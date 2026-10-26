@@ -30,7 +30,9 @@ import org.miaixz.bus.core.xyz.MapKit;
 
 /**
  * A {@link Table} implementation that uses a row key as the primary key. The internal structure is a map where each row
- * key maps to another map of column keys to values. Structure: {@code Map<Row, Map<Column, Value>>}.
+ * key maps to another map of column keys to values. Structure: {@code Map<Row, Map<Column, Value>>}. The raw map and
+ * its row maps are shared rather than copied. Empty rows can exist through direct map access and do not by themselves
+ * make the table non-empty. Callers must provide any synchronization required by the chosen maps.
  *
  * @param <R> The type of the row keys.
  * @param <C> The type of the column keys.
@@ -78,7 +80,7 @@ public class RowKeyTable<R, C, V> extends AbstractTable<R, C, V> {
     /**
      * Constructs a new {@code RowKeyTable} wrapping the specified raw map.
      *
-     * @param raw The raw map to wrap.
+     * @param raw the shared raw map to wrap; row maps must be non-null when traversed
      */
     public RowKeyTable(final Map<R, Map<C, V>> raw) {
         this(raw, HashMap::new);
@@ -87,17 +89,18 @@ public class RowKeyTable<R, C, V> extends AbstractTable<R, C, V> {
     /**
      * Constructs a new {@code RowKeyTable} with a specified raw map and column map builder.
      *
-     * @param raw              The raw map to wrap.
-     * @param columnMapBuilder A builder for creating the inner column maps.
+     * @param raw              the shared raw map to wrap; row maps must be non-null when traversed
+     * @param columnMapBuilder a builder producing empty inner maps, or null to use {@link HashMap}
      */
     public RowKeyTable(final Map<R, Map<C, V>> raw, final Builder<? extends Map<C, V>> columnMapBuilder) {
         this.raw = raw;
-        this.columnBuilder = (Builder<? extends Map<C, V>>) Objects
-                .requireNonNullElseGet(columnMapBuilder, HashMap::new);
+        this.columnBuilder = columnMapBuilder == null ? HashMap::new : columnMapBuilder;
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Returns the shared row-indexed backing map. Direct modifications are visible to this table.
+     *
+     * @return the shared map from row keys to column maps
      */
     @Override
     public Map<R, Map<C, V>> rowMap() {
@@ -105,7 +108,12 @@ public class RowKeyTable<R, C, V> extends AbstractTable<R, C, V> {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Stores a value at the given coordinates, creating the row with the configured builder if necessary.
+     *
+     * @param rowKey    the row key
+     * @param columnKey the column key
+     * @param value     the value to store
+     * @return the previous value at the coordinates, or null if no value was associated
      */
     @Override
     public V put(final R rowKey, final C columnKey, final V value) {
@@ -113,7 +121,11 @@ public class RowKeyTable<R, C, V> extends AbstractTable<R, C, V> {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Removes the given coordinate and removes its outer row mapping if the row becomes empty.
+     *
+     * @param rowKey    the row key
+     * @param columnKey the column key
+     * @return the removed value, or null if no value was associated
      */
     @Override
     public V remove(final R rowKey, final C columnKey) {
@@ -129,15 +141,22 @@ public class RowKeyTable<R, C, V> extends AbstractTable<R, C, V> {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Tests whether all row maps contain no cells, ignoring any empty outer row mappings.
+     *
+     * @return whether no row contains a cell
      */
     @Override
     public boolean isEmpty() {
-        return raw.isEmpty();
+        for (final Map<C, V> row : raw.values()) {
+            if (!row.isEmpty()) {
+                return false;
+            }
+        }
+        return true;
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Removes every row mapping from the shared backing map.
      */
     @Override
     public void clear() {
@@ -145,7 +164,10 @@ public class RowKeyTable<R, C, V> extends AbstractTable<R, C, V> {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Tests whether any non-null row map contains the specified column key. A null column key is reported absent.
+     *
+     * @param columnKey the column key to search for
+     * @return whether any row map contains the non-null key
      */
     @Override
     public boolean containsColumn(final C columnKey) {
@@ -161,7 +183,10 @@ public class RowKeyTable<R, C, V> extends AbstractTable<R, C, V> {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Returns a lazily cached view that discovers column keys from the current row maps. Its values are individual
+     * column views; their entries can update existing row maps, but the outer view does not support general insertion.
+     *
+     * @return a column-indexed view over the shared rows
      */
     @Override
     public Map<C, Map<R, V>> columnMap() {
@@ -170,7 +195,10 @@ public class RowKeyTable<R, C, V> extends AbstractTable<R, C, V> {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Returns a lazily cached view of distinct column keys, discovered by scanning the current rows. The view's
+     * iterator does not support removal.
+     *
+     * @return the distinct column-key view
      */
     @Override
     public Set<C> columnKeySet() {
@@ -179,7 +207,10 @@ public class RowKeyTable<R, C, V> extends AbstractTable<R, C, V> {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Collects the column keys from every current row into a new list. Keys occurring in multiple rows appear more than
+     * once; ordering follows the backing row and column maps.
+     *
+     * @return a snapshot list of column-key occurrences
      */
     @Override
     public List<C> columnKeys() {
@@ -192,7 +223,11 @@ public class RowKeyTable<R, C, V> extends AbstractTable<R, C, V> {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Creates a view of one column, mapping row keys to values at that column. Entry value replacements write through
+     * to their existing row maps; general insertion and iterator removal are not provided by this view.
+     *
+     * @param columnKey the column represented by the view
+     * @return a new column view over the shared table data
      */
     @Override
     public Map<R, V> getColumn(final C columnKey) {
@@ -207,7 +242,9 @@ public class RowKeyTable<R, C, V> extends AbstractTable<R, C, V> {
     private class ColumnMap extends AbstractMap<C, Map<R, V>> {
 
         /**
-         * Description inherited from parent class or interface.
+         * Returns a view pairing each discovered column key with its backed column view.
+         *
+         * @return the column-view entry set
          */
         @Override
         public Set<Entry<C, Map<R, V>>> entrySet() {
@@ -224,7 +261,9 @@ public class RowKeyTable<R, C, V> extends AbstractTable<R, C, V> {
     private class ColumnMapEntrySet extends AbstractSet<Map.Entry<C, Map<R, V>>> {
 
         /**
-         * Description inherited from parent class or interface.
+         * Projects distinct column keys to column-view entries. Removal through this iterator is unsupported.
+         *
+         * @return an iterator over the discovered columns
          */
         @Override
         public Iterator<Map.Entry<C, Map<R, V>>> iterator() {
@@ -232,7 +271,9 @@ public class RowKeyTable<R, C, V> extends AbstractTable<R, C, V> {
         }
 
         /**
-         * Description inherited from parent class or interface.
+         * Counts the currently discoverable distinct column keys.
+         *
+         * @return the current distinct-column count
          */
         @Override
         public int size() {
@@ -249,7 +290,9 @@ public class RowKeyTable<R, C, V> extends AbstractTable<R, C, V> {
     private class ColumnKeySet extends AbstractSet<C> {
 
         /**
-         * Description inherited from parent class or interface.
+         * Creates an iterator that scans rows and emits each discovered column key once.
+         *
+         * @return a distinct-column iterator without removal support
          */
         @Override
         public Iterator<C> iterator() {
@@ -257,7 +300,9 @@ public class RowKeyTable<R, C, V> extends AbstractTable<R, C, V> {
         }
 
         /**
-         * Description inherited from parent class or interface.
+         * Counts distinct column keys by traversing a fresh iterator.
+         *
+         * @return the current distinct-column count
          */
         @Override
         public int size() {
@@ -274,7 +319,7 @@ public class RowKeyTable<R, C, V> extends AbstractTable<R, C, V> {
     private class ColumnKeyIterator extends ComputeIterator<C> {
 
         /**
-         * Tracks seen column keys to ensure uniqueness.
+         * Tracks seen column keys using the configured column-map implementation and its key-equivalence rules.
          */
         final Map<C, V> seen = columnBuilder.build();
 
@@ -289,7 +334,9 @@ public class RowKeyTable<R, C, V> extends AbstractTable<R, C, V> {
         Iterator<Map.Entry<C, V>> entryIterator = Collections.emptyIterator();
 
         /**
-         * Description inherited from parent class or interface.
+         * Searches the current and subsequent rows for an unseen column key.
+         *
+         * @return the next unseen key, or null to signal completion; null column keys cannot be represented as elements
          */
         @Override
         protected C computeNext() {
@@ -323,7 +370,7 @@ public class RowKeyTable<R, C, V> extends AbstractTable<R, C, V> {
         final C columnKey;
 
         /**
-         * Constructor.
+         * Creates a backed view for the specified column.
          *
          * @param columnKey The column key.
          */
@@ -332,7 +379,10 @@ public class RowKeyTable<R, C, V> extends AbstractTable<R, C, V> {
         }
 
         /**
-         * Description inherited from parent class or interface.
+         * Returns a view of the existing row entries containing this column. Entry replacements write through to the
+         * row map, while iterator removal is unsupported.
+         *
+         * @return the column's row/value entry view
          */
         @Override
         public Set<Entry<R, V>> entrySet() {
@@ -347,7 +397,9 @@ public class RowKeyTable<R, C, V> extends AbstractTable<R, C, V> {
         private class EntrySet extends AbstractSet<Map.Entry<R, V>> {
 
             /**
-             * Description inherited from parent class or interface.
+             * Creates an iterator over row mappings containing this column.
+             *
+             * @return a write-through-entry iterator without removal support
              */
             @Override
             public Iterator<Map.Entry<R, V>> iterator() {
@@ -355,7 +407,9 @@ public class RowKeyTable<R, C, V> extends AbstractTable<R, C, V> {
             }
 
             /**
-             * Description inherited from parent class or interface.
+             * Counts rows that currently contain the column, including those mapping it to null.
+             *
+             * @return the number of matching rows
              */
             @Override
             public int size() {
@@ -383,7 +437,10 @@ public class RowKeyTable<R, C, V> extends AbstractTable<R, C, V> {
             final Iterator<Entry<R, Map<C, V>>> iterator = raw.entrySet().iterator();
 
             /**
-             * Description inherited from parent class or interface.
+             * Searches rows for the next mapping containing this column and exposes its current value through a
+             * write-through entry.
+             *
+             * @return the next matching row/value entry, or null when no matching row remains
              */
             @Override
             protected Entry<R, V> computeNext() {
@@ -393,9 +450,9 @@ public class RowKeyTable<R, C, V> extends AbstractTable<R, C, V> {
                         return new AbstractEntry<>() {
 
                             /**
-                             * Gets the key of this entry.
+                             * Returns the row key represented by this column entry.
                              *
-                             * @return the key
+                             * @return the backing row key
                              */
                             @Override
                             public R getKey() {
@@ -403,9 +460,9 @@ public class RowKeyTable<R, C, V> extends AbstractTable<R, C, V> {
                             }
 
                             /**
-                             * Gets the value of this entry.
+                             * Reads the current column value from the represented row map.
                              *
-                             * @return the value
+                             * @return the current value, possibly null
                              */
                             @Override
                             public V getValue() {
@@ -413,7 +470,7 @@ public class RowKeyTable<R, C, V> extends AbstractTable<R, C, V> {
                             }
 
                             /**
-                             * Sets the value of this entry.
+                             * Replaces the column value directly in the represented row map.
                              *
                              * @param value the new value
                              * @return the old value

@@ -41,7 +41,8 @@ import org.miaixz.bus.core.xyz.SetKit;
 /**
  * A flexible and powerful dictionary class that extends {@link CustomKeyMap} and implements {@link TypeGetter}. It
  * serves as a versatile data carrier, offering type-safe getters, seamless bean conversion, and support for
- * case-insensitive keys.
+ * case-insensitive keys. When enabled, case-insensitive normalization uses {@link Locale#ROOT}, not the process's
+ * default locale. The map-taking constructor shares its supplied storage and remains case-sensitive.
  *
  * @author Kimi Liu
  */
@@ -113,7 +114,7 @@ public class Dictionary extends CustomKeyMap<String, Object> implements TypeGett
     }
 
     /**
-     * Constructs a {@code Dictionary} from an existing {@link Map}.
+     * Constructs a case-sensitive {@code Dictionary} sharing an existing {@link Map}, without copying its mappings.
      *
      * @param m The map to initialize the dictionary with. If {@code null}, an empty map is created.
      */
@@ -157,7 +158,8 @@ public class Dictionary extends CustomKeyMap<String, Object> implements TypeGett
     }
 
     /**
-     * Creates a {@code Dictionary} from an array of alternating keys and values. Keys are converted to strings.
+     * Creates a {@code Dictionary} from an array of alternating keys and values. Keys are converted to strings; a final
+     * unpaired key is ignored.
      * <p>
      * Example: {@code Dictionary.ofKvs("name", "John", "age", 30)}
      *
@@ -401,15 +403,17 @@ public class Dictionary extends CustomKeyMap<String, Object> implements TypeGett
     }
 
     /**
-     * Customizes the key before it is used. If case-insensitivity is enabled, the key is converted to lowercase.
+     * Customizes the key before use. In case-insensitive mode, a non-null key's string representation is lowercased
+     * with {@link Locale#ROOT}; in case-sensitive mode, the key must already be a string or null.
      *
      * @param key The original key.
      * @return The transformed key.
+     * @throws ClassCastException if a non-string key is supplied while case-insensitive normalization is disabled
      */
     @Override
     protected String customKey(Object key) {
         if (this.caseInsensitive && null != key) {
-            key = key.toString().toLowerCase();
+            key = key.toString().toLowerCase(Locale.ROOT);
         }
         return (String) key;
     }

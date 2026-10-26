@@ -31,7 +31,8 @@ import org.miaixz.bus.core.xyz.ObjectKit;
 /**
  * An abstract base implementation of the {@link Table} interface, providing default implementations for common methods.
  * This class handles the basic structure and behavior of a two-key map, leaving the specific storage mechanism to
- * concrete subclasses.
+ * concrete subclasses. Cell traversal skips empty rows and returns immutable snapshots of individual cells; the cell
+ * and value collections themselves are backed views. No synchronization is added around the subclass's storage.
  *
  * @param <R> The type of the row key.
  * @param <C> The type of the column key.
@@ -99,7 +100,8 @@ public abstract class AbstractTable<R, C, V> implements Table<R, C, V> {
 
     /**
      * Returns a {@link Collection} view of all values contained in this table. The collection is backed by the table,
-     * so changes to the table are reflected in the collection, and vice-versa.
+     * so table changes are reflected in subsequent traversals. Supported removals and clear operations write through to
+     * the table; adding values through this view is unsupported.
      *
      * @return A collection view of the values contained in this table.
      */
@@ -111,8 +113,8 @@ public abstract class AbstractTable<R, C, V> implements Table<R, C, V> {
 
     /**
      * Returns a {@link Set} view of all cell entries contained in this table. Each element in the returned set is a
-     * {@link Table.Cell}. The set is backed by the table, so changes to the table are reflected in the set, and
-     * vice-versa.
+     * {@link Table.Cell}. The set is backed by the table: supported removals and clear operations write through, while
+     * additions are unsupported. Each returned cell is an immutable snapshot rather than a write-through entry.
      *
      * @return A set view of the cells contained in this table.
      */
@@ -174,9 +176,9 @@ public abstract class AbstractTable<R, C, V> implements Table<R, C, V> {
         }
 
         /**
-         * Getrowkey method.
+         * Returns this snapshot's row key.
          *
-         * @return the R value
+         * @return the captured row key
          */
         @Override
         public R getRowKey() {
@@ -184,9 +186,9 @@ public abstract class AbstractTable<R, C, V> implements Table<R, C, V> {
         }
 
         /**
-         * Getcolumnkey method.
+         * Returns this snapshot's column key.
          *
-         * @return the C value
+         * @return the captured column key
          */
         @Override
         public C getColumnKey() {
@@ -194,9 +196,9 @@ public abstract class AbstractTable<R, C, V> implements Table<R, C, V> {
         }
 
         /**
-         * Gets the value of this entry.
+         * Returns the value captured when this cell was created.
          *
-         * @return the value
+         * @return the captured value, possibly null
          */
         @Override
         public V getValue() {
@@ -253,9 +255,9 @@ public abstract class AbstractTable<R, C, V> implements Table<R, C, V> {
     private class Values extends AbstractCollection<V> {
 
         /**
-         * Returns an iterator over elements of type T.
+         * Projects the table's cell iterator to values while retaining its removal behavior.
          *
-         * @return an Iterator
+         * @return an iterator over the current cells' values
          */
         @Override
         public Iterator<V> iterator() {
@@ -263,9 +265,10 @@ public abstract class AbstractTable<R, C, V> implements Table<R, C, V> {
         }
 
         /**
-         * Contains method.
+         * Tests whether the table contains the given value.
          *
-         * @return the boolean value
+         * @param o the candidate value
+         * @return whether any table cell contains the candidate
          */
         @Override
         public boolean contains(final Object o) {
@@ -300,9 +303,11 @@ public abstract class AbstractTable<R, C, V> implements Table<R, C, V> {
     private class CellSet extends AbstractSet<Cell<R, C, V>> {
 
         /**
-         * Contains method.
+         * Tests whether the candidate cell's coordinates exist with an equal value. A stored null value is distinct
+         * from a missing coordinate.
          *
-         * @return the boolean value
+         * @param o the candidate cell
+         * @return whether the table contains an equal cell
          */
         @Override
         public boolean contains(final Object o) {
@@ -310,14 +315,18 @@ public abstract class AbstractTable<R, C, V> implements Table<R, C, V> {
                 final Cell<R, C, V> cell = (Cell<R, C, V>) o;
                 final Map<C, V> row = getRow(cell.getRowKey());
                 if (null != row) {
-                    return ObjectKit.equals(row.get(cell.getColumnKey()), cell.getValue());
+                    return row.containsKey(cell.getColumnKey())
+                            && ObjectKit.equals(row.get(cell.getColumnKey()), cell.getValue());
                 }
             }
             return false;
         }
 
         /**
-         * Removes from the underlying collection the last element returned by this iterator.
+         * Removes the candidate cell when its coordinates and value match a cell in the table.
+         *
+         * @param o the candidate cell
+         * @return whether a matching cell was found and removed
          */
         @Override
         public boolean remove(final Object o) {
@@ -338,9 +347,9 @@ public abstract class AbstractTable<R, C, V> implements Table<R, C, V> {
         }
 
         /**
-         * Returns an iterator over elements of type T.
+         * Returns a table-cell iterator with write-through removal and immutable cell snapshots.
          *
-         * @return an Iterator
+         * @return an iterator over the current table cells
          */
         @Override
         public Iterator<Table.Cell<R, C, V>> iterator() {
@@ -360,7 +369,9 @@ public abstract class AbstractTable<R, C, V> implements Table<R, C, V> {
     }
 
     /**
-     * An iterator for traversing the cells of the table.
+     * Traverses non-empty rows and their cells. Lookahead may move to a subsequent row without changing the last cell
+     * eligible for removal. An emptied row is removed from the outer map only while its row iterator position is still
+     * current; removal after cross-row lookahead can leave an empty row mapping behind.
      *
      * @author Kimi Liu
      */
@@ -382,37 +393,57 @@ public abstract class AbstractTable<R, C, V> implements Table<R, C, V> {
         Iterator<Map.Entry<C, V>> columnIterator = IteratorKit.empty();
 
         /**
-         * Returns true if the iteration has more elements.
+         * Column iterator that produced the last returned cell, independent of hasNext moving to another row.
+         */
+        Iterator<Map.Entry<C, V>> lastReturnedIterator;
+
+        /**
+         * Searches past empty rows for another cell without changing which returned cell can be removed.
          *
          * @return true if the iteration has more elements
          */
         @Override
         public boolean hasNext() {
-            return rowIterator.hasNext() || columnIterator.hasNext();
-        }
-
-        /**
-         * Returns the next element in the iteration.
-         *
-         * @return the next element
-         */
-        @Override
-        public Cell<R, C, V> next() {
-            if (!columnIterator.hasNext()) {
+            while (!columnIterator.hasNext() && rowIterator.hasNext()) {
                 rowEntry = rowIterator.next();
                 columnIterator = rowEntry.getValue().entrySet().iterator();
             }
+            return columnIterator.hasNext();
+        }
+
+        /**
+         * Returns an immutable snapshot of the next cell.
+         *
+         * @return the next cell snapshot
+         * @throws NoSuchElementException if no cell remains
+         */
+        @Override
+        public Cell<R, C, V> next() {
+            if (!hasNext()) {
+                throw new NoSuchElementException();
+            }
             final Map.Entry<C, V> columnEntry = columnIterator.next();
+            lastReturnedIterator = columnIterator;
             return new SimpleCell<>(rowEntry.getKey(), columnEntry.getKey(), columnEntry.getValue());
         }
 
         /**
-         * Removes from the underlying collection the last element returned by this iterator.
+         * Removes the last returned cell from the row iterator that produced it. An emptied current row is also
+         * removed; an older row reached before cross-row lookahead is left structurally intact.
+         *
+         * @throws IllegalStateException         if no cell has been returned since construction or the previous removal
+         * @throws UnsupportedOperationException if the underlying row or column iterator does not support removal
          */
         @Override
         public void remove() {
-            columnIterator.remove();
-            if (rowEntry.getValue().isEmpty()) {
+            if (lastReturnedIterator == null) {
+                throw new IllegalStateException();
+            }
+            final Iterator<Map.Entry<C, V>> removedFrom = lastReturnedIterator;
+            removedFrom.remove();
+            lastReturnedIterator = null;
+            // Remove an empty current row only while rowIterator still owns it. Lookahead may have advanced the row.
+            if (removedFrom == columnIterator && rowEntry.getValue().isEmpty()) {
                 rowIterator.remove();
             }
         }

@@ -27,8 +27,8 @@ import org.miaixz.bus.core.lang.Normal;
 
 /**
  * A thread-safe {@link java.util.Set} implementation backed by a {@link ConcurrentLinkedHashMap}. This class provides a
- * concurrent hash set that maintains insertion order, similar to {@link java.util.LinkedHashSet}, but with thread-safe
- * operations.
+ * concurrent hash set with asynchronous eviction-policy maintenance. Ordinary iteration does not guarantee insertion
+ * order. Explicit-capacity constructors retain their configured bounds.
  *
  * @param <E> The type of elements in this set.
  * @author Kimi Liu
@@ -73,14 +73,16 @@ public class ConcurrentLinkedHashSet<E> extends SetFromMap<E> {
     /**
      * Constructs a new {@code ConcurrentLinkedHashSet} containing the elements in the specified iterable collection.
      * The initial capacity of the backing map is determined by the size of the iterable, if it is a {@link Collection}.
+     * This constructor uses the backing map's maximum supported capacity rather than applying the no-argument
+     * constructor's 64-element bound. A non-collection iterable is consumed exactly once. Null elements remain subject
+     * to the backing map's null-key prohibition.
      *
      * @param iter The collection whose elements are to be placed into this set.
      */
     public ConcurrentLinkedHashSet(final Iterable<E> iter) {
-        super(iter instanceof Collection
-                ? new ConcurrentLinkedHashMap.Builder<E, Boolean>().initialCapacity(((Collection<E>) iter).size())
-                        .build()
-                : new ConcurrentLinkedHashMap.Builder<E, Boolean>().build());
+        super(new ConcurrentLinkedHashMap.Builder<E, Boolean>()
+                .initialCapacity(iter instanceof Collection ? ((Collection<E>) iter).size() : Normal._16)
+                .maximumWeightedCapacity(Long.MAX_VALUE).build());
         if (iter instanceof Collection) {
             this.addAll((Collection<E>) iter);
         } else {

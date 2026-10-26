@@ -33,7 +33,7 @@ import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * A basic implementation of {@link ForestMap}.
+ * An insertion-ordered {@link ForestMap} of keyed nodes with explicit parent-child relationships.
  *
  * <p>
  * This collection can be viewed as a {@link LinkedHashMap} where the key is {@link TreeEntryNode#getKey()} and the
@@ -44,7 +44,8 @@ import org.miaixz.bus.core.xyz.StringKit;
  * Nodes form parent-child relationships through their keys, ultimately creating a multi-way tree structure. Multiple
  * parallel multi-way trees constitute a forest within this collection. Users can manipulate or access the forest
  * through the methods of {@link ForestMap} itself, or by obtaining a {@link TreeEntry} and using the node's own
- * methods.
+ * methods. This class is not thread-safe. The key set is backed by the forest and preserves relationship cleanup on
+ * removal; the values and entry sets are detached collection snapshots containing the existing node objects.
  *
  * @param <K> The type of the keys.
  * @param <V> The type of the values.
@@ -142,15 +143,28 @@ public class LinkedForestMap<K, V> implements ForestMap<K, V> {
         if (ObjectKit.isNull(target)) {
             return null;
         }
-        // If a parent exists, remove the target from its children and re-parent the target's children.
-        if (target.hasParent()) {
-            final TreeEntryNode<K, V> parent = target.getDeclaredParent();
-            final Map<K, TreeEntry<K, V>> targetChildren = target.getChildren();
-            parent.removeDeclaredChild(target.getKey());
-            target.clear();
-            targetChildren.forEach((k, c) -> parent.addChild((TreeEntryNode<K, V>) c));
-        }
+        detachNode(target);
         return target;
+    }
+
+    /**
+     * Disconnects a removed node while preserving each direct child's subtree. Children of a removed root become roots;
+     * children of an internal node are reattached to its former parent.
+     *
+     * @param target node already removed from the backing node collection
+     */
+    private void detachNode(final TreeEntryNode<K, V> target) {
+        final TreeEntryNode<K, V> parent = target.getDeclaredParent();
+        if (parent != null) {
+            parent.removeDeclaredChild(target.getKey());
+        }
+        for (final TreeEntryNode<K, V> child : new ArrayList<>(target.children.values())) {
+            target.removeDeclaredChild(child.getKey());
+            if (parent != null) {
+                parent.addChild(child);
+            }
+        }
+        target.clear();
     }
 
     /**
@@ -163,17 +177,120 @@ public class LinkedForestMap<K, V> implements ForestMap<K, V> {
     }
 
     /**
-     * Returns a {@link Set} of all keys in the current instance.
+     * Returns a backed set of all node keys. Removing a key or using the iterator's removal operation also detaches the
+     * removed node and reconnects its direct children as specified by {@link #remove(Object)}.
      *
      * @return The set of keys.
      */
     @Override
     public Set<K> keySet() {
-        return nodes.keySet();
+        return new AbstractSet<>() {
+
+            /**
+             * Creates an insertion-ordered key iterator whose removal operation also updates node relationships.
+             *
+             * @return a backed iterator over the current node keys
+             */
+            @Override
+            public Iterator<K> iterator() {
+                final Iterator<TreeEntryNode<K, V>> iterator = nodes.values().iterator();
+                return new Iterator<>() {
+
+                    /**
+                     * Last returned node whose relationships must be detached on removal.
+                     */
+                    private TreeEntryNode<K, V> last;
+
+                    /**
+                     * Tests whether the backing node iterator has another node.
+                     *
+                     * @return {@code true} if another node key is available
+                     */
+                    @Override
+                    public boolean hasNext() {
+                        return iterator.hasNext();
+                    }
+
+                    /**
+                     * Advances to the next node and records it as the target of a subsequent removal.
+                     *
+                     * @return the next node's key
+                     * @throws NoSuchElementException          if no node remains
+                     * @throws ConcurrentModificationException if the backing forest was structurally modified outside
+                     *                                         this iterator
+                     */
+                    @Override
+                    public K next() {
+                        last = iterator.next();
+                        return last.getKey();
+                    }
+
+                    /**
+                     * Removes the last returned node and detaches its relationships while preserving child subtrees.
+                     * Direct children are reattached to the former parent, or become roots when the removed node was a
+                     * root.
+                     *
+                     * @throws IllegalStateException           if no node was returned or it has already been removed
+                     * @throws ConcurrentModificationException if the backing forest was structurally modified outside
+                     *                                         this iterator
+                     */
+                    @Override
+                    public void remove() {
+                        if (last == null) {
+                            throw new IllegalStateException();
+                        }
+                        iterator.remove();
+                        detachNode(last);
+                        last = null;
+                    }
+                };
+            }
+
+            /**
+             * Returns the number of current node keys in the backing forest.
+             *
+             * @return the current node count
+             */
+            @Override
+            public int size() {
+                return nodes.size();
+            }
+
+            /**
+             * Tests whether the backing forest currently contains a node with the supplied key.
+             *
+             * @param key node key to locate
+             * @return {@code true} if the node exists
+             */
+            @Override
+            public boolean contains(final Object key) {
+                return nodes.containsKey(key);
+            }
+
+            /**
+             * Removes the node with the supplied key through the forest's relationship-aware removal operation.
+             *
+             * @param key key of the node to remove
+             * @return {@code true} if a node was removed
+             */
+            @Override
+            public boolean remove(final Object key) {
+                return LinkedForestMap.this.remove(key) != null;
+            }
+
+            /**
+             * Removes all forest nodes and clears their parent, child, root, and depth relationships.
+             */
+            @Override
+            public void clear() {
+                LinkedForestMap.this.clear();
+            }
+        };
     }
 
     /**
-     * Returns a {@link Collection} of all {@link TreeEntry} instances in the current instance.
+     * Returns a detached collection snapshot containing the current node objects. Removing snapshot elements does not
+     * remove forest nodes; modifying a retained node still modifies that node.
      *
      * @return The collection of entries.
      */
@@ -183,8 +300,8 @@ public class LinkedForestMap<K, V> implements ForestMap<K, V> {
     }
 
     /**
-     * Returns a {@link Set} of map entries (key and {@link TreeEntry}). Note: {@link Map.Entry#setValue(Object)} is not
-     * supported on the returned set.
+     * Returns a detached set snapshot of key-to-node wrappers. Set changes do not modify the forest; node objects are
+     * still shared. Replacing a wrapped node through {@link Map.Entry#setValue(Object)} is not supported.
      *
      * @return The set of map entries.
      */
@@ -263,6 +380,7 @@ public class LinkedForestMap<K, V> implements ForestMap<K, V> {
      * @param parentKey The key of the parent node.
      * @param childKey  The key of the child node.
      * @param consumer  An optional consumer to perform actions on the parent and child nodes.
+     * @throws IllegalArgumentException if changing an existing parent is disallowed or the link would create a cycle
      */
     @Override
     public void linkNodes(final K parentKey, final K childKey, BiConsumerX<TreeEntry<K, V>, TreeEntry<K, V>> consumer) {
@@ -397,9 +515,9 @@ public class LinkedForestMap<K, V> implements ForestMap<K, V> {
         }
 
         /**
-         * Gets the weight of this node.
+         * Gets the depth of this node relative to its root.
          *
-         * @return the weight
+         * @return the depth, with zero representing a root node
          */
         @Override
         public int getWeight() {
@@ -435,7 +553,7 @@ public class LinkedForestMap<K, V> implements ForestMap<K, V> {
          * @param includeCurrent If true, the current node is included in the traversal.
          * @param consumer       The action to perform on each ancestor.
          * @param breakTraverse  A predicate to stop the traversal.
-         * @return The last node visited before the traversal was stopped.
+         * @return the node matching the stop predicate, or {@code null} when the ancestor chain is exhausted
          */
         TreeEntryNode<K, V> traverseParentNodes(
                 final boolean includeCurrent,
@@ -463,9 +581,9 @@ public class LinkedForestMap<K, V> implements ForestMap<K, V> {
         }
 
         /**
-         * Getroot method.
+         * Returns the cached root, or discovers and caches the topmost ancestor if the cached root was cleared.
          *
-         * @return the TreeEntryNode&lt;K, V&gt; value
+         * @return the root node, including this node when it has no parent
          */
         @Override
         public TreeEntryNode<K, V> getRoot() {
@@ -477,9 +595,9 @@ public class LinkedForestMap<K, V> implements ForestMap<K, V> {
         }
 
         /**
-         * Getdeclaredparent method.
+         * Returns this node's direct parent.
          *
-         * @return the TreeEntryNode&lt;K, V&gt; value
+         * @return the direct parent, or {@code null} for a root node
          */
         @Override
         public TreeEntryNode<K, V> getDeclaredParent() {
@@ -487,9 +605,10 @@ public class LinkedForestMap<K, V> implements ForestMap<K, V> {
         }
 
         /**
-         * Getparent method.
+         * Searches ancestors, starting with the direct parent, for the specified key.
          *
-         * @return the TreeEntryNode&lt;K, V&gt; value
+         * @param key ancestor key to locate
+         * @return the matching ancestor, or {@code null} if none matches
          */
         @Override
         public TreeEntryNode<K, V> getParent(final K key) {
@@ -498,7 +617,10 @@ public class LinkedForestMap<K, V> implements ForestMap<K, V> {
         }
 
         /**
-         * Foreachchild method.
+         * Visits descendants in breadth-first order, optionally including this node.
+         *
+         * @param includeSelf  whether to visit this node before its descendants
+         * @param nodeConsumer action applied to each visited node
          */
         @Override
         public void forEachChild(final boolean includeSelf, final ConsumerX<TreeEntry<K, V>> nodeConsumer) {
@@ -519,9 +641,9 @@ public class LinkedForestMap<K, V> implements ForestMap<K, V> {
          * Traverses all descendant nodes in breadth-first order.
          *
          * @param includeCurrent If true, the current node is included in the traversal.
-         * @param consumer       The action to perform on each descendant.
-         * @param breakTraverse  A predicate to stop the traversal.
-         * @return The last node visited before the traversal was stopped.
+         * @param consumer       action applied with the traversal level and visited node
+         * @param breakTraverse  optional predicate that stops traversal after the current node's action
+         * @return the node matching the stop predicate, or {@code null} when traversal completes without a match
          */
         TreeEntryNode<K, V> traverseChildNodes(
                 final boolean includeCurrent,
@@ -585,7 +707,8 @@ public class LinkedForestMap<K, V> implements ForestMap<K, V> {
         }
 
         /**
-         * Removes a direct child node.
+         * Detaches a direct child without discarding its subtree. The child becomes its subtree's root, and descendant
+         * root references and depths are recalculated.
          *
          * @param key The key of the child to remove.
          */
@@ -605,9 +728,10 @@ public class LinkedForestMap<K, V> implements ForestMap<K, V> {
         }
 
         /**
-         * Getchild method.
+         * Searches descendants in breadth-first order for the specified key.
          *
-         * @return the TreeEntryNode&lt;K, V&gt; value
+         * @param key descendant key to locate
+         * @return the first matching descendant, or {@code null} if none matches
          */
         @Override
         public TreeEntryNode<K, V> getChild(final K key) {
@@ -616,7 +740,9 @@ public class LinkedForestMap<K, V> implements ForestMap<K, V> {
         }
 
         /**
-         * Getdeclaredchildren method.
+         * Copies the direct-child mappings into a new insertion-ordered map. The child nodes themselves remain shared.
+         *
+         * @return a detached map containing the direct child nodes
          */
         @Override
         public Map<K, TreeEntry<K, V>> getDeclaredChildren() {
@@ -624,7 +750,9 @@ public class LinkedForestMap<K, V> implements ForestMap<K, V> {
         }
 
         /**
-         * Getchildren method.
+         * Collects all descendant mappings into a new map in breadth-first encounter order. Node objects remain shared.
+         *
+         * @return a detached map containing all descendant nodes
          */
         @Override
         public Map<K, TreeEntry<K, V>> getChildren() {
@@ -640,10 +768,11 @@ public class LinkedForestMap<K, V> implements ForestMap<K, V> {
             this.root = null;
             this.children.clear();
             this.parent = null;
+            this.weight = 0;
         }
 
         /**
-         * Checks if this object equals another object.
+         * Compares this node with another tree entry using the node key, without comparing values or relationships.
          *
          * @param o the object to compare with
          * @return true if the objects are equal, false otherwise
@@ -668,7 +797,8 @@ public class LinkedForestMap<K, V> implements ForestMap<K, V> {
         }
 
         /**
-         * Creates a copy of the current node.
+         * Creates a shallow node copy using the supplied non-null value, or this node's value when it is null. Parent
+         * and child node objects remain shared rather than being recursively copied.
          *
          * @param value The value for the new copied node.
          * @return The new node.
@@ -728,10 +858,11 @@ public class LinkedForestMap<K, V> implements ForestMap<K, V> {
         }
 
         /**
-         * Sets the value of this entry.
+         * Rejects replacement of the wrapped node. Node contents can be changed through the returned node itself.
          *
          * @param value the new value
-         * @return the old value
+         * @return never returns normally
+         * @throws UnsupportedOperationException always
          */
         @Override
         public TreeEntry<K, V> setValue(final TreeEntry<K, V> value) {

@@ -44,59 +44,58 @@ import org.miaixz.bus.core.lang.annotation.resolve.synthesize.SynthesizedAnnotat
 import org.miaixz.bus.core.lang.exception.InternalException;
 
 /**
- * Annotation class, providing encapsulated functions for quickly obtaining annotation objects, annotation values, etc.
+ * Provides direct, composite, and synthesized annotation lookup, annotation-attribute access, and annotation proxies.
+ * Declared annotation arrays use a weak-reference cache; lookup and synthesis results use separate soft-reference
+ * caches that also represent misses with a sentinel. Cached values may be reclaimed and resolved again.
  *
  * @author Kimi Liu
  */
 public class AnnoKit {
 
     /**
-     * JDK annotation attribute field name.
+     * Name of the member-value map on a JDK annotation invocation handler.
      */
     private static final String JDK_MEMBER_ATTRIBUTE = "memberValues";
 
     /**
-     * Spring annotation attribute field name.
+     * Name of the member-value map on a recognized Spring synthesized-annotation handler.
      */
     private static final String SPRING_MEMBER_ATTRIBUTE = "valueCache";
 
     /**
-     * Bus annotation attribute field name.
+     * Name of the member-value map on a Bus annotation-mapping proxy.
      */
     private static final String BUS_MEMBER_ATTRIBUTE = "valueCache";
 
     /**
-     * Spring synthesized annotation handler class name.
+     * Handler class-name fragment used to recognize Spring synthesized annotations without a Spring dependency.
      */
     private static final String SPRING_INVOCATION_HANDLER = "SynthesizedMergedAnnotationInvocationHandler";
 
     /**
-     * Cache for directly declared annotations, stored using a weak-reference concurrent map.
+     * Directly declared annotation arrays, with both annotated elements and arrays weakly held.
      */
     private static final Map<AnnotatedElement, Annotation[]> DECLARED_ANNOTATIONS_CACHE = new WeakConcurrentMap<>();
 
     /**
-     * Sentinel object used in the two-level annotation cache to represent “annotation not found”, avoiding NPE from
-     * caching {@code null}.
+     * Internal non-null marker for a missing lookup or synthesis result; it is never returned as a user annotation.
      */
     private static final Annotation NULL_ANNOTATION_SENTINEL = () -> null;
 
     /**
-     * L1 raw annotation cache (high-frequency core scenario).<br>
-     * Key: annotation lookup key (annotated element + target annotation type).<br>
-     * Value: the raw annotation object, or {@code NULL_ANNOTATION_SENTINEL} if not present.
+     * Composite-annotation lookup results keyed by element and target annotation type. Keys and values are softly held;
+     * an absent annotation is represented by {@link #NULL_ANNOTATION_SENTINEL}.
      */
     private static final Map<AnnotationLookupKey, Annotation> L1_ANNOTATION_CACHE = new SoftConcurrentMap<>();
 
     /**
-     * L2 synthesized annotation cache (alias/aggregate scenario).<br>
-     * Key: annotation lookup key (annotated element + target annotation type).<br>
-     * Value: the synthesized annotation object, or {@code NULL_ANNOTATION_SENTINEL} if not present.
+     * Direct or synthesized lookup results keyed by element and target annotation type. Keys and values are softly
+     * held; an absent annotation is represented by {@link #NULL_ANNOTATION_SENTINEL}.
      */
     private static final Map<AnnotationLookupKey, Annotation> L2_SYNTHESIZED_ANNOTATION_CACHE = new SoftConcurrentMap<>();
 
     /**
-     * Keeps annotation lookup and synthesis on the static API.
+     * Creates an instance; annotation lookup and synthesis operations remain available through the static API.
      */
     public AnnoKit() {
         // No initialization required.
@@ -111,25 +110,23 @@ public class AnnoKit {
      * <li>Retrieves only annotations defined on the current class, method, field, etc.</li>
      * </ul>
      *
-     * @param element The annotated element, which can be a Class, Method, Field, Constructor, etc.
-     * @return An array of annotations.
+     * @param element The non-null annotated element, such as a class, method, field, or constructor.
+     * @return The shared cached annotation array; callers must not modify it.
+     * @throws NullPointerException If the annotated element is null.
      */
     public static Annotation[] getDeclaredAnnotations(final AnnotatedElement element) {
         return DECLARED_ANNOTATIONS_CACHE.computeIfAbsent(element, AnnotatedElement::getDeclaredAnnotations);
     }
 
     /**
-     * Retrieves all annotations for the specified element. This method specifically:
-     * <ul>
-     * <li>Returns all annotations on the element.</li>
-     * <li>Includes annotations inherited from parent classes or interfaces.</li>
-     * <li>Retrieves all annotations from the current element and its inherited elements.</li>
-     * </ul>
+     * Retrieves annotations exposed by the element, optionally expanding their meta-annotations. Without combination
+     * expansion, inheritance follows {@link AnnotatedElement#getAnnotations()}; this does not independently traverse
+     * every superclass or interface.
      *
      * @param annotationEle   The annotated element, which can be a Class, Method, Field, Constructor, etc.
      * @param isToCombination Whether to convert to a combination annotation, which supports recursively obtaining
      *                        annotations of annotations.
-     * @return An array of annotations.
+     * @return An array of annotations, or null if the element is null.
      */
     public static Annotation[] getAnnotations(final AnnotatedElement annotationEle, final boolean isToCombination) {
         return getAnnotations(annotationEle, isToCombination, (PredicateX<Annotation>) null);
@@ -139,8 +136,8 @@ public class AnnoKit {
      * Retrieves combination annotations of a specific type for the given element.
      *
      * @param <T>            The type of the annotation.
-     * @param annotationEle  The annotated element.
-     * @param annotationType The type of the annotation to retrieve.
+     * @param annotationEle  The non-null annotated element.
+     * @param annotationType The non-null type of the annotation to retrieve.
      * @return An array of annotations of the specified type.
      */
     public static <T> T[] getCombinationAnnotations(
@@ -153,9 +150,9 @@ public class AnnoKit {
      * Retrieves annotations of a specific type for the given element.
      *
      * @param <T>             The type of the annotation.
-     * @param annotationEle   The annotated element.
+     * @param annotationEle   The non-null annotated element.
      * @param isToCombination Whether to convert to a combination annotation.
-     * @param annotationType  The type of the annotation to retrieve.
+     * @param annotationType  The non-null type of the annotation to retrieve.
      * @return An array of annotations of the specified type.
      */
     public static <T> T[] getAnnotations(
@@ -179,8 +176,8 @@ public class AnnoKit {
      *
      * @param annotationEle   The annotated element.
      * @param isToCombination Whether to convert to a combination annotation.
-     * @param predicate       A predicate to filter the annotations.
-     * @return An array of annotations.
+     * @param predicate       A predicate to filter the annotations, or null to retain all annotations.
+     * @return An array of annotations, or null if the element is null.
      */
     public static Annotation[] getAnnotations(
             final AnnotatedElement annotationEle,
@@ -205,19 +202,18 @@ public class AnnoKit {
     }
 
     /**
-     * Retrieves the specified annotation (optimized: adds L1 cache to improve high-frequency call performance).<br>
-     * Supports direct annotations, meta-annotations, and combination annotations with the same behavior as the native
-     * implementation.
+     * Retrieves the specified annotation through a combination-annotation view. Both found annotations and misses are
+     * cached by element and annotation type while the soft references remain live. Meta-annotations are included, but
+     * the lookup does not introduce an independent traversal of all superclass and interface declarations.
      *
      * @param <A>            The type of the annotation.
      * @param annotationEle  The annotated element.
      * @param annotationType The type of the annotation to retrieve.
-     * @return The annotation object, or {@code null} if not found.
+     * @return The annotation object, or null if either input is null or the annotation is not found.
      */
     public static <A extends Annotation> A getAnnotation(
             final AnnotatedElement annotationEle,
             final Class<A> annotationType) {
-        // return (null == annotationEle) ? null : toCombination(annotationEle).getAnnotation(annotationType);
         if (null == annotationEle || null == annotationType) {
             return null;
         }
@@ -225,7 +221,7 @@ public class AnnoKit {
         // Check L1 cache first
         final A result = (A) L1_ANNOTATION_CACHE
                 .computeIfAbsent(new AnnotationLookupKey(annotationEle, annotationType), (lookupKey) -> {
-                    // Cache miss: execute native logic
+                    // Resolve a cache miss through the same combination view used by uncached lookup.
                     final A annotation = toCombination(annotationEle).getAnnotation(annotationType);
                     // Store in cache: replace null with sentinel
                     return (null == annotation) ? NULL_ANNOTATION_SENTINEL : annotation;
@@ -234,8 +230,8 @@ public class AnnoKit {
     }
 
     /**
-     * Checks if the specified element contains a specific annotation, loading the annotation class by its fully
-     * qualified name to avoid {@link ClassNotFoundException}.
+     * Checks for an annotation identified by its fully qualified class name. A missing annotation class is treated as
+     * an absent annotation; other class-loading failures are not suppressed.
      *
      * @param annotationEle      The annotated element.
      * @param annotationTypeName The fully qualified class name of the annotation type.
@@ -268,12 +264,13 @@ public class AnnoKit {
     }
 
     /**
-     * Retrieves the default value of a specified annotation (usually the "value" attribute).
+     * Retrieves the resolved annotation's {@code value} attribute. This is the annotation instance's value, which may
+     * be explicitly supplied or supplied by the annotation declaration's default.
      *
      * @param <T>            The type of the annotation value.
      * @param annotationEle  The annotated element.
      * @param annotationType The type of the annotation.
-     * @return The default annotation value, or {@code null} if no default value exists.
+     * @return The attribute value, or null if the annotation or its {@code value} attribute is absent.
      * @throws InternalException If an error occurs while invoking the annotation method.
      */
     public static <T> T getAnnotationValue(
@@ -289,7 +286,7 @@ public class AnnoKit {
      * @param <R>           The type of the attribute value.
      * @param annotationEle The annotated element.
      * @param propertyName  The Lambda expression representing the property name.
-     * @return The attribute value, or {@code null} if the specified attribute does not exist.
+     * @return The attribute value, or null if the property expression, annotation, or attribute is absent.
      * @throws InternalException If an error occurs while invoking the annotation method.
      */
     public static <A extends Annotation, R> R getAnnotationValue(
@@ -316,7 +313,7 @@ public class AnnoKit {
      * @param annotationEle  The annotated element.
      * @param annotationType The type of the annotation.
      * @param propertyName   The name of the attribute.
-     * @return The attribute value, or {@code null} if the specified attribute does not exist.
+     * @return The attribute value, or null if the annotation or specified attribute is absent.
      * @throws InternalException If an error occurs while invoking the annotation method.
      */
     public static <T> T getAnnotationValue(
@@ -387,22 +384,24 @@ public class AnnoKit {
      * Retrieves the program element types supported by an annotation class.
      *
      * @param annotationType The annotation type.
-     * @return An array of element types, or all {@link ElementType} values if no {@code @Target} annotation is defined.
+     * @return The declared target types, or all {@link ElementType} values as this method's fallback when
+     *         {@code @Target} is absent; the fallback is not a validation of Java source placement rules.
      */
     public static ElementType[] getTargetType(final Class<? extends Annotation> annotationType) {
         final Target target = annotationType.getAnnotation(Target.class);
         if (null == target) {
-            // If @Target meta-annotation is not defined, it means all nodes are supported
+            // Return the all-types fallback rather than enforce Java annotation placement rules.
             return ElementType.values();
         }
         return target.value();
     }
 
     /**
-     * Checks if an annotation is a meta-annotation.
+     * Checks whether a type belongs to the predefined core meta-annotation set in {@link Normal#META_ANNOTATIONS}. This
+     * does not detect every application-defined annotation that can annotate another annotation.
      *
      * @param annotationType The annotation type.
-     * @return {@code true} if it is a meta-annotation, {@code false} otherwise.
+     * @return Whether the type belongs to the predefined set.
      */
     public static boolean isMetaAnnotation(final Class<? extends Annotation> annotationType) {
         return Normal.META_ANNOTATIONS.contains(annotationType);
@@ -419,7 +418,8 @@ public class AnnoKit {
     }
 
     /**
-     * Checks if an annotation class can be inherited.
+     * Checks whether an annotation type declares {@link Inherited}. Java inheritance of such annotations applies to
+     * class declarations, not arbitrary method, field, or interface annotations.
      *
      * @param annotationType The annotation type.
      * @return {@code true} if it can be inherited, {@code false} otherwise.
@@ -429,14 +429,18 @@ public class AnnoKit {
     }
 
     /**
-     * Sets the value of an annotation attribute.
+     * Mutates the member-value map of a recognized annotation invocation handler. This changes the supplied proxy
+     * instance; it does not rewrite annotation metadata stored in a class file.
      * <p>
-     * Note: This may throw an exception in JDK 9 and above. The JVM argument
-     * {@code --add-opens=java.base/java.lang=ALL-UNNAMED} may be required.
+     * Reflective access must be permitted by the runtime. For a JDK annotation handler, this may require opening
+     * {@code java.base/sun.reflect.annotation} to the caller, for example with
+     * {@code --add-opens=java.base/sun.reflect.annotation=ALL-UNNAMED} for classpath applications. Other handlers may
+     * require access to their own packages. This method does not perform annotation-member type validation.
      *
      * @param annotation      The annotation object.
      * @param annotationField The name of the attribute.
      * @param value           The value to set for the attribute.
+     * @throws IllegalArgumentException If the annotation is not a proxy instance.
      */
     public static void setValue(final Annotation annotation, final String annotationField, final Object value) {
         final InvocationHandler invocationHandler = Proxy.getInvocationHandler(annotation);
@@ -487,7 +491,8 @@ public class AnnoKit {
     }
 
     /**
-     * Determines if a method is an annotation attribute method.
+     * Applies the annotation-attribute method-shape filter when inspecting annotation types. This is not a complete
+     * validation of every Java annotation declaration rule.
      *
      * <ul>
      * <li>Not {@link Object#equals(Object)} method</li>
@@ -498,7 +503,7 @@ public class AnnoKit {
      * <li>Not a static method</li>
      * <li>A public method</li>
      * <li>Has no parameters</li>
-     * <li>Has a return value (not void)</li>
+     * <li>Its return type is not the boxed {@link Void} class</li>
      * </ul>
      *
      * @param attribute The method object.
@@ -532,7 +537,7 @@ public class AnnoKit {
      * @param annotationType the annotation type
      * @param annotations    the annotation instances
      * @param <T>            the annotation type
-     * @return the synthesized annotation
+     * @return The synthesized annotation, or null if no supplied annotation can produce the requested type.
      * @see SynthesizedAggregateAnnotation
      */
     public static <T extends Annotation> T getSynthesizedAnnotation(
@@ -543,12 +548,11 @@ public class AnnoKit {
     }
 
     /**
-     * Retrieves the synthesized annotation of the specified type that is closest to the given element (optimized: adds
-     * L2 cache to avoid repeated synthesis parsing).
-     * <ul>
-     * <li>If the element is a class, recursively resolves annotations on all parent classes and interfaces.</li>
-     * <li>If the element is a method, field, or annotation, only directly declared annotations are resolved.</li>
-     * </ul>
+     * Retrieves an annotation directly exposed by the element, returning that instance unchanged if present. Otherwise,
+     * scans the element with {@link AnnotationScanner#DIRECTLY} and returns the first root annotation whose
+     * meta-annotation aggregate can synthesize the requested type. Class annotations include those exposed by JDK
+     * {@link Inherited} rules; this method does not independently scan every superclass or interface. Found results and
+     * misses are cached by element and annotation type while the soft references remain live.
      *
      * <p>
      * Annotation synthesis rules: suppose {@code AnnotatedEle} declares annotations A, B, C in order from top to
@@ -563,10 +567,10 @@ public class AnnoKit {
      * If {@code annotationType} is {@code M2}, the synthesized annotation derived from root annotation B is returned
      * first.
      *
-     * @param annotatedEle   {@link AnnotatedElement}, can be Class, Method, Field, Constructor, or ReflectPermission
+     * @param annotatedEle   The annotated element, such as a class, method, field, or constructor.
      * @param annotationType the annotation type
      * @param <T>            the annotation type
-     * @return the synthesized annotation
+     * @return The direct or synthesized annotation, or null if either input is null or no match is found.
      * @see SynthesizedAggregateAnnotation
      */
     public static <T extends Annotation> T getSynthesizedAnnotation(
@@ -585,7 +589,7 @@ public class AnnoKit {
             return (cached == NULL_ANNOTATION_SENTINEL) ? null : (T) cached;
         }
 
-        // Cache miss: execute native logic
+        // Prefer an annotation directly exposed by the element before synthesizing from its roots.
         T result = annotatedEle.getAnnotation(annotationType);
         if (ObjectKit.isNotNull(result)) {
             L2_SYNTHESIZED_ANNOTATION_CACHE.put(key, result);
@@ -602,11 +606,9 @@ public class AnnoKit {
     }
 
     /**
-     * Retrieves all synthesized annotations of the specified type from the given element.
-     * <ul>
-     * <li>If the element is a class, recursively resolves annotations on all parent classes and interfaces.</li>
-     * <li>If the element is a method, field, or annotation, only directly declared annotations are resolved.</li>
-     * </ul>
+     * Scans the element with {@link AnnotationScanner#DIRECTLY} and attempts synthesis from each root annotation and
+     * its meta-annotations. Results follow root scan order and are not deduplicated. Class annotations include those
+     * exposed by JDK {@link Inherited} rules; this does not independently scan every superclass or interface.
      *
      * <p>
      * Annotation synthesis rules: suppose {@code AnnotatedEle} declares annotations A, B, C in order from top to
@@ -621,10 +623,10 @@ public class AnnoKit {
      * If {@code annotationType} is {@code M1}, the synthesized annotations derived from root annotations A and B are
      * both returned.
      *
-     * @param annotatedEle   {@link AnnotatedElement}, can be Class, Method, Field, Constructor, or ReflectPermission
+     * @param annotatedEle   The annotated element, such as a class, method, field, or constructor.
      * @param annotationType the annotation type
      * @param <T>            the annotation type
-     * @return list of synthesized annotations
+     * @return A list of successfully synthesized annotations, empty if the scanner finds no matching roots.
      * @see SynthesizedAggregateAnnotation
      */
     public static <T extends Annotation> List<T> getAllSynthesizedAnnotations(
@@ -670,10 +672,13 @@ public class AnnoKit {
     }
 
     /**
-     * Clears annotation-related caches.
+     * Clears the declared-annotation, lookup, and synthesized-annotation caches owned by this class. Concurrent queries
+     * can populate them again; clearing does not form a global barrier against annotation lookups.
      */
     public static void clearCaches() {
         DECLARED_ANNOTATIONS_CACHE.clear();
+        L1_ANNOTATION_CACHE.clear();
+        L2_SYNTHESIZED_ANNOTATION_CACHE.clear();
     }
 
 }

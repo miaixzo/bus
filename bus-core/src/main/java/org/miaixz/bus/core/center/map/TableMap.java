@@ -35,7 +35,8 @@ import org.miaixz.bus.core.xyz.ObjectKit;
  * for keys and values, preserving the insertion order of elements.
  * <p>
  * Because it relies on list iteration for lookups, its performance is O(n) for most operations, making it suitable for
- * smaller datasets where duplicate keys are required.
+ * smaller datasets where duplicate keys are required. Duplicate-key operations deliberately differ from the standard
+ * {@code Map} contract; this class is not thread-safe.
  *
  * @param <K> The type of keys in the map.
  * @param <V> The type of values in the map.
@@ -72,6 +73,7 @@ public class TableMap<K, V> implements Map<K, V>, Iterable<Map.Entry<K, V>>, Ser
      * Constructs an empty {@code TableMap} with the specified initial capacity.
      *
      * @param size The initial capacity for the internal key and value lists.
+     * @throws IllegalArgumentException if the initial capacity is negative
      */
     public TableMap(final int size) {
         this.keys = new ArrayList<>(size);
@@ -80,7 +82,7 @@ public class TableMap<K, V> implements Map<K, V>, Iterable<Map.Entry<K, V>>, Ser
 
     /**
      * Constructs a {@code TableMap} from the given arrays of keys and values. The keys and values are mapped based on
-     * their corresponding indices.
+     * their corresponding indices. Callers must supply arrays of equal length so the two internal lists remain aligned.
      *
      * @param keys   An array of keys.
      * @param values An array of values.
@@ -91,7 +93,9 @@ public class TableMap<K, V> implements Map<K, V>, Iterable<Map.Entry<K, V>>, Ser
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Returns the number of stored pairs, counting duplicate keys and duplicate mappings separately.
+     *
+     * @return the number of key/value list positions
      */
     @Override
     public int size() {
@@ -99,7 +103,9 @@ public class TableMap<K, V> implements Map<K, V>, Iterable<Map.Entry<K, V>>, Ser
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Tests whether the backing key list contains no pairs.
+     *
+     * @return {@code true} if no pairs are stored
      */
     @Override
     public boolean isEmpty() {
@@ -107,7 +113,10 @@ public class TableMap<K, V> implements Map<K, V>, Iterable<Map.Entry<K, V>>, Ser
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Tests whether any stored pair has the specified key, including {@code null}.
+     *
+     * @param key key to locate
+     * @return {@code true} when at least one stored key matches
      */
     @Override
     public boolean containsKey(final Object key) {
@@ -115,7 +124,10 @@ public class TableMap<K, V> implements Map<K, V>, Iterable<Map.Entry<K, V>>, Ser
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Tests whether any stored pair has the specified value, including {@code null}.
+     *
+     * @param value value to locate
+     * @return {@code true} when at least one stored value matches
      */
     @Override
     public boolean containsValue(final Object value) {
@@ -229,7 +241,7 @@ public class TableMap<K, V> implements Map<K, V>, Iterable<Map.Entry<K, V>>, Ser
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Removes all key and value list positions, including duplicate mappings.
      */
     @Override
     public void clear() {
@@ -238,7 +250,8 @@ public class TableMap<K, V> implements Map<K, V>, Iterable<Map.Entry<K, V>>, Ser
     }
 
     /**
-     * Returns a {@link Set} view of the unique keys contained in this map.
+     * Returns a detached {@link Set} snapshot of the unique keys contained in this map. Changing this set does not
+     * modify the map.
      *
      * @return A set containing the unique keys from this map.
      */
@@ -267,10 +280,11 @@ public class TableMap<K, V> implements Map<K, V>, Iterable<Map.Entry<K, V>>, Ser
     }
 
     /**
-     * Returns a {@link Set} view of the unique key-value mappings in this map. If the map contains duplicate key-value
-     * pairs (e.g., two entries of {@code (key1, value1)}), the returned set will contain only one such entry.
+     * Returns a detached {@link Set} snapshot of the unique key-value mappings in this map. If the map contains
+     * duplicate key-value pairs (e.g., two entries of {@code (key1, value1)}), the returned set contains only one such
+     * entry. Neither set changes nor entry changes write through to this map.
      *
-     * @return A set view of the unique entries in this map.
+     * @return a snapshot of the unique entries in encounter order
      */
     @Override
     public Set<Map.Entry<K, V>> entrySet() {
@@ -282,7 +296,8 @@ public class TableMap<K, V> implements Map<K, V>, Iterable<Map.Entry<K, V>>, Ser
     }
 
     /**
-     * Returns an iterator over the entries in this map.
+     * Returns an insertion-ordered iterator over all stored pairs, including duplicates. Entry objects are detached;
+     * iterator removal deletes the corresponding key and value list positions together.
      *
      * @return An {@link Iterator} over the map entries.
      */
@@ -290,7 +305,13 @@ public class TableMap<K, V> implements Map<K, V>, Iterable<Map.Entry<K, V>>, Ser
     public Iterator<Map.Entry<K, V>> iterator() {
         return new Iterator<Map.Entry<K, V>>() {
 
+            /**
+             * Iterator over the key list, advanced and removed together with the value iterator.
+             */
             private final Iterator<K> keysIter = keys.iterator();
+            /**
+             * Iterator over the value list, kept at the same position as the key iterator.
+             */
             private final Iterator<V> valuesIter = values.iterator();
 
             /**
@@ -303,13 +324,26 @@ public class TableMap<K, V> implements Map<K, V>, Iterable<Map.Entry<K, V>>, Ser
                 return keysIter.hasNext() && valuesIter.hasNext();
             }
 
+            /**
+             * Advances the paired key and value iterators and creates a detached entry for that list position.
+             * Duplicate keys and duplicate pairs are returned separately.
+             *
+             * @return the next stored key-value pair
+             * @throws NoSuchElementException          if either backing iterator has no next element
+             * @throws ConcurrentModificationException if either backing list was structurally modified outside this
+             *                                         iterator
+             */
             @Override
             public Map.Entry<K, V> next() {
                 return MapKit.entry(keysIter.next(), valuesIter.next());
             }
 
             /**
-             * Removes from the underlying collection the last element returned by this iterator.
+             * Removes from the underlying collection the last element returned by this iterator. Both backing list
+             * positions are removed together so the remaining keys and values stay aligned.
+             *
+             * @throws IllegalStateException           if no pair was returned or it has already been removed
+             * @throws ConcurrentModificationException if a backing list was structurally modified outside this iterator
              */
             @Override
             public void remove() {
@@ -320,7 +354,10 @@ public class TableMap<K, V> implements Map<K, V>, Iterable<Map.Entry<K, V>>, Ser
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Invokes the action for every stored pair in insertion order, including duplicate keys.
+     *
+     * @param action action receiving each stored key and value
+     * @throws NullPointerException if the action is {@code null} and at least one pair is visited
      */
     @Override
     public void forEach(final BiConsumer<? super K, ? super V> action) {
@@ -350,7 +387,11 @@ public class TableMap<K, V> implements Map<K, V>, Iterable<Map.Entry<K, V>>, Ser
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Replaces the value at every list position with the function result. Duplicate keys are processed separately, and
+     * a null result is retained as a value rather than removing the pair.
+     *
+     * @param function function receiving each stored key and current value
+     * @throws NullPointerException if the function is {@code null} and at least one pair is processed
      */
     @Override
     public void replaceAll(final BiFunction<? super K, ? super V, ? extends V> function) {
@@ -379,25 +420,25 @@ public class TableMap<K, V> implements Map<K, V>, Iterable<Map.Entry<K, V>>, Ser
     }
 
     /**
-     * For each entry with the specified key, computes a new value using the given remapping function. If the function
-     * returns {@code null}, the entry is removed.
+     * For each entry with the specified key, including entries whose current value is null, computes a new value using
+     * the given remapping function. If the function returns {@code null}, the entry is removed.
      *
      * @param key               The key to compute a new value for.
      * @param remappingFunction The function to compute the new value.
      * @return The last computed value, or {@code null} if no value was computed or the last one was {@code null}.
+     * @throws NullPointerException if the remapping function is {@code null}, even when no pair matches
      */
     @Override
     public V computeIfPresent(final K key, final BiFunction<? super K, ? super V, ? extends V> remappingFunction) {
-        if (null == remappingFunction) {
-            return null;
-        }
+        Objects.requireNonNull(remappingFunction, "remappingFunction");
 
         V lastValue = null;
         for (int i = 0; i < size(); i++) {
             if (ObjectKit.equals(key, keys.get(i))) {
                 final V newValue = remappingFunction.apply(key, values.get(i));
+                lastValue = newValue;
                 if (null != newValue) {
-                    lastValue = values.set(i, newValue);
+                    values.set(i, newValue);
                 } else {
                     removeByIndex(i);
                     i--; // Re-check the current index since the list has shifted.
