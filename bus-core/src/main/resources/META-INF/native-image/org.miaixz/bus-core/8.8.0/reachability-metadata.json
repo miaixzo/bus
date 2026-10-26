@@ -1,6 +1,30 @@
 {
   "reflection": [
     {
+      "type": "java.io.IOException",
+      "serializable": true
+    },
+    {
+      "type": "java.io.NotSerializableException",
+      "serializable": true
+    },
+    {
+      "type": "java.io.ObjectStreamException",
+      "serializable": true
+    },
+    {
+      "type": "java.lang.Exception",
+      "serializable": true
+    },
+    {
+      "type": "java.lang.StackTraceElement",
+      "serializable": true
+    },
+    {
+      "type": "java.lang.Throwable",
+      "serializable": true
+    },
+    {
       "type": "java.lang.annotation.Annotation",
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.annotation.resolve.AnnotationProxy"
@@ -42,6 +66,62 @@
       "type": "java.util.LinkedHashMap",
       "condition": {
         "typeReached": "org.miaixz.bus.core.center.map.MapWrapper"
+      },
+      "serializable": true
+    },
+    {
+      "type": "java.util.concurrent.locks.AbstractOwnableSynchronizer",
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.cache.SimpleCache"
+      },
+      "serializable": true
+    },
+    {
+      "type": "java.util.concurrent.locks.AbstractQueuedLongSynchronizer",
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.cache.SimpleCache"
+      },
+      "serializable": true
+    },
+    {
+      "type": "java.util.concurrent.locks.AbstractQueuedSynchronizer",
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.cache.SimpleCache"
+      },
+      "serializable": true
+    },
+    {
+      "type": "java.util.concurrent.locks.ReentrantReadWriteLock",
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.cache.SimpleCache"
+      },
+      "serializable": true
+    },
+    {
+      "type": "java.util.concurrent.locks.ReentrantReadWriteLock$NonfairSync",
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.cache.SimpleCache"
+      },
+      "serializable": true
+    },
+    {
+      "type": "java.util.concurrent.locks.ReentrantReadWriteLock$ReadLock",
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.cache.SimpleCache"
+      },
+      "serializable": true
+    },
+    {
+      "type": "java.util.concurrent.locks.ReentrantReadWriteLock$Sync",
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.cache.SimpleCache"
+      },
+      "serializable": true
+    },
+    {
+      "type": "java.util.concurrent.locks.ReentrantReadWriteLock$WriteLock",
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.cache.SimpleCache"
       },
       "serializable": true
     },
@@ -1832,7 +1912,8 @@
             "java.util.Map"
           ]
         }
-      ]
+      ],
+      "serializable": true
     },
     {
       "type": "org.miaixz.bus.core.center.array.ArrayValidator",
@@ -4865,8 +4946,7 @@
           "name": "<init>",
           "parameterTypes": [
             "org.miaixz.bus.core.center.map.concurrent.ConcurrentLinkedHashMap",
-            "org.miaixz.bus.core.center.map.concurrent.ConcurrentLinkedHashMap$Node",
-            "int"
+            "org.miaixz.bus.core.center.map.concurrent.ConcurrentLinkedHashMap$Node"
           ]
         }
       ]
@@ -5004,8 +5084,7 @@
           "name": "<init>",
           "parameterTypes": [
             "org.miaixz.bus.core.center.map.concurrent.ConcurrentLinkedHashMap",
-            "org.miaixz.bus.core.center.map.concurrent.ConcurrentLinkedHashMap$Node",
-            "int"
+            "org.miaixz.bus.core.center.map.concurrent.ConcurrentLinkedHashMap$Node"
           ]
         }
       ]
@@ -5674,16 +5753,8 @@
             "java.util.concurrent.ConcurrentMap"
           ]
         }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.center.map.reference.ReferenceConcurrentMap$NullRef",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        }
-      ]
+      ],
+      "serializable": true
     },
     {
       "type": "org.miaixz.bus.core.center.map.reference.SoftConcurrentMap",
@@ -5698,7 +5769,8 @@
             "java.util.concurrent.ConcurrentMap"
           ]
         }
-      ]
+      ],
+      "serializable": true
     },
     {
       "type": "org.miaixz.bus.core.center.map.reference.WeakConcurrentMap",
@@ -5713,7 +5785,8 @@
             "java.util.concurrent.ConcurrentMap"
           ]
         }
-      ]
+      ],
+      "serializable": true
     },
     {
       "type": "org.miaixz.bus.core.center.map.reference.WeakKeyConcurrentMap",
@@ -5728,7 +5801,8 @@
             "java.util.concurrent.ConcurrentMap"
           ]
         }
-      ]
+      ],
+      "serializable": true
     },
     {
       "type": "org.miaixz.bus.core.center.map.TableMap",

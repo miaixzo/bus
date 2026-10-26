@@ -19,8 +19,6 @@
 */
 package org.miaixz.bus.core.lang.intern;
 
-import java.lang.ref.WeakReference;
-
 import org.miaixz.bus.core.center.map.reference.WeakConcurrentMap;
 
 /**
@@ -35,10 +33,9 @@ import org.miaixz.bus.core.center.map.reference.WeakConcurrentMap;
 public class WeakIntern<T> implements Intern<T> {
 
     /**
-     * The cache for storing weak references to interned objects. The keys are the objects themselves, and the values
-     * are weak references to the canonical objects.
+     * Canonical objects held weakly as both keys and values, without a separately collectible reference wrapper.
      */
-    private final WeakConcurrentMap<T, WeakReference<T>> cache = new WeakConcurrentMap<>();
+    private final WeakConcurrentMap<T, T> cache = new WeakConcurrentMap<>();
 
     /**
      * Constructs a new WeakIntern instance.
@@ -51,8 +48,8 @@ public class WeakIntern<T> implements Intern<T> {
      * Returns the canonical representation for the given object. If the object is already in the cache, its canonical
      * instance is returned. Otherwise, the object is added to the cache as a new canonical instance.
      * <p>
-     * This method handles the case where a weak reference might be garbage collected immediately after creation by
-     * looping until a non-null value is retrieved.
+     * The lookup retains its result strongly until this call returns; an external strong reference keeps that same
+     * canonical object available to subsequent equal samples.
      *
      * @param sample The object for which to retrieve the canonical representation.
      * @return The canonical object instance, or {@code null} if the sample is {@code null}.
@@ -62,12 +59,7 @@ public class WeakIntern<T> implements Intern<T> {
         if (null == sample) {
             return null;
         }
-        T val;
-        // Loop to avoid the situation where a newly created WeakReference is immediately garbage collected.
-        do {
-            val = this.cache.computeIfAbsent(sample, WeakReference::new).get();
-        } while (val == null);
-        return val;
+        return this.cache.computeIfAbsent(sample, key -> key);
     }
 
 }

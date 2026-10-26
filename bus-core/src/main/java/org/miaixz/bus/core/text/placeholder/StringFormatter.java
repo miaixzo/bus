@@ -39,9 +39,9 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class StringFormatter {
 
     /**
-     * Cache for compiled {@link StringTemplate} instances. The cache uses a weak-concurrent map to store templates,
-     * preventing memory leaks when templates are no longer referenced. The key is a combination of the template pattern
-     * and the placeholder (for single placeholder templates) or a flag for named placeholders.
+     * Best-effort cache for compiled {@link StringTemplate} instances. Both composite keys and compiled templates are
+     * weakly held, so entries may be reclaimed even while the original pattern remains in use. Keys combine immutable
+     * pattern text with either the single placeholder text or the named-placeholder null-handling flag.
      */
     private static final WeakConcurrentMap<Map.Entry<CharSequence, Object>, StringTemplate> CACHE = new WeakConcurrentMap<>();
 
@@ -53,40 +53,41 @@ public class StringFormatter {
     }
 
     /**
-     * Formats a string by replacing placeholders `{}` with provided arguments in order. To output `{}` literally,
-     * escape it with `\\{}`. To output a literal `\` before `{}`, use `\\\\{}`.
+     * Formats a string by replacing {@code {}} placeholders with provided arguments in order. A backslash escapes a
+     * placeholder, and a doubled backslash preserves a backslash while allowing placeholder substitution.
      * <p>
      * Example:
      * <ul>
-     * <li>Normal usage: `format("this is {} for {}", "a", "b")` returns `"this is a for b"`</li>
-     * <li>Escaping `{}`: `format("this is \\{} for {}", "a", "b")` returns `"this is {} for a"`</li>
-     * <li>Escaping `\`: `format("this is \\\\{} for {}", "a", "b")` returns `"this is \a for b"`</li>
+     * <li>{@code format("this is {} for {}", "a", "b")} returns {@code "this is a for b"}.</li>
+     * <li>{@code format("this is \\{} for {}", "a", "b")} returns {@code "this is {} for a"}.</li>
+     * <li>{@code format("this is \\\\{} for {}", "a", "b")} returns text with a literal backslash before the
+     * substituted {@code a}.</li>
      * </ul>
      *
-     * @param strPattern The string template with `{}` placeholders.
+     * @param strPattern The string template with {@code {}} placeholders.
      * @param argArray   The array of arguments to replace the placeholders.
-     * @return The formatted string.
+     * @return The formatted string, or the original pattern if it is blank or no arguments exist.
      */
     public static String format(final String strPattern, final Object... argArray) {
         return formatWith(strPattern, Symbol.DELIM, argArray);
     }
 
     /**
-     * Formats a string by replacing specified placeholders with provided arguments in order. To output the placeholder
-     * literally, escape it with `\\` (e.g., `\\{}`). To output a literal `\` before the placeholder, use `\\\\` (e.g.,
-     * `\\\\{}`).
+     * Formats a string by replacing the specified placeholder with provided arguments in order. A backslash escapes a
+     * placeholder, and a doubled backslash preserves a backslash while allowing placeholder substitution.
      * <p>
      * Example:
      * <ul>
-     * <li>Normal usage: `formatWith("this is {} for {}", "{}", "a", "b")` returns `"this is a for b"`</li>
-     * <li>Escaping placeholder: `formatWith("this is \\{} for {}", "{}", "a", "b")` returns `"this is {} for a"`</li>
-     * <li>Escaping `\`: `formatWith("this is \\\\{} for {}", "{}", "a", "b")` returns `"this is \a for b"`</li>
+     * <li>{@code formatWith("this is {} for {}", "{}", "a", "b")} returns {@code "this is a for b"}.</li>
+     * <li>{@code formatWith("this is \\{} for {}", "{}", "a", "b")} returns {@code "this is {} for a"}.</li>
+     * <li>{@code formatWith("this is \\\\{} for {}", "{}", "a", "b")} preserves a literal backslash before the
+     * substituted {@code a}.</li>
      * </ul>
      *
      * @param strPattern  The string template.
-     * @param placeHolder The placeholder string, e.g., `{}`.
+     * @param placeHolder The placeholder string, e.g., {@code {}}.
      * @param argArray    The array of arguments to replace the placeholders.
-     * @return The formatted string.
+     * @return The formatted string, or the original pattern if it or the placeholder is blank, or no arguments exist.
      */
     public static String formatWith(final String strPattern, final String placeHolder, final Object... argArray) {
         if (StringKit.isBlank(strPattern) || StringKit.isBlank(placeHolder) || ArrayKit.isEmpty(argArray)) {
@@ -98,31 +99,34 @@ public class StringFormatter {
     }
 
     /**
-     * Formats text using named placeholders like `{varName}` and a JavaBean or Map as arguments.
+     * Formats text using named placeholders like {@code {varName}} and a JavaBean or Map as arguments. The supplied
+     * template is converted to an immutable string exactly once per non-null call; the same snapshot is used for cache
+     * lookup and compilation, so a mutable CharSequence cannot provide different patterns for those operations.
      * <p>
-     * Example: `bean = User:{a: "aValue", b: "bValue"}` `formatByBean("{a} and {b}", bean, false)` returns `"aValue and
-     * bValue"`
+     * For a bean or map with properties {@code a = "aValue"} and {@code b = "bValue"},
+     * {@code formatByBean("{a} and {b}", bean, false)} returns {@code "aValue and bValue"}.
      *
-     * @param template   The text template, where parts to be replaced are denoted by `{key}`.
+     * @param template   The text template, where parts to be replaced are denoted by {@code {key}}.
      * @param bean       The JavaBean or Map containing the values for replacement.
      * @param ignoreNull If {@code true}, {@code null} values in the bean will not replace their corresponding
      *                   placeholders. If {@code false}, {@code null} values will replace placeholders with an empty
      *                   string.
-     * @return The formatted text.
+     * @return The formatted text, null for a null template, or the unchanged snapshot when the supplied map is empty.
      */
     public static String formatByBean(final CharSequence template, final Object bean, final boolean ignoreNull) {
         if (null == template) {
             return null;
         }
 
+        final String pattern = template.toString();
         if (bean instanceof Map) {
             if (MapKit.isEmpty((Map<?, ?>) bean)) {
-                return template.toString();
+                return pattern;
             }
         }
-        // Bean's null check requires reflection, which is very slow, so it is not checked here.
-        return ((NamedPlaceholderString) CACHE.computeIfAbsent(MutableEntry.of(template, ignoreNull), k -> {
-            final NamedPlaceholderString.Builder builder = StringTemplate.ofNamed(template.toString());
+        // Leave bean-property and null-value handling to the compiled named template.
+        return ((NamedPlaceholderString) CACHE.computeIfAbsent(MutableEntry.of(pattern, ignoreNull), k -> {
+            final NamedPlaceholderString.Builder builder = StringTemplate.ofNamed(pattern);
             if (ignoreNull) {
                 builder.addFeatures(StringTemplate.Feature.FORMAT_NULL_VALUE_TO_WHOLE_PLACEHOLDER);
             } else {
@@ -134,7 +138,7 @@ public class StringFormatter {
 
     /**
      * Clears the internal cache of compiled {@link StringTemplate} instances. This can be used to free up memory if
-     * many different templates have been used.
+     * many different templates have been used. Concurrent formatting calls may populate the cache again.
      */
     public static void clear() {
         CACHE.clear();

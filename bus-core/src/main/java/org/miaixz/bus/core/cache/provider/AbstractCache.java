@@ -19,12 +19,16 @@
 */
 package org.miaixz.bus.core.cache.provider;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.Serial;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.LongAdder;
+import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
@@ -55,9 +59,9 @@ public abstract class AbstractCache<K, V> implements Cache<K, V> {
     private static final long serialVersionUID = 2535388650001L;
 
     /**
-     * A map of locks for each key to reduce lock granularity during write operations.
+     * Per-key loading locks and registered users, including waiters. Runtime coordination is not serialized.
      */
-    protected final Map<K, Lock> keyLockMap = new ConcurrentHashMap<>();
+    protected transient Map<K, Lock> keyLockMap = new ConcurrentHashMap<>();
 
     /**
      * The underlying map that stores the cache data.
@@ -92,7 +96,7 @@ public abstract class AbstractCache<K, V> implements Cache<K, V> {
     /**
      * The listener for cache events.
      */
-    protected CacheListener<K, V> listener;
+    protected volatile CacheListener<K, V> listener;
 
     /**
      * Creates a new {@code AbstractCache} instance.
@@ -172,25 +176,179 @@ public abstract class AbstractCache<K, V> implements Cache<K, V> {
     public V get(final K key, final boolean isUpdateLastAccess, final long timeout, final SupplierX<V> supplier) {
         V v = get(key, isUpdateLastAccess);
         if (null == v && null != supplier) {
-            // Use a per-key lock to reduce contention and improve concurrency.
-            final Lock keyLock = keyLockMap.computeIfAbsent(key, k -> new ReentrantLock());
-            keyLock.lock();
+            final Lock loading = acquireKeyLock(key);
             try {
                 // Double-check to prevent regeneration if another thread has already written the value.
                 // This get operation needs to be globally aware as put and pruneCache can modify the map.
                 v = get(key, isUpdateLastAccess);
                 if (null == v) {
-                    // The supplier call can be time-consuming, so it's done under the key-specific lock
-                    // to ensure that the value is created only once per key.
+                    // Serialize same-key supplier calls and reuse a value installed before this recheck.
+                    // A null result or later removal can still require a subsequent load.
                     v = supplier.get();
                     put(key, v, timeout);
                 }
             } finally {
-                keyLock.unlock();
-                keyLockMap.remove(key);
+                releaseKeyLock(key, loading);
             }
         }
         return v;
+    }
+
+    /**
+     * Registers before waiting without holding a registry computation while acquiring the delegate lock.
+     *
+     * @param key cache key
+     * @return acquired Lock-valued loading registration
+     */
+    protected Lock acquireKeyLock(final K key) {
+        final RegisteredLock loading = (RegisteredLock) keyLockMap.compute(key, (k, current) -> {
+            final RegisteredLock registered = current instanceof RegisteredLock existing ? existing
+                    : new RegisteredLock(current);
+            registered.users++;
+            return registered;
+        });
+        try {
+            loading.lock();
+            return loading;
+        } catch (RuntimeException | Error failure) {
+            unregisterKeyLock(key, loading);
+            throw failure;
+        }
+    }
+
+    /**
+     * Releases a loading lock and unregisters the caller after unlocking its original delegate.
+     *
+     * @param key     cache key
+     * @param loading acquired loading registration
+     */
+    protected void releaseKeyLock(final K key, final Lock loading) {
+        loading.unlock();
+        unregisterKeyLock(key, loading);
+    }
+
+    /**
+     * Removes idle internal locks, but restores injected delegates that external callers can still hold or await.
+     *
+     * @param key     cache key associated with the registration
+     * @param loading acquired or failed registration whose user count must be released
+     */
+    private void unregisterKeyLock(final K key, final Lock loading) {
+        keyLockMap.computeIfPresent(key, (k, current) -> {
+            if (current != loading) {
+                return current;
+            }
+            final RegisteredLock registered = (RegisteredLock) current;
+            if (--registered.users != 0) {
+                return registered;
+            }
+            return registered.injected ? registered.delegate : null;
+        });
+    }
+
+    /**
+     * Lock-valued runtime registration, preserving the protected registry's existing subclass contract.
+     */
+    private static final class RegisteredLock implements Lock {
+
+        /**
+         * Original lock, including one supplied by a subclass.
+         */
+        private final Lock delegate;
+        /**
+         * Whether an idle registration must restore the external delegate rather than remove it.
+         */
+        private final boolean injected;
+        /**
+         * Registered holders and waiters, mutated only inside atomic registry updates.
+         */
+        private int users;
+
+        /**
+         * Retains an injected delegate, or creates an internal reentrant lock when none exists.
+         *
+         * @param existing existing subclass-supplied lock, or {@code null} for an internal lock
+         */
+        private RegisteredLock(final Lock existing) {
+            injected = existing != null;
+            delegate = injected ? existing : new ReentrantLock();
+        }
+
+        /**
+         * Acquires the delegate lock, waiting according to that lock's acquisition and interrupt-handling policy.
+         */
+        @Override
+        public void lock() {
+            delegate.lock();
+        }
+
+        /**
+         * Acquires the delegate lock using its interruptible acquisition operation.
+         *
+         * @throws InterruptedException if the delegate reports interruption before acquisition completes
+         */
+        @Override
+        public void lockInterruptibly() throws InterruptedException {
+            delegate.lockInterruptibly();
+        }
+
+        /**
+         * Attempts to acquire the delegate lock without waiting.
+         *
+         * @return whether the delegate granted the lock immediately
+         */
+        @Override
+        public boolean tryLock() {
+            return delegate.tryLock();
+        }
+
+        /**
+         * Attempts to acquire the delegate lock within the supplied waiting time.
+         *
+         * @param time maximum waiting time, interpreted according to the delegate's Lock contract
+         * @param unit unit of the waiting time
+         * @return whether the delegate acquired the lock before the wait expired
+         * @throws InterruptedException if the delegate reports interruption while acquiring
+         * @throws NullPointerException if the delegate rejects a null time unit
+         */
+        @Override
+        public boolean tryLock(final long time, final TimeUnit unit) throws InterruptedException {
+            return delegate.tryLock(time, unit);
+        }
+
+        /**
+         * Releases the delegate lock according to its ownership and reentrancy rules.
+         *
+         * @throws IllegalMonitorStateException if the delegate enforces ownership and the caller does not hold it
+         */
+        @Override
+        public void unlock() {
+            delegate.unlock();
+        }
+
+        /**
+         * Creates a condition associated with the delegate lock.
+         *
+         * @return the delegate's condition object
+         * @throws UnsupportedOperationException if the delegate does not support conditions
+         */
+        @Override
+        public Condition newCondition() {
+            return delegate.newCondition();
+        }
+    }
+
+    /**
+     * Restores an empty runtime loading registry rather than deserializing active waiters.
+     *
+     * @param input source stream containing the persistent cache fields
+     * @throws IOException            if persistent fields cannot be read
+     * @throws ClassNotFoundException if a stored class is unavailable
+     */
+    @Serial
+    private void readObject(final ObjectInputStream input) throws IOException, ClassNotFoundException {
+        input.defaultReadObject();
+        keyLockMap = new ConcurrentHashMap<>();
     }
 
     /**

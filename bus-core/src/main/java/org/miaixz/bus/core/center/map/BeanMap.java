@@ -31,7 +31,8 @@ import org.miaixz.bus.core.xyz.ObjectKit;
  * values are the corresponding property values.
  * <p>
  * Note: Operations that would alter the bean's structure, such as {@link #remove(Object)} and {@link #clear()}, are not
- * supported and will throw an {@link UnsupportedOperationException}.
+ * supported and will throw an {@link UnsupportedOperationException}. Collection views are backed by the bean and do not
+ * support structural changes; entries support property updates through {@link Entry#setValue(Object)}.
  *
  * @author Kimi Liu
  */
@@ -51,6 +52,7 @@ public class BeanMap implements Map<String, Object> {
      * Constructs a new {@code BeanMap} that wraps the given bean.
      *
      * @param bean The Java Bean to be wrapped. Must not be {@code null}.
+     * @throws NullPointerException if the bean is {@code null}
      */
     public BeanMap(final Object bean) {
         this.bean = bean;
@@ -62,13 +64,14 @@ public class BeanMap implements Map<String, Object> {
      *
      * @param bean The Java Bean to be wrapped.
      * @return A new {@code BeanMap} instance.
+     * @throws NullPointerException if the bean is {@code null}
      */
     public static BeanMap of(final Object bean) {
         return new BeanMap(bean);
     }
 
     /**
-     * Returns the number of readable properties in the bean.
+     * Returns the number of properties represented by the bean's property descriptors.
      *
      * @return The number of properties.
      */
@@ -78,7 +81,7 @@ public class BeanMap implements Map<String, Object> {
     }
 
     /**
-     * Checks if the bean has any readable properties.
+     * Checks whether the bean has any represented properties.
      *
      * @return {@code true} if the bean has no properties, {@code false} otherwise.
      */
@@ -200,40 +203,210 @@ public class BeanMap implements Map<String, Object> {
     }
 
     /**
-     * Returns a {@link Set} view of the property names (keys) in this bean map.
+     * Returns a read-only, backed {@link Set} view of the property names. Structural modification must not affect the
+     * shared property descriptors used by other instances of the same bean type.
      *
      * @return A set of property names.
      */
     @Override
     public Set<String> keySet() {
-        return this.propDescMap.keySet();
+        return Collections.unmodifiableSet(this.propDescMap.keySet());
     }
 
     /**
-     * Returns a {@link Collection} view of the property values in this bean map.
+     * Returns a read-only, backed {@link Collection} view of the property values. Each iteration reads the current
+     * values from the bean; removing elements cannot remove bean properties.
      *
      * @return A collection of property values.
      */
     @Override
     public Collection<Object> values() {
-        final List<Object> list = new ArrayList<>(size());
-        for (final PropDesc propDesc : this.propDescMap.values()) {
-            list.add(propDesc.getValue(bean, false));
-        }
-        return list;
+        return Collections.unmodifiableCollection(new AbstractCollection<>() {
+
+            /**
+             * Creates an iterator that reads each represented property's current value from the bean.
+             *
+             * @return a property-value iterator in descriptor encounter order
+             */
+            @Override
+            public Iterator<Object> iterator() {
+                final Iterator<PropDesc> descriptors = propDescMap.values().iterator();
+                return new Iterator<>() {
+
+                    /**
+                     * Tests whether another property descriptor remains to be read.
+                     *
+                     * @return {@code true} if another property value is available
+                     */
+                    @Override
+                    public boolean hasNext() {
+                        return descriptors.hasNext();
+                    }
+
+                    /**
+                     * Reads the current value of the next represented property.
+                     *
+                     * @return the next property value, which may be {@code null}
+                     * @throws NoSuchElementException if no property descriptor remains
+                     */
+                    @Override
+                    public Object next() {
+                        return descriptors.next().getValue(bean, false);
+                    }
+                };
+            }
+
+            /**
+             * Returns the number of represented bean properties, including null-valued properties.
+             *
+             * @return the size of the owning bean map
+             */
+            @Override
+            public int size() {
+                return BeanMap.this.size();
+            }
+
+            /**
+             * Searches the current bean-property values for the supplied value.
+             *
+             * @param value value to locate, including {@code null}
+             * @return {@code true} if at least one current property value matches
+             */
+            @Override
+            public boolean contains(final Object value) {
+                return BeanMap.this.containsValue(value);
+            }
+        });
     }
 
     /**
-     * Returns a {@link Set} view of the mappings (entries) in this bean map.
+     * Returns a backed {@link Set} view of the bean's property mappings. The set does not support structural changes,
+     * but each entry reads its current property value and writes updates through {@link #put(String, Object)}.
      *
      * @return A set of map entries, where each entry is a property name and its value.
      */
     @Override
     public Set<Entry<String, Object>> entrySet() {
-        final HashSet<Entry<String, Object>> set = new HashSet<>(size(), 1);
-        this.propDescMap.forEach(
-                (key, propDesc) -> set.add(new AbstractMap.SimpleEntry<>(key, propDesc.getValue(bean, false))));
-        return set;
+        return Collections.unmodifiableSet(new AbstractSet<>() {
+
+            /**
+             * Creates an iterator of entries that read and update the corresponding bean properties.
+             *
+             * @return a property-entry iterator in descriptor encounter order
+             */
+            @Override
+            public Iterator<Entry<String, Object>> iterator() {
+                final Iterator<String> names = propDescMap.keySet().iterator();
+                return new Iterator<>() {
+
+                    /**
+                     * Tests whether another represented property name remains.
+                     *
+                     * @return {@code true} if another property entry is available
+                     */
+                    @Override
+                    public boolean hasNext() {
+                        return names.hasNext();
+                    }
+
+                    /**
+                     * Creates a backed entry for the next represented property name.
+                     *
+                     * @return an entry that reads and writes the named property on the owning bean
+                     * @throws NoSuchElementException if no property name remains
+                     */
+                    @Override
+                    public Entry<String, Object> next() {
+                        final String name = names.next();
+                        return new AbstractEntry<>() {
+
+                            /**
+                             * Returns the property name captured by this entry.
+                             *
+                             * @return the represented bean-property name
+                             */
+                            @Override
+                            public String getKey() {
+                                return name;
+                            }
+
+                            /**
+                             * Reads the property's current value from the owning bean rather than a snapshot.
+                             *
+                             * @return the current property value, which may be {@code null}
+                             */
+                            @Override
+                            public Object getValue() {
+                                return BeanMap.this.get(name);
+                            }
+
+                            /**
+                             * Updates the represented property through the owning bean map.
+                             *
+                             * @param value replacement property value
+                             * @return the property value observed before the update
+                             */
+                            @Override
+                            public Object setValue(final Object value) {
+                                return BeanMap.this.put(name, value);
+                            }
+                        };
+                    }
+                };
+            }
+
+            /**
+             * Returns the number of represented property mappings in the owning bean map.
+             *
+             * @return the current property-descriptor count
+             */
+            @Override
+            public int size() {
+                return BeanMap.this.size();
+            }
+        });
+    }
+
+    /**
+     * Compares property mappings using the standard Map content contract, including present null-valued properties.
+     *
+     * @param object object to compare
+     * @return whether both maps contain the same mappings
+     */
+    @Override
+    public boolean equals(final Object object) {
+        if (object == this) {
+            return true;
+        }
+        if (!(object instanceof Map<?, ?> other) || other.size() != size()) {
+            return false;
+        }
+        try {
+            for (final Entry<String, Object> entry : entrySet()) {
+                final Object value = entry.getValue();
+                final Object otherValue = other.get(entry.getKey());
+                if (!Objects.equals(value, otherValue) || value == null && !other.containsKey(entry.getKey())) {
+                    return false;
+                }
+            }
+            return true;
+        } catch (final ClassCastException | NullPointerException ignored) {
+            return false;
+        }
+    }
+
+    /**
+     * Returns the sum of the current property entries' standard Map hash codes.
+     *
+     * @return the content-based hash code of the current property mappings
+     */
+    @Override
+    public int hashCode() {
+        int hash = 0;
+        for (final Entry<String, Object> entry : entrySet()) {
+            hash += entry.hashCode();
+        }
+        return hash;
     }
 
 }
