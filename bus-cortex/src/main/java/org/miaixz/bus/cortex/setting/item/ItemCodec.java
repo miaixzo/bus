@@ -27,6 +27,7 @@ import org.miaixz.bus.core.lang.EnumValue.Format;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.PatternKit;
+import org.miaixz.bus.cortex.setting.item.Item.Property;
 import org.miaixz.bus.crypto.Builder;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.extra.json.JsonSchema;
@@ -73,16 +74,7 @@ public final class ItemCodec {
      */
     private static JsonValue.ObjectValue definition(Document document) {
         Map<String, JsonValue> result = new TreeMap<>();
-        document.properties().forEach((k, v) -> {
-            Map<String, JsonValue> fields = new TreeMap<>();
-            if (v.value() != null)
-                fields.put("value", v.value());
-            if (v.defaultValue() != null)
-                fields.put("default", v.defaultValue());
-            if (v.desc() != null)
-                fields.put("desc", new JsonValue.StringValue(v.desc()));
-            result.put(k, new JsonValue.ObjectValue(fields));
-        });
+        document.properties().forEach((key, property) -> result.put(key, new JsonValue.ObjectValue(property.attributes())));
         return new JsonValue.ObjectValue(result);
     }
 
@@ -117,10 +109,10 @@ public final class ItemCodec {
     /**
      * Converts a literal top-level key or explicit JSON Pointer to its canonical pointer coordinate.
      *
-     * @param key literal object key, enum code or exact identity
-     * @return the encoded value or exact identity; null when the documented optional result is absent
+     * @param key literal definition key or explicit JSON Pointer
+     * @return validated canonical property pointer
      */
-    private static String coordinate(String key) {
+    public static String coordinate(String key) {
         String pointer = key.isEmpty() || key.startsWith(Symbol.SLASH) ? key : JsonSchema.pointer(Normal.EMPTY, key);
         path(pointer);
         return pointer;
@@ -295,6 +287,44 @@ public final class ItemCodec {
     }
 
     /**
+     * Identifies an extensible attribute independently from the built-in business and validation members.
+     *
+     * @param name exact attribute name
+     * @return whether the name belongs to the dynamic attribute collection
+     */
+    public static boolean isAttribute(String name) {
+        return !Set.of("value", "default", "desc", "required").contains(Objects.requireNonNull(name));
+    }
+
+    /**
+     * Addresses an exact definition attribute without colliding with business-value actions.
+     *
+     * @param property exact definition key or its canonical coordinate
+     * @param attribute extensible attribute name
+     * @return a definition-fragment coordinate
+     */
+    public static String attributePath(String property, String attribute) {
+        if (!isAttribute(attribute) || attribute.isBlank() || attribute.codePoints().anyMatch(Character::isISOControl))
+            throw invalid("attribute");
+        return "#" + JsonSchema.pointer(JsonSchema.pointer("", coordinate(Objects.requireNonNull(property))), attribute);
+    }
+
+    /**
+     * Decodes a definition-fragment action into its exact original key and attribute.
+     *
+     * @param coordinate definition-fragment coordinate
+     * @return immutable property and attribute tokens
+     */
+    public static List<String> attributePath(String coordinate) {
+        if (coordinate == null || !coordinate.startsWith("#/"))
+            throw invalid("attributePath");
+        List<String> tokens = JsonSchema.tokens(coordinate.substring(1));
+        if (tokens.size() != 2 || !attributePath(tokens.getFirst(), tokens.get(1)).equals(coordinate))
+            throw invalid("attributePath");
+        return tokens;
+    }
+
+    /**
      * Applies present explicit values over defaults; null, false, zero and empty strings never trigger fallback.
      *
      * @param definition validated definition envelope
@@ -446,15 +476,15 @@ public final class ItemCodec {
             if (!paths.add(coordinate(e.getKey())))
                 throw invalid("duplicatePath");
             if (!(e.getValue() instanceof JsonValue.ObjectValue attrs)
-                    || !Set.of("value", "default", "desc").containsAll(attrs.values().keySet()))
+                    || attrs.values().keySet().stream().anyMatch(name -> name.isBlank() || name.codePoints().anyMatch(Character::isISOControl)))
                 throw invalid("member");
             JsonValue desc = attrs.values().get("desc");
             if (desc != null && !(desc instanceof JsonValue.StringValue))
                 throw invalid("desc");
-            properties.put(
-                    e.getKey(),
-                    new Property(attrs.values().get("value"), attrs.values().get("default"),
-                            desc == null ? null : ((JsonValue.StringValue) desc).value()));
+            JsonValue required = attrs.values().get("required");
+            if (required != null && !(required instanceof JsonValue.BooleanValue))
+                throw invalid("required");
+            properties.put(e.getKey(), new Property(attrs.values()));
         }
         JsonValue whole = tree(schema);
         if (whole != null)
@@ -514,8 +544,64 @@ public final class ItemCodec {
      */
     public Document importValues(JsonValue.ObjectValue values) {
         Map<String, Property> properties = new TreeMap<>();
-        values.values().forEach((k, v) -> properties.put(k, new Property(v, null, null)));
+        values.values().forEach((k, v) -> properties.put(k, new Property(Map.of("value", v))));
         return new Document(properties, Map.of(), null, new JsonValue.ObjectValue(Map.of()), Protection.NONE);
+    }
+
+    /**
+     * Replaces business values while retaining complete definitions at their canonical coordinates.
+     * Existing metadata-only properties remain absent from the explicit value layer.
+     *
+     * @param values explicit business object
+     * @param previous previous plaintext definition, or null for a new object
+     * @return an unprotected current definition retaining existing property names and metadata
+     */
+    public Document importValues(JsonValue.ObjectValue values, Document previous) {
+        if (previous == null)
+            return importValues(values);
+        NavigableMap<String, String> names = new TreeMap<>();
+        Map<String, Property> properties = new TreeMap<>();
+        previous.properties().forEach((name, property) -> {
+            names.put(coordinate(name), name);
+            if (property.value() == null)
+                properties.put(name, property);
+        });
+        if (names.containsKey(""))
+            importValue(values, "", "", previous, names, properties);
+        else
+            values.values().forEach((name, value) -> importValue(value, JsonSchema.pointer("", name), name,
+                    previous, names, properties));
+        return new Document(properties, previous.rules(), previous.schema(), previous.management(), Protection.NONE);
+    }
+
+    /**
+     * Projects one business branch through existing property coordinates without guessing attribute envelopes.
+     *
+     * @param value explicit business subtree
+     * @param pointer canonical business pointer
+     * @param literal original top-level name, or null for a nested branch
+     * @param previous authoritative plaintext definition
+     * @param names canonical pointer-to-original-name index
+     * @param properties resulting complete properties
+     */
+    private void importValue(JsonValue value, String pointer, String literal, Document previous,
+            NavigableMap<String, String> names, Map<String, Property> properties) {
+        String name = names.get(pointer), descendant = names.ceilingKey(pointer + "/");
+        boolean split = descendant != null && descendant.startsWith(pointer + "/");
+        Property property = name == null ? null : previous.properties().get(name);
+        if (property != null && (property.value() != null || !split)) {
+            properties.put(name, property.with("value", value));
+            return;
+        }
+        if (split && value instanceof JsonValue.ObjectValue object && !object.values().isEmpty()) {
+            object.values().forEach((key, child) -> importValue(child, JsonSchema.pointer(pointer, key), null,
+                    previous, names, properties));
+            return;
+        }
+        if (split && value instanceof JsonValue.ArrayValue)
+            throw invalid("pathContainer");
+        String target = name != null ? name : literal != null && !literal.startsWith("/") ? literal : pointer;
+        properties.put(target, property == null ? new Property(Map.of("value", value)) : property.with("value", value));
     }
 
     /**
@@ -584,7 +670,9 @@ public final class ItemCodec {
      */
     public void validate(Document document, ValidationLevel level) {
         JsonSchema.validate(new JsonValue.BooleanValue(true), definition(document), maximumDepth, maximumSteps);
-        if (level == ValidationLevel.FULL) {
+        if (level == ValidationLevel.REQUIRED)
+            validateRequired(document);
+        if (level != ValidationLevel.SYNTAX) {
             check(document, document.effective());
             for (var e : document.properties().entrySet())
                 if (e.getValue().defaultValue() != null)
@@ -596,6 +684,21 @@ public final class ItemCodec {
                                     0,
                                     e.getValue().defaultValue()));
         }
+    }
+
+    /**
+     * Requires explicit non-null, nonblank values only when requested by the editing workflow.
+     * Defaults do not satisfy this check; zero and false remain valid values.
+     *
+     * @param document plaintext definition after protected edit intents have been applied
+     */
+    public void validateRequired(Document document) {
+        document.properties().forEach((name, property) -> {
+            JsonValue value = property.value();
+            if (property.required() && (value == null || value instanceof JsonValue.NullValue
+                    || value instanceof JsonValue.StringValue text && text.value().isBlank()))
+                throw invalid("required");
+        });
     }
 
     /**
@@ -678,19 +781,11 @@ public final class ItemCodec {
         /**
          * Effective value and Schema constraints as well.
          */
-        FULL
-
-    }
-
-    /**
-     * Exact value/default members; Java null denotes absence.
-     *
-     * @param value        explicit member
-     * @param defaultValue fallback member
-     * @param desc         display description
-     * @author Kimi Liu
-     */
-    public record Property(JsonValue value, JsonValue defaultValue, String desc) {
+        FULL,
+        /**
+         * Full constraints and explicit values for properties marked required.
+         */
+        REQUIRED
 
     }
 
@@ -776,7 +871,7 @@ public final class ItemCodec {
                 if (properties.entrySet().stream().anyMatch(
                         e -> e.getValue().value() != null && !coordinate(e.getKey()).equals(path)
                                 && ancestor(coordinate(e.getKey()), path)))
-                    applicable.put(key, new Property(property.value(), null, property.desc()));
+                    applicable.put(key, property.without("default"));
             });
             return layer(definition(new Document(applicable, rules, schema, management, protection)), "default");
         }

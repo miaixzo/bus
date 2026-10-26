@@ -1105,7 +1105,7 @@
       "allDeclaredConstructors": true
     },
     {
-      "type": "org.miaixz.bus.cortex.setting.item.ItemCodec$Property",
+      "type": "org.miaixz.bus.cortex.setting.item.Item$Property",
       "allDeclaredFields": true,
       "allDeclaredMethods": true,
       "allDeclaredConstructors": true
