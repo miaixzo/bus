@@ -20,6 +20,10 @@
 package org.miaixz.bus.cortex.setting.item;
 
 import java.io.Serial;
+import java.util.Collections;
+import java.util.Map;
+import java.util.Objects;
+import java.util.TreeMap;
 
 import jakarta.persistence.Lob;
 
@@ -29,6 +33,7 @@ import lombok.experimental.SuperBuilder;
 
 import org.miaixz.bus.core.basic.entity.Tenant;
 import org.miaixz.bus.core.xyz.EnumKit;
+import org.miaixz.bus.extra.json.JsonValue;
 
 /**
  * Current editable configuration definition; application relationships and publication state belong elsewhere.
@@ -59,8 +64,8 @@ public class Item extends Tenant {
     private Integer type;
 
     /**
-     * Current definition containing {@code value}, {@code default} and {@code desc} members; sensitive members must be
-     * protected.
+     * Current definition with extensible property attributes, including {@code value}, {@code default} and {@code desc};
+     * sensitive members must be protected.
      */
     @Lob
     private String content;
@@ -107,6 +112,114 @@ public class Item extends Tenant {
      */
     public Item() {
         // No initialization required.
+    }
+
+    /**
+     * Immutable attributes of one configuration property, independent of storage and publication state.
+     * Java null denotes an absent attribute; JSON null remains an explicit value.
+     *
+     * @param attributes complete attribute collection
+     * @author Kimi Liu
+     */
+    public static record Property(Map<String, JsonValue> attributes) {
+
+        /**
+         * Copies attributes without retaining mutable caller collections.
+         *
+         * @param attributes complete non-null attribute collection
+         */
+        public Property {
+            TreeMap<String, JsonValue> copy = new TreeMap<>(Objects.requireNonNull(attributes));
+            copy.forEach((name, value) -> {
+                Objects.requireNonNull(name);
+                Objects.requireNonNull(value);
+            });
+            attributes = Collections.unmodifiableMap(copy);
+        }
+
+        /**
+         * Tests presence independently from JSON null or false values.
+         *
+         * @param name exact attribute name
+         * @return whether the attribute exists
+         */
+        public boolean contains(String name) {
+            return attributes.containsKey(name);
+        }
+
+        /**
+         * Reads an exact attribute without interpreting its business meaning.
+         *
+         * @param name exact attribute name
+         * @return the node, or Java null when absent
+         */
+        public JsonValue get(String name) {
+            return attributes.get(name);
+        }
+
+        /**
+         * Returns a changed property; Java null removes the member while JSON null remains present.
+         *
+         * @param name exact attribute name
+         * @param value replacement node, or Java null for removal
+         * @return a new immutable property
+         */
+        public Property with(String name, JsonValue value) {
+            Map<String, JsonValue> copy = new TreeMap<>(attributes);
+            if (value == null)
+                copy.remove(Objects.requireNonNull(name));
+            else
+                copy.put(Objects.requireNonNull(name), value);
+            return new Property(copy);
+        }
+
+        /**
+         * Returns a property with one exact attribute removed.
+         *
+         * @param name exact attribute name
+         * @return a new immutable property
+         */
+        public Property without(String name) {
+            return with(name, null);
+        }
+
+        /**
+         * Reads the explicit business value without materializing defaults.
+         *
+         * @return the value node, or Java null when absent
+         */
+        public JsonValue value() {
+            return get("value");
+        }
+
+        /**
+         * Reads the existing wire attribute named default.
+         *
+         * @return the fallback node, or Java null when absent
+         */
+        public JsonValue defaultValue() {
+            return get("default");
+        }
+
+        /**
+         * Reads the display description after Codec type validation.
+         *
+         * @return description text, or Java null when absent
+         */
+        public String desc() {
+            JsonValue value = get("desc");
+            return value == null ? null : ((JsonValue.StringValue) value).value();
+        }
+
+        /**
+         * Reports whether an explicit business value is required during user editing.
+         *
+         * @return whether an explicit required flag is true
+         */
+        public boolean required() {
+            return get("required") instanceof JsonValue.BooleanValue flag && flag.value();
+        }
+
     }
 
     /**

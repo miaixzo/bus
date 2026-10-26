@@ -132,6 +132,20 @@ void unsubscribe(Curator curator, String watchId) {
 }
 ```
 
+## Configuration property attributes
+
+`Item.Property` owns an immutable `Map<String, JsonValue>` of flat attributes. `ItemCodec` alone parses and serializes it; no Java wrapper is added to persisted content:
+
+```json
+{"server.port":{"value":9090,"default":8080,"desc":"Port","required":true,"unit":"tcp","minimum":1}}
+```
+
+`value`, `default`, `desc` and boolean `required` have defined semantics. Other attributes retain their exact JSON types and remain outside runtime business values; they do not create new validation rules. Use the existing Schema for additional business constraints. Missing attributes and explicit JSON null remain distinct.
+
+`ValidationLevel.REQUIRED` checks explicit actual values after protected edit actions, in addition to full validation. A required value cannot be absent, null or a blank string; false and zero are valid, and defaults do not satisfy this explicit edit check. Registration uses FULL, which retains declarations without demanding populated values.
+
+Dynamic attributes follow existing protected storage, masking and immutable publication snapshots. `desc` and `required` remain visible. Exact extension intents reuse SecretAction with definition fragment coordinates: property `/password`, attribute `unit` becomes `#/~1password/unit`. These coordinates are distinct from `/password/value` and `/password/default`. Renames, restores and imports retain complete attributes; explicit DELETE removes an attribute, while KEEP preserves it.
+
 ## Publication flow
 
 1. Prepare current edits with ItemService and save definitions with References through SettingService.

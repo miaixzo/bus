@@ -26,6 +26,7 @@ import org.miaixz.bus.core.data.id.ID;
 import org.miaixz.bus.core.lang.EnumValue.Format;
 import org.miaixz.bus.core.xyz.PatternKit;
 import org.miaixz.bus.cortex.setting.item.Item;
+import org.miaixz.bus.cortex.setting.item.Item.Property;
 import org.miaixz.bus.cortex.setting.item.ItemCodec;
 import org.miaixz.bus.cortex.setting.secret.NoOpSecretCodec;
 import org.miaixz.bus.cortex.setting.secret.SecretCodec;
@@ -35,7 +36,7 @@ import org.miaixz.bus.extra.json.JsonSchema;
 import org.miaixz.bus.extra.json.JsonValue;
 
 /**
- * Prepares current definitions and protects exact value/default members; never writes or versions them.
+ * Prepares current definitions and protects business members and dynamic attributes; never writes or versions them.
  *
  * @author Kimi Liu
  */
@@ -109,7 +110,7 @@ public final class ItemEditor {
      *
      * @param expected  current protected item
      * @param candidate explicit edited definition
-     * @param actions   exact value/default pointer intents
+     * @param actions   exact business-member and extension-attribute intents
      * @param level     validation level
      * @return protected candidate
      */
@@ -156,13 +157,22 @@ public final class ItemEditor {
                 && incoming.rules().values().stream().noneMatch(ItemCodec.Rule::sensitive))
             throw new IllegalArgumentException("Cannot implicitly remove protection");
         Map<String, SecretAction> commands = actions == null ? Map.of() : Map.copyOf(actions);
+        Map<String, Map<String, SecretAction>> attributeActions = new HashMap<>();
+        commands.forEach((coordinate, action) -> {
+            if (coordinate.startsWith("#")) {
+                List<String> tokens = ItemCodec.attributePath(coordinate);
+                attributeActions.computeIfAbsent(tokens.getFirst(), ignored -> new TreeMap<>()).put(tokens.get(1), action);
+            }
+        });
+        boolean attributeProtection = whole || expected != null && Integer.valueOf(1).equals(expected.getEncrypted())
+                || incoming.rules().values().stream().anyMatch(ItemCodec.Rule::sensitive);
         Set<String> used = new HashSet<>();
-        Map<String, ItemCodec.Property> properties = new TreeMap<>();
+        Map<String, Property> properties = new TreeMap<>();
         Set<String> names = new TreeSet<>(incoming.properties().keySet());
         if (before != null)
             names.addAll(before.properties().keySet());
         for (String name : names) {
-            ItemCodec.Property old = before == null ? null : before.properties().get(name),
+            Property old = before == null ? null : before.properties().get(name),
                     fresh = incoming.properties().get(name);
             String path = name.isEmpty() || name.startsWith("/") ? name : JsonSchema.pointer("", name);
             JsonValue value = edit(
@@ -185,18 +195,20 @@ public final class ItemEditor {
                     whole,
                     commands,
                     used);
-            if (fresh != null || value != null || fallback != null)
-                properties.put(
-                        name,
-                        new ItemCodec.Property(value, fallback,
-                                fresh == null ? (old == null ? null : old.desc()) : fresh.desc()));
+            Property seed = fresh != null ? fresh : old != null ? old : new Property(Map.of());
+            Property changed = editAttributes(name, old, fresh, seed.with("value", value).with("default", fallback),
+                    attributeProtection, attributeActions.getOrDefault(path, Map.of()), used);
+            if (fresh != null || value != null || fallback != null || changed.attributes().keySet().stream().anyMatch(ItemCodec::isAttribute))
+                properties.put(name, changed);
         }
         if (!used.containsAll(commands.keySet()))
             throw new IllegalArgumentException("Unknown protected-member action");
         Map<String, ItemCodec.Rule> rules = new TreeMap<>(incoming.rules());
         if (before != null)
             before.rules().forEach((path, rule) -> {
-                if (rule.sensitive() && !rules.containsKey(path))
+                if (rule.sensitive() && !rules.containsKey(path) && !removed(path, before,
+                        new ItemCodec.Document(properties, rules, incoming.schema(), incoming.management(),
+                                ItemCodec.Protection.NONE), commands, used))
                     throw new IllegalArgumentException("Sensitive rule cannot be implicitly removed");
             });
         if (whole)
@@ -239,6 +251,83 @@ public final class ItemEditor {
         next.setExtension(codec.extension(marked));
         next.setChecksum(codec.checksum(next));
         return next;
+    }
+
+    /**
+     * Verifies that every affected old member was explicitly deleted before retiring its sensitive rule.
+     * Present replacement data, including JSON null, still requires the protection rule.
+     *
+     * @param path previous sensitive rule coordinate
+     * @param before previous plaintext definition
+     * @param after processed current definition
+     * @param commands explicit member intents
+     * @param used verified consumed intent coordinates
+     * @return whether the rule protects no remaining data after explicit deletion
+     */
+    private boolean removed(String path, ItemCodec.Document before, ItemCodec.Document after,
+            Map<String, SecretAction> commands, Set<String> used) {
+        if (ItemCodec.at(after.values(), path) != null || ItemCodec.at(after.defaults(), path) != null)
+            return false;
+        Set<String> selected = new TreeSet<>();
+        before.properties().keySet().forEach(name -> {
+            String pointer = ItemCodec.coordinate(name);
+            if (ancestor(path, pointer))
+                selected.add(pointer);
+            else if (ancestor(pointer, path))
+                selected.add(path);
+        });
+        return !selected.isEmpty() && selected.stream().allMatch(pointer ->
+                commands.get(pointer + "/value") == SecretAction.DELETE
+                        && commands.get(pointer + "/default") == SecretAction.DELETE
+                        && used.contains(pointer + "/value") && used.contains(pointer + "/default"));
+    }
+
+    /**
+     * Applies atomic dynamic-attribute edits without interpreting metadata as business paths.
+     *
+     * @param name exact definition key
+     * @param before previous plaintext property
+     * @param incoming submitted property
+     * @param changed already processed business members
+     * @param protectedAttributes whether metadata requires protection
+     * @param commands exact edit intents
+     * @param used consumed command coordinates
+     * @return complete property with untouched attributes retained
+     */
+    private Property editAttributes(
+            String name,
+            Property before,
+            Property incoming,
+            Property changed,
+            boolean protectedAttributes,
+            Map<String, SecretAction> commands,
+            Set<String> used) {
+        Set<String> attributes = new TreeSet<>(changed.attributes().keySet());
+        if (before != null)
+            attributes.addAll(before.attributes().keySet());
+        attributes.addAll(commands.keySet());
+        for (String attribute : attributes) {
+            if (!ItemCodec.isAttribute(attribute))
+                continue;
+            String coordinate = ItemCodec.attributePath(name, attribute);
+            SecretAction action = commands.get(attribute);
+            JsonValue previous = before == null ? null : before.get(attribute),
+                    candidate = incoming == null ? null : incoming.get(attribute);
+            if (action != null)
+                used.add(coordinate);
+            if (action == SecretAction.DELETE)
+                candidate = null;
+            else if (action == SecretAction.REPLACE) {
+                if (candidate == null || protectedAttributes && containsMask(candidate))
+                    throw new IllegalArgumentException("Explicit attribute replacement required");
+            } else if (protectedAttributes || action == SecretAction.KEEP) {
+                if (previous == null && candidate != null)
+                    throw new IllegalArgumentException("New sensitive attribute requires REPLACE");
+                candidate = previous;
+            }
+            changed = changed.with(attribute, candidate);
+        }
+        return changed;
     }
 
     /**
@@ -419,29 +508,22 @@ public final class ItemEditor {
             boolean encrypt,
             ItemCodec.Document previous,
             ItemCodec.Document stored) {
-        Map<String, ItemCodec.Property> properties = new TreeMap<>();
+        Map<String, Property> properties = new TreeMap<>();
         document.properties().forEach((name, property) -> {
             String path = name.isEmpty() || name.startsWith("/") ? name : JsonSchema.pointer("", name);
-            ItemCodec.Property old = previous == null ? null : previous.properties().get(name),
+            Property old = previous == null ? null : previous.properties().get(name),
                     protectedOld = stored == null ? null : stored.properties().get(name);
-            properties.put(
-                    name,
-                    new ItemCodec.Property(
-                            cryptMember(
-                                    property.value(),
-                                    path,
-                                    document,
-                                    encrypt,
-                                    old == null ? null : old.value(),
-                                    protectedOld == null ? null : protectedOld.value()),
-                            cryptMember(
-                                    property.defaultValue(),
-                                    path,
-                                    document,
-                                    encrypt,
-                                    old == null ? null : old.defaultValue(),
-                                    protectedOld == null ? null : protectedOld.defaultValue()),
-                            property.desc()));
+            Property changed = property.with("value", cryptMember(property.value(), path, document, encrypt,
+                    old == null ? null : old.value(), protectedOld == null ? null : protectedOld.value()))
+                    .with("default", cryptMember(property.defaultValue(), path, document, encrypt,
+                            old == null ? null : old.defaultValue(), protectedOld == null ? null : protectedOld.defaultValue()));
+            if (document.protection() != ItemCodec.Protection.NONE)
+                for (var attribute : property.attributes().entrySet())
+                    if (ItemCodec.isAttribute(attribute.getKey()))
+                        changed = changed.with(attribute.getKey(), protectedValue(attribute.getValue(), encrypt,
+                                old == null ? null : old.get(attribute.getKey()),
+                                protectedOld == null ? null : protectedOld.get(attribute.getKey())));
+            properties.put(name, changed);
         });
         return new ItemCodec.Document(properties, document.rules(), document.schema(), document.management(),
                 document.protection());
@@ -612,7 +694,16 @@ public final class ItemEditor {
                     selected.add(path);
                 else if (ancestor(path, protectedPath))
                     selected.add(protectedPath);
-            ItemCodec.Property target = doc.properties().get(name);
+            Property target = doc.properties().get(name);
+            Set<String> attributes = new TreeSet<>();
+            if (target != null)
+                attributes.addAll(target.attributes().keySet());
+            if (currentDocument.properties().get(name) != null)
+                attributes.addAll(currentDocument.properties().get(name).attributes().keySet());
+            for (String attribute : attributes)
+                if (ItemCodec.isAttribute(attribute))
+                    actions.put(ItemCodec.attributePath(name, attribute), target != null && target.contains(attribute)
+                            ? SecretAction.REPLACE : SecretAction.DELETE);
             for (String protectedPath : selected)
                 for (String member : List.of("value", "default")) {
                     JsonValue node = target == null ? null

@@ -586,7 +586,6 @@ public class ImageConversion {
      * @param img source image
      * @return copied properties, or null when none are defined
      */
-    @SuppressWarnings("java:S1874") // BufferedImage constructor requires Hashtable
     private static Hashtable<String, Object> createImageProperties(RenderedImage img) {
         String[] keys = img.getPropertyNames();
         if (keys == null || keys.length == 0) {

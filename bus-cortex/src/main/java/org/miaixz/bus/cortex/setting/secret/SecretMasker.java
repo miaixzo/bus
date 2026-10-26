@@ -22,6 +22,7 @@ package org.miaixz.bus.cortex.setting.secret;
 import java.util.Map;
 import java.util.TreeMap;
 
+import org.miaixz.bus.cortex.setting.item.Item.Property;
 import org.miaixz.bus.cortex.setting.item.ItemCodec;
 import org.miaixz.bus.extra.json.JsonSchema;
 import org.miaixz.bus.extra.json.JsonValue;
@@ -55,19 +56,22 @@ public final class SecretMasker {
     }
 
     /**
-     * Masks both explicit and default sensitive values.
+     * Masks sensitive business values and protected dynamic attributes.
      *
      * @param document parsed definition
      * @return safe immutable projection
      */
     public ItemCodec.Document mask(ItemCodec.Document document) {
-        Map<String, ItemCodec.Property> properties = new TreeMap<>();
+        Map<String, Property> properties = new TreeMap<>();
         document.properties().forEach((name, p) -> {
             String path = name.isEmpty() || name.startsWith("/") ? name : JsonSchema.pointer("", name);
-            properties.put(
-                    name,
-                    new ItemCodec.Property(member(p.value(), path, document), member(p.defaultValue(), path, document),
-                            p.desc()));
+            Property changed = p.with("value", member(p.value(), path, document))
+                    .with("default", member(p.defaultValue(), path, document));
+            if (document.protection() != ItemCodec.Protection.NONE)
+                for (String attribute : p.attributes().keySet())
+                    if (ItemCodec.isAttribute(attribute))
+                        changed = changed.with(attribute, new JsonValue.StringValue(MASK));
+            properties.put(name, changed);
         });
         return new ItemCodec.Document(properties, document.rules(), document.schema(), document.management(),
                 document.protection());

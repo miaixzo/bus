@@ -1963,7 +1963,6 @@ public class AliyunRealmAdapter implements VendorAdapter {
         final String code = requiredString(error, "Code");
         requiredString(error, "Message");
         if (missing && code.contains("EntityNotExist")) {
-            @SuppressWarnings("unchecked")
             final T absent = (T) Optional.<JsonValue.ObjectValue>empty();
             return Outcome.succeeded(absent);
         }

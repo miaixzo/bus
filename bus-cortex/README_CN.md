@@ -132,6 +132,20 @@ void unsubscribe(Curator curator, String watchId) {
 }
 ```
 
+## 配置项属性
+
+`Item.Property` 使用不可变 `Map<String, JsonValue>` 保存完整扁平属性集合，由 `ItemCodec` 统一解析和序列化，不在存储正文中增加 Java 对象包装层：
+
+```json
+{"server.port":{"value":9090,"default":8080,"desc":"端口","required":true,"unit":"tcp","minimum":1}}
+```
+
+`value`、`default`、`desc` 和布尔型 `required` 有明确语义。其他属性保留原始 JSON 类型，不混入运行时业务值，也不自动成为校验规则；额外业务约束继续使用现有 Schema。字段缺失与显式 JSON null 保持区别。
+
+`ValidationLevel.REQUIRED` 在处理敏感编辑意图后检查实际值，并执行完整校验。必填实际值不得缺失、为 null 或空白字符串；false、0 有效，默认值不能代替实际填写。注册使用 FULL，保留必填声明但不要求填入实际值。
+
+动态属性沿用敏感存储、遮罩和不可变发布快照；`desc`、`required` 保持可见。扩展属性复用 SecretAction，使用独立定义片段坐标：配置项 `/password` 的 `unit` 对应 `#/~1password/unit`，与 `/password/value`、`/password/default` 区分。改名、恢复和导入保留完整属性；DELETE 显式删除属性，KEEP 保留原属性。
+
 ## 发布链路
 
 1. 用 ItemService 准备当前配置修改，通过 SettingService 联合保存定义与 Reference。

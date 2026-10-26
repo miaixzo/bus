@@ -163,7 +163,6 @@ public class CardinalityGuard {
          * @param descriptor string descriptor
          * @param value      replacement value
          */
-        @SuppressWarnings("unchecked")
         private static void putString(Attributes.Builder builder, AttributeDescriptor<?> descriptor, String value) {
             builder.put((AttributeDescriptor<String>) descriptor, value);
         }
