@@ -610,6 +610,9 @@ public class ApiRegistry extends StoreBackedRegistry<ApiAssets> implements Regis
      */
     private ApiAssets normalizeService(ApiAssets service, Instance instance) {
         ApiAssets prepared = normalizeEntry(service);
+        if (StringKit.isBlank(prepared.getApp_id())) {
+            throw new IllegalArgumentException("API application identifier is required");
+        }
         prepared.normalizeMeta(keying);
         if (instance != null) {
             if (StringKit.isEmpty(instance.getApp_id())) {

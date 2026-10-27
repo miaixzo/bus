@@ -20,8 +20,11 @@
 package org.miaixz.bus.base.service;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -30,14 +33,20 @@ import org.miaixz.bus.core.basic.entity.Entity;
 import org.miaixz.bus.core.basic.entity.Result;
 import org.miaixz.bus.core.basic.normal.Consts;
 import org.miaixz.bus.core.data.id.ID;
+import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.xyz.*;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.mapper.binding.condition.Condition;
 import org.miaixz.bus.mapper.binding.condition.ConditionWrapper;
 import org.miaixz.bus.mapper.binding.function.Fn;
+import org.miaixz.bus.mapper.builder.GenericTypeResolver;
+import org.miaixz.bus.mapper.criteria.Criterion;
 import org.miaixz.bus.mapper.feature.paging.Page;
 import org.miaixz.bus.mapper.feature.paging.PageContext;
+import org.miaixz.bus.mapper.parsing.ColumnMeta;
+import org.miaixz.bus.mapper.parsing.MapperFactory;
+import org.miaixz.bus.mapper.parsing.TableMeta;
 
 /**
  * Abstract base implementation of {@link SharedService} providing standard CRUD functionality.
@@ -56,6 +65,10 @@ import org.miaixz.bus.mapper.feature.paging.PageContext;
  * <li>List-oriented batch methods such as {@code insertList}, {@code update(List)} and {@code updateListSelective},
  * delegated to {@code ListMapper}.</li>
  * </ul>
+ * <p>
+ * Creation fields are preserved by mapping metadata. Standard updates refresh modification audit values, including
+ * conditional and chained writes. Mapper-level exact assignments remain available for host-owned atomic operations.
+ * </p>
  * <p>
  * If your business logic requires custom handling of lifecycle fields or batch strategy selection, override the
  * relevant methods in a concrete service.
@@ -223,7 +236,10 @@ public abstract class AbstractService<T, I extends Serializable, M extends Share
                 list == null || list.isEmpty() || list.get(0) == null ? null : list.get(0).getClass().getSimpleName(),
                 list == null ? 0 : list.size());
         if (list != null && !list.isEmpty()) {
-            list.forEach(this::setInsert);
+            list.forEach(entity -> {
+                this.setInsert(entity);
+                this.setUpdate(entity);
+            });
         }
         int result = mapper.insertUpBatch(list);
         Logger.debug(
@@ -269,7 +285,7 @@ public abstract class AbstractService<T, I extends Serializable, M extends Share
     }
 
     /**
-     * Updates an existing entity with all fields.
+     * Updates all updatable fields of an existing entity.
      * <p>
      * Automatically updates modification metadata (modifier, update time) before execution.
      * </p>
@@ -332,7 +348,8 @@ public abstract class AbstractService<T, I extends Serializable, M extends Share
     /**
      * Updates an existing entity, forcing updates on specified fields.
      * <p>
-     * Automatically updates modification metadata (modifier, update time).
+     * Includes current modification metadata even when the selected business fields do not include it. Read-only mapped
+     * fields cannot be explicitly selected for assignment.
      * </p>
      *
      * @param entity the entity to update
@@ -341,6 +358,7 @@ public abstract class AbstractService<T, I extends Serializable, M extends Share
      */
     @Override
     public Integer update(T entity, Fn<T, Object>... fields) {
+        Assert.notEmpty(fields, "Update fields cannot be empty");
         Logger.debug(
                 true,
                 "Base",
@@ -349,7 +367,7 @@ public abstract class AbstractService<T, I extends Serializable, M extends Share
                 entity == null ? null : entity.getClass().getSimpleName(),
                 fields == null ? 0 : fields.length);
         this.setUpdate(entity);
-        int result = mapper.updateForFieldListByPrimaryKey(entity, Fn.of(fields));
+        int result = mapper.updateForFieldListByPrimaryKey(entity, auditedFields(entity, fields));
         Logger.debug(
                 false,
                 "Base",
@@ -364,7 +382,8 @@ public abstract class AbstractService<T, I extends Serializable, M extends Share
     /**
      * Updates an existing entity, only modifying fields that are non-null.
      * <p>
-     * Automatically updates modification metadata (modifier, update time).
+     * Includes current modification metadata even when the selected business fields do not include it. Read-only mapped
+     * fields cannot be explicitly selected for assignment.
      * </p>
      *
      * @param entity the entity to update
@@ -393,7 +412,8 @@ public abstract class AbstractService<T, I extends Serializable, M extends Share
     /**
      * Updates an existing entity, only modifying non-null fields, while forcing updates on additional specified fields.
      * <p>
-     * Automatically updates modification metadata (modifier, update time).
+     * Includes current modification metadata even when the selected business fields do not include it. Read-only mapped
+     * fields cannot be explicitly selected for assignment.
      * </p>
      *
      * @param entity the entity to update
@@ -410,7 +430,7 @@ public abstract class AbstractService<T, I extends Serializable, M extends Share
                 entity == null ? null : entity.getClass().getSimpleName(),
                 fields == null ? 0 : fields.length);
         this.setUpdate(entity);
-        int result = mapper.updateByPrimaryKeySelectiveWithForceFields(entity, Fn.of(fields));
+        int result = mapper.updateByPrimaryKeySelectiveWithForceFields(entity, auditedFields(entity, fields));
         Logger.debug(
                 false,
                 "Base",
@@ -503,7 +523,7 @@ public abstract class AbstractService<T, I extends Serializable, M extends Share
                 this.getClass().getSimpleName(),
                 entity == null ? null : entity.getClass().getSimpleName());
         this.setRemove(entity);
-        int total = mapper.updateByPrimaryKeySelective(entity);
+        int total = mapper.updateForFieldListByPrimaryKey(entity, removalFields(entity));
         Logger.debug(
                 false,
                 "Base",
@@ -512,6 +532,27 @@ public abstract class AbstractService<T, I extends Serializable, M extends Share
                 entity == null ? null : entity.getClass().getSimpleName(),
                 total);
         return total;
+    }
+
+    /**
+     * Logically removes records matching the supplied condition through the removal lifecycle hook.
+     * Writes only the logical status and mapped modification audit fields, retaining the original query and concurrency
+     * predicates without changing the caller's assignments.
+     *
+     * @param entity the source of the removal status and current operator metadata
+     * @param condition the target and concurrency conditions
+     * @return the number of affected records, including zero when the conditions no longer match
+     */
+    @Override
+    public Integer remove(T entity, Condition<T> condition) {
+        Condition<T> command = writeCondition(condition);
+        this.setRemove(entity);
+        command.getSetValues().clear();
+        for (ColumnMeta column : removalFields(entity).columns()) {
+            command.getSetValues()
+                    .add(new Criterion(column.column(), getFieldValue(entity, column.property()), column));
+        }
+        return mapper.updateByConditionSetValues(command);
     }
 
     /**
@@ -803,7 +844,7 @@ public abstract class AbstractService<T, I extends Serializable, M extends Share
     }
 
     /**
-     * Updates records matching the {@link Condition} with values from the provided entity (updates all fields).
+     * Updates all updatable fields of records matching the unchanged {@link Condition}.
      *
      * @param entity    the source of the new values
      * @param condition the condition defining which records to update
@@ -818,6 +859,7 @@ public abstract class AbstractService<T, I extends Serializable, M extends Share
                 this.getClass().getSimpleName(),
                 entity == null ? null : entity.getClass().getSimpleName(),
                 condition != null);
+        this.setUpdate(entity);
         int total = mapper.updateByCondition(entity, condition);
         Logger.debug(
                 false,
@@ -845,6 +887,7 @@ public abstract class AbstractService<T, I extends Serializable, M extends Share
                 this.getClass().getSimpleName(),
                 entity == null ? null : entity.getClass().getSimpleName(),
                 condition != null);
+        this.setUpdate(entity);
         int total = mapper.updateByConditionSelective(entity, condition);
         Logger.debug(
                 false,
@@ -853,6 +896,40 @@ public abstract class AbstractService<T, I extends Serializable, M extends Share
                 this.getClass().getSimpleName(),
                 total);
         return total;
+    }
+
+    /**
+     * Updates explicit condition assignments through the update lifecycle hook.
+     * Copies the assignments, rejects structurally assigned read-only columns, and includes the current modification
+     * audit values without changing the original query or concurrency predicates.
+     *
+     * @param condition the requested assignments and target or concurrency conditions
+     * @return the number of affected records, including zero when the conditions no longer match
+     * @throws IllegalArgumentException when the condition is null, its assignments are empty, or an assignment targets
+     *         a read-only mapped column
+     * @throws IllegalStateException when the concrete service entity type cannot be resolved
+     */
+    @Override
+    public Integer update(Condition<T> condition) {
+        Condition<T> command = writeCondition(condition);
+        Assert.notEmpty(command.getSetValues(), "Condition assignments cannot be empty");
+        TableMeta table = MapperFactory.of(entityClass());
+        for (ColumnMeta column : table.columns()) {
+            if (!column.updatable() && command.getSetValues().stream()
+                    .anyMatch(value -> column.column().equals(value.getCondition()))) {
+                throw new IllegalArgumentException("Column is not updatable: " + column.property());
+            }
+        }
+        T audit = ReflectKit.newInstance(entityClass());
+        this.setUpdate(audit);
+        for (ColumnMeta column : table.updateColumns()) {
+            if (Set.of("modifier", "modified").contains(column.property())) {
+                command.getSetValues().removeIf(value -> column.column().equals(value.getCondition()));
+                command.getSetValues()
+                        .add(new Criterion(column.column(), getFieldValue(audit, column.property()), column));
+            }
+        }
+        return mapper.updateByConditionSetValues(command);
     }
 
     /**
@@ -1013,13 +1090,90 @@ public abstract class AbstractService<T, I extends Serializable, M extends Share
     }
 
     /**
-     * Returns a new {@link ConditionWrapper} for fluent query construction.
+     * Returns a new {@link ConditionWrapper} whose write terminals delegate to this service and its lifecycle hooks.
      *
      * @return a new ConditionWrapper instance
      */
     @Override
     public ConditionWrapper<T, I> wrapper() {
-        return mapper.wrapper();
+        return new ConditionWrapper<>(mapper, condition(), this::update, this::updateSelective, this::update,
+                this::delete);
+    }
+
+    /**
+     * Resolves the declared entity type, including parameterized intermediate services and Spring subclasses.
+     *
+     * @return concrete mapped entity class
+     * @throws IllegalStateException when the service does not declare a resolvable entity type
+     */
+    protected Class<T> entityClass() {
+        Class<?> type = GenericTypeResolver.resolveTypeToClass(
+                GenericTypeResolver
+                        .resolveType(AbstractService.class.getTypeParameters()[0], getClass(), AbstractService.class));
+        if (type == null || type == Object.class) {
+            throw new IllegalStateException("Cannot resolve the service entity type: " + getClass().getName());
+        }
+        return CastKit.cast(type);
+    }
+
+    /**
+     * Keeps selected business fields and includes mapped modification fields without accepting read-only assignments.
+     *
+     * @param entity source entity
+     * @param fields explicitly selected fields
+     * @return mapped update fields including modification metadata
+     */
+    private Fn.FnArray<T> auditedFields(T entity, Fn<T, Object>[] fields) {
+        Assert.notNull(entity, "Entity cannot be null");
+        Assert.notNull(fields, "Fields cannot be null");
+        Class<T> type = entityClass();
+        Set<String> selected = new LinkedHashSet<>();
+        if (fields != null && fields.length > 0) {
+            selected.addAll(Fn.of(type, fields).fieldNames());
+        }
+        TableMeta table = MapperFactory.of(type);
+        for (ColumnMeta column : table.columns()) {
+            if (selected.contains(column.property()) && !column.updatable()) {
+                throw new IllegalArgumentException("Column is not updatable: " + column.property());
+            }
+            if (column.updatable() && Set.of("modifier", "modified").contains(column.property())) {
+                selected.add(column.property());
+            }
+        }
+        return Fn.of(type, selected.toArray(String[]::new));
+    }
+
+    /**
+     * Restricts logical removal to the conventional status and mapped modification fields.
+     *
+     * @param entity entity whose logical removal values have been prepared
+     * @return the exact logical-removal field selection
+     * @throws IllegalArgumentException when the entity has no updatable conventional logical status
+     */
+    private Fn.FnArray<T> removalFields(T entity) {
+        Assert.notNull(entity, "Entity cannot be null");
+        TableMeta table = MapperFactory.of(entityClass());
+        if (table.updateColumns().stream().noneMatch(column -> "status".equals(column.property()))) {
+            throw new IllegalArgumentException("Logical removal requires an updatable status field");
+        }
+        String[] fields = table.updateColumns().stream()
+                .filter(column -> Set.of("status", "modifier", "modified").contains(column.property()))
+                .map(ColumnMeta::property).toArray(String[]::new);
+        return Fn.of(entityClass(), fields);
+    }
+
+    /**
+     * Copies update assignments while retaining the original target conditions and concurrency values.
+     *
+     * @param condition caller-owned condition
+     * @return independent assignment list sharing unchanged query predicates
+     */
+    private Condition<T> writeCondition(Condition<T> condition) {
+        Assert.notNull(condition, "Condition cannot be null");
+        Condition<T> command = new Condition<>();
+        BeanKit.copyProperties(condition, command);
+        command.setSetValues(new ArrayList<>(condition.getSetValues()));
+        return command;
     }
 
     /**
@@ -1056,7 +1210,7 @@ public abstract class AbstractService<T, I extends Serializable, M extends Share
     }
 
     /**
-     * Applies update-time defaults.
+     * Refreshes the modification timestamp and current operator without changing creation fields.
      *
      * @param entity the entity to process
      */
@@ -1064,14 +1218,16 @@ public abstract class AbstractService<T, I extends Serializable, M extends Share
         if (entity == null) {
             return;
         }
-        setFieldValue(entity, "modified", DateKit.current());
-        if (!hasFieldValue(entity, "modifier")) {
+        if (FieldKit.hasField(entity.getClass(), "modified")) {
+            setFieldValue(entity, "modified", DateKit.current());
+        }
+        if (FieldKit.hasField(entity.getClass(), "modifier")) {
             setFieldValue(entity, "modifier", operatorId(entity));
         }
     }
 
     /**
-     * Applies logical-delete defaults.
+     * Marks the entity as logically removed and delegates modification auditing to the update lifecycle hook.
      *
      * @param entity the entity to process
      */
@@ -1080,10 +1236,7 @@ public abstract class AbstractService<T, I extends Serializable, M extends Share
             return;
         }
         setFieldValue(entity, "status", Consts.MINUS_ONE);
-        setFieldValue(entity, "modified", DateKit.current());
-        if (!hasFieldValue(entity, "modifier")) {
-            setFieldValue(entity, "modifier", operatorId(entity));
-        }
+        this.setUpdate(entity);
     }
 
     /**

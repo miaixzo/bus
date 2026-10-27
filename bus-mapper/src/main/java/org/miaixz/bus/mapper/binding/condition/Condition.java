@@ -426,9 +426,13 @@ public class Condition<T> {
      * @param fn    A method reference to the field.
      * @param value The value to set.
      * @return The current {@link Condition} object.
+     * @throws IllegalArgumentException if the mapped column is not updatable
      */
     public Condition<T> set(Fn<T, Object> fn, Object value) {
         ColumnMeta column = fn.toEntityColumn();
+        if (!column.updatable()) {
+            throw new IllegalArgumentException("Column is not updatable: " + column.property());
+        }
         this.setValues.add(new Criterion(column.column(), value, column));
         return this;
     }

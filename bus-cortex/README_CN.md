@@ -98,13 +98,13 @@ List<Instance> instances(Registry<ApiAssets> registry) {
 }
 ```
 
-API 服务路由是全局范围；MCP 和 Prompt 操作必须提供明确的租户。共享进程统一使用根包的 `Instance`，通过 `app_id` 标识应用归属；服务关联由 Registry 维护，运行实例通过 `checksum` 标识。
+API 服务路由是全局范围，定义以 `app_id + method + verb + version` 唯一标识，注册必须提供 `app_id`，同一方法可分别注册 GET、POST、PUT 等请求方式；MCP 和 Prompt 操作必须提供明确的租户。共享进程统一使用根包的 `Instance`，通过 `app_id` 标识应用归属；服务关联由 Registry 维护，运行实例通过 `checksum` 标识。
 
 `Instance` 仅使用继承的整数 `status`：DELETED=-1、DISABLED=0、UP=1、DOWN=2、UNKNOWN=3、STARTING=4、MAINTENANCE=5。`modified` 是继承的普通修改时间，单位为毫秒。`health` JSON 文本统一保存 `scheme`、`path`、`time`（最近探测时间）、`origin`、`session`、`beat`、`lease`，不再保留对应的顶层字段。会话过期与实例是否可达分别判断；注册边界补齐 UNKNOWN，探测不会覆盖禁用、删除及维护状态。
 
 `health`、`labels`、`metadata` 均保存 JSON 对象文本。labels 成员必须是字符串，metadata 可包含嵌套值；通过 `labelView()`、`metadataView()` 解析，不持久化 Map，不保留旧字段别名。程序 `version` 不参与 host/port 校验码计算。
 
-健康信息由独立共享类 `org.miaixz.bus.cortex.health.HealthInfo` 表达，通过 `HealthInfo.parse(String)` 和 `toJson()` 统一完成严格解析、校验和序列化，仍以 `@Lob String health` 持久化。`healthView()` 返回独立、已校验的完整快照；调用方只修改负责的属性，再通过 `health(HealthInfo)` 校验并序列化完整对象，null 表示清空成员。共享类只描述七个既有属性，不承担 ORM 映射或执行职责，不保留健康 Map、字符串取值方法或补丁接口。探测器维护 time、origin，宿主管理 session、beat、lease；客户端上报的检查配置不会覆盖服务端观察值。建立或替换会话时清空旧探测观察，并保留本次提供的检查配置。Watch 和投递证据保留自己的 session 坐标，与 health.session 比较。Lattice 使用已有 edition 保护健康信息写入；健康变化事件只比较 status 和 health.origin，不直接比较整段 JSON。
+健康信息由独立共享类 `org.miaixz.bus.cortex.health.HealthInfo` 表达，通过 `HealthInfo.parse(String)` 和 `toJson()` 统一完成严格解析、校验和序列化，仍以 `@Lob String health` 持久化。`healthView()` 返回独立、已校验的完整快照；调用方只修改负责的属性，再通过 `health(HealthInfo)` 校验并序列化完整对象，null 表示清空成员。共享类只描述七个既有属性，不承担 ORM 映射或执行职责，不保留健康 Map、字符串取值方法或补丁接口。探测器维护 time、origin，宿主管理 session、beat、lease；客户端上报的检查配置不会覆盖服务端观察值。建立或替换会话时清空旧探测观察，并保留本次提供的检查配置。Watch 和投递证据保留自己的 session 坐标，与 health.session 比较。Lattice 对 API 关联使用原始修改时间和观察快照保护写回，配置实例会话保留既有并发校验；健康变化事件只比较 status 和 health.origin，不直接比较整段 JSON。
 
 探测按进程、会话及生效的协议、主机、端口和 HTTP 路径分组；等价默认配置共用检查，不同目标分别探测。结果通过 `RegistryStore.updateHealth` 更新现有观察，不调用普通注册。宿主原子校验未变化的服务定义和运行时行，提交后才更新缓存和发送事件；过期、停用、注销或替换的注册拒绝旧结果。`ApiAssets` 不再管理或注入心跳与租期默认值，正常保存元数据时清除其旧 `beat`、`lease` 键并保留其他扩展。
 

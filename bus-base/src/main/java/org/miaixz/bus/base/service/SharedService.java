@@ -32,6 +32,11 @@ import org.miaixz.bus.mapper.binding.function.Fn;
 /**
  * Generic service interface defining standard CRUD (Create, Retrieve, Update, Delete) operations.
  * <p>
+ * Standard updates and logical removals refresh modification audit fields while preserving stored creation fields. Full
+ * and selective writes retain their original null semantics. Physical deletion does not perform a preliminary audit
+ * update. Low-level Mapper operations retain their own explicit assignment contract.
+ * </p>
+ * <p>
  * This interface exposes both native batch-write methods and list-oriented batch methods:
  * </p>
  * <ul>
@@ -110,7 +115,7 @@ public interface SharedService<T, I extends Serializable> extends Service {
     Integer insertSelectiveBatch(List<T> list);
 
     /**
-     * Updates an existing entity, overwriting all fields (including setting fields to null).
+     * Updates an existing entity, overwriting all updatable fields (including setting fields to null).
      *
      * @param entity the entity to update
      * @return the number of affected rows
@@ -118,8 +123,8 @@ public interface SharedService<T, I extends Serializable> extends Service {
     Integer update(T entity);
 
     /**
-     * Updates a list of entities using list-oriented batch update semantics, overwriting all mapped fields for each
-     * entity.
+     * Updates a list of entities using list-oriented batch update semantics, overwriting all updatable mapped fields
+     * for each entity.
      *
      * @param list the list of entities to update
      * @return the number of affected rows
@@ -187,6 +192,16 @@ public interface SharedService<T, I extends Serializable> extends Service {
      * @return the number of affected rows
      */
     Integer remove(T entity);
+
+    /**
+     * Logically deletes records matching the condition, writing only the logical status and modification audit fields.
+     * The entity supplies the operator metadata; its other business values are not persisted.
+     *
+     * @param entity    the source of operator metadata
+     * @param condition the unchanged target and concurrency conditions
+     * @return the number of affected records
+     */
+    Integer remove(T entity, Condition<T> condition);
 
     /**
      * Performs a physical deletion of the entity from the database.
@@ -289,13 +304,23 @@ public interface SharedService<T, I extends Serializable> extends Service {
     Integer delete(Condition<T> condition);
 
     /**
-     * Updates records matching the {@link Condition} with values from the provided entity (updates all fields).
+     * Updates all updatable fields of records matching the unchanged {@link Condition}.
      *
      * @param entity    the source of the new values
      * @param condition the condition defining which records to update
      * @return the number of updated records
      */
     Integer update(T entity, Condition<T> condition);
+
+    /**
+     * Updates explicit condition assignments with the service's current modification audit values. WHERE conditions
+     * remain unchanged; read-only mapped columns cannot be assigned structurally. Operator resolution uses the existing
+     * service lifecycle extension point, with the usual system marker when no operator is available.
+     *
+     * @param condition the assignments and unchanged target or concurrency conditions
+     * @return the number of affected records
+     */
+    Integer update(Condition<T> condition);
 
     /**
      * Updates records matching the {@link Condition} with values from the provided entity (updates only non-null

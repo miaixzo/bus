@@ -388,6 +388,17 @@
             "org.miaixz.bus.mapper.binding.BasicMapper",
             "org.miaixz.bus.mapper.binding.condition.Condition"
           ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.mapper.binding.BasicMapper",
+            "org.miaixz.bus.mapper.binding.condition.Condition",
+            "org.miaixz.bus.core.center.function.BiFunctionX",
+            "org.miaixz.bus.core.center.function.BiFunctionX",
+            "org.miaixz.bus.core.center.function.FunctionX",
+            "org.miaixz.bus.core.center.function.FunctionX"
+          ]
         }
       ]
     },
