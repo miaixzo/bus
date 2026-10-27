@@ -48,6 +48,32 @@
       ]
     },
     {
+      "type": "org.miaixz.bus.spring.context.web.ContextBindingFilter",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.util.List"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.util.List",
+            "org.miaixz.bus.spring.web.RequestContext"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.util.List",
+            "org.miaixz.bus.spring.web.RequestContext",
+            "long"
+          ]
+        }
+      ]
+    },
+    {
       "type": "org.miaixz.bus.spring.jdbc.DataSourceDefinition",
       "methods": [
         {
@@ -93,6 +119,88 @@
         {
           "name": "setUsername",
           "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.spring.web.advice.AuthorizeRequestBodyAdvice",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.spring.web.resolver.RequestObjectArgumentResolver"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.spring.web.resolver.AutoBindingTypeMatcher",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.spring.web.resolver.RequestBindingOptions",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.spring.web.resolver.RequestObjectArgumentResolver",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.spring.web.resolver.AutoBindingTypeMatcher",
+            "org.miaixz.bus.spring.web.resolver.RequestBindingOptions"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.spring.web.resolver.RequestWebMvcConfigurer",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.spring.web.resolver.RequestBindingOptions",
+            "org.miaixz.bus.spring.web.resolver.RequestObjectArgumentResolver"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.spring.web.resolver.RequestWebMvcConfigurer$ModelAttributeProcessor",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.spring.web.resolver.RequestObjectArgumentResolver"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.spring.web.resolver.RequestWebMvcConfigurer$ModelAttributeResolver",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.springframework.beans.factory.ObjectProvider"
+          ]
+        },
+        {
+          "name": "postProcessAfterInitialization",
+          "parameterTypes": [
+            "java.lang.Object",
             "java.lang.String"
           ]
         }

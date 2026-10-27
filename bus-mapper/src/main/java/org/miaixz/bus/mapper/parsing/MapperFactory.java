@@ -95,6 +95,8 @@ public abstract class MapperFactory {
                         // evaluated before inherited definitions and can override them deterministically.
                         Field[] declaredFields = FieldKit.getDeclaredFields(declaredClass, null);
                         if (isSuperclass) {
+                            // Reverse a private copy so other entities and schema ordering retain cached declaration order.
+                            declaredFields = declaredFields.clone();
                             reverse(declaredFields);
                         }
                         for (Field field : declaredFields) {

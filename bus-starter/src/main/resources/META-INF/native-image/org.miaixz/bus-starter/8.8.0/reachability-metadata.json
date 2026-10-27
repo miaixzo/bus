@@ -139,6 +139,14 @@
         {
           "name": "<init>",
           "parameterTypes": []
+        },
+        {
+          "name": "contextBindingFilter",
+          "parameterTypes": [
+            "java.util.List",
+            "org.miaixz.bus.spring.web.RequestContext",
+            "org.springframework.core.env.Environment"
+          ]
         }
       ]
     },
@@ -1488,6 +1496,18 @@
         {
           "name": "<init>",
           "parameterTypes": []
+        },
+        {
+          "name": "authorizeRequestBodyAdvice",
+          "parameterTypes": [
+            "org.miaixz.bus.spring.web.resolver.RequestObjectArgumentResolver"
+          ]
+        },
+        {
+          "name": "authorizeModelAttributeResolver",
+          "parameterTypes": [
+            "org.springframework.beans.factory.ObjectProvider"
+          ]
         }
       ]
     },
