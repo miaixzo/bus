@@ -63,9 +63,10 @@ public class SolarFestival extends AbstractFestival {
      */
     public static SolarFestival fromIndex(int year, int index) {
         Festival e = buildEvent(NAMES, DATA, index);
-        return null == e ? null
-                : year < e.getStartYear() ? null
-                        : new SolarFestival(index, e, SolarDay.fromYmd(year, e.getValue(2), e.getValue(3)));
+        if (null == e || year < e.getStartYear()) {
+            return null;
+        }
+        return new SolarFestival(index, e, SolarDay.fromYmd(year, e.getValue(2), e.getValue(3)));
     }
 
     /**

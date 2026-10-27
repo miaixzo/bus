@@ -20,6 +20,7 @@
 package org.miaixz.bus.core.center.date.culture.lunar;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.miaixz.bus.core.center.date.culture.Vesta;
@@ -35,7 +36,7 @@ public class LunarYear extends AbstractTraditionalYear {
     /**
      * Cached leap month data: maps leap month to list of years.
      */
-    protected static final List<List<Integer>> LEAP = new ArrayList<>(12);
+    protected static final int[][] LEAP = new int[12][];
 
     static {
         String chars = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_@";
@@ -52,10 +53,11 @@ public class LunarYear extends AbstractTraditionalYear {
                 "0a0j0j0j0j0C0j0j0C0j0C0C0j0j0j0j0j0j0j0m0C0j0j0j0j0u080j0j0j1n0j0j0j0j0C0j0j0j0V0j0j0j1c0u0j0C0V0j0j0V0j0j1v0N0C0V2o1v1O2S2o141v0j1v4l0j1c0j1v2S2o0C0u1v0j0C0C2S1v0j1c0j0j1v0N251c0j1v0b1c1v1n1v0j0j0V0j0j1v0N1v0C0V0j0j1v0b0C0j0j0V1c0j0u0j1c0j0j0j0j0j0j0j0j1c0j0u0j0j0V0j0j0j0j0j0j0b080u110u0j0j0j0j0j0j1c0j0b0j080b0j0C0j0j0j0V0j0j0u0C0V0j0j0j0C0j0b080j1c0j0b0j0j0j0C0j0C0j0j0j0b080b080b0j0C0j080b0j0j0j0j0j0j0j0b0C0r0u0j0j0j0j0j0j0b080j0b0r0C0j0b0j0j0j0r0b0j0b0r0j0j0j0b080b080b0j0r0b0j080b0j0j0j0j0j0j0b0j0r0C0b0j0j0j0j0j0j0b080j0j0C0j0j0b080b0j0j0j0j0j0j0j0j0j0j0b080b080b080b0C0j0j080b0j0j0j0j0j0j0b0j0j0C080b0j0j0j0j0j0j0j0j0b0C080j0j0b0j0j0j0j0j",
                 "0n0Q0j1c14010q0V1c171k0u0r140V0j0j1c0C0N1O0j0V0j0j0j1c0j0u110u0C0j0C0V0C0j0j0b671v0j1v5Q1O2S2o2S1v4l1v0j1v2S2o0C1Z0j0C0C1O141v0j1c0j2z1O0j0V0j0j1v0b2H390j1c0j0V0C2z0j1c0j1v2g0C0V0j1O0b0j0j0V0C1c0j0u0j1c0j0j0j0j0j0j0j0j1c0N0j0j0V0j0j0C0j0j0b081v0u0j0j0j0C0j1c0N0j0j0C0j0j0j0C0j0j0j0u0C0r0u0j0j0j0C0j0b080j1c0j0b0j0C0C0j0C0C0j0b080b080u0C0j080b0j0C0j0j0j0u110u0j0j0j0j0j0j0j0j0C0C0j0b0j0j0j0C0j0C0C0j0b080b080b0j0C0j080b0j0C0j0j0j0b0j110b0j0j0j0j0j",
                 "0B0j0V0j0j0C0j0j0j0C0j0C0j0j0C0j0m0j0j0j0j0C0j0C0j0j0u0j1c0j0j0C0C0j0j0j0j0j0j0j0j0u110N0j0j0V0C0V0j0b081n080b0CrU1O5e2SbX2_1Z0V2o141v0j0C0C0j2z1v0j1c0j7N1O420j1c0j1v2S1c0j1v2S2_0b0j0V0j0j1v0N1v0j0j1c0j1v140j0V0j0j0C0C0b080u1v0C0V0u110u0j0j0j0C0j0j0j0C0C0N0C0V0j0j0C0j0j0b080u110u0C0j0C0u0r0C0u080b0j0j0C0j0j0j" };
-        for (String m : months) {
+        for (int i = 0, j = months.length; i < j; i++) {
             int n = 0;
+            String m = months[i];
             int size = m.length() / 2;
-            List<Integer> l = new ArrayList<>(size);
+            int[] l = new int[size];
             for (int y = 0; y < size; y++) {
                 int z = y * 2;
                 int t = 0;
@@ -65,9 +67,9 @@ public class LunarYear extends AbstractTraditionalYear {
                     c *= 64;
                 }
                 n += t;
-                l.add(n);
+                l[y] = n;
             }
-            LEAP.add(l);
+            LEAP[i] = l;
         }
     }
 
@@ -146,8 +148,8 @@ public class LunarYear extends AbstractTraditionalYear {
         if (year == -1) {
             return 11;
         }
-        for (int i = 0, j = LEAP.size(); i < j; i++) {
-            if (LEAP.get(i).contains(year)) {
+        for (int i = 0, j = LEAP.length; i < j; i++) {
+            if (Arrays.binarySearch(LEAP[i], year) >= 0) {
                 return i + 1;
             }
         }

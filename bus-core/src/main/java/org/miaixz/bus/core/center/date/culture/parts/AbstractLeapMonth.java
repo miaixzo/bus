@@ -76,7 +76,7 @@ public abstract class AbstractLeapMonth extends AbstractMonth {
 
     @Override
     public AbstractLeapMonth next(final int n) {
-        int ty = getYear();
+        int ty = year;
         int tm = getMonthValue();
         if (n != 0) {
             int m = getIndexInYear() + 1 + n;
@@ -104,25 +104,10 @@ public abstract class AbstractLeapMonth extends AbstractMonth {
                     m--;
                 }
             }
-            ty = y.getYear();
+            ty = y.year;
             tm = leap ? -m : m;
         }
         return new AbstractLeapMonth(ty, tm) {
-
-            @Override
-            public int getDayCount() {
-                return 0;
-            }
-
-            @Override
-            public AbstractDay getFirstDay() {
-                return null;
-            }
-
-            @Override
-            public AbstractYear getAbstractYear() {
-                return null;
-            }
         };
     }
 
