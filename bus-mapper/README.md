@@ -1209,12 +1209,16 @@ public class SchemaBootstrap {
 ### Column order for new tables (ColumnOrder)
 
 Schema initialization places mapped Java properties `status`, `creator`, `created`, `modifier`,
-and `modified` last, in that order, by default. Missing properties are skipped and other columns
-retain their original mapping order. No `Audit` inheritance is required. Matching uses exact Java
+and `modified` last, in that order, by default. Missing properties are skipped. No `Audit` inheritance is required.
+Matching uses exact Java
 property names, not database column names: `created` mapped to `created_at` still matches.
 This changes the column layout of newly created tables compared with previous versions.
 
-Set `new SchemaConfig().auditColumnsLast(false)` to retain the original mapping order.
+New tables place primary-key columns first, followed by mapped properties in ancestor-to-descendant declaration order.
+Static, transient, and otherwise excluded properties do not participate. Overridden properties occur only at their final
+mapped declaration. Ordering uses a schema-only metadata copy and leaves ordinary CRUD mappings unchanged.
+Set `new SchemaConfig().auditColumnsLast(false)` to disable the default audit tail while retaining primary-key-first
+declaration order.
 Spring configuration supports `bus.mapper.schema.audit-columns-last: false`, plus
 `configurationProperties.shared.schema.audit-columns-last` and
 `configurationProperties.<namespace>.schema.audit-columns-last` (namespace overrides shared).

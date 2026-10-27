@@ -19,8 +19,10 @@
 */
 package org.miaixz.bus.mapper.feature.schema;
 
+import java.lang.reflect.Field;
 import java.util.*;
 
+import org.miaixz.bus.core.xyz.FieldKit;
 import org.miaixz.bus.mapper.annotation.ColumnOrder;
 import org.miaixz.bus.mapper.parsing.ColumnMeta;
 import org.miaixz.bus.mapper.parsing.TableMeta;
@@ -33,7 +35,7 @@ import org.miaixz.bus.mapper.parsing.TableMeta;
 public class ColumnOrderResolver {
 
     /**
-     * Resolves default rules followed by explicitly declared ancestor and descendant rules.
+     * Resolves primary-key-first declaration order, optional audit tails, and explicit ancestor and descendant rules.
      *
      * @param table            final mapped table metadata
      * @param auditColumnsLast whether conventional audit properties default to the end
@@ -47,13 +49,6 @@ public class ColumnOrderResolver {
                 throw invalid(table, table.entityClass(), "ambiguous mapped property '" + column.property() + "'");
             }
         }
-        List<String> base = new ArrayList<>(columns.keySet());
-        List<String> first = new ArrayList<>();
-        List<String> last = new ArrayList<>();
-        if (auditColumnsLast) {
-            List.of("status", "creator", "created", "modifier", "modified").stream().filter(columns::containsKey)
-                    .forEach(last::add);
-        }
         List<Class<?>> hierarchy = new ArrayList<>();
         for (Class<?> current = table.entityClass(); current != null
                 && current != Object.class; current = current.getSuperclass()) {
@@ -62,6 +57,34 @@ public class ColumnOrderResolver {
             }
         }
         Collections.reverse(hierarchy);
+        Map<Field, List<ColumnMeta>> fields = new HashMap<>();
+        for (ColumnMeta column : columns.values()) {
+            if (column.fieldMeta() != null && column.fieldMeta().getField() != null) {
+                fields.computeIfAbsent(column.fieldMeta().getField(), key -> new ArrayList<>()).add(column);
+            }
+        }
+        List<ColumnMeta> declared = new ArrayList<>(columns.size());
+        for (Class<?> source : hierarchy) {
+            for (Field field : FieldKit.getDeclaredFields(source, null)) {
+                List<ColumnMeta> mapped = fields.get(field);
+                if (mapped != null) {
+                    declared.addAll(mapped);
+                }
+            }
+        }
+        // Retain custom columns without a declaring field after the source-backed properties.
+        Set<String> ordered = new LinkedHashSet<>();
+        declared.stream().filter(ColumnMeta::id).map(ColumnMeta::property).forEach(ordered::add);
+        columns.values().stream().filter(ColumnMeta::id).map(ColumnMeta::property).forEach(ordered::add);
+        declared.stream().map(ColumnMeta::property).forEach(ordered::add);
+        ordered.addAll(columns.keySet());
+        List<String> base = new ArrayList<>(ordered);
+        List<String> first = new ArrayList<>();
+        List<String> last = new ArrayList<>();
+        if (auditColumnsLast) {
+            List.of("status", "creator", "created", "modifier", "modified").stream().filter(columns::containsKey)
+                    .forEach(last::add);
+        }
         Class<?> completeSource = null;
         // Keep origins so errors in surviving inherited rules identify their declaration, not the child entity.
         Map<String, Class<?>> sources = new HashMap<>();

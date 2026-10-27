@@ -28,8 +28,14 @@ import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+import org.miaixz.bus.core.basic.entity.Authorize;
+import org.miaixz.bus.core.bean.copier.CopyOptions;
+import org.miaixz.bus.core.center.map.CaseInsensitiveMap;
 import org.miaixz.bus.core.data.id.ID;
 import org.miaixz.bus.core.net.Http;
+import org.miaixz.bus.core.net.MediaType;
+import org.miaixz.bus.core.xyz.BeanKit;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.spring.context.ContextBuilder;
 import org.miaixz.bus.spring.context.ContextScope;
 import org.miaixz.bus.spring.context.ContextState;
@@ -37,6 +43,7 @@ import org.miaixz.bus.spring.context.ContextTransfer;
 import org.miaixz.bus.spring.context.resolver.ContextResolver;
 import org.miaixz.bus.spring.context.spi.ContextProvider;
 import org.miaixz.bus.spring.web.RequestContext;
+import org.miaixz.bus.spring.web.wrapper.CachedBodyRequestWrapper;
 
 /**
  * Installs one immutable runtime context around every supported Servlet dispatch.
@@ -71,6 +78,12 @@ public final class ContextBindingFilter implements Filter {
     private final RequestContext requestContext;
 
     /**
+     * Positive body limit enabling identity projection from a host's trusted gateway request boundary; zero disables
+     * it.
+     */
+    private final long metadataLimit;
+
+    /**
      * Creates a filter using a default stateless request accessor.
      *
      * @param providers ordered authenticated-context providers
@@ -87,8 +100,29 @@ public final class ContextBindingFilter implements Filter {
      * @throws NullPointerException when {@code requestContext} is {@code null}
      */
     public ContextBindingFilter(List<ContextProvider> providers, RequestContext requestContext) {
+        this(providers, requestContext, 0);
+    }
+
+    /**
+     * Creates a filter with optional identity projection at a trusted gateway boundary.
+     * <p>
+     * Identity verification remains the responsibility of the identity service. Servlet integration supplies the
+     * existing body limit for metadata forwarded by the gateway after verification. An authenticated provider result
+     * takes precedence over forwarded request metadata.
+     *
+     * @param providers      ordered authenticated-context providers
+     * @param requestContext accessor for forwarded parameters and cached JSON values
+     * @param metadataLimit  maximum cached JSON bytes, or zero to disable forwarded identity projection
+     * @throws IllegalArgumentException when the limit is negative or exceeds the supported body size
+     * @throws NullPointerException     when {@code requestContext} is {@code null}
+     */
+    public ContextBindingFilter(List<ContextProvider> providers, RequestContext requestContext, long metadataLimit) {
+        if (metadataLimit < 0 || metadataLimit > Integer.MAX_VALUE) {
+            throw new IllegalArgumentException("Request metadata body limit is out of range");
+        }
         this.resolver = new ContextResolver(providers);
         this.requestContext = Objects.requireNonNull(requestContext, "requestContext");
+        this.metadataLimit = metadataLimit;
     }
 
     /**
@@ -157,6 +191,13 @@ public final class ContextBindingFilter implements Filter {
             return;
         }
 
+        if (this.metadataLimit > 0 && httpRequest.getDispatcherType() == DispatcherType.REQUEST
+                && !(httpRequest instanceof CachedBodyRequestWrapper) && MediaType.isJson(httpRequest.getContentType())
+                && (Http.Method.POST.value().equals(httpRequest.getMethod())
+                        || Http.Method.PUT.value().equals(httpRequest.getMethod())
+                        || Http.Method.PATCH.value().equals(httpRequest.getMethod()))) {
+            httpRequest = new CachedBodyRequestWrapper(httpRequest, this.metadataLimit);
+        }
         request.setAttribute(FILTERED_ATTRIBUTE, Boolean.TRUE);
         boolean completed = false;
         try {
@@ -194,12 +235,33 @@ public final class ContextBindingFilter implements Filter {
         Http.Auth.Credential tokenCredential = Http.Auth.bearerCredential(headers);
         Http.Auth.Credential apiKeyCredential = Http.Auth.apiKeyCredential(headers);
         ContextState state = this.resolver.resolve(ID.objectId(), tokenCredential, apiKeyCredential);
+        if (state.getAuthorize() == null && this.metadataLimit > 0) {
+            Map<String, Object> metadata = new CaseInsensitiveMap<>();
+            metadata.putAll(this.requestContext.getParameters(request));
+            metadata.putAll(this.requestContext.getJsonBody(request));
+            Authorize authorize = new Authorize();
+            BeanKit.copyProperties(
+                    metadata,
+                    authorize,
+                    CopyOptions.of().setTransientSupport(false).setIgnoreCase(true)
+                            .setPropertiesFilter((field, value) -> field.getDeclaringClass() == Authorize.class));
+            if (BeanKit.getBeanDesc(Authorize.class).getProps().stream()
+                    .filter(property -> property.getField() != null
+                            && property.getField().getDeclaringClass() == Authorize.class)
+                    .map(property -> property.getValue(authorize, false))
+                    .anyMatch(value -> value != null
+                            && (!(value instanceof String text) || StringKit.isNotBlank(text)))) {
+                state = state.withAuthorize(authorize);
+            }
+        }
         request.setAttribute(STATE_ATTRIBUTE, state);
         return state;
     }
 
     /**
      * Retains immutable state across asynchronous restarts and clears it at terminal events.
+     *
+     * @author Kimi Liu
      */
     private static final class ContextAsyncListener implements AsyncListener {
 
@@ -221,23 +283,23 @@ public final class ContextBindingFilter implements Filter {
         }
 
         /**
-         * Clears request context attributes after an asynchronous timeout.
+         * Retains the request snapshot for timeout handlers and any subsequent asynchronous or error dispatch.
          *
          * @param event asynchronous timeout event
          */
         @Override
         public void onTimeout(AsyncEvent event) {
-            cleanup(event.getSuppliedRequest());
+            // Completion or the final dispatch owns cleanup; a timeout callback may still dispatch the request.
         }
 
         /**
-         * Clears request context attributes after an asynchronous error.
+         * Retains the request snapshot until error handling or asynchronous completion has finished.
          *
          * @param event asynchronous error event
          */
         @Override
         public void onError(AsyncEvent event) {
-            cleanup(event.getSuppliedRequest());
+            // Completion or the final dispatch owns cleanup; error handlers may still redispatch the request.
         }
 
         /**

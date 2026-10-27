@@ -21,6 +21,7 @@ package org.miaixz.bus.spring.web.resolver;
 
 import java.io.IOException;
 import java.lang.annotation.Annotation;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -43,12 +44,15 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import org.miaixz.bus.core.basic.entity.Authorize;
+import org.miaixz.bus.core.bean.copier.CopyOptions;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.xyz.BeanKit;
 import org.miaixz.bus.extra.json.JsonKit;
+import org.miaixz.bus.spring.context.ContextBuilder;
 import org.miaixz.bus.spring.web.wrapper.CachedBodyRequestWrapper;
 
 /**
@@ -198,6 +202,7 @@ public class RequestObjectArgumentResolver implements HandlerMethodArgumentResol
         }
         if (isJsonBodyRequest(request)) {
             Object target = resolveJson(parameter, request);
+            bindAuthorize(target);
             validate(parameter, target, webRequest, binderFactory);
             return target;
         }
@@ -223,6 +228,7 @@ public class RequestObjectArgumentResolver implements HandlerMethodArgumentResol
             binder.getBindingResult().reject("request.binding", "Invalid request object");
             throw new MethodArgumentNotValidException(parameter, binder.getBindingResult());
         }
+        bindAuthorize(target);
         if (requiresValidation(parameter)) {
             binder.validate();
         }
@@ -230,6 +236,41 @@ public class RequestObjectArgumentResolver implements HandlerMethodArgumentResol
             throw new MethodArgumentNotValidException(parameter, binder.getBindingResult());
         }
         return target;
+    }
+
+    /**
+     * Replaces request identity fields with the current context snapshot before controller validation.
+     * <p>
+     * Only fields declared by {@link Authorize} participate; inherited query fields and application data remain
+     * unchanged. Null identity fields are also copied so submitted roles or other claims cannot survive an absent
+     * context value. Missing and anonymous contexts clear identity claims without requiring authentication. Arrays and
+     * collections share one detached snapshot, and their direct elements are processed independently.
+     *
+     * @param target request object, array, or collection to bind; unrelated values are ignored
+     */
+    public void bindAuthorize(Object target) {
+        Authorize authorize = ContextBuilder.getAuthorize();
+        if (authorize == null) {
+            authorize = new Authorize();
+        }
+        CopyOptions copyOptions = CopyOptions.of().setEditable(Authorize.class).setTransientSupport(false)
+                .setIgnoreNullValue(false)
+                .setPropertiesFilter((field, value) -> field.getDeclaringClass() == Authorize.class);
+        if (target instanceof Authorize) {
+            BeanKit.copyProperties(authorize, target, copyOptions);
+        } else if (target instanceof Object[] elements) {
+            for (Object element : elements) {
+                if (element instanceof Authorize) {
+                    BeanKit.copyProperties(authorize, element, copyOptions);
+                }
+            }
+        } else if (target instanceof Collection<?> elements) {
+            for (Object element : elements) {
+                if (element instanceof Authorize) {
+                    BeanKit.copyProperties(authorize, element, copyOptions);
+                }
+            }
+        }
     }
 
     /**

@@ -1197,12 +1197,13 @@ public class SchemaBootstrap {
 
 ### 新建表的列顺序（ColumnOrder）
 
-自动初始化新表时，默认将最终映射中存在的 Java 属性按
-`status → creator → created → modifier → modified` 后置。其他列保持原映射相对顺序；
+自动初始化新表时，主键列前置，其余映射属性按父类到子类、各类内部的属性声明顺序排列，默认将
+`status → creator → created → modifier → modified` 后置。静态字段、临时字段和其他未映射属性不参与排序；
+子类覆盖的属性仅按最终有效映射的声明位置出现一次。排序只应用于建表元数据副本，不修改普通 CRUD 映射；
 不要求实体继承 `Audit`，缺少部分审计属性时直接跳过。匹配属性名而非数据库列名，区分大小写，
 例如 `created` 映射为 `created_at` 时仍参与默认后置。此默认行为会改变旧版本中新建表的列排列。
 
-可通过 `new SchemaConfig().auditColumnsLast(false)` 恢复原映射顺序。
+可通过 `new SchemaConfig().auditColumnsLast(false)` 关闭默认审计属性后置，仍保留主键前置及属性声明顺序。
 Spring 全局配置为 `bus.mapper.schema.audit-columns-last: false`；namespace 配置支持
 `configurationProperties.shared.schema.audit-columns-last` 和
 `configurationProperties.<namespace>.schema.audit-columns-last`，具体 namespace 优先。
