@@ -109,6 +109,18 @@
           ]
         },
         {
+          "name": "assignmentColumns",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "assigns",
+          "parameterTypes": [
+            "org.miaixz.bus.mapper.parsing.ColumnMeta"
+          ]
+        },
+        {
           "name": "builder",
           "parameterTypes": []
         },
@@ -185,6 +197,10 @@
           ]
         },
         {
+          "name": "orPart",
+          "parameterTypes": []
+        },
+        {
           "name": "orderBy",
           "parameterTypes": [
             "java.lang.String"
@@ -214,10 +230,6 @@
           "parameterTypes": [
             "org.miaixz.bus.mapper.binding.function.Fn[]"
           ]
-        },
-        {
-          "name": "orPart",
-          "parameterTypes": []
         },
         {
           "name": "selectColumns",
@@ -394,6 +406,15 @@
           "parameterTypes": [
             "org.miaixz.bus.mapper.binding.BasicMapper",
             "org.miaixz.bus.mapper.binding.condition.Condition",
+            "org.miaixz.bus.core.center.function.BiFunctionX",
+            "org.miaixz.bus.core.center.function.BiFunctionX",
+            "org.miaixz.bus.core.center.function.FunctionX",
+            "org.miaixz.bus.core.center.function.FunctionX"
+          ]
+        },
+        {
+          "name": "writes",
+          "parameterTypes": [
             "org.miaixz.bus.core.center.function.BiFunctionX",
             "org.miaixz.bus.core.center.function.BiFunctionX",
             "org.miaixz.bus.core.center.function.FunctionX",

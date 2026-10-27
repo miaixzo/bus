@@ -59,7 +59,7 @@ public abstract class BasicProvider {
      */
     protected static final String CONDITION_SET_VALUES = "<set>"
             + "  <foreach collection=\"condition.setValues\" item=\"setValue\">\n" + "    <choose>\n"
-            + "      <when test=\"setValue.noValue\">\n" + "        ${setValue.condition},\n" + "      </when>\n"
+            + "      <when test=\"setValue.noValue\">\n" + "        ${setValue.condition}\n,\n" + "      </when>\n"
             + "      <when test=\"setValue.singleValue\">\n"
             + "        ${setValue.condition} = ${setValue.variables('setValue.value')},\n" + "      </when>\n"
             + "    </choose>\n" + "  </foreach>\n" + "</set>";
@@ -633,6 +633,22 @@ public abstract class BasicProvider {
     }
 
     /**
+     * Builds a fixed MERGE source projection containing the union of insertable and updatable columns. Update-only
+     * values are available to matched rows without becoming columns of the unmatched INSERT branch.
+     *
+     * @param entity the table metadata
+     * @param prefix the value parameter prefix, including its trailing dot
+     * @param values whether to render bound values instead of column names
+     * @return the parenthesized source column list or value tuple
+     */
+    protected static String buildMergeSource(TableMeta entity, String prefix, boolean values) {
+        return entity.columns().stream().filter(column -> column.insertable() || column.updatable())
+                .map(column -> values ? column.variables(prefix) : column.column()).collect(
+                        Collectors
+                                .joining(Symbol.COMMA + Symbol.SPACE, Symbol.PARENTHESE_LEFT, Symbol.PARENTHESE_RIGHT));
+    }
+
+    /**
      * Builds a {@code MERGE} statement whose source is expressed as a {@code VALUES} clause.
      *
      * @param entity    the table metadata
@@ -642,31 +658,15 @@ public abstract class BasicProvider {
     protected static String buildMergeUsingValues(TableMeta entity, boolean selective) {
         String targetAlias = "target";
         String sourceAlias = "source";
-        StringBuilder sql = new StringBuilder();
-        sql.append("MERGE INTO ").append(entity.tableName()).append(Symbol.SPACE).append(targetAlias).append(Symbol.LF);
-        if (!selective) {
-            sql.append("USING (VALUES (").append(insertValues(entity, null)).append(")) ").append(sourceAlias)
-                    .append(" (").append(insertColumnList(entity)).append(Symbol.PARENTHESE_RIGHT).append(Symbol.LF);
-            sql.append("ON (").append(buildMergeOnClause(entity, targetAlias, sourceAlias))
-                    .append(Symbol.PARENTHESE_RIGHT).append(Symbol.LF);
-            sql.append("WHEN MATCHED THEN UPDATE SET ")
-                    .append(buildUpdateAssignments(entity, "SOURCE", sourceAlias, false)).append(Symbol.LF);
-            sql.append("WHEN NOT MATCHED THEN INSERT (").append(insertColumnList(entity))
-                    .append(Symbol.PARENTHESE_RIGHT).append(Symbol.LF);
-            sql.append("VALUES (").append(buildSourceReferenceList(entity, sourceAlias, false))
-                    .append(Symbol.PARENTHESE_RIGHT);
-            return sql.toString();
-        }
-        String columns = buildDynamicColumnListSingle(entity);
-        sql.append("USING (VALUES\n").append(buildDynamicValuesListSingle(entity)).append(") ").append(sourceAlias)
-                .append(Symbol.SPACE).append(columns).append(Symbol.LF);
-        sql.append("ON (").append(buildMergeOnClause(entity, targetAlias, sourceAlias)).append(Symbol.PARENTHESE_RIGHT)
-                .append(Symbol.LF);
-        sql.append("WHEN MATCHED THEN UPDATE SET").append(Symbol.LF)
-                .append(buildUpdateAssignments(entity, "SOURCE", sourceAlias, true)).append(Symbol.LF);
-        sql.append("WHEN NOT MATCHED THEN INSERT").append(Symbol.LF).append(columns).append(Symbol.LF).append("VALUES")
-                .append(Symbol.LF).append(buildSourceReferenceList(entity, sourceAlias, true));
-        return sql.toString();
+        String columns = selective ? buildDynamicColumnListSingle(entity) : "(" + insertColumnList(entity) + ")";
+        String values = buildSourceReferenceList(entity, sourceAlias, selective);
+        return "MERGE INTO " + entity.tableName() + Symbol.SPACE + targetAlias + Symbol.LF + "USING (VALUES "
+                + buildMergeSource(entity, Normal.EMPTY, true) + ") " + sourceAlias + Symbol.SPACE
+                + buildMergeSource(entity, Normal.EMPTY, false) + Symbol.LF + "ON ("
+                + buildMergeOnClause(entity, targetAlias, sourceAlias) + ")" + Symbol.LF
+                + "WHEN MATCHED THEN UPDATE SET " + buildUpdateAssignments(entity, "SOURCE", sourceAlias, selective)
+                + Symbol.LF + "WHEN NOT MATCHED THEN INSERT " + columns + " VALUES "
+                + (selective ? values : "(" + values + ")");
     }
 
     /**
