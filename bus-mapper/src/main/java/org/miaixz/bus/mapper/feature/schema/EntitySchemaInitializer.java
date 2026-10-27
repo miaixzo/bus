@@ -128,7 +128,7 @@ public class EntitySchemaInitializer {
                         if (table.schema() == null || table.schema().isBlank()) {
                             table.schema(connection.getSchema());
                         }
-                        table.columns(new ColumnOrderResolver().resolve(table, config.auditColumnsLast()));
+                        table.columns(new ColumnOrderResolver().resolve(table));
                         locks.add(SchemaInitializationLock.acquire(dataSource, table));
                         locks.add(operations.acquireSchemaInitializationLock(connection, table));
                         TableSnapshot snapshot = operations.readTable(connection, table);

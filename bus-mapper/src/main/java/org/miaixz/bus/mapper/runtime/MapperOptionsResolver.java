@@ -272,7 +272,6 @@ final class MapperOptionsResolver {
                 case "mode" -> schemaOptions.setMode(Schema.valueOf(value.trim().toUpperCase(Locale.ROOT)));
                 case "dryrun" -> schemaOptions.setDryRun(Boolean.parseBoolean(value));
                 case "printsql" -> schemaOptions.setPrintSql(Boolean.parseBoolean(value));
-                case "auditcolumnslast" -> schemaOptions.setAuditColumnsLast(Boolean.parseBoolean(value));
                 case "failfast" -> schemaOptions.setFailFast(Boolean.parseBoolean(value));
                 case "continueonerror" -> schemaOptions.setContinueOnError(Boolean.parseBoolean(value));
                 case "allowcreatetable" -> schemaOptions.setAllowCreateTable(Boolean.parseBoolean(value));
@@ -331,7 +330,6 @@ final class MapperOptionsResolver {
         copy.setMode(source.getMode());
         copy.setDryRun(source.isDryRun());
         copy.setPrintSql(source.isPrintSql());
-        copy.setAuditColumnsLast(source.isAuditColumnsLast());
         copy.setFailFast(source.isFailFast());
         copy.setContinueOnError(source.isContinueOnError());
         copy.setEntityPackages(

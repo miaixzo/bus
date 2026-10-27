@@ -5623,8 +5623,7 @@
         {
           "name": "resolve",
           "parameterTypes": [
-            "org.miaixz.bus.mapper.parsing.TableMeta",
-            "boolean"
+            "org.miaixz.bus.mapper.parsing.TableMeta"
           ]
         },
         {
@@ -5644,6 +5643,11 @@
             "java.lang.String",
             "java.util.Map"
           ]
+        }
+      ],
+      "fields": [
+        {
+          "name": "COMMON_LAST_PROPERTIES"
         }
       ]
     },
@@ -6120,16 +6124,6 @@
         },
         {
           "name": "allowShrinkLength",
-          "parameterTypes": [
-            "boolean"
-          ]
-        },
-        {
-          "name": "auditColumnsLast",
-          "parameterTypes": []
-        },
-        {
-          "name": "auditColumnsLast",
           "parameterTypes": [
             "boolean"
           ]
@@ -9606,9 +9600,6 @@
           "name": "allowShrinkLength"
         },
         {
-          "name": "auditColumnsLast"
-        },
-        {
           "name": "continueOnError"
         },
         {
@@ -9769,10 +9760,6 @@
           "parameterTypes": []
         },
         {
-          "name": "isAuditColumnsLast",
-          "parameterTypes": []
-        },
-        {
           "name": "isContinueOnError",
           "parameterTypes": []
         },
@@ -9902,12 +9889,6 @@
         },
         {
           "name": "setAllowShrinkLength",
-          "parameterTypes": [
-            "boolean"
-          ]
-        },
-        {
-          "name": "setAuditColumnsLast",
           "parameterTypes": [
             "boolean"
           ]
