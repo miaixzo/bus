@@ -349,7 +349,7 @@ public class OpenBsdOperatingSystem extends AbstractOperatingSystem {
         if (dir.exists() && dir.isDirectory() && (listFiles = dir.listFiles()) != null) {
             for (File f : listFiles) {
                 String name = f.getName();
-                if (!running.contains(name)) {
+                if (f.canExecute() && !name.equals(name.toUpperCase(Locale.ROOT)) && !running.contains(name)) {
                     OSService s = new OSService(name, 0, OSService.State.STOPPED);
                     services.add(s);
                 }

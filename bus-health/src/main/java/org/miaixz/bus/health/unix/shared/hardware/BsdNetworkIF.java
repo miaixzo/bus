@@ -20,7 +20,11 @@
 package org.miaixz.bus.health.unix.shared.hardware;
 
 import java.net.NetworkInterface;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.regex.Matcher;
 
 import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
@@ -36,6 +40,15 @@ import org.miaixz.bus.health.builtin.hardware.common.AbstractNetworkIF;
  */
 @ThreadSafe
 public class BsdNetworkIF extends AbstractNetworkIF {
+
+    /** Pattern fragment matching an Ethernet or wireless media rate. */
+    private static final String MEDIA_RATE = "(?i)(?<!\\d)(\\d++(?:\\.\\d++)?+)";
+
+    /** Pattern fragment matching the unit used by a BSD media description. */
+    private static final String MEDIA_UNIT = "([GM]?+)(?:base|bps)";
+
+    /** Pattern matching the active media speed in an {@code ifconfig} media line. */
+    private static final java.util.regex.Pattern MEDIA_SPEED = java.util.regex.Pattern.compile(MEDIA_RATE + MEDIA_UNIT);
 
     /**
      * The bytesRecv value.
@@ -76,6 +89,11 @@ public class BsdNetworkIF extends AbstractNetworkIF {
      * The collisions value.
      */
     private volatile long collisions;
+
+    /**
+     * The interface speed in bits per second.
+     */
+    private volatile long speed;
 
     /**
      * The timeStamp value.
@@ -190,7 +208,7 @@ public class BsdNetworkIF extends AbstractNetworkIF {
      */
     @Override
     public long getSpeed() {
-        return 0;
+        return this.speed;
     }
 
     /**
@@ -210,22 +228,91 @@ public class BsdNetworkIF extends AbstractNetworkIF {
      */
     @Override
     public synchronized boolean updateAttributes() {
-        String stats = Executor.getAnswerAt("netstat -bI " + getName(), 1);
+        Map<String, Long> stats = parseNetstat(Executor.runNative("netstat -bnI " + getName()));
         this.timeStamp = System.currentTimeMillis();
-        String[] split = Pattern.SPACES_PATTERN.split(stats);
-        if (split.length < 12) {
-            // No update
+        if (!stats.containsKey("Ibytes")) {
             return false;
         }
-        this.bytesSent = Parsing.parseUnsignedLongOrDefault(split[10], 0L);
-        this.bytesRecv = Parsing.parseUnsignedLongOrDefault(split[7], 0L);
-        this.packetsSent = Parsing.parseUnsignedLongOrDefault(split[8], 0L);
-        this.packetsRecv = Parsing.parseUnsignedLongOrDefault(split[4], 0L);
-        this.outErrors = Parsing.parseUnsignedLongOrDefault(split[9], 0L);
-        this.inErrors = Parsing.parseUnsignedLongOrDefault(split[5], 0L);
-        this.collisions = Parsing.parseUnsignedLongOrDefault(split[11], 0L);
-        this.inDrops = Parsing.parseUnsignedLongOrDefault(split[6], 0L);
+        if (!stats.containsKey("Ipkts")) {
+            stats.putAll(parseNetstat(Executor.runNative("netstat -nI " + getName())));
+        }
+        this.bytesRecv = stats.getOrDefault("Ibytes", 0L);
+        this.bytesSent = stats.getOrDefault("Obytes", 0L);
+        this.packetsRecv = stats.getOrDefault("Ipkts", 0L);
+        this.packetsSent = stats.getOrDefault("Opkts", 0L);
+        this.inErrors = stats.getOrDefault("Ierrs", stats.getOrDefault("Ifail", 0L));
+        this.outErrors = stats.getOrDefault("Oerrs", stats.getOrDefault("Ofail", 0L));
+        this.collisions = stats.getOrDefault("Coll", stats.getOrDefault("Colls", 0L));
+        this.inDrops = stats.getOrDefault("Idrop", 0L);
+        this.speed = parseMediaSpeed(Executor.runNative("/sbin/ifconfig " + getName()));
         return true;
+    }
+
+    /**
+     * Parses the active link speed from BSD {@code ifconfig} output.
+     *
+     * @param lines the lines emitted by {@code ifconfig <interface>}
+     * @return the link speed in bits per second, or {@code 0} if unavailable
+     */
+    static long parseMediaSpeed(List<String> lines) {
+        long parsedSpeed = 0L;
+        for (String line : lines) {
+            String value = line.trim();
+            if (value.startsWith("status: no ")) {
+                return 0L;
+            }
+            if (parsedSpeed == 0L && value.startsWith("media:")) {
+                parsedSpeed = parseMediaRate(value);
+            }
+        }
+        return parsedSpeed;
+    }
+
+    /**
+     * Parses one BSD media description.
+     *
+     * @param mediaLine the media description
+     * @return the media speed in bits per second, or {@code 0}
+     */
+    private static long parseMediaRate(String mediaLine) {
+        String media = mediaLine;
+        int open = media.indexOf('(');
+        int close = media.lastIndexOf(')');
+        if (open >= 0 && close > open) {
+            media = media.substring(open + 1, close);
+        }
+        Matcher matcher = MEDIA_SPEED.matcher(media);
+        if (matcher.find()) {
+            double rate = Parsing.parseDoubleOrDefault(matcher.group(1), 0D);
+            return (long) (rate * ("G".equalsIgnoreCase(matcher.group(2)) ? 1_000_000_000L : 1_000_000L));
+        }
+        return 0L;
+    }
+
+    /**
+     * Parses a link-level row from BSD {@code netstat -I} output by matching values to column headings.
+     *
+     * @param lines the command output
+     * @return the counter values keyed by heading
+     */
+    static Map<String, Long> parseNetstat(List<String> lines) {
+        Map<String, Long> stats = new HashMap<>();
+        if (lines.size() < 2) {
+            return stats;
+        }
+        String[] header = Pattern.SPACES_PATTERN.split(lines.get(0).trim());
+        String[] row = Pattern.SPACES_PATTERN.split(lines.get(1).trim());
+        int firstCounter = Arrays.asList(header).indexOf("Address") + 1;
+        int counters = header.length - firstCounter;
+        if (firstCounter == 0 || row.length <= counters) {
+            return stats;
+        }
+        for (int index = 0; index < counters; index++) {
+            stats.put(
+                    header[firstCounter + index],
+                    Parsing.parseUnsignedLongOrDefault(row[row.length - counters + index], 0L));
+        }
+        return stats;
     }
 
 }

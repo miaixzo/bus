@@ -19,139 +19,149 @@
 */
 package org.miaixz.bus.health.unix.freebsd.software;
 
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+
 import com.sun.jna.Memory;
 
 import org.miaixz.bus.core.center.function.SupplierX;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.tuple.Pair;
 import org.miaixz.bus.health.Memoizer;
-import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.software.InternetProtocolStats;
 import org.miaixz.bus.health.builtin.software.common.AbstractInternetProtocolStats;
 import org.miaixz.bus.health.unix.freebsd.BsdSysctlKit;
 import org.miaixz.bus.health.unix.shared.driver.NetStat;
-import org.miaixz.bus.health.unix.shared.jna.CLibrary;
 
 /**
- * Internet Protocol Stats implementation
+ * FreeBSD Internet protocol statistics read from 64-bit kernel structures with a command fallback for unknown layouts.
  *
  * @author Kimi Liu
  */
 @ThreadSafe
 public class FreeBsdInternetProtocolStats extends AbstractInternetProtocolStats {
 
-    /**
-     * The establishedv4v6 value.
-     */
-    private final SupplierX<Pair<Long, Long>> establishedv4v6 = Memoizer
+    /** TCP statistics sysctl name. */
+    private static final String TCPSTAT_SYSCTL = "net.inet.tcp.stats";
+    /** UDP statistics sysctl name. */
+    private static final String UDPSTAT_SYSCTL = "net.inet.udp.stats";
+    /** Minimum size of the FreeBSD 10 through 13 TCP statistics structure. */
+    private static final int TCPSTAT_MIN_SIZE = 880;
+    /** Maximum size of a TCP structure before FreeBSD 14 inserted {@code tcps_progdrops}. */
+    private static final int TCPSTAT_MAX_SIZE_BEFORE_PROGDROPS = 904;
+    /** Minimum size of a TCP structure containing {@code tcps_progdrops}. */
+    private static final int TCPSTAT_MIN_SIZE_WITH_PROGDROPS = 984;
+    /** Legacy offset of TCP packets sent. */
+    private static final int TCPS_SNDPACK = 136;
+    /** Legacy offset of retransmitted TCP packets. */
+    private static final int TCPS_SNDREXMITPACK = 152;
+    /** Legacy offset of TCP packets received. */
+    private static final int TCPS_RCVPACK = 224;
+    /** Legacy offset of TCP bad-checksum packets. */
+    private static final int TCPS_RCVBADSUM = 240;
+    /** Legacy offset of TCP bad-offset packets. */
+    private static final int TCPS_RCVBADOFF = 248;
+    /** Legacy offset of short TCP packets. */
+    private static final int TCPS_RCVSHORT = 264;
+    /** Minimum supported UDP statistics structure size. */
+    private static final int UDPSTAT_SIZE = 112;
+
+    /** Memoized established IPv4 and IPv6 connection counts. */
+    private final SupplierX<Pair<Long, Long>> established = Memoizer
             .memoize(NetStat::queryTcpnetstat, Memoizer.defaultExpiration());
+    /** Memoized IPv4 TCP statistics. */
+    private final SupplierX<TcpStats> tcpv4 = Memoizer.memoize(this::queryTcpv4Stats, Memoizer.defaultExpiration());
+    /** Memoized IPv4 UDP statistics. */
+    private final SupplierX<UdpStats> udpv4 = Memoizer.memoize(this::queryUdpv4Stats, Memoizer.defaultExpiration());
 
-    /**
-     * The tcpstat value.
-     */
-    private final SupplierX<CLibrary.BsdTcpstat> tcpstat = Memoizer
-            .memoize(FreeBsdInternetProtocolStats::queryTcpstat, Memoizer.defaultExpiration());
-
-    /**
-     * The udpstat value.
-     */
-    private final SupplierX<CLibrary.BsdUdpstat> udpstat = Memoizer
-            .memoize(FreeBsdInternetProtocolStats::queryUdpstat, Memoizer.defaultExpiration());
-
-    /**
-     * Constructs a new FreeBsdInternetProtocolStats instance.
-     */
+    /** Constructs a FreeBSD Internet protocol statistics provider. */
     public FreeBsdInternetProtocolStats() {
         // No initialization required.
     }
 
-    /**
-     * Queries the tcpstat.
-     *
-     * @return the query tcpstat result
-     */
-    private static CLibrary.BsdTcpstat queryTcpstat() {
-        CLibrary.BsdTcpstat ft = new CLibrary.BsdTcpstat();
-        try (Memory m = BsdSysctlKit.sysctl("net.inet.tcp.stats")) {
-            if (m != null && m.size() >= 128) {
-                ft.tcps_connattempt = m.getInt(0);
-                ft.tcps_accepts = m.getInt(4);
-                ft.tcps_drops = m.getInt(12);
-                ft.tcps_conndrops = m.getInt(16);
-                ft.tcps_sndpack = m.getInt(64);
-                ft.tcps_sndrexmitpack = m.getInt(72);
-                ft.tcps_rcvpack = m.getInt(104);
-                ft.tcps_rcvbadsum = m.getInt(112);
-                ft.tcps_rcvbadoff = m.getInt(116);
-                ft.tcps_rcvmemdrop = m.getInt(120);
-                ft.tcps_rcvshort = m.getInt(124);
-            }
-        }
-        return ft;
-    }
-
-    /**
-     * Queries the udpstat.
-     *
-     * @return the query udpstat result
-     */
-    private static CLibrary.BsdUdpstat queryUdpstat() {
-        CLibrary.BsdUdpstat ut = new CLibrary.BsdUdpstat();
-        try (Memory m = BsdSysctlKit.sysctl("net.inet.udp.stats")) {
-            if (m != null && m.size() >= 84) {
-                ut.udps_ipackets = m.getInt(0);
-                ut.udps_hdrops = m.getInt(4);
-                ut.udps_badsum = m.getInt(8);
-                ut.udps_badlen = m.getInt(12);
-                ut.udps_opackets = m.getInt(36);
-                ut.udps_noportmcast = m.getInt(48);
-                ut.udps_rcv6_swcsum = m.getInt(64);
-                ut.udps_snd6_swcsum = m.getInt(80);
-            }
-        }
-        return ut;
-    }
-
-    /**
-     * Returns the tc pv4 stats.
-     *
-     * @return the get tc pv4 stats result
-     */
+    /** {@inheritDoc} */
     @Override
     public InternetProtocolStats.TcpStats getTCPv4Stats() {
-        CLibrary.BsdTcpstat tcp = tcpstat.get();
-        return new InternetProtocolStats.TcpStats(establishedv4v6.get().getLeft(),
-                Parsing.unsignedIntToLong(tcp.tcps_connattempt), Parsing.unsignedIntToLong(tcp.tcps_accepts),
-                Parsing.unsignedIntToLong(tcp.tcps_conndrops), Parsing.unsignedIntToLong(tcp.tcps_drops),
-                Parsing.unsignedIntToLong(tcp.tcps_sndpack), Parsing.unsignedIntToLong(tcp.tcps_rcvpack),
-                Parsing.unsignedIntToLong(tcp.tcps_sndrexmitpack), Parsing.unsignedIntToLong(
-                        tcp.tcps_rcvbadsum + tcp.tcps_rcvbadoff + tcp.tcps_rcvmemdrop + tcp.tcps_rcvshort),
+        return tcpv4.get();
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public InternetProtocolStats.UdpStats getUDPv4Stats() {
+        return udpv4.get();
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public InternetProtocolStats.UdpStats getUDPv6Stats() {
+        return new InternetProtocolStats.UdpStats(0L, 0L, 0L, 0L);
+    }
+
+    /** Queries IPv4 TCP statistics with a command fallback. */
+    private TcpStats queryTcpv4Stats() {
+        long establishedCount = established.get().getLeft();
+        TcpStats stats = parseTcpstat(querySysctl(TCPSTAT_SYSCTL), establishedCount);
+        return stats == null ? NetStat.queryTcpStats("netstat -s -p tcp", establishedCount) : stats;
+    }
+
+    /** Queries IPv4 UDP statistics with a command fallback. */
+    private UdpStats queryUdpv4Stats() {
+        UdpStats stats = parseUdpstat(querySysctl(UDPSTAT_SYSCTL));
+        return stats == null ? NetStat.queryUdpStats("netstat -s -p udp") : stats;
+    }
+
+    /**
+     * Reads a sysctl value as raw bytes.
+     *
+     * @param name the sysctl name
+     * @return the raw value, or an empty array
+     */
+    private static byte[] querySysctl(String name) {
+        try (Memory memory = BsdSysctlKit.sysctl(name)) {
+            return memory == null ? Normal.EMPTY_BYTE_ARRAY : memory.getByteArray(0, (int) memory.size());
+        }
+    }
+
+    /**
+     * Parses a FreeBSD {@code struct tcpstat}.
+     *
+     * @param value            the raw structure
+     * @param establishedCount the current established connection count
+     * @return parsed statistics, or {@code null} for an unknown layout
+     */
+    static TcpStats parseTcpstat(byte[] value, long establishedCount) {
+        int shift;
+        if (value.length >= TCPSTAT_MIN_SIZE_WITH_PROGDROPS) {
+            shift = Normal._8;
+        } else if (value.length >= TCPSTAT_MIN_SIZE && value.length <= TCPSTAT_MAX_SIZE_BEFORE_PROGDROPS) {
+            shift = Normal._0;
+        } else {
+            return null;
+        }
+        ByteBuffer buffer = ByteBuffer.wrap(value).order(ByteOrder.nativeOrder());
+        return new TcpStats(establishedCount, buffer.getLong(Normal._0), buffer.getLong(Normal._8),
+                buffer.getLong(Normal._32), buffer.getLong(Normal._24), buffer.getLong(TCPS_SNDPACK + shift),
+                buffer.getLong(TCPS_RCVPACK + shift), buffer.getLong(TCPS_SNDREXMITPACK + shift),
+                buffer.getLong(TCPS_RCVBADSUM + shift) + buffer.getLong(TCPS_RCVBADOFF + shift)
+                        + buffer.getLong(TCPS_RCVSHORT + shift),
                 0L);
     }
 
     /**
-     * Returns the ud pv4 stats.
+     * Parses a FreeBSD {@code struct udpstat}.
      *
-     * @return the get ud pv4 stats result
+     * @param value the raw structure
+     * @return parsed statistics, or {@code null} for an unknown layout
      */
-    @Override
-    public InternetProtocolStats.UdpStats getUDPv4Stats() {
-        CLibrary.BsdUdpstat stat = udpstat.get();
-        return new InternetProtocolStats.UdpStats(Parsing.unsignedIntToLong(stat.udps_opackets),
-                Parsing.unsignedIntToLong(stat.udps_ipackets), Parsing.unsignedIntToLong(stat.udps_noportmcast),
-                Parsing.unsignedIntToLong(stat.udps_hdrops + stat.udps_badsum + stat.udps_badlen));
-    }
-
-    /**
-     * Returns the ud pv6 stats.
-     *
-     * @return the get ud pv6 stats result
-     */
-    @Override
-    public InternetProtocolStats.UdpStats getUDPv6Stats() {
-        CLibrary.BsdUdpstat stat = udpstat.get();
-        return new InternetProtocolStats.UdpStats(Parsing.unsignedIntToLong(stat.udps_snd6_swcsum),
-                Parsing.unsignedIntToLong(stat.udps_rcv6_swcsum), 0L, 0L);
+    static UdpStats parseUdpstat(byte[] value) {
+        if (value.length < UDPSTAT_SIZE) {
+            return null;
+        }
+        ByteBuffer buffer = ByteBuffer.wrap(value).order(ByteOrder.nativeOrder());
+        return new UdpStats(buffer.getLong(Normal._80), buffer.getLong(Normal._0),
+                buffer.getLong(Normal._40) + buffer.getLong(Normal._48) + buffer.getLong(Normal._96),
+                buffer.getLong(Normal._8) + buffer.getLong(Normal._16) + buffer.getLong(Normal._32));
     }
 
 }

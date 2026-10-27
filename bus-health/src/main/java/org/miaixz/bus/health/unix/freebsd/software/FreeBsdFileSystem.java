@@ -26,16 +26,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
+import org.miaixz.bus.core.lang.tuple.Pair;
 import org.miaixz.bus.health.Builder;
 import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.software.OSFileStore;
 import org.miaixz.bus.health.builtin.software.common.AbstractFileSystem;
 import org.miaixz.bus.health.unix.freebsd.BsdSysctlKit;
+import org.miaixz.bus.health.unix.shared.driver.MountTable;
 
 /**
  * The FreeBSD File System contains {@link OSFileStore}s which are a storage pool, device, partition, volume, concrete
@@ -85,64 +86,43 @@ public class FreeBsdFileSystem extends AbstractFileSystem {
      */
     @Override
     public List<OSFileStore> getFileStores(boolean localOnly) {
-        // Mount point to UUID mapping is unavailable here.
-        // The /etc/fstab file may be useful for future enrichment.
         Map<String, String> uuidMap = new HashMap<>();
-        // Now grab dmssg output
         String device = Normal.EMPTY;
+        String uuid = Normal.EMPTY;
         for (String line : Executor.runNative("geom part list")) {
+            line = line.trim();
             if (line.contains("Name: ")) {
                 device = line.substring(line.lastIndexOf(Symbol.C_SPACE) + 1);
-            }
-            // If we aren't working with a current partition, continue
-            if (device.isEmpty()) {
-                continue;
-            }
-            line = line.trim();
-            if (line.startsWith("rawuuid:")) {
-                uuidMap.put(device, line.substring(line.lastIndexOf(Symbol.C_SPACE) + 1));
-                device = Normal.EMPTY;
+                uuid = Normal.EMPTY;
+            } else if (!device.isEmpty() && line.startsWith("rawuuid:")) {
+                uuid = line.substring(line.lastIndexOf(Symbol.C_SPACE) + 1);
+                uuidMap.put(device, uuid);
+                uuidMap.put("gptid/" + uuid, uuid);
+            } else if (!uuid.isEmpty() && line.startsWith("label:")) {
+                String label = line.substring("label:".length()).trim();
+                if (!label.isEmpty() && !"(null)".equals(label)) {
+                    uuidMap.put("gpt/" + label, uuid);
+                }
             }
         }
 
         List<OSFileStore> fsList = new ArrayList<>();
 
         // Get inode usage data
-        Map<String, Long> inodeFreeMap = new HashMap<>();
-        Map<String, Long> inodeTotalMap = new HashMap<>();
-        for (String line : Executor.runNative("df -i")) {
-            /*- Sample Output:
-            Filesystem    1K-blocks   Used   Avail Capacity iused  ifree %iused  Mounted on
-            /dev/twed0s1a   2026030 584112 1279836    31%    2751 279871    1%   /
-            */
-            if (!line.startsWith("Filesystem")) {
-                String[] split = Pattern.SPACES_PATTERN.split(line);
-                if (split.length > 8) {
-                    long ifree = Parsing.parseLongOrDefault(split[6], 0L);
-                    long iused = Parsing.parseLongOrDefault(split[5], 0L);
-                    // Key by mount point to match the later file-store lookup.
-                    inodeFreeMap.put(split[8], ifree);
-                    // total is used + free
-                    inodeTotalMap.put(split[8], iused + ifree);
-                }
-            }
-        }
+        Pair<Map<String, Long>, Map<String, Long>> inodes = MountTable.parseDfInodes(Executor.runNative("df -i"));
+        Map<String, Long> inodeFreeMap = inodes.getLeft();
+        Map<String, Long> inodeTotalMap = inodes.getRight();
 
         // Get mount table
-        for (String fs : Executor.runNative("mount -p")) {
-            String[] split = Pattern.SPACES_PATTERN.split(fs);
-            if (split.length < 5) {
-                continue;
-            }
-            // 1st field is volume name
-            // 2nd field is mount point
-            // 3rd field is fs type
-            // 4th field is options
-            // other fields ignored
-            String volume = split[0];
-            String path = split[1];
-            String type = split[2];
-            String options = split[3];
+        List<MountTable.Entry> mounts = MountTable.parseFreeBsdLibxo(Executor.runNative("mount -p --libxo json"));
+        if (mounts.isEmpty()) {
+            mounts = MountTable.parseFstab(Executor.runNative("mount -p"));
+        }
+        for (MountTable.Entry mount : mounts) {
+            String volume = mount.getVolume();
+            String path = mount.getPath();
+            String type = mount.getType();
+            String options = mount.getOptions();
 
             // Skip non-local drives if requested, and exclude pseudo file systems
             boolean isLocal = !NETWORK_FS_TYPES.contains(type);
@@ -178,11 +158,13 @@ public class FreeBsdFileSystem extends AbstractFileSystem {
                 description = "Mount Point";
             }
             // Match UUID
-            String uuid = uuidMap.getOrDefault(name, Normal.EMPTY);
+            String volumeUuid = volume.startsWith("/dev/")
+                    ? uuidMap.getOrDefault(volume.substring("/dev/".length()), Normal.EMPTY)
+                    : Normal.EMPTY;
 
             fsList.add(
-                    new FreeBsdOSFileStore(name, volume, name, path, options, uuid, isLocal, Normal.EMPTY, description,
-                            type, freeSpace, usableSpace, totalSpace, inodeFreeMap.getOrDefault(path, 0L),
+                    new FreeBsdOSFileStore(name, volume, name, path, options, volumeUuid, isLocal, Normal.EMPTY,
+                            description, type, freeSpace, usableSpace, totalSpace, inodeFreeMap.getOrDefault(path, 0L),
                             inodeTotalMap.getOrDefault(path, 0L)));
         }
         return fsList;
@@ -215,8 +197,7 @@ public class FreeBsdFileSystem extends AbstractFileSystem {
      */
     @Override
     public long getMaxFileDescriptorsPerProcess() {
-        // On FreeBsd there is no process specific system-wide limit, so the general limit is returned
-        return getMaxFileDescriptors();
+        return BsdSysctlKit.sysctl("kern.maxfilesperproc", 0);
     }
 
 }

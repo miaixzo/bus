@@ -355,6 +355,16 @@ public interface CLibrary extends LibCAPI, Library {
         public int udps_badlen;
 
         /**
+         * Datagrams with no socket on the destination port.
+         */
+        public int udps_noport;
+
+        /**
+         * Broadcast or multicast datagrams with no socket on the destination port.
+         */
+        public int udps_noportbcast;
+
+        /**
          * Total output packets.
          */
         public int udps_opackets;
@@ -421,9 +431,9 @@ public interface CLibrary extends LibCAPI, Library {
         public int ips_badlen;
 
         /**
-         * Delivered to upper level protocols.
+         * Packets sent from this host.
          */
-        public int ips_delivered;
+        public int ips_localout;
 
         /**
          * Constructs a new BsdIpstat instance.

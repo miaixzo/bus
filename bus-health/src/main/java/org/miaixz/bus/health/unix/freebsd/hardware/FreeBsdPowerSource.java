@@ -20,6 +20,8 @@
 package org.miaixz.bus.health.unix.freebsd.hardware;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -85,107 +87,151 @@ public class FreeBsdPowerSource extends AbstractPowerSource {
      * @return A list of PowerSource objects representing batteries, etc.
      */
     public static List<PowerSource> getPowerSources() {
-        return List.of(getPowerSource("BAT0"));
+        int units = BsdSysctlKit.sysctl("hw.acpi.battery.units", Normal._0);
+        if (units <= Normal._0) {
+            return Collections.emptyList();
+        }
+        boolean powerOnline = BsdSysctlKit.sysctl("hw.acpi.acline", Normal._0) == Normal._1;
+        int state = Normal.__1;
+        int time = Normal.__1;
+        int life = Normal.__1;
+        if (units == Normal._1) {
+            state = BsdSysctlKit.sysctl("hw.acpi.battery.state", Normal.__1);
+            time = BsdSysctlKit.sysctl("hw.acpi.battery.time", Normal.__1);
+            life = BsdSysctlKit.sysctl("hw.acpi.battery.life", Normal.__1);
+        }
+        List<PowerSource> batteries = new ArrayList<>();
+        for (int unit = Normal._0; unit < units; unit++) {
+            FreeBsdPowerSource battery = parsePowerSource(
+                    "BAT" + unit,
+                    Executor.runNative("acpiconf -i " + unit),
+                    powerOnline,
+                    state,
+                    time,
+                    life);
+            if (battery != null) {
+                batteries.add(battery);
+            }
+        }
+        return Collections.unmodifiableList(batteries);
     }
 
     /**
-     * Returns the power source.
+     * Parses one battery from {@code acpiconf -i} output.
      *
-     * @param name the name
-     * @return the get power source result
+     * @param name        the battery name
+     * @param lines       the command output
+     * @param powerOnline whether external power is connected
+     * @param state       the aggregate battery state bits
+     * @param time        the aggregate time remaining in minutes
+     * @param life        the aggregate remaining percentage
+     * @return the battery, or {@code null} when it is not present
      */
-    private static FreeBsdPowerSource getPowerSource(String name) {
-        String psName = name;
-        double psRemainingCapacityPercent = 1d;
-        double psTimeRemainingEstimated = -1d; // -1 = unknown, -2 = unlimited
-        double psPowerUsageRate = 0d;
-        int psVoltage = -1;
-        double psAmperage = 0d;
-        boolean psPowerOnLine = false;
-        boolean psCharging = false;
-        boolean psDischarging = false;
-        PowerSource.CapacityUnits psCapacityUnits = PowerSource.CapacityUnits.RELATIVE;
-        int psCurrentCapacity = 0;
-        int psMaxCapacity = 1;
-        int psDesignCapacity = 1;
-        int psCycleCount = -1;
-        LocalDate psManufactureDate = null;
-
-        double psTemperature = 0d;
-
-        // state 0=full, 1=discharging, 2=charging
-        int state = BsdSysctlKit.sysctl("hw.acpi.battery.state", 0);
-        if (state == 2) {
-            psCharging = true;
-        } else {
-            int time = BsdSysctlKit.sysctl("hw.acpi.battery.time", -1);
-            // time is in minutes
-            psTimeRemainingEstimated = time < 0 ? -1d : 60d * time;
-            if (state == 1) {
-                psDischarging = true;
-            }
-        }
-        // life is in percent
-        int life = BsdSysctlKit.sysctl("hw.acpi.battery.life", -1);
-        if (life >= 0) {
-            psRemainingCapacityPercent = life / 100d;
-        }
-        List<String> acpiconf = Executor.runNative("acpiconf -i 0");
+    private static FreeBsdPowerSource parsePowerSource(
+            String name,
+            List<String> lines,
+            boolean powerOnline,
+            int state,
+            int time,
+            int life) {
         Map<String, String> psMap = new HashMap<>();
-        for (String line : acpiconf) {
-            String[] split = line.split(Symbol.COLON, 2);
-            if (split.length > 1) {
+        for (String line : lines) {
+            String[] split = line.split(Symbol.COLON, Normal._2);
+            if (split.length > Normal._1) {
                 String value = split[1].trim();
-                if (!value.isEmpty()) {
-                    psMap.put(split[0], value);
+                if (!value.isEmpty() && !"unknown".equals(value)) {
+                    psMap.put(split[0].trim(), value);
                 }
             }
         }
+        boolean charging = state > Normal._0 && (state & Normal._2) != Normal._0;
+        boolean discharging = state > Normal._0 && (state & Normal._1) != Normal._0;
+        String reportedState = psMap.get("State");
+        if (reportedState != null) {
+            if ("not present".equals(reportedState)) {
+                return null;
+            }
+            discharging = reportedState.contains("discharging");
+            charging = !discharging && reportedState.contains("charging");
+        }
 
-        String psDeviceName = psMap.getOrDefault("Model number", Normal.UNKNOWN);
-        String psSerialNumber = psMap.getOrDefault("Serial number", Normal.UNKNOWN);
-        String psChemistry = psMap.getOrDefault("Type", Normal.UNKNOWN);
-        String psManufacturer = psMap.getOrDefault("OEM info", Normal.UNKNOWN);
-        String cap = psMap.get("Design capacity");
-        if (cap != null) {
-            psDesignCapacity = Parsing.getFirstIntValue(cap);
-            if (cap.toLowerCase(Locale.ROOT).contains("mah")) {
-                psCapacityUnits = PowerSource.CapacityUnits.MAH;
-            } else if (cap.toLowerCase(Locale.ROOT).contains("mwh")) {
-                psCapacityUnits = PowerSource.CapacityUnits.MWH;
+        double remainingPercent = 1D;
+        String reportedPercent = psMap.get("Remaining capacity");
+        if (reportedPercent != null) {
+            remainingPercent = Parsing.getFirstIntValue(reportedPercent) / 100D;
+        } else if (life >= Normal._0) {
+            remainingPercent = life / 100D;
+        }
+
+        double instantTime = -1D;
+        String reportedTime = psMap.get("Remaining time");
+        if (reportedTime != null) {
+            String[] hhmm = reportedTime.split(Symbol.COLON);
+            if (hhmm.length == Normal._2) {
+                instantTime = 3600D * Parsing.parseIntOrDefault(hhmm[Normal._0], Normal._0)
+                        + 60D * Parsing.parseIntOrDefault(hhmm[Normal._1], Normal._0);
             }
         }
-        cap = psMap.get("Last full capacity");
-        if (cap != null) {
-            psMaxCapacity = Parsing.getFirstIntValue(cap);
-        } else {
-            psMaxCapacity = psDesignCapacity;
+        double estimatedTime = time >= Normal._0 ? 60D * time : instantTime;
+        if (instantTime < Normal._0) {
+            instantTime = estimatedTime;
         }
-        double psTimeRemainingInstant = psTimeRemainingEstimated;
-        String time = psMap.get("Remaining time");
-        if (time != null) {
-            String[] hhmm = time.split(Symbol.COLON);
-            if (hhmm.length == 2) {
-                psTimeRemainingInstant = 3600d * Parsing.parseIntOrDefault(hhmm[0], 0)
-                        + 60d * Parsing.parseIntOrDefault(hhmm[1], 0);
-            }
-        }
+
+        double powerRate = 0D;
+        double amperage = 0D;
         String rate = psMap.get("Present rate");
         if (rate != null) {
-            psPowerUsageRate = Parsing.getFirstIntValue(rate);
-        }
-        String volts = psMap.get("Present voltage");
-        if (volts != null) {
-            psVoltage = Parsing.getFirstIntValue(volts);
-            if (psVoltage != 0) {
-                psAmperage = psPowerUsageRate / psVoltage;
+            if (rate.contains("mA")) {
+                amperage = Parsing.getFirstIntValue(rate);
+                int parenthesis = rate.indexOf(Symbol.C_PARENTHESE_LEFT);
+                if (parenthesis >= Normal._0) {
+                    powerRate = Parsing.getFirstIntValue(rate.substring(parenthesis));
+                }
+            } else {
+                powerRate = Parsing.getFirstIntValue(rate);
             }
         }
+        double voltage = -1D;
+        String volts = psMap.get("Present voltage");
+        if (volts != null) {
+            int millivolts = Parsing.getFirstIntValue(volts);
+            if (millivolts > Normal._0) {
+                voltage = millivolts / 1000D;
+                if (amperage == 0D) {
+                    amperage = powerRate / voltage;
+                }
+            }
+        }
+        if (discharging) {
+            powerRate = -powerRate;
+            amperage = -amperage;
+        }
 
-        return new FreeBsdPowerSource(psName, psDeviceName, psRemainingCapacityPercent, psTimeRemainingEstimated,
-                psTimeRemainingInstant, psPowerUsageRate, psVoltage, psAmperage, psPowerOnLine, psCharging,
-                psDischarging, psCapacityUnits, psCurrentCapacity, psMaxCapacity, psDesignCapacity, psCycleCount,
-                psChemistry, psManufactureDate, psManufacturer, psSerialNumber, psTemperature);
+        PowerSource.CapacityUnits capacityUnits = PowerSource.CapacityUnits.RELATIVE;
+        int designCapacity = Normal._1;
+        int maxCapacity = Normal._1;
+        String design = psMap.get("Design capacity");
+        String lastFull = psMap.get("Last full capacity");
+        if (design != null) {
+            String units = design.toLowerCase(Locale.ROOT);
+            if (units.endsWith("mah")) {
+                capacityUnits = PowerSource.CapacityUnits.MAH;
+            } else if (units.endsWith("mwh")) {
+                capacityUnits = PowerSource.CapacityUnits.MWH;
+            }
+            if (capacityUnits != PowerSource.CapacityUnits.RELATIVE) {
+                designCapacity = Parsing.getFirstIntValue(design);
+                maxCapacity = lastFull == null ? designCapacity : Parsing.getFirstIntValue(lastFull);
+            }
+        }
+        int currentCapacity = (int) Math.round(remainingPercent * maxCapacity);
+        int cycleCount = Parsing.parseIntOrDefault(psMap.getOrDefault("Cycle Count", Normal.EMPTY), Normal.__1);
+
+        return new FreeBsdPowerSource(name, psMap.getOrDefault("Model number", Normal.UNKNOWN), remainingPercent,
+                estimatedTime, instantTime, powerRate, voltage, amperage, powerOnline, charging, discharging,
+                capacityUnits, currentCapacity, maxCapacity, designCapacity, cycleCount,
+                psMap.getOrDefault("Type", Normal.UNKNOWN), null, psMap.getOrDefault("OEM info", Normal.UNKNOWN),
+                psMap.getOrDefault("Serial number", Normal.UNKNOWN), 0D);
     }
 
     /**

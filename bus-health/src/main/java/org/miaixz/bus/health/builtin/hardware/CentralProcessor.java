@@ -1012,7 +1012,7 @@ public interface CentralProcessor {
             if (cpuVendor.contentEquals("GenuineIntel")) {
                 sb.append(cpu64bit ? "Intel64" : "x86");
             } else {
-                sb.append(cpuVendor);
+                sb.append(this.cpuVendor);
             }
             sb.append(" Family ").append(cpuFamily);
             sb.append(" Model ").append(cpuModel);
@@ -1165,7 +1165,9 @@ public interface CentralProcessor {
             } else if (ucVendor.contains("APPLE")) {
                 sb.append("apple.");
             }
-            if (StringKit.isBlank(arch) && !sb.toString().equals("arm.")) {
+            // ARM keys use the part number alone, for example arm.0xd0c.
+            boolean isArm = sb.toString().equals("arm.");
+            if (StringKit.isBlank(arch) && !isArm) {
                 // Append family
                 sb.append(this.cpuFamily);
                 arch = archProps.getProperty(sb.toString());
@@ -1173,7 +1175,10 @@ public interface CentralProcessor {
 
             if (StringKit.isBlank(arch)) {
                 // Append model
-                sb.append(Symbol.C_DOT).append(this.cpuModel);
+                if (!isArm) {
+                    sb.append(Symbol.C_DOT);
+                }
+                sb.append(this.cpuModel);
                 arch = archProps.getProperty(sb.toString());
             }
 
