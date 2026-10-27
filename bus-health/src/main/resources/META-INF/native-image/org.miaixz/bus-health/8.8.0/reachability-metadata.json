@@ -1286,6 +1286,12 @@
           ]
         },
         {
+          "name": "cpuidToFamilyModelStepping",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
           "name": "createProcessorID",
           "parameterTypes": [
             "java.lang.String",
@@ -4472,6 +4478,13 @@
     {
       "type": "org.miaixz.bus.health.builtin.software.common.AbstractFileSystem",
       "methods": [
+        {
+          "name": "capAtSystemLimit",
+          "parameterTypes": [
+            "long",
+            "long"
+          ]
+        },
         {
           "name": "<init>",
           "parameterTypes": []
@@ -11885,6 +11898,13 @@
           ]
         },
         {
+          "name": "getStringValueOrDefault",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
           "name": "getStringValueOrUnknown",
           "parameterTypes": [
             "java.lang.String"
@@ -12108,6 +12128,12 @@
         },
         {
           "name": "parseMmDdYyyyToYyyyMmDD",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "parseYyyyMmDdToIso",
           "parameterTypes": [
             "java.lang.String"
           ]
@@ -12416,6 +12442,19 @@
         {
           "name": "isPPC",
           "parameterTypes": []
+        },
+        {
+          "name": "isSafeToLoad",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "isSafeToLoad",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
         },
         {
           "name": "isSolaris",
@@ -14020,6 +14059,15 @@
         },
         {
           "name": "getVoltage",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.health.unix.freebsd.driver.Kenv",
+      "methods": [
+        {
+          "name": "queryKenv",
           "parameterTypes": []
         }
       ]
@@ -15950,6 +15998,60 @@
       ]
     },
     {
+      "type": "org.miaixz.bus.health.unix.shared.driver.MountTable",
+      "methods": [
+        {
+          "name": "parseDfInodes",
+          "parameterTypes": [
+            "java.util.List"
+          ]
+        },
+        {
+          "name": "parseFreeBsdLibxo",
+          "parameterTypes": [
+            "java.util.List"
+          ]
+        },
+        {
+          "name": "parseFstab",
+          "parameterTypes": [
+            "java.util.List"
+          ]
+        },
+        {
+          "name": "parseOpenBsdVerbose",
+          "parameterTypes": [
+            "java.util.List"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.health.unix.shared.driver.MountTable$Entry",
+      "methods": [
+        {
+          "name": "getOptions",
+          "parameterTypes": []
+        },
+        {
+          "name": "getPath",
+          "parameterTypes": []
+        },
+        {
+          "name": "getType",
+          "parameterTypes": []
+        },
+        {
+          "name": "getUuid",
+          "parameterTypes": []
+        },
+        {
+          "name": "getVolume",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
       "type": "org.miaixz.bus.health.unix.shared.driver.NetStat",
       "methods": [
         {
@@ -15967,6 +16069,10 @@
           "parameterTypes": [
             "java.lang.String"
           ]
+        },
+        {
+          "name": "queryBsdTcpStats",
+          "parameterTypes": []
         },
         {
           "name": "queryNetstat",
@@ -16002,6 +16108,13 @@
           "name": "queryTcpStats",
           "parameterTypes": [
             "java.lang.String"
+          ]
+        },
+        {
+          "name": "queryTcpStats",
+          "parameterTypes": [
+            "java.lang.String",
+            "long"
           ]
         },
         {
@@ -16104,7 +16217,8 @@
         {
           "name": "queryRouteDump",
           "parameterTypes": [
-            "org.miaixz.bus.health.unix.shared.jna.CLibrary"
+            "org.miaixz.bus.health.unix.shared.jna.CLibrary",
+            "org.miaixz.bus.health.unix.shared.driver.RouteTableDump$Layout"
           ]
         }
       ]
@@ -16181,6 +16295,10 @@
         }
       ],
       "methods": [
+        {
+          "name": "getPfRoute",
+          "parameterTypes": []
+        },
         {
           "name": "values",
           "parameterTypes": []
@@ -17006,7 +17124,7 @@
           "name": "ips_badsum"
         },
         {
-          "name": "ips_delivered"
+          "name": "ips_localout"
         },
         {
           "name": "ips_tooshort"
@@ -17083,6 +17201,12 @@
         },
         {
           "name": "udps_ipackets"
+        },
+        {
+          "name": "udps_noport"
+        },
+        {
+          "name": "udps_noportbcast"
         },
         {
           "name": "udps_noportmcast"
@@ -17426,9 +17550,6 @@
           "name": "KERN_VERSION"
         },
         {
-          "name": "RLIMIT_NOFILE"
-        },
-        {
           "name": "UINT64_SIZE"
         },
         {
@@ -17442,6 +17563,13 @@
         }
       ],
       "methods": [
+        {
+          "name": "getrlimit",
+          "parameterTypes": [
+            "int",
+            "com.sun.jna.platform.unix.Resource$Rlimit"
+          ]
+        },
         {
           "name": "getthrid",
           "parameterTypes": []
@@ -17529,6 +17657,56 @@
         {
           "name": "<init>",
           "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.health.unix.shared.jna.SolarisLibKstat",
+      "fields": [
+        {
+          "name": "INSTANCE"
+        }
+      ],
+      "methods": [
+        {
+          "name": "kstat_chain_update",
+          "parameterTypes": [
+            "com.sun.jna.Pointer"
+          ]
+        },
+        {
+          "name": "kstat_close",
+          "parameterTypes": [
+            "com.sun.jna.Pointer"
+          ]
+        },
+        {
+          "name": "kstat_data_lookup",
+          "parameterTypes": [
+            "com.sun.jna.platform.unix.solaris.LibKstat$Kstat",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "kstat_lookup",
+          "parameterTypes": [
+            "com.sun.jna.Pointer",
+            "java.lang.String",
+            "int",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "kstat_open",
+          "parameterTypes": []
+        },
+        {
+          "name": "kstat_read",
+          "parameterTypes": [
+            "com.sun.jna.Pointer",
+            "com.sun.jna.platform.unix.solaris.LibKstat$Kstat",
+            "com.sun.jna.Pointer"
+          ]
         }
       ]
     },

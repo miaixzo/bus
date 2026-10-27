@@ -21,6 +21,7 @@ package org.miaixz.bus.health.unix.openbsd.driver.disk;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
 
 import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.Normal;
@@ -146,16 +147,19 @@ public class Disklabel {
      */
     private static Tuple getDiskParamsNoRoot(String diskName) {
         List<HWPartition> partitions = new ArrayList<>();
-        for (String line : Executor.runNative("df")) {
-            if (line.startsWith("/dev/" + diskName)) {
-                String[] split = Pattern.SPACES_PATTERN.split(line);
-                if (split.length > 5) {
-                    String name = split[0].substring(5 + diskName.length());
-                    Pair<Integer, Integer> majorMinor = getMajorMinor(diskName, name);
-                    long partSize = Parsing.parseLongOrDefault(split[1], Normal._0) * Normal._512;
+        java.util.regex.Pattern device = java.util.regex.Pattern
+                .compile("/dev/" + java.util.regex.Pattern.quote(diskName) + "([a-p])");
+        for (String line : Executor.runNative("df -k")) {
+            String[] split = Pattern.SPACES_PATTERN.split(line.trim(), Normal._6);
+            if (split.length == Normal._6) {
+                Matcher matcher = device.matcher(split[Normal._0]);
+                if (matcher.matches()) {
+                    Pair<Integer, Integer> majorMinor = getMajorMinor(diskName, matcher.group(Normal._1));
+                    long partSize = Parsing.parseLongOrDefault(split[Normal._1], Normal._0) * Normal._1024;
                     partitions.add(
-                            new HWPartition(split[0], split[0].substring(5), Normal.UNKNOWN, Normal.UNKNOWN, partSize,
-                                    majorMinor.getLeft(), majorMinor.getRight(), split[5]));
+                            new HWPartition(split[Normal._0], split[Normal._0].substring(Normal._5), Normal.UNKNOWN,
+                                    Normal.UNKNOWN, partSize, majorMinor.getLeft(), majorMinor.getRight(),
+                                    split[Normal._5]));
                 }
             }
         }

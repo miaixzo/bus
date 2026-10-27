@@ -19,8 +19,9 @@
 */
 package org.miaixz.bus.health.unix.freebsd.hardware;
 
-import org.miaixz.bus.core.center.function.SupplierX;
+import java.util.Map;
 
+import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.annotation.Immutable;
 import org.miaixz.bus.core.lang.tuple.Tuple;
@@ -32,10 +33,11 @@ import org.miaixz.bus.health.builtin.hardware.Baseboard;
 import org.miaixz.bus.health.builtin.hardware.Firmware;
 import org.miaixz.bus.health.builtin.hardware.common.AbstractComputerSystem;
 import org.miaixz.bus.health.unix.freebsd.BsdSysctlKit;
+import org.miaixz.bus.health.unix.freebsd.driver.Kenv;
 import org.miaixz.bus.health.unix.shared.hardware.UnixBaseboard;
 
 /**
- * Hardware data obtained from dmidecode.
+ * Hardware data obtained from SMBIOS kernel environment values with {@code dmidecode} fallbacks.
  *
  * @author Kimi Liu
  */
@@ -45,19 +47,25 @@ final class FreeBsdComputerSystem extends AbstractComputerSystem {
     /**
      * The manufModelSerialUuidVers value.
      */
-    private final SupplierX<Tuple> manufModelSerialUuidVers = Memoizer.memoize(FreeBsdComputerSystem::readDmiDecode);
+    private final SupplierX<Map<String, String>> kenv = Memoizer.memoize(Kenv::queryKenv);
 
     /**
-     * Reads the dmi decode.
+     * The system manufacturer, model, serial number, UUID and version.
+     */
+    private final SupplierX<Tuple> manufModelSerialUuidVers = Memoizer.memoize(this::readSmbios);
+
+    /**
+     * Reads SMBIOS system values from the kernel environment and fills missing values from {@code dmidecode}.
      *
      * @return the read dmi decode result
      */
-    private static Tuple readDmiDecode() {
-        String manufacturer = null;
-        String model = null;
-        String serialNumber = null;
-        String uuid = null;
-        String version = null;
+    private Tuple readSmbios() {
+        Map<String, String> environment = kenv.get();
+        String manufacturer = environment.get("smbios.system.maker");
+        String model = environment.get("smbios.system.product");
+        String serialNumber = environment.get("smbios.system.serial");
+        String uuid = environment.get("smbios.system.uuid");
+        String version = environment.get("smbios.system.version");
 
         // $ sudo dmidecode -t system
         // # dmidecode 3.0
@@ -86,18 +94,20 @@ final class FreeBsdComputerSystem extends AbstractComputerSystem {
         final String uuidMarker = "UUID:";
         final String versionMarker = "Version:";
 
-        // Only works with root permissions but it's all we've got
-        for (final String checkLine : Executor.runNative("dmidecode -t system")) {
-            if (checkLine.contains(manufacturerMarker)) {
-                manufacturer = Parsing.getTextAfterString(checkLine, manufacturerMarker).trim();
-            } else if (checkLine.contains(productNameMarker)) {
-                model = Parsing.getTextAfterString(checkLine, productNameMarker).trim();
-            } else if (checkLine.contains(serialNumMarker)) {
-                serialNumber = Parsing.getTextAfterString(checkLine, serialNumMarker).trim();
-            } else if (checkLine.contains(uuidMarker)) {
-                uuid = Parsing.getTextAfterString(checkLine, uuidMarker).trim();
-            } else if (checkLine.contains(versionMarker)) {
-                version = Parsing.getTextAfterString(checkLine, versionMarker).trim();
+        if (StringKit.isBlank(manufacturer) || StringKit.isBlank(model) || StringKit.isBlank(serialNumber)
+                || StringKit.isBlank(uuid) || StringKit.isBlank(version)) {
+            for (String checkLine : Executor.runNative("dmidecode -t system")) {
+                if (checkLine.contains(manufacturerMarker) && StringKit.isBlank(manufacturer)) {
+                    manufacturer = Parsing.getTextAfterString(checkLine, manufacturerMarker).trim();
+                } else if (checkLine.contains(productNameMarker) && StringKit.isBlank(model)) {
+                    model = Parsing.getTextAfterString(checkLine, productNameMarker).trim();
+                } else if (checkLine.contains(serialNumMarker) && StringKit.isBlank(serialNumber)) {
+                    serialNumber = Parsing.getTextAfterString(checkLine, serialNumMarker).trim();
+                } else if (checkLine.contains(uuidMarker) && StringKit.isBlank(uuid)) {
+                    uuid = Parsing.getTextAfterString(checkLine, uuidMarker).trim();
+                } else if (checkLine.contains(versionMarker) && StringKit.isBlank(version)) {
+                    version = Parsing.getTextAfterString(checkLine, versionMarker).trim();
+                }
             }
         }
         // If we get to end and haven't assigned, use fallback
@@ -185,8 +195,12 @@ final class FreeBsdComputerSystem extends AbstractComputerSystem {
      */
     @Override
     public Baseboard createBaseboard() {
-        return new UnixBaseboard(manufModelSerialUuidVers.get().get(0), manufModelSerialUuidVers.get().get(1),
-                manufModelSerialUuidVers.get().get(2), manufModelSerialUuidVers.get().get(4));
+        Map<String, String> environment = kenv.get();
+        Tuple system = manufModelSerialUuidVers.get();
+        return new UnixBaseboard(Parsing.getStringValueOrDefault(environment.get("smbios.planar.maker"), system.get(0)),
+                Parsing.getStringValueOrDefault(environment.get("smbios.planar.product"), system.get(1)),
+                Parsing.getStringValueOrDefault(environment.get("smbios.planar.serial"), system.get(2)),
+                Parsing.getStringValueOrDefault(environment.get("smbios.planar.version"), system.get(4)));
     }
 
 }

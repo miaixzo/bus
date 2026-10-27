@@ -234,9 +234,7 @@ public class WindowsGraphicsCard extends AbstractGraphicsCard {
                 // HardwareInformation.MemorySize (32-bit) is intentionally omitted: Windows caps
                 // it at 0x7FFFF000 (~2 GiB) for GPUs with more VRAM, making it unreliable.
 
-                String lhmParent = lhmParentMap.getOrDefault(
-                        WindowsDxgi.normalizeName(StringKit.isBlank(name) ? Normal.EMPTY : name),
-                        Normal.EMPTY);
+                String lhmParent = lhmParentMap.getOrDefault(WindowsDxgi.normalizeName(name), Normal.EMPTY);
 
                 GraphicsCard card = new WindowsGraphicsCard(StringKit.isBlank(name) ? Normal.UNKNOWN : name,
                         StringKit.isBlank(deviceId) ? Normal.UNKNOWN : deviceId,
@@ -350,9 +348,7 @@ public class WindowsGraphicsCard extends AbstractGraphicsCard {
                 } else {
                     vram = WmiKit.getUint32asLong(cards, VideoControllerProperty.ADAPTERRAM, index);
                 }
-                String lhmParent = lhmParentMap.getOrDefault(
-                        WindowsDxgi.normalizeName(StringKit.isBlank(name) ? Normal.EMPTY : name),
-                        Normal.EMPTY);
+                String lhmParent = lhmParentMap.getOrDefault(WindowsDxgi.normalizeName(name), Normal.EMPTY);
                 GraphicsCard card = new WindowsGraphicsCard(StringKit.isBlank(name) ? Normal.UNKNOWN : name, deviceId,
                         StringKit.isBlank(vendor) ? Normal.UNKNOWN : vendor, versionInfo, vram, luidPrefix, lhmParent,
                         pciBusNumber, pciBusId);

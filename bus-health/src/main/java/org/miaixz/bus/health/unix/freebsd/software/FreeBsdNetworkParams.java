@@ -99,7 +99,7 @@ final class FreeBsdNetworkParams extends AbstractNetworkParams {
      */
     @Override
     public String getIpv4DefaultGateway() {
-        return searchGateway(Executor.runNative("route -4 get default"));
+        return searchGateway(Executor.runNative("route -n get default"));
     }
 
     /**
@@ -109,7 +109,7 @@ final class FreeBsdNetworkParams extends AbstractNetworkParams {
      */
     @Override
     public String getIpv6DefaultGateway() {
-        return searchGateway(Executor.runNative("route -6 get default"));
+        return searchGateway(Executor.runNative("route -n get -inet6 default"));
     }
 
     /**
@@ -137,7 +137,7 @@ final class FreeBsdNetworkParams extends AbstractNetworkParams {
      * @return the routing table dump, or an empty array
      */
     protected byte[] queryRouteDump() {
-        return BsdRouteDump.queryRouteDump(LIBC);
+        return BsdRouteDump.queryRouteDump(LIBC, RouteTableDump.Layout.FREEBSD);
     }
 
 }

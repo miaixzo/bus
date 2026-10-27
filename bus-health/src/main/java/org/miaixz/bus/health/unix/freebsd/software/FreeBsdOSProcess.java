@@ -40,7 +40,6 @@ import org.miaixz.bus.health.builtin.software.OSThread;
 import org.miaixz.bus.health.builtin.software.common.AbstractOSProcess;
 import org.miaixz.bus.health.unix.freebsd.BsdSysctlKit;
 import org.miaixz.bus.health.unix.freebsd.ProcstatKit;
-import org.miaixz.bus.health.unix.shared.driver.ProcLimits;
 import org.miaixz.bus.health.unix.shared.jna.FreeBsdLibc;
 import org.miaixz.bus.logger.Logger;
 
@@ -575,10 +574,10 @@ public class FreeBsdOSProcess extends AbstractOSProcess {
     public long getSoftOpenFileLimit() {
         if (getProcessID() == this.os.getProcessId()) {
             final Resource.Rlimit rlimit = new Resource.Rlimit();
-            FreeBsdLibc.INSTANCE.getrlimit(FreeBsdLibc.RLIMIT_NOFILE, rlimit);
+            FreeBsdLibc.INSTANCE.getrlimit(Normal._8, rlimit);
             return rlimit.rlim_cur;
         } else {
-            return getProcessOpenFileLimit(getProcessID(), 1);
+            return queryOtherRlimitNofile(true);
         }
     }
 
@@ -591,10 +590,10 @@ public class FreeBsdOSProcess extends AbstractOSProcess {
     public long getHardOpenFileLimit() {
         if (getProcessID() == this.os.getProcessId()) {
             final Resource.Rlimit rlimit = new Resource.Rlimit();
-            FreeBsdLibc.INSTANCE.getrlimit(FreeBsdLibc.RLIMIT_NOFILE, rlimit);
+            FreeBsdLibc.INSTANCE.getrlimit(Normal._8, rlimit);
             return rlimit.rlim_max;
         } else {
-            return getProcessOpenFileLimit(getProcessID(), 2);
+            return queryOtherRlimitNofile(false);
         }
     }
 
@@ -782,7 +781,10 @@ public class FreeBsdOSProcess extends AbstractOSProcess {
         this.userTime = monotonic(
                 this.userTime,
                 Parsing.parseDHMSOrDefault(psMap.get(FreeBsdOperatingSystem.PsKeywords.TIME), 0L) - sysTime);
-        this.path = psMap.get(FreeBsdOperatingSystem.PsKeywords.COMM);
+        this.path = queryExecutablePath();
+        if (this.path.isEmpty()) {
+            this.path = psMap.get(FreeBsdOperatingSystem.PsKeywords.COMM);
+        }
         this.name = this.path.substring(this.path.lastIndexOf(Symbol.C_SLASH) + 1);
         this.minorFaults = Parsing.parseLongOrDefault(psMap.get(FreeBsdOperatingSystem.PsKeywords.MINFLT), 0L);
         this.majorFaults = Parsing.parseLongOrDefault(psMap.get(FreeBsdOperatingSystem.PsKeywords.MAJFLT), 0L);
@@ -796,14 +798,36 @@ public class FreeBsdOSProcess extends AbstractOSProcess {
     }
 
     /**
-     * Returns the process open file limit.
+     * Reads another process's open-file limit through {@code kern.proc.rlimit}.
      *
-     * @param processId the process id
-     * @param index     the index
-     * @return the get process open file limit result
+     * @param soft {@code true} for the soft limit or {@code false} for the hard limit
+     * @return the limit, or {@code -1} if unavailable
      */
-    private long getProcessOpenFileLimit(long processId, int index) {
-        return ProcLimits.queryOpenFileLimit(processId, index);
+    private long queryOtherRlimitNofile(boolean soft) {
+        int[] mib = { Normal._1, Normal._14, Normal._37, getProcessID(), Normal._8 };
+        try (Memory limit = new Memory(Normal._16);
+                ByRef.CloseableSizeTByReference size = new ByRef.CloseableSizeTByReference(Normal._16)) {
+            if (FreeBsdLibc.INSTANCE.sysctl(mib, mib.length, limit, size, null, size_t.ZERO) == Normal._0) {
+                return limit.getLong(soft ? Normal._0 : Normal._8);
+            }
+        }
+        return -1L;
+    }
+
+    /**
+     * Reads the executable path from the kernel through {@code kern.proc.pathname}.
+     *
+     * @return the executable path, or an empty string
+     */
+    private String queryExecutablePath() {
+        int[] mib = { Normal._1, Normal._14, Normal._12, getProcessID() };
+        try (Memory buffer = new Memory(Normal._1024);
+                ByRef.CloseableSizeTByReference size = new ByRef.CloseableSizeTByReference(Normal._1024)) {
+            if (FreeBsdLibc.INSTANCE.sysctl(mib, mib.length, buffer, size, null, size_t.ZERO) == Normal._0) {
+                return buffer.getString(Normal._0);
+            }
+        }
+        return Normal.EMPTY;
     }
 
     /**

@@ -32,6 +32,7 @@ import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.annotation.Immutable;
 import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.Parsing;
+import org.miaixz.bus.health.Platform;
 import org.miaixz.bus.health.builtin.hardware.Printer;
 import org.miaixz.bus.health.builtin.hardware.common.AbstractPrinter;
 import org.miaixz.bus.health.unix.shared.driver.Lpstat;
@@ -68,11 +69,13 @@ public class CupsPrinter extends AbstractPrinter {
 
     static {
         boolean hasCups = false;
-        try {
-            Cups lib = Cups.INSTANCE;
-            hasCups = true;
-        } catch (UnsatisfiedLinkError e) {
-            Logger.debug(false, "Health", "libcups not found. Falling back to lpstat command.");
+        if (Platform.isSafeToLoad(System.mapLibraryName("cups"), System.getProperty("jna.library.path"))) {
+            try {
+                Cups lib = Cups.INSTANCE;
+                hasCups = true;
+            } catch (UnsatisfiedLinkError e) {
+                Logger.debug(false, "Health", "libcups not found. Falling back to lpstat command.");
+            }
         }
         HAS_CUPS = hasCups;
     }
