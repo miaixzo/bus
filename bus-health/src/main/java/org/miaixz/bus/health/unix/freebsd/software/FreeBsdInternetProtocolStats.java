@@ -42,70 +42,120 @@ import org.miaixz.bus.health.unix.shared.driver.NetStat;
 @ThreadSafe
 public class FreeBsdInternetProtocolStats extends AbstractInternetProtocolStats {
 
-    /** TCP statistics sysctl name. */
+    /**
+     * TCP statistics sysctl name.
+     */
     private static final String TCPSTAT_SYSCTL = "net.inet.tcp.stats";
-    /** UDP statistics sysctl name. */
+    /**
+     * UDP statistics sysctl name.
+     */
     private static final String UDPSTAT_SYSCTL = "net.inet.udp.stats";
-    /** Minimum size of the FreeBSD 10 through 13 TCP statistics structure. */
+    /**
+     * Minimum size of the FreeBSD 10 through 13 TCP statistics structure.
+     */
     private static final int TCPSTAT_MIN_SIZE = 880;
-    /** Maximum size of a TCP structure before FreeBSD 14 inserted {@code tcps_progdrops}. */
+    /**
+     * Maximum size of a TCP structure before FreeBSD 14 inserted {@code tcps_progdrops}.
+     */
     private static final int TCPSTAT_MAX_SIZE_BEFORE_PROGDROPS = 904;
-    /** Minimum size of a TCP structure containing {@code tcps_progdrops}. */
+    /**
+     * Minimum size of a TCP structure containing {@code tcps_progdrops}.
+     */
     private static final int TCPSTAT_MIN_SIZE_WITH_PROGDROPS = 984;
-    /** Legacy offset of TCP packets sent. */
+    /**
+     * Legacy offset of TCP packets sent.
+     */
     private static final int TCPS_SNDPACK = 136;
-    /** Legacy offset of retransmitted TCP packets. */
+    /**
+     * Legacy offset of retransmitted TCP packets.
+     */
     private static final int TCPS_SNDREXMITPACK = 152;
-    /** Legacy offset of TCP packets received. */
+    /**
+     * Legacy offset of TCP packets received.
+     */
     private static final int TCPS_RCVPACK = 224;
-    /** Legacy offset of TCP bad-checksum packets. */
+    /**
+     * Legacy offset of TCP bad-checksum packets.
+     */
     private static final int TCPS_RCVBADSUM = 240;
-    /** Legacy offset of TCP bad-offset packets. */
+    /**
+     * Legacy offset of TCP bad-offset packets.
+     */
     private static final int TCPS_RCVBADOFF = 248;
-    /** Legacy offset of short TCP packets. */
+    /**
+     * Legacy offset of short TCP packets.
+     */
     private static final int TCPS_RCVSHORT = 264;
-    /** Minimum supported UDP statistics structure size. */
+    /**
+     * Minimum supported UDP statistics structure size.
+     */
     private static final int UDPSTAT_SIZE = 112;
 
-    /** Memoized established IPv4 and IPv6 connection counts. */
+    /**
+     * Memoized established IPv4 and IPv6 connection counts.
+     */
     private final SupplierX<Pair<Long, Long>> established = Memoizer
             .memoize(NetStat::queryTcpnetstat, Memoizer.defaultExpiration());
-    /** Memoized IPv4 TCP statistics. */
+    /**
+     * Memoized IPv4 TCP statistics.
+     */
     private final SupplierX<TcpStats> tcpv4 = Memoizer.memoize(this::queryTcpv4Stats, Memoizer.defaultExpiration());
-    /** Memoized IPv4 UDP statistics. */
+    /**
+     * Memoized IPv4 UDP statistics.
+     */
     private final SupplierX<UdpStats> udpv4 = Memoizer.memoize(this::queryUdpv4Stats, Memoizer.defaultExpiration());
 
-    /** Constructs a FreeBSD Internet protocol statistics provider. */
+    /**
+     * Constructs a FreeBSD Internet protocol statistics provider.
+     */
     public FreeBsdInternetProtocolStats() {
         // No initialization required.
     }
 
-    /** {@inheritDoc} */
+    /**
+     * Returns memoized IPv4 TCP statistics obtained from the FreeBSD kernel structure, with a netstat command
+     * fallback when the structure layout is unsupported.
+     *
+     * @return the cached IPv4 TCP counters and established connection count
+     */
     @Override
     public InternetProtocolStats.TcpStats getTCPv4Stats() {
         return tcpv4.get();
     }
 
-    /** {@inheritDoc} */
+    /**
+     * Returns memoized IPv4 UDP statistics obtained from the FreeBSD kernel structure, with a netstat command
+     * fallback when the structure layout is unsupported.
+     *
+     * @return the cached IPv4 UDP datagram and error counters
+     */
     @Override
     public InternetProtocolStats.UdpStats getUDPv4Stats() {
         return udpv4.get();
     }
 
-    /** {@inheritDoc} */
+    /**
+     * Returns zero-valued IPv6 UDP statistics because this provider does not collect a separate IPv6 UDP snapshot.
+     *
+     * @return an IPv6 UDP statistics object whose counters are all zero
+     */
     @Override
     public InternetProtocolStats.UdpStats getUDPv6Stats() {
         return new InternetProtocolStats.UdpStats(0L, 0L, 0L, 0L);
     }
 
-    /** Queries IPv4 TCP statistics with a command fallback. */
+    /**
+     * Queries IPv4 TCP statistics with a command fallback.
+     */
     private TcpStats queryTcpv4Stats() {
         long establishedCount = established.get().getLeft();
         TcpStats stats = parseTcpstat(querySysctl(TCPSTAT_SYSCTL), establishedCount);
         return stats == null ? NetStat.queryTcpStats("netstat -s -p tcp", establishedCount) : stats;
     }
 
-    /** Queries IPv4 UDP statistics with a command fallback. */
+    /**
+     * Queries IPv4 UDP statistics with a command fallback.
+     */
     private UdpStats queryUdpv4Stats() {
         UdpStats stats = parseUdpstat(querySysctl(UDPSTAT_SYSCTL));
         return stats == null ? NetStat.queryUdpStats("netstat -s -p udp") : stats;
