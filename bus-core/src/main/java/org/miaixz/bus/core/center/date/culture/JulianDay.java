@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.core.center.date.culture;
 
+import org.miaixz.bus.core.center.date.culture.parts.SecondParts;
 import org.miaixz.bus.core.center.date.culture.solar.SolarDay;
 import org.miaixz.bus.core.center.date.culture.solar.SolarTime;
 
@@ -121,7 +122,8 @@ public class JulianDay extends Loops {
      * @return The corresponding {@code SolarDay}.
      */
     public SolarDay getSolarDay() {
-        return getSolarTime().getSolarDay();
+        SecondParts parts = getSecondParts(false);
+        return new SolarDay(parts.getYear(), parts.getMonth(), parts.getDay());
     }
 
     /**
@@ -130,6 +132,25 @@ public class JulianDay extends Loops {
      * @return The corresponding {@code SolarTime}.
      */
     public SolarTime getSolarTime() {
+        SecondParts parts = getSecondParts(true);
+        int y = parts.getYear();
+        int m = parts.getMonth();
+        int d = parts.getDay();
+        int hour = parts.getHour();
+        int minute = parts.getMinute();
+        int second = parts.getSecond();
+        // Handle second rounding overflow.
+        return second < 60 ? new SolarTime(y, m, d, hour, minute, second)
+                : new SolarTime(y, m, d, hour, minute, second - 60).next(60);
+    }
+
+    /**
+     * Converts this Julian Day to calendar components, optionally including the time.
+     *
+     * @param withTime whether to calculate time components
+     * @return the calendar components
+     */
+    protected SecondParts getSecondParts(boolean withTime) {
         int n = (int) (day + 0.5);
         double f = day + 0.5 - n;
 
@@ -150,20 +171,23 @@ public class JulianDay extends Loops {
         }
         m -= 1;
         y -= 4715;
-        f *= 24;
-        int hour = (int) f;
+        int hour = 0;
+        int minute = 0;
+        int second = 0;
+        if (withTime) {
+            f *= 24;
+            hour = (int) f;
 
-        f -= hour;
-        f *= 60;
-        int minute = (int) f;
+            f -= hour;
+            f *= 60;
+            minute = (int) f;
 
-        f -= minute;
-        f *= 60;
-        int second = (int) Math.round(f);
-
-        // Handle leap second overflow
-        return second < 60 ? new SolarTime(y, m, d, hour, minute, second)
-                : new SolarTime(y, m, d, hour, minute, second - 60).next(60);
+            f -= minute;
+            f *= 60;
+            second = (int) Math.round(f);
+        }
+        return new SecondParts(y, m, d, hour, minute, second) {
+        };
     }
 
     /**

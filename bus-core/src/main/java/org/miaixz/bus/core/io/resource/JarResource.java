@@ -19,15 +19,11 @@
 */
 package org.miaixz.bus.core.io.resource;
 
-import java.io.IOException;
 import java.io.Serial;
-import java.net.JarURLConnection;
 import java.net.URI;
 import java.net.URL;
-import java.net.URLConnection;
 import java.util.jar.JarFile;
 
-import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.ZipKit;
 
@@ -71,43 +67,27 @@ public class JarResource extends UrlResource {
     }
 
     /**
-     * Retrieves the {@link JarFile} object corresponding to the resource's URL.
+     * Retrieves the {@link JarFile} object corresponding to the resource's URL. The returned instance may be shared
+     * through the URL connection cache and must not be closed by the caller.
      *
      * @return The {@link JarFile} instance.
      * @throws InternalException If an I/O error occurs while obtaining the JAR file.
      */
     public JarFile getJarFile() throws InternalException {
-        try {
-            return doGetJarFile();
-        } catch (final IOException e) {
-            throw new InternalException(e);
-        }
+        return getJarFile(true);
     }
 
     /**
-     * Internal method to obtain the {@link JarFile}. It first attempts to get it via {@link URLConnection}. If the
-     * connection is not a {@link JarURLConnection}, it tries to extract the JAR file path by removing WAR or JAR
-     * protocol separators from the URL file string.
+     * Retrieves the JAR file with optional URL connection caching. When {@code useCaches} is {@code false}, returns an
+     * independent instance that the caller must close. Otherwise, the instance may be shared and must not be closed by
+     * the caller.
      *
+     * @param useCaches Whether to allow a cached, potentially shared JAR file.
      * @return The {@link JarFile} instance.
-     * @throws IOException If an I/O error occurs.
+     * @throws InternalException If an I/O error occurs while obtaining the JAR file.
      */
-    private JarFile doGetJarFile() throws IOException {
-        final URLConnection con = getUrl().openConnection();
-        if (con instanceof JarURLConnection jarCon) {
-            return jarCon.getJarFile();
-        } else {
-            final String urlFile = getUrl().getFile();
-            int separatorIndex = urlFile.indexOf(Normal.WAR_URL_SEPARATOR);
-            if (separatorIndex == -1) {
-                separatorIndex = urlFile.indexOf(Normal.JAR_URL_SEPARATOR);
-            }
-            if (separatorIndex != -1) {
-                return ZipKit.ofJar(urlFile.substring(0, separatorIndex));
-            } else {
-                return new JarFile(urlFile);
-            }
-        }
+    public JarFile getJarFile(final boolean useCaches) throws InternalException {
+        return ZipKit.ofJar(getUrl(), useCaches);
     }
 
 }

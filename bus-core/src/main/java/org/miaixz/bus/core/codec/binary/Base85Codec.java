@@ -266,8 +266,13 @@ public class Base85Codec implements Encoder<byte[], byte[]>, Decoder<byte[], byt
          * @param out       The output stream receiving decoded bytes.
          * @param tuple     The decoded unsigned 32-bit tuple.
          * @param byteCount The number of decoded bytes to emit.
+         * @throws IllegalArgumentException If the tuple exceeds the unsigned 32-bit range.
          */
         private static void writeDecodedTuple(final ByteArrayOutputStream out, final long tuple, final int byteCount) {
+            if (tuple > 0xffffffffL) {
+                throw new IllegalArgumentException(
+                        "Invalid Base85 encoding: group value " + tuple + " exceeds 32 bits");
+            }
             for (int i = CHUNK_SIZE - 1; i >= CHUNK_SIZE - byteCount; i--) {
                 out.write((int) ((tuple >> (i * 8)) & 0xff));
             }
@@ -288,6 +293,7 @@ public class Base85Codec implements Encoder<byte[], byte[]>, Decoder<byte[], byt
          *
          * @param encoded The Base85 bytes to decode.
          * @return The decoded bytes.
+         * @throws IllegalArgumentException If a character, trailing group, or decoded tuple is invalid.
          */
         @Override
         public byte[] decode(final byte[] encoded) {

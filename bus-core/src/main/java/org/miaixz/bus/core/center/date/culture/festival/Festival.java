@@ -264,7 +264,7 @@ public class Festival extends Loops {
         int m = month.getMonth();
         int d = getValue(3);
         int delay = getValue(4);
-        int lastDay = lunar ? LunarMonth.fromYm(y, m).getDayCount() : SolarMonth.fromYm(y, m).getDayCount();
+        int lastDay = lunar ? new LunarMonth(y, m).getDayCount() : SolarMonth.getDayCount(y, m);
         if (d > lastDay) {
             if (0 == delay) {
                 return null;

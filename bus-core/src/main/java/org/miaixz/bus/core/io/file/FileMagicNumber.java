@@ -842,11 +842,13 @@ public enum FileMagicNumber {
          * Checks if the given bytes match the SWF file signature.
          *
          * @param bytes the file bytes to check
-         * @return {@code true} if the bytes match SWF signature (435753 or 465753)
+         * @return {@code true} if the bytes match an SWF signature (CWS, FWS, or ZWS)
          */
         @Override
         public boolean match(final byte[] bytes) {
-            return bytes.length > 2 && (Objects.equals(bytes[0], 0x43) || Objects.equals(bytes[0], (byte) 0x46))
+            return bytes.length > 2
+                    && (Objects.equals(bytes[0], (byte) 0x43) || Objects.equals(bytes[0], (byte) 0x46)
+                            || Objects.equals(bytes[0], (byte) 0x5a))
                     && Objects.equals(bytes[1], (byte) 0x57) && Objects.equals(bytes[2], (byte) 0x53);
         }
     },

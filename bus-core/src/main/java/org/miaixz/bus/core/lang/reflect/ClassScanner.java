@@ -294,7 +294,8 @@ public class ClassScanner implements Serializable {
                     break;
 
                 case "jar":
-                    scanJar(new JarResource(url).getJarFile());
+                    // scanJar closes its input, so it must not receive a shared cached JAR.
+                    scanJar(new JarResource(url).getJarFile(false));
                     break;
             }
         }
