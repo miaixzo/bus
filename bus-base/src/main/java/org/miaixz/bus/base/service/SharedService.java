@@ -313,9 +313,10 @@ public interface SharedService<T, I extends Serializable> extends Service {
     Integer update(T entity, Condition<T> condition);
 
     /**
-     * Updates explicit condition assignments with the service's current modification audit values. WHERE conditions
-     * remain unchanged; read-only mapped columns cannot be assigned structurally. Operator resolution uses the existing
-     * service lifecycle extension point, with the usual system marker when no operator is available.
+     * Updates explicit condition assignments and fills missing modification audit values without requiring an entity
+     * constructor. Explicit assignments retain precedence; WHERE conditions and concurrency values remain unchanged.
+     * Read-only mapped targets are rejected. Operator resolution uses the contextual lifecycle extension point, with
+     * the usual system marker when no operator is available.
      *
      * @param condition the assignments and unchanged target or concurrency conditions
      * @return the number of affected records

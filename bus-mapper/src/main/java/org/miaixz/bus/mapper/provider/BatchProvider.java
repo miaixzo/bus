@@ -479,13 +479,28 @@ public class BatchProvider extends BasicProvider {
      * @return native batch MERGE SQL
      */
     private static String buildBatchMergeUsingValues(TableMeta entity, boolean selective) {
+        StringBuilder shape = new StringBuilder();
+        if (selective) {
+            shape.append("<foreach collection=\"list\" item=\"item\">");
+            for (ColumnMeta column : entity.insertColumns()) {
+                if (!column.id()) {
+                    shape.append("<if test=\"(list[0].").append(column.property()).append(" != null) != (item.")
+                            .append(column.property()).append(" != null)\">")
+                            .append("${@org.miaixz.bus.core.lang.Assert@isTrue(false, '")
+                            .append("Selective batch insert columns must share the same non-null shape')}")
+                            .append("</if>");
+                }
+            }
+            shape.append("</foreach>");
+        }
         String columns = selective ? buildDynamicColumnList(entity, "list", Symbol.ZERO)
                 : "(" + insertColumnList(entity) + ")";
-        String rows = selective ? buildBatchDynamicRows(entity) : buildBatchRowValues(entity);
+        String rows = "<foreach collection=\"list\" item=\"item\" separator=\",\">"
+                + buildMergeSource(entity, "item.", true) + "</foreach>";
         String values = buildSourceReferenceList(entity, "source", selective, "list[0]");
-        return "MERGE INTO " + entity.tableName() + " target" + Symbol.LF + "USING (VALUES " + rows + ") source "
-                + columns + Symbol.LF + "ON (" + buildMergeOnClause(entity, "target", "source") + ")" + Symbol.LF
-                + "WHEN MATCHED THEN UPDATE SET "
+        return shape + "MERGE INTO " + entity.tableName() + " target" + Symbol.LF + "USING (VALUES " + rows
+                + ") source " + buildMergeSource(entity, Normal.EMPTY, false) + Symbol.LF + "ON ("
+                + buildMergeOnClause(entity, "target", "source") + ")" + Symbol.LF + "WHEN MATCHED THEN UPDATE SET "
                 + (selective ? buildSelectiveAssignments(entity, "SOURCE")
                         : buildUpdateAssignments(entity, "SOURCE", "source", false))
                 + Symbol.LF + "WHEN NOT MATCHED THEN INSERT " + columns + " VALUES "
@@ -503,14 +518,18 @@ public class BatchProvider extends BasicProvider {
         StringBuilder sql = new StringBuilder();
         sql.append("<trim suffixOverrides=\",\">").append(Symbol.LF);
         for (ColumnMeta col : entity.updateColumns()) {
+            if ("SOURCE".equals(mode)) {
+                sql.append(col.column()).append(" = CASE WHEN source.").append(col.column())
+                        .append(" IS NULL THEN target.").append(col.column()).append(" ELSE source.")
+                        .append(col.column()).append(" END,").append(Symbol.LF);
+                continue;
+            }
             String condition = col.id() ? Normal.TRUE
                     : "list[0]" + Symbol.DOT + col.property() + Symbol.SPACE + Symbol.NE + Symbol.SPACE + Normal.NULL;
             sql.append("  <if test=\"").append(condition).append("\">").append(col.column()).append(Symbol.SPACE)
                     .append(Symbol.EQUAL).append(Symbol.SPACE);
             if ("VALUES".equals(mode)) {
                 sql.append("VALUES(").append(col.column()).append(Symbol.PARENTHESE_RIGHT);
-            } else if ("SOURCE".equals(mode)) {
-                sql.append("source").append(Symbol.DOT).append(col.column());
             } else {
                 sql.append("EXCLUDED").append(Symbol.DOT).append(col.column());
             }

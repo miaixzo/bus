@@ -19,15 +19,6 @@
 */
 package org.miaixz.bus.base.service;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
-
-import org.springframework.beans.factory.annotation.Autowired;
-
 import org.miaixz.bus.base.mapper.SharedMapper;
 import org.miaixz.bus.core.basic.entity.Entity;
 import org.miaixz.bus.core.basic.entity.Result;
@@ -47,6 +38,10 @@ import org.miaixz.bus.mapper.feature.paging.PageContext;
 import org.miaixz.bus.mapper.parsing.ColumnMeta;
 import org.miaixz.bus.mapper.parsing.MapperFactory;
 import org.miaixz.bus.mapper.parsing.TableMeta;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.io.Serializable;
+import java.util.*;
 
 /**
  * Abstract base implementation of {@link SharedService} providing standard CRUD functionality.
@@ -535,11 +530,11 @@ public abstract class AbstractService<T, I extends Serializable, M extends Share
     }
 
     /**
-     * Logically removes records matching the supplied condition through the removal lifecycle hook.
-     * Writes only the logical status and mapped modification audit fields, retaining the original query and concurrency
-     * predicates without changing the caller's assignments.
+     * Logically removes records matching the supplied condition through the removal lifecycle hook. Writes only the
+     * logical status and mapped modification audit fields, retaining the original query and concurrency predicates
+     * without changing the caller's assignments.
      *
-     * @param entity the source of the removal status and current operator metadata
+     * @param entity    the source of the removal status and current operator metadata
      * @param condition the target and concurrency conditions
      * @return the number of affected records, including zero when the conditions no longer match
      */
@@ -899,34 +894,39 @@ public abstract class AbstractService<T, I extends Serializable, M extends Share
     }
 
     /**
-     * Updates explicit condition assignments through the update lifecycle hook.
-     * Copies the assignments, rejects structurally assigned read-only columns, and includes the current modification
-     * audit values without changing the original query or concurrency predicates.
+     * Updates explicit condition assignments through the update lifecycle hook. Copies the assignments, rejects
+     * read-only mapped targets, and fills missing modification assignments without requiring a business entity
+     * constructor or changing the original query or concurrency predicates. Explicit assignments retain precedence over
+     * automatic audit defaults.
      *
      * @param condition the requested assignments and target or concurrency conditions
      * @return the number of affected records, including zero when the conditions no longer match
      * @throws IllegalArgumentException when the condition is null, its assignments are empty, or an assignment targets
-     *         a read-only mapped column
-     * @throws IllegalStateException when the concrete service entity type cannot be resolved
+     *                                  a read-only mapped column
+     * @throws IllegalStateException    when the concrete service entity type cannot be resolved
      */
     @Override
     public Integer update(Condition<T> condition) {
         Condition<T> command = writeCondition(condition);
         Assert.notEmpty(command.getSetValues(), "Condition assignments cannot be empty");
-        TableMeta table = MapperFactory.of(entityClass());
+        Class<T> type = entityClass();
+        TableMeta table = MapperFactory.of(type);
         for (ColumnMeta column : table.columns()) {
-            if (!column.updatable() && command.getSetValues().stream()
-                    .anyMatch(value -> column.column().equals(value.getCondition()))) {
+            if (!column.updatable() && command.assigns(column)) {
                 throw new IllegalArgumentException("Column is not updatable: " + column.property());
             }
         }
-        T audit = ReflectKit.newInstance(entityClass());
+        T audit = ReflectKit.getConstructor(type) == null ? null : ReflectKit.newInstance(type);
         this.setUpdate(audit);
         for (ColumnMeta column : table.updateColumns()) {
-            if (Set.of("modifier", "modified").contains(column.property())) {
-                command.getSetValues().removeIf(value -> column.column().equals(value.getCondition()));
-                command.getSetValues()
-                        .add(new Criterion(column.column(), getFieldValue(audit, column.property()), column));
+            if (!command.assigns(column)) {
+                if ("modified".equals(column.property())) {
+                    Object value = audit == null ? DateKit.current() : getFieldValue(audit, column.property());
+                    command.getSetValues().add(new Criterion(column.column(), value, column));
+                } else if ("modifier".equals(column.property())) {
+                    Object value = audit == null ? String.valueOf(Normal.__1) : getFieldValue(audit, column.property());
+                    command.getSetValues().add(new Criterion(column.column(), value, column));
+                }
             }
         }
         return mapper.updateByConditionSetValues(command);
@@ -1096,8 +1096,7 @@ public abstract class AbstractService<T, I extends Serializable, M extends Share
      */
     @Override
     public ConditionWrapper<T, I> wrapper() {
-        return new ConditionWrapper<>(mapper, condition(), this::update, this::updateSelective, this::update,
-                this::delete);
+        return mapper.wrapper().writes(this::update, this::updateSelective, this::update, this::delete);
     }
 
     /**
@@ -1211,8 +1210,12 @@ public abstract class AbstractService<T, I extends Serializable, M extends Share
 
     /**
      * Refreshes the modification timestamp and current operator without changing creation fields.
+     * <p>
+     * Assignment-only updates reuse a no-argument entity context when available. Otherwise this hook receives
+     * {@code null} for lifecycle validation and {@link #update(Condition)} fills missing audit assignments directly.
+     * Overrides handling entities without no-argument constructors can customize that condition-based update entry.
      *
-     * @param entity the entity to process
+     * @param entity the entity to process, or {@code null} for an assignment-only update
      */
     protected void setUpdate(T entity) {
         if (entity == null) {
@@ -1293,7 +1296,7 @@ public abstract class AbstractService<T, I extends Serializable, M extends Share
             return;
         }
         if (entity instanceof Entity baseEntity) {
-            baseEntity.setValue(entity, new String[] { field }, new Object[] { value });
+            baseEntity.setValue(entity, new String[]{field}, new Object[]{value});
             return;
         }
         if (!FieldKit.hasField(entity.getClass(), field)) {

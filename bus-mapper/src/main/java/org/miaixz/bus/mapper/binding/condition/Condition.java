@@ -23,7 +23,9 @@ import static org.miaixz.bus.mapper.Args.DELIMITER;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.stream.Collectors;
@@ -35,6 +37,7 @@ import lombok.experimental.SuperBuilder;
 import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.xyz.PatternKit;
 import org.miaixz.bus.mapper.Order;
 import org.miaixz.bus.mapper.binding.function.Fn;
 import org.miaixz.bus.mapper.criteria.Criteria;
@@ -407,6 +410,120 @@ public class Condition<T> {
     public Condition<T> setDistinct(boolean distinct) {
         this.distinct = distinct;
         return this;
+    }
+
+    /**
+     * Tests whether a mapped column is explicitly assigned by a typed SET value or a trusted native SET fragment.
+     * Qualified and delimited identifiers are recognized without treating expression values, comments, or nested
+     * function arguments as assignment targets. The original fragments are never rewritten.
+     *
+     * @param column the mapped column to locate
+     * @return whether an explicit SET target names that column
+     */
+    public boolean assigns(ColumnMeta column) {
+        Set<String> targets = assignmentColumns(column.column() + " = NULL");
+        return setValues != null && setValues.stream().anyMatch(value -> {
+            String expression = value.isNoValue() ? value.getCondition() : value.getCondition() + " = NULL";
+            return assignmentColumns(expression).stream().anyMatch(targets::contains);
+        });
+    }
+
+    /**
+     * Reads only left-hand assignment identifiers from native SET fragments. Quoted values, dollar-quoted strings,
+     * comments, and parenthesized expressions are skipped; row-assignment targets are collected individually.
+     *
+     * @param expression the original SET fragment
+     * @return normalized, unqualified assignment identifiers
+     */
+    private static Set<String> assignmentColumns(String expression) {
+        Set<String> columns = new HashSet<>();
+        StringBuilder target = new StringBuilder();
+        int depth = Normal._0;
+        char quote = Symbol.C_NUL;
+        boolean value = false;
+        for (int index = Normal._0; index < expression.length(); index++) {
+            char current = expression.charAt(index);
+            char next = index + Normal._1 < expression.length() ? expression.charAt(index + Normal._1) : Symbol.C_NUL;
+            if (quote != Symbol.C_NUL) {
+                if (current == quote) {
+                    if (next == quote) {
+                        if (!value) {
+                            target.append(current);
+                        }
+                        index++;
+                    } else {
+                        quote = Symbol.C_NUL;
+                    }
+                } else if (!value) {
+                    target.append(current);
+                }
+                continue;
+            }
+            if (current == Symbol.C_MINUS && next == Symbol.C_MINUS) {
+                int end = expression.indexOf(Symbol.C_LF, index + Normal._2);
+                index = end < Normal._0 ? expression.length() : end;
+                continue;
+            }
+            if (current == Symbol.C_SLASH && next == Symbol.C_STAR) {
+                int comments = Normal._1;
+                index += Normal._2;
+                while (index < expression.length() && comments > Normal._0) {
+                    if (expression.startsWith(Symbol.SLASH + Symbol.STAR, index)) {
+                        comments++;
+                        index += Normal._2;
+                    } else if (expression.startsWith(Symbol.STAR + Symbol.SLASH, index)) {
+                        comments--;
+                        index += Normal._2;
+                    } else {
+                        index++;
+                    }
+                }
+                index--;
+                continue;
+            }
+            if (current == Symbol.C_DOLLAR && value) {
+                int end = expression.indexOf(Symbol.C_DOLLAR, index + Normal._1);
+                if (end >= Normal._0) {
+                    String delimiter = expression.substring(index, end + Normal._1);
+                    int closing = expression.indexOf(delimiter, end + Normal._1);
+                    if (closing >= Normal._0 && PatternKit.isMatch(
+                            Symbol.BACKSLASH + Symbol.DOLLAR + "(?:[A-Za-z_][A-Za-z0-9_]*)?" + Symbol.BACKSLASH
+                                    + Symbol.DOLLAR,
+                            delimiter)) {
+                        index = closing + delimiter.length() - Normal._1;
+                        continue;
+                    }
+                }
+            }
+            if (current == Symbol.C_SINGLE_QUOTE || current == Symbol.C_DOUBLE_QUOTES || current == Symbol.C_BACKTICK
+                    || current == Symbol.C_BRACKET_LEFT) {
+                quote = current == Symbol.C_BRACKET_LEFT ? Symbol.C_BRACKET_RIGHT : current;
+            } else if (current == Symbol.C_PARENTHESE_LEFT) {
+                depth++;
+            } else if (current == Symbol.C_PARENTHESE_RIGHT) {
+                depth--;
+            } else if (current == Symbol.C_EQUAL && depth == Normal._0 && !value) {
+                columns.add(target.toString().toLowerCase(Locale.ROOT));
+                target.setLength(Normal._0);
+                value = true;
+            } else if (current == Symbol.C_COMMA && (depth == Normal._0 || !value && depth == Normal._1)) {
+                if (!value) {
+                    columns.add(target.toString().toLowerCase(Locale.ROOT));
+                }
+                target.setLength(Normal._0);
+                if (depth == Normal._0) {
+                    value = false;
+                }
+            } else if (!value) {
+                if (current == Symbol.C_DOT) {
+                    target.setLength(Normal._0);
+                } else if (!Character.isWhitespace(current)) {
+                    target.append(current);
+                }
+            }
+        }
+        columns.remove(Normal.EMPTY);
+        return columns;
     }
 
     /**

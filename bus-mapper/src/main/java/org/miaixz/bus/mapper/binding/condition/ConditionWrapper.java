@@ -19,8 +19,15 @@
 */
 package org.miaixz.bus.mapper.binding.condition;
 
+import java.io.Serializable;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 import org.apache.ibatis.cursor.Cursor;
 import org.apache.ibatis.session.RowBounds;
+
 import org.miaixz.bus.core.center.function.BiFunctionX;
 import org.miaixz.bus.core.center.function.FunctionX;
 import org.miaixz.bus.core.center.function.SupplierX;
@@ -31,12 +38,6 @@ import org.miaixz.bus.mapper.binding.BasicMapper;
 import org.miaixz.bus.mapper.binding.function.Fn;
 import org.miaixz.bus.mapper.criteria.Criteria;
 import org.miaixz.bus.mapper.criteria.OrCriteria;
-
-import java.io.Serializable;
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * Wraps a {@link Condition} object to provide a fluent, chainable API for building complex queries.
@@ -65,22 +66,22 @@ public class ConditionWrapper<T, I extends Serializable> {
     /**
      * Executes physical deletion within the selected write boundary.
      */
-    private final FunctionX<Condition<T>, Integer> deleter;
+    private FunctionX<Condition<T>, Integer> deleter;
 
     /**
      * Executes explicit assignments within the selected write boundary.
      */
-    private final FunctionX<Condition<T>, Integer> assignment;
+    private FunctionX<Condition<T>, Integer> assignment;
 
     /**
      * Executes full entity updates within the selected write boundary.
      */
-    private final BiFunctionX<T, Condition<T>, Integer> updater;
+    private BiFunctionX<T, Condition<T>, Integer> updater;
 
     /**
      * Executes selective entity updates within the selected write boundary.
      */
-    private final BiFunctionX<T, Condition<T>, Integer> selective;
+    private BiFunctionX<T, Condition<T>, Integer> selective;
 
     /**
      * Constructs a new ConditionWrapper.
@@ -105,15 +106,38 @@ public class ConditionWrapper<T, I extends Serializable> {
      * @param deleter     the physical delete handler
      */
     public ConditionWrapper(BasicMapper<T, I> basicMapper, Condition<T> condition,
-                            BiFunctionX<T, Condition<T>, Integer> updater, BiFunctionX<T, Condition<T>, Integer> selective,
-                            FunctionX<Condition<T>, Integer> assignment, FunctionX<Condition<T>, Integer> deleter) {
+            BiFunctionX<T, Condition<T>, Integer> updater, BiFunctionX<T, Condition<T>, Integer> selective,
+            FunctionX<Condition<T>, Integer> assignment, FunctionX<Condition<T>, Integer> deleter) {
         this.basicMapper = Assert.notNull(basicMapper, "Mapper cannot be null");
         this.condition = Assert.notNull(condition, "Condition cannot be null");
-        this.updater = Assert.notNull(updater, "Full update handler cannot be null");
-        this.selective = Assert.notNull(selective, "Selective update handler cannot be null");
-        this.assignment = Assert.notNull(assignment, "Assignment update handler cannot be null");
-        this.deleter = Assert.notNull(deleter, "Delete handler cannot be null");
+        writes(updater, selective, assignment, deleter);
         this.current = condition.createCriteria();
+    }
+
+    /**
+     * Binds write handlers to this wrapper without replacing its conditions or custom query behavior. The wrapper
+     * remains mutable and is intended for one operation-building context, as with its other fluent methods.
+     *
+     * @param updater    the full entity update handler
+     * @param selective  the selective entity update handler
+     * @param assignment the explicit assignment update handler
+     * @param deleter    the physical delete handler
+     * @return this same wrapper instance
+     */
+    public final ConditionWrapper<T, I> writes(
+            BiFunctionX<T, Condition<T>, Integer> updater,
+            BiFunctionX<T, Condition<T>, Integer> selective,
+            FunctionX<Condition<T>, Integer> assignment,
+            FunctionX<Condition<T>, Integer> deleter) {
+        Assert.notNull(updater, "Full update handler cannot be null");
+        Assert.notNull(selective, "Selective update handler cannot be null");
+        Assert.notNull(assignment, "Assignment update handler cannot be null");
+        Assert.notNull(deleter, "Delete handler cannot be null");
+        this.updater = updater;
+        this.selective = selective;
+        this.assignment = assignment;
+        this.deleter = deleter;
+        return this;
     }
 
     /**
