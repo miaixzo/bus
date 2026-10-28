@@ -41,7 +41,6 @@ import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.type.JdbcType;
 import org.apache.ibatis.type.TypeException;
 import org.apache.ibatis.type.TypeHandler;
-import org.apache.ibatis.type.UnknownTypeHandler;
 
 import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.core.lang.Symbol;
@@ -549,7 +548,7 @@ public class TableMeta extends PropertyMeta<TableMeta> {
             if (columnMeta.jdbcType != null && columnMeta.jdbcType != JdbcType.UNDEFINED) {
                 builder.jdbcType(columnMeta.jdbcType);
             }
-            if (columnMeta.typeHandler != null && columnMeta.typeHandler != UnknownTypeHandler.class) {
+            if (columnMeta.typeHandler != null) {
                 try {
                     builder.typeHandler(getTypeHandlerInstance(columnMeta.javaType(), columnMeta.typeHandler));
                 } catch (Exception e) {
