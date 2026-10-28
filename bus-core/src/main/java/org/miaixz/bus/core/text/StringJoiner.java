@@ -49,7 +49,7 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class StringJoiner implements Appendable, Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852233611385L;
+    private static final long serialVersionUID = 2538153800001L;
 
     /**
      * The Appendable to which the strings will be appended.

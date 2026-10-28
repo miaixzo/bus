@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.health;
 
+import java.io.Serial;
 import java.math.BigInteger;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -107,6 +108,13 @@ public class Parsing {
      */
     private static final java.util.regex.Pattern UUID_PATTERN = java.util.regex.Pattern
             .compile(".*([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}).*");
+
+    /** Date pattern in MM-DD-YYYY or MM/DD/YYYY form using the same separator. */
+    private static final java.util.regex.Pattern MM_DD_YYYY = java.util.regex.Pattern
+            .compile("\\d{2}([-/])\\d{2}\\1\\d{4}");
+
+    /** Date pattern in compact YYYYMMDD form. */
+    private static final java.util.regex.Pattern YYYYMMDD = java.util.regex.Pattern.compile("\\d{8}");
 
     /**
      * Regular expression for matching Vendor ID, Product ID, and Serial Number from Windows device IDs.
@@ -399,6 +407,9 @@ public class Parsing {
         Matcher matcher = HERTZ_PATTERN.matcher(hertz.trim());
         if (matcher.find()) {
             Map<String, Long> map = new HashMap<>() {
+
+                @Serial
+                private static final long serialVersionUID = 2555612350001L;
 
                 {
                     put("Hz", 1L);
@@ -1129,14 +1140,25 @@ public class Parsing {
      * @return The date in ISO YYYY-MM-DD format if parsable; otherwise, the original string.
      */
     public static String parseMmDdYyyyToYyyyMmDD(String dateString) {
-        try {
-            // Date is MM-DD-YYYY, convert to YYYY-MM-DD
-            return dateString.substring(Normal._6, Normal._10) + Symbol.MINUS
-                    + dateString.substring(Normal._0, Normal._2) + Symbol.MINUS
-                    + dateString.substring(Normal._3, Normal._5);
-        } catch (StringIndexOutOfBoundsException e) {
+        if (!MM_DD_YYYY.matcher(dateString).matches()) {
             return dateString;
         }
+        return dateString.substring(Normal._6, Normal._10) + Symbol.MINUS + dateString.substring(Normal._0, Normal._2)
+                + Symbol.MINUS + dateString.substring(Normal._3, Normal._5);
+    }
+
+    /**
+     * Parses a date in YYYYMMDD format to YYYY-MM-DD format.
+     *
+     * @param dateString The date in YYYYMMDD format.
+     * @return The date in ISO YYYY-MM-DD format if parsable; otherwise, the original string.
+     */
+    public static String parseYyyyMmDdToIso(String dateString) {
+        if (!YYYYMMDD.matcher(dateString).matches()) {
+            return dateString;
+        }
+        return dateString.substring(Normal._0, Normal._4) + Symbol.MINUS + dateString.substring(Normal._4, Normal._6)
+                + Symbol.MINUS + dateString.substring(Normal._6, Normal._8);
     }
 
     /**
@@ -1563,6 +1585,9 @@ public class Parsing {
         }
         byte[] bytes = new byte[Normal._16];
         String head = doubleColon < Normal._0 ? addr : addr.substring(Normal._0, doubleColon);
+        if (doubleColon >= Normal._0 && head.indexOf('.') >= Normal._0) {
+            return Normal.EMPTY_BYTE_ARRAY;
+        }
         int headBytes = parseIpv6Groups(head, bytes, Normal._0);
         if (headBytes < Normal._0) {
             return Normal.EMPTY_BYTE_ARRAY;
@@ -2032,6 +2057,17 @@ public class Parsing {
      */
     public static String getStringValueOrUnknown(String value) {
         return (value == null || value.isEmpty()) ? Normal.UNKNOWN : value;
+    }
+
+    /**
+     * Returns the given string value if it is not empty; otherwise, returns a fallback value.
+     *
+     * @param value    The input string value.
+     * @param fallback The value to return if the input is null or empty.
+     * @return The input value if it is non-empty; otherwise, the fallback.
+     */
+    public static String getStringValueOrDefault(String value, String fallback) {
+        return value == null || value.isEmpty() ? fallback : value;
     }
 
     /**

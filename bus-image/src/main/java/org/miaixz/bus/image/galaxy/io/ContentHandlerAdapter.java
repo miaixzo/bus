@@ -177,7 +177,7 @@ public class ContentHandlerAdapter extends DefaultHandler {
      * @return {@code true} if big-endian, {@code false} otherwise.
      */
     private static boolean bigEndian(Attributes fmi) {
-        return fmi != null && UID.ExplicitVRBigEndian.equals(fmi.getString(Tag.TransferSyntaxUID));
+        return fmi != null && UID.ExplicitVRBigEndian.uid.equals(fmi.getString(Tag.TransferSyntaxUID));
     }
 
     /**

@@ -34,7 +34,7 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class Commit implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852239586962L;
+    private static final long serialVersionUID = 2550256800001L;
 
     /**
      * The author value.

@@ -31,7 +31,7 @@ import org.miaixz.bus.core.basic.normal.Errors;
 public class NotInitedException extends UncheckedException {
 
     @Serial
-    private static final long serialVersionUID = 2852262252837L;
+    private static final long serialVersionUID = 2536850000001L;
 
     /**
      * Constructs a new NotInitedException with no detail message.

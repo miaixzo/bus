@@ -26,80 +26,99 @@ import org.miaixz.bus.cortex.Suite;
 import org.miaixz.bus.cortex.Trait;
 
 /**
- * Durable store contract for runtime-watch entities.
+ * Runtime target and acknowledgement storage with session, target and generation compare-and-set.
  *
  * @author Kimi Liu
  */
 public interface WatchStore {
 
     /**
-     * Saves one runtime watch.
+     * Saves a tenant-qualified runtime watch. Target transitions and acknowledgements use their dedicated
+     * compare-and-set operations.
      *
-     * @param watch runtime watch
+     * @param watch runtime watch to save
      * @return saved runtime watch
      */
     Watch save(Watch watch);
 
     /**
-     * Saves a batch of runtime watches.
+     * Finds a runtime watch by its exact tenant-qualified identity.
      *
-     * @param watches runtime watches
-     * @return saved non-null runtime watches
+     * @param tenant_id required tenant identity
+     * @param watch_id  exact subscription identifier
+     * @return the matching detached tenant-scoped record, or null when absent
+     */
+    Watch find(String tenant_id, String watch_id);
+
+    /**
+     * Finds the runtime watch for an exact tenant, instance and source item.
+     *
+     * @param tenant_id   required tenant identity
+     * @param instance_id exact runtime instance identifier
+     * @param item_id     exact source Item ID
+     * @return the matching detached tenant-scoped record, or null when absent
+     */
+    Watch find(String tenant_id, String instance_id, String item_id);
+
+    /**
+     * Lists runtime watches owned by the specified instance within the tenant.
+     *
+     * @param tenant_id   required tenant identity
+     * @param instance_id exact runtime instance identifier
+     * @return watches belonging to the specified instance
+     */
+    List<Watch> query(String tenant_id, String instance_id);
+
+    /**
+     * Deletes the runtime watch identified by tenant and watch identifier.
+     *
+     * @param tenant_id required tenant identity
+     * @param watch_id  exact subscription identifier
+     * @return deleted runtime watch, or null when absent
+     */
+    Watch delete(String tenant_id, String watch_id);
+
+    /**
+     * Atomically compares session, target and generation; advances the generation only when the target changes.
+     *
+     * @param next     desired target state
+     * @param expected complete expected state for compare-and-set
+     * @return committed target state
+     */
+    Watch target(Watch next, Watch expected);
+
+    /**
+     * Compares the current session, target and generation; rejects stale acknowledgements.
+     *
+     * @param acknowledgement runtime application evidence for the expected target
+     * @param expected        complete expected state for compare-and-set
+     * @return committed runtime acknowledgement
+     */
+    Watch acknowledge(Watch acknowledgement, Watch expected);
+
+    /**
+     * Saves runtime watch records through the existing single-record contract.
+     *
+     * @param watches runtime watch records; null records are skipped
+     * @return results of saving each non-null watch in input order
      */
     default List<Watch> saveAll(List<Watch> watches) {
         if (watches == null || watches.isEmpty()) {
             return List.of();
         }
-        List<Watch> result = new ArrayList<>(watches.size());
-        for (Watch watch : watches) {
-            if (watch != null) {
-                result.add(save(watch));
+        ArrayList<Watch> result = new ArrayList<>(watches.size());
+        for (Watch value : watches) {
+            if (value != null) {
+                result.add(save(value));
             }
         }
         return result;
     }
 
     /**
-     * Finds one runtime watch by identifier.
+     * Reports the persistence operations required by this store contract.
      *
-     * @param tenant_id tenant identifier
-     * @param watch_id  runtime watch identifier
-     * @return matched runtime watch, or {@code null}
-     */
-    Watch find(String tenant_id, String watch_id);
-
-    /**
-     * Finds one runtime watch by instance and item.
-     *
-     * @param tenant_id   tenant identifier
-     * @param instance_id runtime instance identifier
-     * @param item_id     configuration item identifier
-     * @return matched runtime watch, or {@code null}
-     */
-    Watch find(String tenant_id, String instance_id, String item_id);
-
-    /**
-     * Queries runtime watches belonging to an instance.
-     *
-     * @param tenant_id   tenant identifier
-     * @param instance_id runtime instance identifier
-     * @return matching runtime watches
-     */
-    List<Watch> query(String tenant_id, String instance_id);
-
-    /**
-     * Deletes one runtime watch.
-     *
-     * @param tenant_id tenant identifier
-     * @param watch_id  runtime watch identifier
-     * @return deleted runtime watch, or {@code null}
-     */
-    Watch delete(String tenant_id, String watch_id);
-
-    /**
-     * Returns strongly typed durable-store capabilities.
-     *
-     * @return fixed runtime-watch store capabilities
+     * @return the required persistence capabilities
      */
     default Suite storeCapabilities() {
         return Suite.of(Trait.BATCH, Trait.QUERY, Trait.DURABLE, Trait.DELETE);

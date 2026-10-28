@@ -39,7 +39,7 @@ import org.miaixz.bus.core.center.function.SupplierX;
 public class SetValueMap<K, V> extends AbstractCollValueMap<K, V> {
 
     @Serial
-    private static final long serialVersionUID = 2852277962550L;
+    private static final long serialVersionUID = 2535926532199L;
 
     /**
      * Constructs a new {@code SetValueMap} using a provided factory for the underlying map. The values for each key

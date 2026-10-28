@@ -26,6 +26,7 @@ import java.io.InputStream;
 import org.apache.poi.poifs.filesystem.FileMagic;
 import org.apache.poi.ss.formula.ConditionalFormattingEvaluator;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.ss.usermodel.ExcelNumberFormat;
 
 import org.miaixz.bus.core.lang.exception.InternalException;
@@ -121,7 +122,7 @@ public class Builder {
             return true;
         }
 
-        return org.apache.poi.ss.usermodel.DateUtil.isADateFormat(formatIndex, formatString);
+        return DateUtil.isADateFormat(formatIndex, formatString);
     }
 
     /**

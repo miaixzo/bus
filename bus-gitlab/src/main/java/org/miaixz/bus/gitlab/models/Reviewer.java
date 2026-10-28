@@ -29,7 +29,7 @@ import java.io.Serial;
 public class Reviewer extends AbstractUser<Reviewer> {
 
     @Serial
-    private static final long serialVersionUID = 2852280533625L;
+    private static final long serialVersionUID = 2551190800001L;
 
     /**
      * Constructs a new {@code Reviewer} instance.

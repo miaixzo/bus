@@ -32,7 +32,9 @@ import org.miaixz.bus.auth.*;
 import org.miaixz.bus.auth.FabricX.Response;
 import org.miaixz.bus.auth.FabricX.Url;
 import org.miaixz.bus.auth.Identity.Evidence;
+import org.miaixz.bus.auth.guard.AlgorithmGuard;
 import org.miaixz.bus.auth.guard.IssuerValidator;
+import org.miaixz.bus.auth.guard.TimeGuard;
 import org.miaixz.bus.auth.shared.jose.*;
 import org.miaixz.bus.auth.shared.jwt.JwtClaims;
 import org.miaixz.bus.auth.shared.jwt.JwtVerifier;
@@ -193,14 +195,12 @@ public class OktaSourceAdapter implements VendorAdapter {
                 new StandardAdapter.Binding<>(OpenIdClientScheme.USERINFO, openIdClient::userInfo)));
         this.callbackDecoder = new AuthorizationResponseDecoder();
         this.jwkSelector = new JwkSelector();
-        this.jwsService = new JwsService(new org.miaixz.bus.auth.guard.AlgorithmGuard(),
-                Set.of(JwaAlgorithm.RS256.name()));
-        final JweService dormantJweService = new JweService(new org.miaixz.bus.auth.guard.AlgorithmGuard(),
+        this.jwsService = new JwsService(new AlgorithmGuard(), Set.of(JwaAlgorithm.RS256.name()));
+        final JweService dormantJweService = new JweService(new AlgorithmGuard(),
                 Set.of(JwaAlgorithm.RSA_OAEP_256.name()), Set.of(JwaAlgorithm.A256GCM.name()));
         final IdTokenCodec idTokenCodec = new IdTokenCodec(new JwtVerifier(jwsService, dormantJweService));
         this.idTokenVerifier = new IdTokenVerifier(idTokenCodec, new IssuerValidator(),
-                new org.miaixz.bus.auth.guard.TimeGuard(FabricX.clock(),
-                        services.policies().require(Protocol.OIDC).maximumClockSkew()));
+                new TimeGuard(FabricX.clock(), services.policies().require(Protocol.OIDC).maximumClockSkew()));
     }
 
     /**

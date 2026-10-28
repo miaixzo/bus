@@ -42,7 +42,7 @@ import org.miaixz.bus.core.xyz.IoKit;
 public class FileReader extends FileWrapper {
 
     @Serial
-    private static final long serialVersionUID = 2852285708261L;
+    private static final long serialVersionUID = 2536535961231L;
 
     /**
      * Constructs a new {@code FileReader} instance. The file is checked for existence and if it is a regular file upon

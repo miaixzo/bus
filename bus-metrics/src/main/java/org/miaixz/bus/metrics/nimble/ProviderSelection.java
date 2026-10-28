@@ -20,7 +20,9 @@
 package org.miaixz.bus.metrics.nimble;
 
 import java.util.*;
+import java.util.Comparator;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 import org.miaixz.bus.metrics.Provider;
 
@@ -99,10 +101,10 @@ public final class ProviderSelection {
     private static Candidate automatic(Map<Type, Candidate> indexed) {
         List<Candidate> external = indexed.values().stream()
                 .filter(candidate -> candidate.external() && candidate.available())
-                .sorted(java.util.Comparator.comparing(candidate -> candidate.type().name())).toList();
+                .sorted(Comparator.comparing(candidate -> candidate.type().name())).toList();
         if (external.size() > 1) {
             String names = external.stream().map(candidate -> candidate.type().name().toLowerCase(Locale.ROOT))
-                    .collect(java.util.stream.Collectors.joining(", "));
+                    .collect(Collectors.joining(", "));
             throw new IllegalStateException("Multiple external metrics providers are available: " + names
                     + "; configure bus.metrics.provider explicitly");
         }

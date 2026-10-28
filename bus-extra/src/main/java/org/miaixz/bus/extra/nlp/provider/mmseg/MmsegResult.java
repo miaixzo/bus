@@ -22,6 +22,7 @@ package org.miaixz.bus.extra.nlp.provider.mmseg;
 import java.io.IOException;
 
 import com.chenlb.mmseg4j.MMSeg;
+import com.chenlb.mmseg4j.Word;
 
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.extra.nlp.AbstractResult;
@@ -61,7 +62,7 @@ public class MmsegResult extends AbstractResult {
      */
     @Override
     protected NLPWord nextWord() {
-        final com.chenlb.mmseg4j.Word next;
+        final Word next;
         try {
             next = this.mmSeg.next();
         } catch (final IOException e) {

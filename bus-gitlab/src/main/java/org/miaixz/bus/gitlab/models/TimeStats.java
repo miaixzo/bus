@@ -32,7 +32,7 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class TimeStats implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852281923917L;
+    private static final long serialVersionUID = 2551238080001L;
 
     /**
      * The time estimate value.

@@ -28,14 +28,16 @@ import java.util.concurrent.locks.ReentrantLock;
 import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.center.iterator.CopiedIterator;
 import org.miaixz.bus.core.lang.mutable.Mutable;
+import org.miaixz.bus.core.lang.thread.lock.NoLock;
 import org.miaixz.bus.core.xyz.SetKit;
 
 /**
  * A cache implementation protected by a pessimistic {@link Lock}.
  * <p>
- * Both read and write operations are performed under a mutual exclusion lock. This is primarily intended for cache
- * implementations where read operations can also modify the underlying map structure (e.g., a
- * {@link java.util.LinkedHashMap} in an LRU cache), making a standard read-write lock unsuitable.
+ * Both read and write operations use the configured lock. This is primarily intended for cache implementations where
+ * read operations can also modify the underlying map structure (e.g., a {@link java.util.LinkedHashMap} in an LRU
+ * cache), making a standard read-write lock unsuitable. Concurrent-storage subclasses may select {@link NoLock}; lazy
+ * loading then still uses registered per-key locks.
  *
  * @param <K> The type of the key.
  * @param <V> The type of the value.
@@ -44,7 +46,7 @@ import org.miaixz.bus.core.xyz.SetKit;
 public abstract class LockedCache<K, V> extends AbstractCache<K, V> {
 
     @Serial
-    private static final long serialVersionUID = 2852231905670L;
+    private static final long serialVersionUID = 2535518000001L;
 
     /**
      * The mutual exclusion lock. This is necessary for caches like those based on LinkedHashMap, where the get method
@@ -61,6 +63,10 @@ public abstract class LockedCache<K, V> extends AbstractCache<K, V> {
 
     /**
      * Adds a value to the cache with the specified timeout.
+     *
+     * @param key     cache key
+     * @param object  value to store, including {@code null} when permitted by the concrete cache
+     * @param timeout entry timeout in milliseconds; {@code 0} disables expiration
      */
     @Override
     public void put(final K key, final V object, final long timeout) {
@@ -73,7 +79,10 @@ public abstract class LockedCache<K, V> extends AbstractCache<K, V> {
     }
 
     /**
-     * Checks if the cache contains the specified key.
+     * Checks if the cache contains the specified key. Expired entries are removed without updating hit or miss counts.
+     *
+     * @param key key to check
+     * @return whether the lookup returns an unexpired non-null value; null-valued entries also return {@code false}
      */
     @Override
     public boolean containsKey(final K key) {
@@ -82,6 +91,10 @@ public abstract class LockedCache<K, V> extends AbstractCache<K, V> {
 
     /**
      * Gets a value from the cache.
+     *
+     * @param key                key to look up
+     * @param isUpdateLastAccess whether to refresh the entry's last-access timestamp
+     * @return the stored value, or {@code null} for an absent, expired, or null-valued entry
      */
     @Override
     public V get(final K key, final boolean isUpdateLastAccess) {
@@ -89,7 +102,15 @@ public abstract class LockedCache<K, V> extends AbstractCache<K, V> {
     }
 
     /**
-     * Gets a value from the cache, creating it if necessary using the provided supplier.
+     * Gets a value, rechecking an initial null result before invoking the supplier. A surviving null-valued entry is
+     * reused rather than reloaded. Loading holds the configured storage lock, or a registered per-key lock when storage
+     * uses {@link NoLock}. Different keys are not globally serialized by the per-key loading path.
+     *
+     * @param key                key to look up or load
+     * @param isUpdateLastAccess whether to refresh the entry's last-access timestamp
+     * @param timeout            timeout in milliseconds for a newly loaded entry; {@code 0} disables expiration
+     * @param supplier           value supplier, or {@code null} to disable loading
+     * @return the cached or loaded value, which may be {@code null}
      */
     @Override
     public V get(final K key, final boolean isUpdateLastAccess, final long timeout, final SupplierX<V> supplier) {
@@ -97,10 +118,12 @@ public abstract class LockedCache<K, V> extends AbstractCache<K, V> {
 
         // If the object does not exist, create it under a lock.
         if (null == v && null != supplier) {
-            // A global lock is used here to prevent deadlock issues that could arise from per-key locks.
-            // This avoids circular dependencies but means that all other cache operations are blocked
-            // during the object creation process. The performance impact depends on the creation time.
-            lock.lock();
+            // Concurrent storage still needs coordination for this compound loading operation.
+            // Non-concurrent storage retains its original global loading and storage lock order.
+            final Lock loading = lock == NoLock.INSTANCE ? acquireKeyLock(key) : null;
+            if (loading == null) {
+                lock.lock();
+            }
             try {
                 // Double-check to prevent regeneration if another thread has already written the value.
                 final CacheObject<K, V> co = getOrRemoveExpiredWithoutLock(key);
@@ -111,14 +134,21 @@ public abstract class LockedCache<K, V> extends AbstractCache<K, V> {
                     v = co.get(isUpdateLastAccess);
                 }
             } finally {
-                lock.unlock();
+                if (loading == null) {
+                    lock.unlock();
+                } else {
+                    releaseKeyLock(key, loading);
+                }
             }
         }
         return v;
     }
 
     /**
-     * Returns an iterator over the cache objects.
+     * Returns an iterator over the cache objects. The backing traversal is copied while holding the configured lock,
+     * then expired entries are filtered.
+     *
+     * @return an iterator over the captured, unexpired cache objects
      */
     @Override
     public Iterator<CacheObject<K, V>> cacheObjIterator() {
@@ -134,7 +164,9 @@ public abstract class LockedCache<K, V> extends AbstractCache<K, V> {
     }
 
     /**
-     * Removes expired entries from the cache.
+     * Runs the concrete eviction strategy while holding the configured lock.
+     *
+     * @return the number of entries removed by that strategy
      */
     @Override
     public int prune() {
@@ -147,7 +179,9 @@ public abstract class LockedCache<K, V> extends AbstractCache<K, V> {
     }
 
     /**
-     * Removes a value from the cache.
+     * Removes a value from the cache. Listener notification occurs after releasing the configured lock.
+     *
+     * @param key key whose entry is to be removed
      */
     @Override
     public void remove(final K key) {
@@ -186,6 +220,8 @@ public abstract class LockedCache<K, V> extends AbstractCache<K, V> {
 
     /**
      * Returns the string representation of this cache.
+     *
+     * @return the backing map's representation obtained while holding the configured lock
      */
     @Override
     public String toString() {

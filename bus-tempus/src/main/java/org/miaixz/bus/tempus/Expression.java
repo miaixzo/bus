@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.tempus;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.Serial;
 import java.io.Serializable;
 import java.text.ParseException;
@@ -36,7 +38,7 @@ import org.miaixz.bus.core.xyz.DateKit;
 public class Expression implements Serializable, Cloneable {
 
     @Serial
-    private static final long serialVersionUID = 2852287029125L;
+    private static final long serialVersionUID = 2558262501185L;
 
     /**
      * The maximum year value for cron expressions. Set to the current year plus 100.
@@ -1693,7 +1695,7 @@ public class Expression implements Serializable, Cloneable {
      * @throws java.io.IOException    if reading fails
      * @throws ClassNotFoundException if a serialized class cannot be found
      */
-    private void readObject(java.io.ObjectInputStream stream) throws java.io.IOException, ClassNotFoundException {
+    private void readObject(ObjectInputStream stream) throws IOException, ClassNotFoundException {
 
         stream.defaultReadObject();
         try {

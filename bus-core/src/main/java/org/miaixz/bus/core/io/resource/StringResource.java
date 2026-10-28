@@ -33,7 +33,7 @@ import org.miaixz.bus.core.lang.Charset;
 public class StringResource extends CharSequenceResource {
 
     @Serial
-    private static final long serialVersionUID = 2852232676563L;
+    private static final long serialVersionUID = 2536608568801L;
 
     /**
      * Constructs a {@code StringResource} with the given string data, using UTF-8 encoding.

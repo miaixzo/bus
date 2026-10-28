@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.cortex;
 
+import java.io.Serial;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -30,6 +31,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
+import org.miaixz.bus.core.center.date.Chrono;
 import org.miaixz.bus.cortex.builtin.Label;
 import org.miaixz.bus.cortex.builtin.LabelMapper;
 
@@ -46,6 +48,9 @@ import org.miaixz.bus.cortex.builtin.LabelMapper;
 @Setter
 @SuperBuilder
 public class Assets extends Nature {
+
+    @Serial
+    private static final long serialVersionUID = 2558861502065L;
 
     /**
      * Application identifier bound to the asset within the current tenantId.
@@ -215,7 +220,7 @@ public class Assets extends Nature {
      */
     @Transient
     @Builder.Default
-    private long ttl = 3600_000L;
+    private long ttl = Chrono.HOUR.getMillis();
 
     /**
      * Structured key-value labels attached to the entry, used for routing, filtering and discovery.
@@ -242,7 +247,7 @@ public class Assets extends Nature {
     /**
      * Returns the effective retry count.
      *
-     * @return positive retry count
+     * @return non-negative retry count; zero disables retries
      */
     public int retryCount() {
         return retries == null || retries < 0 ? 0 : retries;
@@ -299,9 +304,9 @@ public class Assets extends Nature {
     }
 
     /**
-     * Returns an immutable label view for routing and filtering code paths.
+     * Returns an unmodifiable view of the current label map; changes to the backing map remain visible.
      *
-     * @return immutable label map
+     * @return unmodifiable label-map view, or an empty map
      */
     public Map<String, String> labelView() {
         return labels == null ? Collections.emptyMap() : Collections.unmodifiableMap(labels);

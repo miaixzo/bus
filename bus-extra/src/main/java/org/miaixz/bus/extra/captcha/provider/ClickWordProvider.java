@@ -33,7 +33,7 @@ import org.miaixz.bus.extra.captcha.strategy.CodeStrategy;
 public class ClickWordProvider extends AbstractProvider {
 
     @Serial
-    private static final long serialVersionUID = -2852291580758L;
+    private static final long serialVersionUID = 2553961356522L;
 
     /**
      * Constructor.

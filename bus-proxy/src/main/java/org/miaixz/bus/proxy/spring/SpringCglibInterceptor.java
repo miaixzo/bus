@@ -39,7 +39,7 @@ import org.miaixz.bus.proxy.invoker.Interceptor;
 public class SpringCglibInterceptor extends Interceptor implements MethodInterceptor {
 
     @Serial
-    private static final long serialVersionUID = 2852260139720L;
+    private static final long serialVersionUID = 2552195001808L;
 
     /**
      * Constructs a new {@code SpringCglibInterceptor}.

@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.cortex.registry.api;
 
+import java.io.Serial;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
@@ -31,7 +32,6 @@ import lombok.experimental.SuperBuilder;
 
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.cortex.Assets;
-import org.miaixz.bus.cortex.Builder;
 import org.miaixz.bus.cortex.Keying;
 import org.miaixz.bus.cortex.Type;
 import org.miaixz.bus.cortex.builtin.RegistryGenerator;
@@ -50,10 +50,8 @@ import org.miaixz.bus.logger.Logger;
 @SuperBuilder
 public class ApiAssets extends Assets {
 
-    /**
-     * Default service lease duration used when API metadata does not define one.
-     */
-    private static final int DEFAULT_LEASE = 30;
+    @Serial
+    private static final long serialVersionUID = 2558885501596L;
 
     /**
      * API-specific metadata view.
@@ -130,54 +128,8 @@ public class ApiAssets extends Assets {
         Keying<Keying.RegistrySpec> effective = keying == null ? RegistryGenerator.INSTANCE : keying;
         Meta meta = meta();
         meta.setKey(defaultKey(effective));
-        if (meta.getLease() == null) {
-            meta.setLease(DEFAULT_LEASE);
-        }
-        if (meta.getBeat() == null) {
-            meta.setBeat(Builder.DEFAULT_HEALTH_INTERVAL_MS);
-        }
         meta(meta);
         return this;
-    }
-
-    /**
-     * Returns beat interval from API metadata.
-     *
-     * @return beat interval in milliseconds
-     */
-    public Long beat() {
-        return meta().getBeat();
-    }
-
-    /**
-     * Stores beat interval into API metadata.
-     *
-     * @param beat beat interval in milliseconds
-     */
-    public void beat(Long beat) {
-        Meta meta = meta();
-        meta.setBeat(beat);
-        meta(meta);
-    }
-
-    /**
-     * Returns service lease duration from API metadata.
-     *
-     * @return lease duration in seconds
-     */
-    public Integer lease() {
-        return meta().getLease();
-    }
-
-    /**
-     * Stores service lease duration into API metadata.
-     *
-     * @param lease lease duration in seconds
-     */
-    public void lease(Integer lease) {
-        Meta meta = meta();
-        meta.setLease(lease);
-        meta(meta);
     }
 
     /**
@@ -236,34 +188,14 @@ public class ApiAssets extends Assets {
         private static final String KEY = "key";
 
         /**
-         * Metadata key storing the beat interval.
+         * Metadata members replaced on API writes, including removed system keys that must not survive a save.
          */
-        private static final String BEAT = "beat";
-
-        /**
-         * Metadata key storing the service lease duration.
-         */
-        private static final String LEASE = "lease";
-
-        /**
-         * Fixed metadata members owned by the API subtype, independent of incoming payloads.
-         */
-        private static final Set<String> FIELDS = Set.of(KEY, BEAT, LEASE);
+        private static final Set<String> FIELDS = Set.of(KEY, "beat", "lease");
 
         /**
          * Stable public key used by admin and bridge paths, for example {@code dp.license.get:1.0:1}.
          */
         private String key;
-
-        /**
-         * Beat interval in milliseconds expected for runtime instances of this service.
-         */
-        private Long beat;
-
-        /**
-         * Lease timeout in seconds for runtime instances of this service.
-         */
-        private Integer lease;
 
         /**
          * Creates an empty API metadata view.
@@ -315,8 +247,6 @@ public class ApiAssets extends Assets {
         public String merge(String metadata) {
             Map<String, Object> values = new LinkedHashMap<>();
             values.put(KEY, key);
-            values.put(BEAT, beat);
-            values.put(LEASE, lease);
             return MetadataCodec.merge(metadata, FIELDS, values);
         }
 

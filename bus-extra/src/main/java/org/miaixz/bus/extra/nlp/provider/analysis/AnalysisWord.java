@@ -37,7 +37,7 @@ import org.miaixz.bus.extra.nlp.NLPWord;
 public class AnalysisWord implements NLPWord {
 
     @Serial
-    private static final long serialVersionUID = 2852285660095L;
+    private static final long serialVersionUID = 2555029055281L;
 
     /**
      * The underlying Lucene {@link Attribute} object, typically a {@link CharTermAttribute}.

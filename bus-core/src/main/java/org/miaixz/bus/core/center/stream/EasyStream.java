@@ -95,7 +95,7 @@ public class EasyStream<T> extends EnhancedWrappedStream<T, EasyStream<T>> {
         return new Builder<>() {
 
             @Serial
-            private static final long serialVersionUID = 2852271123932L;
+            private static final long serialVersionUID = 2536080000001L;
 
             private final Stream.Builder<T> streamBuilder = Stream.builder();
 

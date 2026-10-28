@@ -29,6 +29,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.GeneralSecurityException;
+import java.security.SecureRandom;
 import java.security.cert.X509Certificate;
 import java.util.Base64;
 import java.util.HashMap;
@@ -221,7 +222,7 @@ public class WadoRS {
      */
     SSLContext sslContext() throws GeneralSecurityException {
         SSLContext ctx = SSLContext.getInstance("TLS");
-        ctx.init(null, trustManagers(), new java.security.SecureRandom());
+        ctx.init(null, trustManagers(), new SecureRandom());
         return ctx;
     }
 

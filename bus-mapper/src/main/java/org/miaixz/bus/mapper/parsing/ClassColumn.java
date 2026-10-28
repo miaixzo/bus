@@ -19,12 +19,17 @@
 */
 package org.miaixz.bus.mapper.parsing;
 
+import java.io.Serial;
+
 /**
  * Records the class and column name corresponding to a field, used to match entity class fields with database columns.
  *
  * @author Kimi Liu
  */
 public class ClassColumn extends ClassField {
+
+    @Serial
+    private static final long serialVersionUID = 2551631211501L;
 
     /**
      * Constructs a new ClassColumn, initializing the class and field information.

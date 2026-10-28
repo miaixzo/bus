@@ -74,10 +74,20 @@ public class SolarYear extends AbstractYear {
      * @return the number of days in this year
      */
     public int getDayCount() {
+        return getDayCount(year);
+    }
+
+    /**
+     * Gets the number of days in the given year, accounting for the Gregorian calendar reform.
+     *
+     * @param year the solar year
+     * @return the number of days
+     */
+    public static int getDayCount(int year) {
         if (1582 == year) {
             return 355;
         }
-        return isLeap() ? 366 : 365;
+        return isLeap(year) ? 366 : 365;
     }
 
     /**
@@ -87,6 +97,16 @@ public class SolarYear extends AbstractYear {
      * @return true if this is a leap year
      */
     public boolean isLeap() {
+        return isLeap(year);
+    }
+
+    /**
+     * Checks whether the given year is a leap year using the Julian or Gregorian calendar rules.
+     *
+     * @param year the solar year
+     * @return true if the year is a leap year
+     */
+    public static boolean isLeap(int year) {
         if (year < 1600) {
             return year % 4 == 0;
         }

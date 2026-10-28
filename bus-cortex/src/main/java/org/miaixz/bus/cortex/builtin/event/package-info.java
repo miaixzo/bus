@@ -18,14 +18,8 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Ready-to-use implementations for watch-event logging and lightweight setting publishing.
- * <p>
- * {@code LoggingWatchListener} implements the {@link org.miaixz.bus.cortex.Listener} contract and logs every
- * {@code Watch<?>} diff event — added, removed and updated values — at INFO level via the standard logger. It is
- * suitable as a diagnostic listener during development or as a lightweight placeholder when no other listener is wired.
- * {@code SimpleSettingPublisher} writes setting content directly to a CacheX key without creating revision history; use
- * {@code SettingPublisher} instead when full revision history is required. The lightweight publisher is intended for
- * runtime overlays, warmup snapshots, and other non-revisioned operational data.
+ * Shared registry event publication and audit integration. Configuration changes reach subscribers only after a
+ * successful formal publication; no temporary configuration publisher is provided.
  *
  * @author Kimi Liu
  */

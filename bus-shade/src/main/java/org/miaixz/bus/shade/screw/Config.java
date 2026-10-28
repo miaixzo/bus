@@ -43,7 +43,7 @@ import org.miaixz.bus.shade.screw.process.ProcessConfig;
 public class Config implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2805231869025L;
+    private static final long serialVersionUID = 2552828803523L;
 
     /**
      * The name of the organization.

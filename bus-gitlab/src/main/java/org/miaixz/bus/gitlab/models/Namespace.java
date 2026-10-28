@@ -32,7 +32,7 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class Namespace implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852265752716L;
+    private static final long serialVersionUID = 2550890801551L;
 
     /**
      * The id value.

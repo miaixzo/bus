@@ -205,7 +205,7 @@ public interface Pageable extends Serializable {
     class PageRequest implements Pageable {
 
         @Serial
-        private static final long serialVersionUID = 2852289758690L;
+        private static final long serialVersionUID = 2551611661801L;
 
         /**
          * One-based page number.

@@ -46,7 +46,7 @@ public class MapWrapper<K, V>
         implements Map<K, V>, Iterable<Map.Entry<K, V>>, Wrapper<Map<K, V>>, Serializable, Cloneable {
 
     @Serial
-    private static final long serialVersionUID = 2852267777760L;
+    private static final long serialVersionUID = 2535860800001L;
 
     /**
      * The underlying (raw) map that all operations are delegated to.

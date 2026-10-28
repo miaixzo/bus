@@ -603,11 +603,6 @@ public class MapperOptions {
         private boolean printSql = true;
 
         /**
-         * Whether conventional status and audit properties default to the end of newly created tables.
-         */
-        private boolean auditColumnsLast = true;
-
-        /**
          * Whether to fail immediately on the first DDL error.
          */
         private boolean failFast = true;

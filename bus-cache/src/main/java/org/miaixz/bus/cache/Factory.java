@@ -156,7 +156,7 @@ public class Factory {
      */
     private Backend caffeineBackend(Options options, boolean extendedMode) {
         try {
-            return new Backend(new CaffeineCache<>(maxSize(options), expireMs(options)), !extendedMode, !extendedMode,
+            return new Backend(new CaffeineCache<>(maxSize(options), expireMs(options)), true, !extendedMode,
                     extendedMode, maxSize(options), expireMs(options));
         } catch (Throwable e) {
             Logger.warn(

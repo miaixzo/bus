@@ -21,6 +21,8 @@ package org.miaixz.bus.core.basic.entity;
 
 import java.io.Serial;
 
+import jakarta.persistence.Column;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
@@ -38,7 +40,32 @@ import org.miaixz.bus.core.lang.annotation.Logical;
 public class Audit extends Entity {
 
     @Serial
-    private static final long serialVersionUID = 2852290719630L;
+    private static final long serialVersionUID = 2535295951883L;
+
+    /**
+     * Name of the {@link #status} property.
+     */
+    public static final String FIELD_STATUS = "status";
+
+    /**
+     * Name of the {@link #creator} property.
+     */
+    public static final String FIELD_CREATOR = "creator";
+
+    /**
+     * Name of the {@link #created} property.
+     */
+    public static final String FIELD_CREATED = "created";
+
+    /**
+     * Name of the {@link #modifier} property.
+     */
+    public static final String FIELD_MODIFIER = "modifier";
+
+    /**
+     * Name of the {@link #modified} property.
+     */
+    public static final String FIELD_MODIFIED = "modified";
 
     /**
      * Logical data status:
@@ -52,13 +79,15 @@ public class Audit extends Entity {
     protected Integer status;
 
     /**
-     * Identifier of the user who created the entity.
+     * Identifier of the user who created the entity; insertable but excluded from mapped updates.
      */
+    @Column(updatable = false)
     protected String creator;
 
     /**
-     * Entity creation timestamp in milliseconds.
+     * Entity creation timestamp in milliseconds; insertable but excluded from mapped updates.
      */
+    @Column(updatable = false)
     protected Long created;
 
     /**

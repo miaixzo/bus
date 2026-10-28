@@ -34,6 +34,7 @@ import org.opencv.imgcodecs.Imgcodecs;
 import org.miaixz.bus.core.io.file.FileName;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.FileKit;
+import org.miaixz.bus.image.Builder;
 import org.miaixz.bus.image.Tag;
 import org.miaixz.bus.image.galaxy.SupplierEx;
 import org.miaixz.bus.image.galaxy.data.Attributes;
@@ -89,27 +90,43 @@ public class Transcoder {
         List<Path> outFiles = new ArrayList<>();
         Format format = params.getFormat();
         ImageReader reader = new ImageReader(IMAGE_READER_SPI);
+        MatOfInt map = null;
         try (ImageFileInputStream inputStream = new ImageFileInputStream(srcPath)) {
-            MatOfInt map = format == Format.JPEG
-                    ? new MatOfInt(Imgcodecs.IMWRITE_JPEG_QUALITY, getCompressionRatio(params))
+            map = format == Format.JPEG ? new MatOfInt(Imgcodecs.IMWRITE_JPEG_QUALITY, getCompressionRatio(params))
                     : null;
             reader.setInput(inputStream, false, false);
             int nbFrames = reader.getImageDescriptor().getFrames();
             int indexSize = (int) Math.log10(nbFrames);
             indexSize = nbFrames > 1 ? indexSize + 1 : 0;
             for (int i = 0; i < nbFrames; i++) {
-                PlanarImage img = reader.getPlanarImage(i, params.getReadParam());
-                boolean rawImg = isPreserveRawImage(params, format, img.type());
-                if (rawImg) {
-                    ImageRendering.getRawRenderedImage(img, reader.getImageDescriptor(), params.getReadParam(), i);
-                } else {
-                    img = ImageRendering
-                            .getDefaultRenderedImage(img, reader.getImageDescriptor(), params.getReadParam(), i);
+                PlanarImage source = reader.getPlanarImage(i, params.getReadParam());
+                if (source == null) {
+                    throw new IOException("Cannot read frame " + i);
                 }
-                Path outPath = writeImage(img, getOutputPath(srcPath, dstPath), format, map, i + 1, indexSize);
-                outFiles.add(outPath);
+                PlanarImage rendered = null;
+                try {
+                    boolean rawImg = isPreserveRawImage(params, format, source.type());
+                    rendered = rawImg
+                            ? ImageRendering
+                                    .getRawRenderedImage(source, reader.getImageDescriptor(), params.getReadParam(), i)
+                            : ImageRendering.getDefaultRenderedImage(
+                                    source,
+                                    reader.getImageDescriptor(),
+                                    params.getReadParam(),
+                                    i);
+                    Path outPath = writeImage(rendered, getOutputPath(srcPath, dstPath), format, map, i + 1, indexSize);
+                    outFiles.add(outPath);
+                } finally {
+                    if (rendered != null && rendered != source) {
+                        rendered.release();
+                    }
+                    source.release();
+                }
             }
         } finally {
+            if (map != null) {
+                map.release();
+            }
             reader.dispose();
         }
         return outFiles;
@@ -128,8 +145,9 @@ public class Transcoder {
     public static Path dcm2dcm(Path srcPath, Path dstPath, TranscodeParam params) throws IOException {
         Path outPath = adaptFileExtension(getOutputPath(srcPath, dstPath), ".dcm", ".dcm");
 
-        try {
-            dcm2dcm(srcPath, Files.newOutputStream(outPath), params);
+        try (OutputStream output = new java.io.BufferedOutputStream(Files.newOutputStream(outPath),
+                Builder.FILE_BUFFER_SIZE)) {
+            dcm2dcm(srcPath, output, params);
         } catch (Exception e) {
             FileKit.remove(outPath);
             throw e;

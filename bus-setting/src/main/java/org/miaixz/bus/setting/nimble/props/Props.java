@@ -57,7 +57,7 @@ import org.miaixz.bus.setting.Setting;
 public class Props extends Properties implements TypeGetter<CharSequence> {
 
     @Serial
-    private static final long serialVersionUID = 2852230820065L;
+    private static final long serialVersionUID = 2552550000001L;
 
     /**
      * A cache for {@code Props} instances, keyed by file path.
@@ -380,7 +380,7 @@ public class Props extends Properties implements TypeGetter<CharSequence> {
             this.watchMonitor = WatchKit.ofModify(this.resource.getUrl(), new SimpleWatcher() {
 
                 @Serial
-                private static final long serialVersionUID = 2853080953378L;
+                private static final long serialVersionUID = 2552552161081L;
 
                 @Override
                 public void onModify(final WatchEvent<?> event, final WatchKey key) {

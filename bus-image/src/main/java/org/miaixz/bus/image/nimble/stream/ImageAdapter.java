@@ -87,7 +87,8 @@ public class ImageAdapter {
             BytesWithImageDescriptor desc,
             File file) {
         if (desc == null) {
-            if (UID.ImplicitVRLittleEndian.equals(syntax.suitable) || UID.ExplicitVRBigEndian.equals(syntax.suitable)) {
+            if (UID.ImplicitVRLittleEndian.uid.equals(syntax.suitable)
+                    || UID.ExplicitVRBigEndian.uid.equals(syntax.suitable)) {
                 syntax.suitable = UID.ImplicitVRLittleEndian.uid;
             }
             try (ImageOutputStream writer = new ImageOutputStream(file)) {
@@ -114,8 +115,8 @@ public class ImageAdapter {
         Attributes dataSet = new Attributes(data);
         dataSet.remove(Tag.PixelData);
         String dstTsuid = syntax.suitable;
-        try (ImageOutputStream dos = new ImageOutputStream(new BufferedOutputStream(new FileOutputStream(file)),
-                dstTsuid)) {
+        try (ImageOutputStream dos = new ImageOutputStream(
+                new BufferedOutputStream(new FileOutputStream(file), Builder.FILE_BUFFER_SIZE), dstTsuid)) {
             dos.writeFileMetaInformation(dataSet.createFileMetaInformation(dstTsuid));
             writeImage(syntax, desc, imgData, dataSet, dstTsuid, dos);
         } catch (Exception e) {
@@ -265,11 +266,22 @@ public class ImageAdapter {
             ArrayList<Integer> fragmentsPositions = new ArrayList<>();
             return new BytesWithImageDescriptor() {
 
+                /**
+                 * Returns the descriptor associated with the in-memory frame source.
+                 *
+                 * @return the image descriptor for these encoded frames
+                 */
                 @Override
                 public ImageDescriptor getImageDescriptor() {
                     return imdDesc;
                 }
 
+                /**
+                 * Reads byte order from bulk data or encapsulated fragments, defaulting to little endian for inline
+                 * values.
+                 *
+                 * @return whether the backing pixel data uses big-endian byte order
+                 */
                 @Override
                 public boolean isBigEndian() {
                     if (pixdata instanceof BulkData bulkData) {
@@ -280,11 +292,23 @@ public class ImageAdapter {
                     return false;
                 }
 
+                /**
+                 * Returns the value representation of the source pixel-data attribute.
+                 *
+                 * @return the pixel-data VR
+                 */
                 @Override
                 public VR getPixelDataVR() {
                     return pixeldataVR.vr;
                 }
 
+                /**
+                 * Reads the selected native frame or encoded fragments, decoding RLE frames when required.
+                 *
+                 * @param frame the zero-based image frame index
+                 * @return a buffer containing the selected frame bytes; empty when no stored bits are available
+                 * @throws IOException if frame decoding or payload serialization fails
+                 */
                 @Override
                 public ByteBuffer getBytes(int frame) throws IOException {
                     ImageDescriptor desc = getImageDescriptor();
@@ -339,7 +363,7 @@ public class ImageAdapter {
                             } else {
                                 // Multi-frames where each frames can have multiple fragments.
                                 if (fragmentsPositions.isEmpty()) {
-                                    if (UID.RLELossless.equals(syntax.original)) {
+                                    if (UID.RLELossless.uid.equals(syntax.original)) {
                                         for (int i = 1; i < nbFragments; i++) {
                                             fragmentsPositions.add(i);
                                         }
@@ -387,11 +411,21 @@ public class ImageAdapter {
                     throw new IOException("Neither fragments nor BulkData!");
                 }
 
+                /**
+                 * Returns the transfer syntax of the original encoded instance.
+                 *
+                 * @return the original transfer syntax UID string
+                 */
                 @Override
                 public String getTransferSyntax() {
                     return syntax.original;
                 }
 
+                /**
+                 * Copies palette descriptors and data into a dataset used by palette expansion.
+                 *
+                 * @return the palette attribute dataset, possibly empty
+                 */
                 @Override
                 public Attributes getPaletteColorLookupTable() {
                     Attributes dcm = new Attributes(9);

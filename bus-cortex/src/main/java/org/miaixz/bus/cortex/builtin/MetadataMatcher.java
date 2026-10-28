@@ -71,11 +71,15 @@ public class MetadataMatcher {
     }
 
     /**
-     * Returns true if the metadata satisfies the given selector.
+     * Evaluates one comparison against a label map. EQ and NEQ compare the first configured value; IN and NOTIN test
+     * membership. Null or empty comparison lists make EQ/IN false and NEQ/NOTIN true. A missing actual value makes IN
+     * false and NOTIN true.
      *
-     * @param metadata metadata map to check
-     * @param selector selector expression
-     * @return true if matched
+     * @param metadata label map, or null
+     * @param selector expression, or null; a non-null expression requires an operator and non-null first value for
+     *                 nonempty EQ/NEQ comparisons
+     * @return false for a null map or expression; otherwise the comparison result
+     * @throws NullPointerException if an evaluated expression has no operator or has a null first EQ/NEQ value
      */
     public static boolean matchSelector(Map<String, String> metadata, Selector selector) {
         if (metadata == null || selector == null) {
@@ -92,12 +96,14 @@ public class MetadataMatcher {
     }
 
     /**
-     * Returns true if the metadata satisfies all exact-label and advanced selector constraints.
+     * Tests every effective constraint. An empty constraint set matches even a null label map; a nonempty set rejects
+     * null or empty metadata before evaluating selectors.
      *
-     * @param metadata  metadata map to check
-     * @param labels    exact labels
-     * @param selectors advanced selectors
-     * @return true if matched
+     * @param metadata  label map, or null
+     * @param labels    exact constraints, or null
+     * @param selectors advanced constraints, or null
+     * @return true when there are no constraints, otherwise whether all constraints match
+     * @throws NullPointerException if an evaluated selector violates its comparison preconditions
      */
     public static boolean matches(Map<String, String> metadata, Map<String, String> labels, List<Selector> selectors) {
         List<Selector> merged = selectors(labels, selectors);
@@ -116,19 +122,23 @@ public class MetadataMatcher {
      * @param assets    asset to check
      * @param labels    exact labels
      * @param selectors advanced selectors
-     * @return true if matched
+     * @return false for a null asset; otherwise whether its labels satisfy all effective constraints
      */
     public static boolean matches(Assets assets, Map<String, String> labels, List<Selector> selectors) {
         return assets != null && matches(assets.getLabels(), labels, selectors);
     }
 
     /**
-     * Filters a list of entries by all given selectors.
+     * Filters entries against all selectors, preserving matching entries in encounter order. When no selectors are
+     * supplied, returns the input list itself without copying or validating it.
      *
-     * @param entries   entries to filter
-     * @param selectors selectors to apply
      * @param <T>       asset type
-     * @return filtered list
+     * @param entries   entries to filter; may be null only when no selectors are supplied
+     * @param selectors selector expressions, or null for no filtering
+     * @return the original list, possibly null, when selectors are absent or empty; otherwise a new mutable filtered
+     *         list
+     * @throws NullPointerException if entries is null while filtering is required, or a selector violates its
+     *                              comparison preconditions
      */
     public static <T extends Assets> List<T> filter(List<T> entries, List<Selector> selectors) {
         if (selectors == null || selectors.isEmpty()) {
@@ -139,13 +149,15 @@ public class MetadataMatcher {
     }
 
     /**
-     * Filters a list of entries by exact labels and advanced selectors.
+     * Filters entries by exact labels and advanced selectors. With no effective constraints, returns the original list.
      *
-     * @param entries   entries to filter
-     * @param labels    exact labels
-     * @param selectors advanced selectors
      * @param <T>       asset type
-     * @return filtered list
+     * @param entries   entries to filter; may be null only when no constraints are supplied
+     * @param labels    exact label constraints, or null
+     * @param selectors advanced constraints, or null
+     * @return the original list, possibly null, when no constraints exist; otherwise a new mutable filtered list
+     * @throws NullPointerException if entries is null while filtering is required, or a selector violates its
+     *                              comparison preconditions
      */
     public static <T extends Assets> List<T> filter(
             List<T> entries,

@@ -47,7 +47,7 @@ public class TickMeter {
     protected TickMeter(long addr) {
         nativeObj = addr;
         long nativeObjCopy = nativeObj;
-        org.opencv.core.CleanableMat.cleaner.register(this, () -> delete(nativeObjCopy));
+        CleanableMat.cleaner.register(this, () -> delete(nativeObjCopy));
     }
 
     /**
@@ -56,7 +56,7 @@ public class TickMeter {
     public TickMeter() {
         nativeObj = TickMeter_0();
         long nativeObjCopy = nativeObj;
-        org.opencv.core.CleanableMat.cleaner.register(this, () -> delete(nativeObjCopy));
+        CleanableMat.cleaner.register(this, () -> delete(nativeObjCopy));
     }
 
     // internal usage only

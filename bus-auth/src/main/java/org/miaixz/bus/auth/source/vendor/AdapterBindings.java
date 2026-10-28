@@ -114,7 +114,6 @@ final class AdapterBindings {
      * @param options runtime options value declaring its exact implementation class
      * @return options narrowed to the binding's concrete type
      */
-    @SuppressWarnings("unchecked")
     private static <O extends VendorOptions<?>> O narrow(final VendorOptions<?> options) {
         final VendorOptions<?> checked = Assert.notNull(options, "Vendor options must not be null");
         if (checked.type() != checked.getClass()) {

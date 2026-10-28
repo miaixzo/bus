@@ -38,7 +38,7 @@ import org.miaixz.bus.core.basic.normal.Errors;
 public class UncheckedException extends RuntimeException {
 
     @Serial
-    private static final long serialVersionUID = 2852266759151L;
+    private static final long serialVersionUID = 2536912255392L;
 
     /**
      * The error code associated with this exception.

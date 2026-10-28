@@ -41,7 +41,7 @@ import org.miaixz.bus.core.text.finder.MultiStringFinder;
 public class HighMultiReplacerV2 extends StringReplacer {
 
     @Serial
-    private static final long serialVersionUID = 2852238992618L;
+    private static final long serialVersionUID = 2538328000001L;
 
     /**
      * The Aho-Corasick automaton used for efficient keyword searching and replacement.

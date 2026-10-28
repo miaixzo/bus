@@ -31,7 +31,7 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class GroupAccessToken extends ImpersonationToken {
 
     @Serial
-    private static final long serialVersionUID = 2852255961571L;
+    private static final long serialVersionUID = 2550613500001L;
 
     /**
      * The access level value.

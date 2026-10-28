@@ -38,7 +38,7 @@ import org.miaixz.bus.crypto.builtin.digest.DigesterFactory;
 public class MD5 extends Digester {
 
     @Serial
-    private static final long serialVersionUID = 2852290106196L;
+    private static final long serialVersionUID = 2539256313501L;
 
     /**
      * The {@link DigesterFactory} for MD5, using the JDK's default provider for better initial performance. MD5

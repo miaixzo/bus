@@ -38,7 +38,7 @@ import org.miaixz.bus.gitlab.support.JacksonJsonEnumCodec;
 public class NoteEvent extends AbstractEvent {
 
     @Serial
-    private static final long serialVersionUID = 2852232895012L;
+    private static final long serialVersionUID = 2550106222222L;
 
     /**
      * The x gitlab event value.

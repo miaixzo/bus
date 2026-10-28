@@ -30,7 +30,7 @@ import java.util.Locale;
 public class PinyinCompare extends LocaleCompare {
 
     @Serial
-    private static final long serialVersionUID = 2852262615223L;
+    private static final long serialVersionUID = 2536160800001L;
 
     /**
      * Constructs a new {@code PinyinCompare}, with {@code null} values placed at the end.

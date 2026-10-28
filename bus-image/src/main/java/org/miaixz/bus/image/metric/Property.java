@@ -37,7 +37,7 @@ import org.miaixz.bus.core.lang.Symbol;
 public class Property implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852261138619L;
+    private static final long serialVersionUID = 2556231103065L;
 
     /**
      * Provides DICOM processing details.

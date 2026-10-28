@@ -54,14 +54,18 @@ public abstract class AbstractMonth extends MonthParts {
      *
      * @return the day count
      */
-    public abstract int getDayCount();
+    public int getDayCount() {
+        throw new UnsupportedOperationException();
+    }
 
     /**
      * Gets the first day in the month.
      *
      * @return the first day
      */
-    public abstract AbstractDay getFirstDay();
+    public AbstractDay getFirstDay() {
+        throw new UnsupportedOperationException();
+    }
 
     /**
      * Gets the month value.
@@ -77,7 +81,9 @@ public abstract class AbstractMonth extends MonthParts {
      *
      * @return the abstract year
      */
-    public abstract AbstractYear getAbstractYear();
+    public AbstractYear getAbstractYear() {
+        throw new UnsupportedOperationException();
+    }
 
     @Override
     public String toString() {

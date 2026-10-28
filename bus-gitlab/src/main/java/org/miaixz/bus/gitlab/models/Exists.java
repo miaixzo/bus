@@ -32,7 +32,7 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class Exists implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852253538080L;
+    private static final long serialVersionUID = 2550385001885L;
 
     /**
      * The exists value.

@@ -37,7 +37,7 @@ import org.miaixz.bus.logger.Logger;
 public class BeetlTemplate implements Template, Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852288593976L;
+    private static final long serialVersionUID = 2555082162501L;
 
     /**
      * The raw Beetl template object.

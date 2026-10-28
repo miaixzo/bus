@@ -46,7 +46,7 @@ import org.miaixz.bus.core.lang.copier.Copier;
 public class BeanCopier<T> implements Copier<T>, Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852291373181L;
+    private static final long serialVersionUID = 2535322880001L;
 
     /**
      * The internal copier instance that performs the actual property copying.

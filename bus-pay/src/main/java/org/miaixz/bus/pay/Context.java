@@ -36,7 +36,7 @@ import lombok.Setter;
 public class Context implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852292391971L;
+    private static final long serialVersionUID = 2560062351551L;
 
     /**
      * Application ID.

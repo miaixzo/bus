@@ -28,6 +28,8 @@ import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.extra.template.Template;
 import org.miaixz.bus.logger.Logger;
 
+import freemarker.template.TemplateException;
+
 /**
  * Freemarker template implementation. This class wraps a FreeMarker {@link freemarker.template.Template} object,
  * providing a unified interface for rendering templates.
@@ -37,7 +39,7 @@ import org.miaixz.bus.logger.Logger;
 public class FreemarkerTemplate implements Template, Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852288838528L;
+    private static final long serialVersionUID = 2555085000001L;
 
     /**
      * The raw FreeMarker template object.
@@ -92,7 +94,7 @@ public class FreemarkerTemplate implements Template, Serializable {
                     "Freemarker render completed: bindingCount={}, elapsedMs={}",
                     bindingMap == null ? 0 : bindingMap.size(),
                     (System.nanoTime() - startedAt) / 1_000_000L);
-        } catch (final freemarker.template.TemplateException e) {
+        } catch (final TemplateException e) {
             Logger.warn(
                     false,
                     "Extra",

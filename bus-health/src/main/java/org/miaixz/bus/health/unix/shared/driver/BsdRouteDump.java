@@ -45,11 +45,12 @@ public final class BsdRouteDump {
     /**
      * Fetches the routing table dump.
      *
-     * @param libc the platform C library
+     * @param libc   the platform C library
+     * @param layout the platform routing-message layout
      * @return the bytes returned by the kernel, or an empty array if the query fails
      */
-    public static byte[] queryRouteDump(CLibrary libc) {
-        int[] mib = { Normal._4, Normal._17, Normal._0, Normal._0, Normal._1, Normal._0 };
+    public static byte[] queryRouteDump(CLibrary libc, RouteTableDump.Layout layout) {
+        int[] mib = { Normal._4, layout.getPfRoute(), Normal._0, Normal._0, Normal._1, Normal._0 };
         try (CloseableSizeTByReference len = new CloseableSizeTByReference()) {
             if (Normal._0 != libc.sysctl(mib, Normal._6, null, len, null, size_t.ZERO)) {
                 Logger.error(false, "Health", "Didn't get buffer length for NET_RT_DUMP");

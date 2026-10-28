@@ -38,6 +38,7 @@ import org.miaixz.bus.health.Builder;
 import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.Memoizer;
 import org.miaixz.bus.health.Parsing;
+import org.miaixz.bus.health.Platform;
 import org.miaixz.bus.health.builtin.software.*;
 import org.miaixz.bus.health.builtin.software.common.AbstractOperatingSystem;
 import org.miaixz.bus.health.linux.driver.proc.ProcessStat;
@@ -89,7 +90,8 @@ public class SolarisOperatingSystem extends AbstractOperatingSystem {
     static {
         Kstat2 lib = null;
         try {
-            if (ALLOW_KSTAT2) {
+            if (ALLOW_KSTAT2
+                    && Platform.isSafeToLoad(System.mapLibraryName("kstat2"), System.getProperty("jna.library.path"))) {
                 lib = Kstat2.INSTANCE;
             }
         } catch (UnsatisfiedLinkError e) {

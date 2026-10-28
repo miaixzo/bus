@@ -47,7 +47,7 @@ public abstract class AbstractCollValueMap<K, V> extends MapWrapper<K, Collectio
         implements MultipleValueMap<K, V> {
 
     @Serial
-    private static final long serialVersionUID = 2852276903237L;
+    private static final long serialVersionUID = 2535912555001L;
 
     /**
      * The default initial capacity for the collections created to hold multiple values.
@@ -65,7 +65,7 @@ public abstract class AbstractCollValueMap<K, V> extends MapWrapper<K, Collectio
 
     /**
      * Constructs an {@code AbstractCollValueMap} with initial data from the provided map. A new {@link HashMap} is
-     * created to store the data.
+     * created to store the mappings, while the existing value collections remain shared.
      *
      * @param map The map providing initial key-collection pairs.
      */
@@ -82,7 +82,8 @@ public abstract class AbstractCollValueMap<K, V> extends MapWrapper<K, Collectio
 
     /**
      * Appends all elements from the given collection to the collection of values associated with the specified key. If
-     * no collection is associated with the key, a new one is created using {@link #createCollection()}.
+     * no collection is associated with the key, a new one is created using {@link #createCollection()}. A null input is
+     * ignored; an empty input can still create and retain an empty collection mapping.
      *
      * @param key  The key to which the values are to be added.
      * @param coll The collection of values to add.
@@ -110,8 +111,8 @@ public abstract class AbstractCollValueMap<K, V> extends MapWrapper<K, Collectio
     }
 
     /**
-     * Removes a single occurrence of the specified value from the collection associated with the given key. If the
-     * collection becomes empty after removal, the key-collection mapping is also removed from the map.
+     * Removes a single occurrence of the specified value from the collection associated with the given key. The key
+     * remains mapped to an empty collection when the final value is removed.
      *
      * @param key   The key from which the value is to be removed.
      * @param value The value to remove.
@@ -123,8 +124,8 @@ public abstract class AbstractCollValueMap<K, V> extends MapWrapper<K, Collectio
     }
 
     /**
-     * Removes all occurrences of the specified values from the collection associated with the given key. If the
-     * collection becomes empty after removal, the key-collection mapping is also removed from the map.
+     * Removes all occurrences of the specified values from the collection associated with the given key. The key
+     * remains mapped to an empty collection when the final value is removed.
      *
      * @param key    The key from which the values are to be removed.
      * @param values A collection of values to remove.
@@ -140,13 +141,12 @@ public abstract class AbstractCollValueMap<K, V> extends MapWrapper<K, Collectio
     }
 
     /**
-     * Filters all values in the map based on a given key-value predicate and returns a new {@code MultipleValueMap}
-     * containing only the values that satisfy the predicate. The type of the value collections in the new map will be
-     * consistent with the default collection type of this instance.
+     * Filters this map in place using a key-value predicate. Each collection is replaced by a collection of this
+     * instance's default type containing only the retained values; keys with no retained values remain present.
      *
      * @param filter The predicate to apply to each key-value pair. Values for which the predicate returns {@code true}
      *               are retained.
-     * @return A new {@code MultipleValueMap} instance with filtered values.
+     * @return This map after filtering.
      */
     @Override
     public MultipleValueMap<K, V> filterAllValues(final BiPredicateX<K, V> filter) {
@@ -160,12 +160,11 @@ public abstract class AbstractCollValueMap<K, V> extends MapWrapper<K, Collectio
     }
 
     /**
-     * Replaces all values in the map by applying a given key-value binary operator to each value. Returns a new
-     * {@code MultipleValueMap} with the transformed values. The type of the value collections in the new map will be
-     * consistent with the default collection type of this instance.
+     * Replaces all values in this map in place using a key-value binary operator. Each collection is replaced by a
+     * collection of this instance's default type containing the transformed values.
      *
      * @param operate The binary operator to apply to each key-value pair to produce a new value.
-     * @return A new {@code MultipleValueMap} instance with replaced values.
+     * @return This map after replacing values.
      */
     @Override
     public MultipleValueMap<K, V> replaceAllValues(final BiFunctionX<K, V, V> operate) {

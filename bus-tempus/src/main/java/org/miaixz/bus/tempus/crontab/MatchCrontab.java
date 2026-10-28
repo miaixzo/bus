@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.tempus.crontab;
 
+import java.io.Serial;
 import java.util.concurrent.locks.Lock;
 
 import org.miaixz.bus.logger.Logger;
@@ -33,6 +34,9 @@ import org.miaixz.bus.tempus.Scheduler;
  * @author Kimi Liu
  */
 public class MatchCrontab extends Repertoire {
+
+    @Serial
+    private static final long serialVersionUID = 2558295503861L;
 
     /**
      * Constructor with default capacity of {@link Repertoire#DEFAULT_CAPACITY}.

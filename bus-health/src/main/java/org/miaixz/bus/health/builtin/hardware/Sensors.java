@@ -45,7 +45,7 @@ public interface Sensors {
     /**
      * CPU Temperature
      *
-     * @return CPU Temperature in degrees Celsius if available, 0 or {@link Double#NaN} otherwise.
+     * @return CPU Temperature in degrees Celsius if available, 0 otherwise.
      *         <p>
      *         See notes on {@link Sensors}.
      */

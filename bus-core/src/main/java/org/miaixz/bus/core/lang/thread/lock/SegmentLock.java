@@ -804,7 +804,7 @@ public abstract class SegmentLock<L> {
     private static class PaddedLock extends ReentrantLock {
 
         @Serial
-        private static final long serialVersionUID = 2852280575965L;
+        private static final long serialVersionUID = 2538102920831L;
 
         /**
          * Padding slot used to reduce cache-line sharing with adjacent objects.
@@ -839,7 +839,7 @@ public abstract class SegmentLock<L> {
     private static class PaddedSemaphore extends Semaphore {
 
         @Serial
-        private static final long serialVersionUID = 2852280626061L;
+        private static final long serialVersionUID = 2538106080001L;
 
         /**
          * Constructs a new {@code PaddedSemaphore} with the given number of permits and a non-fair policy.

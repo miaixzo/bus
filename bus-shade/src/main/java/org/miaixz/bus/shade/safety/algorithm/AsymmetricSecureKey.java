@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.shade.safety.algorithm;
 
+import java.io.Serial;
+
 /**
  * Represents an asymmetric secure key, extending {@link SecureKey} and implementing {@link AsymmetricKey}. This class
  * holds the public and private key components for asymmetric encryption schemes.
@@ -26,6 +28,9 @@ package org.miaixz.bus.shade.safety.algorithm;
  * @author Kimi Liu
  */
 public class AsymmetricSecureKey extends SecureKey implements AsymmetricKey {
+
+    @Serial
+    private static final long serialVersionUID = 2552818000001L;
 
     /**
      * Encoded public key bytes.

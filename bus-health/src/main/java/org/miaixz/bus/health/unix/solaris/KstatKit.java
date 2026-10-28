@@ -34,7 +34,6 @@ import com.sun.jna.platform.unix.solaris.Kstat2.Kstat2MatcherList;
 import com.sun.jna.platform.unix.solaris.Kstat2StatusException;
 import com.sun.jna.platform.unix.solaris.LibKstat;
 import com.sun.jna.platform.unix.solaris.LibKstat.Kstat;
-import com.sun.jna.platform.unix.solaris.LibKstat.KstatCtl;
 import com.sun.jna.platform.unix.solaris.LibKstat.KstatNamed;
 
 import org.miaixz.bus.core.lang.Charset;
@@ -44,6 +43,7 @@ import org.miaixz.bus.core.lang.annotation.GuardedBy;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.xyz.ThreadKit;
 import org.miaixz.bus.health.Formats;
+import org.miaixz.bus.health.unix.shared.jna.SolarisLibKstat;
 import org.miaixz.bus.health.unix.solaris.software.SolarisOperatingSystem;
 import org.miaixz.bus.logger.Logger;
 
@@ -66,7 +66,7 @@ public class KstatKit {
      * The kstatCtl value.
      */
     @GuardedBy("CHAIN")
-    private static KstatCtl kstatCtl = null;
+    private static Pointer kstatCtl = null;
 
     /**
      * Creates a new KstatKit instance.
@@ -80,12 +80,13 @@ public class KstatKit {
      *
      * @return A locked copy of the chain. It should be unlocked/released when you are done with it with
      *         {@link KstatChain#close()}.
-     * @throws IllegalStateException if {@link LibKstat#kstat_open} fails, in which case the lock is released first
+     * @throws IllegalStateException if {@link SolarisLibKstat#kstat_open} fails, in which case the lock is released
+     *                               first
      */
     public static synchronized KstatChain openChain() {
         CHAIN.lock();
         if (kstatCtl == null) {
-            KstatCtl ctl = LibKstat.INSTANCE.kstat_open();
+            Pointer ctl = SolarisLibKstat.INSTANCE.kstat_open();
             if (ctl == null) {
                 CHAIN.unlock();
                 throw new IllegalStateException("kstat_open returned NULL");
@@ -108,7 +109,7 @@ public class KstatKit {
         if (ksp.ks_type != LibKstat.KSTAT_TYPE_NAMED && ksp.ks_type != LibKstat.KSTAT_TYPE_TIMER) {
             throw new IllegalArgumentException("Not a kstat_named or kstat_timer kstat.");
         }
-        Pointer p = LibKstat.INSTANCE.kstat_data_lookup(ksp, name);
+        Pointer p = SolarisLibKstat.INSTANCE.kstat_data_lookup(ksp, name);
         if (p == null) {
             Logger.debug(false, "Health", "Failed to lookup kstat value for key {}", name);
             return Normal.EMPTY;
@@ -152,7 +153,7 @@ public class KstatKit {
         if (ksp.ks_type != LibKstat.KSTAT_TYPE_NAMED && ksp.ks_type != LibKstat.KSTAT_TYPE_TIMER) {
             throw new IllegalArgumentException("Not a kstat_named or kstat_timer kstat.");
         }
-        Pointer p = LibKstat.INSTANCE.kstat_data_lookup(ksp, name);
+        Pointer p = SolarisLibKstat.INSTANCE.kstat_data_lookup(ksp, name);
         if (p == null) {
             if (Logger.isDebugEnabled()) {
                 Logger.debug(
@@ -295,14 +296,14 @@ public class KstatKit {
         /**
          * The localCtlRef value.
          */
-        private final KstatCtl localCtlRef;
+        private final Pointer localCtlRef;
 
         /**
          * Creates a new KstatChain instance.
          *
          * @param ctl the ctl
          */
-        public KstatChain(KstatCtl ctl) {
+        public KstatChain(Pointer ctl) {
             this.localCtlRef = ctl;
             update();
         }
@@ -320,7 +321,7 @@ public class KstatKit {
         @GuardedBy("CHAIN")
         public boolean read(Kstat ksp) {
             int retry = 0;
-            while (0 > LibKstat.INSTANCE.kstat_read(localCtlRef, ksp, null)) {
+            while (0 > SolarisLibKstat.INSTANCE.kstat_read(localCtlRef, ksp, null)) {
                 if (LibKstat.EAGAIN != Native.getLastError() || 5 <= ++retry) {
                     if (Logger.isDebugEnabled()) {
                         Logger.debug(
@@ -351,7 +352,7 @@ public class KstatKit {
          */
         @GuardedBy("CHAIN")
         public Kstat lookup(String module, int instance, String name) {
-            return LibKstat.INSTANCE.kstat_lookup(localCtlRef, module, instance, name);
+            return SolarisLibKstat.INSTANCE.kstat_lookup(localCtlRef, module, instance, name);
         }
 
         /**
@@ -368,8 +369,8 @@ public class KstatKit {
         @GuardedBy("CHAIN")
         public List<Kstat> lookupAll(String module, int instance, String name) {
             List<Kstat> kstats = new ArrayList<>();
-            for (Kstat ksp = LibKstat.INSTANCE.kstat_lookup(localCtlRef, module, instance, name); ksp != null; ksp = ksp
-                    .next()) {
+            for (Kstat ksp = SolarisLibKstat.INSTANCE
+                    .kstat_lookup(localCtlRef, module, instance, name); ksp != null; ksp = ksp.next()) {
                 if ((module == null || module.equals(Native.toString(ksp.ks_module, Charset.US_ASCII)))
                         && (instance < 0 || instance == ksp.ks_instance)
                         && (name == null || name.equals(Native.toString(ksp.ks_name, Charset.US_ASCII)))) {
@@ -388,7 +389,7 @@ public class KstatKit {
          */
         @GuardedBy("CHAIN")
         public int update() {
-            return LibKstat.INSTANCE.kstat_chain_update(localCtlRef);
+            return SolarisLibKstat.INSTANCE.kstat_chain_update(localCtlRef);
         }
 
         /**

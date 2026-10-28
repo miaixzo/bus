@@ -19,12 +19,12 @@
 */
 package org.miaixz.bus.extra.json;
 
+import java.math.BigDecimal;
+import java.util.*;
+
 import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
-
-import java.math.BigDecimal;
-import java.util.*;
 
 /**
  * Validates the explicitly supported, local-only JSON Schema vocabulary using exact provider-neutral values. Unknown

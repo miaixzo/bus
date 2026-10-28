@@ -39,7 +39,7 @@ import org.miaixz.bus.core.io.resource.Resource;
 public class VirtualFile extends File {
 
     @Serial
-    private static final long serialVersionUID = 2852285580251L;
+    private static final long serialVersionUID = 2536580651209L;
 
     /**
      * The resource representing the file's content.

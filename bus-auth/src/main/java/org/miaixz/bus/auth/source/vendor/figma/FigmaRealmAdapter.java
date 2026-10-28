@@ -27,6 +27,7 @@ import java.util.concurrent.CompletionStage;
 import java.util.function.Function;
 
 import org.miaixz.bus.auth.*;
+import org.miaixz.bus.auth.Credential;
 import org.miaixz.bus.auth.FabricX.Response;
 import org.miaixz.bus.auth.FabricX.Url;
 import org.miaixz.bus.auth.shared.SecretLease;
@@ -129,7 +130,7 @@ public class FigmaRealmAdapter implements VendorAdapter {
                 || this.variant.protocol() != Protocol.SCIM || !FigmaManifest.ID.equals(this.options.vendor())
                 || !FigmaManifest.SCIM.equals(this.options.variant()) || this.options.redirectUri().isPresent()
                 || !this.options.scopes().isEmpty()
-                || this.options.credential().type() != org.miaixz.bus.auth.Credential.Type.SHARED_SECRET) {
+                || this.options.credential().type() != Credential.Type.SHARED_SECRET) {
             throw new ValidateException("Figma realm adapter requires the frozen administrator SCIM Variant");
         }
         this.services.policies().require(this.variant.protocol());

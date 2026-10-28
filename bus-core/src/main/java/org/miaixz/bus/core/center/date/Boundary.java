@@ -34,7 +34,7 @@ import org.miaixz.bus.core.xyz.DateKit;
 public class Boundary extends Range<DateTime> {
 
     @Serial
-    private static final long serialVersionUID = 2852233385529L;
+    private static final long serialVersionUID = 2535639653501L;
 
     /**
      * Constructs a {@code Boundary} with inclusive start and end dates, and a specified step unit. The iteration step

@@ -50,7 +50,7 @@ import org.miaixz.bus.logger.Logger;
 public class RSA extends Crypto {
 
     @Serial
-    private static final long serialVersionUID = 2852290353723L;
+    private static final long serialVersionUID = 2539280000001L;
 
     /**
      * Constructor, generates a new private-public key pair.

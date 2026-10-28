@@ -34,7 +34,7 @@ import java.util.Set;
 public class LookupReplacer extends StringReplacer {
 
     @Serial
-    private static final long serialVersionUID = 2852239213366L;
+    private static final long serialVersionUID = 2538332161501L;
 
     /**
      * The map containing lookup keys and their replacement values.

@@ -33,7 +33,7 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class DownstreamPipeline implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852251939228L;
+    private static final long serialVersionUID = 2550331162831L;
 
     /**
      * The id value.

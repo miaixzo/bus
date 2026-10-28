@@ -75,10 +75,7 @@ public class ApplicationsApi extends AbstractApi {
      * @throws RelevantException if any exception occurs
      */
     public List<Application> getApplications(int page, int perPage) throws RelevantException {
-        Response response = get(
-                jakarta.ws.rs.core.Response.Status.OK,
-                getPageQueryParams(page, perPage),
-                "applications");
+        Response response = get(Response.Status.OK, getPageQueryParams(page, perPage), "applications");
         return (response.readEntity(new GenericType<>() {
         }));
     }

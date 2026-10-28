@@ -32,7 +32,9 @@ import org.miaixz.bus.auth.FabricX.Url;
 import org.miaixz.bus.auth.Identity.Evidence;
 import org.miaixz.bus.auth.codec.FormCodec;
 import org.miaixz.bus.auth.codec.NameValue;
+import org.miaixz.bus.auth.guard.AlgorithmGuard;
 import org.miaixz.bus.auth.guard.IssuerValidator;
+import org.miaixz.bus.auth.guard.TimeGuard;
 import org.miaixz.bus.auth.shared.SecretLease;
 import org.miaixz.bus.auth.shared.jose.*;
 import org.miaixz.bus.auth.shared.jwt.JwtClaims;
@@ -175,13 +177,12 @@ public class HuaweiSourceAdapter implements VendorAdapter {
         this.formCodec = new FormCodec();
         this.issuerValidator = new IssuerValidator();
         this.jwkSelector = new JwkSelector();
-        this.jwsService = new JwsService(new org.miaixz.bus.auth.guard.AlgorithmGuard(),
-                Set.of(JwaAlgorithm.RS256.name()));
-        final JweService dormantJwe = new JweService(new org.miaixz.bus.auth.guard.AlgorithmGuard(),
-                Set.of(JwaAlgorithm.RSA_OAEP_256.name()), Set.of(JwaAlgorithm.A256GCM.name()));
+        this.jwsService = new JwsService(new AlgorithmGuard(), Set.of(JwaAlgorithm.RS256.name()));
+        final JweService dormantJwe = new JweService(new AlgorithmGuard(), Set.of(JwaAlgorithm.RSA_OAEP_256.name()),
+                Set.of(JwaAlgorithm.A256GCM.name()));
         this.idTokenVerifier = new IdTokenVerifier(new IdTokenCodec(new JwtVerifier(jwsService, dormantJwe)),
-                issuerValidator, new org.miaixz.bus.auth.guard.TimeGuard(FabricX.clock(),
-                        services.policies().require(Protocol.OIDC).maximumClockSkew()));
+                issuerValidator,
+                new TimeGuard(FabricX.clock(), services.policies().require(Protocol.OIDC).maximumClockSkew()));
         final var targets = variant.targets().resolve(options);
         final OAuth2ClientOptions oauthSettings = new OAuth2ClientOptions(targets.authorization(), targets.token(),
                 Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Optional.of(ISSUER),

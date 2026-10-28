@@ -49,6 +49,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Role;
 import org.springframework.core.env.Environment;
+import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePatternResolver;
@@ -197,8 +198,7 @@ public class MapperConfiguration implements InitializingBean {
     @Override
     public void afterPropertiesSet() {
         if (this.properties.isCheckConfigLocation() && StringKit.hasText(this.properties.getConfigLocation())) {
-            org.springframework.core.io.Resource resource = this.resourceLoader
-                    .getResource(this.properties.getConfigLocation());
+            Resource resource = this.resourceLoader.getResource(this.properties.getConfigLocation());
             Assert.state(
                     resource.exists(),
                     "Cannot find config location: " + resource
@@ -280,7 +280,7 @@ public class MapperConfiguration implements InitializingBean {
         }
 
         // Set mapper locations.
-        org.springframework.core.io.Resource[] mapperLocations = resolveMapperLocations();
+        Resource[] mapperLocations = resolveMapperLocations();
         if (!ObjectKit.isEmpty(mapperLocations)) {
             factory.setMapperLocations(mapperLocations);
         }
@@ -347,7 +347,7 @@ public class MapperConfiguration implements InitializingBean {
      *
      * @return resolved mapper XML resources
      */
-    private org.springframework.core.io.Resource[] resolveMapperLocations() {
+    private Resource[] resolveMapperLocations() {
         MapperLocationResolver.Result result = MapperLocationResolver
                 .resolve(this.properties, mapperResourceResolver());
         Logger.info(
@@ -426,10 +426,9 @@ public class MapperConfiguration implements InitializingBean {
          */
         @Override
         protected List<String> list(URL url, String path) throws IOException {
-            org.springframework.core.io.Resource[] resources = resourceResolver
-                    .getResources("classpath*:" + path + "/**/*.class");
+            Resource[] resources = resourceResolver.getResources("classpath*:" + path + "/**/*.class");
             List<String> resourcePaths = new ArrayList<>();
-            for (org.springframework.core.io.Resource resource : resources) {
+            for (Resource resource : resources) {
                 String resourceUrl = resource.getURI().toString();
                 resourcePaths.add(resourceUrl.substring(resourceUrl.indexOf(path)));
             }

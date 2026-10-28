@@ -31,7 +31,7 @@ import org.miaixz.bus.core.basic.normal.Errors;
 public class StatefulException extends UncheckedException {
 
     @Serial
-    private static final long serialVersionUID = 2852265690567L;
+    private static final long serialVersionUID = 2536891500001L;
 
     /**
      * The status code associated with this exception.

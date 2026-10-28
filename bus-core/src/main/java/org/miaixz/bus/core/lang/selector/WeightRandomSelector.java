@@ -48,7 +48,7 @@ import org.miaixz.bus.core.xyz.CollKit;
 public class WeightRandomSelector<T> implements Selector<T>, Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852278757903L;
+    private static final long serialVersionUID = 2538095265001L;
 
     /**
      * A map where the key is the cumulative weight and the value is the object.

@@ -108,7 +108,7 @@ public class OpenBsdNetworkParams extends AbstractNetworkParams {
      * @return the routing table dump, or an empty array
      */
     protected byte[] queryRouteDump() {
-        return BsdRouteDump.queryRouteDump(OpenBsdLibc.INSTANCE);
+        return BsdRouteDump.queryRouteDump(OpenBsdLibc.INSTANCE, RouteTableDump.Layout.OPENBSD);
     }
 
 }

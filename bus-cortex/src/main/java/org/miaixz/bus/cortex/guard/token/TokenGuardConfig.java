@@ -127,10 +127,11 @@ public class TokenGuardConfig {
     }
 
     /**
-     * Resolves one effective token lifetime in seconds for the supplied logical scope.
+     * Uses a strictly positive per-scope override when present; otherwise returns expireSeconds unchanged. The default
+     * lifetime is not validated or clamped by this method.
      *
-     * @param scope logical scope, role, or scene key
-     * @return positive lifetime in seconds
+     * @param scope scope, role, or scene key; null bypasses per-scope lookup
+     * @return positive scope override, or the configured default, which may be non-positive if configured that way
      */
     public long resolveExpireSeconds(String scope) {
         if (scope != null && scopeExpireSeconds != null) {

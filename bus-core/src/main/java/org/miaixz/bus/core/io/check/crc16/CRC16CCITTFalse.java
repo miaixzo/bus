@@ -31,7 +31,7 @@ import java.io.Serial;
 public class CRC16CCITTFalse extends CRC16Checksum {
 
     @Serial
-    private static final long serialVersionUID = 2852278527996L;
+    private static final long serialVersionUID = 2536508652885L;
 
     /**
      * The polynomial used in the CRC16-CCITT-FALSE calculation (0x1021).

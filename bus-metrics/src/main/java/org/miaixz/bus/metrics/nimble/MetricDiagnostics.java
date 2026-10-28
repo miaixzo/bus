@@ -21,6 +21,7 @@ package org.miaixz.bus.metrics.nimble;
 
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -112,7 +113,7 @@ public interface MetricDiagnostics {
                 requireToken("category", category);
                 requireNonNegative("durationNanos", durationNanos);
                 checkedProvider.timer("bus.metrics.collection.duration", Tag.of("category", category))
-                        .record(durationNanos, java.util.concurrent.TimeUnit.NANOSECONDS);
+                        .record(durationNanos, TimeUnit.NANOSECONDS);
             }
 
             @Override

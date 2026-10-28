@@ -29,6 +29,7 @@ import org.miaixz.bus.image.galaxy.data.Attributes;
 import org.miaixz.bus.image.galaxy.data.ElementDictionary;
 import org.miaixz.bus.image.galaxy.data.VR;
 import org.miaixz.bus.image.metric.Connection;
+import org.miaixz.bus.image.metric.QueryOption;
 import org.miaixz.bus.image.metric.service.QueryRetrieveLevel;
 import org.miaixz.bus.logger.Logger;
 
@@ -242,6 +243,10 @@ public class CFind {
             try {
                 long t1 = System.currentTimeMillis();
                 findSCU.open();
+                dcmState.setRejectedQueryOptions(findSCU.getRejectedQueryOptions());
+                if (dcmState.getRejectedQueryOptions().contains(QueryOption.FUZZY)) {
+                    Logger.warn("The SCP rejected fuzzy Person Name matching; results use literal matching");
+                }
                 long t2 = System.currentTimeMillis();
                 findSCU.query();
                 Builder.forceGettingAttributes(dcmState, findSCU);

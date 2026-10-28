@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.starter.wrapper.binding;
 
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
@@ -26,6 +27,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import org.miaixz.bus.spring.web.advice.AuthorizeRequestBodyAdvice;
 import org.miaixz.bus.spring.web.resolver.AutoBindingTypeMatcher;
 import org.miaixz.bus.spring.web.resolver.RequestBindingOptions;
 import org.miaixz.bus.spring.web.resolver.RequestObjectArgumentResolver;
@@ -71,6 +73,31 @@ public class RequestBindingConfiguration {
     @ConditionalOnMissingBean(RequestObjectArgumentResolver.class)
     public RequestObjectArgumentResolver requestObjectArgumentResolver(RequestBindingOptions options) {
         return new RequestObjectArgumentResolver(new AutoBindingTypeMatcher(), options);
+    }
+
+    /**
+     * Registers context identity binding for native Spring request bodies and typed body collections.
+     *
+     * @param resolver shared request-object resolver
+     * @return advice applying identity before request-body validation
+     */
+    @Bean
+    @ConditionalOnMissingBean(AuthorizeRequestBodyAdvice.class)
+    public AuthorizeRequestBodyAdvice authorizeRequestBodyAdvice(RequestObjectArgumentResolver resolver) {
+        return new AuthorizeRequestBodyAdvice(resolver);
+    }
+
+    /**
+     * Installs native model-attribute identity binding without eagerly creating request-binding collaborators.
+     *
+     * @param resolver lazy shared request-object resolver lookup
+     * @return native model-attribute adapter and MVC post-processor
+     */
+    @Bean
+    @ConditionalOnMissingBean(RequestWebMvcConfigurer.ModelAttributeResolver.class)
+    public static RequestWebMvcConfigurer.ModelAttributeResolver authorizeModelAttributeResolver(
+            ObjectProvider<RequestObjectArgumentResolver> resolver) {
+        return new RequestWebMvcConfigurer.ModelAttributeResolver(resolver);
     }
 
     /**

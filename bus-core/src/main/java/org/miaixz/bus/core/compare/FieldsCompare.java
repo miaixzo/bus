@@ -34,7 +34,7 @@ import org.miaixz.bus.core.xyz.FieldKit;
 public class FieldsCompare<T> extends NullCompare<T> {
 
     @Serial
-    private static final long serialVersionUID = 2852261195893L;
+    private static final long serialVersionUID = 2536150000001L;
 
     /**
      * Constructs a new {@code FieldsCompare}.

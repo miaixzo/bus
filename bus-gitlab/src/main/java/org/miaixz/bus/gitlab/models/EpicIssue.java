@@ -35,7 +35,7 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class EpicIssue extends AbstractIssue {
 
     @Serial
-    private static final long serialVersionUID = 2852253051692L;
+    private static final long serialVersionUID = 2550361303501L;
 
     /**
      * The links value.

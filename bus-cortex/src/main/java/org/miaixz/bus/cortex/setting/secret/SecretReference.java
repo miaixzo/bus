@@ -20,8 +20,10 @@
 package org.miaixz.bus.cortex.setting.secret;
 
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
+import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.exception.CryptoException;
 import org.miaixz.bus.extra.json.JsonKit;
 
@@ -34,21 +36,27 @@ import org.miaixz.bus.extra.json.JsonKit;
  * @param version      immutable backend version; null selects the current version
  * @param field        optional top-level JSON string field; null requests the complete value
  * @param expectedType non-null logical payload classification, without automatic conversion
+ * @author Kimi Liu
  */
 public record SecretReference(String connectionId, String resource, String version, String field, Type expectedType) {
 
     /**
      * Validates the record components before publishing this immutable value.
      *
+     * @param connectionId non-null connectionId component
+     * @param resource     logical backend resource name before URL encoding
+     * @param version      immutable backend version; null selects the current version
+     * @param field        optional top-level JSON string field; null requests the complete value
+     * @param expectedType non-null logical payload classification, without automatic conversion
      * @throws IllegalArgumentException if component values violate this record's constraints
-     * @throws NullPointerException     if a required component or collection is null
+     * @throws NullPointerException     if expectedType is null
      */
     public SecretReference {
         if (connectionId == null || connectionId.isBlank() || resource == null || resource.isBlank()
                 || field != null && field.isBlank() || version != null && version.isBlank()) {
             throw new IllegalArgumentException("Invalid secret reference");
         }
-        java.util.Objects.requireNonNull(expectedType, "expectedType");
+        Objects.requireNonNull(expectedType, "expectedType");
     }
 
     /**
@@ -61,8 +69,7 @@ public record SecretReference(String connectionId, String resource, String versi
      */
     public static SecretReference parse(String json) {
         try {
-            Object parsed = JsonKit
-                    .toJavaValue(JsonKit.readValue(json.getBytes(java.nio.charset.StandardCharsets.UTF_8), 16, true));
+            Object parsed = JsonKit.toJavaValue(JsonKit.readValue(json.getBytes(Charset.UTF_8), 16, true));
             if (!(parsed instanceof Map<?, ?> spec)
                     || !Set.of("connectionId", "resource", "selector", "field", "expectedType")
                             .containsAll(spec.keySet())
@@ -114,6 +121,8 @@ public record SecretReference(String connectionId, String resource, String versi
 
     /**
      * Logical payload classification; this enum does not install a schema or parser.
+     *
+     * @author Kimi Liu
      */
     public enum Type {
         /**
@@ -140,6 +149,7 @@ public record SecretReference(String connectionId, String resource, String versi
          * Classify text as application-defined object-storage credentials, without implicit schema conversion.
          */
         OBJECT_STORAGE
+
     }
 
 }

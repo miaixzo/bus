@@ -22,6 +22,7 @@ package org.miaixz.bus.auth.source.protocol.saml.codec;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.util.*;
@@ -1713,14 +1714,14 @@ public class SamlMessageCodec {
          * @return absolute URI
          * @throws ValidateException if the value is not an absolute URI
          */
-        private static java.net.URI absoluteUri(final String value, final String label) {
+        private static URI absoluteUri(final String value, final String label) {
             try {
                 final URI uri = new URI(Assert.notBlank(value, label + " must not be blank"));
                 if (!uri.isAbsolute()) {
                     throw new ValidateException(label + " must be an absolute URI");
                 }
                 return uri;
-            } catch (java.net.URISyntaxException exception) {
+            } catch (URISyntaxException exception) {
                 throw new ValidateException(label + " must be a valid URI", exception);
             }
         }

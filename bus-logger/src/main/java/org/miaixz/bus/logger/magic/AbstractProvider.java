@@ -35,7 +35,7 @@ import org.miaixz.bus.logger.Provider;
 public abstract class AbstractProvider implements Provider, Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852286301053L;
+    private static final long serialVersionUID = 2538909201251L;
 
     /**
      * The fully qualified class name of this abstract provider.

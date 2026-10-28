@@ -37,7 +37,7 @@ import org.miaixz.bus.image.galaxy.data.ValidationResult;
 public class ImageServiceException extends IOException {
 
     @Serial
-    private static final long serialVersionUID = 2852276570267L;
+    private static final long serialVersionUID = 2556325001121L;
 
     /**
      * The rsp value.

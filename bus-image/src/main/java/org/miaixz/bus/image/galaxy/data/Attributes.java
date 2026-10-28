@@ -49,7 +49,7 @@ import org.miaixz.bus.logger.Logger;
 public class Attributes implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852260209995L;
+    private static final long serialVersionUID = 2556180001128L;
 
     /**
      * Coercion mode constant
@@ -469,26 +469,20 @@ public class Attributes implements Serializable {
     public static void unifyCharacterSets(Attributes... attrsList) {
         if (attrsList.length == 0)
             return;
-        SpecificCharacterSet utf8 = SpecificCharacterSet.valueOf("ISO_IR 192");
-        SpecificCharacterSet commonCS = attrsList[0].getSpecificCharacterSet();
-        if (!commonCS.equals(utf8)) {
-            for (int i = 1; i < attrsList.length; i++) {
-                SpecificCharacterSet cs = attrsList[i].getSpecificCharacterSet();
-                if (!(cs.equals(commonCS) || cs.isASCII() && commonCS.containsASCII())) {
-                    if (commonCS.isASCII() && cs.containsASCII())
-                        commonCS = cs;
-                    else {
-                        commonCS = utf8;
-                        break;
-                    }
-                }
-            }
-        }
+        List<Set<SpecificCharacterSet>> cssOfItems = new ArrayList<>(attrsList.length);
+        SpecificCharacterSet commonCS = null;
         for (Attributes attrs : attrsList) {
             SpecificCharacterSet cs = attrs.getSpecificCharacterSet();
-            if (!(cs.equals(commonCS))) {
-                if (!cs.isASCII() || !commonCS.containsASCII())
-                    attrs.decodeStringValuesUsingSpecificCharacterSet();
+            Set<SpecificCharacterSet> css = attrs.getSpecificCharacterSetsOfItems(new HashSet<>());
+            cssOfItems.add(css);
+            commonCS = SpecificCharacterSet
+                    .common(commonCS != null ? SpecificCharacterSet.common(commonCS, cs) : cs, css);
+        }
+        for (int i = 0; i < attrsList.length; i++) {
+            Attributes attrs = attrsList[i];
+            SpecificCharacterSet cs = attrs.getSpecificCharacterSet();
+            if (!cs.contains(commonCS) || !commonCS.containedByAll(cssOfItems.get(i))) {
+                attrs.decodeStringValuesUsingSpecificCharacterSet(true);
                 attrs.setString(Tag.SpecificCharacterSet, VR.CS, commonCS.toCodes());
             }
         }
@@ -874,16 +868,21 @@ public class Attributes implements Serializable {
 
     /**
      * Decodes string values with the specific character set
+     *
+     * @param removeSpecificCharacterSetFromItems whether to remove explicit character sets from nested items
      */
-    private void decodeStringValuesUsingSpecificCharacterSet() {
+    private void decodeStringValuesUsingSpecificCharacterSet(boolean removeSpecificCharacterSetFromItems) {
         Object value;
         VR vr;
         SpecificCharacterSet cs = getSpecificCharacterSet();
         for (int i = 0; i < size; i++) {
             value = values[i];
             if (value instanceof Sequence) {
-                for (Attributes item : (Sequence) value)
-                    item.decodeStringValuesUsingSpecificCharacterSet();
+                for (Attributes item : (Sequence) value) {
+                    item.decodeStringValuesUsingSpecificCharacterSet(removeSpecificCharacterSetFromItems);
+                    if (removeSpecificCharacterSetFromItems)
+                        item.remove(Tag.SpecificCharacterSet);
+                }
             } else if ((vr = vrs[i]).useSpecificCharacterSet())
                 if (value instanceof byte[])
                     values[i] = vr.toStrings((byte[]) value, bigEndian, cs);
@@ -3200,8 +3199,27 @@ public class Attributes implements Serializable {
      */
     public void setSpecificCharacterSet(String... codes) {
         ensureModifiable();
-        decodeStringValuesUsingSpecificCharacterSet();
+        decodeStringValuesUsingSpecificCharacterSet(false);
         setString(Tag.SpecificCharacterSet, VR.CS, codes);
+    }
+
+    /**
+     * Collects explicit specific character sets from nested sequence items.
+     *
+     * @param css the set to populate
+     * @return the populated set
+     */
+    public Set<SpecificCharacterSet> getSpecificCharacterSetsOfItems(Set<SpecificCharacterSet> css) {
+        for (int i = 0; i < size; i++) {
+            if (values[i] instanceof Sequence) {
+                for (Attributes item : (Sequence) values[i]) {
+                    if (item.containsSpecificCharacterSet)
+                        css.add(item.getSpecificCharacterSet());
+                    item.getSpecificCharacterSetsOfItems(css);
+                }
+            }
+        }
+        return css;
     }
 
     /**
@@ -4425,7 +4443,7 @@ public class Attributes implements Serializable {
                                     + Arrays.toString(other.getSpecificCharacterSet().toCodes()) + " not compatible");
                 }
                 if (updateSpecificCharacterSet) {
-                    decodeStringValuesUsingSpecificCharacterSet();
+                    decodeStringValuesUsingSpecificCharacterSet(false);
                 } else {
                     decodeStringValue = true;
                 }

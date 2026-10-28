@@ -616,7 +616,7 @@ public class OpenBsdOSProcess extends AbstractOSProcess {
     public long getSoftOpenFileLimit() {
         if (getProcessID() == this.os.getProcessId()) {
             final Resource.Rlimit rlimit = new Resource.Rlimit();
-            OpenBsdLibc.INSTANCE.getrlimit(OpenBsdLibc.RLIMIT_NOFILE, rlimit);
+            OpenBsdLibc.INSTANCE.getrlimit(Normal._8, rlimit);
             return rlimit.rlim_cur;
         } else {
             return -1L; // not supported
@@ -632,7 +632,7 @@ public class OpenBsdOSProcess extends AbstractOSProcess {
     public long getHardOpenFileLimit() {
         if (getProcessID() == this.os.getProcessId()) {
             final Resource.Rlimit rlimit = new Resource.Rlimit();
-            OpenBsdLibc.INSTANCE.getrlimit(OpenBsdLibc.RLIMIT_NOFILE, rlimit);
+            OpenBsdLibc.INSTANCE.getrlimit(Normal._8, rlimit);
             return rlimit.rlim_max;
         } else {
             return -1L; // not supported

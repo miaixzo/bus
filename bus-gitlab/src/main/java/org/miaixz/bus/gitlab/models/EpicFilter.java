@@ -43,7 +43,7 @@ import org.miaixz.bus.gitlab.support.JacksonJsonEnumCodec;
 public class EpicFilter implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852252738550L;
+    private static final long serialVersionUID = 2550355000001L;
 
     /**
      * The author id value.

@@ -25,10 +25,10 @@ import java.util.List;
 import com.sun.jna.Native;
 
 import org.miaixz.bus.core.lang.Charset;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.Builder;
 import org.miaixz.bus.health.builtin.software.OSSession;
-import org.miaixz.bus.health.unix.shared.jna.CLibrary;
 import org.miaixz.bus.health.unix.shared.jna.FreeBsdLibc;
 
 /**
@@ -64,7 +64,7 @@ public class Who {
         try {
             // Iterate
             while ((ut = LIBC.getutxent()) != null) {
-                if (ut.ut_type == CLibrary.USER_PROCESS || ut.ut_type == CLibrary.LOGIN_PROCESS) {
+                if (ut.ut_type == Normal._4 || ut.ut_type == FreeBsdLibc.LOGIN_PROCESS) {
                     String user = Native.toString(ut.ut_user, Charset.UTF_8);
                     String device = Native.toString(ut.ut_line, Charset.UTF_8);
                     String host = Native.toString(ut.ut_host, Charset.UTF_8);

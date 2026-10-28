@@ -47,7 +47,7 @@ import org.miaixz.bus.core.xyz.*;
 public class BeanConverter implements Converter, Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852265579700L;
+    private static final long serialVersionUID = 2536195000001L;
 
     /**
      * Singleton instance with default copy options.

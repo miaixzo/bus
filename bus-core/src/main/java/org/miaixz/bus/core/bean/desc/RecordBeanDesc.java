@@ -37,7 +37,7 @@ import org.miaixz.bus.core.xyz.ModifierKit;
 public class RecordBeanDesc extends AbstractBeanDesc {
 
     @Serial
-    private static final long serialVersionUID = 2852227223863L;
+    private static final long serialVersionUID = 2535331335889L;
 
     /**
      * Constructs a {@code RecordBeanDesc} for the given Record class.

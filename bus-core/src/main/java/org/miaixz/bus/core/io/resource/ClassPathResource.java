@@ -39,7 +39,7 @@ import org.miaixz.bus.core.xyz.*;
 public class ClassPathResource extends UrlResource {
 
     @Serial
-    private static final long serialVersionUID = 2852230779720L;
+    private static final long serialVersionUID = 2536589206906L;
 
     /**
      * The path of the resource relative to the ClassPath.

@@ -1,0 +1,143 @@
+/*
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~                                                                           ~
+ ~ Copyright (c) 2015-2026 miaixz.org and other contributors.                ~
+ ~                                                                           ~
+ ~ Licensed under the Apache License, Version 2.0 (the "License");           ~
+ ~ you may not use this file except in compliance with the License.          ~
+ ~ You may obtain a copy of the License at                                   ~
+ ~                                                                           ~
+ ~      https://www.apache.org/licenses/LICENSE-2.0                          ~
+ ~                                                                           ~
+ ~ Unless required by applicable law or agreed to in writing, software       ~
+ ~ distributed under the License is distributed on an "AS IS" BASIS,         ~
+ ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  ~
+ ~ See the License for the specific language governing permissions and       ~
+ ~ limitations under the License.                                            ~
+ ~                                                                           ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+*/
+package org.miaixz.bus.cortex.setting.rollout;
+
+import java.util.List;
+
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.SuperBuilder;
+
+/**
+ * Gray release rule definition.
+ *
+ * @author Kimi Liu
+ */
+@Getter
+@Setter
+@SuperBuilder
+public class GrayRule {
+
+    /**
+     * Gray-routing strategy type.
+     */
+    private Type type;
+
+    /**
+     * Explicit client IP addresses matched by the rule.
+     */
+    private List<String> ipList;
+
+    /**
+     * Inclusive client IP range in string form.
+     */
+    private String ipRange;
+
+    /**
+     * Traffic percentage selected by the rule.
+     */
+    private int percentage;
+
+    /**
+     * Tenant identifier matched by tenant-based rules.
+     */
+    private String tenant;
+
+    /**
+     * Label key used by label-based rules.
+     */
+    private String labelKey;
+
+    /**
+     * Label value used by label-based rules.
+     */
+    private String labelValue;
+
+    /**
+     * Creates an empty gray-release rule.
+     */
+    public GrayRule() {
+        // No initialization required.
+    }
+
+    /**
+     * Validates selectors supported by configuration-instance delivery, not end-user HTTP routing.
+     *
+     * @return this validated rule
+     * @throws IllegalArgumentException if the selector type or its required values are invalid
+     */
+    public GrayRule validate() {
+        if (type == null) {
+            throw new IllegalArgumentException("Gray selector type is required");
+        }
+        boolean valid = switch (type) {
+            case IP_LIST -> ipList != null && !ipList.isEmpty()
+                    && ipList.stream().allMatch(ip -> ip != null && !ip.isBlank());
+            case IP_RANGE -> ipRange != null && new GrayRuleMatcher().validRange(ipRange);
+            case PERCENTAGE -> percentage >= 0 && percentage <= 100;
+            case TENANT -> tenant != null && !tenant.isBlank();
+            case LABEL -> labelKey != null && !labelKey.isBlank() && labelValue != null;
+        };
+        if (!valid) {
+            throw new IllegalArgumentException("Invalid configuration-instance gray selector");
+        }
+        return this;
+    }
+
+    /**
+     * Creates an independent rule copy.
+     *
+     * @return detached selector
+     */
+    public GrayRule copy() {
+        return GrayRule.builder().type(type).ipList(ipList == null ? null : List.copyOf(ipList)).ipRange(ipRange)
+                .percentage(percentage).tenant(tenant).labelKey(labelKey).labelValue(labelValue).build();
+    }
+
+    /**
+     * Supported configuration-instance selectors.
+     *
+     * @author Kimi Liu
+     */
+    public enum Type {
+        /**
+         * Explicit instance addresses.
+         */
+        IP_LIST,
+        /**
+         * Inclusive IPv4 range.
+         */
+        IP_RANGE,
+        /**
+         * Stable instance percentage.
+         */
+        PERCENTAGE,
+        /**
+         * Authenticated tenant.
+         */
+        TENANT,
+        /**
+         * Trusted instance label.
+         */
+        LABEL
+
+    }
+
+}

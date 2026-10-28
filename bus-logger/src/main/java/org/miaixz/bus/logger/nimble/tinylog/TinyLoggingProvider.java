@@ -41,7 +41,7 @@ import org.miaixz.bus.logger.magic.AbstractProvider;
 public class TinyLoggingProvider extends AbstractProvider {
 
     @Serial
-    private static final long serialVersionUID = 2852287656777L;
+    private static final long serialVersionUID = 2538950000001L;
 
     /**
      * The stack depth, which is increased by two layers due to encapsulation. This value is used to correctly obtain

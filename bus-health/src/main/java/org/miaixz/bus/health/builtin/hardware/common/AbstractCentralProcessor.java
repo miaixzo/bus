@@ -26,6 +26,7 @@ import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
+import org.miaixz.bus.core.lang.tuple.Triplet;
 import org.miaixz.bus.core.lang.tuple.Tuple;
 import org.miaixz.bus.health.Memoizer;
 import org.miaixz.bus.health.Parsing;
@@ -162,6 +163,22 @@ public abstract class AbstractCentralProcessor implements CentralProcessor {
     }
 
     /**
+     * Decodes the family, model and stepping from an x86 processor signature returned in EAX by CPUID leaf 1.
+     *
+     * @param cpuid the processor signature
+     * @return a triplet containing the family, model and stepping
+     */
+    protected static Triplet<Integer, Integer, Integer> cpuidToFamilyModelStepping(int cpuid) {
+        int baseFamily = cpuid >> 8 & 0xf;
+        int family = baseFamily == 0xf ? baseFamily + (cpuid >> 20 & 0xff) : baseFamily;
+        int model = cpuid >> 4 & 0xf;
+        if (baseFamily == 0x6 || baseFamily == 0xf) {
+            model |= cpuid >> 12 & 0xf0;
+        }
+        return Triplet.of(family, model, cpuid & 0xf);
+    }
+
+    /**
      * Creates a Processor ID by encoding the stepping, model, family, feature flags, and optional hardware
      * capabilities.
      *
@@ -187,9 +204,13 @@ public abstract class AbstractCentralProcessor implements CentralProcessor {
         // 19:16,7:4 – Model
         processorIdBytes |= (modelL & 0xf) << 4;
         processorIdBytes |= (modelL & 0xf0) << 12; // shift high 4 bits
-        // 27:20,11:8 – Family
-        processorIdBytes |= (familyL & 0xf) << 8;
-        processorIdBytes |= (familyL & 0xff0) << 16; // shift high 8 bits
+        // 27:20,11:8 – Family: a family above 15 is a base family of 15 plus the extended family
+        if (familyL > 0xf) {
+            processorIdBytes |= 0xfL << 8;
+            processorIdBytes |= (familyL - 0xf & 0xff) << 20;
+        } else {
+            processorIdBytes |= familyL << 8;
+        }
         // 13:12 – Processor Type, assume 0
         if (hwcap != 0) {
             processorIdBytes |= hwcap << 32;

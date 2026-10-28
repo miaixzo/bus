@@ -27,6 +27,8 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
+import org.miaixz.bus.core.xyz.DateKit;
+
 /**
  * Result of a health check probe.
  *
@@ -58,14 +60,14 @@ public class Status {
     private String source;
 
     /**
-     * Probe timestamp in epoch milliseconds.
-     */
-    private long timestamp;
-
-    /**
      * Logical lifecycle state derived from the probe result.
      */
     private String state;
+
+    /**
+     * Probe timestamp in epoch milliseconds.
+     */
+    private long timestamp;
 
     /**
      * Optional structured probe details.
@@ -104,7 +106,7 @@ public class Status {
         r.message = "OK";
         r.source = source;
         r.state = Health.UP.name();
-        r.timestamp = System.currentTimeMillis();
+        r.timestamp = DateKit.current();
         return r;
     }
 
@@ -132,7 +134,7 @@ public class Status {
         r.message = message;
         r.source = source;
         r.state = Health.DOWN.name();
-        r.timestamp = System.currentTimeMillis();
+        r.timestamp = DateKit.current();
         return r;
     }
 
@@ -155,32 +157,79 @@ public class Status {
 
     /**
      * Health lifecycle reported by trusted probes.
+     *
+     * @author Kimi Liu
      */
     public enum Health {
+
         /**
-         * The service instance is reachable and healthy.
+         * The instance has been retired.
          */
-        UP,
+        DELETED(-1),
         /**
-         * The service instance is unreachable or unhealthy.
+         * The instance is administratively disabled.
          */
-        DOWN,
+        DISABLED(0),
         /**
-         * No reliable probe result is currently available.
+         * The instance is reachable and healthy.
          */
-        UNKNOWN,
+        UP(1),
         /**
-         * The service instance is still starting and is not ready for normal traffic.
+         * The instance is unreachable or unhealthy.
          */
-        STARTING,
+        DOWN(2),
         /**
-         * The service instance has intentionally been removed from normal traffic for maintenance.
+         * No reliable probe result is available.
          */
-        MAINTENANCE
+        UNKNOWN(3),
+        /**
+         * The instance is starting and not ready for normal traffic.
+         */
+        STARTING(4),
+        /**
+         * The instance is intentionally excluded from normal traffic.
+         */
+        MAINTENANCE(5);
+
+        /**
+         * Persistent value stored in the inherited instance status.
+         */
+        private final int key;
+
+        /**
+         * Creates one persistent health status.
+         *
+         * @param key persistent integer value
+         */
+        Health(int key) {
+            this.key = key;
+        }
+
+        /**
+         * Returns the persistent integer value.
+         *
+         * @return persistent status
+         */
+        public int getKey() {
+            return key;
+        }
+
+        /**
+         * Tests an inherited instance status against this health status.
+         *
+         * @param status persistent status, possibly null
+         * @return whether the values match
+         */
+        public boolean matches(Integer status) {
+            return status != null && status == key;
+        }
+
     }
 
     /**
      * Lifecycle state exposed by managed resources.
+     *
+     * @author Kimi Liu
      */
     public enum Resource {
         /**
@@ -195,10 +244,13 @@ public class Status {
          * The resource has been archived and is no longer active.
          */
         ARCHIVED
+
     }
 
     /**
      * Result of applying a revision to a target.
+     *
+     * @author Kimi Liu
      */
     public enum Apply {
         /**
@@ -217,10 +269,13 @@ public class Status {
          * No reliable target evidence is available for the active revision.
          */
         UNKNOWN
+
     }
 
     /**
      * Availability of a projected capability or target.
+     *
+     * @author Kimi Liu
      */
     public enum Availability {
         /**
@@ -235,6 +290,7 @@ public class Status {
          * Availability cannot be established from reliable evidence.
          */
         UNKNOWN
+
     }
 
 }

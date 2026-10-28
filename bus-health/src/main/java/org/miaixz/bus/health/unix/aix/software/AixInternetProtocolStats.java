@@ -61,8 +61,8 @@ public class AixInternetProtocolStats extends AbstractInternetProtocolStats {
         for (perfstat_protocol_t stat : ipstats.get()) {
             if (Protocol.TCP.name.equals(Native.toString(stat.name))) {
                 return new InternetProtocolStats.TcpStats(stat.u.tcp.established, stat.u.tcp.initiated,
-                        stat.u.tcp.accepted, stat.u.tcp.dropped, stat.u.tcp.dropped, stat.u.tcp.opackets,
-                        stat.u.tcp.ipackets, 0L, stat.u.tcp.ierrors, 0L);
+                        stat.u.tcp.accepted, 0L, stat.u.tcp.dropped, stat.u.tcp.opackets, stat.u.tcp.ipackets, 0L,
+                        stat.u.tcp.ierrors, 0L);
             }
         }
         return new InternetProtocolStats.TcpStats(0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L);
@@ -78,7 +78,7 @@ public class AixInternetProtocolStats extends AbstractInternetProtocolStats {
         for (perfstat_protocol_t stat : ipstats.get()) {
             if (Protocol.UDP.name.equals(Native.toString(stat.name))) {
                 return new InternetProtocolStats.UdpStats(stat.u.udp.opackets, stat.u.udp.ipackets,
-                        stat.u.udp.no_socket, stat.u.udp.ierrors);
+                        stat.u.udp.no_socket, 0L);
             }
         }
         return new InternetProtocolStats.UdpStats(0L, 0L, 0L, 0L);

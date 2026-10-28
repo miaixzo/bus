@@ -219,7 +219,7 @@ public interface Order extends org.miaixz.bus.core.Order {
     class SimpleOrder implements Order, Serializable {
 
         @Serial
-        private static final long serialVersionUID = 2852292629090L;
+        private static final long serialVersionUID = 2551580000001L;
 
         /**
          * Sort direction for this order item.

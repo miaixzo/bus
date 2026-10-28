@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.image.metric.hl7.net;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.text.ParsePosition;
 import java.util.Arrays;
@@ -32,6 +33,9 @@ import org.miaixz.bus.image.metric.hl7.HL7Segment;
  * @author Kimi Liu
  */
 public class UnparsedHL7Message implements Serializable {
+
+    @Serial
+    private static final long serialVersionUID = 2556288802263L;
 
     /**
      * The prev serial no value.

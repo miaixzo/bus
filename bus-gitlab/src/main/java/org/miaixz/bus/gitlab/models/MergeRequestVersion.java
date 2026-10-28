@@ -33,7 +33,7 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class MergeRequestVersion implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852265139183L;
+    private static final long serialVersionUID = 2550883152251L;
 
     /**
      * The id value.

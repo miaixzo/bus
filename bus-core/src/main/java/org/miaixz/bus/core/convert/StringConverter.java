@@ -21,9 +21,13 @@ package org.miaixz.bus.core.convert;
 
 import java.io.Serial;
 import java.lang.reflect.Type;
+import java.sql.Blob;
+import java.sql.Clob;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TimeZone;
+
+import org.w3c.dom.Node;
 
 import org.miaixz.bus.core.center.function.FunctionX;
 import org.miaixz.bus.core.convert.stringer.BlobStringer;
@@ -40,7 +44,7 @@ import org.miaixz.bus.core.xyz.XmlKit;
 public class StringConverter extends AbstractConverter {
 
     @Serial
-    private static final long serialVersionUID = 2852271992351L;
+    private static final long serialVersionUID = 2536308902221L;
 
     /**
      * Custom string conversion rules keyed by the target source type.
@@ -90,11 +94,11 @@ public class StringConverter extends AbstractConverter {
 
         if (value instanceof TimeZone) {
             return ((TimeZone) value).getID();
-        } else if (value instanceof org.w3c.dom.Node) {
-            return XmlKit.toString((org.w3c.dom.Node) value);
-        } else if (value instanceof java.sql.Clob) {
+        } else if (value instanceof Node) {
+            return XmlKit.toString((Node) value);
+        } else if (value instanceof Clob) {
             return ClobStringer.INSTANCE.apply(value);
-        } else if (value instanceof java.sql.Blob) {
+        } else if (value instanceof Blob) {
             return BlobStringer.INSTANCE.apply(value);
         } else if (value instanceof Type) {
             return ((Type) value).getTypeName();

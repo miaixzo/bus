@@ -33,7 +33,7 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class ProtectedTag implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852275572097L;
+    private static final long serialVersionUID = 2551130505001L;
 
     /**
      * The name value.
@@ -111,7 +111,7 @@ public class ProtectedTag implements Serializable {
     public static class CreateAccessLevel implements Serializable {
 
         @Serial
-        private static final long serialVersionUID = 2852275621375L;
+        private static final long serialVersionUID = 2551132656858L;
 
         /**
          * The access level value.

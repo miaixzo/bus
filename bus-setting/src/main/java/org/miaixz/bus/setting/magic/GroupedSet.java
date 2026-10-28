@@ -52,7 +52,7 @@ import org.miaixz.bus.core.xyz.*;
 public class GroupedSet extends HashMap<String, LinkedHashSet<String>> {
 
     @Serial
-    private static final long serialVersionUID = 2852227976051L;
+    private static final long serialVersionUID = 2552520813326L;
 
     /**
      * The characters that surround a group name (e.g., '[' and ']').

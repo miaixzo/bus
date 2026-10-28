@@ -48,7 +48,7 @@ import tools.jackson.databind.node.ValueNode;
 public abstract class AbstractIssue implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852235017309L;
+    private static final long serialVersionUID = 2550131000123L;
 
     /**
      * The references value.
@@ -338,7 +338,7 @@ public abstract class AbstractIssue implements Serializable {
     public static class TaskCompletionStatus implements Serializable {
 
         @Serial
-        private static final long serialVersionUID = 2852235115381L;
+        private static final long serialVersionUID = 2550133150001L;
 
         /**
          * The count value.

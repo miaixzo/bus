@@ -5464,47 +5464,6 @@
       ],
       "methods": [
         {
-          "name": "awaitTermination",
-          "parameterTypes": [
-            "long",
-            "java.util.concurrent.TimeUnit"
-          ]
-        },
-        {
-          "name": "blockingStub",
-          "parameterTypes": []
-        },
-        {
-          "name": "connect",
-          "parameterTypes": [
-            "java.time.Duration"
-          ]
-        },
-        {
-          "name": "futureStub",
-          "parameterTypes": []
-        },
-        {
-          "name": "getRawChannel",
-          "parameterTypes": []
-        },
-        {
-          "name": "getServerCapabilities",
-          "parameterTypes": []
-        },
-        {
-          "name": "healthCheck",
-          "parameterTypes": []
-        },
-        {
-          "name": "isShutdown",
-          "parameterTypes": []
-        },
-        {
-          "name": "isTerminated",
-          "parameterTypes": []
-        },
-        {
           "name": "newCloudServiceStubs",
           "parameterTypes": []
         },
@@ -5513,14 +5472,6 @@
           "parameterTypes": [
             "io.temporal.serviceclient.CloudServiceStubsOptions"
           ]
-        },
-        {
-          "name": "shutdown",
-          "parameterTypes": []
-        },
-        {
-          "name": "shutdownNow",
-          "parameterTypes": []
         }
       ]
     },
@@ -5660,47 +5611,6 @@
       ],
       "methods": [
         {
-          "name": "awaitTermination",
-          "parameterTypes": [
-            "long",
-            "java.util.concurrent.TimeUnit"
-          ]
-        },
-        {
-          "name": "blockingStub",
-          "parameterTypes": []
-        },
-        {
-          "name": "connect",
-          "parameterTypes": [
-            "java.time.Duration"
-          ]
-        },
-        {
-          "name": "futureStub",
-          "parameterTypes": []
-        },
-        {
-          "name": "getRawChannel",
-          "parameterTypes": []
-        },
-        {
-          "name": "getServerCapabilities",
-          "parameterTypes": []
-        },
-        {
-          "name": "healthCheck",
-          "parameterTypes": []
-        },
-        {
-          "name": "isShutdown",
-          "parameterTypes": []
-        },
-        {
-          "name": "isTerminated",
-          "parameterTypes": []
-        },
-        {
           "name": "newInstance",
           "parameterTypes": []
         },
@@ -5719,14 +5629,6 @@
           "parameterTypes": [
             "io.temporal.serviceclient.OperatorServiceStubsOptions"
           ]
-        },
-        {
-          "name": "shutdown",
-          "parameterTypes": []
-        },
-        {
-          "name": "shutdownNow",
-          "parameterTypes": []
         }
       ]
     },
@@ -5889,48 +5791,7 @@
       ],
       "methods": [
         {
-          "name": "awaitTermination",
-          "parameterTypes": [
-            "long",
-            "java.util.concurrent.TimeUnit"
-          ]
-        },
-        {
-          "name": "blockingStub",
-          "parameterTypes": []
-        },
-        {
-          "name": "connect",
-          "parameterTypes": [
-            "java.time.Duration"
-          ]
-        },
-        {
-          "name": "futureStub",
-          "parameterTypes": []
-        },
-        {
           "name": "getOptions",
-          "parameterTypes": []
-        },
-        {
-          "name": "getRawChannel",
-          "parameterTypes": []
-        },
-        {
-          "name": "getServerCapabilities",
-          "parameterTypes": []
-        },
-        {
-          "name": "healthCheck",
-          "parameterTypes": []
-        },
-        {
-          "name": "isShutdown",
-          "parameterTypes": []
-        },
-        {
-          "name": "isTerminated",
           "parameterTypes": []
         },
         {
@@ -5980,14 +5841,6 @@
           "parameterTypes": [
             "io.temporal.serviceclient.WorkflowServiceStubsOptions"
           ]
-        },
-        {
-          "name": "shutdown",
-          "parameterTypes": []
-        },
-        {
-          "name": "shutdownNow",
-          "parameterTypes": []
         }
       ]
     },
@@ -7641,6 +7494,60 @@
         },
         {
           "name": "toString",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "io.temporal.serviceclient.ServiceStubs",
+      "methods": [
+        {
+          "name": "awaitTermination",
+          "parameterTypes": [
+            "long",
+            "java.util.concurrent.TimeUnit"
+          ]
+        },
+        {
+          "name": "blockingStub",
+          "parameterTypes": []
+        },
+        {
+          "name": "connect",
+          "parameterTypes": [
+            "java.time.Duration"
+          ]
+        },
+        {
+          "name": "futureStub",
+          "parameterTypes": []
+        },
+        {
+          "name": "getRawChannel",
+          "parameterTypes": []
+        },
+        {
+          "name": "getServerCapabilities",
+          "parameterTypes": []
+        },
+        {
+          "name": "healthCheck",
+          "parameterTypes": []
+        },
+        {
+          "name": "isShutdown",
+          "parameterTypes": []
+        },
+        {
+          "name": "isTerminated",
+          "parameterTypes": []
+        },
+        {
+          "name": "shutdown",
+          "parameterTypes": []
+        },
+        {
+          "name": "shutdownNow",
           "parameterTypes": []
         }
       ]

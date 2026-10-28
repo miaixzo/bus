@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.cortex;
 
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.cortex.health.TcpProber;
 import org.miaixz.bus.cortex.registry.HealthProbeScheduler;
@@ -33,18 +34,18 @@ public class Builder {
     /**
      * Default health probe interval in milliseconds (30 s). Recommended value for {@link HealthProbeScheduler}.
      */
-    public static final long DEFAULT_HEALTH_INTERVAL_MS = 30000L;
+    public static final long DEFAULT_HEALTH_INTERVAL_MS = Normal._30 * (long) Normal._1000;
 
     /**
      * Default health probe timeout in milliseconds (5 s). Used by {@link TcpProber} and recommended for
      * {@link HealthProbeScheduler}.
      */
-    public static final long DEFAULT_HEALTH_TIMEOUT_MS = 5000L;
+    public static final long DEFAULT_HEALTH_TIMEOUT_MS = Normal._5 * (long) Normal._1000;
 
     /**
      * Default security-token expiry in seconds (24 h).
      */
-    public static final long DEFAULT_TOKEN_EXPIRE_SECONDS = 86400L;
+    public static final long DEFAULT_TOKEN_EXPIRE_SECONDS = Normal._24 * (long) Normal._60 * Normal._60;
 
     /**
      * CacheX key prefix for registry entries ({@code reg:v2:}).

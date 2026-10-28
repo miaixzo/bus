@@ -47,7 +47,7 @@ import org.miaixz.bus.crypto.builtin.symmetric.Crypto;
 public class SM4 extends Crypto {
 
     @Serial
-    private static final long serialVersionUID = 2852290629929L;
+    private static final long serialVersionUID = 2539288500001L;
 
     /**
      * Constructs an SM4 encryptor/decryptor with a randomly generated key.

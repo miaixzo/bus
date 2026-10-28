@@ -142,26 +142,6 @@ public class Args {
     public static final String PROP_VALUE = "value";
 
     /**
-     * Populate property: enable created time field.
-     */
-    public static final String POPULATE_CREATED = "created";
-
-    /**
-     * Populate property: enable modified time field.
-     */
-    public static final String POPULATE_MODIFIED = "modified";
-
-    /**
-     * Populate property: enable creator field.
-     */
-    public static final String POPULATE_CREATOR = "creator";
-
-    /**
-     * Populate property: enable modifier field.
-     */
-    public static final String POPULATE_MODIFIER = "modifier";
-
-    /**
      * Audit property: slow SQL threshold in milliseconds.
      */
     public static final String AUDIT_SLOW_SQL_THRESHOLD = "slowSqlThreshold";

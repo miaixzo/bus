@@ -109,7 +109,6 @@ public final class Attributes {
      * @param <T>        value type
      * @return value or {@code null}
      */
-    @SuppressWarnings("unchecked")
     public <T> T get(AttributeDescriptor<T> descriptor) {
         Objects.requireNonNull(descriptor, "Attribute descriptor must not be null");
         for (Value<?> value : values) {

@@ -20,6 +20,7 @@
 package org.miaixz.bus.core.io.sink;
 
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.nio.channels.GatheringByteChannel;
 import java.nio.channels.WritableByteChannel;
 
@@ -53,7 +54,7 @@ public class ChannelSink implements Sink {
     /**
      * Reusable gathering write buffers.
      */
-    private final java.nio.ByteBuffer[] buffers = new java.nio.ByteBuffer[GATHERING_VIEW_COUNT];
+    private final ByteBuffer[] buffers = new ByteBuffer[GATHERING_VIEW_COUNT];
 
     /**
      * Creates a channel backed sink.
@@ -163,7 +164,7 @@ public class ChannelSink implements Sink {
     private void writeSingle(Buffer source, long byteCount) throws IOException {
         while (byteCount > 0) {
             timeout.throwIfReached();
-            java.nio.ByteBuffer buffer = source.nioBuffer((int) Math.min(byteCount, Integer.MAX_VALUE));
+            ByteBuffer buffer = source.nioBuffer((int) Math.min(byteCount, Integer.MAX_VALUE));
             int written = channel.write(buffer);
             if (written <= 0) {
                 throw new IOException("channel write returned " + written);

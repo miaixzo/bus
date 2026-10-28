@@ -20,6 +20,7 @@
 package org.miaixz.bus.image.plugin;
 
 import java.io.*;
+import java.io.Serial;
 import java.net.Socket;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
@@ -42,6 +43,9 @@ import org.miaixz.bus.image.metric.hl7.MLLPRelease;
  * @author Kimi Liu
  */
 public class HL7Snd extends Device {
+
+    @Serial
+    private static final long serialVersionUID = 2556512969018L;
 
     /**
      * The local network connection configuration.

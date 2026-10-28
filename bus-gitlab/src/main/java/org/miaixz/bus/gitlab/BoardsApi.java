@@ -81,7 +81,7 @@ public class BoardsApi extends AbstractApi {
      */
     public List<Board> getProjectIssueBoards(Object projectIdOrPath, int page, int perPage) throws RelevantException {
         Response response = get(
-                jakarta.ws.rs.core.Response.Status.OK,
+                Response.Status.OK,
                 getPageQueryParams(page, perPage),
                 "projects",
                 getProjectIdOrPath(projectIdOrPath),
@@ -282,7 +282,7 @@ public class BoardsApi extends AbstractApi {
     public List<BoardList> getProjectIssueBoardLists(Object projectIdOrPath, Long boardId, int page, int perPage)
             throws RelevantException {
         Response response = get(
-                jakarta.ws.rs.core.Response.Status.OK,
+                Response.Status.OK,
                 getPageQueryParams(page, perPage),
                 "projects",
                 getProjectIdOrPath(projectIdOrPath),
@@ -496,7 +496,7 @@ public class BoardsApi extends AbstractApi {
      */
     public List<Board> getGroupIssueBoards(Object groupIdOrPath, int page, int perPage) throws RelevantException {
         Response response = get(
-                jakarta.ws.rs.core.Response.Status.OK,
+                Response.Status.OK,
                 getPageQueryParams(page, perPage),
                 "groups",
                 getGroupIdOrPath(groupIdOrPath),
@@ -690,7 +690,7 @@ public class BoardsApi extends AbstractApi {
     public List<BoardList> getGroupIssueBoardLists(Object groupIdOrPath, Long boardId, int page, int perPage)
             throws RelevantException {
         Response response = get(
-                jakarta.ws.rs.core.Response.Status.OK,
+                Response.Status.OK,
                 getPageQueryParams(page, perPage),
                 "groups",
                 getGroupIdOrPath(groupIdOrPath),
@@ -902,7 +902,7 @@ public class BoardsApi extends AbstractApi {
      */
     public List<Board> getGroupEpicBoards(Object groupIdOrPath, int page, int perPage) throws RelevantException {
         Response response = get(
-                jakarta.ws.rs.core.Response.Status.OK,
+                Response.Status.OK,
                 getPageQueryParams(page, perPage),
                 "groups",
                 getGroupIdOrPath(groupIdOrPath),
@@ -1018,7 +1018,7 @@ public class BoardsApi extends AbstractApi {
     public List<BoardList> getGroupEpicBoardLists(Object groupIdOrPath, Long boardId, int page, int perPage)
             throws RelevantException {
         Response response = get(
-                jakarta.ws.rs.core.Response.Status.OK,
+                Response.Status.OK,
                 getPageQueryParams(page, perPage),
                 "groups",
                 getGroupIdOrPath(groupIdOrPath),

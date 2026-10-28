@@ -77,6 +77,16 @@ public class JpegWriteParam {
     private int compressionRatioFactor;
 
     /**
+     * JPEG XL encoder effort, from 1 through 9; higher values favor compression efficiency over encoding speed.
+     */
+    private int jxlEffort = 7;
+
+    /**
+     * JPEG XL decoding-speed tier, from 0 through 7; zero leaves the encoder's default trade-off unchanged.
+     */
+    private int jxlDecodingSpeed;
+
+    /**
      * Creates a new instance.
      *
      * @param type              the type.
@@ -116,7 +126,7 @@ public class JpegWriteParam {
         param.setCompressionQuality(param.losslessCompression ? 0 : param.getCompressionQuality());
         if (type == TransferSyntaxType.JPEG_LOSSLESS) {
             param.setPointTransform(0);
-            if (UID.JPEGLossless.equals(tsuid)) {
+            if (UID.JPEGLossless.uid.equals(tsuid)) {
                 param.setPrediction(6);
             } else {
                 param.setPrediction(1);
@@ -160,6 +170,50 @@ public class JpegWriteParam {
      */
     public int getPointTransform() {
         return pointTransform;
+    }
+
+    /**
+     * Returns the effort passed to the native JPEG XL encoder.
+     *
+     * @return the encoder effort, from 1 through 9; initially 7
+     */
+    public int getJxlEffort() {
+        return jxlEffort;
+    }
+
+    /**
+     * Sets the JPEG XL encoding effort without changing other compression settings.
+     *
+     * @param effort the encoder effort, from 1 through 9
+     * @throws IllegalArgumentException if the effort is outside the supported range
+     */
+    public void setJxlEffort(int effort) {
+        if (effort < 1 || effort > 9) {
+            throw new IllegalArgumentException("JPEG XL effort must be between 1 and 9");
+        }
+        jxlEffort = effort;
+    }
+
+    /**
+     * Returns the decoding-speed tier passed to the native JPEG XL encoder.
+     *
+     * @return the decoding-speed tier, from 0 through 7; initially 0
+     */
+    public int getJxlDecodingSpeed() {
+        return jxlDecodingSpeed;
+    }
+
+    /**
+     * Sets the JPEG XL decoding-speed preference independently of the encoding effort.
+     *
+     * @param decodingSpeed the decoding-speed tier, from 0 through 7
+     * @throws IllegalArgumentException if the tier is outside the supported range
+     */
+    public void setJxlDecodingSpeed(int decodingSpeed) {
+        if (decodingSpeed < 0 || decodingSpeed > 7) {
+            throw new IllegalArgumentException("JPEG XL decoding speed must be between 0 and 7");
+        }
+        jxlDecodingSpeed = decodingSpeed;
     }
 
     /**

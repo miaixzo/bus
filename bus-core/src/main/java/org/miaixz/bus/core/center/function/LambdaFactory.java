@@ -28,23 +28,26 @@ import java.util.Map;
 import org.miaixz.bus.core.center.map.reference.SoftConcurrentMap;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.core.lang.mutable.MutableEntry;
+import org.miaixz.bus.core.lang.tuple.Triplet;
 import org.miaixz.bus.core.xyz.*;
 
 /**
- * Dynamically creates Lambdas in a reflection-like manner, offering performance advantages and avoiding the creation of
- * anonymous inner classes with each Lambda invocation.
+ * Creates functional-interface implementations for instance methods and constructors through {@link LambdaMetafactory}.
+ * Generated implementations are reused through a soft-reference cache keyed by the interface, executable, and effective
+ * receiver or constructor-result type. Garbage collection may discard cached implementations, so callers must not rely
+ * on their identity remaining stable indefinitely. The receiver-based method adaptation used here does not support
+ * static methods.
  *
  * @author Kimi Liu
  */
 public class LambdaFactory {
 
     /**
-     * Cache for storing generated Lambda objects to avoid repeated creation. The key is a {@link MutableEntry}
-     * containing the function interface type and the executable (method or constructor). The value is the generated
-     * Lambda object.
+     * Cache for storing generated Lambda objects to avoid repeated creation. The key contains the function interface,
+     * executable, and effective receiver or constructor-result class, since all three participate in adapting the
+     * generated Lambda. Both composite keys and generated implementations may be softly reclaimed.
      */
-    private static final Map<MutableEntry<Class<?>, Executable>, Object> CACHE = new SoftConcurrentMap<>();
+    private static final Map<Triplet<Class<?>, Executable, Class<?>>, Object> CACHE = new SoftConcurrentMap<>();
 
     /**
      * Creates a lambda factory backed by the shared executable cache.
@@ -72,11 +75,14 @@ public class LambdaFactory {
      * }</pre>
      *
      * @param functionInterfaceType The functional interface type that accepts the Lambda.
-     * @param declaringClass        The type of the class that declares the method.
+     * @param declaringClass        The class used to find the method and adapt its receiver type.
      * @param methodName            The name of the method.
      * @param paramTypes            An array of parameter types for the method.
      * @param <F>                   The type of the functional interface.
      * @return An object of the functional interface type that represents the Lambda.
+     * @throws IllegalArgumentException If no executable can be resolved, or the supplied type is null or is not a
+     *                                  functional interface with one public abstract method.
+     * @throws InternalException        If the executable cannot be adapted or the Lambda cannot be instantiated.
      */
     public static <F> F build(
             final Class<F> functionInterfaceType,
@@ -91,12 +97,16 @@ public class LambdaFactory {
 
     /**
      * Builds a Lambda function based on the provided function interface type and executable (method or constructor).
-     * Invoking the Lambda function is equivalent to executing the corresponding method or constructor.
+     * The executable's declaring class is used as the effective receiver or constructor-result type, including in the
+     * cache key.
      *
      * @param functionInterfaceType The functional interface type that accepts the Lambda.
      * @param executable            The executable object ({@link Constructor} or {@link Method}).
      * @param <F>                   The type of the functional interface.
      * @return An object of the functional interface type that represents the Lambda.
+     * @throws IllegalArgumentException If the interface or executable is null, or the interface does not have one
+     *                                  public abstract method.
+     * @throws InternalException        If the executable cannot be adapted or the Lambda cannot be instantiated.
      */
     public static <F> F build(final Class<F> functionInterfaceType, final Executable executable) {
         return build(functionInterfaceType, executable, null);
@@ -104,14 +114,19 @@ public class LambdaFactory {
 
     /**
      * Builds a Lambda function based on the provided function interface type, executable (method or constructor), and
-     * declaring class. Invoking the Lambda function is equivalent to executing the corresponding method or constructor.
+     * effective receiver or constructor-result class. The same effective class is used for both cache lookup and Lambda
+     * adaptation; explicitly supplying the executable's declaring class is equivalent to supplying null.
      *
      * @param <F>                   The type of the functional interface.
      * @param functionInterfaceType The functional interface type that accepts the Lambda.
      * @param executable            The executable object ({@link Constructor} or {@link Method}).
-     * @param declaringClass        The class where the {@link Executable} is declared. If the method or constructor is
-     *                              defined in a superclass, this is used to specify the subclass.
+     * @param declaringClass        The receiver class for a method or result class for a constructor. A subclass may be
+     *                              supplied for an inherited method. A null value uses the executable's declaring
+     *                              class. The class must be compatible with the executable and functional interface.
      * @return An object of the functional interface type that represents the Lambda.
+     * @throws IllegalArgumentException If the interface or executable is null, or the interface does not have one
+     *                                  public abstract method.
+     * @throws InternalException        If the executable cannot be adapted or the Lambda cannot be instantiated.
      */
     public static <F> F build(
             final Class<F> functionInterfaceType,
@@ -120,10 +135,13 @@ public class LambdaFactory {
         Assert.notNull(functionInterfaceType);
         Assert.notNull(executable);
 
-        final MutableEntry<Class<?>, Executable> cacheKey = new MutableEntry<>(functionInterfaceType, executable);
+        final Class<?> effectiveDeclaringClass = declaringClass == null ? executable.getDeclaringClass()
+                : declaringClass;
+        final Triplet<Class<?>, Executable, Class<?>> cacheKey = Triplet
+                .of(functionInterfaceType, executable, effectiveDeclaringClass);
         return (F) CACHE.computeIfAbsent(
                 cacheKey,
-                key -> doBuildWithoutCache(functionInterfaceType, executable, declaringClass));
+                key -> doBuildWithoutCache(functionInterfaceType, executable, effectiveDeclaringClass));
     }
 
     /**
@@ -134,9 +152,9 @@ public class LambdaFactory {
      * @param <F>            The type of the functional interface.
      * @param funcType       The functional interface type that accepts the Lambda.
      * @param executable     The executable object (method or constructor).
-     * @param declaringClass The class where the {@link Executable} is declared. If the method or constructor is defined
-     *                       in a superclass, this is used to specify the subclass.
+     * @param declaringClass The non-null effective receiver or constructor-result class already selected by the caller.
      * @return An object of the functional interface type that represents the Lambda.
+     * @throws InternalException If linking or instantiating the generated implementation fails.
      */
     private static <F> F doBuildWithoutCache(
             final Class<F> funcType,
@@ -159,10 +177,11 @@ public class LambdaFactory {
      * @param funcType       The functional interface type.
      * @param funcMethod     The method of the functional interface to be implemented.
      * @param executable     The method or constructor to be proxied.
-     * @param declaringClass The class where the {@link Executable} is declared. If the method or constructor is defined
-     *                       in a superclass, this is used to specify the subclass.
+     * @param declaringClass The effective receiver or constructor-result class used to form the instantiated method
+     *                       type.
      * @return A {@link CallSite} representing the Lambda function.
-     * @throws LambdaConversionException If there is an error during Lambda conversion, such as access permissions.
+     * @throws LambdaConversionException If the implementation handle and functional-interface signatures cannot be
+     *                                   linked.
      */
     private static CallSite metaFactory(
             final Class<?> funcType,

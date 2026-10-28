@@ -19,15 +19,15 @@
 */
 package org.miaixz.bus.extra.json;
 
-import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.core.lang.Charset;
-import org.miaixz.bus.core.lang.exception.ValidateException;
-
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Charset;
+import org.miaixz.bus.core.lang.exception.ValidateException;
 
 /**
  * Serializes and deserializes JSON values, which automatically identifies the underlying JSON provider via SPI. This

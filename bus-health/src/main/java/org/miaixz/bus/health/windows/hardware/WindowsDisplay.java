@@ -336,7 +336,9 @@ final class WindowsDisplay extends AbstractDisplay {
     }
 
     /**
-     * {@inheritDoc}
+     * Reads the current mode from the connector snapshot associated with this Windows display.
+     *
+     * @return the connector's current mode, or an empty optional when the connector or mode is unavailable
      */
     @Override
     public Optional<DisplayMode> getCurrentMode() {
@@ -344,7 +346,9 @@ final class WindowsDisplay extends AbstractDisplay {
     }
 
     /**
-     * {@inheritDoc}
+     * Reads the built-in panel classification from the associated Windows connector.
+     *
+     * @return the connector's built-in classification, or an empty optional when no connector is associated
      */
     @Override
     public Optional<Boolean> isBuiltIn() {
@@ -352,7 +356,9 @@ final class WindowsDisplay extends AbstractDisplay {
     }
 
     /**
-     * {@inheritDoc}
+     * Infers the primary-display flag from whether the current mode starts at desktop coordinates {@code (0, 0)}.
+     *
+     * @return the inferred flag, or an empty optional when the current mode is unavailable
      */
     @Override
     public Optional<Boolean> isPrimary() {

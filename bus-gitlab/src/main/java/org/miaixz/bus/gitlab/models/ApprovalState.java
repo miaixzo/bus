@@ -33,7 +33,7 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class ApprovalState implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852236560169L;
+    private static final long serialVersionUID = 2550181088001L;
 
     /**
      * The approval rules overwritten value.

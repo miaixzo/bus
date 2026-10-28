@@ -31,7 +31,7 @@ import org.miaixz.bus.core.basic.normal.Errors;
 public class InternalException extends UncheckedException {
 
     @Serial
-    private static final long serialVersionUID = 2852256005322L;
+    private static final long serialVersionUID = 2536811303651L;
 
     /**
      * Constructs a new InternalException with no detail message.

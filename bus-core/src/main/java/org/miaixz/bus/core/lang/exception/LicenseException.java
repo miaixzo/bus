@@ -31,7 +31,7 @@ import org.miaixz.bus.core.basic.normal.Errors;
 public class LicenseException extends UncheckedException {
 
     @Serial
-    private static final long serialVersionUID = 2852252876910L;
+    private static final long serialVersionUID = 2536822202565L;
 
     /**
      * Constructs a new LicenseException with no detail message.

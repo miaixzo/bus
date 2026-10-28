@@ -37,7 +37,7 @@ import org.miaixz.bus.gitlab.support.JacksonJsonEnumCodec;
 public class AwardEmoji implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852238050300L;
+    private static final long serialVersionUID = 2550213328051L;
 
     /**
      * The id value.

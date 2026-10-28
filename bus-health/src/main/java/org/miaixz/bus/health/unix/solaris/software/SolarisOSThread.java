@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.health.unix.solaris.software;
 
+import com.sun.jna.Native;
 import com.sun.jna.Pointer;
 
 import org.miaixz.bus.core.center.function.SupplierX;
@@ -261,9 +262,9 @@ public class SolarisOSThread extends AbstractOSThread {
                     + usage.pr_stime.tv_nsec.longValue() / 1_000_000L;
             this.contextSwitches = usage.pr_ictx.longValue() + usage.pr_vctx.longValue();
         }
-        this.name = com.sun.jna.Native.toString(info.pr_name);
+        this.name = Native.toString(info.pr_name);
         if (StringKit.isBlank(name)) {
-            this.name = com.sun.jna.Native.toString(info.pr_oldname);
+            this.name = Native.toString(info.pr_oldname);
         }
         return true;
     }

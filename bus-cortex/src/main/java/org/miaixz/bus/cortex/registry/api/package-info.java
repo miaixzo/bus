@@ -18,19 +18,17 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * HTTP API service-definition and runtime-instance registry support.
+ * API service definitions and direct shared-process registration.
  * <p>
- * {@code ApiAssets} defaults its type to API. Optional runtime hints such as beat interval, lease duration and key are
- * carried by the typed {@code ApiAssets.Meta} payload in metadata. {@code ApiRegistry} persists service definitions
- * through the shared {@code StoreBackedRegistry} path and separately projects runtime instances to
- * {@code reg:{tenantId}:instance:{method}:{version}:{fingerprint}} cache keys. When a durable {@code RegistryStore} is
- * present, instance queries read from that store first and warm the cache projection from the returned snapshots.
+ * {@code ApiAssets} supplies exact service identity, method and service version. Registration passes this existing
+ * definition together with {@code org.miaixz.bus.cortex.Instance}; no second instance model or relationship wrapper is
+ * required. The process retains its actual tenant, program version, application ownership and authenticated session.
  * <p>
- * {@code register(service, instance)} upserts the logical service definition and one live instance snapshot.
- * {@code deregisterInstance(tenantId, method, version, fingerprint)} removes one runtime instance while leaving the
- * shared route definition intact. {@code queryInstances(tenantId, method, version)} always scopes reads to the resolved
- * tenantId, rejecting missing or blank tenant identifiers; omitting method and version broadens the scan only within
- * that tenantId.
+ * {@code register(service, instance)} persists the service association using the existing host store context.
+ * {@code queryInstances(tenantId, app_id, method, version)} returns direct process snapshots selected through that
+ * association. {@code deregisterInstance(tenantId, app_id, method, version, checksum)} removes only the registration.
+ * The host owns authoritative process persistence and session maintenance. Cache-only process projections use service
+ * coordinates from ApiAssets and the global {@code reg:process:} namespace.
  *
  * @author Kimi Liu
  */

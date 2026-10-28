@@ -659,7 +659,7 @@ public interface InternetProtocolStats {
             this.localPort = localPort;
             this.foreignAddress = Arrays.copyOf(foreignAddress, foreignAddress.length);
             this.foreignPort = foreignPort;
-            this.state = state;
+            this.state = state == null ? TcpState.UNKNOWN : state;
             this.transmitQueue = transmitQueue;
             this.receiveQueue = receiveQueue;
             this.owningProcessId = owningProcessId;
@@ -721,7 +721,8 @@ public interface InternetProtocolStats {
         /**
          * Gets the connection state (TCP connections only).
          *
-         * @return The connection state if known or relevant, null otherwise.
+         * @return The connection state: {@link TcpState#NONE} for a UDP connection, and {@link TcpState#UNKNOWN} when
+         *         it is not known.
          */
         public TcpState getState() {
             return state;

@@ -36,7 +36,7 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class ParameterizedType implements java.lang.reflect.ParameterizedType, Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852276963509L;
+    private static final long serialVersionUID = 2538083558881L;
 
     /**
      * The actual type arguments for this parameterized type.

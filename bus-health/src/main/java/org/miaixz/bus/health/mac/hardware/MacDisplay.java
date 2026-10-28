@@ -706,7 +706,9 @@ final class MacDisplay extends AbstractDisplay {
     }
 
     /**
-     * {@inheritDoc}
+     * Reads the current mode of the CoreGraphics display matched to this IOKit display.
+     *
+     * @return the matched display's mode, or an empty optional when no unique match or mode is available
      */
     @Override
     public Optional<DisplayMode> getCurrentMode() {
@@ -714,7 +716,9 @@ final class MacDisplay extends AbstractDisplay {
     }
 
     /**
-     * {@inheritDoc}
+     * Returns the captured IOKit built-in flag when available, otherwise uses the matched CoreGraphics display.
+     *
+     * @return the available built-in flag, or an empty optional when neither source provides it
      */
     @Override
     public Optional<Boolean> isBuiltIn() {
@@ -725,7 +729,9 @@ final class MacDisplay extends AbstractDisplay {
     }
 
     /**
-     * {@inheritDoc}
+     * Reads the main-display flag from the CoreGraphics display matched to this IOKit display.
+     *
+     * @return the matched display's main-display flag, or an empty optional when no unique match is available
      */
     @Override
     public Optional<Boolean> isPrimary() {

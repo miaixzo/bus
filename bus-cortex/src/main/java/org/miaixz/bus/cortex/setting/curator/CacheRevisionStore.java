@@ -19,202 +19,177 @@
 */
 package org.miaixz.bus.cortex.setting.curator;
 
-import java.util.ArrayList;
-import java.util.Comparator;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Predicate;
+import java.util.Objects;
+import java.util.Set;
 
 import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.cortex.setting.revision.Revision;
-import org.miaixz.bus.cortex.setting.revision.RevisionNumbers;
 import org.miaixz.bus.cortex.setting.revision.RevisionStore;
 import org.miaixz.bus.extra.json.JsonKit;
 
 /**
- * Cache-backed append-only revision store.
+ * Protected Revision cache; authoritative writes and transactions remain in the host.
  *
  * @author Kimi Liu
  */
-public class CacheRevisionStore implements RevisionStore {
+public final class CacheRevisionStore implements RevisionStore {
 
     /**
-     * Namespace prefix for cached revisions.
+     * Protected serialized cache only.
      */
-    private static final String PREFIX = "cortex:setting:revision:";
-
+    private final CacheX<String, Object> cache;
     /**
-     * Cache used as the append-only revision backend.
+     * Authoritative entity store.
      */
-    private final CacheX<String, Object> cacheX;
+    private final RevisionStore delegate;
 
     /**
-     * Complete host-supplied reachability check; unknown reachability retains every revision.
-     */
-    private final Predicate<Revision> protectedRevision;
-
-    /**
-     * Creates a cache-backed revision store.
+     * Creates a bounded store decorator.
      *
-     * @param cacheX revision cache
+     * @param cache    protected cache
+     * @param delegate authoritative entity source
      */
-    public CacheRevisionStore(CacheX<String, Object> cacheX) {
-        this(cacheX, revision -> true);
+    public CacheRevisionStore(CacheX<String, Object> cache, RevisionStore delegate) {
+        this.cache = Objects.requireNonNull(cache);
+        this.delegate = Objects.requireNonNull(delegate);
     }
 
     /**
-     * Creates a store with an authoritative reference, release, gray, and watch reachability check. The host must
-     * serialize reachability changes with pruning. This cache adapter is not a distributed transaction.
-     */
-    public CacheRevisionStore(CacheX<String, Object> cacheX, Predicate<Revision> protectedRevision) {
-        if (protectedRevision == null) {
-            throw new IllegalArgumentException("Revision reachability policy is required");
-        }
-        this.protectedRevision = protectedRevision;
-        if (cacheX == null) {
-            throw new IllegalArgumentException("Revision cache is required");
-        }
-        this.cacheX = cacheX;
-    }
-
-    /**
-     * Appends one immutable revision.
+     * Reads exact tenant-qualified content.
      *
-     * @param revision revision to append
-     * @return appended revision
+     * @param tenant tenant
+     * @param id     exact identity
+     * @return detached content or absent
      */
     @Override
-    public Revision save(Revision revision) {
-        if (revision == null) {
-            throw new IllegalArgumentException("Revision is required");
-        }
-        String key = key(revision.getTenant_id(), revision.getItem_id(), revision.getRevision());
-        synchronized (cacheX) {
-            if (cacheX.read(key) != null) {
-                throw new IllegalStateException("Revision already exists: " + revision.getRevision());
+    public Revision find(String tenant, String id) {
+        try {
+            Object raw = cache.read(key(tenant, id));
+            if (raw instanceof String json) {
+                Revision value = JsonKit.toPojo(json, Revision.class);
+                check(tenant, id, value);
+                return value;
             }
-            cacheX.write(key, JsonKit.toJsonString(revision), 0L);
+        } catch (RuntimeException unavailable) {
+            /* Authoritative immutable source remains available. */
         }
-        return revision;
+        Revision value = delegate.find(tenant, id);
+        if (value != null) {
+            check(tenant, id, value);
+            put(tenant, id, value);
+        }
+        return value;
     }
 
     /**
-     * Finds one revision by tenant, item, and revision number.
+     * Reads protected cache entries and loads only misses in one authoritative batch; never issues per-record delegate
+     * reads.
      *
-     * @param tenant_id mandatory tenant identifier
-     * @param item_id   item identifier
-     * @param revision  item-scoped revision number
-     * @return matching revision, or {@code null} when absent
+     * @param tenant tenant
+     * @param ids    exact identities
+     * @return detached content
      */
     @Override
-    public Revision find(String tenant_id, String item_id, String revision) {
-        Object value = cacheX.read(key(tenant_id, item_id, revision));
-        if (value instanceof Revision snapshot) {
-            if (!tenant_id.equals(snapshot.getTenant_id()) || !item_id.equals(snapshot.getItem_id())
-                    || !revision.equals(snapshot.getRevision())) {
-                throw new IllegalStateException("Revision store returned mismatched coordinates");
-            }
-            return JsonKit.toPojo(JsonKit.toJsonString(snapshot), Revision.class);
-        }
-        Revision snapshot = value instanceof String json ? JsonKit.toPojo(json, Revision.class) : null;
-        if (snapshot != null && (!tenant_id.equals(snapshot.getTenant_id()) || !item_id.equals(snapshot.getItem_id())
-                || !revision.equals(snapshot.getRevision()))) {
-            throw new IllegalStateException("Revision store returned mismatched coordinates");
-        }
-        return snapshot;
-    }
-
-    /**
-     * Lists revisions for one item in newest-first order.
-     *
-     * @param tenant_id mandatory tenant identifier
-     * @param item_id   item identifier
-     * @return immutable revisions
-     */
-    @Override
-    public List<Revision> query(String tenant_id, String item_id) {
-        Map<String, Object> values = cacheX.scan(prefix(tenant_id, item_id));
-        if (values == null || values.isEmpty()) {
-            return List.of();
-        }
-        List<Revision> revisions = new ArrayList<>(values.size());
-        for (Object value : values.values()) {
-            Revision revision = value instanceof Revision snapshot ? snapshot
-                    : value instanceof String json ? JsonKit.toPojo(json, Revision.class) : null;
-            if (revision != null) {
-                if (!tenant_id.equals(revision.getTenant_id()) || !item_id.equals(revision.getItem_id())) {
-                    throw new IllegalStateException("Revision store returned mismatched coordinates");
+    public List<Revision> findAll(String tenant, Set<String> ids) {
+        if (tenant == null || tenant.isBlank())
+            throw new IllegalArgumentException("Exact store identity required");
+        Set<String> requested = Set.copyOf(ids);
+        Map<String, Revision> result = new LinkedHashMap<>();
+        Set<String> missing = new HashSet<>(requested);
+        for (String id : requested) {
+            try {
+                Object raw = cache.read(key(tenant, id));
+                if (raw instanceof String json) {
+                    Revision value = JsonKit.toPojo(json, Revision.class);
+                    check(tenant, id, value);
+                    result.put(id, value);
+                    missing.remove(id);
                 }
-                revisions.add(JsonKit.toPojo(JsonKit.toJsonString(revision), Revision.class));
+            } catch (RuntimeException unavailable) {
+                /* Invalid or unavailable cache entries remain authoritative batch misses. */
             }
         }
-        revisions.sort(
-                Comparator.comparingLong((Revision value) -> RevisionNumbers.sortKey(value.getRevision())).reversed());
-        return revisions;
+        if (!missing.isEmpty()) {
+            Set<String> seen = new HashSet<>();
+            for (Revision value : delegate.findAll(tenant, Set.copyOf(missing))) {
+                if (!missing.contains(value.getId()) || !seen.add(value.getId()))
+                    throw new IllegalStateException("Unexpected store identity");
+                check(tenant, value.getId(), value);
+                result.put(value.getId(), value);
+                put(tenant, value.getId(), value);
+            }
+        }
+        return List.copyOf(result.values());
     }
 
     /**
-     * Removes unreachable revisions beyond the newest-revision retention boundary.
+     * Validates cache identity.
      *
-     * @param tenant_id    mandatory tenant identifier
-     * @param item_id      item identifier
-     * @param maxRevisions maximum number of newest revisions to retain
+     * @param tenant tenant
+     * @param id     exact identity
+     * @param value  loaded content
+     */
+    private void check(String tenant, String id, Revision value) {
+        if (!Objects.equals(tenant, value.getTenant_id()) || !Objects.equals(id, value.getId()))
+            throw new IllegalStateException("Store identity mismatch");
+    }
+
+    /**
+     * Populates only protected serialized data.
+     *
+     * @param tenant tenant
+     * @param id     exact identity
+     * @param value  protected content
+     */
+    private void put(String tenant, String id, Revision value) {
+        try {
+            cache.write(key(tenant, id), JsonKit.toJsonString(value), 0L);
+        } catch (RuntimeException unavailable) {
+            /* Cache population is not a persistence boundary. */
+        }
+    }
+
+    /**
+     * Builds unambiguous tenant-scoped cache coordinates.
+     *
+     * @param tenant tenant
+     * @param id     exact identity
+     * @return cache key
+     */
+    private String key(String tenant, String id) {
+        if (tenant == null || tenant.isBlank() || id == null || id.isBlank())
+            throw new IllegalArgumentException("Exact store identity required");
+        return "setting:revision:" + tenant.length() + ":" + tenant + id.length() + ":" + id;
+    }
+
+    /**
+     * Lists formal source history only.
+     *
+     * @param tenant tenant
+     * @param item   source
+     * @param offset page offset
+     * @param limit  size
+     * @return published snapshots
      */
     @Override
-    public void retainLatest(String tenant_id, String item_id, int maxRevisions) {
-        if (maxRevisions < 1) {
-            throw new IllegalArgumentException("maxRevisions must be positive");
-        }
-        List<Revision> revisions = query(tenant_id, item_id);
-        if (revisions.size() <= maxRevisions) {
-            return;
-        }
-        List<String> expired = new ArrayList<>();
-        for (int index = maxRevisions; index < revisions.size(); index++) {
-            Revision revision = revisions.get(index);
-            if (!protectedRevision.test(revision)) {
-                expired.add(key(tenant_id, item_id, revision.getRevision()));
-            }
-        }
-        if (!expired.isEmpty()) {
-            cacheX.remove(expired.toArray(String[]::new));
-        }
+    public List<Revision> byItem(String tenant, String item, int offset, int limit) {
+        return List.copyOf(delegate.byItem(tenant, item, offset, limit));
     }
 
     /**
-     * Builds the full key for one revision.
+     * Reads one formal release's snapshots.
      *
-     * @param tenant_id mandatory tenant identifier
-     * @param item_id   item identifier
-     * @param revision  item-scoped revision number
-     * @return revision cache key
+     * @param tenant  tenant
+     * @param release formal release
+     * @return snapshots
      */
-    private String key(String tenant_id, String item_id, String revision) {
-        return prefix(tenant_id, item_id) + value(revision);
-    }
-
-    /**
-     * Builds the scan prefix for all revisions of one item.
-     *
-     * @param tenant_id mandatory tenant identifier
-     * @param item_id   item identifier
-     * @return item revision prefix
-     */
-    private String prefix(String tenant_id, String item_id) {
-        return PREFIX + value(tenant_id) + value(item_id);
-    }
-
-    /**
-     * Validates and length-prefixes one required coordinate to prevent delimiter collisions.
-     *
-     * @param value segment value
-     * @return unambiguous segment
-     */
-    private String value(String value) {
-        if (value == null || value.isBlank()) {
-            throw new IllegalArgumentException("Revision tenant, item, and revision coordinates must be nonblank");
-        }
-        return value.length() + ":" + value;
+    @Override
+    public List<Revision> byRelease(String tenant, String release) {
+        return List.copyOf(delegate.byRelease(tenant, release));
     }
 
 }

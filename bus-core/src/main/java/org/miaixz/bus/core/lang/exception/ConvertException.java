@@ -31,7 +31,7 @@ import org.miaixz.bus.core.basic.normal.Errors;
 public class ConvertException extends UncheckedException {
 
     @Serial
-    private static final long serialVersionUID = 2852252619003L;
+    private static final long serialVersionUID = 2536686801591L;
 
     /**
      * Constructs a new ConvertException with no detail message.

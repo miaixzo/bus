@@ -30,7 +30,7 @@ import java.io.Serializable;
 public class GroupHookParams implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852256256678L;
+    private static final long serialVersionUID = 2550622205101L;
 
     /**
      * The url value.

@@ -32,7 +32,7 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class JobAttribute implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852259783653L;
+    private static final long serialVersionUID = 2550805500001L;
 
     /**
      * The key value.

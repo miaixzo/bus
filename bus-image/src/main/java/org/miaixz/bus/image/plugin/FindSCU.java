@@ -20,6 +20,9 @@
 package org.miaixz.bus.image.plugin;
 
 import java.io.*;
+import java.io.BufferedOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.security.GeneralSecurityException;
 import java.text.DecimalFormat;
 import java.util.EnumSet;
@@ -766,6 +769,22 @@ public class FindSCU implements AutoCloseable {
             return true;
         }
 
+    }
+
+    /**
+     * Returns the requested query options the SCP did not accept in the association (PS3.4 C.5.1.1), empty before
+     * {@link #open()}. A rejected {@link QueryOption#FUZZY} means literal matching of Person Names.
+     *
+     * @return the requested query options the SCP did not accept in the association (PS3.4 C.5.1.1), empty before
+     *         {@link #open()}. A rejected {@link QueryOption#FUZZY} means literal matching of Person Names
+     */
+    public EnumSet<QueryOption> getRejectedQueryOptions() {
+        if (as == null || model == null) {
+            return EnumSet.noneOf(QueryOption.class);
+        }
+        EnumSet<QueryOption> rejected = as.getRequestedQueryOptionsFor(model.cuid);
+        rejected.removeAll(as.getQueryOptionsFor(model.cuid));
+        return rejected;
     }
 
 }

@@ -41,7 +41,7 @@ import org.miaixz.bus.crypto.builtin.symmetric.Encryptor;
 public class TEA implements Encryptor, Decryptor, Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852291067505L;
+    private static final long serialVersionUID = 2539298000001L;
 
     /**
      * Key scheduling constant used in the TEA algorithm.

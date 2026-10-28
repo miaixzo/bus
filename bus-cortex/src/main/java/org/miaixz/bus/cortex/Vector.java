@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.cortex;
 
+import java.io.Serial;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -48,6 +49,9 @@ import org.miaixz.bus.cortex.builtin.Selector;
 @SuperBuilder
 public class Vector extends Nature {
 
+    @Serial
+    private static final long serialVersionUID = 2558882153228L;
+
     /**
      * Application identifier bound to the queried asset or setting scope.
      */
@@ -72,11 +76,6 @@ public class Vector extends Nature {
      * Advanced metadata selectors used together with exact labels.
      */
     private List<Selector> selectors;
-
-    /**
-     * Instance state selector.
-     */
-    private String state;
 
     /**
      * Optional logical purpose such as query, watch, rebuild or export.
@@ -132,18 +131,18 @@ public class Vector extends Nature {
     }
 
     /**
-     * Returns immutable label criteria.
+     * Returns an unmodifiable view of the current label criteria; changes to the backing map remain visible.
      *
-     * @return immutable labels map
+     * @return unmodifiable label-map view, or an empty map
      */
     public Map<String, String> labelView() {
         return labels == null ? Collections.emptyMap() : Collections.unmodifiableMap(labels);
     }
 
     /**
-     * Returns immutable advanced selector criteria.
+     * Returns an unmodifiable snapshot of the selector list; selector objects are not copied.
      *
-     * @return immutable selector list
+     * @return unmodifiable selector-list snapshot, or an empty list
      */
     public List<Selector> selectorView() {
         return selectors == null ? List.of() : List.copyOf(selectors);
@@ -275,13 +274,13 @@ public class Vector extends Nature {
         }
 
         /**
-         * Sets state vector.
+         * Sets the desired instance status.
          *
-         * @param state instance state
+         * @param status inherited instance status
          * @return current builder
          */
-        public Builder state(String state) {
-            vector.setState(state);
+        public Builder status(Integer status) {
+            vector.setStatus(status);
             return this;
         }
 

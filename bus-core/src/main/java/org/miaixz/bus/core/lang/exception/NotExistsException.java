@@ -31,7 +31,7 @@ import org.miaixz.bus.core.basic.normal.Errors;
 public class NotExistsException extends UncheckedException {
 
     @Serial
-    private static final long serialVersionUID = 2852261792681L;
+    private static final long serialVersionUID = 2536833800001L;
 
     /**
      * Constructs a new NotExistsException with no detail message.

@@ -20,6 +20,7 @@
 package org.miaixz.bus.core.convert.stringer;
 
 import java.io.InputStream;
+import java.io.Serial;
 import java.sql.Blob;
 import java.sql.SQLException;
 
@@ -34,6 +35,9 @@ import org.miaixz.bus.core.xyz.IoKit;
  * @author Kimi Liu
  */
 public class BlobStringer implements FunctionX<Object, String> {
+
+    @Serial
+    private static final long serialVersionUID = 2536352262651L;
 
     /**
      * Singleton instance.
@@ -54,7 +58,7 @@ public class BlobStringer implements FunctionX<Object, String> {
      * @return The String representation of the Blob.
      * @throws ConvertException if a {@link SQLException} occurs.
      */
-    private static String toString(final java.sql.Blob blob) {
+    private static String toString(final Blob blob) {
         InputStream in = null;
         try {
             in = blob.getBinaryStream();

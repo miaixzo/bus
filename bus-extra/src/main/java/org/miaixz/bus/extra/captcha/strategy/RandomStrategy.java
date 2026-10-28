@@ -33,7 +33,7 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class RandomStrategy extends AbstractStrategy {
 
     @Serial
-    private static final long serialVersionUID = 2852292312392L;
+    private static final long serialVersionUID = 2553991500001L;
 
     /**
      * Constructs a new {@code RandomStrategy} using letters and numbers as the base character set.

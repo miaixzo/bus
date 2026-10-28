@@ -19,14 +19,24 @@
 */
 package org.miaixz.bus.cortex.setting.item;
 
+import java.io.Serial;
+import java.util.Collections;
+import java.util.Map;
+import java.util.Objects;
+import java.util.TreeMap;
+
+import jakarta.persistence.Lob;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 import org.miaixz.bus.core.basic.entity.Tenant;
+import org.miaixz.bus.core.xyz.EnumKit;
+import org.miaixz.bus.extra.json.JsonValue;
 
 /**
- * Current state of one setting item.
+ * Current editable configuration definition; application relationships and publication state belong elsewhere.
  *
  * @author Kimi Liu
  */
@@ -35,220 +45,297 @@ import org.miaixz.bus.core.basic.entity.Tenant;
 @SuperBuilder
 public class Item extends Tenant {
 
-    /**
-     * Owning application identifier; required for application items and absent for shared items.
-     */
-    private String app_id;
-    /**
-     * Current stable revision identifier.
-     */
-    private String stable_id;
+    @Serial
+    private static final long serialVersionUID = 2558909106509L;
 
     /**
-     * Latest pending revision, including staged deletion; never a runtime-delivery pointer.
+     * name.
      */
-    private String draft_id;
+    private String name;
 
     /**
-     * Configuration lifecycle from State, independent from the inherited persistence status.
-     */
-    private String state;
-    /**
-     * Current gray revision identifier.
-     */
-    private String gray_id;
-    /**
-     * Active gray rollout identifier.
-     */
-    private String rollout_id;
-    /**
-     * Ownership scope: SHARED for tenant-wide items or APPLICATION for application-owned items.
-     */
-    private String scope;
-    /**
-     * Persisted item kind.
-     */
-    private String kind;
-    /**
-     * Stable setting code.
+     * Code identifying the current configuration definition.
      */
     private String code;
+
     /**
-     * Digest of immutable item coordinates.
+     * Configuration category stored using the stable code from {@link Type}.
      */
-    private String fingerprint;
+    private Integer type;
+
     /**
-     * Editable source content.
+     * Current definition with extensible property attributes, including {@code value}, {@code default} and {@code desc};
+     * sensitive members must be protected.
      */
+    @Lob
     private String content;
+
     /**
-     * Content format.
+     * Delivery and export format; the definition body is always canonical JSON.
      */
     private String format;
+
     /**
-     * Editing mode.
+     * JSON Schema used to validate the complete effective configuration.
      */
-    private String editor;
+    @Lob
+    private String schema;
+
     /**
-     * Content source type.
-     */
-    private String source;
-    /**
-     * External source descriptor.
-     */
-    private String spec;
-    /**
-     * Delivery exposure policy.
-     */
-    private String exposure;
-    /**
-     * Encrypted-content flag.
+     * Storage protection flag; protection is mandatory for {@link Type#SECRET}.
      */
     private Integer encrypted;
+
     /**
-     * Structured editor payload stored as text.
-     */
-    private String payload;
-    /**
-     * Labels stored as text.
-     */
-    private String labels;
-    /**
-     * Source extension stored as text.
-     */
-    private String extension;
-    /**
-     * Semantic content checksum.
-     */
-    private String checksum;
-    /**
-     * Optimistic editing edition.
+     * Optimistic concurrency counter for the current definition, independent of publication versions.
      */
     private Long edition;
+
     /**
-     * Runtime delivery generation.
+     * Validated definition rules and protection metadata.
      */
-    private Long generation;
+    @Lob
+    private String extension;
+
     /**
-     * Optional item description.
+     * Checksum of the canonical protected definition.
+     */
+    private String checksum;
+
+    /**
+     * Description of the complete configuration.
      */
     private String description;
 
     /**
-     * Creates an empty setting item.
+     * Creates an empty configuration definition.
      */
     public Item() {
         // No initialization required.
     }
 
     /**
-     * Supported configuration ownership scopes.
+     * Immutable attributes of one configuration property, independent of storage and publication state.
+     * Java null denotes an absent attribute; JSON null remains an explicit value.
      *
+     * @param attributes complete attribute collection
      * @author Kimi Liu
      */
-    public enum Scope {
+    public static record Property(Map<String, JsonValue> attributes) {
+
         /**
-         * Configuration shared within a tenant.
+         * Copies attributes without retaining mutable caller collections.
+         *
+         * @param attributes complete non-null attribute collection
          */
-        SHARED,
+        public Property {
+            TreeMap<String, JsonValue> copy = new TreeMap<>(Objects.requireNonNull(attributes));
+            copy.forEach((name, value) -> {
+                Objects.requireNonNull(name);
+                Objects.requireNonNull(value);
+            });
+            attributes = Collections.unmodifiableMap(copy);
+        }
+
         /**
-         * Configuration maintained by one application.
+         * Tests presence independently from JSON null or false values.
+         *
+         * @param name exact attribute name
+         * @return whether the attribute exists
          */
-        APPLICATION
+        public boolean contains(String name) {
+            return attributes.containsKey(name);
+        }
+
+        /**
+         * Reads an exact attribute without interpreting its business meaning.
+         *
+         * @param name exact attribute name
+         * @return the node, or Java null when absent
+         */
+        public JsonValue get(String name) {
+            return attributes.get(name);
+        }
+
+        /**
+         * Returns a changed property; Java null removes the member while JSON null remains present.
+         *
+         * @param name exact attribute name
+         * @param value replacement node, or Java null for removal
+         * @return a new immutable property
+         */
+        public Property with(String name, JsonValue value) {
+            Map<String, JsonValue> copy = new TreeMap<>(attributes);
+            if (value == null)
+                copy.remove(Objects.requireNonNull(name));
+            else
+                copy.put(Objects.requireNonNull(name), value);
+            return new Property(copy);
+        }
+
+        /**
+         * Returns a property with one exact attribute removed.
+         *
+         * @param name exact attribute name
+         * @return a new immutable property
+         */
+        public Property without(String name) {
+            return with(name, null);
+        }
+
+        /**
+         * Reads the explicit business value without materializing defaults.
+         *
+         * @return the value node, or Java null when absent
+         */
+        public JsonValue value() {
+            return get("value");
+        }
+
+        /**
+         * Reads the existing wire attribute named default.
+         *
+         * @return the fallback node, or Java null when absent
+         */
+        public JsonValue defaultValue() {
+            return get("default");
+        }
+
+        /**
+         * Reads the display description after Codec type validation.
+         *
+         * @return description text, or Java null when absent
+         */
+        public String desc() {
+            JsonValue value = get("desc");
+            return value == null ? null : ((JsonValue.StringValue) value).value();
+        }
+
+        /**
+         * Reports whether an explicit business value is required during user editing.
+         *
+         * @return whether an explicit required flag is true
+         */
+        public boolean required() {
+            return get("required") instanceof JsonValue.BooleanValue flag && flag.value();
+        }
+
     }
 
     /**
-     * Configuration content kind.
-     */
-    public enum Kind {
-        /**
-         * User-authored source configuration.
-         */
-        SOURCE,
-        /**
-         * Materialized effective configuration.
-         */
-        EFFECTIVE
-    }
-
-    /**
-     * Supported content editing modes.
+     * Configuration categories, independent of Cortex resource categories.
      *
      * @author Kimi Liu
      */
-    public enum Editor {
+    public enum Type {
+
         /**
-         * Source-text editing mode.
+         * Ordinary configuration values.
          */
-        SOURCE,
+        CONFIG_MAP(1),
         /**
-         * Structured key-value editing mode.
+         * Sensitive configuration values requiring storage protection.
          */
-        KEY_VALUE
+        SECRET(2);
+
+        /**
+         * Stable persistence code.
+         */
+        private final int key;
+
+        /**
+         * Creates an enum value with its stable persistence code.
+         *
+         * @param key stable persistence code
+         */
+        Type(int key) {
+            this.key = key;
+        }
+
+        /**
+         * Resolves a supported persistence code without fallback.
+         *
+         * @param key persistence code to resolve
+         * @return matching enum value
+         * @throws IllegalArgumentException if the code is null or unsupported
+         */
+        public static Type of(Integer key) {
+            Type value = EnumKit.getBy(Type.class, candidate -> key != null && candidate.key == key);
+            if (value == null) {
+                throw new IllegalArgumentException("Unsupported Type code");
+            }
+            return value;
+        }
+
+        /**
+         * Returns the stable persistence code.
+         *
+         * @return stable persistence code
+         */
+        public int key() {
+            return key;
+        }
+
     }
 
     /**
-     * User-facing item states.
+     * Current definition states, independent of publication workflow states.
      *
      * @author Kimi Liu
      */
-    public enum State {
-        /**
-         * Item has never been published.
-         */
-        UNPUBLISHED,
-        /**
-         * Item matches its stable published revision.
-         */
-        PUBLISHED,
-        /**
-         * Item contains unpublished changes.
-         */
-        CHANGED,
-        /**
-         * Item has an active gray revision.
-         */
-        GRAY,
-        /**
-         * Item is archived.
-         */
-        ARCHIVED
-    }
+    public enum Status {
 
-    /**
-     * Supported protected-value mutations.
-     *
-     * @author Kimi Liu
-     */
-    public enum SecretAction {
         /**
-         * Keeps the existing protected value.
+         * Deleted current definition.
          */
-        KEEP,
+        DELETED(-1),
         /**
-         * Replaces the existing protected value.
+         * Disabled current definition.
          */
-        REPLACE,
+        DISABLED(0),
         /**
-         * Deletes the existing protected value.
+         * Active current definition.
          */
-        DELETE
-    }
+        ACTIVE(1);
 
-    /**
-     * Supported validation depths.
-     *
-     * @author Kimi Liu
-     */
-    public enum ValidationLevel {
         /**
-         * Performs syntax validation only.
+         * Stable persistence code.
          */
-        SYNTAX,
+        private final int key;
+
         /**
-         * Performs syntax and business validation.
+         * Creates an enum value with its stable persistence code.
+         *
+         * @param key stable persistence code
          */
-        FULL
+        Status(int key) {
+            this.key = key;
+        }
+
+        /**
+         * Resolves a supported persistence code without fallback.
+         *
+         * @param key persistence code to resolve
+         * @return matching enum value
+         * @throws IllegalArgumentException if the code is null or unsupported
+         */
+        public static Status of(Integer key) {
+            Status value = EnumKit.getBy(Status.class, candidate -> key != null && candidate.key == key);
+            if (value == null) {
+                throw new IllegalArgumentException("Unsupported Status code");
+            }
+            return value;
+        }
+
+        /**
+         * Returns the stable persistence code.
+         *
+         * @return stable persistence code
+         */
+        public int key() {
+            return key;
+        }
+
     }
 
 }

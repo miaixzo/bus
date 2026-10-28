@@ -59,7 +59,7 @@ import org.miaixz.bus.logger.Logger;
 public class Crypto implements Encryptor, Decryptor, Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852289196593L;
+    private static final long serialVersionUID = 2539226655811L;
 
     /**
      * Lock for thread-safe operations.

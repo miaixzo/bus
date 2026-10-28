@@ -28,11 +28,11 @@ import org.miaixz.bus.cortex.guard.GuardPolicy;
 import org.miaixz.bus.cortex.guard.GuardStrategy;
 
 /**
- * Lightweight token-guard strategy that performs presence and transport pre-validation.
+ * Lightweight credential strategy that performs token presence and transport pre-validation with policy-controlled API
+ * key fallback.
  * <p>
- * This strategy intentionally does not verify token signatures or consult persistence. Those responsibilities stay in
- * the runtime authorization provider. Its job is to keep tenantId and asset-level token policy definitions in one
- * reusable Cortex model.
+ * This strategy does not authenticate tokens or API keys or consult persistence. Those responsibilities stay in the
+ * runtime authorization provider. A present token retains priority over API key fallback.
  *
  * @author Kimi Liu
  */
@@ -58,7 +58,7 @@ public class TokenGuardStrategy implements GuardStrategy {
     }
 
     /**
-     * Evaluates whether the request satisfies basic token-guard requirements.
+     * Evaluates token transport requirements or accepts API key fallback when the policy allows it.
      *
      * @param context guard evaluation context
      * @return guard decision
@@ -78,6 +78,9 @@ public class TokenGuardStrategy implements GuardStrategy {
         }
 
         if (StringKit.isBlank(context.getToken())) {
+            if (policy.apiKeyBased() && StringKit.isNotBlank(context.getApiKey())) {
+                return GuardDecision.allow();
+            }
             return GuardDecision.deny("guard.token.missing", "Token credential is required");
         }
 

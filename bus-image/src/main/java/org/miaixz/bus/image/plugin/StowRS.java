@@ -26,6 +26,7 @@ import java.nio.channels.SeekableByteChannel;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.security.GeneralSecurityException;
+import java.security.SecureRandom;
 import java.security.cert.X509Certificate;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -35,14 +36,20 @@ import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
+import javax.xml.XMLConstants;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParserFactory;
 import javax.xml.transform.stream.StreamResult;
 
 import jakarta.json.Json;
 import jakarta.json.stream.JsonGenerator;
 
+import org.xml.sax.SAXException;
+
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.xyz.IoKit;
@@ -51,7 +58,9 @@ import org.miaixz.bus.image.UID;
 import org.miaixz.bus.image.galaxy.data.Attributes;
 import org.miaixz.bus.image.galaxy.data.BulkData;
 import org.miaixz.bus.image.galaxy.data.ElementDictionary;
+import org.miaixz.bus.image.galaxy.data.Sequence;
 import org.miaixz.bus.image.galaxy.data.VR;
+import org.miaixz.bus.image.galaxy.io.ContentHandlerAdapter;
 import org.miaixz.bus.image.galaxy.io.ImageInputStream;
 import org.miaixz.bus.image.galaxy.io.ImageOutputStream;
 import org.miaixz.bus.image.galaxy.io.SAXReader;
@@ -526,16 +535,34 @@ public class StowRS {
     }
 
     /**
-     * Verifies an HTTP response code and raises an error for failed responses.
+     * Verifies storage confirmation without following redirects. HTTP 202 is accepted when the response contains
+     * warnings only; a nonempty Failed SOP Sequence is rejected. HTTP errors retain their status message and a bounded
+     * response-body excerpt.
      *
      * @param responseCode    the HTTP response code.
      * @param responseMessage the HTTP response message.
      * @param responseBody    the response body.
-     * @throws IOException if the response code represents a failure.
+     * @throws IOException if the request was redirected, the server reported failed instances or the HTTP status
+     *                     represents an error.
      */
     private static void verifySuccessfulResponse(int responseCode, String responseMessage, String responseBody)
             throws IOException {
         if (responseCode < HttpURLConnection.HTTP_BAD_REQUEST) {
+            try {
+                if (responseCode >= HttpURLConnection.HTTP_MULT_CHOICE) {
+                    throw new ProtocolException(Integer.toString(responseCode),
+                            "STOW-RS request not completed: " + responseBody);
+                }
+                if (responseCode == HttpURLConnection.HTTP_ACCEPTED) {
+                    String failures = failedInstances(responseBody);
+                    if (failures != null) {
+                        throw new ProtocolException(Integer.toString(responseCode),
+                                "STOW-RS failed to store: " + failures + ": " + responseBody);
+                    }
+                }
+            } catch (ProtocolException e) {
+                throw new IOException(e.getMessage(), e);
+            }
             return;
         }
 
@@ -550,6 +577,64 @@ public class StowRS {
 
         Logger.error(false, "Image", header);
         throw new IOException(header);
+    }
+
+    /**
+     * Extracts failed SOP instance identifiers and failure reasons from a Native DICOM XML response. Empty or
+     * unreadable bodies retain the existing unknown-failure behavior; unreadable XML is logged without resolving
+     * external resources.
+     *
+     * @param responseBody the Native DICOM XML response body
+     * @return comma-separated failure details, or null when no failures can be decoded
+     */
+    private static String failedInstances(String responseBody) {
+        if (responseBody == null || responseBody.isBlank()) {
+            return null;
+        }
+        Attributes response;
+        try {
+            response = parseStoreResponse(responseBody);
+        } catch (Exception e) {
+            Logger.warn("Cannot read the STOW-RS response, the failed instances are unknown", e);
+            return null;
+        }
+        Sequence failed = response.getSequence(Tag.FailedSOPSequence);
+        if (failed == null || failed.isEmpty()) {
+            return null;
+        }
+        return failed.stream()
+                .map(
+                        item -> item.getString(Tag.ReferencedSOPInstanceUID, "unknown SOP Instance UID")
+                                + " (failure reason " + item.getInt(Tag.FailureReason, -1) + ")")
+                .collect(Collectors.joining(", "));
+    }
+
+    /**
+     * Parses a server-supplied Native DICOM XML response with DTDs, XInclude and external entity access disabled.
+     *
+     * @param responseBody the UTF-8 Native DICOM XML response text
+     * @return the decoded response dataset
+     * @throws ParserConfigurationException if a secure SAX parser cannot be created
+     * @throws SAXException                 if the XML is malformed, contains a DTD or required security settings are
+     *                                      unsupported
+     * @throws IOException                  if the response content cannot be read
+     */
+    private static Attributes parseStoreResponse(String responseBody)
+            throws ParserConfigurationException, SAXException, IOException {
+        SAXParserFactory factory = SAXParserFactory.newInstance();
+        factory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+        factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+        factory.setFeature("http://xml.org/sax/features/external-general-entities", false);
+        factory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+        factory.setXIncludeAware(false);
+        var parser = factory.newSAXParser();
+        parser.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, Normal.EMPTY);
+        parser.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, Normal.EMPTY);
+        Attributes response = new Attributes();
+        parser.parse(
+                new ByteArrayInputStream(responseBody.getBytes(Charset.UTF_8)),
+                new ContentHandlerAdapter(response));
+        return response;
     }
 
     /**
@@ -861,6 +946,7 @@ public class StowRS {
      */
     private void stow(final HttpURLConnection connection, StowChunk stowChunk) throws Exception {
         File tmpFile = stowChunk.getTmpFile();
+        connection.setInstanceFollowRedirects(false);
         connection.setDoOutput(true);
         connection.setDoInput(true);
         connection.setRequestMethod(Http.Method.POST.value());
@@ -912,6 +998,7 @@ public class StowRS {
      */
     private void stowHttps(final HttpsURLConnection connection, StowChunk stowChunk) throws Exception {
         File tmpFile = stowChunk.getTmpFile();
+        connection.setInstanceFollowRedirects(false);
         connection.setDoOutput(true);
         connection.setDoInput(true);
         connection.setRequestMethod(Http.Method.POST.value());
@@ -945,7 +1032,7 @@ public class StowRS {
      */
     SSLContext sslContext() throws GeneralSecurityException {
         SSLContext ctx = SSLContext.getInstance("TLS");
-        ctx.init(null, trustManagers(), new java.security.SecureRandom());
+        ctx.init(null, trustManagers(), new SecureRandom());
         return ctx;
     }
 
@@ -957,13 +1044,30 @@ public class StowRS {
     TrustManager[] trustManagers() {
         return new TrustManager[] { new X509TrustManager() {
 
+            /**
+             * Reports no issuer restrictions for the legacy permissive TLS trust configuration.
+             *
+             * @return an empty certificate array
+             */
             public X509Certificate[] getAcceptedIssuers() {
                 return new X509Certificate[0];
             }
 
+            /**
+             * Accepts the supplied client chain without validation in the legacy permissive TLS configuration.
+             *
+             * @param certs    the certificate chain accepted without validation
+             * @param authType the authentication type ignored by this permissive trust manager
+             */
             public void checkClientTrusted(X509Certificate[] certs, String authType) {
             }
 
+            /**
+             * Accepts the supplied server chain without validation in the legacy permissive TLS configuration.
+             *
+             * @param certs    the certificate chain accepted without validation
+             * @param authType the authentication type ignored by this permissive trust manager
+             */
             public void checkServerTrusted(X509Certificate[] certs, String authType) {
             }
         } };
@@ -1555,6 +1659,7 @@ public class StowRS {
     /**
      * A functional interface for consuming a file path, allowing for exceptions.
      *
+     * @param <Path> the generic type used by this operation
      * @author Kimi Liu
      */
     interface StowRSFileConsumer<Path> {
@@ -1572,6 +1677,7 @@ public class StowRS {
     /**
      * A functional interface for applying a function to a file path, allowing for exceptions.
      *
+     * @param <Path> the generic type used by this operation
      * @author Kimi Liu
      */
     interface StowRSFileFunction<Path> {

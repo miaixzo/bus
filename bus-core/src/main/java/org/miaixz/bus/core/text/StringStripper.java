@@ -35,7 +35,7 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class StringStripper implements UnaryOperatorX<CharSequence>, Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852233890053L;
+    private static final long serialVersionUID = 2538161151156L;
 
     /**
      * The prefix to strip.

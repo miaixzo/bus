@@ -39,7 +39,7 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class XMLGregorianCalendarConverter extends AbstractConverter {
 
     @Serial
-    private static final long serialVersionUID = 2852272916958L;
+    private static final long serialVersionUID = 2536338183191L;
 
     /**
      * Factory used to create {@link XMLGregorianCalendar} instances from converted calendar values.

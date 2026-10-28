@@ -24,6 +24,7 @@ import java.util.*;
 import org.miaixz.bus.core.center.function.FunctionX;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.DateKit;
+import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.cortex.Assets;
 import org.miaixz.bus.cortex.Keying;
 import org.miaixz.bus.cortex.Type;
@@ -188,7 +189,7 @@ public class RegistryControlService {
     }
 
     /**
-     * Lists registry entries matching the query.
+     * Lists registry entries matching the query, applying pagination once across all selected registry types.
      *
      * @param query admin query
      * @return matching entries
@@ -204,7 +205,18 @@ public class RegistryControlService {
                 criteria.getId());
         List<Assets> result;
         if (criteria.getType() == null) {
-            result = snapshot(criteria);
+            RegistryQuery pagination = RegistryScopeMapping.query(criteria, Type.API);
+            int window = (int) Math.min((long) pagination.getOffset() + pagination.getLimit(), Integer.MAX_VALUE);
+            result = new ArrayList<>();
+            for (Type type : supportedTypes()) {
+                Vector filtered = sourceScope(criteria, type);
+                filtered.setOffset(0);
+                filtered.setLimit(window);
+                result.addAll(registry(type).refresh(filtered));
+            }
+            int from = Math.min(pagination.getOffset(), result.size());
+            int to = (int) Math.min((long) from + pagination.getLimit(), result.size());
+            result = new ArrayList<>(result.subList(from, to));
         } else {
             result = assets(registry(RegistryIdentity.type(criteria.getType())).refresh(criteria));
         }
@@ -269,6 +281,7 @@ public class RegistryControlService {
      * @param existing    existing snapshot or {@code null}
      * @param preResolved whether the snapshot was resolved by the batch resolver
      * @return stored entry snapshot
+     * @throws IllegalArgumentException if the resolved asset type has no supported admin registry
      */
     private Assets upsert(Assets asset, Assets existing, boolean preResolved) {
         if (asset == null) {
@@ -333,6 +346,7 @@ public class RegistryControlService {
      * @param id          entry identifier
      * @param existing    existing snapshot or {@code null}
      * @param preResolved whether the snapshot was resolved by the batch resolver
+     * @throws IllegalArgumentException if the requested type has no supported admin registry
      */
     private void delete(Type type, String tenantId, String id, Assets existing, boolean preResolved) {
         Logger.info(
@@ -663,6 +677,8 @@ public class RegistryControlService {
             vector.setVersion(query.getVersion());
             vector.setLabels(query.getLabels());
             vector.setSelectors(query.getSelectors());
+            vector.setStatus(query.getStatus());
+            vector.setIncludeDisabled(query.isIncludeDisabled());
             vector.setLimit(query.getLimit());
             vector.setOffset(query.getOffset());
         }
@@ -710,53 +726,6 @@ public class RegistryControlService {
     }
 
     /**
-     * Applies one batch entry.
-     *
-     * @param operation operation type
-     * @param entry     batch entry
-     * @param result    aggregate result
-     */
-    private void applyBatchEntry(BatchOperation operation, Assets entry, BatchResult result) {
-        BatchOperation.OperationType operationType = operation.getOperationType();
-        if (operationType == null) {
-            throw new IllegalArgumentException("Batch operation type is required");
-        }
-        if (operation.isDryRun()) {
-            result.recordSkip();
-            result.getWarnings().add("Dry-run skipped mutation for " + entry.getId());
-            return;
-        }
-        switch (operationType) {
-            case DEREGISTER -> {
-                Assets existing = resolveExisting(entry);
-                if (existing == null) {
-                    result.recordSkip();
-                    return;
-                }
-                delete(RegistryIdentity.type(existing), existing.getTenant_id(), existing.getId());
-                result.recordDelete();
-            }
-            case REGISTER, UPDATE, UPSERT -> {
-                Assets existing = resolveExisting(entry);
-                if (existing != null && operation.getConflictPolicy() == BatchOperation.ConflictPolicy.FAIL_FAST) {
-                    throw new IllegalStateException("Conflict detected for " + existing.getId());
-                }
-                if (existing != null && operation.getConflictPolicy() == BatchOperation.ConflictPolicy.SKIP) {
-                    result.recordSkip();
-                    result.getWarnings().add("Skipped existing entry " + existing.getId());
-                    return;
-                }
-                upsert(entry);
-                if (existing == null) {
-                    result.recordInsert();
-                } else {
-                    result.recordUpdate();
-                }
-            }
-        }
-    }
-
-    /**
      * Resolves an existing asset using ID first, then method/version route identity.
      *
      * @param entry candidate asset
@@ -797,7 +766,7 @@ public class RegistryControlService {
     }
 
     /**
-     * Builds and normalizes one registry snapshot for impact analysis and administrative scans.
+     * Builds and normalizes one registry snapshot for impact analysis.
      *
      * @param scope snapshot scope
      * @return normalized snapshot
@@ -833,11 +802,11 @@ public class RegistryControlService {
     }
 
     /**
-     * Creates one type-specific scope used to resolve the source entry for impact analysis.
+     * Creates one type-specific scope preserving all caller criteria for listing and exact source resolution.
      *
      * @param scope base scope
      * @param type  target type
-     * @return type-specific source scope
+     * @return complete type-specific scope
      */
     private Vector sourceScope(Vector scope, Type type) {
         Vector filtered = vector(scope);
@@ -878,8 +847,8 @@ public class RegistryControlService {
      * Resolves the first non-null result produced while scanning all supported types.
      *
      * @param criteria base criteria
-     * @param resolver type-specific resolver
      * @param <T>      resolved value type
+     * @param resolver type-specific resolver
      * @return first non-null result or {@code null}
      */
     private <T> T firstAcrossTypes(Vector criteria, FunctionX<Vector, T> resolver) {
@@ -1121,121 +1090,15 @@ public class RegistryControlService {
             return List.of();
         }
         Map<String, Object> root = JsonKit.toMap(asset.getMetadata());
-        List<String> dependencies = strings(root.get("dependsOn"));
+        List<String> dependencies = ObjectKit.defaultIfNull(MetadataCodec.strings(root.get("dependsOn")), List.of());
         if (!dependencies.isEmpty()) {
             return dependencies;
         }
-        Map<String, Object> cortex = objectMap(root.get("_cortex"));
+        Map<String, Object> cortex = MetadataCodec.object(root.get(MetadataCodec.ROOT));
         if (cortex != null) {
-            return strings(cortex.get("dependsOn"));
+            return ObjectKit.defaultIfNull(MetadataCodec.strings(cortex.get("dependsOn")), List.of());
         }
         return List.of();
-    }
-
-    /**
-     * Converts one metadata value into a list of dependency strings.
-     *
-     * @param value metadata value
-     * @return dependency strings
-     */
-    private List<String> strings(Object value) {
-        if (value == null) {
-            return List.of();
-        }
-        if (value instanceof Iterable<?> iterable) {
-            List<String> result = new ArrayList<>();
-            for (Object item : iterable) {
-                String text = scalarString(item);
-                if (text != null) {
-                    result.add(text);
-                }
-            }
-            return result;
-        }
-        try {
-            List<Object> parsed = JsonKit.toList(JsonKit.toJsonString(value), Object.class);
-            if (parsed == null) {
-                return List.of();
-            }
-            List<String> result = new ArrayList<>(parsed.size());
-            for (Object item : parsed) {
-                String text = scalarString(item);
-                if (text != null) {
-                    result.add(text);
-                }
-            }
-            return result;
-        } catch (Exception ignore) {
-            Logger.debug(
-                    false,
-                    "Cortex",
-                    "Cortex operation skipped: provider={}, recoverable={}, exception={}",
-                    "RegistryControlService",
-                    true,
-                    ignore.getClass().getSimpleName());
-            return List.of();
-        }
-    }
-
-    /**
-     * Converts one scalar dependency payload into a string.
-     *
-     * @param value dependency payload
-     * @return string value or {@code null}
-     */
-    private String scalarString(Object value) {
-        if (value == null) {
-            return null;
-        }
-        if (value instanceof CharSequence || value instanceof Number || value instanceof Boolean) {
-            return value.toString();
-        }
-        try {
-            return JsonKit.toPojo(JsonKit.toJsonString(value), String.class);
-        } catch (Exception ignore) {
-            Logger.debug(
-                    false,
-                    "Cortex",
-                    "Cortex operation skipped: provider={}, recoverable={}, exception={}",
-                    "RegistryControlService",
-                    true,
-                    ignore.getClass().getSimpleName());
-            return value.toString();
-        }
-    }
-
-    /**
-     * Converts one metadata payload into a mutable string-keyed map.
-     *
-     * @param value metadata payload
-     * @return mutable metadata map or {@code null}
-     */
-    private Map<String, Object> objectMap(Object value) {
-        if (value == null) {
-            return null;
-        }
-        if (value instanceof Map<?, ?> map) {
-            Map<String, Object> result = new LinkedHashMap<>();
-            for (Map.Entry<?, ?> entry : map.entrySet()) {
-                if (entry.getKey() != null) {
-                    result.put(entry.getKey().toString(), entry.getValue());
-                }
-            }
-            return result;
-        }
-        try {
-            Map<String, Object> result = JsonKit.toMap(JsonKit.toJsonString(value));
-            return result == null ? null : new LinkedHashMap<>(result);
-        } catch (Exception ignore) {
-            Logger.debug(
-                    false,
-                    "Cortex",
-                    "Cortex operation skipped: provider={}, recoverable={}, exception={}",
-                    "RegistryControlService",
-                    true,
-                    ignore.getClass().getSimpleName());
-            return null;
-        }
     }
 
     /**
@@ -1243,6 +1106,7 @@ public class RegistryControlService {
      *
      * @param type target registry type
      * @return matching concrete registry
+     * @throws IllegalArgumentException if the type has no supported admin registry
      */
     private StoreBackedRegistry<? extends Assets> registry(Type type) {
         Type effective = type == null ? Type.API : type;
@@ -1260,6 +1124,13 @@ public class RegistryControlService {
      * @author Kimi Liu
      */
     private class ControlRegistryBatchOperations implements RegistryBatchOperations {
+
+        /**
+         * Creates batch operations bound to the enclosing control service.
+         */
+        private ControlRegistryBatchOperations() {
+            // No initialization required.
+        }
 
         /**
          * Returns the shared registry key strategy.

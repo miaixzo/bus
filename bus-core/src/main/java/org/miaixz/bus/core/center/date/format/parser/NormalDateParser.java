@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.core.center.date.format.parser;
 
+import java.io.Serial;
 import java.util.regex.Pattern;
 
 import org.miaixz.bus.core.center.date.DateTime;
@@ -30,6 +31,9 @@ import org.miaixz.bus.core.lang.Symbol;
  * @author Kimi Liu
  */
 public class NormalDateParser implements PredicateDateParser {
+
+    @Serial
+    private static final long serialVersionUID = 2535660961281L;
 
     /**
      * The default singleton instance of this parser.

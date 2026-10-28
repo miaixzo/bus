@@ -23,6 +23,7 @@ import com.sun.jna.Native;
 import com.sun.jna.Pointer;
 import com.sun.jna.Structure;
 import com.sun.jna.Structure.FieldOrder;
+import com.sun.jna.platform.unix.Resource;
 
 /**
  * C library for OpenBSD. This class should be considered non-API as it may be removed if/when its code is incorporated
@@ -201,17 +202,21 @@ public interface OpenBsdLibc extends CLibrary {
     int INT_SIZE = Native.getNativeSize(int.class);
 
     /**
-     * OpenBSD's {@code RLIMIT_NOFILE} value.
-     */
-    int RLIMIT_NOFILE = 8;
-
-    /**
      * Returns the thread ID of the calling thread. This is used in the implementation of the thread library (-lpthread)
      * and can appear in the output of system utilities such as ps and kdump.
      *
      * @return the thread ID of the calling thread.
      */
     int getthrid();
+
+    /**
+     * Gets a process resource limit.
+     *
+     * @param resource the resource identifier
+     * @param rlimit   the structure receiving the soft and hard limits
+     * @return {@code 0} on success or {@code -1} on failure
+     */
+    int getrlimit(int resource, Resource.Rlimit rlimit);
 
     /**
      * JNA wrapper for the bcachestats structure.

@@ -40,7 +40,7 @@ import org.miaixz.bus.extra.image.gif.AnimatedGifEncoder;
 public class GifProvider extends AbstractProvider {
 
     @Serial
-    private static final long serialVersionUID = 2852291762232L;
+    private static final long serialVersionUID = 2553963518001L;
 
     /**
      * Quantizer sampling interval - default is 10ms.

@@ -38,7 +38,7 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class GroupedMap extends LinkedHashMap<String, LinkedHashMap<String, String>> {
 
     @Serial
-    private static final long serialVersionUID = 2852227322018L;
+    private static final long serialVersionUID = 2552508651881L;
 
     /**
      * Lock for ensuring thread-safe access.

@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.cortex.guard;
 
+import org.miaixz.bus.core.xyz.EnumKit;
+
 /**
  * Canonical access-control policy model for Cortex assets.
  * <p>
@@ -108,12 +110,11 @@ public enum GuardPolicy {
         if (code == null) {
             throw new IllegalArgumentException("Guard policy code must not be null");
         }
-        for (GuardPolicy policy : values()) {
-            if (policy.code == code) {
-                return policy;
-            }
+        GuardPolicy policy = EnumKit.getBy(GuardPolicy.class, candidate -> candidate.code == code);
+        if (policy == null) {
+            throw new IllegalArgumentException("Unsupported guard policy code: " + code);
         }
-        throw new IllegalArgumentException("Unsupported guard policy code: " + code);
+        return policy;
     }
 
     /**

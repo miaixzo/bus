@@ -47,7 +47,7 @@ public class Selector {
     private Op op;
 
     /**
-     * Set of values used in the comparison.
+     * Ordered comparison values; EQ and NEQ use only the first, while IN and NOTIN use the whole list.
      */
     private List<String> values;
 
@@ -62,8 +62,9 @@ public class Selector {
      * Creates an equality selector.
      *
      * @param key   metadata key
-     * @param value expected value
-     * @return selector
+     * @param value non-null expected value
+     * @return equality selector containing exactly one value
+     * @throws NullPointerException if value is null
      */
     public static Selector eq(String key, String value) {
         Selector s = new Selector();
@@ -77,7 +78,7 @@ public class Selector {
      * Creates an IN selector.
      *
      * @param key    metadata key
-     * @param values allowed values
+     * @param values allowed values retained by reference, possibly null
      * @return selector
      */
     public static Selector in(String key, List<String> values) {
@@ -92,8 +93,9 @@ public class Selector {
      * Creates a non-equality selector.
      *
      * @param key   metadata key
-     * @param value rejected value
-     * @return selector
+     * @param value non-null rejected value
+     * @return non-equality selector containing exactly one value
+     * @throws NullPointerException if value is null
      */
     public static Selector neq(String key, String value) {
         Selector s = new Selector();
@@ -107,7 +109,7 @@ public class Selector {
      * Creates a NOT IN selector.
      *
      * @param key    metadata key
-     * @param values rejected values
+     * @param values rejected values retained by reference, possibly null
      * @return selector
      */
     public static Selector notIn(String key, List<String> values) {
@@ -121,8 +123,9 @@ public class Selector {
     /**
      * Converts one exact-label map into selector expressions.
      *
-     * @param labels exact-label map
-     * @return equality selectors preserving encounter order
+     * @param labels exact-label map, possibly null; values must be non-null
+     * @return new mutable selectors in map encounter order, or an immutable empty list for null or empty input
+     * @throws NullPointerException if any label value is null
      */
     public static List<Selector> ofExactLabels(Map<String, String> labels) {
         if (labels == null || labels.isEmpty()) {
@@ -143,11 +146,11 @@ public class Selector {
      */
     public enum Op {
         /**
-         * Key equals one of the given values.
+         * Key value equals the first comparison value; an absent or empty value list does not match.
          */
         EQ,
         /**
-         * Key does not equal any of the given values.
+         * Key value differs from the first comparison value; an absent or empty value list matches.
          */
         NEQ,
         /**

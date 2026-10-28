@@ -18,11 +18,8 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Provides first-class revision snapshots and storage abstractions.
- * <p>
- * The current revision representation preserves the setting-item history contract. Keeping it in a sibling package
- * avoids making revision storage subordinate to one resource family and leaves room for additional revision variants.
- * </p>
+ * Read-only immutable configuration snapshots created only by successful formal publication. No editing editions,
+ * per-save history, deletion tombstones or current-state pointers.
  *
  * @author Kimi Liu
  */

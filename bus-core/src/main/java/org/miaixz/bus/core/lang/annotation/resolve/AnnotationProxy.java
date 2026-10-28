@@ -42,7 +42,7 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class AnnotationProxy<T extends Annotation> implements Annotation, InvocationHandler, Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852250659959L;
+    private static final long serialVersionUID = 2536632250001L;
 
     /**
      * The original annotation instance.

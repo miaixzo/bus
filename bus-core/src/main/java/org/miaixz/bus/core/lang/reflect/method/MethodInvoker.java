@@ -157,7 +157,7 @@ public class MethodInvoker implements Invoker {
     public static <T> T invokeExact(final Object object, final Method method, final Object... args)
             throws InternalException {
         Assert.notNull(method, "Method must be not null!");
-        java.lang.invoke.MethodHandle handle;
+        MethodHandle handle;
         try {
             handle = LookupKit.unreflectMethod(method);
         } catch (final Throwable e) {

@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.core.basic.entity;
 
+import java.io.Serial;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
@@ -32,6 +34,9 @@ import lombok.experimental.SuperBuilder;
 @Setter
 @SuperBuilder
 public class Tenant extends Tracer {
+
+    @Serial
+    private static final long serialVersionUID = 2535315218001L;
 
     /**
      * The unique identifier of the tenant to which the current entity belongs.

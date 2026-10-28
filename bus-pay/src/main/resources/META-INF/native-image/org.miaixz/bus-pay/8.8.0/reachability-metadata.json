@@ -25660,6 +25660,21 @@
           ]
         },
         {
+          "name": "valueOf",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "values",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "java.lang.Enum",
+      "methods": [
+        {
           "name": "compareTo",
           "parameterTypes": [
             "java.lang.Enum"
@@ -25682,10 +25697,6 @@
           ]
         },
         {
-          "name": "getClass",
-          "parameterTypes": []
-        },
-        {
           "name": "getDeclaringClass",
           "parameterTypes": []
         },
@@ -25695,14 +25706,6 @@
         },
         {
           "name": "name",
-          "parameterTypes": []
-        },
-        {
-          "name": "notify",
-          "parameterTypes": []
-        },
-        {
-          "name": "notifyAll",
           "parameterTypes": []
         },
         {
@@ -25719,20 +25722,30 @@
             "java.lang.Class",
             "java.lang.String"
           ]
+        }
+      ]
+    },
+    {
+      "type": "java.lang.Object",
+      "methods": [
+        {
+          "name": "getClass",
+          "parameterTypes": []
         },
         {
-          "name": "valueOf",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
+          "name": "notify",
+          "parameterTypes": []
         },
         {
-          "name": "values",
+          "name": "notifyAll",
           "parameterTypes": []
         },
         {
           "name": "wait",
-          "parameterTypes": []
+          "parameterTypes": [
+            "long",
+            "int"
+          ]
         },
         {
           "name": "wait",
@@ -25742,10 +25755,7 @@
         },
         {
           "name": "wait",
-          "parameterTypes": [
-            "long",
-            "int"
-          ]
+          "parameterTypes": []
         }
       ]
     }

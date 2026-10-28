@@ -34,7 +34,7 @@ import org.miaixz.bus.core.xyz.ByteKit;
 public class CharSequenceResource extends BytesResource {
 
     @Serial
-    private static final long serialVersionUID = 2852230576091L;
+    private static final long serialVersionUID = 2536586053881L;
 
     /**
      * The name of the character set used for encoding. Since {@link java.nio.charset.Charset} is not serializable, its

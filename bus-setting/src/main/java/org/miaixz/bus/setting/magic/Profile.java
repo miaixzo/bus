@@ -42,7 +42,7 @@ import org.miaixz.bus.setting.Setting;
 public class Profile implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852228167252L;
+    private static final long serialVersionUID = 2552523055281L;
 
     /**
      * A cache for {@link Setting} instances, keyed by file name.

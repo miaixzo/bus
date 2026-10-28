@@ -73,7 +73,7 @@ import org.miaixz.bus.logger.Logger;
 public class SM2 extends AbstractCrypto<SM2> {
 
     @Serial
-    private static final long serialVersionUID = 2852290382583L;
+    private static final long serialVersionUID = 2539283151501L;
 
     /**
      * SM2 Engine.

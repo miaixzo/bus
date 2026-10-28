@@ -31,7 +31,7 @@ import org.miaixz.bus.core.basic.normal.Errors;
 public class RevisedException extends RelevantException {
 
     @Serial
-    private static final long serialVersionUID = 2852263688317L;
+    private static final long serialVersionUID = 2536882163501L;
 
     /**
      * Constructs a new RevisedException with no detail message.

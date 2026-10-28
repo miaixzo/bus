@@ -539,4 +539,87 @@ public class ImageReadParam extends javax.imageio.ImageReadParam {
         this.overlayColor = overlayColor;
     }
 
+    /**
+     * Requested VOI output precision; rendering clamps configured values to the supported 8-to-16-bit range.
+     */
+    private Integer outputBits;
+
+    /**
+     * Whether supplemental palettes color the upper stored-value range; null uses the enabled default.
+     */
+    private Boolean applySupplementalPalette;
+
+    /**
+     * Per-request floating-point conversion override, or null to retain the reader-wide compatibility setting.
+     */
+    private Boolean allowFloatImageConversion;
+
+    /**
+     * Tests whether this request explicitly enables floating-point conversion after modality rescaling.
+     *
+     * @return true when enabled for this request; false when disabled or left to the reader-wide setting
+     */
+    public boolean isAllowFloatImageConversion() {
+        return Boolean.TRUE.equals(allowFloatImageConversion);
+    }
+
+    /**
+     * Overrides the reader-wide conversion setting for this request. Floating-point conversion avoids clipping when
+     * modality-rescaled values exceed the original sample type. Series conversion decisions remain cached until
+     * {@link ImageReader#removeSeriesToFloatImages(String)} is called.
+     *
+     * @param allow whether this request may convert rescaled samples to floating point
+     */
+    public void setAllowFloatImageConversion(boolean allow) {
+        allowFloatImageConversion = allow;
+    }
+
+    /**
+     * Resolves an explicit request override against the legacy reader-wide conversion setting.
+     *
+     * @param defaultValue the reader-wide setting used when this request has no override
+     * @return whether floating-point conversion is enabled for this read
+     */
+    boolean resolveFloatImageConversion(boolean defaultValue) {
+        return allowFloatImageConversion == null ? defaultValue : allowFloatImageConversion;
+    }
+
+    /**
+     * Returns the explicitly requested VOI output precision.
+     *
+     * @return the configured bit count, or an empty optional to use eight-bit output
+     */
+    public Optional<Integer> getOutputBits() {
+        return Optional.ofNullable(outputBits);
+    }
+
+    /**
+     * Bit depth of the windowed output, 8 by default. Above 8 the VOI stage yields a 16-bit index image over
+     * {@code [0, 2^bits - 1]}; ignored when a presentation LUT follows the VOI LUT.
+     *
+     * @param outputBits the requested bit count, clamped during rendering to 8 through 16; null restores the default
+     */
+    public void setOutputBits(Integer outputBits) {
+        this.outputBits = outputBits;
+    }
+
+    /**
+     * Returns the explicit supplemental palette policy.
+     *
+     * @return the configured policy, or an empty optional to enable supplemental palettes by default
+     */
+    public Optional<Boolean> getApplySupplementalPalette() {
+        return Optional.ofNullable(applySupplementalPalette);
+    }
+
+    /**
+     * Whether the Supplemental Palette Color LUT of a grayscale image colors its upper range (true by default); false
+     * displays the whole range in grayscale, which PS3.3 C.8.16.2 also allows.
+     *
+     * @param applySupplementalPalette whether to apply the palette; null restores the enabled default
+     */
+    public void setApplySupplementalPalette(Boolean applySupplementalPalette) {
+        this.applySupplementalPalette = applySupplementalPalette;
+    }
+
 }

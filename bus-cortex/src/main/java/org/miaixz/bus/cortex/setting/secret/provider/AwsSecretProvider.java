@@ -20,16 +20,22 @@
 package org.miaixz.bus.cortex.setting.secret.provider;
 
 import java.net.URI;
-import java.nio.charset.StandardCharsets;
 import java.time.Clock;
 import java.time.Instant;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
+import org.miaixz.bus.core.center.regex.Pattern;
+import org.miaixz.bus.core.lang.Algorithm;
+import org.miaixz.bus.core.lang.Charset;
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.CryptoException;
 import org.miaixz.bus.core.xyz.HexKit;
+import org.miaixz.bus.core.xyz.PatternKit;
 import org.miaixz.bus.cortex.setting.secret.SecretContext;
 import org.miaixz.bus.cortex.setting.secret.SecretMaterial;
 import org.miaixz.bus.cortex.setting.secret.SecretProvider;
@@ -40,6 +46,8 @@ import org.miaixz.bus.fabric.protocol.http.HttpX;
 
 /**
  * AWS Secrets Manager GetSecretValue, signed directly with AWS Signature Version 4.
+ *
+ * @author Kimi Liu
  */
 public final class AwsSecretProvider implements SecretProvider {
 
@@ -137,7 +145,7 @@ public final class AwsSecretProvider implements SecretProvider {
      */
     AwsSecretProvider(String region, URI endpoint, long generation, CloudCredentials.Source credentials,
             Supplier<HttpX.Builder> http, Clock clock) {
-        if (region == null || !region.matches("[a-z0-9-]+") || generation < 0) {
+        if (region == null || !PatternKit.isMatch(Pattern.get("[a-z0-9-]+", 0), region) || generation < 0) {
             throw new IllegalArgumentException("Invalid AWS connection");
         }
         this.region = region;
@@ -175,25 +183,26 @@ public final class AwsSecretProvider implements SecretProvider {
         if (identity.token() != null) {
             headers.put("x-amz-security-token", identity.token());
         }
-        String names = String.join(";", headers.keySet());
-        String canonicalHeaders = headers.entrySet().stream().map(e -> e.getKey() + ":" + e.getValue().trim() + "\n")
-                .collect(java.util.stream.Collectors.joining());
-        String canonical = "POST\n/\n\n" + canonicalHeaders + "\n" + names + "\n" + CloudProtocol.hash(payload);
-        String scope = date + "/" + region + "/secretsmanager/aws4_request";
-        String toSign = "AWS4-HMAC-SHA256\n" + timestamp + "\n" + scope + "\n"
-                + CloudProtocol.hash(canonical.getBytes(StandardCharsets.UTF_8));
-        byte[] initial = identity.signingKey("AWS4", "");
+        String names = String.join(Symbol.SEMICOLON, headers.keySet());
+        String canonicalHeaders = headers.entrySet().stream()
+                .map(e -> e.getKey() + Symbol.COLON + e.getValue().trim() + Symbol.LF).collect(Collectors.joining());
+        String canonical = "POST\n/\n\n" + canonicalHeaders + Symbol.LF + names + Symbol.LF
+                + CloudProtocol.hash(payload);
+        String scope = date + Symbol.SLASH + region + "/secretsmanager/aws4_request";
+        String toSign = "AWS4-HMAC-SHA256\n" + timestamp + Symbol.LF + scope + Symbol.LF
+                + CloudProtocol.hash(canonical.getBytes(Charset.UTF_8));
+        byte[] initial = identity.signingKey("AWS4", Normal.EMPTY);
         byte[] day = null, area = null, service = null, key = null;
         try {
-            day = CloudProtocol.hmac("HmacSHA256", initial, date);
-            area = CloudProtocol.hmac("HmacSHA256", day, region);
-            service = CloudProtocol.hmac("HmacSHA256", area, "secretsmanager");
-            key = CloudProtocol.hmac("HmacSHA256", service, "aws4_request");
-            String signature = HexKit.encodeString(CloudProtocol.hmac("HmacSHA256", key, toSign));
+            day = CloudProtocol.hmac(Algorithm.HMACSHA256, initial, date);
+            area = CloudProtocol.hmac(Algorithm.HMACSHA256, day, region);
+            service = CloudProtocol.hmac(Algorithm.HMACSHA256, area, "secretsmanager");
+            key = CloudProtocol.hmac(Algorithm.HMACSHA256, service, "aws4_request");
+            String signature = HexKit.encodeString(CloudProtocol.hmac(Algorithm.HMACSHA256, key, toSign));
             headers.put(
                     "authorization",
-                    "AWS4-HMAC-SHA256 Credential=" + identity.accessKeyId() + "/" + scope + ", SignedHeaders=" + names
-                            + ", Signature=" + signature);
+                    "AWS4-HMAC-SHA256 Credential=" + identity.accessKeyId() + Symbol.SLASH + scope + ", SignedHeaders="
+                            + names + ", Signature=" + signature);
             return headers;
         } finally {
             for (byte[] bytes : new byte[][] { initial, day, area, service, key }) {
@@ -214,7 +223,7 @@ public final class AwsSecretProvider implements SecretProvider {
      */
     private static boolean retryable(int status, Map<?, ?> body) {
         Object raw = body.containsKey("Code") ? body.get("Code") : body.get("__type");
-        String code = raw instanceof String text ? text : "";
+        String code = raw instanceof String text ? text : Normal.EMPTY;
         if (code.contains("NotFound") || code.contains("InvalidParameter") || code.contains("InvalidArgument")
                 || code.contains("InvalidRequest")) {
             return false;
@@ -294,7 +303,7 @@ public final class AwsSecretProvider implements SecretProvider {
         } else {
             payload.put("VersionStage", "AWSCURRENT");
         }
-        byte[] body = JsonKit.toJsonString(payload).getBytes(StandardCharsets.UTF_8);
+        byte[] body = JsonKit.toJsonString(payload).getBytes(Charset.UTF_8);
         try (CloudCredentials identity = credentials.acquire(context)) {
             Map<String, String> signed = sign(endpoint, region, body, identity, clock.instant());
             HttpX.Builder request = http.get().to(endpoint.toString()).post().body(body);

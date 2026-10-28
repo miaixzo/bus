@@ -59,7 +59,7 @@ import org.miaixz.bus.core.center.function.SupplierX;
 public class GenericBuilder<T> implements Builder<T> {
 
     @Serial
-    private static final long serialVersionUID = 2852229897009L;
+    private static final long serialVersionUID = 2535350000001L;
 
     /**
      * The supplier that provides the initial instance of the object.

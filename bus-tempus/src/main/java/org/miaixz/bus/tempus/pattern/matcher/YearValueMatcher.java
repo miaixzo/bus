@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.tempus.pattern.matcher;
 
+import java.io.Serial;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 
@@ -35,6 +36,9 @@ import java.util.LinkedHashSet;
  * @author Kimi Liu
  */
 public class YearValueMatcher implements PartMatcher {
+
+    @Serial
+    private static final long serialVersionUID = 2558325000001L;
 
     /**
      * A collection to store the year values.

@@ -28,6 +28,7 @@ the modules that the application actually uses.
 ## Maven Usage
 
 ```xml
+
 <dependency>
     <groupId>org.miaixz</groupId>
     <artifactId>bus-all</artifactId>
@@ -38,6 +39,7 @@ the modules that the application actually uses.
 When the project already imports `bus-bom`, the version can be omitted:
 
 ```xml
+
 <dependencyManagement>
     <dependencies>
         <dependency>
@@ -51,10 +53,10 @@ When the project already imports `bus-bom`, the version can be omitted:
 </dependencyManagement>
 
 <dependencies>
-    <dependency>
-        <groupId>org.miaixz</groupId>
-        <artifactId>bus-all</artifactId>
-    </dependency>
+<dependency>
+    <groupId>org.miaixz</groupId>
+    <artifactId>bus-all</artifactId>
+</dependency>
 </dependencies>
 ```
 

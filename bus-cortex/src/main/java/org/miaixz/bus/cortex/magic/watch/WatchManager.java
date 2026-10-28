@@ -25,10 +25,11 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.basic.entity.Tenant;
+import org.miaixz.bus.core.center.date.Chrono;
 import org.miaixz.bus.core.data.id.ID;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.DateKit;
-import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.cortex.*;
 import org.miaixz.bus.cortex.Vector;
 import org.miaixz.bus.cortex.builtin.MetadataMatcher;
@@ -154,7 +155,7 @@ public class WatchManager implements AutoCloseable, CortexLifecycle, CortexDiagn
      * @param cacheX shared cache used by the backing sequence generator
      */
     public WatchManager(CacheX<String, Object> cacheX) {
-        this(cacheX, 1000, 86400000L, 1024, OverflowStrategy.DROP_LATEST);
+        this(cacheX, Normal._1000, Chrono.DAY.getMillis(), Normal._1024, OverflowStrategy.DROP_LATEST);
     }
 
     /**
@@ -165,7 +166,7 @@ public class WatchManager implements AutoCloseable, CortexLifecycle, CortexDiagn
      * @param watchExpireMs       milliseconds of inactivity after which a watch is removed
      */
     public WatchManager(CacheX<String, Object> cacheX, int maxWatchesPerTenant, long watchExpireMs) {
-        this(cacheX, maxWatchesPerTenant, watchExpireMs, 1024, OverflowStrategy.DROP_LATEST);
+        this(cacheX, maxWatchesPerTenant, watchExpireMs, Normal._1024, OverflowStrategy.DROP_LATEST);
     }
 
     /**
@@ -200,26 +201,30 @@ public class WatchManager implements AutoCloseable, CortexLifecycle, CortexDiagn
     }
 
     /**
-     * Adds a watch subscription and returns its unique ID.
+     * Adds a watch subscription and returns its unique ID. Registration and manager shutdown are serialized on this
+     * manager so a closed dispatcher never retains a newly accepted subscription.
      *
      * @param vector   vector defining what to watch
-     * @param listener listener to notify on change
      * @param <T>      watched type
+     * @param listener listener to notify on change
      * @return watch identifier
+     * @throws IllegalStateException if the manager is closed or the tenant watch limit has been reached
      */
-    public <T> String add(Vector vector, Listener<Watch<T>> listener) {
+    public synchronized <T> String add(Vector vector, Listener<Watch<T>> listener) {
         if (closed) {
             throw new IllegalStateException("WatchManager is closed");
         }
         Objects.requireNonNull(listener, "watch listener must not be null");
         Vector normalized = normalizeVector(vector);
         String resolvedTenant = tenantIdOf(normalized);
-        AtomicInteger counter = tenantIdCounts
-                .computeIfAbsent(partitionKey(resolvedTenant), key -> new AtomicInteger());
-        if (counter.incrementAndGet() > maxWatchesPerTenant) {
-            counter.decrementAndGet();
-            throw new IllegalStateException("Max watches per tenantId exceeded: " + resolvedTenant);
-        }
+        tenantIdCounts.compute(partitionKey(resolvedTenant), (key, counter) -> {
+            AtomicInteger current = counter == null ? new AtomicInteger() : counter;
+            if (current.get() >= maxWatchesPerTenant) {
+                throw new IllegalStateException("Max watches per tenantId exceeded: " + resolvedTenant);
+            }
+            current.incrementAndGet();
+            return current;
+        });
         String watchId = ID.fastSimpleUUID();
         long now = DateKit.current();
         WatchSubscription<T> entry = new WatchSubscription<>(normalized, resolvedTenant, listener, now);
@@ -241,11 +246,13 @@ public class WatchManager implements AutoCloseable, CortexLifecycle, CortexDiagn
     }
 
     /**
-     * Adds one global listener that observes every emitted watch event.
+     * Adds one global listener that observes every emitted watch event. Registration shares the manager shutdown
+     * boundary so no listener can be retained after closure.
      *
      * @param listener global watch listener
+     * @throws IllegalStateException if the manager is closed
      */
-    public void addGlobalListener(Listener<Watch<Object>> listener) {
+    public synchronized void addGlobalListener(Listener<Watch<Object>> listener) {
         if (closed) {
             throw new IllegalStateException("WatchManager is closed");
         }
@@ -269,31 +276,25 @@ public class WatchManager implements AutoCloseable, CortexLifecycle, CortexDiagn
      * Notifies matching watch listeners about a value change.
      *
      * @param key      changed key
-     * @param newValue new value
      * @param <T>      value type
+     * @param newValue new value
      */
     public <T> void notify(String key, T newValue) {
-        notifyTyped(key, newValue, "update", "watch:generic", "WatchManager", "Generic watch update");
+        notifyTyped(key, newValue, "update", "WatchManager", "Generic watch update");
     }
 
     /**
      * Notifies matching generic watch listeners with explicit event metadata.
      *
-     * @param key         changed logical key
-     * @param newValue    new payload value
-     * @param eventType   logical event type
-     * @param sequenceKey logical sequence stream key
-     * @param source      event source component
-     * @param summary     event summary
-     * @param <T>         payload type
+     * @param key       changed logical key
+     * @param <T>       payload type
+     * @param newValue  new payload value
+     * @param eventType logical event type
+     * @param source    event source component
+     * @param summary   event summary
+     * @throws IllegalArgumentException if the notification does not carry a tenant identifier
      */
-    public <T> void notifyTyped(
-            String key,
-            T newValue,
-            String eventType,
-            String sequenceKey,
-            String source,
-            String summary) {
+    public <T> void notifyTyped(String key, T newValue, String eventType, String source, String summary) {
         if (closed) {
             return;
         }
@@ -301,9 +302,6 @@ public class WatchManager implements AutoCloseable, CortexLifecycle, CortexDiagn
         if (newValue instanceof Assets value) {
             RegistryIdentity.normalize(value, RegistryIdentity.type(value));
             tenantId = value.getTenant_id();
-        } else if (newValue instanceof Instance value) {
-            value.setTenant_id(RegistryIdentity.tenantId(Type.API, value.getTenant_id()));
-            tenantId = null;
         } else if (newValue instanceof Tenant value) {
             tenantId = CortexIdentity.tenantId(value.getTenant_id());
         } else {
@@ -324,7 +322,6 @@ public class WatchManager implements AutoCloseable, CortexLifecycle, CortexDiagn
                     item.getKey(),
                     typed,
                     eventType == null || eventType.isBlank() ? "update" : eventType,
-                    sequenceKey == null || sequenceKey.isBlank() ? "watch:generic" : sequenceKey,
                     source == null || source.isBlank() ? "WatchManager" : source,
                     now);
             if (newValue instanceof Assets asset) {
@@ -396,7 +393,6 @@ public class WatchManager implements AutoCloseable, CortexLifecycle, CortexDiagn
                     eventType == null || eventType.isBlank()
                             ? content == null ? SETTING_DELETE_EVENT : SETTING_UPDATE_EVENT
                             : eventType,
-                    "watch:setting",
                     source == null || source.isBlank() ? SETTING_SOURCE : source,
                     now);
             event.setUpdated(content != null ? List.of(content) : List.of());
@@ -412,11 +408,11 @@ public class WatchManager implements AutoCloseable, CortexLifecycle, CortexDiagn
      * Notifies registry watch listeners about a committed registry mutation.
      *
      * @param action           registry mutation action
+     * @param <T>              asset type
      * @param asset            current asset snapshot
      * @param previousAsset    previous asset snapshot
-     * @param instance         current runtime instance snapshot
-     * @param previousInstance previous runtime instance snapshot
-     * @param <T>              asset type
+     * @param instance         current service relationship
+     * @param previousInstance previous service relationship
      */
     public <T extends Assets> void notifyRegistry(
             RegistryChange.Action action,
@@ -431,12 +427,12 @@ public class WatchManager implements AutoCloseable, CortexLifecycle, CortexDiagn
      * Notifies registry watch listeners with an explicit logical event type.
      *
      * @param eventType        logical event type override
+     * @param <T>              asset type
      * @param action           registry mutation action
      * @param asset            current asset snapshot
      * @param previousAsset    previous asset snapshot
-     * @param instance         current runtime instance snapshot
-     * @param previousInstance previous runtime instance snapshot
-     * @param <T>              asset type
+     * @param instance         current service relationship
+     * @param previousInstance previous service relationship
      */
     public <T extends Assets> void notifyRegistry(
             String eventType,
@@ -454,25 +450,21 @@ public class WatchManager implements AutoCloseable, CortexLifecycle, CortexDiagn
                     .requireTenant(RegistryIdentity.type(asset), asset.getTenant_id(), previousAsset.getTenant_id());
             RegistryIdentity.normalize(previousAsset, RegistryIdentity.type(previousAsset));
         }
-        Instance currentRuntime = runtimeSnapshot(asset, instance);
-        Instance previousRuntime = runtimeSnapshot(asset, previousInstance);
         String effectiveEventType = eventType == null || eventType.isBlank()
-                ? registryEventType(action, currentRuntime, previousRuntime)
+                ? registryEventType(action, instance, previousInstance)
                 : eventType;
         Type assetType = Type.tryFromKey(asset.getType()).orElse(null);
-        String sequenceKey = "watch:registry:"
-                + (assetType == null ? "unknown" : StringKit.toLowerCase(assetType.name(), Locale.ROOT));
-        String matchKey = registryWatchKey(asset, currentRuntime, previousRuntime);
+        String matchKey = registryWatchKey(asset, instance, previousInstance);
         for (Map.Entry<String, WatchSubscription<?>> item : entries.entrySet()) {
             Vector vector = item.getValue().getVector();
             if (!Objects.equals(item.getValue().getTenant_id(), asset.getTenant_id())
-                    || !matchesRegistry(vector, matchKey, asset, previousAsset, currentRuntime, previousRuntime)) {
+                    || !matchesRegistry(vector, matchKey, asset, previousAsset, instance, previousInstance)) {
                 continue;
             }
             long now = DateKit.current();
             item.getValue().touch(now, watchExpireMs);
             WatchSubscription<T> typed = (WatchSubscription<T>) item.getValue();
-            Watch<T> event = createEvent(item.getKey(), typed, effectiveEventType, sequenceKey, REGISTRY_SOURCE, now);
+            Watch<T> event = createEvent(item.getKey(), typed, effectiveEventType, REGISTRY_SOURCE, now);
             event.setTenant_id(asset.getTenant_id());
             event.setType(assetType);
             fillRegistryPayload(event, action, effectiveEventType, asset, previousAsset);
@@ -482,16 +474,16 @@ public class WatchManager implements AutoCloseable, CortexLifecycle, CortexDiagn
     }
 
     /**
-     * Removes stale watch entries that have not been accessed recently.
+     * Removes stale watch entries that have not been accessed recently. Only the successful remover releases a
+     * subscription's quota, including when explicit removal or another cleanup runs concurrently.
      */
     public void cleanExpired() {
         long now = DateKit.current();
-        entries.entrySet().removeIf(e -> {
-            boolean expired = e.getValue().getExpiresAt() > 0L && now > e.getValue().getExpiresAt();
-            if (expired) {
-                decrementTenantCount(e.getValue().getTenant_id());
+        entries.forEach((id, subscription) -> {
+            if (subscription.getExpiresAt() > 0L && now > subscription.getExpiresAt()
+                    && entries.remove(id, subscription)) {
+                decrementTenantCount(subscription.getTenant_id());
             }
-            return expired;
         });
     }
 
@@ -554,10 +546,11 @@ public class WatchManager implements AutoCloseable, CortexLifecycle, CortexDiagn
     }
 
     /**
-     * Stops asynchronous dispatching and clears all live subscriptions.
+     * Stops asynchronous dispatching and clears all live subscriptions. The manager monitor serializes shutdown with
+     * subscription and global-listener registration.
      */
     @Override
-    public void close() {
+    public synchronized void close() {
         closed = true;
         entries.clear();
         tenantIdCounts.clear();
@@ -598,10 +591,13 @@ public class WatchManager implements AutoCloseable, CortexLifecycle, CortexDiagn
      */
     private boolean matches(Vector vector, String key, Object value) {
         if (vector == null) {
-            return !(value instanceof org.miaixz.bus.cortex.setting.watch.Watch);
+            return !(WatchProjection.runtime(value));
         }
         if (value instanceof Assets asset) {
             if (vector.getTenant_id() != null && !Objects.equals(vector.getTenant_id(), asset.getTenant_id())) {
+                return false;
+            }
+            if (vector.getApp_id() != null && !Objects.equals(vector.getApp_id(), asset.getApp_id())) {
                 return false;
             }
             if (vector.getType() != null && !Objects.equals(vector.getType(), asset.getType())) {
@@ -622,33 +618,18 @@ public class WatchManager implements AutoCloseable, CortexLifecycle, CortexDiagn
             return true;
         }
         if (value instanceof Instance instance) {
-            if (vector.getTenant_id() != null && !Objects.equals(vector.getTenant_id(), instance.getTenant_id())) {
-                return false;
-            }
-            if (vector.getId() != null && !Objects.equals(vector.getId(), instance.getServiceId())
-                    && !Objects.equals(vector.getId(), instance.getFingerprint())) {
-                return false;
-            }
-            if (vector.getMethod() != null && !Objects.equals(vector.getMethod(), instance.getMethod())) {
-                return false;
-            }
-            if (vector.getVersion() != null && !Objects.equals(vector.getVersion(), instance.getVersion())) {
-                return false;
-            }
-            if (vector.getState() != null && !Objects.equals(vector.getState(), instance.getState())) {
-                return false;
-            }
-            return true;
+            return (vector.getType() == null || vector.getType() == Type.INSTANCE.key())
+                    && (vector.getTenant_id() == null || Objects.equals(vector.getTenant_id(), instance.getTenant_id()))
+                    && (vector.getApp_id() == null || Objects.equals(vector.getApp_id(), instance.getApp_id()))
+                    && (vector.getId() == null || Objects.equals(vector.getId(), instance.getId())
+                            || Objects.equals(vector.getId(), instance.getChecksum()))
+                    && vector.getMethod() == null && vector.getVersion() == null
+                    && (vector.getStatus() == null || Objects.equals(vector.getStatus(), instance.getStatus()))
+                    && MetadataMatcher.matches(instance.labelView(), vector.getLabels(), vector.getSelectors());
         }
-        if (value instanceof org.miaixz.bus.cortex.setting.watch.Watch watch) {
-            if (!Objects.equals(vector.getType(), Type.WATCH.getKey())
-                    || vector.getTenant_id() != null && !Objects.equals(vector.getTenant_id(), watch.getTenant_id())
-                    || vector.getApp_id() != null || vector.getMethod() != null || vector.getVersion() != null
-                    || vector.getState() != null || vector.getLabels() != null && !vector.getLabels().isEmpty()
-                    || vector.getSelectors() != null && !vector.getSelectors().isEmpty()) {
-                return false;
-            }
-            return vector.getId() == null || matchesSettingKey(key, vector.getId());
+        if (WatchProjection.runtime(value)) {
+            return WatchProjection.permits(vector, value)
+                    && (vector.getId() == null || matchesSettingKey(key, vector.getId()));
         }
         if (vector.getId() == null) {
             return true;
@@ -667,28 +648,24 @@ public class WatchManager implements AutoCloseable, CortexLifecycle, CortexDiagn
     }
 
     /**
-     * Builds the base watch event envelope before added, removed, or updated payloads are attached.
+     * Builds the base watch event envelope before payloads are attached. Dispatch assigns ordering metadata when the
+     * completed event enters the subscription's serialized enqueue path.
      *
      * @param watchId      generated watch identifier
+     * @param <T>          watched payload type
      * @param subscription receiving subscription
      * @param eventType    logical event type
-     * @param sequenceKey  logical stream key used for ordered sequencing
      * @param source       event source component
      * @param now          event timestamp in epoch milliseconds
-     * @param <T>          watched payload type
      * @return initialized watch event envelope
      */
     private <T> Watch<T> createEvent(
             String watchId,
             WatchSubscription<T> subscription,
             String eventType,
-            String sequenceKey,
             String source,
             long now) {
         Watch<T> event = new Watch<>();
-        long sequence = nextSequence(partitionKey(subscription.getTenant_id()) + ":" + sequenceKey);
-        long previousSequence = subscription.getLastSequence();
-        subscription.setLastSequence(sequence);
         event.setWatchId(watchId);
         event.setVector(subscription.getVector());
         event.setTenant_id(subscription.getTenant_id());
@@ -700,8 +677,6 @@ public class WatchManager implements AutoCloseable, CortexLifecycle, CortexDiagn
         event.setUpdated(List.of());
         event.setEventType(eventType);
         event.setSource(source);
-        event.setPreviousSequence(previousSequence);
-        event.setSequence(sequence);
         event.setTimestamp(now);
         return event;
     }
@@ -724,51 +699,60 @@ public class WatchManager implements AutoCloseable, CortexLifecycle, CortexDiagn
     }
 
     /**
-     * Dispatches one watch event asynchronously and records listener execution state.
+     * Assigns ordering metadata and enqueues one completed event while holding only its subscription monitor. Listener
+     * callbacks, including global listeners, execute asynchronously outside that monitor. All event types share one
+     * tenant-scoped sequence, so mixed subscriptions cannot move backwards. Dropped events still advance the emitted
+     * sequence so existing gap detection remains unchanged.
      *
      * @param watchId      watch identifier
+     * @param <T>          watched payload type
      * @param subscription watch subscription
      * @param event        emitted event
-     * @param <T>          watched payload type
      */
     private <T> void dispatch(String watchId, WatchSubscription<T> subscription, Watch<T> event) {
-        long now = DateKit.current();
-        if (!subscription.reservePending(maxPendingPerWatch)) {
-            handleOverflow(watchId, subscription, event, now);
-            return;
-        }
-        try {
-            subscription.enqueueDispatch(() -> {
-                try {
-                    subscription.setDispatchCount(subscription.getDispatchCount() + 1);
-                    long deliveredAt = DateKit.current();
-                    subscription.setLastEventAt(deliveredAt);
-                    subscription.getListener().onEvent(event);
-                } catch (Exception e) {
-                    subscription.setFailureCount(subscription.getFailureCount() + 1);
-                    subscription.setLastError(e.getMessage());
-                    event.setErrorMessage(e.getMessage());
+        synchronized (subscription) {
+            long sequence = nextSequence(partitionKey(subscription.getTenant_id()) + ":watch");
+            event.setPreviousSequence(subscription.getLastSequence());
+            subscription.setLastSequence(sequence);
+            event.setSequence(sequence);
+            long now = DateKit.current();
+            if (!subscription.reservePending(maxPendingPerWatch)) {
+                handleOverflow(watchId, subscription, event, now);
+                return;
+            }
+            try {
+                subscription.enqueueDispatch(() -> {
                     try {
-                        subscription.getListener().onError(event, e);
-                    } catch (Exception errorHandlerFailure) {
-                        Logger.warn(
-                                false,
-                                "Cortex",
-                                "Watch listener error handler failed {}: {}",
-                                watchId,
-                                errorHandlerFailure.getMessage());
+                        subscription.setDispatchCount(subscription.getDispatchCount() + 1);
+                        long deliveredAt = DateKit.current();
+                        subscription.setLastEventAt(deliveredAt);
+                        subscription.getListener().onEvent(event);
+                    } catch (Exception e) {
+                        subscription.setFailureCount(subscription.getFailureCount() + 1);
+                        subscription.setLastError(e.getMessage());
+                        event.setErrorMessage(e.getMessage());
+                        try {
+                            subscription.getListener().onError(event, e);
+                        } catch (Exception errorHandlerFailure) {
+                            Logger.warn(
+                                    false,
+                                    "Cortex",
+                                    "Watch listener error handler failed {}: {}",
+                                    watchId,
+                                    errorHandlerFailure.getMessage());
+                        }
+                        Logger.warn(false, "Cortex", "Watch listener execution failed {}: {}", watchId, e.getMessage());
+                    } finally {
+                        subscription.completeDelivery(DateKit.current());
                     }
-                    Logger.warn(false, "Cortex", "Watch listener execution failed {}: {}", watchId, e.getMessage());
-                } finally {
-                    subscription.completeDelivery(DateKit.current());
-                }
-                dispatchGlobal(event);
-            }, dispatcher);
-        } catch (RejectedExecutionException e) {
-            subscription.releasePending();
-            subscription.recordDrop(now, e.getMessage());
-            event.setErrorMessage(e.getMessage());
-            Logger.warn(false, "Cortex", "Watch dispatch rejected {}: {}", watchId, e.getMessage());
+                    dispatchGlobal(event);
+                }, dispatcher);
+            } catch (RejectedExecutionException e) {
+                subscription.releasePending();
+                subscription.recordDrop(now, e.getMessage());
+                event.setErrorMessage(e.getMessage());
+                Logger.warn(false, "Cortex", "Watch dispatch rejected {}: {}", watchId, e.getMessage());
+            }
         }
     }
 
@@ -776,10 +760,10 @@ public class WatchManager implements AutoCloseable, CortexLifecycle, CortexDiagn
      * Records one dropped event caused by subscription backlog overflow.
      *
      * @param watchId      watch identifier
+     * @param <T>          watched payload type
      * @param subscription watch subscription
      * @param event        dropped event
      * @param now          current timestamp
-     * @param <T>          watched payload type
      */
     private <T> void handleOverflow(String watchId, WatchSubscription<T> subscription, Watch<T> event, long now) {
         String reason = "Watch backlog limit exceeded";
@@ -810,7 +794,7 @@ public class WatchManager implements AutoCloseable, CortexLifecycle, CortexDiagn
         copy.setVersion(vector.getVersion());
         copy.setLabels(vector.getLabels() == null ? null : new LinkedHashMap<>(vector.getLabels()));
         copy.setSelectors(vector.getSelectors() == null ? null : new ArrayList<>(vector.getSelectors()));
-        copy.setState(vector.getState());
+        copy.setStatus(vector.getStatus());
         copy.setPurpose(vector.getPurpose());
         copy.setWatch(vector.isWatch());
         copy.setRefresh(vector.isRefresh());
@@ -845,8 +829,8 @@ public class WatchManager implements AutoCloseable, CortexLifecycle, CortexDiagn
      * @param key              fallback watch key
      * @param asset            current asset
      * @param previousAsset    previous asset
-     * @param instance         current instance
-     * @param previousInstance previous instance
+     * @param instance         current service relationship
+     * @param previousInstance previous service relationship
      * @return {@code true} when the change matches
      */
     private boolean matchesRegistry(
@@ -856,17 +840,44 @@ public class WatchManager implements AutoCloseable, CortexLifecycle, CortexDiagn
             Assets previousAsset,
             Instance instance,
             Instance previousInstance) {
-        return matches(vector, key, asset) || (previousAsset != null && matches(vector, key, previousAsset))
-                || (instance != null && matches(vector, key, instance))
-                || (previousInstance != null && matches(vector, key, previousInstance));
+        if (instance != null || previousInstance != null) {
+            return instance != null && matchesServiceInstance(vector, asset, instance) || previousInstance != null
+                    && matchesServiceInstance(vector, previousAsset == null ? asset : previousAsset, previousInstance);
+        }
+        return matches(vector, key, asset) || previousAsset != null && matches(vector, key, previousAsset);
+    }
+
+    /**
+     * Matches a shared process using service route coordinates supplied by the event asset.
+     *
+     * @param vector   subscription selector
+     * @param asset    exact service definition context
+     * @param instance shared runtime process
+     * @return whether service and process constraints all match
+     */
+    private boolean matchesServiceInstance(Vector vector, Assets asset, Instance instance) {
+        if (vector == null) {
+            return true;
+        }
+        return (vector.getType() == null || Objects.equals(vector.getType(), asset.getType()))
+                && (vector.getTenant_id() == null || asset.getType() == Type.API.key()
+                        || Objects.equals(vector.getTenant_id(), asset.getTenant_id()))
+                && (vector.getApp_id() == null || Objects.equals(vector.getApp_id(), instance.getApp_id()))
+                && (vector.getId() == null || Objects.equals(vector.getId(), asset.getId())
+                        || Objects.equals(vector.getId(), instance.getId())
+                        || Objects.equals(vector.getId(), instance.getChecksum()))
+                && (vector.getMethod() == null || Objects.equals(vector.getMethod(), asset.getMethod()))
+                && (vector.getVersion() == null || Objects.equals(vector.getVersion(), asset.getVersion()))
+                && (vector.getStatus() == null || Objects.equals(vector.getStatus(), instance.getStatus()))
+                && MetadataMatcher.matches(asset, vector.getLabels(), vector.getSelectors());
     }
 
     /**
      * Resolves a logical registry watch event type from registry action and instance state.
      *
      * @param action           registry action
-     * @param instance         current instance
-     * @param previousInstance previous instance
+     * @param instance         current service relationship
+     * @param previousInstance previous service relationship
      * @return event type
      */
     private String registryEventType(RegistryChange.Action action, Instance instance, Instance previousInstance) {
@@ -887,11 +898,11 @@ public class WatchManager implements AutoCloseable, CortexLifecycle, CortexDiagn
      * Attaches registry-domain payload lists using asset snapshots.
      *
      * @param event         watch event to fill
+     * @param <T>           asset type
      * @param action        registry action
      * @param eventType     resolved event type
      * @param asset         current asset
      * @param previousAsset previous asset
-     * @param <T>           asset type
      */
     private <T extends Assets> void fillRegistryPayload(
             Watch<T> event,
@@ -915,8 +926,8 @@ public class WatchManager implements AutoCloseable, CortexLifecycle, CortexDiagn
      * Builds a compact registry watch key for fallback string selectors.
      *
      * @param asset            current asset
-     * @param instance         current instance
-     * @param previousInstance previous instance
+     * @param instance         current service relationship
+     * @param previousInstance previous service relationship
      * @return logical watch key
      */
     private String registryWatchKey(Assets asset, Instance instance, Instance previousInstance) {
@@ -924,47 +935,10 @@ public class WatchManager implements AutoCloseable, CortexLifecycle, CortexDiagn
             return asset.getId();
         }
         Instance runtime = instance != null ? instance : previousInstance;
-        if (runtime != null && runtime.getFingerprint() != null) {
-            return runtime.getFingerprint();
+        if (runtime != null && runtime.getChecksum() != null) {
+            return runtime.getChecksum();
         }
         return null;
-    }
-
-    /**
-     * Copies an instance snapshot and fills missing identity fields from the owning asset for matching.
-     *
-     * @param asset    owning asset
-     * @param instance runtime instance
-     * @return copied runtime instance, or {@code null}
-     */
-    private Instance runtimeSnapshot(Assets asset, Instance instance) {
-        if (instance == null) {
-            return null;
-        }
-        Instance copy = new Instance();
-        copy.setTenant_id(RegistryIdentity.tenantId(Type.API, instance.getTenant_id()));
-        copy.setApp_id(instance.getApp_id() != null ? instance.getApp_id() : asset.getApp_id());
-        copy.setServiceId(instance.getServiceId() != null ? instance.getServiceId() : asset.getId());
-        copy.setMethod(instance.getMethod() != null ? instance.getMethod() : asset.getMethod());
-        copy.setVersion(instance.getVersion() != null ? instance.getVersion() : asset.getVersion());
-        copy.setHost(instance.getHost());
-        copy.setPort(instance.getPort());
-        copy.setWeight(instance.getWeight());
-        copy.setHealthy(instance.getHealthy());
-        copy.setState(instance.getState());
-        copy.setFingerprint(instance.getFingerprint());
-        copy.setPid(instance.getPid());
-        copy.setScheme(instance.getScheme());
-        copy.setHealthPath(instance.getHealthPath());
-        copy.setLease(instance.getLease());
-        copy.setLastHeartbeatAt(instance.getLastHeartbeatAt());
-        copy.setLastProbeAt(instance.getLastProbeAt());
-        copy.setStateChangedAt(instance.getStateChangedAt());
-        copy.setHealthSource(instance.getHealthSource());
-        copy.setLastStatus(instance.getLastStatus());
-        copy.setLabels(instance.getLabels() == null ? null : new LinkedHashMap<>(instance.getLabels()));
-        copy.setMetadata(instance.getMetadata() == null ? null : new LinkedHashMap<>(instance.getMetadata()));
-        return copy;
     }
 
     /**
@@ -996,19 +970,15 @@ public class WatchManager implements AutoCloseable, CortexLifecycle, CortexDiagn
     }
 
     /**
-     * Decrements the tenantId watch counter and clears empty counters.
+     * Atomically decrements the tenantId watch counter and removes it only while still empty, so concurrent
+     * registration cannot retain a detached counter.
      *
      * @param tenantId tenantId key
      */
     private void decrementTenantCount(String tenantId) {
-        String counterKey = partitionKey(tenantId);
-        AtomicInteger counter = tenantIdCounts.get(counterKey);
-        if (counter == null) {
-            return;
-        }
-        if (counter.decrementAndGet() <= 0) {
-            tenantIdCounts.remove(counterKey, counter);
-        }
+        tenantIdCounts.computeIfPresent(
+                partitionKey(tenantId),
+                (key, counter) -> counter.decrementAndGet() <= 0 ? null : counter);
     }
 
     /**

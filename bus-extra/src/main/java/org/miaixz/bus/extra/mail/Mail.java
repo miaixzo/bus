@@ -23,6 +23,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
+import java.io.Serial;
 import java.nio.charset.Charset;
 
 import jakarta.activation.DataSource;
@@ -64,6 +65,9 @@ import org.miaixz.bus.logger.Logger;
  * @author Kimi Liu
  */
 public class Mail implements Builder<MimeMessage> {
+
+    @Serial
+    private static final long serialVersionUID = 2555011500001L;
 
     /**
      * The mail account configuration, including SMTP server settings, authentication details, etc.
@@ -393,9 +397,9 @@ public class Mail implements Builder<MimeMessage> {
      */
     @Override
     public SMTPMessage build() {
-        return SMTPMessage.of(this.mailAccount, this.useGlobalSession, this.debugOutput).setTitle(this.title)
-                .setTos(this.tos).setCcs(this.ccs).setBccs(this.bccs).setReply(this.reply)
-                .setContent(this.content, this.isHtml);
+        return SMTPMessage.of(this.mailAccount, this.useGlobalSession, this.debugOutput)
+                .setTos(this.tos).setCcs(this.ccs).setBccs(this.bccs).setReply(this.reply).setTitle(this.title)
+                .setContent(this.content, this.isHtml).addAttachments(this.attachments);
     }
 
     /**

@@ -22,6 +22,9 @@ package org.miaixz.bus.metrics.builtin;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.OptionalLong;
+import java.util.function.Function;
+import java.util.function.ToLongFunction;
 
 import org.miaixz.bus.metrics.Provider;
 import org.miaixz.bus.metrics.bridge.HostMetricCapabilities;
@@ -244,7 +247,7 @@ public final class ProcessHostMetrics implements MetricBinder {
             Provider provider,
             String name,
             String unit,
-            java.util.function.ToLongFunction<ProcessSnapshot> getter) {
+            ToLongFunction<ProcessSnapshot> getter) {
         group.add(
                 provider.registerObservable(
                         descriptor(name, InstrumentKind.UP_DOWN_COUNTER, NumberKind.LONG, unit, List.of()),
@@ -267,7 +270,7 @@ public final class ProcessHostMetrics implements MetricBinder {
             String name,
             InstrumentKind kind,
             String unit,
-            java.util.function.Function<ProcessSnapshot, java.util.OptionalLong> getter) {
+            Function<ProcessSnapshot, OptionalLong> getter) {
         group.add(
                 provider.registerObservable(
                         descriptor(name, kind, NumberKind.LONG, unit, List.of()),

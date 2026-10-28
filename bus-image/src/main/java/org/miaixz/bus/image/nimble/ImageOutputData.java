@@ -126,14 +126,17 @@ public class ImageOutputData {
         data.setInt(Tag.Columns, VR.US, img.width());
         data.setInt(Tag.Rows, VR.US, img.height());
         data.setInt(Tag.SamplesPerPixel, VR.US, channels);
-        data.setInt(Tag.BitsAllocated, VR.US, desc.getBitsAllocated());
-        data.setInt(Tag.BitsStored, VR.US, desc.getBitsStored());
-        data.setInt(Tag.HighBit, VR.US, desc.getBitsStored() - 1);
+        int bitsAllocated = (int) img.elemSize1() * 8;
+        int bitsStored = Math.min(desc.getBitsStored(), bitsAllocated);
+        data.setInt(Tag.BitsAllocated, VR.US, bitsAllocated);
+        data.setInt(Tag.BitsStored, VR.US, bitsStored);
+        data.setInt(Tag.HighBit, VR.US, bitsStored - 1);
         data.setInt(Tag.PixelRepresentation, VR.US, signed);
         String pmi = desc.getPhotometricInterpretation().toString();
         if (img.channels() > 1) {
             pmi = Photometric.RGB.toString();
             data.setInt(Tag.PlanarConfiguration, VR.US, 0);
+            RGBImageVoiLut.removePaletteColorLookupTable(data);
         }
         data.setString(Tag.PhotometricInterpretation, VR.CS, pmi);
     }
@@ -590,7 +593,7 @@ public class ImageOutputData {
             bitCompressedForEncoder = 12;
         }
 
-        int[] params = new int[16];
+        int[] params = new int[18];
         params[Imgcodecs.DICOM_PARAM_IMREAD] = Imgcodecs.IMREAD_UNCHANGED; // Image flags
         params[Imgcodecs.DICOM_PARAM_DCM_IMREAD] = dcmFlags; // DICOM flags
         params[Imgcodecs.DICOM_PARAM_WIDTH] = img.width(); // Image width
@@ -608,6 +611,8 @@ public class ImageOutputData {
         params[Imgcodecs.DICOM_PARAM_JPEG_PREDICTION] = param.getPrediction(); // JPEG lossless prediction
         params[Imgcodecs.DICOM_PARAM_JPEG_PT_TRANSFORM] = param.getPointTransform(); // JPEG lossless transformation
         // point
+        params[Imgcodecs.DICOM_PARAM_JXL_EFFORT] = param.getJxlEffort();
+        params[Imgcodecs.DICOM_PARAM_JXL_DECODING_SPEED] = param.getJxlDecodingSpeed();
 
         data.setInt(Tag.Columns, VR.US, img.width());
         data.setInt(Tag.Rows, VR.US, img.height());

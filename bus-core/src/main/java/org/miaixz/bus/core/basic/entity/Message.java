@@ -41,7 +41,7 @@ import org.miaixz.bus.core.basic.normal.Errors;
 public class Message<T> implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852291039238L;
+    private static final long serialVersionUID = 2535303508001L;
 
     /**
      * The response code, indicating the status of the request.

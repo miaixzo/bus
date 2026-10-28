@@ -31,7 +31,7 @@ import org.miaixz.bus.gitlab.models.GitLabForm;
 public class CustomIssueTrackerService extends NotificationService {
 
     @Serial
-    private static final long serialVersionUID = 2852283856060L;
+    private static final long serialVersionUID = 2551298001633L;
 
     /**
      * Constructs a new {@code CustomIssueTrackerService} instance.

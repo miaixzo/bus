@@ -36,7 +36,8 @@ public class CortexGuard {
     /**
      * Creates a Cortex guard from the supplied strategies.
      *
-     * @param strategies guard strategies
+     * @param strategies ordered strategies copied at construction; null selects an empty list
+     * @throws NullPointerException if a non-null list contains a null strategy
      */
     public CortexGuard(List<GuardStrategy> strategies) {
         this.strategies = strategies == null ? List.of() : List.copyOf(strategies);
@@ -64,6 +65,7 @@ public class CortexGuard {
      * Enforces guard policy and raises a security exception on denial.
      *
      * @param context guard evaluation context
+     * @throws SecurityException if a guard strategy denies the operation
      */
     public void enforce(GuardContext context) {
         GuardDecision decision = check(context);

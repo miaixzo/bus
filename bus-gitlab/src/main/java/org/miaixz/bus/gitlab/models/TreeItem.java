@@ -32,7 +32,7 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class TreeItem implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852282298357L;
+    private static final long serialVersionUID = 2551258898001L;
 
     /**
      * The id value.

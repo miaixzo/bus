@@ -19,15 +19,18 @@
 */
 package org.miaixz.bus.cortex.setting.event;
 
+import java.io.Serial;
+
+import jakarta.persistence.Lob;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 import org.miaixz.bus.core.basic.entity.Tenant;
-import org.miaixz.bus.logger.Level;
 
 /**
- * Immutable service-center event record.
+ * Value-free operation audit and exact idempotency receipt.
  *
  * @author Kimi Liu
  */
@@ -36,93 +39,72 @@ import org.miaixz.bus.logger.Level;
 @SuperBuilder
 public class Event extends Tenant {
 
+    @Serial
+    private static final long serialVersionUID = 2558905952518L;
+
     /**
-     * Actor that produced the event.
+     * Audit actor supplied for the operation.
      */
     private String actor_id;
+
     /**
-     * Notification target identifier.
-     */
-    private String target_id;
-    /**
-     * Related runtime instance.
-     */
-    private String instance_id;
-    /**
-     * Related watch.
-     */
-    private String watch_id;
-    /**
-     * Related rollout.
-     */
-    private String rollout_id;
-    /**
-     * Related setting item.
-     */
-    private String item_id;
-    /**
-     * Related immutable revision.
-     */
-    private String revision_id;
-    /**
-     * Primary affected resource.
+     * Exact identifier of the operation target.
      */
     private String resource_id;
+
     /**
-     * Event category.
-     */
-    private String category;
-    /**
-     * Event action.
-     */
-    private String action;
-    /**
-     * Runtime session.
-     */
-    private String session;
-    /**
-     * Runtime generation.
-     */
-    private Long generation;
-    /**
-     * Idempotency request identifier.
-     */
-    private String request;
-    /**
-     * Stable event fingerprint.
-     */
-    private String fingerprint;
-    /**
-     * Affected resource type.
+     * Resource category of the operation target.
      */
     private String resource;
+
     /**
-     * Event severity level.
+     * Name of the audited operation.
      */
-    private Level level;
+    private String action;
+
     /**
-     * Source occurrence time.
+     * Request identifier used for idempotency.
      */
-    private Long occurred;
+    private String request;
+
     /**
-     * Server receipt time.
+     * Checksum binding the operation identity and authorized inputs.
      */
-    private Long received;
+    private String checksum;
+
     /**
-     * Event result.
+     * Audit severity level.
+     */
+    private String level;
+
+    /**
+     * Operation outcome or exact result identifier; successful publication records the release identifier.
      */
     private String result;
+
     /**
-     * Human-readable message.
+     * Outcome description containing no sensitive values.
      */
     private String message;
+
     /**
-     * Structured event detail stored as text.
+     * Action-specific audit metadata containing no configuration values.
      */
+    @Lob
     private String detail;
 
     /**
-     * Creates an empty event record.
+     * Operation occurrence time in epoch milliseconds.
+     */
+    private Long occurred;
+
+    /**
+     * Service receipt time in epoch milliseconds.
+     */
+    private Long received;
+
+    /**
+     * Creates an empty operation audit event.
      */
     public Event() {
         // No initialization required.

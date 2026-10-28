@@ -7,25 +7,7 @@
       "allDeclaredConstructors": true
     },
     {
-      "type": "org.miaixz.bus.cortex.setting.revision.Diff",
-      "allDeclaredFields": true,
-      "allDeclaredMethods": true,
-      "allDeclaredConstructors": true
-    },
-    {
-      "type": "org.miaixz.bus.cortex.setting.revision.Diff$Type",
-      "allDeclaredFields": true,
-      "allDeclaredMethods": true,
-      "allDeclaredConstructors": true
-    },
-    {
       "type": "org.miaixz.bus.cortex.setting.reference.Reference$Strategy",
-      "allDeclaredFields": true,
-      "allDeclaredMethods": true,
-      "allDeclaredConstructors": true
-    },
-    {
-      "type": "org.miaixz.bus.cortex.setting.watch.Watch$Synchronization",
       "allDeclaredFields": true,
       "allDeclaredMethods": true,
       "allDeclaredConstructors": true
@@ -61,27 +43,7 @@
       "allDeclaredMethods": true
     },
     {
-      "type": "org.miaixz.bus.cortex.setting.item.Item$Kind",
-      "allDeclaredFields": true,
-      "allDeclaredMethods": true
-    },
-    {
-      "type": "org.miaixz.bus.cortex.setting.item.Item$Editor",
-      "allDeclaredFields": true,
-      "allDeclaredMethods": true
-    },
-    {
-      "type": "org.miaixz.bus.cortex.setting.item.Item$State",
-      "allDeclaredFields": true,
-      "allDeclaredMethods": true
-    },
-    {
-      "type": "org.miaixz.bus.cortex.setting.item.Item$SecretAction",
-      "allDeclaredFields": true,
-      "allDeclaredMethods": true
-    },
-    {
-      "type": "org.miaixz.bus.cortex.setting.item.Item$ValidationLevel",
+      "type": "org.miaixz.bus.cortex.setting.item.Item$Status",
       "allDeclaredFields": true,
       "allDeclaredMethods": true
     },
@@ -105,15 +67,6 @@
       "allPublicMethods": true
     },
     {
-      "type": "org.miaixz.bus.cortex.setting.item.ItemNormalizer",
-      "allDeclaredMethods": true
-    },
-    {
-      "type": "org.miaixz.bus.cortex.setting.item.StoreBackedItemStore",
-      "allDeclaredConstructors": true,
-      "allPublicMethods": true
-    },
-    {
       "type": "org.miaixz.bus.cortex.setting.revision.Revision",
       "allDeclaredFields": true,
       "allDeclaredMethods": true,
@@ -126,11 +79,6 @@
     {
       "type": "org.miaixz.bus.cortex.setting.revision.Revision$RevisionBuilderImpl",
       "allDeclaredConstructors": true,
-      "allDeclaredMethods": true
-    },
-    {
-      "type": "org.miaixz.bus.cortex.setting.revision.Revision$Operation",
-      "allDeclaredFields": true,
       "allDeclaredMethods": true
     },
     {
@@ -177,6 +125,11 @@
       "allDeclaredMethods": true
     },
     {
+      "type": "org.miaixz.bus.cortex.setting.rollout.Rollout$State",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true
+    },
+    {
       "type": "org.miaixz.bus.cortex.setting.approval.Approval",
       "allDeclaredFields": true,
       "allDeclaredMethods": true,
@@ -192,19 +145,28 @@
       "allDeclaredMethods": true
     },
     {
-      "type": "org.miaixz.bus.cortex.setting.instance.Instance",
+      "type": "org.miaixz.bus.cortex.Instance",
       "allDeclaredFields": true,
       "allDeclaredMethods": true,
       "allDeclaredConstructors": true
     },
     {
-      "type": "org.miaixz.bus.cortex.setting.instance.Instance$InstanceBuilder",
-      "allDeclaredMethods": true
+      "type": "org.miaixz.bus.cortex.health.HealthInfo",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true
     },
     {
-      "type": "org.miaixz.bus.cortex.setting.instance.Instance$InstanceBuilderImpl",
+      "type": "org.miaixz.bus.cortex.Instance$InstanceBuilder",
+      "allDeclaredMethods": true,
+      "allDeclaredFields": true,
+      "allDeclaredConstructors": true
+    },
+    {
+      "type": "org.miaixz.bus.cortex.Instance$InstanceBuilderImpl",
       "allDeclaredConstructors": true,
-      "allDeclaredMethods": true
+      "allDeclaredMethods": true,
+      "allDeclaredFields": true
     },
     {
       "type": "org.miaixz.bus.cortex.setting.watch.Watch",
@@ -310,12 +272,6 @@
     },
     {
       "type": "org.miaixz.bus.cortex.builtin.event.LoggingWatchListener",
-      "allDeclaredFields": true,
-      "allDeclaredMethods": true,
-      "allDeclaredConstructors": true
-    },
-    {
-      "type": "org.miaixz.bus.cortex.builtin.event.SimpleSettingPublisher",
       "allDeclaredFields": true,
       "allDeclaredMethods": true,
       "allDeclaredConstructors": true
@@ -471,31 +427,7 @@
       "allDeclaredConstructors": true
     },
     {
-      "type": "org.miaixz.bus.cortex.health.ProcessProber",
-      "allDeclaredFields": true,
-      "allDeclaredMethods": true,
-      "allDeclaredConstructors": true
-    },
-    {
       "type": "org.miaixz.bus.cortex.health.TcpProber",
-      "allDeclaredFields": true,
-      "allDeclaredMethods": true,
-      "allDeclaredConstructors": true
-    },
-    {
-      "type": "org.miaixz.bus.cortex.Instance",
-      "allDeclaredFields": true,
-      "allDeclaredMethods": true,
-      "allDeclaredConstructors": true
-    },
-    {
-      "type": "org.miaixz.bus.cortex.Instance$InstanceBuilder",
-      "allDeclaredFields": true,
-      "allDeclaredMethods": true,
-      "allDeclaredConstructors": true
-    },
-    {
-      "type": "org.miaixz.bus.cortex.Instance$InstanceBuilderImpl",
       "allDeclaredFields": true,
       "allDeclaredMethods": true,
       "allDeclaredConstructors": true
@@ -538,12 +470,6 @@
     },
     {
       "type": "org.miaixz.bus.cortex.magic.identity.CortexIdentity",
-      "allDeclaredFields": true,
-      "allDeclaredMethods": true,
-      "allDeclaredConstructors": true
-    },
-    {
-      "type": "org.miaixz.bus.cortex.magic.identity.Fingerprint",
       "allDeclaredFields": true,
       "allDeclaredMethods": true,
       "allDeclaredConstructors": true
@@ -837,36 +763,6 @@
       "allDeclaredConstructors": true
     },
     {
-      "type": "org.miaixz.bus.cortex.setting.curator.EnvSourceAdapter",
-      "allDeclaredFields": true,
-      "allDeclaredMethods": true,
-      "allDeclaredConstructors": true
-    },
-    {
-      "type": "org.miaixz.bus.cortex.setting.curator.InlineSourceAdapter",
-      "allDeclaredFields": true,
-      "allDeclaredMethods": true,
-      "allDeclaredConstructors": true
-    },
-    {
-      "type": "org.miaixz.bus.cortex.setting.curator.ItemCuratorService",
-      "allDeclaredFields": true,
-      "allDeclaredMethods": true,
-      "allDeclaredConstructors": true
-    },
-    {
-      "type": "org.miaixz.bus.cortex.setting.curator.ItemValueResolver",
-      "allDeclaredFields": true,
-      "allDeclaredMethods": true,
-      "allDeclaredConstructors": true
-    },
-    {
-      "type": "org.miaixz.bus.cortex.setting.DefaultCurator",
-      "allDeclaredFields": true,
-      "allDeclaredMethods": true,
-      "allDeclaredConstructors": true
-    },
-    {
       "type": "org.miaixz.bus.cortex.setting.delivery.ItemExportService",
       "allDeclaredFields": true,
       "allDeclaredMethods": true,
@@ -874,72 +770,6 @@
     },
     {
       "type": "org.miaixz.bus.cortex.setting.delivery.ItemQueryService",
-      "allDeclaredFields": true,
-      "allDeclaredMethods": true,
-      "allDeclaredConstructors": true
-    },
-    {
-      "type": "org.miaixz.bus.cortex.setting.delivery.RuntimeItemOverlayService",
-      "allDeclaredFields": true,
-      "allDeclaredMethods": true,
-      "allDeclaredConstructors": true
-    },
-    {
-      "type": "org.miaixz.bus.cortex.setting.item.GrayRequestContext",
-      "allDeclaredFields": true,
-      "allDeclaredMethods": true,
-      "allDeclaredConstructors": true
-    },
-    {
-      "type": "org.miaixz.bus.cortex.setting.item.GrayRequestContext$GrayRequestContextBuilder",
-      "allDeclaredFields": true,
-      "allDeclaredMethods": true,
-      "allDeclaredConstructors": true
-    },
-    {
-      "type": "org.miaixz.bus.cortex.setting.item.GrayRequestContext$GrayRequestContextBuilderImpl",
-      "allDeclaredFields": true,
-      "allDeclaredMethods": true,
-      "allDeclaredConstructors": true
-    },
-    {
-      "type": "org.miaixz.bus.cortex.setting.item.GrayRule",
-      "allDeclaredFields": true,
-      "allDeclaredMethods": true,
-      "allDeclaredConstructors": true
-    },
-    {
-      "type": "org.miaixz.bus.cortex.setting.item.GrayRule$GrayRuleBuilder",
-      "allDeclaredFields": true,
-      "allDeclaredMethods": true,
-      "allDeclaredConstructors": true
-    },
-    {
-      "type": "org.miaixz.bus.cortex.setting.item.GrayRule$GrayRuleBuilderImpl",
-      "allDeclaredFields": true,
-      "allDeclaredMethods": true,
-      "allDeclaredConstructors": true
-    },
-    {
-      "type": "org.miaixz.bus.cortex.setting.item.GrayRuleMatcher",
-      "allDeclaredFields": true,
-      "allDeclaredMethods": true,
-      "allDeclaredConstructors": true
-    },
-    {
-      "type": "org.miaixz.bus.cortex.setting.item.GrayType",
-      "allDeclaredFields": true,
-      "allDeclaredMethods": true,
-      "allDeclaredConstructors": true
-    },
-    {
-      "type": "org.miaixz.bus.cortex.setting.item.ItemExposure",
-      "allDeclaredFields": true,
-      "allDeclaredMethods": true,
-      "allDeclaredConstructors": true
-    },
-    {
-      "type": "org.miaixz.bus.cortex.setting.item.ItemFormat",
       "allDeclaredFields": true,
       "allDeclaredMethods": true,
       "allDeclaredConstructors": true
@@ -963,10 +793,9 @@
       "allDeclaredConstructors": true
     },
     {
-      "type": "org.miaixz.bus.cortex.setting.item.ItemWatcher",
+      "type": "org.miaixz.bus.cortex.setting.item.Item$Type",
       "allDeclaredFields": true,
-      "allDeclaredMethods": true,
-      "allDeclaredConstructors": true
+      "allDeclaredMethods": true
     },
     {
       "type": "org.miaixz.bus.cortex.setting.secret.NoOpSecretCodec",
@@ -981,16 +810,93 @@
       "allDeclaredConstructors": true
     },
     {
-      "type": "org.miaixz.bus.cortex.setting.SettingEnforcerGuardStrategy",
+      "type": "org.miaixz.bus.cortex.setting.secret.SecretConnection",
       "allDeclaredFields": true,
       "allDeclaredMethods": true,
       "allDeclaredConstructors": true
     },
     {
-      "type": "org.miaixz.bus.cortex.setting.SettingPublisher",
+      "type": "org.miaixz.bus.cortex.setting.secret.SecretContext",
       "allDeclaredFields": true,
       "allDeclaredMethods": true,
       "allDeclaredConstructors": true
+    },
+    {
+      "type": "org.miaixz.bus.cortex.setting.secret.SecretReference",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true
+    },
+    {
+      "type": "org.miaixz.bus.cortex.setting.secret.SecretProvider$Capability",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true
+    },
+    {
+      "type": "org.miaixz.bus.cortex.setting.secret.SecretReference$Type",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true
+    },
+    {
+      "type": "org.miaixz.bus.cortex.setting.secret.SecretCodec",
+      "allPublicMethods": true
+    },
+    {
+      "type": "org.miaixz.bus.cortex.setting.secret.SecretProvider",
+      "allPublicMethods": true
+    },
+    {
+      "type": "org.miaixz.bus.cortex.setting.secret.SecretManager$AccessPolicy",
+      "allPublicMethods": true
+    },
+    {
+      "type": "org.miaixz.bus.cortex.setting.secret.SecretManager",
+      "allPublicConstructors": true,
+      "allPublicMethods": true
+    },
+    {
+      "type": "org.miaixz.bus.cortex.setting.secret.SecretMaterial",
+      "allPublicConstructors": true,
+      "allPublicMethods": true
+    },
+    {
+      "type": "org.miaixz.bus.cortex.setting.secret.provider.CloudCredentials$Source",
+      "allPublicMethods": true
+    },
+    {
+      "type": "org.miaixz.bus.cortex.setting.secret.provider.CloudCredentials",
+      "allPublicConstructors": true,
+      "allPublicMethods": true
+    },
+    {
+      "type": "org.miaixz.bus.cortex.setting.secret.provider.AliyunSecretProvider",
+      "allPublicConstructors": true,
+      "allPublicMethods": true
+    },
+    {
+      "type": "org.miaixz.bus.cortex.setting.secret.provider.AwsSecretProvider",
+      "allPublicConstructors": true,
+      "allPublicMethods": true
+    },
+    {
+      "type": "org.miaixz.bus.cortex.setting.secret.provider.AzureSecretProvider",
+      "allPublicConstructors": true,
+      "allPublicMethods": true
+    },
+    {
+      "type": "org.miaixz.bus.cortex.setting.secret.provider.VaultKvSecretProvider",
+      "allPublicConstructors": true,
+      "allPublicMethods": true
+    },
+    {
+      "type": "org.miaixz.bus.cortex.setting.secret.provider.TencentSecretProvider",
+      "allPublicConstructors": true,
+      "allPublicMethods": true
+    },
+    {
+      "type": "org.miaixz.bus.cortex.setting.secret.provider.HuaweiSecretProvider",
+      "allPublicConstructors": true,
+      "allPublicMethods": true
     },
     {
       "type": "org.miaixz.bus.cortex.Status",
@@ -1083,61 +989,55 @@
       "allDeclaredConstructors": true
     },
     {
-      "type": "org.miaixz.bus.cortex.version.CacheVersionStore",
+      "type": "org.miaixz.bus.cortex.release.CacheReleaseStore",
       "allDeclaredFields": true,
       "allDeclaredMethods": true,
       "allDeclaredConstructors": true
     },
     {
-      "type": "org.miaixz.bus.cortex.version.ReleaseArtifact",
+      "type": "org.miaixz.bus.core.lang.EnumValue$Track",
       "allDeclaredFields": true,
       "allDeclaredMethods": true,
       "allDeclaredConstructors": true
     },
     {
-      "type": "org.miaixz.bus.cortex.version.ReleaseTrack",
+      "type": "org.miaixz.bus.cortex.release.ReleaseAssets",
       "allDeclaredFields": true,
       "allDeclaredMethods": true,
       "allDeclaredConstructors": true
     },
     {
-      "type": "org.miaixz.bus.cortex.version.VersionAssets",
+      "type": "org.miaixz.bus.cortex.release.ReleaseAssets$Meta",
       "allDeclaredFields": true,
       "allDeclaredMethods": true,
       "allDeclaredConstructors": true
     },
     {
-      "type": "org.miaixz.bus.cortex.version.VersionAssets$Meta",
+      "type": "org.miaixz.bus.cortex.release.ReleasePublisher",
       "allDeclaredFields": true,
       "allDeclaredMethods": true,
       "allDeclaredConstructors": true
     },
     {
-      "type": "org.miaixz.bus.cortex.version.VersionPublisher",
+      "type": "org.miaixz.bus.cortex.release.Release",
       "allDeclaredFields": true,
       "allDeclaredMethods": true,
       "allDeclaredConstructors": true
     },
     {
-      "type": "org.miaixz.bus.cortex.version.VersionRecord",
+      "type": "org.miaixz.bus.cortex.release.ReleaseRegistry",
       "allDeclaredFields": true,
       "allDeclaredMethods": true,
       "allDeclaredConstructors": true
     },
     {
-      "type": "org.miaixz.bus.cortex.version.VersionRegistry",
+      "type": "org.miaixz.bus.core.lang.EnumValue$Phase",
       "allDeclaredFields": true,
       "allDeclaredMethods": true,
       "allDeclaredConstructors": true
     },
     {
-      "type": "org.miaixz.bus.cortex.version.VersionStatus",
-      "allDeclaredFields": true,
-      "allDeclaredMethods": true,
-      "allDeclaredConstructors": true
-    },
-    {
-      "type": "org.miaixz.bus.cortex.version.VersionStore",
+      "type": "org.miaixz.bus.cortex.release.ReleaseStore",
       "allDeclaredFields": true,
       "allDeclaredMethods": true,
       "allDeclaredConstructors": true
@@ -1159,6 +1059,210 @@
       "allDeclaredFields": true,
       "allDeclaredMethods": true,
       "allDeclaredConstructors": true
+    },
+    {
+      "type": "org.miaixz.bus.cortex.setting.item.ItemMerger$Source",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true
+    },
+    {
+      "type": "org.miaixz.bus.cortex.setting.item.ItemMerger$Result",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true
+    },
+    {
+      "type": "org.miaixz.bus.cortex.Signing",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true
+    },
+    {
+      "type": "org.miaixz.bus.cortex.Signing$Credential",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true
+    },
+    {
+      "type": "org.miaixz.bus.cortex.magic.identity.Checksum",
+      "allDeclaredMethods": true,
+      "allDeclaredFields": true
+    },
+    {
+      "type": "org.miaixz.bus.cortex.setting.rollout.Plan$Mode",
+      "allDeclaredMethods": true,
+      "allDeclaredFields": true
+    },
+    {
+      "type": "org.miaixz.bus.cortex.setting.rollout.GrayRule",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true
+    },
+    {
+      "type": "org.miaixz.bus.cortex.setting.item.ItemCodec$Document",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true
+    },
+    {
+      "type": "org.miaixz.bus.cortex.setting.item.Item$Property",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true
+    },
+    {
+      "type": "org.miaixz.bus.cortex.setting.item.ItemCodec$Rule",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true
+    },
+    {
+      "type": "org.miaixz.bus.cortex.setting.item.ItemCodec$Protection",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true
+    },
+    {
+      "type": "org.miaixz.bus.cortex.setting.item.ItemCodec$ValidationLevel",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true
+    },
+    {
+      "type": "org.miaixz.bus.cortex.setting.reference.ReferenceCodec$Options",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true
+    },
+    {
+      "type": "org.miaixz.bus.cortex.setting.reference.ReferenceCodec$Override",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true
+    },
+    {
+      "type": "org.miaixz.bus.cortex.setting.curator.ItemEditor$SecretAction",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true
+    },
+    {
+      "type": "org.miaixz.bus.cortex.setting.curator.ItemEditor$Restoration",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true
+    },
+    {
+      "type": "org.miaixz.bus.cortex.setting.rollout.Plan$Selection",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true
+    },
+    {
+      "type": "org.miaixz.bus.cortex.setting.rollout.Plan$Frozen",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true
+    },
+    {
+      "type": "org.miaixz.bus.cortex.setting.rollout.Plan$Definition",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true
+    },
+    {
+      "type": "org.miaixz.bus.cortex.setting.rollout.Plan$Binding",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true
+    },
+    {
+      "type": "org.miaixz.bus.cortex.setting.rollout.Plan$ReadSet",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true
+    },
+    {
+      "type": "org.miaixz.bus.cortex.setting.rollout.Diff$Change",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true
+    },
+    {
+      "type": "org.miaixz.bus.cortex.setting.rollout.Diff$Result",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true
+    },
+    {
+      "type": "org.miaixz.bus.cortex.setting.rollout.Diff$Kind",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true
+    },
+    {
+      "type": "org.miaixz.bus.cortex.release.ReleaseCodec$Document",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true
+    },
+    {
+      "type": "org.miaixz.bus.cortex.release.ReleaseCodec$Binding",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true
+    },
+    {
+      "type": "org.miaixz.bus.cortex.setting.SettingProvider$Context",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true
+    },
+    {
+      "type": "org.miaixz.bus.cortex.setting.SettingStore$Change",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true
+    },
+    {
+      "type": "org.miaixz.bus.cortex.setting.SettingStore$RelationChange",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true
+    },
+    {
+      "type": "org.miaixz.bus.cortex.setting.SettingStore$Result",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true
+    },
+    {
+      "type": "org.miaixz.bus.cortex.setting.SettingStore$View",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true
+    },
+    {
+      "type": "org.miaixz.bus.cortex.setting.rollout.GrayRule$Type",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true
+    },
+    {
+      "type": "org.miaixz.bus.cortex.setting.rollout.GrayRule$GrayRuleBuilder",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true
+    },
+    {
+      "type": "org.miaixz.bus.cortex.setting.rollout.GrayRule$GrayRuleBuilderImpl",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true
+    },
+    {
+      "type": "org.miaixz.bus.cortex.setting.SettingProvider",
+      "allDeclaredMethods": true
     }
   ],
   "resources": []

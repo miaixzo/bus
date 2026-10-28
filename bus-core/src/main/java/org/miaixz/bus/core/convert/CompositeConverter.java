@@ -49,7 +49,7 @@ import org.miaixz.bus.core.xyz.TypeKit;
 public class CompositeConverter implements Converter, Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852267583368L;
+    private static final long serialVersionUID = 2536228161931L;
 
     /**
      * Manages registered standard and custom converters.

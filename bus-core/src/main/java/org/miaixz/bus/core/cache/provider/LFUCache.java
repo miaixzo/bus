@@ -40,7 +40,7 @@ import org.miaixz.bus.core.lang.thread.lock.NoLock;
 public class LFUCache<K, V> extends LockedCache<K, V> {
 
     @Serial
-    private static final long serialVersionUID = 2852231672235L;
+    private static final long serialVersionUID = 2535510816181L;
 
     /**
      * Constructs an LFU cache with a specified capacity and no default timeout.

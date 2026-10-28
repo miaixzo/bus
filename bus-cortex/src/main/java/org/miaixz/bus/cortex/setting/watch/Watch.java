@@ -19,12 +19,15 @@
 */
 package org.miaixz.bus.cortex.setting.watch;
 
+import java.io.Serial;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 import org.miaixz.bus.core.basic.entity.Tenant;
-import org.miaixz.bus.cortex.setting.instance.Instance;
+import org.miaixz.bus.cortex.Instance;
+import org.miaixz.bus.cortex.Status;
 
 /**
  * Persistent runtime-watch attributes shared by configuration-center implementations.
@@ -36,10 +39,8 @@ import org.miaixz.bus.cortex.setting.instance.Instance;
 @SuperBuilder
 public class Watch extends Tenant {
 
-    /**
-     * Runtime instance that owns the watch.
-     */
-    private String instance_id;
+    @Serial
+    private static final long serialVersionUID = 2558929921288L;
 
     /**
      * Configuration item observed by the watch.
@@ -47,34 +48,29 @@ public class Watch extends Tenant {
     private String item_id;
 
     /**
+     * Runtime instance that owns the watch.
+     */
+    private String instance_id;
+
+    /**
+     * Exact Release ID confirmed by the latest successful acknowledgement.
+     */
+    private String applied_id;
+
+    /**
+     * Exact Release ID currently selected for this watch; item_id still identifies the source Item.
+     */
+    private String target_id;
+
+    /**
      * Runtime session captured when the watch was established.
      */
     private String session;
 
     /**
-     * Revision currently authorized for this watch.
-     */
-    private String target_id;
-
-    /**
-     * Current authorized target generation.
+     * Current selected target generation.
      */
     private Long generation;
-
-    /**
-     * Highest generation with committed fetch evidence.
-     */
-    private Long fetched;
-
-    /**
-     * Highest successfully applied generation.
-     */
-    private Long applied;
-
-    /**
-     * Revision confirmed by the latest successful acknowledgement.
-     */
-    private String applied_id;
 
     /**
      * Database timestamp of the latest acknowledgement.
@@ -87,49 +83,41 @@ public class Watch extends Tenant {
     private String error;
 
     /**
-     * Configuration application state, independent from process health.
+     * Highest generation with committed fetch evidence.
      */
-    public enum Synchronization {
-        /**
-         * Application evidence is incomplete or does not match this watch.
-         */
-        UNKNOWN,
-        /**
-         * The target revision has not yet been fully fetched and applied.
-         */
-        PENDING,
-        /**
-         * The target revision was fetched and applied successfully.
-         */
-        APPLIED,
-        /**
-         * The application reported an error for the target revision.
-         */
-        FAILED
-    }
+    private Long fetched;
 
     /**
-     * Derives application evidence for exactly one watch; transport delivery is not application success.
+     * Highest successfully applied generation.
      */
-    public Synchronization synchronization(Instance instance) {
-        if (instance == null || getTenant_id() == null || !getTenant_id().equals(instance.getTenant_id())
-                || instance_id == null || !instance_id.equals(instance.getId()) || session == null
-                || !session.equals(instance.getSession()) || generation == null || generation < 1 || target_id == null
-                || target_id.isBlank()) {
-            return Synchronization.UNKNOWN;
-        }
-        if (error != null && !error.isBlank()) {
-            return Synchronization.FAILED;
-        }
-        return generation.equals(applied) && generation.equals(fetched) && target_id.equals(applied_id)
-                && acknowledged != null && acknowledged > 0 ? Synchronization.APPLIED : Synchronization.PENDING;
-    }
+    private Long applied;
 
     /**
      * Creates an empty runtime-watch entity.
      */
     public Watch() {
         // No initialization required.
+    }
+
+    /**
+     * Derives application evidence for exactly one watch; transport delivery is not application success.
+     *
+     * @param instance trusted runtime instance whose tenant, identifier and session must match this watch
+     * @return UNKNOWN for invalid evidence, FAILED for a recorded error, APPLIED for matching acknowledgments,
+     *         otherwise PENDING
+     */
+    public Status.Apply synchronization(Instance instance) {
+        if (instance == null || getTenant_id() == null || !getTenant_id().equals(instance.getTenant_id())
+                || instance_id == null || !instance_id.equals(instance.getId()) || session == null
+                || !session.equals(instance.healthView().getSession()) || generation == null || generation < 1
+                || target_id == null || target_id.isBlank()) {
+            return Status.Apply.UNKNOWN;
+        }
+        if (error != null && !error.isBlank()) {
+            return Status.Apply.FAILED;
+        }
+        return generation.equals(applied) && generation.equals(fetched) && target_id.equals(applied_id)
+                && acknowledged != null && acknowledged > 0 ? Status.Apply.APPLIED : Status.Apply.PENDING;
     }
 
 }

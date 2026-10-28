@@ -37,7 +37,7 @@ import org.miaixz.bus.gitlab.support.JacksonJsonEnumCodec;
 public class RunnerDetail extends Runner {
 
     @Serial
-    private static final long serialVersionUID = 2852280720196L;
+    private static final long serialVersionUID = 2551198000001L;
 
     /**
      * The architecture value.

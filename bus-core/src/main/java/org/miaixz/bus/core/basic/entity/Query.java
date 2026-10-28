@@ -42,7 +42,7 @@ import lombok.experimental.SuperBuilder;
 public class Query extends Audit {
 
     @Serial
-    private static final long serialVersionUID = 2852290719650L;
+    private static final long serialVersionUID = 2535306659801L;
 
     /**
      * A random string to ensure request uniqueness, preventing replay attacks or duplicate submissions.

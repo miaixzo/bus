@@ -19,6 +19,10 @@
 */
 package org.miaixz.bus.cortex.setting.revision;
 
+import java.io.Serial;
+
+import jakarta.persistence.Lob;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
@@ -26,7 +30,7 @@ import lombok.experimental.SuperBuilder;
 import org.miaixz.bus.core.basic.entity.Tenant;
 
 /**
- * Immutable configuration snapshot; publication is represented by item pointers and a frozen rollout.
+ * Immutable protected definition snapshot belonging to one successful formal publication.
  *
  * @author Kimi Liu
  */
@@ -35,112 +39,72 @@ import org.miaixz.bus.core.basic.entity.Tenant;
 @SuperBuilder
 public class Revision extends Tenant {
 
+    @Serial
+    private static final long serialVersionUID = 2558923509355L;
+
     /**
-     * Owning item identifier.
+     * Identifier of the formal release that first persisted this snapshot.
+     */
+    private String release_id;
+
+    /**
+     * Source item identifier; deleting the current item does not affect this snapshot.
      */
     private String item_id;
+
     /**
-     * Rollout that created the revision.
+     * Configuration category captured at publication.
      */
-    private String rollout_id;
+    private Integer type;
+
     /**
-     * Source revision used for derivation or rollback.
+     * Configuration code captured at publication.
      */
-    private String source_id;
+    private String code;
+
     /**
-     * Monotonic item revision number.
+     * Protected definition body frozen for publication.
      */
-    private String revision;
-    /**
-     * Item edition captured by the snapshot.
-     */
-    private Long edition;
-    /**
-     * Item generation captured by the snapshot.
-     */
-    private Long generation;
-    /**
-     * Immutable content.
-     */
+    @Lob
     private String content;
+
     /**
-     * Immutable content format.
+     * Frozen delivery and export format; the definition body remains canonical JSON.
      */
     private String format;
+
     /**
-     * Immutable editing mode, matching Item.Editor.
+     * Frozen JSON Schema for the complete effective configuration.
      */
-    private String editor;
+    @Lob
+    private String schema;
+
     /**
-     * Immutable structured editor payload.
-     */
-    private String payload;
-    /**
-     * Immutable content source.
-     */
-    private String source;
-    /**
-     * Immutable source descriptor.
-     */
-    private String spec;
-    /**
-     * Immutable exposure policy.
-     */
-    private String exposure;
-    /**
-     * Immutable encryption flag.
+     * Frozen storage protection flag.
      */
     private Integer encrypted;
+
     /**
-     * Immutable labels text.
+     * Frozen definition rules and protection metadata.
      */
-    private String labels;
-    /**
-     * Immutable extension text.
-     */
+    @Lob
     private String extension;
+
     /**
-     * Snapshot checksum.
+     * Checksum of the frozen protected definition.
      */
     private String checksum;
+
     /**
-     * Snapshot operation.
-     */
-    private String operation;
-    /**
-     * Frozen reference manifest with exact revision identifiers, never resolved from live relationships on rollback.
-     */
-    private String reference;
-    /**
-     * Protected-value snapshot stored as text.
-     */
-    private String secrets;
-    /**
-     * Optional snapshot description.
+     * Configuration description captured at publication.
      */
     private String description;
 
     /**
-     * Creates an empty immutable revision.
+     * Creates an empty published definition snapshot.
      */
     public Revision() {
         // No initialization required.
-    }
-
-    /**
-     * Supported immutable snapshot operations.
-     *
-     * @author Kimi Liu
-     */
-    public enum Operation {
-        /**
-         * Creates or replaces the current item state.
-         */
-        UPSERT,
-        /**
-         * Archives the current item state.
-         */
-        DELETE
     }
 
 }

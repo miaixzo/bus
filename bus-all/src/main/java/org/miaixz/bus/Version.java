@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus;
 
+import java.io.Serial;
+
 import org.miaixz.bus.core.lang.Keys;
 
 /**
@@ -41,6 +43,9 @@ import org.miaixz.bus.core.lang.Keys;
  * @author Kimi Liu
  */
 public class Version extends org.miaixz.bus.core.Version {
+
+    @Serial
+    private static final long serialVersionUID = 2561130901801L;
 
     /**
      * Version object, format: tok+ ( '-' tok+)? ( '+' tok+)? Versions are separated by '.' or '-', and the version

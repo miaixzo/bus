@@ -42,7 +42,7 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class CsvParser extends ComputeIterator<CsvRow> implements Closeable, Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852282936732L;
+    private static final long serialVersionUID = 2551901162801L;
 
     /**
      * Default capacity for a row, used to initialize field lists.

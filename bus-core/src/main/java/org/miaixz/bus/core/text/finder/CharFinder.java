@@ -32,7 +32,7 @@ import org.miaixz.bus.core.xyz.CharKit;
 public class CharFinder extends TextFinder {
 
     @Serial
-    private static final long serialVersionUID = 2852236682062L;
+    private static final long serialVersionUID = 2538302112025L;
 
     /**
      * The character to be searched.

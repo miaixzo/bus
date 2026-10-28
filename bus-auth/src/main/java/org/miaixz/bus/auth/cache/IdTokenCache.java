@@ -128,7 +128,7 @@ public class IdTokenCache extends AuthCache<IdTokenCache.Entry> {
             implements Serializable {
 
         @Serial
-        private static final long serialVersionUID = 2868923612053L;
+        private static final long serialVersionUID = 2558600105801L;
 
         /**
          * Validates and freezes non-secret logout facts.

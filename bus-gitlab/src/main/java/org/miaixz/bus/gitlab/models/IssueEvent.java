@@ -36,7 +36,7 @@ import org.miaixz.bus.gitlab.support.JacksonJsonEnumCodec;
 public class IssueEvent implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852257573191L;
+    private static final long serialVersionUID = 2550661503625L;
 
     /**
      * The id value.

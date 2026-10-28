@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.function.Supplier;
 
+import org.miaixz.bus.core.basic.entity.Audit;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
@@ -355,16 +356,16 @@ public class MapperPluginFactory {
         if (hasSimplifiedConfig) {
             Logger.debug(false, "Mapper", "Loading populate config from simplified YAML configuration");
             props.setProperty(
-                    DEFAULT_KEY + Symbol.DOT + Args.POPULATE_KEY + Symbol.DOT + Args.POPULATE_CREATED,
+                    DEFAULT_KEY + Symbol.DOT + Args.POPULATE_KEY + Symbol.DOT + Audit.FIELD_CREATED,
                     String.valueOf(populateOptions.isCreated()));
             props.setProperty(
-                    DEFAULT_KEY + Symbol.DOT + Args.POPULATE_KEY + Symbol.DOT + Args.POPULATE_MODIFIED,
+                    DEFAULT_KEY + Symbol.DOT + Args.POPULATE_KEY + Symbol.DOT + Audit.FIELD_MODIFIED,
                     String.valueOf(populateOptions.isModified()));
             props.setProperty(
-                    DEFAULT_KEY + Symbol.DOT + Args.POPULATE_KEY + Symbol.DOT + Args.POPULATE_CREATOR,
+                    DEFAULT_KEY + Symbol.DOT + Args.POPULATE_KEY + Symbol.DOT + Audit.FIELD_CREATOR,
                     String.valueOf(populateOptions.isCreator()));
             props.setProperty(
-                    DEFAULT_KEY + Symbol.DOT + Args.POPULATE_KEY + Symbol.DOT + Args.POPULATE_MODIFIER,
+                    DEFAULT_KEY + Symbol.DOT + Args.POPULATE_KEY + Symbol.DOT + Audit.FIELD_MODIFIER,
                     String.valueOf(populateOptions.isModifier()));
         }
 
@@ -671,10 +672,10 @@ public class MapperPluginFactory {
         MapperOptions.PopulateOptions populate = options.getPopulate();
         if (populate != null) {
             shared(properties, Args.POPULATE_KEY, Args.PROP_ENABLED, populate.isEnabled());
-            shared(properties, Args.POPULATE_KEY, Args.POPULATE_CREATED, populate.isCreated());
-            shared(properties, Args.POPULATE_KEY, Args.POPULATE_MODIFIED, populate.isModified());
-            shared(properties, Args.POPULATE_KEY, Args.POPULATE_CREATOR, populate.isCreator());
-            shared(properties, Args.POPULATE_KEY, Args.POPULATE_MODIFIER, populate.isModifier());
+            shared(properties, Args.POPULATE_KEY, Audit.FIELD_CREATED, populate.isCreated());
+            shared(properties, Args.POPULATE_KEY, Audit.FIELD_MODIFIED, populate.isModified());
+            shared(properties, Args.POPULATE_KEY, Audit.FIELD_CREATOR, populate.isCreator());
+            shared(properties, Args.POPULATE_KEY, Audit.FIELD_MODIFIER, populate.isModifier());
         }
         MapperOptions.VisibleOptions visible = options.getVisible();
         if (visible != null) {

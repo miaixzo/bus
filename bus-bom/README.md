@@ -31,6 +31,7 @@ place.
 Import the BOM in your project's `pom.xml`:
 
 ```xml
+
 <dependencyManagement>
     <dependencies>
         <dependency>

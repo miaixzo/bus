@@ -36,7 +36,7 @@ import org.miaixz.bus.core.lang.exception.DateException;
 public class PatternsDateParser implements DateParser, Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852256632611L;
+    private static final long serialVersionUID = 2535665000001L;
 
     /**
      * Array of date format patterns.

@@ -37,7 +37,7 @@ import org.miaixz.bus.gitlab.support.JacksonJsonEnumCodec;
 public class Environment implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852252558305L;
+    private static final long serialVersionUID = 2550339801618L;
 
     /**
      * The tier value.

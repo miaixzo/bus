@@ -33,7 +33,7 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class CompareResults implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852250376909L;
+    private static final long serialVersionUID = 2550286205001L;
 
     /**
      * The commit value.

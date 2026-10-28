@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.vortex;
 
+import java.io.Serial;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -45,6 +46,9 @@ import org.miaixz.bus.vortex.magic.Parameter;
  */
 @Getter
 public class Context extends Tracer {
+
+    @Serial
+    private static final long serialVersionUID = 2560609205001L;
 
     /**
      * The key used to store and retrieve this Context object from the attributes of a {@code ServerWebExchange}.

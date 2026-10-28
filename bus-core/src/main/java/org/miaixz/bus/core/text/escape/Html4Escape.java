@@ -34,7 +34,7 @@ import org.miaixz.bus.core.text.replacer.ReplacerChain;
 public class Html4Escape extends ReplacerChain {
 
     @Serial
-    private static final long serialVersionUID = 2852235839619L;
+    private static final long serialVersionUID = 2538188151881L;
 
     /**
      * Lookup table for ISO-8859-1 HTML escape characters. This array defines the mapping from ISO-8859-1 characters to

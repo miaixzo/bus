@@ -40,7 +40,7 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public abstract class NotificationService implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852285332559L;
+    private static final long serialVersionUID = 2551315001135L;
 
     /**
      * The webhook prop value.

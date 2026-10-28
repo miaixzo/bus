@@ -457,7 +457,7 @@ public class MppsSCU {
      */
     public void scanFiles(List<String> fnames, boolean printout) {
         DicomFiles.scan(fnames, printout, (f, fmi, dsPos, ds) -> {
-            if (UID.ModalityPerformedProcedureStep.equals(fmi.getString(Tag.MediaStorageSOPClassUID))) {
+            if (UID.ModalityPerformedProcedureStep.uid.equals(fmi.getString(Tag.MediaStorageSOPClassUID))) {
                 return addMPPS(fmi.getString(Tag.MediaStorageSOPInstanceUID), ds);
             }
             return addInstance(ds);

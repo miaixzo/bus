@@ -19,8 +19,11 @@
 */
 package org.miaixz.bus.mapper.feature.schema;
 
+import java.lang.reflect.Field;
 import java.util.*;
 
+import org.miaixz.bus.core.basic.entity.Audit;
+import org.miaixz.bus.core.xyz.FieldKit;
 import org.miaixz.bus.mapper.annotation.ColumnOrder;
 import org.miaixz.bus.mapper.parsing.ColumnMeta;
 import org.miaixz.bus.mapper.parsing.TableMeta;
@@ -33,26 +36,28 @@ import org.miaixz.bus.mapper.parsing.TableMeta;
 public class ColumnOrderResolver {
 
     /**
-     * Resolves default rules followed by explicitly declared ancestor and descendant rules.
+     * Common mapped properties appended after every user-defined column group, in their fixed order.
+     */
+    private static final List<String> COMMON_LAST_PROPERTIES = List.of(
+            Audit.FIELD_STATUS,
+            Audit.FIELD_CREATOR,
+            Audit.FIELD_CREATED,
+            Audit.FIELD_MODIFIER,
+            Audit.FIELD_MODIFIED);
+
+    /**
+     * Resolves primary-key-first declaration order and explicit hierarchy rules, then appends common mapped properties.
      *
-     * @param table            final mapped table metadata
-     * @param auditColumnsLast whether conventional audit properties default to the end
+     * @param table final mapped table metadata
      * @return an independent, ordered list of the original column objects
      * @throws IllegalArgumentException when an explicit rule is invalid
      */
-    public List<ColumnMeta> resolve(TableMeta table, boolean auditColumnsLast) {
+    public List<ColumnMeta> resolve(TableMeta table) {
         Map<String, ColumnMeta> columns = new LinkedHashMap<>();
         for (ColumnMeta column : table.columns()) {
             if (columns.putIfAbsent(column.property(), column) != null) {
                 throw invalid(table, table.entityClass(), "ambiguous mapped property '" + column.property() + "'");
             }
-        }
-        List<String> base = new ArrayList<>(columns.keySet());
-        List<String> first = new ArrayList<>();
-        List<String> last = new ArrayList<>();
-        if (auditColumnsLast) {
-            List.of("status", "creator", "created", "modifier", "modified").stream().filter(columns::containsKey)
-                    .forEach(last::add);
         }
         List<Class<?>> hierarchy = new ArrayList<>();
         for (Class<?> current = table.entityClass(); current != null
@@ -62,6 +67,30 @@ public class ColumnOrderResolver {
             }
         }
         Collections.reverse(hierarchy);
+        Map<Field, List<ColumnMeta>> fields = new HashMap<>();
+        for (ColumnMeta column : columns.values()) {
+            if (column.fieldMeta() != null && column.fieldMeta().getField() != null) {
+                fields.computeIfAbsent(column.fieldMeta().getField(), key -> new ArrayList<>()).add(column);
+            }
+        }
+        List<ColumnMeta> declared = new ArrayList<>(columns.size());
+        for (Class<?> source : hierarchy) {
+            for (Field field : FieldKit.getDeclaredFields(source, null)) {
+                List<ColumnMeta> mapped = fields.get(field);
+                if (mapped != null) {
+                    declared.addAll(mapped);
+                }
+            }
+        }
+        // Retain custom columns without a declaring field after the source-backed properties.
+        Set<String> ordered = new LinkedHashSet<>();
+        declared.stream().filter(ColumnMeta::id).map(ColumnMeta::property).forEach(ordered::add);
+        columns.values().stream().filter(ColumnMeta::id).map(ColumnMeta::property).forEach(ordered::add);
+        declared.stream().map(ColumnMeta::property).forEach(ordered::add);
+        ordered.addAll(columns.keySet());
+        List<String> base = new ArrayList<>(ordered);
+        List<String> first = new ArrayList<>();
+        List<String> last = new ArrayList<>();
         Class<?> completeSource = null;
         // Keep origins so errors in surviving inherited rules identify their declaration, not the child entity.
         Map<String, Class<?>> sources = new HashMap<>();
@@ -84,14 +113,20 @@ public class ColumnOrderResolver {
                 completeSource = source;
                 sources.clear();
             } else {
+                // Explicit common properties are equivalent to omission and cannot replace inherited user groups.
+                mentioned.removeAll(COMMON_LAST_PROPERTIES);
+                List<String> leading = Arrays.stream(order.first())
+                        .filter(name -> !COMMON_LAST_PROPERTIES.contains(name)).toList();
+                List<String> trailing = Arrays.stream(order.last())
+                        .filter(name -> !COMMON_LAST_PROPERTIES.contains(name)).toList();
                 first.removeAll(mentioned);
-                if (order.last().length > 0) {
+                if (!trailing.isEmpty()) {
                     last.clear();
                 } else {
                     last.removeAll(mentioned);
                 }
-                first.addAll(List.of(order.first()));
-                last.addAll(List.of(order.last()));
+                first.addAll(leading);
+                last.addAll(trailing);
             }
             mentioned.forEach(name -> sources.put(name, source));
         }
@@ -118,6 +153,8 @@ public class ColumnOrderResolver {
         positioned.addAll(last);
         base.stream().filter(name -> !positioned.contains(name)).forEach(name -> result.add(columns.get(name)));
         last.forEach(name -> result.add(columns.get(name)));
+        result.removeIf(column -> COMMON_LAST_PROPERTIES.contains(column.property()));
+        COMMON_LAST_PROPERTIES.stream().filter(columns::containsKey).map(columns::get).forEach(result::add);
         return result;
     }
 

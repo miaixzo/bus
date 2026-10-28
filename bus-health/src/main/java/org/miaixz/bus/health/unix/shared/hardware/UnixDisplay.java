@@ -162,7 +162,9 @@ public class UnixDisplay extends AbstractDisplay {
     }
 
     /**
-     * {@inheritDoc}
+     * Reads the current mode of the xrandr output matched by connector identity and EDID.
+     *
+     * @return the matched output's mode, or an empty optional when the output or mode is unavailable
      */
     @Override
     public Optional<DisplayMode> getCurrentMode() {
@@ -170,7 +172,10 @@ public class UnixDisplay extends AbstractDisplay {
     }
 
     /**
-     * {@inheritDoc}
+     * Classifies a known device-port name as built-in or external, falling back to the matched xrandr output name
+     * only when the device-port name is unknown.
+     *
+     * @return the connector classification, or an empty optional when the name is unavailable or ambiguous
      */
     @Override
     public Optional<Boolean> isBuiltIn() {
@@ -181,7 +186,9 @@ public class UnixDisplay extends AbstractDisplay {
     }
 
     /**
-     * {@inheritDoc}
+     * Reads the primary-output flag of the xrandr output matched to this display.
+     *
+     * @return the matched output's primary flag, or an empty optional when no output matches
      */
     @Override
     public Optional<Boolean> isPrimary() {

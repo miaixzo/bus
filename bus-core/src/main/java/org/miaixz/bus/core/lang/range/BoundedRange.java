@@ -113,7 +113,7 @@ import org.miaixz.bus.core.lang.Assert;
 public class BoundedRange<T extends Comparable<? super T>> implements PredicateX<T> {
 
     @Serial
-    private static final long serialVersionUID = 2852273351363L;
+    private static final long serialVersionUID = 2538058328001L;
 
     /**
      * A static instance representing a doubly unbounded range, i.e., {@code {x | -∞ < x < +∞}}.

@@ -34,7 +34,7 @@ import org.miaixz.bus.core.cache.provider.LRUCache;
 public class LRUFileCache extends AbstractFileCache {
 
     @Serial
-    private static final long serialVersionUID = 2852230517893L;
+    private static final long serialVersionUID = 2535382250001L;
 
     /**
      * Constructs an LRU file cache with a default max file size (half of the capacity) and no timeout.
@@ -79,7 +79,7 @@ public class LRUFileCache extends AbstractFileCache {
         return new LRUCache<>(this.capacity, super.timeout) {
 
             @Serial
-            private static final long serialVersionUID = 2852551020813L;
+            private static final long serialVersionUID = 2535385500001L;
 
             /**
              * Determines if the cache is full by comparing the used byte size against the capacity.

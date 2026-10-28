@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.extra.json;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -105,9 +106,7 @@ public class JsonAnnotationFilter implements JsonPropertyFilter {
      * @param annotationType annotation type
      * @return {@code true} when the element carries the annotation
      */
-    private static boolean hasAnnotation(
-            AnnotatedElement element,
-            Class<? extends java.lang.annotation.Annotation> annotationType) {
+    private static boolean hasAnnotation(AnnotatedElement element, Class<? extends Annotation> annotationType) {
         return element != null && element.isAnnotationPresent(annotationType);
     }
 

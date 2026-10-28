@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.core.lang.annotation;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.lang.annotation.*;
 
@@ -51,6 +52,9 @@ public @interface Named {
      * @author Kimi Liu
      */
     class Names implements Named, Serializable {
+
+        @Serial
+        private static final long serialVersionUID = 2536626939281L;
 
         /**
          * The name value of this annotation instance.

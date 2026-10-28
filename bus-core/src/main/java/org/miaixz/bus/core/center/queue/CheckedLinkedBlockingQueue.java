@@ -37,7 +37,7 @@ import org.miaixz.bus.core.center.function.PredicateX;
 public class CheckedLinkedBlockingQueue<E> extends LinkedBlockingQueue<E> {
 
     @Serial
-    private static final long serialVersionUID = 2852279169056L;
+    private static final long serialVersionUID = 2536052251228L;
 
     /**
      * The checker function.

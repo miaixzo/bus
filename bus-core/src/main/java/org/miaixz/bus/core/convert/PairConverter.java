@@ -47,7 +47,7 @@ import org.miaixz.bus.core.xyz.TypeKit;
 public class PairConverter extends ConverterWithRoot implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852270287618L;
+    private static final long serialVersionUID = 2536282151105L;
 
     /**
      * Constructs a new PairConverter

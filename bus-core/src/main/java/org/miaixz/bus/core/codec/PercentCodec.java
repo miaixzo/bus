@@ -20,6 +20,7 @@
 package org.miaixz.bus.core.codec;
 
 import java.io.*;
+import java.io.Serial;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.util.BitSet;
@@ -55,7 +56,7 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class PercentCodec implements Encoder<byte[], byte[]>, Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852281130770L;
+    private static final long serialVersionUID = 2536086311501L;
 
     /**
      * Stores the set of safe characters that should not be encoded.
@@ -193,6 +194,9 @@ public class PercentCodec implements Encoder<byte[], byte[]>, Serializable {
      * @author Kimi Liu
      */
     public static class Builder implements org.miaixz.bus.core.Builder<PercentCodec> {
+
+        @Serial
+        private static final long serialVersionUID = 2536098553825L;
 
         /**
          * The internal {@link PercentCodec} instance being built.

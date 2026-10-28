@@ -19,30 +19,29 @@
 */
 package org.miaixz.bus.core.cache;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.Serial;
 import java.io.Serializable;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.WeakHashMap;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReadWriteLock;
-import java.util.concurrent.locks.ReentrantLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
-import java.util.stream.Collectors;
+import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.*;
 
 import org.miaixz.bus.core.center.function.PredicateX;
 import org.miaixz.bus.core.center.function.SupplierX;
-import org.miaixz.bus.core.center.iterator.TransIterator;
+import org.miaixz.bus.core.center.map.AbstractEntry;
 import org.miaixz.bus.core.center.map.reference.WeakConcurrentMap;
 import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.core.lang.mutable.Mutable;
-import org.miaixz.bus.core.lang.mutable.MutableObject;
 
 /**
  * A simple cache implementation with no expiration. By default, it uses a {@link WeakConcurrentMap} to allow for
- * automatic garbage collection of entries when keys are no longer referenced elsewhere.
+ * automatic garbage collection of entries when business keys or values are no longer referenced elsewhere. Both default
+ * and caller-supplied storage use business keys directly, without temporary key wrappers.
+ * <p>
+ * Native-image serialization of application-defined storage, cache subclasses, or business key/value types requires the
+ * application's own registrations for those types.
  *
  * @param <K> The type of the key.
  * @param <V> The type of the value.
@@ -51,20 +50,20 @@ import org.miaixz.bus.core.lang.mutable.MutableObject;
 public class SimpleCache<K, V> implements Iterable<Map.Entry<K, V>>, Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852230051852L;
+    private static final long serialVersionUID = 2535362150002L;
 
     /**
-     * A map of locks for each key to reduce lock granularity during write operations.
+     * Loading locks with registered user counts, including waiters. Runtime coordination is not serialized.
      */
-    protected final Map<K, Lock> keyLockMap = new ConcurrentHashMap<>();
+    protected transient Map<K, Lock> keyLockMap = new ConcurrentHashMap<>();
 
     /**
-     * The underlying map that stores the cache data.
+     * Backing storage keyed directly by business keys.
      */
-    private final Map<Mutable<K>, V> rawMap;
+    private final Map<K, V> rawMap;
 
     /**
-     * A read-write lock for thread-safe access to the cache.
+     * Coordinates cache-method reads and writes, but not direct external access to caller-supplied storage.
      */
     private final ReadWriteLock lock = new ReentrantReadWriteLock();
 
@@ -80,12 +79,14 @@ public class SimpleCache<K, V> implements Iterable<Map.Entry<K, V>>, Serializabl
      * <p>
      * This allows for flexible cache implementations. For example, using a {@link WeakHashMap} enables automatic key
      * cleanup, while a standard {@link java.util.HashMap} will not. The provided map can also be pre-populated with
-     * initial key-value pairs.
+     * initial key-value pairs. Keys are business keys, not Mutable wrappers. The supplied map is shared rather than
+     * copied; direct external access must follow that map's own synchronization rules.
      *
-     * @param initMap The initial map to use for the cache.
+     * @param initMap The initial business-key map to use for the cache, must not be {@code null}.
+     * @throws NullPointerException if {@code initMap} is {@code null}
      */
-    public SimpleCache(final Map<Mutable<K>, V> initMap) {
-        this.rawMap = initMap;
+    public SimpleCache(final Map<K, V> initMap) {
+        this.rawMap = Objects.requireNonNull(initMap, "initMap");
     }
 
     /**
@@ -97,7 +98,7 @@ public class SimpleCache<K, V> implements Iterable<Map.Entry<K, V>>, Serializabl
     public boolean containsKey(final K key) {
         lock.readLock().lock();
         try {
-            return rawMap.containsKey(MutableObject.of(key));
+            return rawMap.containsKey(key);
         } finally {
             lock.readLock().unlock();
         }
@@ -112,7 +113,7 @@ public class SimpleCache<K, V> implements Iterable<Map.Entry<K, V>>, Serializabl
     public V get(final K key) {
         lock.readLock().lock();
         try {
-            return rawMap.get(MutableObject.of(key));
+            return rawMap.get(key);
         } finally {
             lock.readLock().unlock();
         }
@@ -148,8 +149,7 @@ public class SimpleCache<K, V> implements Iterable<Map.Entry<K, V>>, Serializabl
         // If the value is null and a supplier is provided, generate a new value.
         if (null == v && null != supplier) {
             // Acquire a lock for the specific key to ensure thread-safe generation.
-            final Lock keyLock = this.keyLockMap.computeIfAbsent(key, k -> new ReentrantLock());
-            keyLock.lock();
+            final Lock loading = acquireKeyLock(key);
             try {
                 // Double-check to prevent re-generation if another thread has already written the value.
                 v = get(key);
@@ -158,8 +158,8 @@ public class SimpleCache<K, V> implements Iterable<Map.Entry<K, V>>, Serializabl
                     put(key, v);
                 }
             } finally {
-                keyLock.unlock();
-                keyLockMap.remove(key);
+                loading.unlock();
+                unregisterKeyLock(key, loading);
             }
         }
 
@@ -172,13 +172,14 @@ public class SimpleCache<K, V> implements Iterable<Map.Entry<K, V>>, Serializabl
      * @param key   The key.
      * @param value The value.
      * @return The stored value.
+     * @throws IllegalArgumentException if {@code value} is {@code null}
      */
     public V put(final K key, final V value) {
         Assert.notNull(value, "'value' must not be null");
         // Acquire exclusive write lock.
         lock.writeLock().lock();
         try {
-            rawMap.put(MutableObject.of(key), value);
+            rawMap.put(key, value);
         } finally {
             lock.writeLock().unlock();
         }
@@ -195,7 +196,7 @@ public class SimpleCache<K, V> implements Iterable<Map.Entry<K, V>>, Serializabl
         // Acquire exclusive write lock.
         lock.writeLock().lock();
         try {
-            return rawMap.remove(MutableObject.of(key));
+            return rawMap.remove(key);
         } finally {
             lock.writeLock().unlock();
         }
@@ -208,61 +209,278 @@ public class SimpleCache<K, V> implements Iterable<Map.Entry<K, V>>, Serializabl
         // Acquire exclusive write lock.
         lock.writeLock().lock();
         try {
-            this.rawMap.clear();
+            rawMap.clear();
         } finally {
             lock.writeLock().unlock();
         }
     }
 
     /**
-     * Returns an iterator over the cache entries.
+     * Returns an iterator over the backing map's entries. Weak storage omits reclaimed entries, while custom storage
+     * retains its own iteration and null-key behavior. Entry writes reject null values just like {@link #put}.
+     * Concurrent-map removal is conditional on the observed value; other maps retain their iterator removal semantics.
+     * Traversal itself does not acquire a cache-wide lock and follows the backing map's concurrency requirements.
      *
      * @return An iterator of {@link Map.Entry}.
      */
     @Override
     public Iterator<Map.Entry<K, V>> iterator() {
-        return new TransIterator<>(this.rawMap.entrySet().iterator(), (entry) -> new Map.Entry<>() {
+        final Iterator<Map.Entry<K, V>> entries = rawMap.entrySet().iterator();
+        return new Iterator<>() {
 
             /**
-             * Gets the key of this entry.
+             * Last returned entry, independent of the backing iterator's lookahead.
+             */
+            private Map.Entry<K, V> last;
+
+            /**
+             * Reports whether the backing iterator has another entry without changing this wrapper's removal target.
              *
-             * @return the key
+             * @return whether another backing entry is available
              */
             @Override
-            public K getKey() {
-                return entry.getKey().get();
+            public boolean hasNext() {
+                return entries.hasNext();
             }
 
             /**
-             * Gets the value of this entry.
+             * Returns the next backing entry through a write-through wrapper and records it as the removal target.
              *
-             * @return the value
+             * @return the next entry, retaining the backing map's key and value behavior
+             * @throws NoSuchElementException if the backing iterator is exhausted
              */
             @Override
-            public V getValue() {
-                return entry.getValue();
+            public Map.Entry<K, V> next() {
+                final Map.Entry<K, V> entry = entries.next();
+                last = new AbstractEntry<>() {
+
+                    /**
+                     * Returns the key exposed by the backing entry.
+                     *
+                     * @return the business key, including null if the backing map permits it
+                     */
+                    @Override
+                    public K getKey() {
+                        return entry.getKey();
+                    }
+
+                    /**
+                     * Returns the value currently exposed by the backing entry.
+                     *
+                     * @return the backing entry's value, including a pre-populated null value when supported
+                     */
+                    @Override
+                    public V getValue() {
+                        return entry.getValue();
+                    }
+
+                    /**
+                     * Replaces this entry's value under the cache write lock using the backing entry's write semantics.
+                     *
+                     * @param value non-null replacement value
+                     * @return the value previously observed by the backing entry
+                     * @throws IllegalArgumentException if {@code value} is {@code null}
+                     */
+                    @Override
+                    public V setValue(final V value) {
+                        Assert.notNull(value, "'value' must not be null");
+                        lock.writeLock().lock();
+                        try {
+                            return entry.setValue(value);
+                        } finally {
+                            lock.writeLock().unlock();
+                        }
+                    }
+                };
+                return last;
             }
 
             /**
-             * Sets the value of this entry.
+             * Removes the last returned mapping under the cache write lock. Concurrent storage removes only a mapping
+             * still equal to the last observed key/value pair; other storage uses its original iterator's removal.
              *
-             * @param value the new value
-             * @return the old value
+             * @throws IllegalStateException if no entry can currently be removed
              */
             @Override
-            public V setValue(final V value) {
-                return entry.setValue(value);
+            public void remove() {
+                if (last == null) {
+                    throw new IllegalStateException();
+                }
+                lock.writeLock().lock();
+                try {
+                    if (rawMap instanceof ConcurrentMap<?, ?>) {
+                        rawMap.remove(last.getKey(), last.getValue());
+                    } else {
+                        entries.remove();
+                    }
+                    last = null;
+                } finally {
+                    lock.writeLock().unlock();
+                }
             }
-        });
+        };
     }
 
     /**
-     * Returns a list of all keys in the cache.
+     * Collects a detached list from the backing map's current key traversal. Weakly consistent storage may change
+     * during collection, while non-concurrent custom maps require callers to prevent concurrent structural changes.
      *
      * @return A list of keys.
      */
     public List<K> keys() {
-        return this.rawMap.keySet().stream().map(Mutable::get).collect(Collectors.toList());
+        final List<K> keys = new ArrayList<>();
+        for (K key : rawMap.keySet()) {
+            keys.add(key);
+        }
+        return keys;
+    }
+
+    /**
+     * Registers before waiting without holding a registry computation while acquiring the delegate lock.
+     *
+     * @param key cache key
+     * @return acquired Lock-valued loading registration
+     */
+    private Lock acquireKeyLock(final K key) {
+        final RegisteredLock loading = (RegisteredLock) keyLockMap.compute(key, (k, current) -> {
+            final RegisteredLock registered = current instanceof RegisteredLock existing ? existing
+                    : new RegisteredLock(current);
+            registered.users++;
+            return registered;
+        });
+        try {
+            loading.lock();
+            return loading;
+        } catch (RuntimeException | Error failure) {
+            unregisterKeyLock(key, loading);
+            throw failure;
+        }
+    }
+
+    /**
+     * Removes idle internal locks, but restores injected delegates that external callers can still hold or await.
+     *
+     * @param key     cache key associated with the registration
+     * @param loading acquired or failed registration whose user count must be released
+     */
+    private void unregisterKeyLock(final K key, final Lock loading) {
+        keyLockMap.computeIfPresent(key, (k, current) -> {
+            if (current != loading) {
+                return current;
+            }
+            final RegisteredLock registered = (RegisteredLock) current;
+            if (--registered.users != 0) {
+                return registered;
+            }
+            return registered.injected ? registered.delegate : null;
+        });
+    }
+
+    /**
+     * Lock-valued runtime registration, preserving the protected registry's existing subclass contract. Delegate
+     * acquisition never takes place inside the registry's atomic update callback.
+     */
+    private static final class RegisteredLock implements Lock {
+
+        /**
+         * Original lock, including one supplied by a subclass.
+         */
+        private final Lock delegate;
+        /**
+         * Whether an idle registration must restore the external delegate rather than remove it.
+         */
+        private final boolean injected;
+        /**
+         * Registered holders and waiters, mutated only inside atomic registry updates.
+         */
+        private int users;
+
+        /**
+         * Retains an injected delegate, or creates an internal reentrant lock when none exists.
+         *
+         * @param existing existing subclass-supplied lock, or {@code null} for an internal lock
+         */
+        private RegisteredLock(final Lock existing) {
+            injected = existing != null;
+            delegate = injected ? existing : new ReentrantLock();
+        }
+
+        /**
+         * Acquires the delegate lock, waiting according to that lock's acquisition and interrupt-handling policy.
+         */
+        @Override
+        public void lock() {
+            delegate.lock();
+        }
+
+        /**
+         * Acquires the delegate lock using its interruptible acquisition operation.
+         *
+         * @throws InterruptedException if the delegate reports interruption before acquisition completes
+         */
+        @Override
+        public void lockInterruptibly() throws InterruptedException {
+            delegate.lockInterruptibly();
+        }
+
+        /**
+         * Attempts to acquire the delegate lock without waiting.
+         *
+         * @return whether the delegate granted the lock immediately
+         */
+        @Override
+        public boolean tryLock() {
+            return delegate.tryLock();
+        }
+
+        /**
+         * Attempts to acquire the delegate lock within the supplied waiting time.
+         *
+         * @param time maximum waiting time, interpreted according to the delegate's Lock contract
+         * @param unit unit of the waiting time
+         * @return whether the delegate acquired the lock before the wait expired
+         * @throws InterruptedException if the delegate reports interruption while acquiring
+         * @throws NullPointerException if the delegate rejects a null time unit
+         */
+        @Override
+        public boolean tryLock(final long time, final TimeUnit unit) throws InterruptedException {
+            return delegate.tryLock(time, unit);
+        }
+
+        /**
+         * Releases the delegate lock according to its ownership and reentrancy rules.
+         *
+         * @throws IllegalMonitorStateException if the delegate enforces ownership and the caller does not hold it
+         */
+        @Override
+        public void unlock() {
+            delegate.unlock();
+        }
+
+        /**
+         * Creates a condition associated with the delegate lock.
+         *
+         * @return the delegate's condition object
+         * @throws UnsupportedOperationException if the delegate does not support conditions
+         */
+        @Override
+        public Condition newCondition() {
+            return delegate.newCondition();
+        }
+    }
+
+    /**
+     * Restores an empty runtime loading registry, without serialized locks or waiters. The serialization version
+     * rejects streams written before direct business-key storage was introduced.
+     *
+     * @param input source stream containing this cache's persistent fields
+     * @throws IOException            if persistent fields cannot be read
+     * @throws ClassNotFoundException if a stored class is unavailable
+     */
+    @Serial
+    private void readObject(final ObjectInputStream input) throws IOException, ClassNotFoundException {
+        input.defaultReadObject();
+        keyLockMap = new ConcurrentHashMap<>();
     }
 
 }

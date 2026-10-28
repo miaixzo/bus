@@ -31,7 +31,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 public abstract class AbstractEvent implements Event {
 
     @Serial
-    private static final long serialVersionUID = 2852230011506L;
+    private static final long serialVersionUID = 2550083800001L;
 
     /**
      * The event type value.

@@ -31,7 +31,7 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class EpicInLink extends AbstractEpic<EpicInLink> {
 
     @Serial
-    private static final long serialVersionUID = 2852252889389L;
+    private static final long serialVersionUID = 2550358151181L;
 
     /**
      * Constructs a new {@code EpicInLink} instance.

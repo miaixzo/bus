@@ -45,7 +45,7 @@ import org.miaixz.bus.core.xyz.IoKit;
 public class LineIterator extends ComputeIterator<String> implements IterableIterator<String>, Closeable, Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852267076328L;
+    private static final long serialVersionUID = 2535808563509L;
 
     /**
      * The underlying BufferedReader.

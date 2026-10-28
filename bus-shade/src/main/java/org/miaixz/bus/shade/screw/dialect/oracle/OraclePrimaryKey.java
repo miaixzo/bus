@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.shade.screw.dialect.oracle;
 
+import java.io.Serial;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -33,6 +35,9 @@ import org.miaixz.bus.shade.screw.metadata.PrimaryKey;
 @Getter
 @Setter
 public class OraclePrimaryKey implements PrimaryKey {
+
+    @Serial
+    private static final long serialVersionUID = 2552853151159L;
 
     /**
      * The name of the table.

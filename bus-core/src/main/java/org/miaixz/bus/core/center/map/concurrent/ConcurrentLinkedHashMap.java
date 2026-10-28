@@ -44,8 +44,8 @@ import org.miaixz.bus.core.xyz.RuntimeKit;
  * A hash table supporting full concurrency of retrievals, adjustable expected concurrency for updates, and a maximum
  * capacity to bound the map by. This implementation differs from {@link ConcurrentHashMap} in that it maintains a page
  * replacement algorithm that is used to evict an entry when the map has exceeded its capacity. Unlike the
- * {@code Java Collections Framework}, this map does not have a publicly visible constructor and instances are created
- * through a {@link Builder}.
+ * {@code Java Collections Framework}, instances are normally configured through a {@link Builder} and constructed from
+ * that configuration.
  * <p>
  * An entry is evicted from the map when the {@code weighted capacity} exceeds its {@code maximum weighted capacity}
  * threshold. A {@link EntryWeigher} determines how many units of capacity that an entry consumes. The default weigher
@@ -60,10 +60,13 @@ import org.miaixz.bus.core.xyz.RuntimeKit;
  * being notified. Execution safety and a fast turn around time can be achieved by performing the operation
  * asynchronously, such as by submitting a task to an {@link java.util.concurrent.ExecutorService}.
  * <p>
- * The {@code concurrency level} determines the number of threads that can concurrently modify the table. Using a
- * significantly higher or lower value than needed can waste space or lead to thread contention, but an estimate within
- * an order of magnitude of the ideal value does not usually have a noticeable impact. Because placement in hash tables
- * is essentially random, the actual concurrency will vary.
+ * The {@code concurrency level} is an initial sizing hint for the backing concurrent hash table, not a limit on the
+ * number of threads that may update it. Retention order and capacity accounting are maintained asynchronously under the
+ * eviction lock, so a write may be visible before its policy task has been applied and the capacity may be exceeded
+ * temporarily.
+ * <p>
+ * Buffered reads and writes make retention order approximate rather than strict access-order LRU. Ordered snapshot
+ * methods traverse the policy deque after bounded maintenance; they are not atomic captures of concurrent updates.
  * <p>
  * This class and its views and iterators implement all of the <em>optional</em> methods of the {@link Map} and
  * {@link Iterator} interfaces.
@@ -79,7 +82,7 @@ import org.miaixz.bus.core.xyz.RuntimeKit;
 public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements ConcurrentMap<K, V>, Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852268251008L;
+    private static final long serialVersionUID = 2535885800001L;
 
     /**
      * The number of CPUs.
@@ -147,7 +150,8 @@ public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements 
     final LinkedDeque<Node<K, V>> evictionDeque;
 
     /**
-     * The total weighted size of the map.
+     * Sum of node weights currently registered in the eviction policy, which can lag backing-map updates. Mutations
+     * occur under the eviction lock; the atomic holder permits lock-free observation.
      */
     final AtomicLong weightedSize;
 
@@ -157,7 +161,7 @@ public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements 
     final AtomicLong capacity;
 
     /**
-     * The lock used to protect the eviction deque.
+     * Lock protecting the eviction deque, each node's registered policy weight, and policy-size mutations.
      */
     final Lock evictionLock;
 
@@ -284,8 +288,8 @@ public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements 
     }
 
     /**
-     * Sets the maximum weighted capacity of the map and eagerly evicts entries until it shrinks to the appropriate
-     * size.
+     * Sets the maximum weighted capacity and eagerly evicts registered policy entries until their weight is within the
+     * new bound. Pending or concurrent writes can remain temporarily visible before their weights are registered.
      *
      * @param capacity the maximum weighted capacity of the map
      * @throws IllegalArgumentException if the capacity is negative
@@ -499,23 +503,51 @@ public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements 
     }
 
     /**
-     * Atomically transitions the node to the {@code dead} state and decrements the {@code weightedSize}.
+     * Marks a node dead and releases only the weight currently registered in the policy. The eviction lock must be
+     * held. Repeated calls release no additional weight; an unprocessed add task therefore cannot cause a negative
+     * deduction.
      *
      * @param node the entry in the page replacement policy
      */
     void makeDead(final Node<K, V> node) {
         for (;;) {
             final WeightedValue<V> current = node.get();
+            if (current.isDead()) {
+                break;
+            }
             final WeightedValue<V> dead = new WeightedValue<>(current.value, 0);
             if (node.compareAndSet(current, dead)) {
-                weightedSize.lazySet(weightedSize.get() - Math.abs(current.weight));
-                return;
+                break;
             }
         }
+        // Current value weight can differ from the amount registered by delayed policy tasks.
+        weightedSize.lazySet(weightedSize.get() - node.policyWeight);
+        node.policyWeight = 0;
+    }
+
+    /**
+     * Reconciles a live node with the weight already registered in the eviction policy. The eviction lock must be held.
+     * Old tasks cannot register removed nodes, and repeated tasks account for the current value only once.
+     *
+     * @param node node observed by a policy task
+     * @return whether the node is still the live mapping for its key
+     */
+    private boolean reconcileWeight(final Node<K, V> node) {
+        final WeightedValue<V> current = node.get();
+        if (!current.isAlive() || data.get(node.key) != node) {
+            evictionDeque.remove(node);
+            makeDead(node);
+            return false;
+        }
+        weightedSize.lazySet(weightedSize.get() + current.weight - node.policyWeight);
+        node.policyWeight = current.weight;
+        return true;
     }
 
     /**
      * Notifies the listener of entries that were evicted.
+     *
+     * @throws RuntimeException if a listener callback fails
      */
     void notifyListener() {
         Node<K, V> node;
@@ -525,8 +557,6 @@ public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements 
     }
 
     /**
-     * Description inherited from parent class or interface.
-     * <p>
      * Returns {@code true} if this map contains no key-value mappings.
      *
      * @return {@code true} if this map contains no key-value mappings
@@ -537,8 +567,6 @@ public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements 
     }
 
     /**
-     * Description inherited from parent class or interface.
-     * <p>
      * Returns the number of key-value mappings in this map.
      *
      * @return the number of key-value mappings in this map
@@ -549,23 +577,33 @@ public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements 
     }
 
     /**
-     * Returns the weighted size of this map.
+     * Returns the asynchronously maintained policy weight, clamped to zero. Pending tasks mean this is not necessarily
+     * the exact combined weight of the mappings currently visible in the backing hash table.
      *
-     * @return the combined weight of the values in this map
+     * @return the non-negative weight currently registered in the eviction policy
      */
     public long weightedSize() {
         return Math.max(0, weightedSize.get());
     }
 
     /**
-     * Description inherited from parent class or interface.
-     * <p>
-     * Removes all of the mappings from this map. The map will be empty after this call returns.
+     * Removes observed mappings and their registered policy weights, including entries whose add tasks have not run.
+     * Concurrent new writes follow the backing map's weakly consistent clear semantics. Delayed tasks cannot revive
+     * removed nodes or reapply historical weight differences.
      */
     @Override
     public void clear() {
         evictionLock.lock();
         try {
+            // Completed writes can still be missing from the asynchronously maintained policy deque.
+            for (final Node<K, V> entry : data.values()) {
+                if (data.remove(entry.key, entry)) {
+                    makeRetired(entry);
+                    evictionDeque.remove(entry);
+                    makeDead(entry);
+                }
+            }
+
             // Discard all entries
             Node<K, V> node;
             while ((node = evictionDeque.poll()) != null) {
@@ -591,12 +629,11 @@ public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements 
     }
 
     /**
-     * Description inherited from parent class or interface.
-     * <p>
      * Returns {@code true} if this map contains a mapping for the specified key.
      *
      * @param key the key whose presence in this map is to be tested
      * @return {@code true} if this map contains a mapping for the specified key
+     * @throws NullPointerException if the key is {@code null}
      */
     @Override
     public boolean containsKey(final Object key) {
@@ -604,12 +641,11 @@ public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements 
     }
 
     /**
-     * Description inherited from parent class or interface.
-     * <p>
      * Returns {@code true} if this map maps one or more keys to the specified value.
      *
      * @param value value whose presence in this map is to be tested
      * @return {@code true} if this map maps one or more keys to the specified value
+     * @throws IllegalArgumentException if the value is {@code null}
      */
     @Override
     public boolean containsValue(final Object value) {
@@ -623,8 +659,6 @@ public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements 
     }
 
     /**
-     * Description inherited from parent class or interface.
-     * <p>
      * Returns the value to which the specified key is mapped, or {@code null} if this map contains no mapping for the
      * key.
      * <p>
@@ -633,6 +667,7 @@ public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements 
      * @param key the key whose associated value is to be returned
      * @return the value to which the specified key is mapped, or {@code null} if this map contains no mapping for the
      *         key
+     * @throws NullPointerException if the key is {@code null}
      */
     @Override
     public V get(final Object key) {
@@ -660,8 +695,6 @@ public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements 
     }
 
     /**
-     * Description inherited from parent class or interface.
-     * <p>
      * Maps the specified key to the specified value in this map. Neither the key nor the value can be {@code null}.
      * <p>
      * This operation is recorded with the page replacement policy.
@@ -669,6 +702,8 @@ public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements 
      * @param key   key with which the specified value is to be associated
      * @param value value to be associated with the specified key
      * @return the previous value associated with {@code key}, or {@code null} if there was no mapping for {@code key}
+     * @throws IllegalArgumentException if the key or value is {@code null}, or the configured weigher returns a
+     *                                  non-positive weight
      */
     @Override
     public V put(final K key, final V value) {
@@ -676,14 +711,14 @@ public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements 
     }
 
     /**
-     * Description inherited from parent class or interface.
-     * <p>
      * If the specified key is not already associated with a value, associates it with the given value and performs the
      * necessary page replacement policy operations.
      *
      * @param key   key with which the specified value is to be associated
      * @param value value to be associated with the specified key
      * @return the previous value associated with the specified key, or {@code null} if there was no mapping
+     * @throws IllegalArgumentException if the key or value is {@code null}, or the configured weigher returns a
+     *                                  non-positive weight
      */
     @Override
     public V putIfAbsent(final K key, final V value) {
@@ -697,6 +732,8 @@ public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements 
      * @param value        value to be associated with the specified key
      * @param onlyIfAbsent a write is performed only if the key is not already associated with a value
      * @return the prior value in the data store or null if no mapping was found
+     * @throws IllegalArgumentException if the key or value is {@code null}, or the configured weigher returns a
+     *                                  non-positive weight
      */
     V put(final K key, final V value, final boolean onlyIfAbsent) {
         Assert.notNull(key);
@@ -709,7 +746,7 @@ public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements 
         for (;;) {
             final Node<K, V> prior = data.putIfAbsent(node.key, node);
             if (prior == null) {
-                afterWrite(new AddTask(node, weight));
+                afterWrite(new AddTask(node));
                 return null;
             } else if (onlyIfAbsent) {
                 afterRead(prior);
@@ -726,7 +763,7 @@ public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements 
                     if (weightedDifference == 0) {
                         afterRead(prior);
                     } else {
-                        afterWrite(new UpdateTask(prior, weightedDifference));
+                        afterWrite(new UpdateTask(prior));
                     }
                     return oldWeightedValue.value;
                 }
@@ -735,14 +772,13 @@ public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements 
     }
 
     /**
-     * Description inherited from parent class or interface.
-     * <p>
      * Removes the mapping for a key from this map if it is present.
      * <p>
      * This operation is recorded with the page replacement policy.
      *
      * @param key key whose mapping is to be removed from the map
      * @return the previous value associated with {@code key}, or {@code null} if there was no mapping for {@code key}
+     * @throws NullPointerException if the key is {@code null}
      */
     @Override
     public V remove(final Object key) {
@@ -757,15 +793,14 @@ public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements 
     }
 
     /**
-     * Description inherited from parent class or interface.
-     * <p>
      * Removes the entry for a key only if it is currently mapped to a given value.
      * <p>
      * This operation is recorded with the page replacement policy if successful.
      *
      * @param key   key with which the specified value is associated
-     * @param value value expected to be associated with the specified key
+     * @param value value expected to be associated with the specified key; {@code null} never matches
      * @return {@code true} if the value was removed
+     * @throws NullPointerException if the key is {@code null}
      */
     @Override
     public boolean remove(final Object key, final Object value) {
@@ -794,8 +829,6 @@ public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements 
     }
 
     /**
-     * Description inherited from parent class or interface.
-     * <p>
      * Replaces the entry for a key only if it is currently mapped to some value.
      * <p>
      * This operation is recorded with the page replacement policy.
@@ -803,6 +836,8 @@ public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements 
      * @param key   key with which the specified value is associated
      * @param value value to be associated with the specified key
      * @return the previous value associated with the specified key, or {@code null} if there was no mapping for the key
+     * @throws IllegalArgumentException if the key or value is {@code null}, or the configured weigher returns a
+     *                                  non-positive weight
      */
     @Override
     public V replace(final K key, final V value) {
@@ -826,7 +861,7 @@ public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements 
                 if (weightedDifference == 0) {
                     afterRead(node);
                 } else {
-                    afterWrite(new UpdateTask(node, weightedDifference));
+                    afterWrite(new UpdateTask(node));
                 }
                 return oldWeightedValue.value;
             }
@@ -834,8 +869,6 @@ public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements 
     }
 
     /**
-     * Description inherited from parent class or interface.
-     * <p>
      * Replaces the entry for a key only if currently mapped to the given value.
      * <p>
      * This operation is recorded with the page replacement policy if successful.
@@ -844,6 +877,8 @@ public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements 
      * @param oldValue value expected to be associated with the specified key
      * @param newValue value to be associated with the specified key
      * @return {@code true} if the value was replaced
+     * @throws IllegalArgumentException if the key or either value is {@code null}, or the configured weigher returns a
+     *                                  non-positive weight
      */
     @Override
     public boolean replace(final K key, final V oldValue, final V newValue) {
@@ -868,7 +903,7 @@ public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements 
                 if (weightedDifference == 0) {
                     afterRead(node);
                 } else {
-                    afterWrite(new UpdateTask(node, weightedDifference));
+                    afterWrite(new UpdateTask(node));
                 }
                 return true;
             }
@@ -876,8 +911,6 @@ public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements 
     }
 
     /**
-     * Description inherited from parent class or interface.
-     * <p>
      * Returns a {@link Set} view of the keys contained in this map. The set is backed by the map, so changes to the map
      * are reflected in the set, and vice-versa.
      *
@@ -959,6 +992,7 @@ public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements 
      * @param ascending whether to iterate from least to most retainable
      * @param limit     maximum number of keys
      * @return ordered key snapshot
+     * @throws IllegalArgumentException if the limit is negative
      */
     Set<K> orderedKeySet(final boolean ascending, final int limit) {
         Assert.isTrue(limit >= 0);
@@ -981,8 +1015,6 @@ public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements 
     }
 
     /**
-     * Description inherited from parent class or interface.
-     * <p>
      * Returns a {@link Collection} view of the values contained in this map. The collection is backed by the map, so
      * changes to the map are reflected in the collection, and vice-versa.
      *
@@ -995,8 +1027,6 @@ public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements 
     }
 
     /**
-     * Description inherited from parent class or interface.
-     * <p>
      * Returns a {@link Set} view of the mappings contained in this map. The set is backed by the map, so changes to the
      * map are reflected in the set, and vice-versa.
      *
@@ -1074,6 +1104,7 @@ public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements 
      * @param ascending whether to iterate from least to most retainable
      * @param limit     maximum number of entries
      * @return ordered map snapshot
+     * @throws IllegalArgumentException if the limit is negative
      */
     Map<K, V> orderedMap(final boolean ascending, final int limit) {
         Assert.isTrue(limit >= 0);
@@ -1097,19 +1128,20 @@ public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements 
     }
 
     /**
-     * Executes the write replace operation.
+     * Substitutes a serialization proxy containing configuration and an entry snapshot, without serializing runtime
+     * queues, locks, or eviction links.
      *
-     * @return the result
+     * @return the serialization proxy
      */
     Object writeReplace() {
         return new SerializationProxy<>(this);
     }
 
     /**
-     * Executes the read object operation.
+     * Rejects direct deserialization; instances must be reconstructed through their serialization proxy.
      *
-     * @param stream the stream value
-     * @throws InvalidObjectException if the operation fails
+     * @param stream the input stream, whose contents are not read
+     * @throws InvalidObjectException always, because a serialization proxy is required
      */
     private void readObject(final ObjectInputStream stream) throws InvalidObjectException {
         throw new InvalidObjectException("Proxy required");
@@ -1128,8 +1160,6 @@ public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements 
         IDLE {
 
             /**
-             * Description inherited from parent class or interface.
-             * <p>
              * Determines whether buffers should be drained when in idle state.
              *
              * @param delayable if a drain should be delayed until required
@@ -1147,8 +1177,6 @@ public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements 
         REQUIRED {
 
             /**
-             * Description inherited from parent class or interface.
-             * <p>
              * Determines whether buffers should be drained when in required state.
              *
              * @param delayable if a drain should be delayed until required
@@ -1166,8 +1194,6 @@ public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements 
         PROCESSING {
 
             /**
-             * Description inherited from parent class or interface.
-             * <p>
              * Determines whether buffers should be drained when already processing.
              *
              * @param delayable if a drain should be delayed until required
@@ -1202,8 +1228,6 @@ public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements 
         INSTANCE;
 
         /**
-         * Description inherited from parent class or interface.
-         * <p>
          * Accepts a key-value pair notification when an entry is evicted from the map. This implementation discards all
          * notifications.
          *
@@ -1217,8 +1241,10 @@ public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements 
     }
 
     /**
-     * A value, its selector, and the entry's status.
+     * Immutable value and signed lifecycle weight. The current live value weight is independent of the amount that
+     * delayed tasks have registered in {@link Node#policyWeight}.
      *
+     * @param <V> the mapped value type
      * @author Kimi Liu
      */
     static final class WeightedValue<V> {
@@ -1255,21 +1281,28 @@ public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements 
         }
 
         /**
-         * If the entry is available in the hash-table and page replacement policy.
+         * Tests whether this value represents a live mapping, which may still await its policy add task.
+         *
+         * @return {@code true} when the lifecycle weight is positive
          */
         boolean isAlive() {
             return weight > 0;
         }
 
         /**
-         * If the entry was removed from the hash-table and is awaiting removal from the page replacement policy.
+         * Tests whether the mapping is retired and awaiting policy cleanup.
+         *
+         * @return {@code true} when the lifecycle weight is negative
          */
         boolean isRetired() {
             return weight < 0;
         }
 
         /**
-         * If the entry was removed from the hash-table and the page replacement policy.
+         * Tests whether the value has been marked dead. Releasing registered policy weight is handled separately while
+         * holding the eviction lock.
+         *
+         * @return {@code true} when the lifecycle weight is zero
          */
         boolean isDead() {
             return weight == 0;
@@ -1281,15 +1314,23 @@ public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements 
      * A node contains the data, the weighted value, and the linkage pointers on the page-replacement algorithm's data
      * structures.
      *
-     * @param <K> the value type
+     * @param <K> the key type
      * @param <V> the value type
      */
     static final class Node<K, V> extends AtomicReference<WeightedValue<V>> implements Linked<Node<K, V>> {
+
+        @Serial
+        private static final long serialVersionUID = 2535888961801L;
 
         /**
          * Immutable map key.
          */
         final K key;
+
+        /**
+         * Weight currently registered in the eviction policy; accessed only while holding the eviction lock.
+         */
+        int policyWeight;
 
         /**
          * Previous node in eviction order.
@@ -1302,7 +1343,10 @@ public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements 
         Node<K, V> next;
 
         /**
-         * Creates a new, unlinked node.
+         * Creates a new, unlinked node with no weight registered in the eviction policy.
+         *
+         * @param key           immutable map key
+         * @param weightedValue initial value and lifecycle weight
          */
         Node(final K key, final WeightedValue<V> weightedValue) {
             super(weightedValue);
@@ -1310,8 +1354,6 @@ public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements 
         }
 
         /**
-         * Description inherited from parent class or interface.
-         * <p>
          * Returns the previous node in the eviction deque.
          *
          * @return the previous node, or {@code null} if this is the first node
@@ -1322,8 +1364,6 @@ public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements 
         }
 
         /**
-         * Description inherited from parent class or interface.
-         * <p>
          * Sets the previous node in the eviction deque.
          *
          * @param prev the node to set as previous
@@ -1334,8 +1374,6 @@ public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements 
         }
 
         /**
-         * Description inherited from parent class or interface.
-         * <p>
          * Returns the next node in the eviction deque.
          *
          * @return the next node, or {@code null} if this is the last node
@@ -1346,8 +1384,6 @@ public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements 
         }
 
         /**
-         * Description inherited from parent class or interface.
-         * <p>
          * Sets the next node in the eviction deque.
          *
          * @param next the node to set as next
@@ -1359,6 +1395,8 @@ public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements 
 
         /**
          * Retrieves the value held by the current {@code WeightedValue}.
+         *
+         * @return the current mapped value, regardless of lifecycle state
          */
         V getValue() {
             return get().value;
@@ -1367,16 +1405,16 @@ public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements 
     }
 
     /**
-     * A weigher that enforces that the selector falls within a valid range.
+     * A weigher that requires every stored entry to consume at least one unit of capacity.
      *
-     * @param <K> the value type
+     * @param <K> the key type
      * @param <V> the value type
      * @author Kimi Liu
      */
     static final class BoundedEntryWeigher<K, V> implements EntryWeigher<K, V>, Serializable {
 
         @Serial
-        private static final long serialVersionUID = 2853159653136L;;
+        private static final long serialVersionUID = 2535891203266L;;
 
         /**
          * Delegate entry weigher whose result is range-checked.
@@ -1387,6 +1425,7 @@ public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements 
          * Creates a range-checking entry weigher.
          *
          * @param weigher delegate weigher
+         * @throws IllegalArgumentException if the delegate is {@code null}
          */
         BoundedEntryWeigher(final EntryWeigher<? super K, ? super V> weigher) {
             Assert.notNull(weigher);
@@ -1394,13 +1433,12 @@ public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements 
         }
 
         /**
-         * Description inherited from parent class or interface.
-         * <p>
          * Returns the weight of the entry for the given key and value.
          *
          * @param key   the key of the entry
          * @param value the value of the entry
          * @return the weight of the entry (must be at least 1)
+         * @throws IllegalArgumentException if the delegate returns a weight below one
          */
         @Override
         public int weightOf(final K key, final V value) {
@@ -1425,14 +1463,14 @@ public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements 
      * serialized so the deserialized instance contains only the entries. This is acceptable as caches hold transient
      * data that is recomputable and serialization would tend to be used as a fast warm-up process.
      *
-     * @param <K> the value type
+     * @param <K> the key type
      * @param <V> the value type
      * @author Kimi Liu
      */
     static final class SerializationProxy<K, V> implements Serializable {
 
         @Serial
-        private static final long serialVersionUID = 2853159653136L;;
+        private static final long serialVersionUID = 2535895000001L;;
 
         /**
          * Entry-weighing strategy restored with the map.
@@ -1488,11 +1526,12 @@ public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements 
 
     /**
      * A builder that creates {@link ConcurrentLinkedHashMap} instances. It provides a flexible approach for
-     * constructing customized instances with a named parameter syntax. It can be used in the following manner: *
+     * constructing customized instances with a named parameter syntax. It can be used in the following manner:
      *
      * <pre>{@code
-     * * ConcurrentMap<Vertex, Set<Edge>> graph = new Builder<Vertex, Set<Edge>>().maximumWeightedCapacity(5000)
-     * .weigher(Weighers.<Edge>set()).build();
+     *
+     * ConcurrentMap<Vertex, Set<Edge>> graph = new Builder<Vertex, Set<Edge>>().maximumWeightedCapacity(5000)
+     *         .weigher(Weighers.<Edge>set()).build();
      * }</pre>
      *
      * @param <K> the key type
@@ -1583,7 +1622,7 @@ public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements 
          *
          * @param listener the object to forward evicted entries to
          * @return this
-         * @throws NullPointerException if the listener is null
+         * @throws IllegalArgumentException if the listener is null
          */
         public Builder<K, V> listener(final BiConsumerX<K, V> listener) {
             Assert.notNull(listener);
@@ -1593,11 +1632,12 @@ public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements 
 
         /**
          * Specifies an algorithm to determine how many the units of capacity a value consumes. The default algorithm
-         * bounds the map by the number of data-value pairs by giving each entry a selector of {@code 1}.
+         * bounds the map by the number of key-value pairs by giving each entry a weight of {@code 1}. A custom weigher
+         * must return a positive weight for every stored value.
          *
-         * @param weigher the algorithm to determine a value's selector
+         * @param weigher the algorithm determining a value's capacity weight
          * @return this
-         * @throws NullPointerException if the weigher is null
+         * @throws IllegalArgumentException if the weigher is null
          */
         public Builder<K, V> weigher(final Weigher<? super V> weigher) {
             this.weigher = (weigher == Weighers.singleton()) ? Weighers.entrySingleton()
@@ -1607,11 +1647,12 @@ public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements 
 
         /**
          * Specifies an algorithm to determine how many the units of capacity an entry consumes. The default algorithm
-         * bounds the map by the number of data-value pairs by giving each entry a selector of {@code 1}.
+         * bounds the map by the number of key-value pairs by giving each entry a weight of {@code 1}. A custom weigher
+         * must return a positive weight for every stored entry.
          *
-         * @param weigher the algorithm to determine a entry's selector
+         * @param weigher the algorithm determining an entry's capacity weight
          * @return this
-         * @throws NullPointerException if the weigher is null
+         * @throws IllegalArgumentException if the weigher is null
          */
         public Builder<K, V> weigher(final EntryWeigher<? super K, ? super V> weigher) {
             this.weigher = (weigher == Weighers.entrySingleton()) ? Weighers.entrySingleton()
@@ -1633,7 +1674,8 @@ public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements 
     }
 
     /**
-     * Adds the node to the page replacement policy.
+     * Reconciles a delayed add with the node's current value and links it only while it remains the live mapping. Tasks
+     * run while the eviction lock is held and do not replay historical weight deltas.
      *
      * @author Kimi Liu
      */
@@ -1645,34 +1687,24 @@ public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements 
         final Node<K, V> node;
 
         /**
-         * Weight contributed by the node.
-         */
-        final int weight;
-
-        /**
          * Creates an eviction-policy add task.
          *
-         * @param node   node to add
-         * @param weight node weight
+         * @param node node to add
          */
-        AddTask(final Node<K, V> node, final int weight) {
-            this.weight = weight;
+        AddTask(final Node<K, V> node) {
             this.node = node;
         }
 
         /**
-         * Description inherited from parent class or interface.
-         * <p>
          * Executes the task to add the node to the eviction policy and update the weighted size.
          */
         @Override
 
         public void run() {
-            weightedSize.lazySet(weightedSize.get() + weight);
-
-            // ignore out-of-order write operations
-            if (node.get().isAlive()) {
-                evictionDeque.add(node);
+            if (reconcileWeight(node)) {
+                if (!evictionDeque.contains(node)) {
+                    evictionDeque.add(node);
+                }
                 evict();
             }
         }
@@ -1701,8 +1733,6 @@ public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements 
         }
 
         /**
-         * Description inherited from parent class or interface.
-         * <p>
          * Executes the task to remove the node from the eviction policy and mark it as dead.
          */
         @Override
@@ -1716,16 +1746,12 @@ public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements 
     }
 
     /**
-     * Updates the weighted size and evicts an entry on overflow.
+     * Reconciles the node's current live weight and recency, then evicts on overflow. The task runs under the eviction
+     * lock and does not retain or replay the weight difference that originally caused it to be queued.
      *
      * @author Kimi Liu
      */
     final class UpdateTask implements Runnable {
-
-        /**
-         * Change applied to the total weighted size.
-         */
-        final int weightDifference;
 
         /**
          * Node whose weight and recency changed.
@@ -1735,31 +1761,32 @@ public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements 
         /**
          * Creates an eviction-policy update task.
          *
-         * @param node             node to update
-         * @param weightDifference signed weight change
+         * @param node node to update
          */
-        public UpdateTask(final Node<K, V> node, final int weightDifference) {
-            this.weightDifference = weightDifference;
+        public UpdateTask(final Node<K, V> node) {
             this.node = node;
         }
 
         /**
-         * Description inherited from parent class or interface.
-         * <p>
          * Executes the task to update the weighted size and potentially evict entries.
          */
         @Override
 
         public void run() {
-            weightedSize.lazySet(weightedSize.get() + weightDifference);
-            applyRead(node);
-            evict();
+            if (reconcileWeight(node)) {
+                if (evictionDeque.contains(node)) {
+                    applyRead(node);
+                } else {
+                    evictionDeque.add(node);
+                }
+                evict();
+            }
         }
 
     }
 
     /**
-     * An adapter to safely externalize the keys.
+     * Backed key-set view whose removals also schedule the owning map's eviction-policy cleanup.
      *
      * @author Kimi Liu
      */
@@ -1771,8 +1798,6 @@ public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements 
         final ConcurrentLinkedHashMap<K, V> map = ConcurrentLinkedHashMap.this;
 
         /**
-         * Description inherited from parent class or interface.
-         * <p>
          * Returns the number of keys in the map.
          *
          * @return the number of keys
@@ -1783,8 +1808,6 @@ public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements 
         }
 
         /**
-         * Description inherited from parent class or interface.
-         * <p>
          * Clears all keys from the map.
          */
         @Override
@@ -1793,8 +1816,6 @@ public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements 
         }
 
         /**
-         * Description inherited from parent class or interface.
-         * <p>
          * Returns an iterator over the keys in the map.
          *
          * @return an iterator over the keys
@@ -1805,8 +1826,6 @@ public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements 
         }
 
         /**
-         * Description inherited from parent class or interface.
-         * <p>
          * Returns {@code true} if this set contains the specified key.
          *
          * @param object the key to check for presence
@@ -1818,8 +1837,6 @@ public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements 
         }
 
         /**
-         * Description inherited from parent class or interface.
-         * <p>
          * Removes the specified key from the map.
          *
          * @param object the key to remove
@@ -1831,8 +1848,6 @@ public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements 
         }
 
         /**
-         * Description inherited from parent class or interface.
-         * <p>
          * Returns an array containing all of the keys in this set.
          *
          * @return an array containing all of the keys in this set
@@ -1843,8 +1858,6 @@ public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements 
         }
 
         /**
-         * Description inherited from parent class or interface.
-         * <p>
          * Returns an array containing all of the keys in this set; the runtime type of the returned array is that of
          * the specified array.
          *
@@ -1860,7 +1873,7 @@ public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements 
     }
 
     /**
-     * An adapter to safely externalize the data iterator.
+     * Weakly consistent traversal of backing-map keys with policy-aware removal through the owning map.
      *
      * @author Kimi Liu
      */
@@ -1877,8 +1890,6 @@ public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements 
         K current;
 
         /**
-         * Description inherited from parent class or interface.
-         * <p>
          * Returns {@code true} if the iteration has more keys.
          *
          * @return {@code true} if the iteration has more keys
@@ -1889,8 +1900,6 @@ public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements 
         }
 
         /**
-         * Description inherited from parent class or interface.
-         * <p>
          * Returns the next element in the iteration.
          *
          * @return the next element
@@ -1903,9 +1912,10 @@ public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements 
         }
 
         /**
-         * Description inherited from parent class or interface.
-         * <p>
-         * Removes from the underlying collection the last element returned by this iterator.
+         * Removes the mapping for the last returned key through the owning map. A replacement at that key is not
+         * protected from this key-based removal.
+         *
+         * @throws IllegalStateException if no key was returned or it has already been removed
          */
         @Override
         public void remove() {
@@ -1917,15 +1927,13 @@ public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements 
     }
 
     /**
-     * An adapter to safely externalize the values.
+     * Backed value collection using the owning map's size, membership, clearing, and policy-aware iteration.
      *
      * @author Kimi Liu
      */
     final class Values extends AbstractCollection<V> {
 
         /**
-         * Description inherited from parent class or interface.
-         * <p>
          * Returns the number of values in the map.
          *
          * @return the number of values
@@ -1936,8 +1944,6 @@ public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements 
         }
 
         /**
-         * Description inherited from parent class or interface.
-         * <p>
          * Clears all values from the map.
          */
         @Override
@@ -1946,8 +1952,6 @@ public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements 
         }
 
         /**
-         * Description inherited from parent class or interface.
-         * <p>
          * Returns an iterator over the values in the map.
          *
          * @return an iterator over the values
@@ -1958,8 +1962,6 @@ public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements 
         }
 
         /**
-         * Description inherited from parent class or interface.
-         * <p>
          * Returns {@code true} if this collection contains the specified value.
          *
          * @param o the value to check for presence
@@ -1973,7 +1975,7 @@ public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements 
     }
 
     /**
-     * An adapter to safely externalize the value iterator.
+     * Weakly consistent traversal of backing-node values with removal through the owning map.
      *
      * @author Kimi Liu
      */
@@ -1990,8 +1992,6 @@ public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements 
         Node<K, V> current;
 
         /**
-         * Description inherited from parent class or interface.
-         * <p>
          * Returns {@code true} if the iteration has more values.
          *
          * @return {@code true} if the iteration has more values
@@ -2002,11 +2002,10 @@ public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements 
         }
 
         /**
-         * Description inherited from parent class or interface.
-         * <p>
          * Returns the next value in the iteration.
          *
          * @return the next value
+         * @throws NoSuchElementException if the backing node iterator is exhausted
          */
         @Override
         public V next() {
@@ -2015,9 +2014,10 @@ public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements 
         }
 
         /**
-         * Description inherited from parent class or interface.
-         * <p>
-         * Removes from the underlying collection the last element returned by this iterator.
+         * Removes the mapping for the last returned node's key through the owning map. A later replacement at that key
+         * is not protected from this key-based removal.
+         *
+         * @throws IllegalStateException if no value was returned or it has already been removed
          */
         @Override
         public void remove() {
@@ -2029,7 +2029,7 @@ public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements 
     }
 
     /**
-     * An adapter to safely externalize the entries.
+     * Backed entry set supporting absent-only insertion and conditional removal through the owning map.
      *
      * @author Kimi Liu
      */
@@ -2041,8 +2041,6 @@ public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements 
         final ConcurrentLinkedHashMap<K, V> map = ConcurrentLinkedHashMap.this;
 
         /**
-         * Description inherited from parent class or interface.
-         * <p>
          * Returns the number of entries in the map.
          *
          * @return the number of entries
@@ -2053,8 +2051,6 @@ public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements 
         }
 
         /**
-         * Description inherited from parent class or interface.
-         * <p>
          * Clears all entries from the map.
          */
         @Override
@@ -2063,8 +2059,6 @@ public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements 
         }
 
         /**
-         * Description inherited from parent class or interface.
-         * <p>
          * Returns an iterator over the entries in the map.
          *
          * @return an iterator over the entries
@@ -2075,8 +2069,6 @@ public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements 
         }
 
         /**
-         * Description inherited from parent class or interface.
-         * <p>
          * Returns {@code true} if this set contains the specified entry.
          *
          * @param object the entry to check for presence
@@ -2093,8 +2085,6 @@ public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements 
         }
 
         /**
-         * Description inherited from parent class or interface.
-         * <p>
          * Adds the specified entry to the map if not already present.
          *
          * @param entry the entry to add
@@ -2106,8 +2096,6 @@ public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements 
         }
 
         /**
-         * Description inherited from parent class or interface.
-         * <p>
          * Removes the specified entry from the map.
          *
          * @param object the entry to remove
@@ -2125,7 +2113,7 @@ public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements 
     }
 
     /**
-     * An adapter to safely externalize the entry iterator.
+     * Weakly consistent traversal producing value snapshots whose updates write through to the owning map.
      *
      * @author Kimi Liu
      */
@@ -2142,8 +2130,6 @@ public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements 
         Node<K, V> current;
 
         /**
-         * Description inherited from parent class or interface.
-         * <p>
          * Returns {@code true} if the iteration has more entries.
          *
          * @return {@code true} if the iteration has more entries
@@ -2154,11 +2140,10 @@ public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements 
         }
 
         /**
-         * Description inherited from parent class or interface.
-         * <p>
          * Returns the next entry in the iteration.
          *
          * @return the next entry
+         * @throws NoSuchElementException if the backing node iterator is exhausted
          */
         @Override
         public Entry<K, V> next() {
@@ -2167,9 +2152,10 @@ public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements 
         }
 
         /**
-         * Description inherited from parent class or interface.
-         * <p>
-         * Removes from the underlying collection the last element returned by this iterator.
+         * Removes the mapping for the last returned entry's key through the owning map. A later replacement at that key
+         * is not protected from this key-based removal.
+         *
+         * @throws IllegalStateException if no entry was returned or it has already been removed
          */
         @Override
         public void remove() {
@@ -2188,7 +2174,7 @@ public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements 
     final class WriteThroughEntry extends SimpleEntry<K, V> {
 
         @Serial
-        private static final long serialVersionUID = 2852276319333L;
+        private static final long serialVersionUID = 2535898150001L;
 
         /**
          * Creates an entry view backed by a map node.
@@ -2200,12 +2186,11 @@ public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements 
         }
 
         /**
-         * Description inherited from parent class or interface.
-         * <p>
          * Sets the value for this entry, writing through to the underlying map.
          *
          * @param value the new value to be stored
-         * @return the old value
+         * @return the value previously held by this entry snapshot, which may differ from a concurrent map value
+         * @throws IllegalArgumentException if the value is {@code null} or its configured weight is non-positive
          */
         @Override
         public V setValue(final V value) {

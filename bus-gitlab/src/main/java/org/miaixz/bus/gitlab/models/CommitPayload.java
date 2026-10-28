@@ -34,7 +34,7 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class CommitPayload implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852239868301L;
+    private static final long serialVersionUID = 2550262203508L;
 
     /**
      * The branch value.

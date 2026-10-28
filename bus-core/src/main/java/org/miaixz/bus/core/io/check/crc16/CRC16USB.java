@@ -31,7 +31,7 @@ import java.io.Serial;
 public class CRC16USB extends CRC16Checksum {
 
     @Serial
-    private static final long serialVersionUID = 2852279770589L;
+    private static final long serialVersionUID = 2536525000001L;
 
     /**
      * The polynomial used in the CRC16-USB calculation. It is the bit-reversed form of 0x8005.

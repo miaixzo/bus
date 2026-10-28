@@ -52,7 +52,7 @@ public class KafkaProvider implements MQProvider {
      */
     public KafkaProvider() {
         // Check if the library is introduced when loading via SPI
-        Assert.notNull(org.apache.kafka.clients.CommonClientConfigs.class);
+        Assert.notNull(CommonClientConfigs.class);
     }
 
     /**

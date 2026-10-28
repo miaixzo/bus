@@ -28,6 +28,7 @@ import org.springframework.http.HttpInputMessage;
 import org.springframework.http.HttpOutputMessage;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.AbstractGenericHttpMessageConverter;
+import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.http.converter.HttpMessageNotWritableException;
 
@@ -93,7 +94,7 @@ public class JsonMessageConverter implements MessageConverterRegistrar {
      * @param converters mutable Spring HTTP converter list
      */
     @Override
-    public void register(List<org.springframework.http.converter.HttpMessageConverter<?>> converters) {
+    public void register(List<HttpMessageConverter<?>> converters) {
         JsonReadOptions readOptions = new JsonReadOptions(typeFilter);
         JsonWriteOptions writeOptions = new JsonWriteOptions(null, false, JsonPropertyFilter.always());
         converters.add(new ProviderHttpMessageConverter(provider, readOptions, writeOptions));

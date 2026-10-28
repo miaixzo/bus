@@ -36,7 +36,7 @@ import java.io.Serializable;
 public class PoolConfig implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852272106223L;
+    private static final long serialVersionUID = 2538036609995L;
 
     /**
      * The minimum (initial) size of the object pool. This defines the number of objects the pool will start with or try

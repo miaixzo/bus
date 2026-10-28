@@ -44,41 +44,46 @@ public class McpProcessManager {
     }
 
     /**
-     * Starts a new subprocess with the given command.
+     * Starts a subprocess when its identifier does not already belong to a running process.
      *
      * @param id      process identifier
      * @param command command and arguments to launch
-     * @throws RuntimeException if the process cannot be started
+     * @throws IllegalStateException if a process with the same identifier is already running
+     * @throws RuntimeException      if the process cannot be started
      */
     public void start(String id, String[] command) {
-        try {
-            ProcessBuilder pb = new ProcessBuilder(command);
-            pb.inheritIO();
-            Process process = pb.start();
-            processes.put(id, process);
-        } catch (Exception e) {
-            Logger.warn(
-                    false,
-                    "Cortex",
-                    e,
-                    "Cortex operation failed: provider={}, recoverable={}, exception={}",
-                    "McpProcessManager",
-                    false,
-                    e.getClass().getSimpleName());
-            throw new RuntimeException("Failed to start process " + id, e);
-        }
+        processes.compute(id, (processId, existing) -> {
+            if (existing != null && existing.isAlive()) {
+                throw new IllegalStateException("Process is already running: " + processId);
+            }
+            try {
+                ProcessBuilder pb = new ProcessBuilder(command);
+                pb.inheritIO();
+                return pb.start();
+            } catch (Exception e) {
+                Logger.warn(
+                        false,
+                        "Cortex",
+                        e,
+                        "Cortex operation failed: provider={}, recoverable={}, exception={}",
+                        "McpProcessManager",
+                        false,
+                        e.getClass().getSimpleName());
+                throw new RuntimeException("Failed to start process " + processId, e);
+            }
+        });
     }
 
     /**
-     * Stops and removes a subprocess by ID.
+     * Requests forced termination and removes a subprocess, serialized with starts for the same identifier.
      *
      * @param id process identifier
      */
     public void stop(String id) {
-        Process p = processes.remove(id);
-        if (p != null) {
-            p.destroyForcibly();
-        }
+        processes.computeIfPresent(id, (processId, process) -> {
+            process.destroyForcibly();
+            return null;
+        });
     }
 
     /**

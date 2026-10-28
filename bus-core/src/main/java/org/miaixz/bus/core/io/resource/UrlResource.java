@@ -42,7 +42,7 @@ import org.miaixz.bus.core.xyz.UrlKit;
 public class UrlResource implements Resource, Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852232772701L;
+    private static final long serialVersionUID = 2536610822081L;
 
     /**
      * The URL of the resource.

@@ -58,7 +58,7 @@ import org.miaixz.bus.crypto.Padding;
 public class FPE implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852289932187L;
+    private static final long serialVersionUID = 2539250000001L;
 
     /**
      * The AES cipher instance.

@@ -19,6 +19,8 @@
 */
 package org.opencv.geometry;
 
+import org.opencv.core.CleanableMat;
+
 // C++: class UsacParams
 
 /**
@@ -39,7 +41,7 @@ public class UsacParams {
     protected UsacParams(long addr) {
         nativeObj = addr;
         long nativeObjCopy = nativeObj;
-        org.opencv.core.CleanableMat.cleaner.register(this, () -> delete(nativeObjCopy));
+        CleanableMat.cleaner.register(this, () -> delete(nativeObjCopy));
     }
 
     /**
@@ -48,7 +50,7 @@ public class UsacParams {
     public UsacParams() {
         nativeObj = UsacParams_0();
         long nativeObjCopy = nativeObj;
-        org.opencv.core.CleanableMat.cleaner.register(this, () -> delete(nativeObjCopy));
+        CleanableMat.cleaner.register(this, () -> delete(nativeObjCopy));
     }
 
     // internal usage only

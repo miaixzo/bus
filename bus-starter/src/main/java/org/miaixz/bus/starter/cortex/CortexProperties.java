@@ -24,6 +24,7 @@ import java.time.Duration;
 import lombok.Getter;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.bind.ConstructorBinding;
 import org.springframework.boot.context.properties.bind.DefaultValue;
 import org.springframework.validation.annotation.Validated;
 
@@ -47,46 +48,6 @@ public class CortexProperties {
      * Whether the cortex integration is enabled.
      */
     private final boolean enabled;
-
-    /**
-     * Cortex server address used by configuration and watch clients.
-     */
-    private final String serverAddr;
-
-    /**
-     * Logical tenantId that isolates Cortex data and watches.
-     */
-    private final String tenantId;
-
-    /**
-     * Whether this application registers itself with Cortex during startup.
-     */
-    private final boolean autoRegister;
-
-    /**
-     * Whether remote Cortex settings are loaded into the Spring environment.
-     */
-    private final boolean settingEnabled;
-
-    /**
-     * Whether embedded Cortex server integration is enabled.
-     */
-    private final boolean serverEnabled;
-
-    /**
-     * Remote configuration group queried by the settings client.
-     */
-    private final String settingGroup;
-
-    /**
-     * Remote configuration data identifier queried by the settings client.
-     */
-    private final String settingDataId;
-
-    /**
-     * Maximum number of remote setting versions retained locally.
-     */
-    private final int maxSettingVersions;
 
     /**
      * Maximum active watches permitted within one tenantId.
@@ -119,7 +80,7 @@ public class CortexProperties {
     private final Bridge bridge;
 
     /**
-     * Request authorization settings for Cortex operations.
+     * Optional host access checks for Cortex operations; disabling them preserves business validation.
      */
     private final Guard guard;
 
@@ -129,22 +90,14 @@ public class CortexProperties {
     private final Audit audit;
 
     /**
-     * Version-history limits and retention settings.
+     * Read-only formal release registry settings.
      */
-    private final Version version;
+    private final Release release;
 
     /**
-     * Creates Cortex properties after validating limits for caching, watches, bridging, security, and history.
+     * Creates Cortex properties after validating cache expiry, watch limits and nested integration options.
      *
      * @param enabled             whether Cortex integration is enabled
-     * @param serverAddr          remote server address
-     * @param tenantId            client tenantId
-     * @param autoRegister        whether local APIs are registered automatically
-     * @param settingEnabled      whether setting integration is enabled
-     * @param serverEnabled       whether this application hosts Cortex server components
-     * @param settingGroup        default setting group
-     * @param settingDataId       default setting identifier
-     * @param maxSettingVersions  retained setting revision count
      * @param maxWatchesPerTenant watch registration limit per tenantId
      * @param watchExpire         watch registration expiry
      * @param cacheExpire         default Cortex cache expiry
@@ -153,32 +106,20 @@ public class CortexProperties {
      * @param bridge              bridge options
      * @param guard               guard options
      * @param audit               audit options
-     * @param version             version-registry options
+     * @param release             release-registry options
      */
-    public CortexProperties(@DefaultValue(Normal.FALSE) boolean enabled, @DefaultValue(Normal.EMPTY) String serverAddr,
-            @DefaultValue(Normal.EMPTY) String tenantId, @DefaultValue("true") boolean autoRegister,
-            @DefaultValue("true") boolean settingEnabled, @DefaultValue("false") boolean serverEnabled,
-            @DefaultValue("DEFAULT") String settingGroup, @DefaultValue(Normal.EMPTY) String settingDataId,
-            @DefaultValue("10") int maxSettingVersions, @DefaultValue("1000") int maxWatchesPerTenant,
+    public CortexProperties(@DefaultValue(Normal.FALSE) boolean enabled, @DefaultValue("1000") int maxWatchesPerTenant,
             @DefaultValue("24h") Duration watchExpire, @DefaultValue("1h") Duration cacheExpire, Options cache,
             @DefaultValue Watch watch, @DefaultValue Bridge bridge, @DefaultValue Guard guard,
-            @DefaultValue Audit audit, @DefaultValue Version version) {
-        if (maxSettingVersions <= 0 || maxWatchesPerTenant <= 0) {
-            throw new IllegalArgumentException("Cortex version and watch limits must be greater than zero");
+            @DefaultValue Audit audit, @DefaultValue Release release) {
+        if (maxWatchesPerTenant <= 0) {
+            throw new IllegalArgumentException("Cortex watch limits must be greater than zero");
         }
         if (watchExpire == null || watchExpire.isZero() || watchExpire.isNegative() || cacheExpire == null
                 || cacheExpire.isZero() || cacheExpire.isNegative()) {
             throw new IllegalArgumentException("Cortex expiry values must be greater than zero");
         }
         this.enabled = enabled;
-        this.serverAddr = serverAddr;
-        this.tenantId = tenantId;
-        this.autoRegister = autoRegister;
-        this.settingEnabled = settingEnabled;
-        this.serverEnabled = serverEnabled;
-        this.settingGroup = settingGroup;
-        this.settingDataId = settingDataId;
-        this.maxSettingVersions = maxSettingVersions;
         this.maxWatchesPerTenant = maxWatchesPerTenant;
         this.watchExpire = watchExpire;
         this.cacheExpire = cacheExpire;
@@ -187,40 +128,7 @@ public class CortexProperties {
         this.bridge = bridge == null ? new Bridge("pull-only", Normal.EMPTY, 3, Normal.EMPTY) : bridge;
         this.guard = guard == null ? new Guard(true, new Token()) : guard;
         this.audit = audit == null ? new Audit(false) : audit;
-        this.version = version == null ? new Version(false) : version;
-    }
-
-    /**
-     * Validates the server addr.
-     *
-     * @return required trimmed server address
-     */
-    public String requireServerAddr() {
-        if (StringKit.isBlank(serverAddr)) {
-            throw new IllegalStateException("bus.cortex.server-addr is required");
-        }
-        return serverAddr.trim();
-    }
-
-    /**
-     * Validates the tenantId.
-     *
-     * @return configured nonblank tenantId
-     */
-    public String requireTenant() {
-        if (StringKit.isBlank(tenantId)) {
-            throw new IllegalStateException("bus.cortex.tenant-id is required");
-        }
-        return tenantId.trim();
-    }
-
-    /**
-     * Validates the max setting versions.
-     *
-     * @return retained setting revision count
-     */
-    public int requireMaxSettingVersions() {
-        return maxSettingVersions;
+        this.release = release == null ? new Release(false) : release;
     }
 
     /**
@@ -255,15 +163,15 @@ public class CortexProperties {
      */
     @Override
     public String toString() {
-        return "CortexProperties[enabled=" + enabled + ", tenantId=" + tenantId + ", serverEnabled=" + serverEnabled
-                + ", maxSettingVersions=" + maxSettingVersions + ", maxWatchesPerTenant=" + maxWatchesPerTenant
-                + ", watchExpire=" + watchExpire + ", cacheExpire=" + cacheExpire + ", guard=***]";
+        return "CortexProperties[enabled=" + enabled + ", maxWatchesPerTenant=" + maxWatchesPerTenant + ", watchExpire="
+                + watchExpire + ", cacheExpire=" + cacheExpire + ", guard=***]";
     }
 
     /**
      * Watch integration options.
      *
      * @param loggingEnabled logging enabled
+     * @author Kimi Liu
      */
     public record Watch(boolean loggingEnabled) {
 
@@ -273,6 +181,7 @@ public class CortexProperties {
         public Watch() {
             this(false);
         }
+
     }
 
     /**
@@ -282,8 +191,10 @@ public class CortexProperties {
      * @param url        service endpoint URL
      * @param maxRetries max retries
      * @param source     source schema settings
+     * @author Kimi Liu
      */
-    public record Bridge(String mode, String url, int maxRetries, String source) {
+    public record Bridge(@DefaultValue("pull-only") String mode, @DefaultValue(Normal.EMPTY) String url,
+            @DefaultValue("3") int maxRetries, @DefaultValue(Normal.EMPTY) String source) {
 
         /**
          * Creates and validates bridge options.
@@ -335,6 +246,7 @@ public class CortexProperties {
         public String resolveSource() {
             return source;
         }
+
     }
 
     /**
@@ -342,8 +254,20 @@ public class CortexProperties {
      *
      * @param enabled whether the feature is enabled
      * @param token   guard token
+     * @author Kimi Liu
      */
-    public record Guard(boolean enabled, Token token) {
+    public record Guard(@DefaultValue("true") boolean enabled, @DefaultValue Token token) {
+
+        /**
+         * Binds the canonical guard options even when the convenience constructor is present.
+         *
+         * @param enabled whether optional access checks are enabled
+         * @param token   credential pre-validation options, or null to use defaults
+         */
+        @ConstructorBinding
+        public Guard {
+            token = token == null ? new Token() : token;
+        }
 
         /**
          * Creates guard defaults.
@@ -360,10 +284,13 @@ public class CortexProperties {
         public Token getToken() {
             return token;
         }
+
     }
 
     /**
      * Token guard binding type retained for the Cortex guard contract.
+     *
+     * @author Kimi Liu
      */
     public static class Token extends TokenGuardConfig {
 
@@ -373,12 +300,14 @@ public class CortexProperties {
         public Token() {
             super();
         }
+
     }
 
     /**
      * Audit integration options.
      *
      * @param enabled whether the feature is enabled
+     * @author Kimi Liu
      */
     public record Audit(boolean enabled) {
 
@@ -388,21 +317,34 @@ public class CortexProperties {
         public Audit() {
             this(false);
         }
+
     }
 
     /**
-     * Version registry options.
+     * Release registry options.
      *
      * @param enabled whether the feature is enabled
+     * @author Kimi Liu
      */
-    public record Version(boolean enabled) {
+    public record Release(boolean enabled) {
 
         /**
-         * Creates version defaults.
+         * Binds the release registry switch through the canonical record constructor.
+         *
+         * @param enabled whether release registry integration is enabled
          */
-        public Version() {
+        @ConstructorBinding
+        public Release(boolean enabled) {
+            this.enabled = enabled;
+        }
+
+        /**
+         * Creates release defaults.
+         */
+        public Release() {
             this(false);
         }
+
     }
 
 }

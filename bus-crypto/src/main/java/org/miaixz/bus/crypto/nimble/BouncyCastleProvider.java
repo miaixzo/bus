@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.crypto.nimble;
 
+import java.security.Provider;
+
 /**
  * Factory interface for creating {@link java.security.Provider} objects, specifically for Bouncy Castle. This interface
  * is designed to be loaded via SPI (Service Provider Interface) to allow for dynamic loading of Bouncy Castle
@@ -36,6 +38,6 @@ public interface BouncyCastleProvider {
      *
      * @return A {@link java.security.Provider} instance.
      */
-    java.security.Provider create();
+    Provider create();
 
 }

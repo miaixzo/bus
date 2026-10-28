@@ -367,6 +367,11 @@ public class BatchProvider extends BasicProvider {
      * @return the generated SQL
      */
     private static String buildBatchInsertOrReplace(TableMeta entity) {
+        if (hasInsertOnlyColumns(entity)) {
+            return "INSERT INTO " + entity.tableName() + " (" + insertColumnList(entity) + ") VALUES" + Symbol.LF
+                    + buildBatchRowValues(entity) + Symbol.LF + "ON CONFLICT DO UPDATE SET "
+                    + buildUpdateAssignments(entity, "EXCLUDED", Normal.EMPTY, false);
+        }
         return "INSERT OR REPLACE INTO " + entity.tableName() + " (" + insertColumnList(entity) + ") VALUES" + Symbol.LF
                 + buildBatchRowValues(entity);
     }
@@ -378,6 +383,9 @@ public class BatchProvider extends BasicProvider {
      * @return the generated SQL
      */
     private static String buildBatchMergeIntoKey(TableMeta entity) {
+        if (hasInsertOnlyColumns(entity)) {
+            return buildBatchMergeUsingValues(entity, false);
+        }
         return "MERGE INTO " + entity.tableName() + " (" + insertColumnList(entity) + ") KEY(" + keyColumnList(entity)
                 + ") VALUES" + Symbol.LF + buildBatchRowValues(entity);
     }
@@ -413,6 +421,11 @@ public class BatchProvider extends BasicProvider {
      * @return the generated SQL
      */
     private static String buildBatchInsertOrReplaceSelective(TableMeta entity) {
+        if (hasInsertOnlyColumns(entity)) {
+            return "INSERT INTO " + entity.tableName() + Symbol.LF + buildDynamicColumnList(entity, "list", Symbol.ZERO)
+                    + Symbol.LF + "VALUES" + Symbol.LF + buildBatchDynamicRows(entity) + Symbol.LF
+                    + "ON CONFLICT DO UPDATE SET " + buildSelectiveAssignments(entity, "EXCLUDED");
+        }
         return "INSERT OR REPLACE INTO " + entity.tableName() + Symbol.LF
                 + buildDynamicColumnList(entity, "list", Symbol.ZERO) + Symbol.LF + "VALUES" + Symbol.LF
                 + buildBatchDynamicRows(entity);
@@ -425,6 +438,9 @@ public class BatchProvider extends BasicProvider {
      * @return the generated SQL
      */
     private static String buildBatchMergeIntoKeySelective(TableMeta entity) {
+        if (hasInsertOnlyColumns(entity)) {
+            return buildBatchMergeUsingValues(entity, true);
+        }
         return "MERGE INTO " + entity.tableName() + Symbol.LF + buildDynamicColumnList(entity, "list", Symbol.ZERO)
                 + Symbol.LF + "KEY(" + keyColumnList(entity) + Symbol.PARENTHESE_RIGHT + Symbol.LF + "VALUES"
                 + Symbol.LF + buildBatchDynamicRows(entity);
@@ -456,6 +472,42 @@ public class BatchProvider extends BasicProvider {
     }
 
     /**
+     * Builds a native H2 MERGE whose matched branch preserves insert-only columns.
+     *
+     * @param entity    table metadata
+     * @param selective whether the batch uses a shared non-null insert shape
+     * @return native batch MERGE SQL
+     */
+    private static String buildBatchMergeUsingValues(TableMeta entity, boolean selective) {
+        StringBuilder shape = new StringBuilder();
+        if (selective) {
+            shape.append("<foreach collection=\"list\" item=\"item\">");
+            for (ColumnMeta column : entity.insertColumns()) {
+                if (!column.id()) {
+                    shape.append("<if test=\"(list[0].").append(column.property()).append(" != null) != (item.")
+                            .append(column.property()).append(" != null)\">")
+                            .append("${@org.miaixz.bus.core.lang.Assert@isTrue(false, '")
+                            .append("Selective batch insert columns must share the same non-null shape')}")
+                            .append("</if>");
+                }
+            }
+            shape.append("</foreach>");
+        }
+        String columns = selective ? buildDynamicColumnList(entity, "list", Symbol.ZERO)
+                : "(" + insertColumnList(entity) + ")";
+        String rows = "<foreach collection=\"list\" item=\"item\" separator=\",\">"
+                + buildMergeSource(entity, "item.", true) + "</foreach>";
+        String values = buildSourceReferenceList(entity, "source", selective, "list[0]");
+        return shape + "MERGE INTO " + entity.tableName() + " target" + Symbol.LF + "USING (VALUES " + rows
+                + ") source " + buildMergeSource(entity, Normal.EMPTY, false) + Symbol.LF + "ON ("
+                + buildMergeOnClause(entity, "target", "source") + ")" + Symbol.LF + "WHEN MATCHED THEN UPDATE SET "
+                + (selective ? buildSelectiveAssignments(entity, "SOURCE")
+                        : buildUpdateAssignments(entity, "SOURCE", "source", false))
+                + Symbol.LF + "WHEN NOT MATCHED THEN INSERT " + columns + " VALUES "
+                + (selective ? values : "(" + values + ")");
+    }
+
+    /**
      * Builds a dynamic update assignment list for selective batch UPSERT SQL.
      *
      * @param entity the table metadata
@@ -466,6 +518,12 @@ public class BatchProvider extends BasicProvider {
         StringBuilder sql = new StringBuilder();
         sql.append("<trim suffixOverrides=\",\">").append(Symbol.LF);
         for (ColumnMeta col : entity.updateColumns()) {
+            if ("SOURCE".equals(mode)) {
+                sql.append(col.column()).append(" = CASE WHEN source.").append(col.column())
+                        .append(" IS NULL THEN target.").append(col.column()).append(" ELSE source.")
+                        .append(col.column()).append(" END,").append(Symbol.LF);
+                continue;
+            }
             String condition = col.id() ? Normal.TRUE
                     : "list[0]" + Symbol.DOT + col.property() + Symbol.SPACE + Symbol.NE + Symbol.SPACE + Normal.NULL;
             sql.append("  <if test=\"").append(condition).append("\">").append(col.column()).append(Symbol.SPACE)

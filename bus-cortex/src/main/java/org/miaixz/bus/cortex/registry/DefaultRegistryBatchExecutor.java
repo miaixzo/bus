@@ -22,7 +22,9 @@ package org.miaixz.bus.cortex.registry;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.cortex.Assets;
 import org.miaixz.bus.cortex.Type;
 import org.miaixz.bus.cortex.builtin.batch.BatchOperation;
@@ -111,22 +113,26 @@ public class DefaultRegistryBatchExecutor implements RegistryBatchExecutor {
                 }
                 continue;
             }
-            Assets entry = operations.prepareEntry(operation, source);
+            Assets entry = source;
             try {
+                entry = Objects.requireNonNull(
+                        operations.prepareEntry(operation, source),
+                        "Prepared batch entry must not be null");
                 operations.enforce(
                         operation.getOperationType() == null ? "batch"
-                                : operation.getOperationType().name().toLowerCase(),
+                                : StringKit.toLowerCase(operation.getOperationType().name()),
                         RegistryIdentity.type(entry),
                         entry);
                 applyBatchEntry(operation, entry, result, operations, lookup);
             } catch (Exception e) {
+                Assets failed = entry == null ? source : entry;
                 result.recordFailure(
                         BatchResult.Failure.of(
-                                RegistryIdentity.type(entry),
-                                entry.getTenant_id(),
-                                entry.getId(),
-                                entry.getMethod(),
-                                entry.getVersion(),
+                                failed.getType() == null ? Type.API : Type.tryFromKey(failed.getType()).orElse(null),
+                                failed.getTenant_id(),
+                                failed.getId(),
+                                failed.getMethod(),
+                                failed.getVersion(),
                                 e.getMessage()));
                 if (!operations.continueOnError(operation)) {
                     break;
@@ -209,6 +215,8 @@ public class DefaultRegistryBatchExecutor implements RegistryBatchExecutor {
      * @param result     aggregate batch result
      * @param operations registry operations
      * @param lookup     optional preloaded lookup
+     * @throws IllegalArgumentException if the operation type is absent
+     * @throws IllegalStateException    if an existing entry conflicts with the FAIL_FAST policy
      */
     private void applyBatchEntry(
             BatchOperation operation,

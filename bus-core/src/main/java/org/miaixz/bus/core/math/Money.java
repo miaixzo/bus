@@ -61,7 +61,7 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class Money implements Serializable, Comparable<Money> {
 
     @Serial
-    private static final long serialVersionUID = 2852229719218L;
+    private static final long serialVersionUID = 2538125350001L;
 
     /**
      * A set of possible conversion factors between major and minor currency units.
