@@ -19,11 +19,18 @@
 */
 package org.miaixz.bus.image.nimble;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
+import org.opencv.core.CvType;
+
 import org.miaixz.bus.image.Tag;
 import org.miaixz.bus.image.galaxy.data.Attributes;
+import org.miaixz.bus.image.nimble.opencv.ImageCV;
 
 /**
- * Represents the StoredValue type.
+ * Interprets stored integer pixel samples and supplies shared lookup ramps for image rendering. Signed and unsigned
+ * sample interpretation does not allocate native images; lookup ramps are created only when requested.
  *
  * @author Kimi Liu
  */
@@ -37,10 +44,11 @@ public abstract class StoredValue {
     }
 
     /**
-     * Executes the value of operation.
+     * Selects signed or unsigned interpretation from the dataset's pixel representation and stored bit depth.
      *
-     * @param attrs the attrs.
-     * @return the operation result.
+     * @param attrs the dataset supplying Bits Stored, Bits Allocated and Pixel Representation
+     * @return the interpreter for the stored pixel values
+     * @throws NullPointerException if the dataset is null
      */
     public static StoredValue valueOf(Attributes attrs) {
         int bitsStored = attrs.getInt(Tag.BitsStored, 0);
@@ -50,26 +58,87 @@ public abstract class StoredValue {
     }
 
     /**
-     * Executes the value of operation.
+     * Interprets the stored bits of a pixel as a signed or unsigned integer sample.
      *
-     * @param pixel the pixel.
-     * @return the operation result.
+     * @param pixel the pixel bit pattern
+     * @return the interpreted sample value
      */
     public abstract int valueOf(int pixel);
 
     /**
-     * Executes the min value operation.
+     * Returns the smallest sample representable by this stored bit depth.
      *
-     * @return the operation result.
+     * @return the minimum stored sample value
      */
     public abstract int minValue();
 
     /**
-     * Executes the max value operation.
+     * Returns the largest sample representable by this stored bit depth.
      *
-     * @return the operation result.
+     * @return the maximum stored sample value
      */
     public abstract int maxValue();
+
+    /**
+     * Returns a shared one-row ramp for a single-channel 8-bit or 16-bit integer OpenCV type. Values follow unsigned
+     * bit-pattern order, so signed ramps contain nonnegative values followed by negative values. Unsupported types
+     * return null without initializing the cache or allocating a native image.
+     *
+     * @param cvType the complete OpenCV pixel type, including its channel count
+     * @return the cached ramp, or null for unsupported pixel types; callers must not modify or release the ramp
+     */
+    static ImageCV ramp(int cvType) {
+        if (CvType.channels(cvType) != 1 || CvType.depth(cvType) > CvType.CV_16S) {
+            return null;
+        }
+        return RampCache.RAMPS.computeIfAbsent(cvType, StoredValue::createRamp);
+    }
+
+    /**
+     * Allocates a ramp containing every bit pattern of a supported integer type in native lookup-table index order.
+     *
+     * @param cvType the single-channel 8-bit or 16-bit integer OpenCV type
+     * @return the new native image owned exclusively by the shared cache
+     */
+    private static ImageCV createRamp(int cvType) {
+        boolean sixteenBits = CvType.depth(cvType) >= CvType.CV_16U;
+        int size = sixteenBits ? 1 << 16 : 1 << 8;
+        var ramp = new ImageCV(1, size, cvType);
+        if (sixteenBits) {
+            short[] values = new short[size];
+            for (int i = 0; i < size; i++) {
+                values[i] = (short) i;
+            }
+            ramp.put(0, 0, values);
+        } else {
+            byte[] values = new byte[size];
+            for (int i = 0; i < size; i++) {
+                values[i] = (byte) i;
+            }
+            ramp.put(0, 0, values);
+        }
+        return ramp;
+    }
+
+    /**
+     * Lazily owns shared native ramps without initializing a cache during ordinary pixel interpretation.
+     *
+     * @author Kimi Liu
+     */
+    private static final class RampCache {
+
+        /**
+         * Shared ramps indexed by complete OpenCV type; cached images must never be modified or released by callers.
+         */
+        private static final Map<Integer, ImageCV> RAMPS = new ConcurrentHashMap<>();
+
+        /**
+         * Prevents construction of the cache holder.
+         */
+        private RampCache() {
+        }
+
+    }
 
     /**
      * Represents the Unsigned type.

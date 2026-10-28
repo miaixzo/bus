@@ -56,6 +56,7 @@ import org.miaixz.bus.image.galaxy.ImageProgress;
 import org.miaixz.bus.image.galaxy.ProgressStatus;
 import org.miaixz.bus.image.galaxy.SupplierEx;
 import org.miaixz.bus.image.galaxy.data.*;
+import org.miaixz.bus.image.galaxy.data.Attributes;
 import org.miaixz.bus.image.galaxy.io.ImageInputStream;
 import org.miaixz.bus.image.nimble.CIELab;
 import org.miaixz.bus.logger.Logger;
@@ -1116,14 +1117,32 @@ public class Builder {
     public static <T, E extends Exception> SupplierEx<T, E> memoize(SupplierEx<T, E> original) {
         return new SupplierEx<>() {
 
+            /**
+             * Whether the memoized supplier has completed its first invocation.
+             */
             boolean initialized;
+            /**
+             * Current supplier used to initialize or return the memoized result.
+             */
             SupplierEx<T, E> delegate = this::firstTime;
 
+            /**
+             * Returns the memoized value, initializing it through the delegate on the first call.
+             *
+             * @return the cached supplier value
+             * @throws E if the underlying value supplier fails
+             */
             @Override
             public T get() throws E {
                 return delegate.get();
             }
 
+            /**
+             * Initializes the memoized supplier once and publishes its cached result.
+             *
+             * @return the initialized supplier result
+             * @throws E if this operation cannot be completed
+             */
             private synchronized T firstTime() throws E {
                 if (!initialized) {
                     T value = original.get();
@@ -1217,10 +1236,10 @@ public class Builder {
             if (shutterShape.contains("RECTANGULAR") || shutterShape.contains("RECTANGLE")) {
                 Rectangle2D rect = new Rectangle2D.Double();
                 rect.setFrameFromDiagonal(
-                        dcm.getInt(Tag.ShutterLeftVerticalEdge, 0),
-                        dcm.getInt(Tag.ShutterUpperHorizontalEdge, 0),
-                        dcm.getInt(Tag.ShutterRightVerticalEdge, 0),
-                        dcm.getInt(Tag.ShutterLowerHorizontalEdge, 0));
+                        dcm.getInt(Tag.ShutterLeftVerticalEdge, 0) - 1,
+                        dcm.getInt(Tag.ShutterUpperHorizontalEdge, 0) - 1,
+                        dcm.getInt(Tag.ShutterRightVerticalEdge, 0) - 1,
+                        dcm.getInt(Tag.ShutterLowerHorizontalEdge, 0) - 1);
                 if (rect.isEmpty()) {
                     Logger.error(false, "Image", "Shutter rectangle has an empty area!");
                 } else {
@@ -1233,10 +1252,10 @@ public class Builder {
                     Ellipse2D ellipse = new Ellipse2D.Double();
                     double radius = dcm.getInt(Tag.RadiusOfCircularShutter, 0);
                     ellipse.setFrameFromCenter(
-                            centerOfCircularShutter[1],
-                            centerOfCircularShutter[0],
-                            centerOfCircularShutter[1] + radius,
-                            centerOfCircularShutter[0] + radius);
+                            centerOfCircularShutter[1] - 1.0,
+                            centerOfCircularShutter[0] - 1.0,
+                            centerOfCircularShutter[1] - 1.0 + radius,
+                            centerOfCircularShutter[0] - 1.0 + radius);
                     if (ellipse.isEmpty()) {
                         Logger.error(false, "Image", "Shutter ellipse has an empty area!");
                     } else {
@@ -1253,7 +1272,7 @@ public class Builder {
                 if (points != null && points.length >= 6) {
                     Polygon polygon = new Polygon();
                     for (int i = 0; i < points.length / 2; i++) {
-                        polygon.addPoint(points[i * 2 + 1], points[i * 2]);
+                        polygon.addPoint(points[i * 2 + 1] - 1, points[i * 2] - 1);
                     }
                     if (isPolygonValid(polygon)) {
                         if (shape == null) {
@@ -1631,6 +1650,11 @@ public class Builder {
 
     /**
      * Method to cut a section out of a string.
+     *
+     * @param s     the source string
+     * @param begin the inclusive start index
+     * @param end   the exclusive end index
+     * @return the selected substring bounded by the source length
      */
     private static String cut(String s, int begin, int end) {
         int l = s.length();
@@ -2057,5 +2081,10 @@ public class Builder {
             IoKit.close(dis);
         }
     }
+
+    /**
+     * Buffer size for DICOM file streams: large requests keep network shares to few round trips.
+     */
+    public static final int FILE_BUFFER_SIZE = 64 * 1024;
 
 }

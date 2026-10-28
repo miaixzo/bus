@@ -391,7 +391,19 @@ public class ImageIOHandler {
      */
     private static ImageCV createThumbnailFromSize(Mat sourceMat, Dimension targetSize) {
         return shouldScale(sourceMat, targetSize) ? ImageTransformer.scale(sourceMat, targetSize)
-                : ImageCV.fromMat(sourceMat);
+                : shareData(sourceMat);
+    }
+
+    /**
+     * Returns an independently releasable header sharing the source pixels.
+     *
+     * @param source the source matrix
+     * @return an image whose release does not release the caller's matrix header
+     */
+    private static ImageCV shareData(Mat source) {
+        ImageCV result = new ImageCV();
+        source.assignTo(result);
+        return result;
     }
 
     /**

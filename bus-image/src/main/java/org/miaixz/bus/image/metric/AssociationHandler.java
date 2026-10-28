@@ -78,7 +78,7 @@ public class AssociationHandler {
         if ((rq.getProtocolVersion() & 1) == 0)
             throw new AAssociateRJ(AAssociateRJ.RESULT_REJECTED_PERMANENT, AAssociateRJ.SOURCE_SERVICE_PROVIDER_ACSE,
                     AAssociateRJ.REASON_PROTOCOL_VERSION_NOT_SUPPORTED);
-        if (!rq.getApplicationContext().equals(UID.DICOMApplicationContext))
+        if (!UID.DICOMApplicationContext.uid.equals(rq.getApplicationContext()))
             throw new AAssociateRJ(AAssociateRJ.RESULT_REJECTED_PERMANENT, AAssociateRJ.SOURCE_SERVICE_USER,
                     AAssociateRJ.REASON_APP_CTX_NAME_NOT_SUPPORTED);
         ApplicationEntity ae = as.getApplicationEntity();

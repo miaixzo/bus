@@ -17,9 +17,29 @@
  ~                                                                           ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
+package org.miaixz.bus.image.nimble.opencv.lut;
+
+import java.util.List;
+
+import org.miaixz.bus.image.nimble.ImageAdapter;
+
 /**
- * Encodes and decodes DICOMweb protocol values.
+ * Source of the configured window/level presets appended after the presets carried by the image. The provider decides
+ * which presets apply to the image, including conditions such as the bit depth.
  *
+ * @see PresetWindowLevel#setModalityPresetProvider(ModalityPresetProvider)
  * @author Kimi Liu
  */
-package org.miaixz.bus.image.metric.web;
+@FunctionalInterface
+public interface ModalityPresetProvider {
+
+    /**
+     * Supplies configured presets for the selected image and presentation state.
+     *
+     * @return the presets for this image, never null
+     * @param adapter the image adapter providing frame-specific pixel and LUT metadata
+     * @param wl      the presentation-state and pixel-padding settings
+     */
+    List<PresetWindowLevel> getPresets(ImageAdapter adapter, WlPresentation wl);
+
+}

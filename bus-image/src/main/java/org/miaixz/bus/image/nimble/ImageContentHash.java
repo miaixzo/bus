@@ -27,9 +27,9 @@ import org.opencv.img_hash.*;
 /**
  * Algorithms to compare image content of two images.
  *
- * @author Kimi Liu
  * @see <a href="http://qtandopencv.blogspot.com/2016/06/introduction-to-image-hash-module-of.html">Hash for pixel
  *      data</a>
+ * @author Kimi Liu
  */
 public enum ImageContentHash {
 
@@ -109,9 +109,14 @@ public enum ImageContentHash {
         ImgHashBase hashAlgorithm = getAlgorithm();
         Mat inHash = new Mat();
         Mat outHash = new Mat();
-        hashAlgorithm.compute(imgIn, inHash);
-        hashAlgorithm.compute(imgOut, outHash);
-        return hashAlgorithm.compare(inHash, outHash);
+        try {
+            hashAlgorithm.compute(imgIn, inHash);
+            hashAlgorithm.compute(imgOut, outHash);
+            return hashAlgorithm.compare(inHash, outHash);
+        } finally {
+            inHash.release();
+            outHash.release();
+        }
     }
 
     /**

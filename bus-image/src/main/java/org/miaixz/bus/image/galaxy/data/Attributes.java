@@ -475,9 +475,8 @@ public class Attributes implements Serializable {
             SpecificCharacterSet cs = attrs.getSpecificCharacterSet();
             Set<SpecificCharacterSet> css = attrs.getSpecificCharacterSetsOfItems(new HashSet<>());
             cssOfItems.add(css);
-            commonCS = SpecificCharacterSet.common(
-                    commonCS != null ? SpecificCharacterSet.common(commonCS, cs) : cs,
-                    css);
+            commonCS = SpecificCharacterSet
+                    .common(commonCS != null ? SpecificCharacterSet.common(commonCS, cs) : cs, css);
         }
         for (int i = 0; i < attrsList.length; i++) {
             Attributes attrs = attrsList[i];

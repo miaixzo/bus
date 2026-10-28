@@ -423,7 +423,7 @@ public class DeIdentifier {
      */
     private void correct(Attributes attrs) {
         if (!options.contains(Option.RetainLongitudinalTemporalInformationFullDatesOption)
-                && UID.PositronEmissionTomographyImageStorage.equals(attrs.getString(Tag.SOPClassUID))) {
+                && UID.PositronEmissionTomographyImageStorage.uid.equals(attrs.getString(Tag.SOPClassUID))) {
             attrs.setString(Tag.SeriesDate, VR.DA, dummyValues.getString(Tag.SeriesDate));
             attrs.setString(Tag.SeriesTime, VR.TM, dummyValues.getString(Tag.SeriesTime));
         }
