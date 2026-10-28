@@ -7279,7 +7279,9 @@
         },
         {
           "name": "decodeStringValuesUsingSpecificCharacterSet",
-          "parameterTypes": []
+          "parameterTypes": [
+            "boolean"
+          ]
         },
         {
           "name": "diff",
@@ -8230,6 +8232,12 @@
           "name": "getSpecificCharacterSet",
           "parameterTypes": [
             "org.miaixz.bus.image.galaxy.data.VR"
+          ]
+        },
+        {
+          "name": "getSpecificCharacterSetsOfItems",
+          "parameterTypes": [
+            "java.util.Set"
           ]
         },
         {
@@ -12370,12 +12378,31 @@
     },
     {
       "type": "org.miaixz.bus.image.galaxy.data.SpecificCharacterSet",
+      "fields": [
+        {
+          "name": "UTF8"
+        }
+      ],
       "methods": [
         {
           "name": "<init>",
           "parameterTypes": [
             "org.miaixz.bus.image.galaxy.data.SpecificCharacterSet$Codec[]",
             "java.lang.String[]"
+          ]
+        },
+        {
+          "name": "common",
+          "parameterTypes": [
+            "org.miaixz.bus.image.galaxy.data.SpecificCharacterSet",
+            "org.miaixz.bus.image.galaxy.data.SpecificCharacterSet"
+          ]
+        },
+        {
+          "name": "common",
+          "parameterTypes": [
+            "org.miaixz.bus.image.galaxy.data.SpecificCharacterSet",
+            "java.util.Collection"
           ]
         },
         {
@@ -12400,6 +12427,12 @@
           "name": "contains",
           "parameterTypes": [
             "org.miaixz.bus.image.galaxy.data.SpecificCharacterSet"
+          ]
+        },
+        {
+          "name": "containedByAll",
+          "parameterTypes": [
+            "java.util.Collection"
           ]
         },
         {
@@ -12474,6 +12507,10 @@
         },
         {
           "name": "toCodes",
+          "parameterTypes": []
+        },
+        {
+          "name": "toString",
           "parameterTypes": []
         },
         {
