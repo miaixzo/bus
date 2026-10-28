@@ -31,7 +31,7 @@ import java.util.Objects;
 public class ValueSelector implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852275858733L;
+    private static final long serialVersionUID = 2556215800001L;
 
     /**
      * The attribute selector value.

@@ -37,7 +37,7 @@ import org.miaixz.bus.gitlab.support.JacksonJsonEnumCodec;
 public class ImportStatus implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852257150210L;
+    private static final long serialVersionUID = 2550652118001L;
 
     /**
      * The id value.

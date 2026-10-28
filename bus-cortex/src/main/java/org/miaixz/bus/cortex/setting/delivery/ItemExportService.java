@@ -19,61 +19,70 @@
 */
 package org.miaixz.bus.cortex.setting.delivery;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.Objects;
 
-import org.miaixz.bus.cortex.setting.curator.ItemCuratorService;
-import org.miaixz.bus.cortex.setting.item.ItemExposure;
-import org.miaixz.bus.cortex.setting.item.ItemFormat;
-import org.miaixz.bus.cortex.setting.item.ItemScope;
+import org.miaixz.bus.cortex.guard.CortexGuard;
+import org.miaixz.bus.cortex.setting.SettingProvider;
+import org.miaixz.bus.cortex.setting.curator.ItemService;
+import org.miaixz.bus.cortex.setting.item.ItemCodec;
+import org.miaixz.bus.cortex.setting.item.ItemQuery;
 
 /**
- * Export service for resolved setting scopes.
+ * Explicit safe current-definition export and published-value export with optional host access checks.
  *
  * @author Kimi Liu
  */
-public class ItemExportService {
+public final class ItemExportService {
 
     /**
-     * Curator application service used to query and resolve export candidates.
+     * Current safe views.
      */
-    private final ItemCuratorService settingCuratorService;
+    private final ItemService items;
+    /**
+     * Published content authority.
+     */
+    private final ItemQueryService published;
+    /**
+     * Optional host export policy.
+     */
+    private final CortexGuard guard;
 
     /**
-     * Creates an ItemExportService.
+     * Creates explicit export boundaries.
      *
-     * @param settingCuratorService curator application service
+     * @param items     current views
+     * @param published formal content
+     * @param guard     optional host access policy
      */
-    public ItemExportService(ItemCuratorService settingCuratorService) {
-        this.settingCuratorService = settingCuratorService;
+    public ItemExportService(ItemService items, ItemQueryService published, CortexGuard guard) {
+        this.items = Objects.requireNonNull(items);
+        this.published = Objects.requireNonNull(published);
+        this.guard = guard;
     }
 
     /**
-     * Exports resolved values for the given scope.
+     * Exports masked current definition; never ciphertext internals.
      *
-     * @param scope export scope
-     * @return resolved export payload
+     * @param context operation coordinates
+     * @param item    exact source
+     * @return safe canonical definition or absent
      */
-    public Map<String, String> export(ItemScope scope) {
-        ItemScope prepared = scope == null ? new ItemScope() : scope;
-        prepared = settingCuratorService == null ? prepared : settingCuratorService.prepare(prepared);
-        return settingCuratorService.export(prepared, ItemExposure.PUBLIC);
+    public String current(SettingProvider.Context context, String item) {
+        context.check(guard, "export", "item", item);
+        ItemCodec.Document view = items.view(context, item);
+        return view == null ? null : new ItemCodec(64, 100000).content(view);
     }
 
     /**
-     * Exports resolved values in a format-oriented view.
+     * Exports published values with optional host sensitive-export policy.
      *
-     * @param scope  scope
-     * @param format export format
-     * @return formatted export payload
+     * @param context operation coordinates
+     * @param query   exact application request
+     * @return published business values
      */
-    public Map<String, Object> export(ItemScope scope, ItemFormat format) {
-        Map<String, String> exported = export(scope);
-        Map<String, Object> payload = new LinkedHashMap<>();
-        payload.put("format", format == null ? ItemFormat.PROPERTIES : format);
-        payload.put("values", exported);
-        payload.put("count", exported.size());
-        return payload;
+    public String published(SettingProvider.Context context, ItemQuery query) {
+        context.check(guard, "export-sensitive", "app", query.getApp_id());
+        return published.get(context, query);
     }
 
 }

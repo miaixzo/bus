@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.auth.source.vendor.facebook;
 
+import java.math.BigDecimal;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
@@ -166,9 +167,9 @@ public class FacebookSourceAdapter implements VendorAdapter {
             optionalNonBlank(error, "error_user_msg");
             optionalNonBlank(error, "fbtrace_id");
             final Map<String, JsonValue> details = new LinkedHashMap<>();
-            details.put("code", new JsonValue.NumberValue(java.math.BigDecimal.valueOf(code)));
+            details.put("code", new JsonValue.NumberValue(BigDecimal.valueOf(code)));
             if (subcode != null) {
-                details.put("subcode", new JsonValue.NumberValue(java.math.BigDecimal.valueOf(subcode)));
+                details.put("subcode", new JsonValue.NumberValue(BigDecimal.valueOf(subcode)));
             }
             if (status == Http.Status.TOO_MANY_REQUESTS || status >= Http.Status.INTERNAL_SERVER_ERROR
                     || transientError(code)) {

@@ -41,7 +41,7 @@ import org.miaixz.bus.crypto.builtin.symmetric.Crypto;
 public class TDEA extends Crypto {
 
     @Serial
-    private static final long serialVersionUID = 2852290890720L;
+    private static final long serialVersionUID = 2539293951168L;
 
     /**
      * Constructs a TDEA encryptor/decryptor with default settings: DESede/ECB/PKCS5Padding. A random key is generated.

@@ -36,7 +36,7 @@ import org.miaixz.bus.image.Tag;
 public class AttributeSelector implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852259019856L;
+    private static final long serialVersionUID = 2556168000001L;
 
     /**
      * The minimum string length for an item pointer, used for parsing.

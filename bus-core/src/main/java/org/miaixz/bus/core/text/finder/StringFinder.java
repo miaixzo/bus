@@ -38,7 +38,7 @@ import org.miaixz.bus.core.text.CharsBacker;
 public class StringFinder extends TextFinder {
 
     @Serial
-    private static final long serialVersionUID = 2852237656798L;
+    private static final long serialVersionUID = 2538313668001L;
 
     /**
      * The string to find.

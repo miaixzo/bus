@@ -102,12 +102,23 @@ public class SolarMonth extends AbstractMonth {
      * @return the number of days in this month
      */
     public int getDayCount() {
+        return getDayCount(year, month);
+    }
+
+    /**
+     * Gets the number of days in the given month, accounting for the Gregorian calendar reform.
+     *
+     * @param year  the solar year
+     * @param month the solar month (1-12)
+     * @return the number of days
+     */
+    public static int getDayCount(int year, int month) {
         if (1582 == year && 10 == month) {
             return 21;
         }
-        int d = DAYS[getIndexInYear()];
+        int d = DAYS[month - 1];
         // Leap year adds one day to February
-        if (2 == month && getSolarYear().isLeap()) {
+        if (2 == month && SolarYear.isLeap(year)) {
             d++;
         }
         return d;

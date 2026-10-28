@@ -40,7 +40,7 @@ import org.miaixz.bus.gitlab.support.JacksonJsonEnumCodec;
 public class Variable implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852283021997L;
+    private static final long serialVersionUID = 2551280000001L;
 
     /**
      * The key value.

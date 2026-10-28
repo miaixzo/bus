@@ -38,6 +38,7 @@ import org.miaixz.bus.auth.worker.loader.BlueprintLoader;
 import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.extra.json.JsonValue;
@@ -252,9 +253,8 @@ public class AuthService {
         VendorManifest.Variant selected = locator.require(vendor, variant);
         requireStandard(vendor, selected);
         return new Vendor.Configuration(vendor, variant, client.clientId(),
-                new SecretLease(client.clientSecret().toCharArray()),
-                org.miaixz.bus.core.lang.Optional.ofNullable(client.redirectUri()), client.scopes(),
-                new JsonValue.ObjectValue(Map.of()));
+                new SecretLease(client.clientSecret().toCharArray()), Optional.ofNullable(client.redirectUri()),
+                client.scopes(), new JsonValue.ObjectValue(Map.of()));
     }
 
     /**

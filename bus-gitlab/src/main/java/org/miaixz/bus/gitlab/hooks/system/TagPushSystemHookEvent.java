@@ -32,7 +32,7 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class TagPushSystemHookEvent extends AbstractPushEvent implements SystemHookEvent {
 
     @Serial
-    private static final long serialVersionUID = 2852229727686L;
+    private static final long serialVersionUID = 2550066122195L;
 
     /**
      * The tag push event value.

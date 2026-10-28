@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.health;
 
+import java.io.Serial;
 import java.util.concurrent.TimeUnit;
 
 import org.miaixz.bus.core.center.function.SupplierX;
@@ -98,6 +99,9 @@ public class Memoizer {
     public static <T> SupplierX<T> memoize(SupplierX<T> original, long ttlNanos) {
         // Adapted from Guava's ExpiringMemoizingSupplier
         return new SupplierX<>() {
+
+            @Serial
+            private static final long serialVersionUID = 2555609201801L;
 
             /**
              * The original supplier.

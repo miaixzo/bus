@@ -19,13 +19,12 @@
 */
 package org.miaixz.bus.cortex.setting.item;
 
-import lombok.Builder.Default;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 /**
- * Lookup criteria for a setting item.
+ * Application-qualified published configuration query; never an editable Item.
  *
  * @author Kimi Liu
  */
@@ -35,42 +34,15 @@ import lombok.experimental.SuperBuilder;
 public class ItemQuery extends ItemScope {
 
     /**
-     * Stable setting code.
+     * Exact application-local configuration alias or code.
      */
     private String code;
 
     /**
-     * Value returned when no item can be resolved.
-     */
-    private String fallbackValue;
-
-    /**
-     * Explicitly opts into runtime overlays; governed delivery uses durable revisions by default.
-     */
-    @Default
-    private boolean preferOverlay = false;
-
-    /**
-     * Runtime request attributes used by delivery policies.
-     */
-    private GrayRequestContext requestContext;
-
-    /**
-     * Creates an empty item query.
+     * Creates an empty query.
      */
     public ItemQuery() {
-        this.preferOverlay = false;
-    }
-
-    /**
-     * Returns exact lookup coordinates; application filtering for shared items uses references.
-     *
-     * @return item coordinates containing tenant, ownership scope, application, code, and kind
-     */
-    public Item coordinates() {
-        return Item.builder().tenant_id(getTenant_id()).scope(getScope())
-                .app_id(Item.Scope.SHARED.name().equals(getScope()) ? null : getApp_id()).code(code).kind(getKind())
-                .build();
+        // No initialization required.
     }
 
 }

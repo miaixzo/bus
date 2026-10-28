@@ -145,7 +145,7 @@ public class ModifierKit {
      * @return `true` if public.
      */
     public static boolean isPublic(final Member member) {
-        return null != member && java.lang.reflect.Modifier.isPublic(member.getModifiers());
+        return null != member && Modifier.isPublic(member.getModifiers());
     }
 
     /**
@@ -155,7 +155,7 @@ public class ModifierKit {
      * @return `true` if public.
      */
     public static boolean isPublic(final Class<?> clazz) {
-        return null != clazz && java.lang.reflect.Modifier.isPublic(clazz.getModifiers());
+        return null != clazz && Modifier.isPublic(clazz.getModifiers());
     }
 
     /**
@@ -165,7 +165,7 @@ public class ModifierKit {
      * @return `true` if private.
      */
     public static boolean isPrivate(final Member member) {
-        return null != member && java.lang.reflect.Modifier.isPrivate(member.getModifiers());
+        return null != member && Modifier.isPrivate(member.getModifiers());
     }
 
     /**
@@ -175,7 +175,7 @@ public class ModifierKit {
      * @return `true` if private.
      */
     public static boolean isPrivate(final Class<?> clazz) {
-        return null != clazz && java.lang.reflect.Modifier.isPrivate(clazz.getModifiers());
+        return null != clazz && Modifier.isPrivate(clazz.getModifiers());
     }
 
     /**
@@ -185,7 +185,7 @@ public class ModifierKit {
      * @return `true` if static.
      */
     public static boolean isStatic(final Member member) {
-        return null != member && java.lang.reflect.Modifier.isStatic(member.getModifiers());
+        return null != member && Modifier.isStatic(member.getModifiers());
     }
 
     /**
@@ -195,7 +195,7 @@ public class ModifierKit {
      * @return `true` if static.
      */
     public static boolean isStatic(final Class<?> clazz) {
-        return null != clazz && java.lang.reflect.Modifier.isStatic(clazz.getModifiers());
+        return null != clazz && Modifier.isStatic(clazz.getModifiers());
     }
 
     /**
@@ -225,7 +225,7 @@ public class ModifierKit {
      * @return `true` if abstract.
      */
     public static boolean isAbstract(final Member member) {
-        return null != member && java.lang.reflect.Modifier.isAbstract(member.getModifiers());
+        return null != member && Modifier.isAbstract(member.getModifiers());
     }
 
     /**
@@ -235,7 +235,7 @@ public class ModifierKit {
      * @return `true` if abstract.
      */
     public static boolean isAbstract(final Class<?> clazz) {
-        return null != clazz && java.lang.reflect.Modifier.isAbstract(clazz.getModifiers());
+        return null != clazz && Modifier.isAbstract(clazz.getModifiers());
     }
 
     /**
@@ -293,7 +293,7 @@ public class ModifierKit {
 
         try {
             modifiersField.setAccessible(true);
-            modifiersField.setInt(field, field.getModifiers() & ~java.lang.reflect.Modifier.FINAL);
+            modifiersField.setInt(field, field.getModifiers() & ~Modifier.FINAL);
         } catch (final IllegalAccessException e) {
             throw new InternalException(e, "IllegalAccess for [{}.{}]", field.getDeclaringClass(), field.getName());
         }

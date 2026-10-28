@@ -39,7 +39,7 @@ import org.miaixz.bus.extra.image.ImageKit;
 public class LineProvider extends AbstractProvider {
 
     @Serial
-    private static final long serialVersionUID = 2852291851365L;
+    private static final long serialVersionUID = 2553966802909L;
 
     /**
      * Constructor with default 5-character code and 150 interfering lines.

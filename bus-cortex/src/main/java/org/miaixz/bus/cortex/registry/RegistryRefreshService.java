@@ -198,8 +198,8 @@ public class RegistryRefreshService {
      * Resolves the first non-null result produced while scanning all supported types.
      *
      * @param criteria base criteria
-     * @param resolver type-specific resolver
      * @param <T>      resolved value type
+     * @param resolver type-specific resolver
      * @return first non-null result or {@code null}
      */
     private <T> T firstAcrossTypes(Vector criteria, FunctionX<Vector, T> resolver) {
@@ -217,6 +217,7 @@ public class RegistryRefreshService {
      *
      * @param type target registry type
      * @return matching concrete registry
+     * @throws IllegalArgumentException if the type has no supported refresh registry
      */
     private StoreBackedRegistry<? extends Assets> registry(Type type) {
         Type effective = type == null ? Type.API : type;

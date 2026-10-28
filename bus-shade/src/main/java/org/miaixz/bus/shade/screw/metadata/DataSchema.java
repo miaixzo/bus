@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.shade.screw.metadata;
 
+import java.io.Serial;
+
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -33,6 +35,9 @@ import lombok.Setter;
 @Setter
 @EqualsAndHashCode(callSuper = true)
 public class DataSchema extends DatabaseSchema {
+
+    @Serial
+    private static final long serialVersionUID = 2552893500001L;
 
     /**
      * The title of the generated document.

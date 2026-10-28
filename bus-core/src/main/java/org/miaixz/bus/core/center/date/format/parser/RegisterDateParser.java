@@ -37,7 +37,7 @@ import org.miaixz.bus.core.xyz.ListKit;
 public class RegisterDateParser implements DateParser, Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852256978098L;
+    private static final long serialVersionUID = 2535680500001L;
 
     /**
      * Singleton instance of {@code RegisterDateParser}.

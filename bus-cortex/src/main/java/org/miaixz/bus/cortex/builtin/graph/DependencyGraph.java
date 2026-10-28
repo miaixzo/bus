@@ -57,23 +57,23 @@ public class DependencyGraph {
     /**
      * Returns the direct upstream dependencies of the given service.
      *
-     * @param serviceId service identifier
+     * @param assetId service identifier
      * @return set of upstream service IDs
      */
-    public Set<String> getUpstream(String serviceId) {
-        return Collections.unmodifiableSet(edges.getOrDefault(serviceId, Collections.emptySet()));
+    public Set<String> getUpstream(String assetId) {
+        return Collections.unmodifiableSet(edges.getOrDefault(assetId, Collections.emptySet()));
     }
 
     /**
      * Returns all services that directly depend on the given service.
      *
-     * @param serviceId service identifier
+     * @param assetId service identifier
      * @return set of downstream service IDs
      */
-    public Set<String> getDownstream(String serviceId) {
+    public Set<String> getDownstream(String assetId) {
         Set<String> result = new HashSet<>();
         for (Map.Entry<String, Set<String>> entry : edges.entrySet()) {
-            if (entry.getValue().contains(serviceId)) {
+            if (entry.getValue().contains(assetId)) {
                 result.add(entry.getKey());
             }
         }

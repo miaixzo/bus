@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.auth.source.vendor.coding;
 
+import java.math.BigDecimal;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
@@ -318,7 +319,7 @@ public class CodingSourceAdapter implements VendorAdapter {
     private static <T> Outcome<T> rejected(final long code, final String description) {
         return Outcome.rejected(
                 new Outcome.Failure(ErrorCode._400, description, new JsonValue.ObjectValue(
-                        Map.of("code", new JsonValue.NumberValue(java.math.BigDecimal.valueOf(code))))));
+                        Map.of("code", new JsonValue.NumberValue(BigDecimal.valueOf(code))))));
     }
 
     /**

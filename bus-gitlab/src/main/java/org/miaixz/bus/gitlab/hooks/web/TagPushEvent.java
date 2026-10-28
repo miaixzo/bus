@@ -32,7 +32,7 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class TagPushEvent extends AbstractPushEvent implements Event {
 
     @Serial
-    private static final long serialVersionUID = 2852233179805L;
+    private static final long serialVersionUID = 2550118029531L;
 
     /**
      * The x gitlab event value.

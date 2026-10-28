@@ -41,7 +41,7 @@ import org.miaixz.bus.notify.nimble.AbstractProvider;
 public class QiniuSmsProvider extends AbstractProvider<QiniuNotice, Context> {
 
     @Serial
-    private static final long serialVersionUID = -202510031218L;
+    private static final long serialVersionUID = 2559803150001L;
 
     /**
      * Constructs a {@code QiniuSmsProvider} with the given context.

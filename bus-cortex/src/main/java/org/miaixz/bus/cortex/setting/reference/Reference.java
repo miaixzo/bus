@@ -19,19 +19,18 @@
 */
 package org.miaixz.bus.cortex.setting.reference;
 
+import java.io.Serial;
+
+import jakarta.persistence.Lob;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 import org.miaixz.bus.core.basic.entity.Tenant;
-import org.miaixz.bus.cortex.setting.item.ItemNormalizer;
 
 /**
- * Directed relationship between service-center resources within one tenant.
- * <p>
- * Shared configuration references use {@link Type#ITEM_APP}; application-owned items use their own application
- * identifier instead of an additional relationship. Rollout application selection uses {@link Type#ROLLOUT_APP}, while
- * configuration membership uses {@link Type#ROLLOUT_ITEM}.
+ * Current configuration-to-application ownership or consumption, including application-local usage options.
  *
  * @author Kimi Liu
  */
@@ -40,104 +39,109 @@ import org.miaixz.bus.cortex.setting.item.ItemNormalizer;
 @SuperBuilder
 public class Reference extends Tenant {
 
+    @Serial
+    private static final long serialVersionUID = 2558921258328L;
+
     /**
-     * Source resource identifier: a shared item for ITEM_APP, or a rollout for ROLLOUT_APP and ROLLOUT_ITEM.
+     * Identifier of the source configuration item.
      */
     private String source_id;
+
     /**
-     * Target resource identifier: an application for ITEM_APP and ROLLOUT_APP, or an item for ROLLOUT_ITEM.
+     * Identifier of the target application.
      */
     private String target_id;
-    /**
-     * Relationship type name from {@link Type}.
-     */
-    private String type;
 
     /**
-     * Application-local name of the referenced shared configuration.
-     */
-    private String alias;
-
-    /**
-     * Follow policy for ITEM_APP; absent values mean LATEST.
-     */
-    private String strategy;
-
-    /**
-     * Immutable revision identifier required for FIXED references.
+     * Optional exact published revision pin; null selects the current definition when the next rollout is frozen.
      */
     private String revision_id;
 
     /**
-     * Monotonic relationship edition used for compare-and-set updates.
+     * Relationship category stored as {@link Type#ITEM_APP} or {@link Type#ITEM_OWNER}.
+     */
+    private String type;
+
+    /**
+     * Reference alias within the target application.
+     */
+    private String alias;
+
+    /**
+     * Optimistic concurrency counter for the relationship.
      */
     private Long edition;
 
     /**
-     * Supported shared-reference follow policies.
+     * Optional literal root property under which the effective configuration is wrapped.
      */
-    public enum Strategy {
-        /**
-         * Follow the latest published revision of the shared item.
-         */
-        LATEST,
-        /**
-         * Remain pinned to an explicit immutable revision.
-         */
-        FIXED
-    }
+    private String prefix;
 
     /**
-     * Validates coordinates and prevents release membership from carrying reference-only options.
+     * Application override policy: {@code NONE}, {@code KEYS} or {@code ALL}.
      */
-    public Reference validate() {
-        ItemNormalizer.requireTenant(getTenant_id());
-        if (source_id == null || source_id.isBlank() || target_id == null || target_id.isBlank()) {
-            throw new IllegalArgumentException("Relationship endpoints are required");
-        }
-        if (type == null || type.isBlank()) {
-            throw new IllegalArgumentException("Relationship type is required");
-        }
-        Type relation = Type.valueOf(type);
-        if (relation == Type.ITEM_APP) {
-            Strategy policy = strategy == null ? Strategy.LATEST : Strategy.valueOf(strategy);
-            if (alias == null || alias.isBlank()) {
-                throw new IllegalArgumentException("Shared references require an application-local alias");
-            }
-            if ((policy == Strategy.FIXED) != (revision_id != null && !revision_id.isBlank())) {
-                throw new IllegalArgumentException("Only FIXED references require a revision identifier");
-            }
-        } else if (alias != null || strategy != null || revision_id != null) {
-            throw new IllegalArgumentException("Release membership cannot contain shared-reference options");
-        }
-        return this;
-    }
+    private String override;
 
     /**
-     * Creates an empty relationship.
+     * JSON array of strict JSON Pointers that the application may override.
+     */
+    @Lob
+    private String keys;
+
+    /**
+     * Protected override object for this relationship; sensitive values must not be stored as plaintext.
+     */
+    @Lob
+    private String overlay;
+
+    /**
+     * Creates an empty configuration-to-application relationship.
      */
     public Reference() {
         // No initialization required.
     }
 
     /**
-     * Supported relationship types.
+     * Derives the selection strategy from the presence of an exact published revision pin.
+     *
+     * @return strategy for selecting a fixed revision or the current definition
+     */
+    public Strategy followPolicy() {
+        return revision_id == null ? Strategy.LATEST : Strategy.FIXED;
+    }
+
+    /**
+     * Revision selection strategies derived from the relationship rather than persisted separately.
+     *
+     * @author Kimi Liu
+     */
+    public enum Strategy {
+        /**
+         * Selects the current definition when the next rollout is frozen.
+         */
+        LATEST,
+        /**
+         * Selects the exact published revision when the next rollout is frozen.
+         */
+        FIXED
+
+    }
+
+    /**
+     * Current ownership and consumption relationship categories.
      *
      * @author Kimi Liu
      */
     public enum Type {
         /**
-         * Associates a shared configuration item with an application that references it.
+         * Application consumption of a shared configuration item.
          */
         ITEM_APP,
         /**
-         * Associates a rollout with an application explicitly selected for that rollout.
+         * Exclusive application ownership of a configuration item.
          */
-        ROLLOUT_APP,
-        /**
-         * Associates a rollout with an item.
-         */
-        ROLLOUT_ITEM
+        ITEM_OWNER
+
     }
 
 }

@@ -33,7 +33,7 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class Snippet implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852281375272L;
+    private static final long serialVersionUID = 2551220960606L;
 
     /**
      * The author value.

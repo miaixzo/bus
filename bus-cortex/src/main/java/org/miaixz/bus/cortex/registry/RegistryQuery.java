@@ -29,7 +29,7 @@ import org.miaixz.bus.cortex.Type;
 import org.miaixz.bus.cortex.builtin.Selector;
 
 /**
- * Internal registry query scope converted from the public {@code Vector} compatibility entry point.
+ * Internal registry query scope converted from the public {@code Vector} entry point.
  *
  * @author Kimi Liu
  */
@@ -78,9 +78,9 @@ public class RegistryQuery {
     private List<Selector> selectors;
 
     /**
-     * Desired runtime state.
+     * Desired runtime status.
      */
-    private String state;
+    private Integer status;
 
     /**
      * Whether disabled entries should be included.

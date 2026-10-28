@@ -43,7 +43,7 @@ public class Mount {
     /**
      * The MOUNT_PATTERN constant.
      */
-    private static final Pattern MOUNT_PATTERN = Pattern.compile("/dev/(\\S+p\\d+) on (\\S+) .*");
+    private static final Pattern MOUNT_PATTERN = Pattern.compile("/dev/(\\S+) on (\\S+) .*");
 
     /**
      * Creates a new Mount instance.

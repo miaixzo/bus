@@ -38,7 +38,7 @@ import org.miaixz.bus.core.center.function.SupplierX;
 public class ListValueMap<K, V> extends AbstractCollValueMap<K, V> {
 
     @Serial
-    private static final long serialVersionUID = 2852277598332L;
+    private static final long serialVersionUID = 2535923280001L;
 
     /**
      * Constructs a new {@code ListValueMap} using the specified map factory. The inner collections for values will be

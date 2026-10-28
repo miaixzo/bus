@@ -31,7 +31,7 @@ import java.io.Serial;
 public class CRC16Modbus extends CRC16Checksum {
 
     @Serial
-    private static final long serialVersionUID = 2852279670851L;
+    private static final long serialVersionUID = 2536521650001L;
 
     /**
      * The polynomial used in the CRC16-Modbus calculation. It is the bit-reversed form of 0x8005.

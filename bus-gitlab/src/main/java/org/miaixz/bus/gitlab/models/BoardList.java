@@ -32,7 +32,7 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class BoardList implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852238305607L;
+    private static final long serialVersionUID = 2550225211501L;
 
     /**
      * The id value.

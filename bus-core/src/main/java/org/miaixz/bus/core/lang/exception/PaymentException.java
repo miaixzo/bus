@@ -31,7 +31,7 @@ import org.miaixz.bus.core.basic.normal.Errors;
 public class PaymentException extends UncheckedException {
 
     @Serial
-    private static final long serialVersionUID = 2852263028577L;
+    private static final long serialVersionUID = 2536865000001L;
 
     /**
      * Constructs a new PaymentException with no detail message.

@@ -38,7 +38,7 @@ import org.miaixz.bus.gitlab.support.JacksonJsonEnumCodec;
 public class IterationFilter implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852259338991L;
+    private static final long serialVersionUID = 2550800000001L;
 
     /**
      * Return opened, upcoming, current, closed, or all iterations.

@@ -20,16 +20,23 @@
 package org.miaixz.bus.cortex.setting.secret.provider;
 
 import java.net.URI;
-import java.nio.charset.StandardCharsets;
 import java.time.Clock;
 import java.time.Instant;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
+import org.miaixz.bus.core.center.regex.Pattern;
+import org.miaixz.bus.core.lang.Algorithm;
+import org.miaixz.bus.core.lang.Charset;
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.CryptoException;
+import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.xyz.HexKit;
+import org.miaixz.bus.core.xyz.PatternKit;
 import org.miaixz.bus.cortex.setting.secret.SecretContext;
 import org.miaixz.bus.cortex.setting.secret.SecretMaterial;
 import org.miaixz.bus.cortex.setting.secret.SecretProvider;
@@ -39,6 +46,8 @@ import org.miaixz.bus.fabric.protocol.http.HttpX;
 
 /**
  * Direct Huawei Cloud CSMS ShowSecretVersion using SDK-HMAC-SHA256 (no signing SDK).
+ *
+ * @author Kimi Liu
  */
 public final class HuaweiSecretProvider implements SecretProvider {
 
@@ -136,7 +145,7 @@ public final class HuaweiSecretProvider implements SecretProvider {
      */
     HuaweiSecretProvider(URI endpoint, String projectId, long generation, CloudCredentials.Source credentials,
             Supplier<HttpX.Builder> http, Clock clock) {
-        if (projectId == null || !projectId.matches("[a-fA-F0-9]{32}") || generation < 0) {
+        if (projectId == null || !PatternKit.isMatch(Pattern.get("[a-fA-F0-9]{32}", 0), projectId) || generation < 0) {
             throw new IllegalArgumentException("Invalid Huawei connection");
         }
         this.endpoint = CloudProtocol.endpoint(endpoint);
@@ -160,25 +169,25 @@ public final class HuaweiSecretProvider implements SecretProvider {
     static Map<String, String> sign(URI uri, String projectId, CloudCredentials identity, Instant instant) {
         String timestamp = DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss'Z'").withZone(ZoneOffset.UTC).format(instant);
         TreeMap<String, String> headers = new TreeMap<>();
-        headers.put("content-type", "application/json");
+        headers.put("content-type", MediaType.APPLICATION_JSON);
         headers.put("host", CloudProtocol.host(uri));
         headers.put("x-project-id", projectId);
         headers.put("x-sdk-date", timestamp);
         if (identity.token() != null) {
             headers.put("x-security-token", identity.token());
         }
-        String names = String.join(";", headers.keySet());
-        String canonicalHeaders = headers.entrySet().stream().map(e -> e.getKey() + ":" + e.getValue().trim() + "\n")
-                .collect(java.util.stream.Collectors.joining());
+        String names = String.join(Symbol.SEMICOLON, headers.keySet());
+        String canonicalHeaders = headers.entrySet().stream()
+                .map(e -> e.getKey() + Symbol.COLON + e.getValue().trim() + Symbol.LF).collect(Collectors.joining());
         // Input is a validated CSMS read path: no arbitrary query or pre-encoded user component.
-        String path = uri.getRawPath().endsWith("/") ? uri.getRawPath() : uri.getRawPath() + "/";
-        String canonical = "GET\n" + path + "\n\n" + canonicalHeaders + "\n" + names + "\n"
-                + CloudProtocol.hash(new byte[0]);
-        String toSign = "SDK-HMAC-SHA256\n" + timestamp + "\n"
-                + CloudProtocol.hash(canonical.getBytes(StandardCharsets.UTF_8));
-        byte[] key = identity.signingKey("", "");
+        String path = uri.getRawPath().endsWith(Symbol.SLASH) ? uri.getRawPath() : uri.getRawPath() + Symbol.SLASH;
+        String canonical = "GET\n" + path + "\n\n" + canonicalHeaders + Symbol.LF + names + Symbol.LF
+                + CloudProtocol.hash(Normal.EMPTY_BYTE_ARRAY);
+        String toSign = "SDK-HMAC-SHA256\n" + timestamp + Symbol.LF
+                + CloudProtocol.hash(canonical.getBytes(Charset.UTF_8));
+        byte[] key = identity.signingKey(Normal.EMPTY, Normal.EMPTY);
         try {
-            String signature = HexKit.encodeString(CloudProtocol.hmac("HmacSHA256", key, toSign));
+            String signature = HexKit.encodeString(CloudProtocol.hmac(Algorithm.HMACSHA256, key, toSign));
             headers.put(
                     "authorization",
                     "SDK-HMAC-SHA256 Access=" + identity.accessKeyId() + ", SignedHeaders=" + names + ", Signature="
@@ -225,12 +234,12 @@ public final class HuaweiSecretProvider implements SecretProvider {
      */
     @Override
     public SecretMaterial read(SecretReference reference, SecretContext context) {
-        if (!reference.resource().matches("[a-zA-Z0-9_-]{1,64}")) {
+        if (!PatternKit.isMatch(Pattern.get("[a-zA-Z0-9_-]{1,64}", 0), reference.resource())) {
             throw new CryptoException("Invalid secret reference");
         }
         boolean fixed = reference.version() != null;
         String selected = fixed ? reference.version() : "latest";
-        if (fixed && !selected.matches("v[0-9]{1,10}")) {
+        if (fixed && !PatternKit.isMatch(Pattern.get("v[0-9]{1,10}", 0), selected)) {
             throw new CryptoException("Invalid secret reference");
         }
         URI uri = URI
@@ -245,7 +254,7 @@ public final class HuaweiSecretProvider implements SecretProvider {
             throw new CryptoException("Secret backend is unavailable");
         }
         String actual = CloudProtocol.required(metadata, "id");
-        if (!actual.matches("v[0-9]{1,10}")
+        if (!PatternKit.isMatch(Pattern.get("v[0-9]{1,10}", 0), actual)
                 || !reference.resource().equals(CloudProtocol.required(metadata, "secret_name"))) {
             throw new CryptoException("Secret backend is unavailable");
         }

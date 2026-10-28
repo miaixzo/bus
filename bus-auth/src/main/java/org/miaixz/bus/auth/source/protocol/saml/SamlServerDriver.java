@@ -32,12 +32,15 @@ import java.util.concurrent.CompletionStage;
 import javax.xml.XMLConstants;
 import javax.xml.crypto.dsig.*;
 import javax.xml.crypto.dsig.dom.DOMSignContext;
+import javax.xml.crypto.dsig.spec.C14NMethodParameterSpec;
+import javax.xml.crypto.dsig.spec.TransformParameterSpec;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -751,18 +754,16 @@ public class SamlServerDriver implements ProtocolDriver<SamlServerOptions> {
                 builder.setExpandEntityReferences(false);
                 builder.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, Normal.EMPTY);
                 builder.setAttribute(XMLConstants.ACCESS_EXTERNAL_SCHEMA, Normal.EMPTY);
-                final org.w3c.dom.Document document = builder.newDocumentBuilder().parse(new ByteArrayInputStream(xml));
+                final Document document = builder.newDocumentBuilder().parse(new ByteArrayInputStream(xml));
                 final Element root = Assert.notNull(document.getDocumentElement(), "SAML signing root must exist");
                 if (!id.equals(root.getAttribute("ID"))) {
                     throw new ValidateException("SAML signing root ID does not match the requested reference");
                 }
                 root.setIdAttribute("ID", true);
                 final XMLSignatureFactory factory = XMLSignatureFactory.getInstance("DOM");
-                final Transform enveloped = factory
-                        .newTransform(Transform.ENVELOPED, (javax.xml.crypto.dsig.spec.TransformParameterSpec) null);
-                final Transform canonical = factory.newTransform(
-                        CanonicalizationMethod.EXCLUSIVE,
-                        (javax.xml.crypto.dsig.spec.TransformParameterSpec) null);
+                final Transform enveloped = factory.newTransform(Transform.ENVELOPED, (TransformParameterSpec) null);
+                final Transform canonical = factory
+                        .newTransform(CanonicalizationMethod.EXCLUSIVE, (TransformParameterSpec) null);
                 final Reference reference = factory.newReference(
                         Symbol.C_HASH + id,
                         factory.newDigestMethod(DigestMethod.SHA256, null),
@@ -772,7 +773,7 @@ public class SamlServerDriver implements ProtocolDriver<SamlServerOptions> {
                 final SignedInfo signedInfo = factory.newSignedInfo(
                         factory.newCanonicalizationMethod(
                                 CanonicalizationMethod.EXCLUSIVE,
-                                (javax.xml.crypto.dsig.spec.C14NMethodParameterSpec) null),
+                                (C14NMethodParameterSpec) null),
                         factory.newSignatureMethod(options.signatureAlgorithm(), null),
                         List.of(reference));
                 final Node insertionPoint = signatureInsertionPoint(root);

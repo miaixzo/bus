@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.cortex.setting.app;
 
+import java.io.Serial;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
@@ -35,10 +37,9 @@ import org.miaixz.bus.core.basic.entity.Tenant;
 @SuperBuilder
 public class App extends Tenant {
 
-    /**
-     * User responsible for the application.
-     */
-    private String owner_id;
+    @Serial
+    private static final long serialVersionUID = 2558900500001L;
+
     /**
      * Stable application code.
      */
@@ -51,6 +52,14 @@ public class App extends Tenant {
      * Icon resource address or key.
      */
     private String icon;
+    /**
+     * Application type (e.g., INTERNAL, THIRD_PARTY, MICRO_APP).
+     */
+    private String type;
+    /**
+     * Display sort order.
+     */
+    private Integer sort;
     /**
      * Optional application description.
      */

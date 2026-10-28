@@ -33,7 +33,7 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class User extends AbstractUser<User> {
 
     @Serial
-    private static final long serialVersionUID = 2852282972009L;
+    private static final long serialVersionUID = 2551269612839L;
 
     /**
      * The bio value.

@@ -32,7 +32,7 @@ import org.miaixz.bus.core.lang.Symbol;
 public class CsvWriteConfig extends CsvConfig<CsvWriteConfig> implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852283371616L;
+    private static final long serialVersionUID = 2551910251801L;
 
     /**
      * Whether to always use text delimiters (quotes). Default is {@code false}, delimiters are added as needed.

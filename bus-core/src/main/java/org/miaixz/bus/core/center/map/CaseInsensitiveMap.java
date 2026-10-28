@@ -22,27 +22,28 @@ package org.miaixz.bus.core.center.map;
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import org.miaixz.bus.core.center.function.FunctionX;
 import org.miaixz.bus.core.lang.Normal;
 
 /**
- * A {@link Map} implementation that treats keys as case-insensitive. All keys are internally converted to lowercase
- * strings for storage and retrieval. This means that {@code get("Value")} and {@code get("value")} will retrieve the
- * same entry.
+ * A {@link Map} implementation that treats character-sequence keys as case-insensitive. Such keys are converted to
+ * lowercase strings with {@link Locale#ROOT} for storage and retrieval; other key types are left unchanged. This means
+ * that {@code get("Value")} and {@code get("value")} retrieve the same entry independently of the default locale.
  * <p>
  * When a key is {@code put} into the map, it is converted to lowercase. If a lowercase version of the key already
  * exists, its value will be overwritten. This map does not preserve the original casing of keys.
  *
- * @param <K> The type of keys in the map (typically {@code String} or a type convertible to {@code String}).
+ * @param <K> The type of keys in the map, typically {@code String}.
  * @param <V> The type of values in the map.
  * @author Kimi Liu
  */
 public class CaseInsensitiveMap<K, V> extends FunctionKeyMap<K, V> {
 
     @Serial
-    private static final long serialVersionUID = 2852268989329L;
+    private static final long serialVersionUID = 2535825653602L;
 
     /**
      * Constructs an empty {@code CaseInsensitiveMap} with the default initial capacity (16).
@@ -55,6 +56,7 @@ public class CaseInsensitiveMap<K, V> extends FunctionKeyMap<K, V> {
      * Constructs an empty {@code CaseInsensitiveMap} with the specified initial capacity.
      *
      * @param initialCapacity The initial capacity of the map.
+     * @throws IllegalArgumentException if the capacity is negative
      */
     public CaseInsensitiveMap(final int initialCapacity) {
         this(initialCapacity, Normal.DEFAULT_LOAD_FACTOR);
@@ -62,9 +64,10 @@ public class CaseInsensitiveMap<K, V> extends FunctionKeyMap<K, V> {
 
     /**
      * Constructs a new {@code CaseInsensitiveMap} with the same mappings as the specified map. Keys from the input map
-     * will be converted to lowercase for internal storage.
+     * that are character sequences will be converted to lowercase for internal storage.
      *
      * @param m The map whose mappings are to be placed in this map.
+     * @throws NullPointerException if the source map is {@code null}
      */
     public CaseInsensitiveMap(final Map<? extends K, ? extends V> m) {
         this(Normal.DEFAULT_LOAD_FACTOR, m);
@@ -72,11 +75,13 @@ public class CaseInsensitiveMap<K, V> extends FunctionKeyMap<K, V> {
 
     /**
      * Constructs a new {@code CaseInsensitiveMap} with the specified load factor and the same mappings as the specified
-     * map. Keys from the input map will be converted to lowercase for internal storage.
+     * map. Character-sequence keys from the input map will be converted to lowercase for internal storage.
      *
      * @param loadFactor The load factor for the map.
      * @param m          The map whose mappings are to be placed in this map. Its data will be copied into a new
      *                   {@link HashMap}.
+     * @throws IllegalArgumentException if the load factor is non-positive or NaN
+     * @throws NullPointerException     if the source map is {@code null}
      */
     public CaseInsensitiveMap(final float loadFactor, final Map<? extends K, ? extends V> m) {
         this(m.size(), loadFactor);
@@ -88,6 +93,7 @@ public class CaseInsensitiveMap<K, V> extends FunctionKeyMap<K, V> {
      *
      * @param initialCapacity The initial capacity of the map.
      * @param loadFactor      The load factor for the map.
+     * @throws IllegalArgumentException if the capacity is negative or the load factor is non-positive or NaN
      */
     public CaseInsensitiveMap(final int initialCapacity, final float loadFactor) {
         this(MapBuilder.of(new HashMap<>(initialCapacity, loadFactor)));
@@ -104,7 +110,7 @@ public class CaseInsensitiveMap<K, V> extends FunctionKeyMap<K, V> {
         // The FunctionX is made Serializable to allow the map to be serialized.
         super(emptyMapBuilder.build(), (FunctionX<Object, K> & Serializable) (key) -> {
             if (key instanceof CharSequence) {
-                key = key.toString().toLowerCase();
+                key = key.toString().toLowerCase(Locale.ROOT);
             }
             return (K) key;
         });

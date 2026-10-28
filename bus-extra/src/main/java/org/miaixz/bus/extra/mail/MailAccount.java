@@ -42,7 +42,7 @@ import org.miaixz.bus.setting.Setting;
 public class MailAccount implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852285572363L;
+    private static final long serialVersionUID = 2555023651801L;
 
     /**
      * Default paths for loading mail configuration settings.

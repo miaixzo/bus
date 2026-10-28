@@ -46,7 +46,7 @@ import org.miaixz.bus.gitlab.support.JacksonJsonEnumCodec;
 public class MergeRequestFilter implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852263228021L;
+    private static final long serialVersionUID = 2550858801805L;
 
     /**
      * The project id value.

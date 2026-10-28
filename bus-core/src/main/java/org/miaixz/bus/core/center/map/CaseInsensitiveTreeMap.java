@@ -39,7 +39,7 @@ import java.util.TreeMap;
 public class CaseInsensitiveTreeMap<K, V> extends CaseInsensitiveMap<K, V> {
 
     @Serial
-    private static final long serialVersionUID = 2852272639786L;
+    private static final long serialVersionUID = 2535828905001L;
 
     /**
      * Constructs an empty {@code CaseInsensitiveTreeMap} that orders its keys according to their natural ordering,

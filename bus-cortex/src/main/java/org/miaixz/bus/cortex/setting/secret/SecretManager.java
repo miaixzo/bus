@@ -24,19 +24,31 @@ import java.time.Instant;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import org.miaixz.bus.cache.nimble.MemoryCache;
+import org.miaixz.bus.core.lang.Charset;
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.CryptoException;
 import org.miaixz.bus.core.lang.exception.ForbiddenException;
 import org.miaixz.bus.core.lang.exception.UncheckedException;
+import org.miaixz.bus.core.net.url.UrlEncoder;
+import org.miaixz.bus.core.xyz.ExceptionKit;
 import org.miaixz.bus.extra.json.JsonKit;
 
 /**
  * Authorizes read-only Secret access and binds backend reads to connection generations. Cache storage, capacity and TTL
  * belong to Bus MemoryCache; fixed resource guards coordinate reads and invalidation. An injected cache must be empty
  * and exclusively owned by this manager. Closing drains admitted guarded reads and erases cached materials.
+ *
+ * @author Kimi Liu
  */
 public final class SecretManager implements AutoCloseable {
 
@@ -49,7 +61,7 @@ public final class SecretManager implements AutoCloseable {
     /**
      * Insert-only tenant connection bindings used after policy authorization.
      */
-    private final java.util.Map<ConnectionKey, Binding> bindings = new java.util.concurrent.ConcurrentHashMap<>();
+    private final Map<ConnectionKey, Binding> bindings = new ConcurrentHashMap<>();
     /**
      * Mandatory application authorization policy evaluated for every operation.
      */
@@ -73,8 +85,8 @@ public final class SecretManager implements AutoCloseable {
     /**
      * Fixed resource-lock stripes; avoid retaining an unbounded lock per user-supplied reference.
      */
-    private final ReentrantLock[] guards = java.util.stream.IntStream.range(0, 64)
-            .mapToObj(index -> new ReentrantLock()).toArray(ReentrantLock[]::new);
+    private final ReentrantLock[] guards = IntStream.range(0, 64).mapToObj(index -> new ReentrantLock())
+            .toArray(ReentrantLock[]::new);
     /**
      * Terminal manager lifecycle flag, visible across caller threads.
      */
@@ -144,10 +156,8 @@ public final class SecretManager implements AutoCloseable {
      * @return resource-scope cache prefix
      */
     private static String scope(SecretReference ref, SecretContext context) {
-        return java.util.stream.Stream
-                .of(context.tenantId(), context.appId(), context.principal(), ref.connectionId(), ref.resource())
-                .map(org.miaixz.bus.core.net.url.UrlEncoder::encodeAll)
-                .collect(java.util.stream.Collectors.joining("/", "", "/"));
+        return Stream.of(context.tenantId(), context.appId(), context.principal(), ref.connectionId(), ref.resource())
+                .map(UrlEncoder::encodeAll).collect(Collectors.joining(Symbol.SLASH, Normal.EMPTY, Symbol.SLASH));
     }
 
     /**
@@ -173,9 +183,9 @@ public final class SecretManager implements AutoCloseable {
             policy.requireAllowed(action, ref, context);
         } catch (RuntimeException failure) {
             discardAfterFailure(ref, context);
-            throw (org.miaixz.bus.core.xyz.ExceptionKit.getThrowableList(failure).stream()
-                    .anyMatch(ForbiddenException.class::isInstance) ? new ForbiddenException("Secret access denied")
-                            : new CryptoException("Secret operation failed"));
+            throw (ExceptionKit.getThrowableList(failure).stream().anyMatch(ForbiddenException.class::isInstance)
+                    ? new ForbiddenException("Secret access denied")
+                    : new CryptoException("Secret operation failed"));
         }
         var binding = requireBinding(context.tenantId(), ref.connectionId());
         if (!binding.connection().allows(ref.resource())) {
@@ -198,7 +208,7 @@ public final class SecretManager implements AutoCloseable {
      *                                                               checks fail; inspect the exception type;
      *                                                               diagnostics are deliberately sanitized
      */
-    public java.util.Set<SecretProvider.Capability> describe(SecretReference ref, SecretContext context) {
+    public Set<SecretProvider.Capability> describe(SecretReference ref, SecretContext context) {
         var binding = binding("describe", ref, context);
         var capabilities = capabilities(binding);
         context.checkDeadline();
@@ -259,7 +269,7 @@ public final class SecretManager implements AutoCloseable {
                     return new SecretMaterial(copy, value.resolvedVersion(), value.fetchedAt(), value.expiresAt(),
                             value.connectionGeneration());
                 }
-                byte[] json = new String(copy).getBytes(java.nio.charset.StandardCharsets.UTF_8);
+                byte[] json = new String(copy).getBytes(Charset.UTF_8);
                 Object parsed;
                 try {
                     parsed = JsonKit.toJavaValue(JsonKit.readValue(json, 32, true));
@@ -280,21 +290,21 @@ public final class SecretManager implements AutoCloseable {
                     return new SecretMaterial(extracted, value.resolvedVersion(), value.fetchedAt(), value.expiresAt(),
                             value.connectionGeneration());
                 } finally {
-                    Arrays.fill(extracted, '\0');
+                    Arrays.fill(extracted, Symbol.C_NUL);
                 }
             } finally {
-                Arrays.fill(copy, '\0');
+                Arrays.fill(copy, Symbol.C_NUL);
             }
         } catch (UncheckedException failure) {
             discardAfterFailure(ref, context);
-            throw (org.miaixz.bus.core.xyz.ExceptionKit.getThrowableList(failure).stream()
-                    .anyMatch(ForbiddenException.class::isInstance) ? new ForbiddenException("Secret access denied")
-                            : new CryptoException("Secret operation failed"));
+            throw (ExceptionKit.getThrowableList(failure).stream().anyMatch(ForbiddenException.class::isInstance)
+                    ? new ForbiddenException("Secret access denied")
+                    : new CryptoException("Secret operation failed"));
         } catch (RuntimeException failure) {
             discardAfterFailure(ref, context);
-            throw (org.miaixz.bus.core.xyz.ExceptionKit.getThrowableList(failure).stream()
-                    .anyMatch(ForbiddenException.class::isInstance) ? new ForbiddenException("Secret access denied")
-                            : new CryptoException("Secret operation failed"));
+            throw (ExceptionKit.getThrowableList(failure).stream().anyMatch(ForbiddenException.class::isInstance)
+                    ? new ForbiddenException("Secret access denied")
+                    : new CryptoException("Secret operation failed"));
         }
     }
 
@@ -306,13 +316,13 @@ public final class SecretManager implements AutoCloseable {
      * @return immutable non-null capability set
      * @throws org.miaixz.bus.core.lang.exception.UncheckedException carrying only only a fixed, non-sensitive message
      */
-    private java.util.Set<SecretProvider.Capability> capabilities(Binding binding) {
+    private Set<SecretProvider.Capability> capabilities(Binding binding) {
         try {
-            return java.util.Set.copyOf(binding.provider().capabilities());
+            return Set.copyOf(binding.provider().capabilities());
         } catch (RuntimeException failure) {
-            throw (org.miaixz.bus.core.xyz.ExceptionKit.getThrowableList(failure).stream()
-                    .anyMatch(ForbiddenException.class::isInstance) ? new ForbiddenException("Secret access denied")
-                            : new CryptoException("Secret operation failed"));
+            throw (ExceptionKit.getThrowableList(failure).stream().anyMatch(ForbiddenException.class::isInstance)
+                    ? new ForbiddenException("Secret access denied")
+                    : new CryptoException("Secret operation failed"));
         }
     }
 
@@ -347,16 +357,16 @@ public final class SecretManager implements AutoCloseable {
                 return new SecretMaterial(chars, value.resolvedVersion(), value.fetchedAt(), value.expiresAt(),
                         value.connectionGeneration());
             } finally {
-                Arrays.fill(chars, '\0');
+                Arrays.fill(chars, Symbol.C_NUL);
             }
         } catch (UncheckedException failure) {
-            throw (org.miaixz.bus.core.xyz.ExceptionKit.getThrowableList(failure).stream()
-                    .anyMatch(ForbiddenException.class::isInstance) ? new ForbiddenException("Secret access denied")
-                            : new CryptoException("Secret operation failed"));
+            throw (ExceptionKit.getThrowableList(failure).stream().anyMatch(ForbiddenException.class::isInstance)
+                    ? new ForbiddenException("Secret access denied")
+                    : new CryptoException("Secret operation failed"));
         } catch (RuntimeException failure) {
-            throw (org.miaixz.bus.core.xyz.ExceptionKit.getThrowableList(failure).stream()
-                    .anyMatch(ForbiddenException.class::isInstance) ? new ForbiddenException("Secret access denied")
-                            : new CryptoException("Secret operation failed"));
+            throw (ExceptionKit.getThrowableList(failure).stream().anyMatch(ForbiddenException.class::isInstance)
+                    ? new ForbiddenException("Secret access denied")
+                    : new CryptoException("Secret operation failed"));
         }
     }
 
@@ -405,8 +415,7 @@ public final class SecretManager implements AutoCloseable {
     /**
      * Rejects new operations after the manager lifecycle has been closed.
      *
-     * @throws org.miaixz.bus.core.lang.exception.CryptoException if the documented validation, expiration or lifecycle
-     *                                                            constraint fails
+     * @throws org.miaixz.bus.core.lang.exception.CryptoException if the manager has been closed
      */
     private void ensureOpen() {
         if (closed) {
@@ -467,8 +476,8 @@ public final class SecretManager implements AutoCloseable {
      */
     private SecretMaterial cached(Binding binding, SecretReference ref, SecretContext context) {
         String scope = scope(ref, context);
-        String key = scope + binding.connection().generation() + "/"
-                + org.miaixz.bus.core.net.url.UrlEncoder.encodeAll(ref.version() == null ? "" : ref.version());
+        String key = scope + binding.connection().generation() + Symbol.SLASH
+                + UrlEncoder.encodeAll(ref.version() == null ? Normal.EMPTY : ref.version());
         SecretMaterial hit = cache.read(key);
         if (hit != null) {
             Instant refreshAt = hit.fetchedAt().plus(ttl).minus(refreshBefore);
@@ -487,7 +496,7 @@ public final class SecretManager implements AutoCloseable {
                         return new SecretMaterial(chars, hit.resolvedVersion(), hit.fetchedAt(), hit.expiresAt(),
                                 hit.connectionGeneration());
                     } finally {
-                        Arrays.fill(chars, '\0');
+                        Arrays.fill(chars, Symbol.C_NUL);
                     }
                 } catch (UncheckedException ignored) {
                     // Expiration or concurrent capacity eviction requires a fresh backend read.
@@ -527,7 +536,7 @@ public final class SecretManager implements AutoCloseable {
                 }
                 return result;
             } finally {
-                Arrays.fill(chars, '\0');
+                Arrays.fill(chars, Symbol.C_NUL);
             }
         }
     }
@@ -619,6 +628,7 @@ public final class SecretManager implements AutoCloseable {
      *
      * @param connection immutable routing and resource-prefix restrictions
      * @param provider   provider instance whose type must match the connection
+     * @throws CryptoException if connection registration conflicts with existing configuration or lifecycle
      */
     public void register(SecretConnection connection, SecretProvider provider) {
         Binding binding = new Binding(connection, provider);
@@ -637,6 +647,7 @@ public final class SecretManager implements AutoCloseable {
      * @param tenantId authenticated tenant identifier
      * @param id       connection identifier scoped to the tenant
      * @return enabled immutable connection/provider binding
+     * @throws ForbiddenException if no enabled binding exists for the tenant and connection
      */
     private Binding requireBinding(String tenantId, String id) {
         Binding binding = bindings.get(new ConnectionKey(tenantId, id));
@@ -649,6 +660,8 @@ public final class SecretManager implements AutoCloseable {
     /**
      * Mandatory authorization boundary for Secret operations. The trusted identity context is independent of persisted
      * references. Policy evaluation precedes connection lookup and occurs even when a backend value is already cached.
+     *
+     * @author Kimi Liu
      */
     @FunctionalInterface
     public interface AccessPolicy {
@@ -668,6 +681,7 @@ public final class SecretManager implements AutoCloseable {
          *                                                               diagnostics are deliberately sanitized
          */
         void requireAllowed(String action, SecretReference reference, SecretContext context);
+
     }
 
     /**
@@ -675,8 +689,10 @@ public final class SecretManager implements AutoCloseable {
      *
      * @param tenantId authenticated tenant identifier
      * @param id       connection identifier scoped to the tenant
+     * @author Kimi Liu
      */
     private record ConnectionKey(String tenantId, String id) {
+
     }
 
     /**
@@ -684,12 +700,15 @@ public final class SecretManager implements AutoCloseable {
      *
      * @param connection immutable routing configuration and prefix restrictions
      * @param provider   provider instance whose type must match the connection
+     * @author Kimi Liu
      */
     private record Binding(SecretConnection connection, SecretProvider provider) {
 
         /**
          * Validates the record components before publishing this immutable value.
          *
+         * @param connection immutable routing configuration and prefix restrictions
+         * @param provider   provider instance whose type must match the connection
          * @throws IllegalArgumentException if component values violate this record's constraints
          * @throws NullPointerException     if a required component or collection is null
          */
@@ -700,6 +719,7 @@ public final class SecretManager implements AutoCloseable {
                 throw new IllegalArgumentException("Secret provider type mismatch");
             }
         }
+
     }
 
 }

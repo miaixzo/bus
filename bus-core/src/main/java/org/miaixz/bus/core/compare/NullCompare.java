@@ -38,7 +38,7 @@ import java.util.Objects;
 public class NullCompare<T> implements Comparator<T>, Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852262152885L;
+    private static final long serialVersionUID = 2536158500001L;
 
     /**
      * Indicates whether {@code null} is considered greater than non-null values.

@@ -29,6 +29,7 @@ import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.extra.json.JsonKit;
+import org.miaixz.bus.fabric.Context;
 import org.miaixz.bus.fabric.Fabric;
 import org.miaixz.bus.fabric.Payload;
 
@@ -42,7 +43,7 @@ public abstract class FabricX {
     /**
      * Shared Fabric context for notification HTTP calls.
      */
-    private static final org.miaixz.bus.fabric.Context CONTEXT = org.miaixz.bus.fabric.Context.create();
+    private static final Context CONTEXT = Context.create();
 
     /**
      * Form media used by notification requests.

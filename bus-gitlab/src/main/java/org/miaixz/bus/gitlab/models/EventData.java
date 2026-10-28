@@ -33,7 +33,7 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class EventData implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852253272657L;
+    private static final long serialVersionUID = 2550382203918L;
 
     /**
      * The after value.

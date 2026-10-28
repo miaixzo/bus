@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.shade.screw.process;
 
+import java.io.Serial;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -37,6 +38,9 @@ import org.miaixz.bus.shade.screw.metadata.*;
  * @author Kimi Liu
  */
 public class DataModelProcess extends AbstractProcess {
+
+    @Serial
+    private static final long serialVersionUID = 2552915000001L;
 
     /**
      * Constructs a {@code DataModelProcess} with the given configuration.

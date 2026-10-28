@@ -33,7 +33,7 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class CreateRunnerResponse implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852250855127L;
+    private static final long serialVersionUID = 2550296965001L;
 
     /**
      * The id value.

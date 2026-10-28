@@ -20,6 +20,7 @@
 package org.miaixz.bus.image.plugin;
 
 import java.io.IOException;
+import java.io.Serial;
 import java.net.Socket;
 import java.security.GeneralSecurityException;
 
@@ -39,6 +40,9 @@ import org.miaixz.bus.image.metric.hl7.MLLPRelease;
  * @author Kimi Liu
  */
 public class HL7Pix extends Device {
+
+    @Serial
+    private static final long serialVersionUID = 2556510818001L;
 
     /**
      * The local network connection configuration.

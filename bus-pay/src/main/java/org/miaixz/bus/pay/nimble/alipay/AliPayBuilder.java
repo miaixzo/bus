@@ -21,6 +21,7 @@ package org.miaixz.bus.pay.nimble.alipay;
 
 import java.io.ByteArrayInputStream;
 import java.security.KeyFactory;
+import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.Signature;
 import java.security.cert.Certificate;
@@ -211,7 +212,7 @@ public class AliPayBuilder {
             byte[] keyBytes = Base64.decode(privateKey);
             PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(keyBytes);
             KeyFactory keyFactory = KeyFactory.getInstance("RSA");
-            java.security.PrivateKey priKey = keyFactory.generatePrivate(keySpec);
+            PrivateKey priKey = keyFactory.generatePrivate(keySpec);
             Signature signature = Signature.getInstance(algorithm);
             signature.initSign(priKey);
             signature.update(content.getBytes(CHARSET_UTF8));

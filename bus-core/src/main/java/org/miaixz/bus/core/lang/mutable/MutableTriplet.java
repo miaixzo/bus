@@ -34,7 +34,7 @@ import org.miaixz.bus.core.lang.tuple.Triplet;
 public class MutableTriplet<L, M, R> extends Triplet<L, M, R> implements Mutable<MutableTriplet<L, M, R>> {
 
     @Serial
-    private static final long serialVersionUID = 2852271951206L;
+    private static final long serialVersionUID = 2538033368151L;
 
     /**
      * Constructs a new {@code MutableTriplet} with the specified left, middle, and right values.

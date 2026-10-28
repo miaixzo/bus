@@ -19,10 +19,14 @@
 */
 package org.miaixz.bus.health;
 
+import java.io.File;
 import java.lang.management.*;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.Properties;
+import java.util.function.Function;
 
 import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.convert.Convert;
@@ -71,6 +75,9 @@ public class Platform {
      * The current operating system platform, detected from system properties without forcing JNA platform loading.
      */
     private static final OS CURRENT_PLATFORM = queryCurrentPlatform();
+
+    /** Version suffix accepted by the OpenBSD runtime linker. */
+    private static final java.util.regex.Pattern LIBRARY_VERSION = java.util.regex.Pattern.compile("\\d+(\\.\\d+)?");
 
     /**
      * Caches the OperatingSystem instance using Memoizer to avoid repeated creation and improve performance.
@@ -504,6 +511,137 @@ public class Platform {
      */
     public static OS getCurrentPlatform() {
         return CURRENT_PLATFORM;
+    }
+
+    /**
+     * Returns whether an optional native library may be loaded without risking a failed concurrent loader lookup on
+     * platforms whose {@code dlerror()} state is shared by the process.
+     *
+     * @param fileName the library file name, without a directory
+     * @return {@code false} if loading the library on this platform should be skipped
+     */
+    public static boolean isSafeToLoad(String fileName) {
+        return isSafeToLoad(fileName, null);
+    }
+
+    /**
+     * Returns whether an optional native library may be loaded, also searching directories supplied directly to JNA.
+     *
+     * @param fileName  the library file name, without a directory
+     * @param extraPath additional directories separated by the platform path separator, or {@code null}
+     * @return {@code false} if loading the library on this platform should be skipped
+     */
+    public static boolean isSafeToLoad(String fileName, String extraPath) {
+        List<String> linkerDirectories = nativeLibrarySearchDirectories(CURRENT_PLATFORM, System::getenv);
+        if (linkerDirectories.isEmpty()) {
+            return true;
+        }
+        List<String> loaderDirectories = new ArrayList<>();
+        addPathEntries(loaderDirectories, extraPath);
+        boolean present = isNativeLibraryPresent(CURRENT_PLATFORM, fileName, linkerDirectories)
+                || (!isAixArchive(CURRENT_PLATFORM, fileName) && isFilePresent(fileName, loaderDirectories));
+        if (!present) {
+            Logger.debug(false, "Health", "{} not found on the library search path; not loading it.", fileName);
+        }
+        return present;
+    }
+
+    /**
+     * Builds the runtime linker's search directories for platforms with process-wide {@code dlerror()} state.
+     *
+     * @param platform the operating system
+     * @param getenv   the environment lookup function
+     * @return the ordered library search directories
+     */
+    static List<String> nativeLibrarySearchDirectories(OS platform, Function<String, String> getenv) {
+        List<String> directories = new ArrayList<>();
+        switch (platform) {
+            case SOLARIS:
+                String path64 = getenv.apply("LD_LIBRARY_PATH_64");
+                addPathEntries(directories, path64 != null ? path64 : getenv.apply("LD_LIBRARY_PATH"));
+                directories.addAll(Arrays.asList("/lib/64", "/usr/lib/64"));
+                break;
+
+            case AIX:
+                String libpath = getenv.apply("LIBPATH");
+                addPathEntries(directories, libpath != null ? libpath : getenv.apply("LD_LIBRARY_PATH"));
+                directories.addAll(Arrays.asList("/usr/lib", "/lib"));
+                break;
+
+            case OPENBSD:
+                addPathEntries(directories, getenv.apply("LD_LIBRARY_PATH"));
+                directories.addAll(Arrays.asList("/usr/lib", "/usr/X11R6/lib", "/usr/local/lib"));
+                break;
+
+            case DRAGONFLYBSD:
+                addPathEntries(directories, getenv.apply("LD_LIBRARY_PATH"));
+                directories.addAll(Arrays.asList("/lib", "/usr/lib", "/usr/local/lib", "/usr/local/lib/compat/pkg"));
+                break;
+
+            default:
+                break;
+        }
+        return directories;
+    }
+
+    /**
+     * Returns whether the runtime linker can resolve the requested native library.
+     *
+     * @param platform    the operating system
+     * @param fileName    the requested library file name
+     * @param directories the directories to search
+     * @return {@code true} when a matching regular file exists
+     */
+    static boolean isNativeLibraryPresent(OS platform, String fileName, List<String> directories) {
+        if (isAixArchive(platform, fileName)) {
+            return false;
+        }
+        if (isFilePresent(fileName, directories)) {
+            return true;
+        }
+        if (platform != OS.OPENBSD) {
+            return false;
+        }
+        String prefix = fileName + Symbol.DOT;
+        for (String directory : directories) {
+            String[] names = new File(directory).list();
+            if (names == null) {
+                continue;
+            }
+            for (String name : names) {
+                if (name.startsWith(prefix) && LIBRARY_VERSION.matcher(name.substring(prefix.length())).matches()
+                        && new File(directory, name).isFile()) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /** Returns whether a file exists in one of the supplied directories. */
+    private static boolean isFilePresent(String fileName, List<String> directories) {
+        for (String directory : directories) {
+            if (new File(directory, fileName).isFile()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /** Returns whether JNA mapped the request to an AIX archive that cannot be loaded without a member name. */
+    private static boolean isAixArchive(OS platform, String fileName) {
+        return platform == OS.AIX && fileName.endsWith(".a");
+    }
+
+    /** Adds non-empty entries from a native library path. */
+    private static void addPathEntries(List<String> directories, String path) {
+        if (path != null) {
+            for (String directory : path.split(java.util.regex.Pattern.quote(File.pathSeparator), -1)) {
+                if (!directory.isEmpty()) {
+                    directories.add(directory);
+                }
+            }
+        }
     }
 
     /**

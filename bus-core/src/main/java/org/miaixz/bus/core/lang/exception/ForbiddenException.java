@@ -31,7 +31,7 @@ import org.miaixz.bus.core.basic.normal.Errors;
 public class ForbiddenException extends UncheckedException {
 
     @Serial
-    private static final long serialVersionUID = 2852255638020L;
+    private static final long serialVersionUID = 2536805000001L;
 
     /**
      * Constructs a new ForbiddenException with no detail message.

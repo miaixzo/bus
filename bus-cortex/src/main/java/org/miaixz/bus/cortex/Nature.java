@@ -42,7 +42,7 @@ import org.miaixz.bus.core.basic.entity.Tenant;
 public class Nature extends Tenant {
 
     @Serial
-    private static final long serialVersionUID = 2852290719700L;
+    private static final long serialVersionUID = 2558868151251L;
 
     /**
      * Stable numeric asset type key used for persistence and business routing.

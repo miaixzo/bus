@@ -33,21 +33,25 @@ import org.miaixz.bus.core.lang.annotation.resolve.processor.SynthesizedAnnotati
 /**
  * A caching implementation of {@link SynthesizedAnnotationAttributeProcessor}.
  * <p>
- * A comparator must be provided at construction time. When retrieving an attribute value, synthesized annotations are
- * sorted by the comparator, and the value is taken from the first annotation (highest priority) that has the requested
- * attribute. The result is cached for subsequent calls.
+ * The comparator supplied at construction time, or the default hierarchical comparator, selects the smallest matching
+ * synthesized annotation. Non-null results are reused for subsequent calls; a missing or null result is resolved again
+ * on the next call. Cache access and resolution are serialized on the cache table's monitor.
  * <p>
  * When retrieving attribute values via this processor, an implicit alias effect occurs: if a child annotation and a
- * meta-annotation both have an attribute with the same name and type, the child annotation's attribute always overrides
- * the meta-annotation's attribute. This override is not propagated through {@link Alias} or {@link Link} to related
- * attributes.
+ * meta-annotation both have an attribute with the same name and type, the default comparator gives the closer child
+ * annotation priority. A custom comparator determines its own priority. This selection is not propagated through
+ * {@link Alias} or {@link Link} to related attributes.
+ * <p>
+ * Each processor belongs to one annotation-resolution context: cache keys contain only the attribute name and type, not
+ * the supplied annotation collection. Reusing an instance with unrelated collections may reuse an earlier value.
  *
  * @author Kimi Liu
  */
 public class CachingAnnotationAttributeProcessor implements SynthesizedAnnotationAttributeProcessor {
 
     /**
-     * Cache table mapping (attributeName, attributeType) to the resolved attribute value.
+     * Cache table mapping (attributeName, attributeType) to the resolved attribute value. Every read, resolution, and
+     * write is performed while holding this table's monitor; null mappings do not represent a reusable cache hit.
      */
     private final Table<String, Class<?>, Object> valueCaches = new RowKeyTable<>();
 
@@ -61,6 +65,7 @@ public class CachingAnnotationAttributeProcessor implements SynthesizedAnnotatio
      * (smallest according to the comparator) are given highest priority.
      *
      * @param annotationComparator the comparator used to order synthesized annotations
+     * @throws IllegalArgumentException if {@code annotationComparator} is {@code null}
      */
     public CachingAnnotationAttributeProcessor(final Comparator<Hierarchical> annotationComparator) {
         Assert.notNull(annotationComparator, "annotationComparator must not null");
@@ -78,12 +83,12 @@ public class CachingAnnotationAttributeProcessor implements SynthesizedAnnotatio
 
     /**
      * Retrieves the attribute value of the specified name and type from the collection of synthesized annotations. The
-     * annotation with the highest priority (smallest comparator order) that has the attribute is used. Results are
-     * cached for subsequent calls.
+     * annotation with the highest priority (smallest comparator order) that has the attribute is used. A non-null
+     * cached result is reused without searching the collection; null results are resolved again on later calls.
      *
      * @param attributeName          the attribute name
      * @param attributeType          the attribute type
-     * @param synthesizedAnnotations the collection of synthesized annotations to search
+     * @param synthesizedAnnotations the non-null collection for this processor's annotation-resolution context
      * @param <T>                    the attribute return type
      * @return the attribute value, or {@code null} if not found
      */
@@ -92,18 +97,15 @@ public class CachingAnnotationAttributeProcessor implements SynthesizedAnnotatio
             final String attributeName,
             final Class<T> attributeType,
             final Collection<? extends SynthesizedAnnotation> synthesizedAnnotations) {
-        Object value = valueCaches.get(attributeName, attributeType);
-        if (Objects.isNull(value)) {
-            synchronized (valueCaches) {
-                value = valueCaches.get(attributeName, attributeType);
-                if (Objects.isNull(value)) {
-                    value = synthesizedAnnotations.stream().filter(ma -> ma.hasAttribute(attributeName, attributeType))
-                            .min(annotationComparator).map(ma -> ma.getAttributeValue(attributeName)).orElse(null);
-                    valueCaches.put(attributeName, attributeType, value);
-                }
+        synchronized (valueCaches) {
+            Object value = valueCaches.get(attributeName, attributeType);
+            if (Objects.isNull(value)) {
+                value = synthesizedAnnotations.stream().filter(ma -> ma.hasAttribute(attributeName, attributeType))
+                        .min(annotationComparator).map(ma -> ma.getAttributeValue(attributeName)).orElse(null);
+                valueCaches.put(attributeName, attributeType, value);
             }
+            return (T) value;
         }
-        return (T) value;
     }
 
 }

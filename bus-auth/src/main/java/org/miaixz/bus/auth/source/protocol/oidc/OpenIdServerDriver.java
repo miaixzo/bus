@@ -27,6 +27,7 @@ import org.miaixz.bus.auth.*;
 import org.miaixz.bus.auth.FabricX.Request;
 import org.miaixz.bus.auth.FabricX.Response;
 import org.miaixz.bus.auth.Scheme.Options;
+import org.miaixz.bus.auth.guard.AlgorithmGuard;
 import org.miaixz.bus.auth.guard.RedirectUriValidator;
 import org.miaixz.bus.auth.guard.ScopeValidator;
 import org.miaixz.bus.auth.guard.SecretGuard;
@@ -247,9 +248,9 @@ public class OpenIdServerDriver implements ProtocolDriver<OpenIdServerOptions> {
         final ScopeValidator scopeValidator = new ScopeValidator();
         final RedirectUriValidator redirectUriValidator = new RedirectUriValidator();
         final PkceValidator pkceValidator = PkceValidator.strict(new SecretGuard());
-        final JwsService jwsService = new JwsService(new org.miaixz.bus.auth.guard.AlgorithmGuard(),
+        final JwsService jwsService = new JwsService(new AlgorithmGuard(),
                 Set.of(options.idTokenSigningAlgorithm().name()));
-        final JweService dormantJweService = new JweService(new org.miaixz.bus.auth.guard.AlgorithmGuard(),
+        final JweService dormantJweService = new JweService(new AlgorithmGuard(),
                 Set.of(JwaAlgorithm.RSA_OAEP_256.name()), Set.of(JwaAlgorithm.A256GCM.name()));
         final IdTokenCodec idTokenCodec = new IdTokenCodec(new JwtVerifier(jwsService, dormantJweService));
         final OAuth2ErrorMapper oauthErrorMapper = new OAuth2ErrorMapper();

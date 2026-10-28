@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.mapper.feature.audit;
 
+import java.io.Serial;
 import java.util.Properties;
 
 import org.apache.ibatis.executor.Executor;
@@ -74,6 +75,9 @@ import org.miaixz.bus.mapper.handler.ScopedProviderHandler;
  * @author Kimi Liu
  */
 public class AuditHandler<T> extends ScopedProviderHandler<T, AuditConfig, AuditProvider> {
+
+    @Serial
+    private static final long serialVersionUID = 2551590809359L;
 
     /**
      * Default constructor (uses default configuration).

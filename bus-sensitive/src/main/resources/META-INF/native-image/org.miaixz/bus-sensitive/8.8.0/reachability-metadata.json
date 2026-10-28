@@ -573,19 +573,6 @@
           "parameterTypes": []
         },
         {
-          "name": "contains",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "register",
-          "parameterTypes": [
-            "org.miaixz.bus.core.lang.EnumValue$Masking",
-            "org.miaixz.bus.sensitive.nimble.StrategyProvider"
-          ]
-        },
-        {
           "name": "require",
           "parameterTypes": [
             "java.lang.annotation.Annotation[]"
@@ -601,6 +588,18 @@
           "name": "require",
           "parameterTypes": [
             "org.miaixz.bus.core.lang.EnumValue$Masking"
+          ]
+        },
+        {
+          "name": "contains",
+          "parameterTypes": [
+            "org.miaixz.bus.core.lang.EnumValue$Masking"
+          ]
+        },
+        {
+          "name": "register",
+          "parameterTypes": [
+            "org.miaixz.bus.sensitive.nimble.StrategyProvider"
           ]
         }
       ]

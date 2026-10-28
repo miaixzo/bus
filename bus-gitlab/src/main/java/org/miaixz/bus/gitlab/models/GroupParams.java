@@ -36,7 +36,7 @@ import org.miaixz.bus.gitlab.models.Constants.SubgroupCreationLevel;
 public class GroupParams implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852256333908L;
+    private static final long serialVersionUID = 2550625001631L;
 
     /**
      * The name value.

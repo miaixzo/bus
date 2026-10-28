@@ -35,7 +35,7 @@ import org.miaixz.bus.image.Tag;
 public class Issuer implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852263505712L;
+    private static final long serialVersionUID = 2556208000001L;
 
     /**
      * The local namespace entity id value.

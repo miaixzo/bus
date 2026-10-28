@@ -18,10 +18,8 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Curator internals for current-state storage, revision history, source adapters, and effective-value resolution.
- * <p>
- * {@code ItemStore}, {@code RevisionStore}, and {@code ReferenceStore} are the required runtime sources of truth. Cache
- * entries accelerate reads but never replace durable persistence or silently accept writes when a store is absent.
+ * Current-state management preparation and protected storage reads. ItemEditor owns sensitive-member intent; no save
+ * operation generates a publication snapshot.
  *
  * @author Kimi Liu
  */

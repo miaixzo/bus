@@ -19,117 +19,90 @@
 */
 package org.miaixz.bus.cortex.setting.secret;
 
-import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.cortex.setting.item.Item;
-import org.miaixz.bus.cortex.setting.item.ItemExposure;
-import org.miaixz.bus.cortex.setting.item.ItemNormalizer;
-import org.miaixz.bus.cortex.setting.revision.Revision;
+import java.util.Map;
+import java.util.TreeMap;
+
+import org.miaixz.bus.cortex.setting.item.Item.Property;
+import org.miaixz.bus.cortex.setting.item.ItemCodec;
+import org.miaixz.bus.extra.json.JsonSchema;
+import org.miaixz.bus.extra.json.JsonValue;
 
 /**
- * Masks protected values in management responses.
+ * Safe projection over already parsed definitions; never reparses an entity.
  *
  * @author Kimi Liu
  */
-public class SecretMasker {
+public final class SecretMasker {
 
     /**
-     * Compile-time compatibility placeholder composed exclusively from existing bus symbols. Whole-source and per-key
-     * safe projections share the unchanged four-character value.
+     * Fixed safe-view placeholder, never an editable secret value.
      */
-    public static final String MASK = Symbol.STAR + Symbol.STAR + Symbol.STAR + Symbol.STAR;
+    public static final String MASK = "****";
 
     /**
-     * Creates SecretMasker with explicitly bound collaborators. Dependencies are not discovered implicitly.
+     * Creates a stateless projector.
      */
-    public SecretMasker() {
-        // No initialization required.
+    public SecretMasker() { // No initialization required.
     }
 
     /**
-     * Masks a scalar without revealing its prefix, suffix, or length.
+     * Masks a present string.
      *
-     * @param value value to mask
-     * @return masked value, or the original null or empty value
+     * @param value original value
+     * @return fixed mask or absent
      */
     public String mask(String value) {
-        if (value == null || value.isEmpty()) {
-            return value;
-        }
-        return MASK;
+        return value == null ? null : MASK;
     }
 
     /**
-     * Returns a masked copy for management responses when the entry is secret or encrypted.
+     * Masks sensitive business values and protected dynamic attributes.
      *
-     * @param entry source entry
-     * @return masked copy
+     * @param document parsed definition
+     * @return safe immutable projection
      */
-    public Item mask(Item entry) {
-        if (entry == null) {
+    public ItemCodec.Document mask(ItemCodec.Document document) {
+        Map<String, Property> properties = new TreeMap<>();
+        document.properties().forEach((name, p) -> {
+            String path = name.isEmpty() || name.startsWith("/") ? name : JsonSchema.pointer("", name);
+            Property changed = p.with("value", member(p.value(), path, document))
+                    .with("default", member(p.defaultValue(), path, document));
+            if (document.protection() != ItemCodec.Protection.NONE)
+                for (String attribute : p.attributes().keySet())
+                    if (ItemCodec.isAttribute(attribute))
+                        changed = changed.with(attribute, new JsonValue.StringValue(MASK));
+            properties.put(name, changed);
+        });
+        return new ItemCodec.Document(properties, document.rules(), document.schema(), document.management(),
+                document.protection());
+    }
+
+    /**
+     * Masks one member using predecoded sensitivity.
+     *
+     * @param value    node
+     * @param path     definition path
+     * @param document rules
+     * @return safe node
+     */
+    private JsonValue member(JsonValue value, String path, ItemCodec.Document document) {
+        if (value == null)
             return null;
-        }
-        Item copy = Item.builder().id(entry.getId()).tenant_id(entry.getTenant_id()).scope(entry.getScope())
-                .app_id(entry.getApp_id()).stable_id(entry.getStable_id()).gray_id(entry.getGray_id())
-                .draft_id(entry.getDraft_id()).state(entry.getState()).rollout_id(entry.getRollout_id())
-                .kind(entry.getKind()).code(entry.getCode()).fingerprint(entry.getFingerprint())
-                .content(entry.getContent()).format(entry.getFormat()).editor(entry.getEditor())
-                .source(entry.getSource()).spec(entry.getSpec()).exposure(entry.getExposure())
-                .encrypted(entry.getEncrypted()).payload(entry.getPayload()).labels(entry.getLabels())
-                .extension(entry.getExtension()).checksum(entry.getChecksum()).edition(entry.getEdition())
-                .generation(entry.getGeneration()).description(entry.getDescription()).status(entry.getStatus())
-                .creator(entry.getCreator()).created(entry.getCreated()).modifier(entry.getModifier())
-                .modified(entry.getModified()).build();
-        if (ItemNormalizer.isSecret(entry) || protectedContent(entry.getEncrypted(), entry.getExposure())) {
-            copy.setContent(mask(entry.getContent()));
-            copy.setPayload(mask(entry.getPayload()));
-            copy.setSpec(mask(entry.getSpec()));
-            copy.setExtension(mask(entry.getExtension()));
-        }
-        return copy;
-    }
-
-    /**
-     * Returns a masked copy for {@code setting.revision} management responses.
-     *
-     * @param revision source revision
-     * @return masked copy
-     */
-    public Revision mask(Revision revision) {
-        if (revision == null) {
-            return null;
-        }
-        Revision copy = Revision.builder().id(revision.getId()).tenant_id(revision.getTenant_id())
-                .item_id(revision.getItem_id()).rollout_id(revision.getRollout_id()).source_id(revision.getSource_id())
-                .revision(revision.getRevision()).edition(revision.getEdition()).generation(revision.getGeneration())
-                .content(revision.getContent()).format(revision.getFormat()).editor(revision.getEditor())
-                .payload(revision.getPayload()).source(revision.getSource()).spec(revision.getSpec())
-                .exposure(revision.getExposure()).encrypted(revision.getEncrypted()).labels(revision.getLabels())
-                .extension(revision.getExtension()).checksum(revision.getChecksum()).operation(revision.getOperation())
-                .reference(revision.getReference()).secrets(revision.getSecrets())
-                .description(revision.getDescription()).status(revision.getStatus()).creator(revision.getCreator())
-                .created(revision.getCreated()).modifier(revision.getModifier()).modified(revision.getModified())
-                .build();
-        if ("SECRET".equalsIgnoreCase(revision.getSource() == null ? "" : revision.getSource().trim())
-                || protectedContent(revision.getEncrypted(), revision.getExposure())) {
-            copy.setContent(mask(revision.getContent()));
-            copy.setPayload(mask(revision.getPayload()));
-            copy.setSpec(mask(revision.getSpec()));
-            copy.setExtension(mask(revision.getExtension()));
-            copy.setSecrets(mask(revision.getSecrets()));
-            copy.setReference(mask(revision.getReference()));
-        }
-        return copy;
-    }
-
-    /**
-     * Tests whether content requires management-response masking.
-     *
-     * @param encrypted persisted encryption flag
-     * @param exposure  persisted exposure policy
-     * @return {@code true} when the content is encrypted or secret
-     */
-    private boolean protectedContent(Integer encrypted, String exposure) {
-        return ItemNormalizer.isEncryptedFlagEnabled(encrypted) || ItemExposure.SECRET.name().equals(exposure);
+        if (document.protection() == ItemCodec.Protection.WHOLE)
+            return new JsonValue.StringValue(MASK);
+        JsonValue result = value;
+        for (var rule : document.rules().entrySet())
+            if (rule.getValue().sensitive()) {
+                String key = rule.getKey();
+                if (key.isEmpty() || key.equals(path) || path.startsWith(key + "/"))
+                    return new JsonValue.StringValue(MASK);
+                if (path.isEmpty() || key.startsWith(path + "/")) {
+                    String relative = key.substring(path.length());
+                    if (ItemCodec.at(result, relative) != null)
+                        result = ItemCodec.write(result, relative, new JsonValue.StringValue(MASK), false);
+                }
+            }
+        return result;
     }
 
 }

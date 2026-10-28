@@ -33,7 +33,7 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class LicenseTemplate implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852260622196L;
+    private static final long serialVersionUID = 2550825000001L;
 
     /**
      * The key value.

@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.core.lang.annotation.resolve.scanner;
 
+import java.io.Serial;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Proxy;
@@ -122,6 +123,9 @@ public class TypeAnnotationScanner extends AbstractTypeAnnotationScanner<TypeAnn
      * @author Kimi Liu
      */
     public static class JdkProxyClassConverter implements UnaryOperatorX<Class<?>> {
+
+        @Serial
+        private static final long serialVersionUID = 2536651061801L;
 
         /**
          * If {@code sourceClass} is a JDK proxy class, recursively returns the superclass until a non-proxy class is

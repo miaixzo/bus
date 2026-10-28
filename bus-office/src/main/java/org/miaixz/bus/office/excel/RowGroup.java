@@ -37,7 +37,7 @@ import org.miaixz.bus.core.xyz.CollKit;
 public class RowGroup implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852283968653L;
+    private static final long serialVersionUID = 2551916653151L;
 
     /**
      * Group name.

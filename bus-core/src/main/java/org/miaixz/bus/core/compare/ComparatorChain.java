@@ -36,7 +36,7 @@ import org.miaixz.bus.core.lang.Chain;
 public class ComparatorChain<E> implements Chain<Comparator<E>, ComparatorChain<E>>, Comparator<E>, Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852260773785L;
+    private static final long serialVersionUID = 2536135000001L;
 
     /**
      * The list of comparators in the chain.

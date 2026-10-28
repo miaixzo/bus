@@ -20,6 +20,8 @@
 package org.miaixz.bus.setting;
 
 import java.io.*;
+import java.io.Reader;
+import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
@@ -63,7 +65,7 @@ public class Loader {
     /**
      * The character set used to read the settings file.
      */
-    private java.nio.charset.Charset charset;
+    private Charset charset;
 
     /**
      * Whether to enable variable substitution.
@@ -122,7 +124,7 @@ public class Loader {
      * @param charset       The character set to use.
      * @param isUseVariable {@code true} to enable variable substitution.
      */
-    public Loader(final java.nio.charset.Charset charset, final boolean isUseVariable) {
+    public Loader(final Charset charset, final boolean isUseVariable) {
         this.charset = charset;
         this.isUseVariable = isUseVariable;
     }
@@ -426,7 +428,7 @@ public class Loader {
      * @throws IOException if an I/O error occurs.
      */
     public IniSetting read(File file) throws IOException {
-        try (java.io.Reader reader = new FileReader(file)) {
+        try (Reader reader = new FileReader(file)) {
             return read(reader);
         }
     }
@@ -439,7 +441,7 @@ public class Loader {
      * @throws IOException if an I/O error occurs.
      */
     public IniSetting read(Path path) throws IOException {
-        try (java.io.Reader reader = Files.newBufferedReader(path)) {
+        try (Reader reader = Files.newBufferedReader(path)) {
             return read(reader);
         }
     }
@@ -464,7 +466,7 @@ public class Loader {
      * @return The parsed INI data as an {@link IniSetting}.
      * @throws IOException if an I/O error occurs.
      */
-    protected IniSetting defaultFormat(java.io.Reader reader) throws IOException {
+    protected IniSetting defaultFormat(Reader reader) throws IOException {
         return defaultFormat(reader, Normal._16);
     }
 
@@ -476,7 +478,7 @@ public class Loader {
      * @return The parsed INI data as an {@link IniSetting}.
      * @throws IOException if an I/O error occurs.
      */
-    protected IniSetting defaultFormat(java.io.Reader reader, int builderCapacity) throws IOException {
+    protected IniSetting defaultFormat(Reader reader, int builderCapacity) throws IOException {
         final long startedAt = System.nanoTime();
         Format format = getFormatter();
         List<IniElement> iniElements = new ArrayList<>();

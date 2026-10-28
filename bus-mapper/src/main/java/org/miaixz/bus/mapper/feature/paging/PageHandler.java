@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.mapper.feature.paging;
 
+import java.io.Serial;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.*;
@@ -76,6 +77,9 @@ import org.miaixz.bus.mapper.handler.MapperHandler;
  * @author Kimi Liu
  */
 public class PageHandler<T> extends AbstractSqlHandler implements MapperHandler<T> {
+
+    @Serial
+    private static final long serialVersionUID = 2551599500001L;
 
     /**
      * Cache for database dialect detection (JDBC URL -> Dialect)

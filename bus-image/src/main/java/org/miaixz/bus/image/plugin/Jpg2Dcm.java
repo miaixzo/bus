@@ -40,6 +40,8 @@ import org.miaixz.bus.image.galaxy.data.ElementDictionary;
 import org.miaixz.bus.image.galaxy.data.VR;
 import org.miaixz.bus.image.galaxy.io.ImageOutputStream;
 import org.miaixz.bus.image.galaxy.io.SAXReader;
+import org.miaixz.bus.image.nimble.ExifData;
+import org.miaixz.bus.image.nimble.ExifToDicom;
 import org.miaixz.bus.image.nimble.codec.XPEGParser;
 import org.miaixz.bus.image.nimble.codec.jpeg.JPEG;
 import org.miaixz.bus.image.nimble.codec.jpeg.JPEGParser;
@@ -243,6 +245,9 @@ public class Jpg2Dcm {
 
         Attributes fileMetadata = SAXReader.parse(IoKit.openFileOrURL(type.getSampleMetadataFile(photo)));
         fileMetadata.addAll(staticMetadata);
+        if (type == ContentType.IMAGE_JPEG) {
+            addExifAttributes(fileMetadata, srcFilePath, !noAPPn);
+        }
         supplementMissingValue(fileMetadata, Tag.SOPClassUID, type.getSOPClassUID(photo));
         try (SeekableByteChannel channel = Files.newByteChannel(srcFilePath);
                 ImageOutputStream dos = new ImageOutputStream(destFilePath.toFile())) {
@@ -273,6 +278,21 @@ public class Jpg2Dcm {
                 codeStreamSize -= len;
             } while (codeStreamSize > 0);
             dos.writeHeader(Tag.SequenceDelimitationItem, null, 0);
+        }
+    }
+
+    /**
+     * Completes unset DICOM attributes from JPEG EXIF metadata.
+     *
+     * @param attributes         the attributes to complete without overwriting caller values
+     * @param jpegFile           the JPEG file
+     * @param includeIdentifying whether serial numbers, owner information and GPS may be mapped
+     */
+    public static void addExifAttributes(Attributes attributes, Path jpegFile, boolean includeIdentifying) {
+        try {
+            ExifToDicom.fill(ExifData.readJpeg(jpegFile), attributes, includeIdentifying);
+        } catch (IOException | RuntimeException e) {
+            Logger.warn("Cannot read the EXIF metadata of {}", jpegFile, e);
         }
     }
 

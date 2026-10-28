@@ -22,6 +22,7 @@ package org.miaixz.bus.cortex.health;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.net.Port;
 import org.miaixz.bus.core.net.Protocol;
+import org.miaixz.bus.core.xyz.DateKit;
 import org.miaixz.bus.cortex.*;
 import org.miaixz.bus.logger.Logger;
 
@@ -47,7 +48,7 @@ public class HttpProber implements Prober {
     /**
      * Creates an HTTP prober with an explicit timeout.
      *
-     * @param timeoutMs timeout in milliseconds
+     * @param timeoutMs timeout in milliseconds, clamped to at least 1
      */
     public HttpProber(long timeoutMs) {
         this.timeoutMs = Math.max(1L, timeoutMs);
@@ -57,28 +58,34 @@ public class HttpProber implements Prober {
      * Returns whether this prober can probe the supplied instance through HTTP.
      *
      * @param instance candidate instance
-     * @return {@code true} when HTTP probing is supported
+     * @return true for a non-null instance and host whose scheme is not TCP, compared case-insensitively; endpoint
+     *         validity is not checked
      */
     @Override
     public boolean supports(Instance instance) {
         return instance != null && instance.getHost() != null
-                && !Protocol.TCP.name.equalsIgnoreCase(instance.getScheme());
+                && !Protocol.TCP.name.equalsIgnoreCase(instance.healthView().getScheme());
     }
 
     /**
-     * Performs an HTTP GET request to the instance's health endpoint.
+     * Performs a GET using the instance host and port together with health.scheme and health.path. An absent scheme
+     * defaults to HTTP, an absent port to 80 even for HTTPS, and an absent health path to /health. No separate supports
+     * check is performed.
      *
-     * @param instance instance to probe
-     * @return healthy result with latency on success, fail result on error
+     * @param instance non-null instance defining the health endpoint
+     * @return healthy status for a 2xx response without a reported call error; failed status for other responses or
+     *         reported transport failures
+     * @throws NullPointerException if instance is null
      */
     @Override
     public Status check(Instance instance) {
-        String scheme = instance.getScheme() != null ? instance.getScheme() : Protocol.HTTP.name;
+        var health = instance.healthView();
+        String scheme = health.getScheme() != null ? health.getScheme() : Protocol.HTTP.name;
         String host = instance.getHost();
         int port = instance.getPort() != null ? instance.getPort() : Port._80.getPort();
-        String path = instance.getHealthPath() != null ? instance.getHealthPath() : Symbol.SLASH + "health";
+        String path = health.getPath() != null ? health.getPath() : Symbol.SLASH + "health";
         String url = scheme + Symbol.COLON + Symbol.FORWARDSLASH + host + Symbol.COLON + port + path;
-        long start = System.currentTimeMillis();
+        long start = DateKit.current();
         Logger.debug(
                 true,
                 "Cortex",
@@ -88,7 +95,7 @@ public class HttpProber implements Prober {
                 path,
                 timeoutMs);
         Callout.Response response = Callout.get(url, timeoutMs);
-        long latency = System.currentTimeMillis() - start;
+        long latency = DateKit.current() - start;
         if (response.errorMessage() != null) {
             Logger.warn(
                     false,

@@ -31,7 +31,7 @@ import org.miaixz.bus.core.basic.normal.Errors;
 public class TokenException extends UncheckedException {
 
     @Serial
-    private static final long serialVersionUID = 2852266567727L;
+    private static final long serialVersionUID = 2536910103951L;
 
     /**
      * Constructs a new TokenException with no detail message.

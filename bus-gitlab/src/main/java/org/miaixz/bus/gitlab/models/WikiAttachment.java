@@ -32,7 +32,7 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class WikiAttachment implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852283267221L;
+    private static final long serialVersionUID = 2551286303081L;
 
     /**
      * The file name value.
@@ -160,7 +160,7 @@ public class WikiAttachment implements Serializable {
     public static class Link implements Serializable {
 
         @Serial
-        private static final long serialVersionUID = 2852283337059L;
+        private static final long serialVersionUID = 2551288500001L;
 
         /**
          * The url value.

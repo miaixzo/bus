@@ -42,7 +42,7 @@ import org.miaixz.bus.extra.image.ImageKit;
 public abstract class AbstractProvider implements CaptchaProvider {
 
     @Serial
-    private static final long serialVersionUID = 2852291319897L;
+    private static final long serialVersionUID = 2553955052628L;
 
     /**
      * The width of the image.

@@ -37,7 +37,7 @@ import lombok.experimental.SuperBuilder;
 public class EngineConfig implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2869182035691L;
+    private static final long serialVersionUID = 2552885000001L;
 
     /**
      * Whether to automatically open the output directory after generation is complete.

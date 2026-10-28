@@ -36,7 +36,7 @@ import org.miaixz.bus.gitlab.support.JacksonJsonEnumCodec;
 public class CommitRef implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852239992782L;
+    private static final long serialVersionUID = 2550265355681L;
 
     /**
      * The type field.

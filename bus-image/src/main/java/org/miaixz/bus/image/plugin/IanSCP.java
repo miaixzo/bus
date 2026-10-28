@@ -21,6 +21,7 @@ package org.miaixz.bus.image.plugin;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.Serial;
 
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.image.*;
@@ -41,6 +42,9 @@ import org.miaixz.bus.logger.Logger;
  * @author Kimi Liu
  */
 public class IanSCP extends Device {
+
+    @Serial
+    private static final long serialVersionUID = 2556518001998L;
 
     /**
      * The Application Entity that accepts associations.

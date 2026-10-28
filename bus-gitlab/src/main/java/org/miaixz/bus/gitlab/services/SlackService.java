@@ -33,7 +33,7 @@ import org.miaixz.bus.gitlab.models.GitLabForm;
 public class SlackService extends NotificationService {
 
     @Serial
-    private static final long serialVersionUID = 2852285372238L;
+    private static final long serialVersionUID = 2551318153951L;
 
     /**
      * The default channel value.

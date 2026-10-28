@@ -33,7 +33,7 @@ import org.miaixz.bus.core.lang.Symbol;
 public class AAssociateRJ extends IOException {
 
     @Serial
-    private static final long serialVersionUID = 2852275733131L;
+    private static final long serialVersionUID = 2556321258001L;
 
     /**
      * The result rejected permanent value.

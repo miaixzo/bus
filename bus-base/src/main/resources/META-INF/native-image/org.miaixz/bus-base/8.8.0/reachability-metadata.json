@@ -74,6 +74,13 @@
           "parameterTypes": []
         },
         {
+          "name": "auditedFields",
+          "parameterTypes": [
+            "java.lang.Object",
+            "org.miaixz.bus.mapper.binding.function.Fn[]"
+          ]
+        },
+        {
           "name": "condition",
           "parameterTypes": []
         },
@@ -119,6 +126,10 @@
           "parameterTypes": [
             "java.util.Collection"
           ]
+        },
+        {
+          "name": "entityClass",
+          "parameterTypes": []
         },
         {
           "name": "firstFieldValue",
@@ -208,9 +219,22 @@
           ]
         },
         {
+          "name": "removalFields",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
           "name": "remove",
           "parameterTypes": [
             "java.lang.Object"
+          ]
+        },
+        {
+          "name": "remove",
+          "parameterTypes": [
+            "java.lang.Object",
+            "org.miaixz.bus.mapper.binding.condition.Condition"
           ]
         },
         {
@@ -313,6 +337,12 @@
           ]
         },
         {
+          "name": "update",
+          "parameterTypes": [
+            "org.miaixz.bus.mapper.binding.condition.Condition"
+          ]
+        },
+        {
           "name": "updateListSelective",
           "parameterTypes": [
             "java.util.List"
@@ -341,6 +371,12 @@
         {
           "name": "wrapper",
           "parameterTypes": []
+        },
+        {
+          "name": "writeCondition",
+          "parameterTypes": [
+            "org.miaixz.bus.mapper.binding.condition.Condition"
+          ]
         }
       ]
     },

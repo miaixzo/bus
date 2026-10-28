@@ -30,14 +30,18 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
+import org.springframework.boot.context.properties.bind.Binder;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
+import org.springframework.core.env.Environment;
+import org.springframework.util.unit.DataSize;
 
 import org.miaixz.bus.spring.context.spi.ContextProvider;
 import org.miaixz.bus.spring.context.web.ContextBindingFilter;
 import org.miaixz.bus.spring.web.RequestContext;
+import org.miaixz.bus.spring.web.resolver.RequestBindingOptions;
 import org.miaixz.bus.starter.GeniusBuilder;
 
 /**
@@ -82,13 +86,17 @@ public class WebConfiguration {
      *
      * @param contextProviders ordered authenticated-context providers
      * @param requestContext   request accessor used to resolve credentials once per request
+     * @param environment      existing Servlet request-size settings; the common binding limit is the fallback
      * @return a filter that manages runtime context state around the Servlet filter chain
      */
     @Bean
     @ConditionalOnMissingBean(ContextBindingFilter.class)
     @ConditionalOnProperty(prefix = GeniusBuilder.CONTEXT, name = "web.enabled", havingValue = "true", matchIfMissing = true)
-    ContextBindingFilter contextBindingFilter(List<ContextProvider> contextProviders, RequestContext requestContext) {
-        return new ContextBindingFilter(contextProviders, requestContext);
+    ContextBindingFilter contextBindingFilter(List<ContextProvider> contextProviders, RequestContext requestContext,
+            Environment environment) {
+        long limit = Binder.get(environment).bind("server.tomcat.max-http-form-post-size", DataSize.class)
+                .orElse(DataSize.ofBytes(new RequestBindingOptions().getMaxRequestBodySize())).toBytes();
+        return new ContextBindingFilter(contextProviders, requestContext, limit);
     }
 
     /**

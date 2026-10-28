@@ -21,6 +21,7 @@ package org.miaixz.bus.image.plugin;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.Serial;
 import java.security.GeneralSecurityException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -53,6 +54,9 @@ import org.miaixz.bus.logger.Logger;
  * @author Kimi Liu
  */
 public class MoveSCU extends Device implements AutoCloseable {
+
+    @Serial
+    private static final long serialVersionUID = 2556520153851L;
 
     /**
      * Default filter for attributes to be read from an input file.

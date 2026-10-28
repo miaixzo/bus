@@ -28,6 +28,7 @@ import com.sun.jna.platform.win32.*;
 import com.sun.jna.platform.win32.Advapi32Util.EventLogIterator;
 import com.sun.jna.platform.win32.Advapi32Util.EventLogRecord;
 import com.sun.jna.platform.win32.COM.WbemcliUtil;
+import com.sun.jna.platform.win32.Win32Exception;
 import com.sun.jna.platform.win32.WinDef.DWORD;
 import com.sun.jna.platform.win32.WinNT.HANDLE;
 import com.sun.jna.platform.win32.WinNT.LUID;
@@ -781,7 +782,7 @@ public class WindowsOperatingSystem extends AbstractOperatingSystem {
                 svcArray.add(new OSService(service.lpDisplayName, service.ServiceStatusProcess.dwProcessId, state));
             }
             return svcArray;
-        } catch (com.sun.jna.platform.win32.Win32Exception ex) {
+        } catch (Win32Exception ex) {
             Logger.error(
                     false,
                     "Health",

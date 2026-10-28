@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.gitlab.models;
 
+import java.io.Serial;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -29,6 +30,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * @author Kimi Liu
  */
 public class ProjectTemplateDetail extends ProjectTemplate {
+
+    @Serial
+    private static final long serialVersionUID = 2551111651829L;
 
     /**
      * Short display name for the template.

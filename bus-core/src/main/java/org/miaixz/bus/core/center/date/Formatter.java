@@ -22,6 +22,7 @@ package org.miaixz.bus.core.center.date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.*;
+import java.time.Month;
 import java.time.chrono.ChronoLocalDate;
 import java.time.chrono.ChronoLocalDateTime;
 import java.time.chrono.Era;
@@ -403,7 +404,7 @@ public class Formatter {
             return null;
         }
 
-        if (time instanceof java.time.Month) {
+        if (time instanceof Month) {
             return time.toString();
         }
 
@@ -441,8 +442,7 @@ public class Formatter {
             return null;
         }
 
-        if (time instanceof DayOfWeek || time instanceof java.time.Month || time instanceof Era
-                || time instanceof MonthDay) {
+        if (time instanceof DayOfWeek || time instanceof Month || time instanceof Era || time instanceof MonthDay) {
             return time.toString();
         }
 

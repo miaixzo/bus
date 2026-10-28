@@ -45,15 +45,15 @@ public class ImpactAnalysis {
     /**
      * Finds all services transitively impacted when the given service changes.
      *
-     * @param serviceId service that changed
+     * @param assetId service that changed
      * @return list of impacted service IDs (BFS order, excluding the source)
      */
-    public List<String> findImpacted(String serviceId) {
+    public List<String> findImpacted(String assetId) {
         List<String> impacted = new ArrayList<>();
         Set<String> visited = new HashSet<>();
         Queue<String> queue = new ArrayDeque<>();
-        queue.add(serviceId);
-        visited.add(serviceId);
+        queue.add(assetId);
+        visited.add(assetId);
         while (!queue.isEmpty()) {
             String current = queue.poll();
             for (String downstream : graph.getDownstream(current)) {
@@ -69,13 +69,13 @@ public class ImpactAnalysis {
     /**
      * Returns the shortest downstream path from the source to every impacted service.
      *
-     * @param serviceId source service
+     * @param assetId source service
      * @return impacted-path map
      */
-    public Map<String, List<String>> paths(String serviceId) {
+    public Map<String, List<String>> paths(String assetId) {
         Map<String, List<String>> paths = new LinkedHashMap<>();
         Queue<List<String>> queue = new ArrayDeque<>();
-        queue.add(List.of(serviceId));
+        queue.add(List.of(assetId));
         while (!queue.isEmpty()) {
             List<String> path = queue.poll();
             String current = path.getLast();

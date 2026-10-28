@@ -32,7 +32,7 @@ import java.util.zip.Checksum;
 public class CRC8 implements Checksum, Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852278059978L;
+    private static final long serialVersionUID = 2536500000001L;
 
     /**
      * The initial value for the CRC calculation.

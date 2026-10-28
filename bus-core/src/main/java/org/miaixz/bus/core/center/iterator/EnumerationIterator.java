@@ -34,7 +34,7 @@ import java.util.Iterator;
 public class EnumerationIterator<E> implements IterableIterator<E>, Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852259861780L;
+    private static final long serialVersionUID = 2535802150001L;
 
     /**
      * The underlying {@link Enumeration} being adapted.

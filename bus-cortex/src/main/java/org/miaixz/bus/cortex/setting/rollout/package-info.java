@@ -18,7 +18,8 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Persistent rollout entities and durable store contracts for configuration-center implementations.
+ * Editable publication selection, immutable approval candidates, workflow states, graph differences and
+ * trusted-instance gray selectors. No formal version exists until atomic publication succeeds.
  *
  * @author Kimi Liu
  */

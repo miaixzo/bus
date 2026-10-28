@@ -33,7 +33,7 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class ExternalStatusCheck implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852253601683L;
+    private static final long serialVersionUID = 2550391500001L;
 
     /**
      * The id value.

@@ -28,6 +28,7 @@ import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
+import org.miaixz.bus.core.lang.tuple.Triplet;
 import org.miaixz.bus.core.lang.tuple.Tuple;
 import org.miaixz.bus.health.Builder;
 import org.miaixz.bus.health.Executor;
@@ -123,107 +124,100 @@ final class FreeBsdCentralProcessor extends AbstractCentralProcessor {
      * @return the parse topology result
      */
     private static List<CentralProcessor.LogicalProcessor> parseTopology() {
-        String[] topology = BsdSysctlKit.sysctl("kern.sched.topology_spec", Normal.EMPTY).split("[\\n\\r]");
-        /*-
-         * Sample output:
-         *
-        <groups>
-        <group level="1" cache-level="0">
-         <cpu count="24" mask="ffffff">0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23</cpu>
-         <children>
-          <group level="2" cache-level="2">
-           <cpu count="12" mask="fff">0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11</cpu>
-           <children>
-            <group level="3" cache-level="1">
-             <cpu count="2" mask="3">0, 1</cpu>
-             <flags><flag name="THREAD">THREAD group</flag><flag name="SMT">SMT group</flag></flags>
-            </group>
-            ...
-        * On FreeBSD 13.1, the output may contain a csv value for the mask:
-        <groups>
-         <group level="1" cache-level="3">
-          <cpu count="8" mask="ff,0,0,0">0, 1, 2, 3, 4, 5, 6, 7</cpu>
-          <children>
-           <group level="2" cache-level="2">
-            <cpu count="2" mask="3,0,0,0">0, 1</cpu>
-            ...
-        *
-        * Opens with <groups>
-        * <group> level 1 identifies all the processors via bitmask, should only be one
-        * <group> level 2 separates by physical package
-        * <group> level 3 puts hyperthreads together: if THREAD or SMT or HTT all the CPUs are one physical
-        * If there is no level 3, then all logical processors are physical
-        */
-        // Create lists of the group bitmasks
-        long group1 = 1L;
-        List<Long> group2 = new ArrayList<>();
-        List<Long> group3 = new ArrayList<>();
-        int groupLevel = 0;
-        for (String topo : topology) {
-            if (topo.contains("<group level=")) {
-                groupLevel++;
-            } else if (topo.contains("</group>")) {
-                groupLevel--;
-            } else if (topo.contains("<cpu")) {
-                // Find <cpu> tag and extract bits
-                Matcher m = CPUMASK.matcher(topo);
-                if (m.matches()) {
-                    // If csv of hex values like "f,0,0,0", parse the first value
-                    String csvMatch = m.group(1);
-                    String[] csvTokens = csvMatch.split(Symbol.COMMA);
-                    String firstVal = csvTokens[0];
+        String specification = BsdSysctlKit.sysctl("kern.sched.topology_spec", Normal.EMPTY);
+        List<TopologyGroup> groups = new ArrayList<>();
+        Deque<TopologyGroup> openGroups = new ArrayDeque<>();
+        for (String line : specification.split("[\\n\\r]")) {
+            if (line.contains("<group level=")) {
+                TopologyGroup group = new TopologyGroup(openGroups.size() + Normal._1);
+                groups.add(group);
+                openGroups.push(group);
+            } else if (line.contains("</group>")) {
+                openGroups.poll();
+            } else if (!openGroups.isEmpty()) {
+                TopologyGroup group = openGroups.element();
+                if (line.contains("<cpu")) {
+                    group.cpus.addAll(parseCpuList(line));
+                } else if (line.contains("<flag name=\"THREAD\"") || line.contains("<flag name=\"SMT\"")
+                        || line.contains("<flag name=\"HTT\"")) {
+                    group.thread = true;
+                }
+            }
+        }
+        if (groups.isEmpty()) {
+            return new ArrayList<>();
+        }
+        Map<Integer, Integer> coreOf = new HashMap<>();
+        Map<Integer, Integer> packageOf = new HashMap<>();
+        int packageNumber = Normal._0;
+        for (TopologyGroup group : groups) {
+            if (group.thread && !group.cpus.isEmpty()) {
+                int first = Collections.min(group.cpus);
+                for (int cpu : group.cpus) {
+                    coreOf.put(cpu, first);
+                }
+            } else if (group.level == Normal._2) {
+                for (int cpu : group.cpus) {
+                    packageOf.put(cpu, packageNumber);
+                }
+                packageNumber++;
+            }
+        }
+        List<CentralProcessor.LogicalProcessor> processors = new ArrayList<>();
+        Map<Integer, Integer> coreNumbers = new HashMap<>();
+        for (int cpu : new TreeSet<>(groups.get(Normal._0).cpus)) {
+            int core = coreNumbers.computeIfAbsent(coreOf.getOrDefault(cpu, cpu), unused -> coreNumbers.size());
+            processors.add(
+                    new CentralProcessor.LogicalProcessor(cpu, core, packageOf.getOrDefault(cpu, Normal._0),
+                            Normal._0));
+        }
+        return processors;
+    }
 
-                    // Regex guarantees parsing digits so we won't get a
-                    // NumberFormatException
-                    long parsedVal = Parsing.hexStringToLong(firstVal, 0);
-                    switch (groupLevel) {
-                        case 1:
-                            group1 = parsedVal;
-                            break;
-
-                        case 2:
-                            group2.add(parsedVal);
-                            break;
-
-                        case 3:
-                            group3.add(parsedVal);
-                            break;
-
-                        default:
-                            break;
+    /** Parses CPU numbers from a topology specification line. */
+    private static List<Integer> parseCpuList(String line) {
+        List<Integer> cpus = new ArrayList<>();
+        int open = line.indexOf(Symbol.C_GT);
+        int close = line.indexOf("</cpu>");
+        if (open >= Normal._0 && close > open) {
+            for (String value : line.substring(open + Normal._1, close).split(Symbol.COMMA)) {
+                int cpu = Parsing.parseIntOrDefault(value.trim(), Normal.__1);
+                if (cpu >= Normal._0) {
+                    cpus.add(cpu);
+                }
+            }
+        }
+        if (cpus.isEmpty()) {
+            Matcher matcher = CPUMASK.matcher(line);
+            if (matcher.find()) {
+                String[] words = matcher.group(Normal._1).split(Symbol.COMMA);
+                for (int word = Normal._0; word < words.length; word++) {
+                    long bits = Parsing.hexStringToLong(words[word], 0L);
+                    for (int bit = Normal._0; bit < Long.SIZE; bit++) {
+                        if ((bits & 1L << bit) != 0L) {
+                            cpus.add(word * Long.SIZE + bit);
+                        }
                     }
                 }
             }
         }
-        return matchBitmasks(group1, group2, group3);
+        return cpus;
     }
 
-    /**
-     * Returns the match bitmasks result.
-     *
-     * @param group1 the group1
-     * @param group2 the group2
-     * @param group3 the group3
-     * @return the match bitmasks result
-     */
-    private static List<CentralProcessor.LogicalProcessor> matchBitmasks(
-            long group1,
-            List<Long> group2,
-            List<Long> group3) {
-        List<CentralProcessor.LogicalProcessor> logProcs = new ArrayList<>();
-        // Lowest and Highest set bits, indexing from 0
-        int lowBit = Long.numberOfTrailingZeros(group1);
-        int hiBit = 63 - Long.numberOfLeadingZeros(group1);
-        // Create logical processors for this core
-        for (int i = lowBit; i <= hiBit; i++) {
-            if ((group1 & (1L << i)) > 0) {
-                int numaNode = 0;
-                CentralProcessor.LogicalProcessor logProc = new CentralProcessor.LogicalProcessor(i,
-                        getMatchingBitmask(group3, i), getMatchingBitmask(group2, i), numaNode);
-                logProcs.add(logProc);
-            }
+    /** A CPU group from the scheduler topology specification. */
+    private static final class TopologyGroup {
+
+        /** Nesting level. */
+        private final int level;
+        /** CPUs in the group. */
+        private final List<Integer> cpus = new ArrayList<>();
+        /** Whether the group represents hardware threads of one core. */
+        private boolean thread;
+
+        /** Creates a topology group. */
+        private TopologyGroup(int level) {
+            this.level = level;
         }
-        return logProcs;
     }
 
     /**
@@ -249,30 +243,15 @@ final class FreeBsdCentralProcessor extends AbstractCentralProcessor {
     }
 
     /**
-     * Returns the matching bitmask.
-     *
-     * @param bitmasks the bitmasks
-     * @param lp       the lp
-     * @return the get matching bitmask result
-     */
-    private static int getMatchingBitmask(List<Long> bitmasks, int lp) {
-        for (int j = 0; j < bitmasks.size(); j++) {
-            if ((bitmasks.get(j).longValue() & (1L << lp)) != 0) {
-                return j;
-            }
-        }
-        return 0;
-    }
-
-    /**
      * Queries the processor id.
      *
      * @return the query processor id result
      */
     @Override
     protected CentralProcessor.ProcessorIdentifier queryProcessorId() {
-        final java.util.regex.Pattern identifierPattern = java.util.regex.Pattern
-                .compile("Origin=\"([^\"]*)\".*Id=(\\S+).*Family=(\\S+).*Model=(\\S+).*Stepping=(\\S+).*");
+        final java.util.regex.Pattern originPattern = java.util.regex.Pattern.compile("Origin\\s*=.*");
+        final java.util.regex.Pattern fieldPattern = java.util.regex.Pattern
+                .compile("(?<!\\w)(\\w++)\\s*+=\\s*+(\"[^\"]*+\"|\\S++)");
         final java.util.regex.Pattern featuresPattern = java.util.regex.Pattern.compile("Features=(\\S+)<.*");
 
         String cpuVendor = Normal.EMPTY;
@@ -294,15 +273,20 @@ final class FreeBsdCentralProcessor extends AbstractCentralProcessor {
             // Prefer hw.model to this one
             if (line.startsWith("CPU:") && cpuName.isEmpty()) {
                 cpuName = line.replace("CPU:", Normal.EMPTY).trim();
-            } else if (line.startsWith("Origin=")) {
-                Matcher m = identifierPattern.matcher(line);
-                if (m.matches()) {
-                    cpuVendor = m.group(1);
-                    processorIdBits |= Parsing.decodeLongOrDefault(m.group(2), 0L);
-                    cpuFamily = Integer.toString(Parsing.decodeIntOrDefault(m.group(3), 0));
-                    cpuModel = Integer.toString(Parsing.decodeIntOrDefault(m.group(4), 0));
-                    cpuStepping = Integer.toString(Parsing.decodeIntOrDefault(m.group(5), 0));
+            } else if (originPattern.matcher(line).matches()) {
+                Map<String, String> fields = new HashMap<>();
+                Matcher matcher = fieldPattern.matcher(line);
+                while (matcher.find()) {
+                    fields.put(matcher.group(Normal._1), matcher.group(Normal._2));
                 }
+                cpuVendor = Parsing
+                        .getStringBetween(fields.getOrDefault("Origin", Normal.EMPTY), Symbol.C_DOUBLE_QUOTES);
+                int id = Parsing.decodeIntOrDefault(fields.getOrDefault("Id", Normal.EMPTY), Normal._0);
+                processorIdBits |= Parsing.unsignedIntToLong(id);
+                Triplet<Integer, Integer, Integer> decoded = cpuidToFamilyModelStepping(id);
+                cpuFamily = Integer.toString(Parsing.decodeIntOrDefault(fields.get("Family"), decoded.getLeft()));
+                cpuModel = Integer.toString(Parsing.decodeIntOrDefault(fields.get("Model"), decoded.getMiddle()));
+                cpuStepping = Integer.toString(Parsing.decodeIntOrDefault(fields.get("Stepping"), decoded.getRight()));
             } else if (line.startsWith("Features=")) {
                 Matcher m = featuresPattern.matcher(line);
                 if (m.matches()) {
@@ -505,7 +489,7 @@ final class FreeBsdCentralProcessor extends AbstractCentralProcessor {
      */
     @Override
     public long queryContextSwitches() {
-        return Parsing.unsignedIntToLong(BsdSysctlKit.sysctl("vm.stats.sys.v_swtch", 0));
+        return BsdSysctlKit.sysctl("vm.stats.sys.v_swtch", 0L);
     }
 
     /**
@@ -515,7 +499,7 @@ final class FreeBsdCentralProcessor extends AbstractCentralProcessor {
      */
     @Override
     public long queryInterrupts() {
-        return Parsing.unsignedIntToLong(BsdSysctlKit.sysctl("vm.stats.sys.v_intr", 0));
+        return BsdSysctlKit.sysctl("vm.stats.sys.v_intr", 0L);
     }
 
 }

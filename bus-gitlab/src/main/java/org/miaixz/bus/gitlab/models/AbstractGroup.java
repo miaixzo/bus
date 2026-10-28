@@ -41,7 +41,7 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public abstract class AbstractGroup<G extends AbstractGroup<G>> implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852233810677L;
+    private static final long serialVersionUID = 2550128838251L;
 
     /**
      * The id value.

@@ -33,7 +33,7 @@ import org.miaixz.bus.core.lang.Normal;
 public class PatternFinder extends TextFinder {
 
     @Serial
-    private static final long serialVersionUID = 2852237367830L;
+    private static final long serialVersionUID = 2538311505001L;
 
     /**
      * The compiled regular expression pattern.

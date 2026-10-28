@@ -31,7 +31,7 @@ import org.miaixz.bus.core.basic.normal.Errors;
 public class DateException extends InternalException {
 
     @Serial
-    private static final long serialVersionUID = 2852252950525L;
+    private static final long serialVersionUID = 2536695000001L;
 
     /**
      * Constructs a new DateException with no detail message.

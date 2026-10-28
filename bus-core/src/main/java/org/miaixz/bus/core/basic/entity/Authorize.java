@@ -38,7 +38,7 @@ import lombok.experimental.SuperBuilder;
 public class Authorize extends Query {
 
     @Serial
-    private static final long serialVersionUID = 2852290950589L;
+    private static final long serialVersionUID = 2535299103862L;
 
     /**
      * The identifier for the current tenant.

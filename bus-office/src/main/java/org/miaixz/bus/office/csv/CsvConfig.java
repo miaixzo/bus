@@ -38,7 +38,7 @@ import org.miaixz.bus.core.lang.Symbol;
 public class CsvConfig<T extends CsvConfig<T>> implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852282577197L;
+    private static final long serialVersionUID = 2551895850001L;
 
     /**
      * Field separator, default is comma ','.

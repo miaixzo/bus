@@ -33,7 +33,7 @@ import java.util.Objects;
 public class AnnotationLookupKey implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852289137230L;
+    private static final long serialVersionUID = 2536630100332L;
 
     /**
      * The annotated element (Class, Method, Field, etc.).

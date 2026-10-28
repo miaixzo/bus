@@ -20,6 +20,9 @@
 package org.miaixz.bus.core.xyz;
 
 import java.io.*;
+import java.net.JarURLConnection;
+import java.net.URL;
+import java.net.URLConnection;
 import java.nio.file.*;
 import java.nio.file.FileSystem;
 import java.util.ArrayList;
@@ -998,6 +1001,38 @@ public class ZipKit {
         }
         try {
             return new JarFile(jarFileUrl);
+        } catch (final IOException e) {
+            throw new InternalException(e);
+        }
+    }
+
+    /**
+     * Opens the JAR file referenced by a URL, optionally using the URL connection cache. For connections other than
+     * {@link JarURLConnection}, extracts the archive path before a WAR or JAR separator when present.
+     * <p>
+     * When {@code useCaches} is {@code false}, the caller owns the returned JAR file and must close it. When it is
+     * {@code true}, the returned instance may be shared and must not be closed by the caller.
+     *
+     * @param url       The URL referencing the JAR file or an entry within it.
+     * @param useCaches Whether to allow the URL connection to use a cached JAR file.
+     * @return The JAR file.
+     * @throws InternalException If an I/O error occurs while opening the JAR file.
+     */
+    public static JarFile ofJar(final URL url, final boolean useCaches) throws InternalException {
+        try {
+            final URLConnection connection = url.openConnection();
+            if (connection instanceof JarURLConnection jarConnection) {
+                if (!useCaches) {
+                    jarConnection.setUseCaches(false);
+                }
+                return jarConnection.getJarFile();
+            }
+            final String urlFile = url.getFile();
+            int separatorIndex = urlFile.indexOf(Normal.WAR_URL_SEPARATOR);
+            if (separatorIndex == -1) {
+                separatorIndex = urlFile.indexOf(Normal.JAR_URL_SEPARATOR);
+            }
+            return separatorIndex != -1 ? ofJar(urlFile.substring(0, separatorIndex)) : new JarFile(urlFile);
         } catch (final IOException e) {
             throw new InternalException(e);
         }

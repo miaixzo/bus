@@ -36,7 +36,7 @@ import tools.jackson.databind.annotation.JsonSerialize;
 public class PersonalAccessToken implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852269203067L;
+    private static final long serialVersionUID = 2551032800001L;
 
     /**
      * The user id value.

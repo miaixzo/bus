@@ -22,7 +22,7 @@
  * Vortex gateway.
  * <p>
  * {@code VortexBridge} forwards {@code RegistryChange} payloads to the Vortex internal sync endpoint.
- * {@code ApiAssetsConverter} maps an {@code ApiAssets} combined with a live {@code Instance} into the gateway-ready
+ * {@code ApiAssetsConverter} maps an {@code ApiAssets} combined with a shared {@code Instance} into the gateway-ready
  * {@code Assets} format required by the sync endpoint, using simple setter calls with no reflection. The bridge drains
  * a bounded {@code LinkedBlockingQueue} of up to 10 000 queued events, HTTP-POSTs each one to the Vortex internal sync
  * endpoint, and retries up to a configurable maximum before discarding a failed event.

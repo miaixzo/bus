@@ -46,7 +46,7 @@ public class OpenBsdInternetProtocolStats extends AbstractInternetProtocolStats 
      */
     @Override
     public InternetProtocolStats.TcpStats getTCPv4Stats() {
-        return NetStat.queryTcpStats("netstat -s -p tcp");
+        return NetStat.queryBsdTcpStats();
     }
 
     /**

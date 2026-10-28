@@ -89,7 +89,11 @@ public class WmiKit {
         return WbemcliUtil.INSTANCE.new WmiResult<T>(propertyEnum) {
 
             /**
-             * {@inheritDoc}
+             * Returns no property value because this result represents a query that was not executed.
+             *
+             * @param property the requested WMI property
+             * @param index the requested result row index
+             * @return {@code null} for every property and row index
              */
             @Override
             public Object getValue(T property, int index) {
@@ -97,7 +101,10 @@ public class WmiKit {
             }
 
             /**
-             * {@inheritDoc}
+             * Reports an empty Variant type for every property in this unexecuted query result.
+             *
+             * @param property the requested WMI property
+             * @return {@link Variant#VT_EMPTY}
              */
             @Override
             public int getVtType(T property) {
@@ -105,7 +112,10 @@ public class WmiKit {
             }
 
             /**
-             * {@inheritDoc}
+             * Reports an empty CIM type for every property in this unexecuted query result.
+             *
+             * @param property the requested WMI property
+             * @return {@link Wbemcli#CIM_EMPTY}
              */
             @Override
             public int getCIMType(T property) {

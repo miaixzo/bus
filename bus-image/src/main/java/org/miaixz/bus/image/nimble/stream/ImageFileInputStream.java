@@ -24,6 +24,7 @@ import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+import org.miaixz.bus.image.Builder;
 import org.miaixz.bus.image.galaxy.io.ImageInputStream;
 import org.miaixz.bus.image.nimble.ImageMetaData;
 
@@ -51,7 +52,7 @@ public class ImageFileInputStream extends ImageInputStream implements ImageReade
      * @throws IOException if the operation cannot be completed.
      */
     public ImageFileInputStream(Path path) throws IOException {
-        super(Files.newInputStream(path));
+        super(new java.io.BufferedInputStream(Files.newInputStream(path), Builder.FILE_BUFFER_SIZE));
         this.path = path;
     }
 

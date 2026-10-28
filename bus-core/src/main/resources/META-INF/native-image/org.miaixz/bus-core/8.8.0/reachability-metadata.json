@@ -1,6 +1,30 @@
 {
   "reflection": [
     {
+      "type": "java.io.IOException",
+      "serializable": true
+    },
+    {
+      "type": "java.io.NotSerializableException",
+      "serializable": true
+    },
+    {
+      "type": "java.io.ObjectStreamException",
+      "serializable": true
+    },
+    {
+      "type": "java.lang.Exception",
+      "serializable": true
+    },
+    {
+      "type": "java.lang.StackTraceElement",
+      "serializable": true
+    },
+    {
+      "type": "java.lang.Throwable",
+      "serializable": true
+    },
+    {
       "type": "java.lang.annotation.Annotation",
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.annotation.resolve.AnnotationProxy"
@@ -42,6 +66,62 @@
       "type": "java.util.LinkedHashMap",
       "condition": {
         "typeReached": "org.miaixz.bus.core.center.map.MapWrapper"
+      },
+      "serializable": true
+    },
+    {
+      "type": "java.util.concurrent.locks.AbstractOwnableSynchronizer",
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.cache.SimpleCache"
+      },
+      "serializable": true
+    },
+    {
+      "type": "java.util.concurrent.locks.AbstractQueuedLongSynchronizer",
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.cache.SimpleCache"
+      },
+      "serializable": true
+    },
+    {
+      "type": "java.util.concurrent.locks.AbstractQueuedSynchronizer",
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.cache.SimpleCache"
+      },
+      "serializable": true
+    },
+    {
+      "type": "java.util.concurrent.locks.ReentrantReadWriteLock",
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.cache.SimpleCache"
+      },
+      "serializable": true
+    },
+    {
+      "type": "java.util.concurrent.locks.ReentrantReadWriteLock$NonfairSync",
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.cache.SimpleCache"
+      },
+      "serializable": true
+    },
+    {
+      "type": "java.util.concurrent.locks.ReentrantReadWriteLock$ReadLock",
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.cache.SimpleCache"
+      },
+      "serializable": true
+    },
+    {
+      "type": "java.util.concurrent.locks.ReentrantReadWriteLock$Sync",
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.cache.SimpleCache"
+      },
+      "serializable": true
+    },
+    {
+      "type": "java.util.concurrent.locks.ReentrantReadWriteLock$WriteLock",
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.cache.SimpleCache"
       },
       "serializable": true
     },
@@ -92,25 +172,11 @@
           "parameterTypes": []
         },
         {
-          "name": "equals",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "getClass",
-          "parameterTypes": []
-        },
-        {
           "name": "getCreated",
           "parameterTypes": []
         },
         {
           "name": "getCreator",
-          "parameterTypes": []
-        },
-        {
-          "name": "getId",
           "parameterTypes": []
         },
         {
@@ -126,32 +192,6 @@
           "parameterTypes": []
         },
         {
-          "name": "getValue",
-          "parameterTypes": [
-            "java.lang.Object",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "hashCode",
-          "parameterTypes": []
-        },
-        {
-          "name": "isPKNotNull",
-          "parameterTypes": [
-            "java.lang.Object",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "notify",
-          "parameterTypes": []
-        },
-        {
-          "name": "notifyAll",
-          "parameterTypes": []
-        },
-        {
           "name": "setCreated",
           "parameterTypes": [
             "java.lang.Long"
@@ -159,12 +199,6 @@
         },
         {
           "name": "setCreator",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setId",
           "parameterTypes": [
             "java.lang.String"
           ]
@@ -185,35 +219,6 @@
           "name": "setStatus",
           "parameterTypes": [
             "java.lang.Integer"
-          ]
-        },
-        {
-          "name": "setValue",
-          "parameterTypes": [
-            "java.lang.Object",
-            "java.lang.String[]",
-            "java.lang.Object[]"
-          ]
-        },
-        {
-          "name": "toString",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long",
-            "int"
           ]
         }
       ]
@@ -307,67 +312,6 @@
           "parameterTypes": []
         },
         {
-          "name": "equals",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "getClass",
-          "parameterTypes": []
-        },
-        {
-          "name": "getCreated",
-          "parameterTypes": []
-        },
-        {
-          "name": "getCreator",
-          "parameterTypes": []
-        },
-        {
-          "name": "getId",
-          "parameterTypes": []
-        },
-        {
-          "name": "getKeyword",
-          "parameterTypes": []
-        },
-        {
-          "name": "getModified",
-          "parameterTypes": []
-        },
-        {
-          "name": "getModifier",
-          "parameterTypes": []
-        },
-        {
-          "name": "getNonce",
-          "parameterTypes": []
-        },
-        {
-          "name": "getOrderBy",
-          "parameterTypes": []
-        },
-        {
-          "name": "getPageNo",
-          "parameterTypes": []
-        },
-        {
-          "name": "getPageSize",
-          "parameterTypes": []
-        },
-        {
-          "name": "getStatus",
-          "parameterTypes": []
-        },
-        {
-          "name": "getValue",
-          "parameterTypes": [
-            "java.lang.Object",
-            "java.lang.String"
-          ]
-        },
-        {
           "name": "getX_api_id",
           "parameterTypes": []
         },
@@ -430,99 +374,6 @@
         {
           "name": "getX_user_nick",
           "parameterTypes": []
-        },
-        {
-          "name": "hashCode",
-          "parameterTypes": []
-        },
-        {
-          "name": "isPKNotNull",
-          "parameterTypes": [
-            "java.lang.Object",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "notify",
-          "parameterTypes": []
-        },
-        {
-          "name": "notifyAll",
-          "parameterTypes": []
-        },
-        {
-          "name": "setCreated",
-          "parameterTypes": [
-            "java.lang.Long"
-          ]
-        },
-        {
-          "name": "setCreator",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setId",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setKeyword",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setModified",
-          "parameterTypes": [
-            "java.lang.Long"
-          ]
-        },
-        {
-          "name": "setModifier",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setNonce",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setOrderBy",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setPageNo",
-          "parameterTypes": [
-            "java.lang.Integer"
-          ]
-        },
-        {
-          "name": "setPageSize",
-          "parameterTypes": [
-            "java.lang.Integer"
-          ]
-        },
-        {
-          "name": "setStatus",
-          "parameterTypes": [
-            "java.lang.Integer"
-          ]
-        },
-        {
-          "name": "setValue",
-          "parameterTypes": [
-            "java.lang.Object",
-            "java.lang.String[]",
-            "java.lang.Object[]"
-          ]
         },
         {
           "name": "setX_api_id",
@@ -619,27 +470,6 @@
           "parameterTypes": [
             "java.lang.String"
           ]
-        },
-        {
-          "name": "toString",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long",
-            "int"
-          ]
         }
       ]
     },
@@ -687,16 +517,6 @@
           "parameterTypes": []
         },
         {
-          "name": "equals",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "getClass",
-          "parameterTypes": []
-        },
-        {
           "name": "getId",
           "parameterTypes": []
         },
@@ -708,23 +528,11 @@
           ]
         },
         {
-          "name": "hashCode",
-          "parameterTypes": []
-        },
-        {
           "name": "isPKNotNull",
           "parameterTypes": [
             "java.lang.Object",
             "java.lang.String"
           ]
-        },
-        {
-          "name": "notify",
-          "parameterTypes": []
-        },
-        {
-          "name": "notifyAll",
-          "parameterTypes": []
         },
         {
           "name": "setId",
@@ -738,27 +546,6 @@
             "java.lang.Object",
             "java.lang.String[]",
             "java.lang.Object[]"
-          ]
-        },
-        {
-          "name": "toString",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long",
-            "int"
           ]
         }
       ]
@@ -813,12 +600,6 @@
           "parameterTypes": []
         },
         {
-          "name": "equals",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
           "name": "failure",
           "parameterTypes": [
             "java.lang.String",
@@ -832,10 +613,6 @@
           ]
         },
         {
-          "name": "getClass",
-          "parameterTypes": []
-        },
-        {
           "name": "getData",
           "parameterTypes": []
         },
@@ -845,18 +622,6 @@
         },
         {
           "name": "getErrmsg",
-          "parameterTypes": []
-        },
-        {
-          "name": "hashCode",
-          "parameterTypes": []
-        },
-        {
-          "name": "notify",
-          "parameterTypes": []
-        },
-        {
-          "name": "notifyAll",
           "parameterTypes": []
         },
         {
@@ -888,27 +653,6 @@
           "parameterTypes": [
             "org.miaixz.bus.core.basic.normal.Errors",
             "java.lang.Object"
-          ]
-        },
-        {
-          "name": "toString",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long",
-            "int"
           ]
         }
       ]
@@ -969,37 +713,7 @@
           "parameterTypes": []
         },
         {
-          "name": "equals",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "getClass",
-          "parameterTypes": []
-        },
-        {
-          "name": "getCreated",
-          "parameterTypes": []
-        },
-        {
-          "name": "getCreator",
-          "parameterTypes": []
-        },
-        {
-          "name": "getId",
-          "parameterTypes": []
-        },
-        {
           "name": "getKeyword",
-          "parameterTypes": []
-        },
-        {
-          "name": "getModified",
-          "parameterTypes": []
-        },
-        {
-          "name": "getModifier",
           "parameterTypes": []
         },
         {
@@ -1019,67 +733,7 @@
           "parameterTypes": []
         },
         {
-          "name": "getStatus",
-          "parameterTypes": []
-        },
-        {
-          "name": "getValue",
-          "parameterTypes": [
-            "java.lang.Object",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "hashCode",
-          "parameterTypes": []
-        },
-        {
-          "name": "isPKNotNull",
-          "parameterTypes": [
-            "java.lang.Object",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "notify",
-          "parameterTypes": []
-        },
-        {
-          "name": "notifyAll",
-          "parameterTypes": []
-        },
-        {
-          "name": "setCreated",
-          "parameterTypes": [
-            "java.lang.Long"
-          ]
-        },
-        {
-          "name": "setCreator",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setId",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
           "name": "setKeyword",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setModified",
-          "parameterTypes": [
-            "java.lang.Long"
-          ]
-        },
-        {
-          "name": "setModifier",
           "parameterTypes": [
             "java.lang.String"
           ]
@@ -1106,41 +760,6 @@
           "name": "setPageSize",
           "parameterTypes": [
             "java.lang.Integer"
-          ]
-        },
-        {
-          "name": "setStatus",
-          "parameterTypes": [
-            "java.lang.Integer"
-          ]
-        },
-        {
-          "name": "setValue",
-          "parameterTypes": [
-            "java.lang.Object",
-            "java.lang.String[]",
-            "java.lang.Object[]"
-          ]
-        },
-        {
-          "name": "toString",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long",
-            "int"
           ]
         }
       ]
@@ -1198,20 +817,10 @@
           "parameterTypes": []
         },
         {
-          "name": "equals",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
           "name": "get",
           "parameterTypes": [
             "int"
           ]
-        },
-        {
-          "name": "getClass",
-          "parameterTypes": []
         },
         {
           "name": "getPageNo",
@@ -1227,18 +836,6 @@
         },
         {
           "name": "getTotal",
-          "parameterTypes": []
-        },
-        {
-          "name": "hashCode",
-          "parameterTypes": []
-        },
-        {
-          "name": "notify",
-          "parameterTypes": []
-        },
-        {
-          "name": "notifyAll",
           "parameterTypes": []
         },
         {
@@ -1270,27 +867,6 @@
           "name": "setTotal",
           "parameterTypes": [
             "long"
-          ]
-        },
-        {
-          "name": "toString",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long",
-            "int"
           ]
         }
       ]
@@ -1336,176 +912,7 @@
           "parameterTypes": []
         },
         {
-          "name": "equals",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "getClass",
-          "parameterTypes": []
-        },
-        {
-          "name": "getCreated",
-          "parameterTypes": []
-        },
-        {
-          "name": "getCreator",
-          "parameterTypes": []
-        },
-        {
-          "name": "getId",
-          "parameterTypes": []
-        },
-        {
-          "name": "getKeyword",
-          "parameterTypes": []
-        },
-        {
-          "name": "getModified",
-          "parameterTypes": []
-        },
-        {
-          "name": "getModifier",
-          "parameterTypes": []
-        },
-        {
           "name": "getSpace_id",
-          "parameterTypes": []
-        },
-        {
-          "name": "getNonce",
-          "parameterTypes": []
-        },
-        {
-          "name": "getOrderBy",
-          "parameterTypes": []
-        },
-        {
-          "name": "getPageNo",
-          "parameterTypes": []
-        },
-        {
-          "name": "getPageSize",
-          "parameterTypes": []
-        },
-        {
-          "name": "getStatus",
-          "parameterTypes": []
-        },
-        {
-          "name": "getValue",
-          "parameterTypes": [
-            "java.lang.Object",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "getX_api_id",
-          "parameterTypes": []
-        },
-        {
-          "name": "getX_app_id",
-          "parameterTypes": []
-        },
-        {
-          "name": "getX_child_id",
-          "parameterTypes": []
-        },
-        {
-          "name": "getX_device_id",
-          "parameterTypes": []
-        },
-        {
-          "name": "getX_duty_id",
-          "parameterTypes": []
-        },
-        {
-          "name": "getX_space_id",
-          "parameterTypes": []
-        },
-        {
-          "name": "getX_space_name",
-          "parameterTypes": []
-        },
-        {
-          "name": "getX_raw_data",
-          "parameterTypes": []
-        },
-        {
-          "name": "getX_request_channel",
-          "parameterTypes": []
-        },
-        {
-          "name": "getX_request_domain",
-          "parameterTypes": []
-        },
-        {
-          "name": "getX_request_id",
-          "parameterTypes": []
-        },
-        {
-          "name": "getX_request_ip",
-          "parameterTypes": []
-        },
-        {
-          "name": "getX_request_ipv4",
-          "parameterTypes": []
-        },
-        {
-          "name": "getX_request_ipv6",
-          "parameterTypes": []
-        },
-        {
-          "name": "getX_request_terminal",
-          "parameterTypes": []
-        },
-        {
-          "name": "getX_role_id",
-          "parameterTypes": []
-        },
-        {
-          "name": "getX_span_id",
-          "parameterTypes": []
-        },
-        {
-          "name": "getX_tenant_id",
-          "parameterTypes": []
-        },
-        {
-          "name": "getX_tenant_name",
-          "parameterTypes": []
-        },
-        {
-          "name": "getX_trace_id",
-          "parameterTypes": []
-        },
-        {
-          "name": "getX_user_avatar",
-          "parameterTypes": []
-        },
-        {
-          "name": "getX_user_code",
-          "parameterTypes": []
-        },
-        {
-          "name": "getX_user_email",
-          "parameterTypes": []
-        },
-        {
-          "name": "getX_user_id",
-          "parameterTypes": []
-        },
-        {
-          "name": "getX_user_name",
-          "parameterTypes": []
-        },
-        {
-          "name": "getX_user_nick",
-          "parameterTypes": []
-        },
-        {
-          "name": "hashCode",
           "parameterTypes": []
         },
         {
@@ -1515,275 +922,9 @@
           ]
         },
         {
-          "name": "isPKNotNull",
-          "parameterTypes": [
-            "java.lang.Object",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "notify",
-          "parameterTypes": []
-        },
-        {
-          "name": "notifyAll",
-          "parameterTypes": []
-        },
-        {
-          "name": "setCreated",
-          "parameterTypes": [
-            "java.lang.Long"
-          ]
-        },
-        {
-          "name": "setCreator",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setId",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setKeyword",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setModified",
-          "parameterTypes": [
-            "java.lang.Long"
-          ]
-        },
-        {
-          "name": "setModifier",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
           "name": "setSpace_id",
           "parameterTypes": [
             "java.lang.String"
-          ]
-        },
-        {
-          "name": "setNonce",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setOrderBy",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setPageNo",
-          "parameterTypes": [
-            "java.lang.Integer"
-          ]
-        },
-        {
-          "name": "setPageSize",
-          "parameterTypes": [
-            "java.lang.Integer"
-          ]
-        },
-        {
-          "name": "setStatus",
-          "parameterTypes": [
-            "java.lang.Integer"
-          ]
-        },
-        {
-          "name": "setValue",
-          "parameterTypes": [
-            "java.lang.Object",
-            "java.lang.String[]",
-            "java.lang.Object[]"
-          ]
-        },
-        {
-          "name": "setX_api_id",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setX_app_id",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setX_child_id",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setX_device_id",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setX_duty_id",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setX_space_id",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setX_space_name",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setX_raw_data",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setX_request_channel",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setX_request_domain",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setX_request_id",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setX_request_ip",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setX_request_ipv4",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setX_request_ipv6",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setX_request_terminal",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setX_role_id",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setX_span_id",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setX_tenant_id",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setX_tenant_name",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setX_trace_id",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setX_user_avatar",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setX_user_code",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setX_user_email",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setX_user_id",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setX_user_name",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setX_user_nick",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "toString",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long",
-            "int"
           ]
         }
       ]
@@ -1829,448 +970,13 @@
           "parameterTypes": []
         },
         {
-          "name": "equals",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "getClass",
-          "parameterTypes": []
-        },
-        {
-          "name": "getCreated",
-          "parameterTypes": []
-        },
-        {
-          "name": "getCreator",
-          "parameterTypes": []
-        },
-        {
-          "name": "getId",
-          "parameterTypes": []
-        },
-        {
-          "name": "getKeyword",
-          "parameterTypes": []
-        },
-        {
-          "name": "getModified",
-          "parameterTypes": []
-        },
-        {
-          "name": "getModifier",
-          "parameterTypes": []
-        },
-        {
-          "name": "getNonce",
-          "parameterTypes": []
-        },
-        {
-          "name": "getOrderBy",
-          "parameterTypes": []
-        },
-        {
-          "name": "getPageNo",
-          "parameterTypes": []
-        },
-        {
-          "name": "getPageSize",
-          "parameterTypes": []
-        },
-        {
-          "name": "getStatus",
-          "parameterTypes": []
-        },
-        {
           "name": "getTenant_id",
           "parameterTypes": []
-        },
-        {
-          "name": "getValue",
-          "parameterTypes": [
-            "java.lang.Object",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "getX_api_id",
-          "parameterTypes": []
-        },
-        {
-          "name": "getX_app_id",
-          "parameterTypes": []
-        },
-        {
-          "name": "getX_child_id",
-          "parameterTypes": []
-        },
-        {
-          "name": "getX_device_id",
-          "parameterTypes": []
-        },
-        {
-          "name": "getX_duty_id",
-          "parameterTypes": []
-        },
-        {
-          "name": "getX_space_id",
-          "parameterTypes": []
-        },
-        {
-          "name": "getX_space_name",
-          "parameterTypes": []
-        },
-        {
-          "name": "getX_raw_data",
-          "parameterTypes": []
-        },
-        {
-          "name": "getX_request_channel",
-          "parameterTypes": []
-        },
-        {
-          "name": "getX_request_domain",
-          "parameterTypes": []
-        },
-        {
-          "name": "getX_request_id",
-          "parameterTypes": []
-        },
-        {
-          "name": "getX_request_ip",
-          "parameterTypes": []
-        },
-        {
-          "name": "getX_request_ipv4",
-          "parameterTypes": []
-        },
-        {
-          "name": "getX_request_ipv6",
-          "parameterTypes": []
-        },
-        {
-          "name": "getX_request_terminal",
-          "parameterTypes": []
-        },
-        {
-          "name": "getX_role_id",
-          "parameterTypes": []
-        },
-        {
-          "name": "getX_span_id",
-          "parameterTypes": []
-        },
-        {
-          "name": "getX_tenant_id",
-          "parameterTypes": []
-        },
-        {
-          "name": "getX_tenant_name",
-          "parameterTypes": []
-        },
-        {
-          "name": "getX_trace_id",
-          "parameterTypes": []
-        },
-        {
-          "name": "getX_user_avatar",
-          "parameterTypes": []
-        },
-        {
-          "name": "getX_user_code",
-          "parameterTypes": []
-        },
-        {
-          "name": "getX_user_email",
-          "parameterTypes": []
-        },
-        {
-          "name": "getX_user_id",
-          "parameterTypes": []
-        },
-        {
-          "name": "getX_user_name",
-          "parameterTypes": []
-        },
-        {
-          "name": "getX_user_nick",
-          "parameterTypes": []
-        },
-        {
-          "name": "hashCode",
-          "parameterTypes": []
-        },
-        {
-          "name": "isPKNotNull",
-          "parameterTypes": [
-            "java.lang.Object",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "notify",
-          "parameterTypes": []
-        },
-        {
-          "name": "notifyAll",
-          "parameterTypes": []
-        },
-        {
-          "name": "setCreated",
-          "parameterTypes": [
-            "java.lang.Long"
-          ]
-        },
-        {
-          "name": "setCreator",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setId",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setKeyword",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setModified",
-          "parameterTypes": [
-            "java.lang.Long"
-          ]
-        },
-        {
-          "name": "setModifier",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setNonce",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setOrderBy",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setPageNo",
-          "parameterTypes": [
-            "java.lang.Integer"
-          ]
-        },
-        {
-          "name": "setPageSize",
-          "parameterTypes": [
-            "java.lang.Integer"
-          ]
-        },
-        {
-          "name": "setStatus",
-          "parameterTypes": [
-            "java.lang.Integer"
-          ]
         },
         {
           "name": "setTenant_id",
           "parameterTypes": [
             "java.lang.String"
-          ]
-        },
-        {
-          "name": "setValue",
-          "parameterTypes": [
-            "java.lang.Object",
-            "java.lang.String[]",
-            "java.lang.Object[]"
-          ]
-        },
-        {
-          "name": "setX_api_id",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setX_app_id",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setX_child_id",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setX_device_id",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setX_duty_id",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setX_space_id",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setX_space_name",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setX_raw_data",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setX_request_channel",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setX_request_domain",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setX_request_id",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setX_request_ip",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setX_request_ipv4",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setX_request_ipv6",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setX_request_terminal",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setX_role_id",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setX_span_id",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setX_tenant_id",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setX_tenant_name",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setX_trace_id",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setX_user_avatar",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setX_user_code",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setX_user_email",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setX_user_id",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setX_user_name",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setX_user_nick",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "toString",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long",
-            "int"
           ]
         }
       ]
@@ -2346,96 +1052,7 @@
           "parameterTypes": []
         },
         {
-          "name": "equals",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "getClass",
-          "parameterTypes": []
-        },
-        {
-          "name": "getCreated",
-          "parameterTypes": []
-        },
-        {
-          "name": "getCreator",
-          "parameterTypes": []
-        },
-        {
-          "name": "getId",
-          "parameterTypes": []
-        },
-        {
-          "name": "getKeyword",
-          "parameterTypes": []
-        },
-        {
-          "name": "getModified",
-          "parameterTypes": []
-        },
-        {
-          "name": "getModifier",
-          "parameterTypes": []
-        },
-        {
-          "name": "getNonce",
-          "parameterTypes": []
-        },
-        {
-          "name": "getOrderBy",
-          "parameterTypes": []
-        },
-        {
-          "name": "getPageNo",
-          "parameterTypes": []
-        },
-        {
-          "name": "getPageSize",
-          "parameterTypes": []
-        },
-        {
-          "name": "getStatus",
-          "parameterTypes": []
-        },
-        {
-          "name": "getValue",
-          "parameterTypes": [
-            "java.lang.Object",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "getX_api_id",
-          "parameterTypes": []
-        },
-        {
-          "name": "getX_app_id",
-          "parameterTypes": []
-        },
-        {
           "name": "getX_child_id",
-          "parameterTypes": []
-        },
-        {
-          "name": "getX_device_id",
-          "parameterTypes": []
-        },
-        {
-          "name": "getX_duty_id",
-          "parameterTypes": []
-        },
-        {
-          "name": "getX_space_id",
-          "parameterTypes": []
-        },
-        {
-          "name": "getX_space_name",
-          "parameterTypes": []
-        },
-        {
-          "name": "getX_raw_data",
           "parameterTypes": []
         },
         {
@@ -2467,19 +1084,7 @@
           "parameterTypes": []
         },
         {
-          "name": "getX_role_id",
-          "parameterTypes": []
-        },
-        {
           "name": "getX_span_id",
-          "parameterTypes": []
-        },
-        {
-          "name": "getX_tenant_id",
-          "parameterTypes": []
-        },
-        {
-          "name": "getX_tenant_name",
           "parameterTypes": []
         },
         {
@@ -2487,166 +1092,7 @@
           "parameterTypes": []
         },
         {
-          "name": "getX_user_avatar",
-          "parameterTypes": []
-        },
-        {
-          "name": "getX_user_code",
-          "parameterTypes": []
-        },
-        {
-          "name": "getX_user_email",
-          "parameterTypes": []
-        },
-        {
-          "name": "getX_user_id",
-          "parameterTypes": []
-        },
-        {
-          "name": "getX_user_name",
-          "parameterTypes": []
-        },
-        {
-          "name": "getX_user_nick",
-          "parameterTypes": []
-        },
-        {
-          "name": "hashCode",
-          "parameterTypes": []
-        },
-        {
-          "name": "isPKNotNull",
-          "parameterTypes": [
-            "java.lang.Object",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "notify",
-          "parameterTypes": []
-        },
-        {
-          "name": "notifyAll",
-          "parameterTypes": []
-        },
-        {
-          "name": "setCreated",
-          "parameterTypes": [
-            "java.lang.Long"
-          ]
-        },
-        {
-          "name": "setCreator",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setId",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setKeyword",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setModified",
-          "parameterTypes": [
-            "java.lang.Long"
-          ]
-        },
-        {
-          "name": "setModifier",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setNonce",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setOrderBy",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setPageNo",
-          "parameterTypes": [
-            "java.lang.Integer"
-          ]
-        },
-        {
-          "name": "setPageSize",
-          "parameterTypes": [
-            "java.lang.Integer"
-          ]
-        },
-        {
-          "name": "setStatus",
-          "parameterTypes": [
-            "java.lang.Integer"
-          ]
-        },
-        {
-          "name": "setValue",
-          "parameterTypes": [
-            "java.lang.Object",
-            "java.lang.String[]",
-            "java.lang.Object[]"
-          ]
-        },
-        {
-          "name": "setX_api_id",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setX_app_id",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
           "name": "setX_child_id",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setX_device_id",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setX_duty_id",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setX_space_id",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setX_space_name",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setX_raw_data",
           "parameterTypes": [
             "java.lang.String"
           ]
@@ -2694,25 +1140,7 @@
           ]
         },
         {
-          "name": "setX_role_id",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
           "name": "setX_span_id",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setX_tenant_id",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setX_tenant_name",
           "parameterTypes": [
             "java.lang.String"
           ]
@@ -2721,63 +1149,6 @@
           "name": "setX_trace_id",
           "parameterTypes": [
             "java.lang.String"
-          ]
-        },
-        {
-          "name": "setX_user_avatar",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setX_user_code",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setX_user_email",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setX_user_id",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setX_user_name",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setX_user_nick",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "toString",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long",
-            "int"
           ]
         }
       ]
@@ -3541,7 +1912,8 @@
             "java.util.Map"
           ]
         }
-      ]
+      ],
+      "serializable": true
     },
     {
       "type": "org.miaixz.bus.core.center.array.ArrayValidator",
@@ -6574,8 +4946,7 @@
           "name": "<init>",
           "parameterTypes": [
             "org.miaixz.bus.core.center.map.concurrent.ConcurrentLinkedHashMap",
-            "org.miaixz.bus.core.center.map.concurrent.ConcurrentLinkedHashMap$Node",
-            "int"
+            "org.miaixz.bus.core.center.map.concurrent.ConcurrentLinkedHashMap$Node"
           ]
         }
       ]
@@ -6713,8 +5084,7 @@
           "name": "<init>",
           "parameterTypes": [
             "org.miaixz.bus.core.center.map.concurrent.ConcurrentLinkedHashMap",
-            "org.miaixz.bus.core.center.map.concurrent.ConcurrentLinkedHashMap$Node",
-            "int"
+            "org.miaixz.bus.core.center.map.concurrent.ConcurrentLinkedHashMap$Node"
           ]
         }
       ]
@@ -7383,16 +5753,8 @@
             "java.util.concurrent.ConcurrentMap"
           ]
         }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.center.map.reference.ReferenceConcurrentMap$NullRef",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        }
-      ]
+      ],
+      "serializable": true
     },
     {
       "type": "org.miaixz.bus.core.center.map.reference.SoftConcurrentMap",
@@ -7407,7 +5769,8 @@
             "java.util.concurrent.ConcurrentMap"
           ]
         }
-      ]
+      ],
+      "serializable": true
     },
     {
       "type": "org.miaixz.bus.core.center.map.reference.WeakConcurrentMap",
@@ -7422,7 +5785,8 @@
             "java.util.concurrent.ConcurrentMap"
           ]
         }
-      ]
+      ],
+      "serializable": true
     },
     {
       "type": "org.miaixz.bus.core.center.map.reference.WeakKeyConcurrentMap",
@@ -7437,7 +5801,8 @@
             "java.util.concurrent.ConcurrentMap"
           ]
         }
-      ]
+      ],
+      "serializable": true
     },
     {
       "type": "org.miaixz.bus.core.center.map.TableMap",
@@ -12096,6 +10461,12 @@
       ]
     },
     {
+      "type": "org.miaixz.bus.core.lang.EnumValue$Format",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true
+    },
+    {
       "type": "org.miaixz.bus.core.lang.EnumValue$Gradient",
       "methods": [
         {
@@ -12184,6 +10555,12 @@
       ]
     },
     {
+      "type": "org.miaixz.bus.core.lang.EnumValue$Phase",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true
+    },
+    {
       "type": "org.miaixz.bus.core.lang.EnumValue$Sort",
       "methods": [
         {
@@ -12220,6 +10597,12 @@
           ]
         }
       ]
+    },
+    {
+      "type": "org.miaixz.bus.core.lang.EnumValue$Track",
+      "allDeclaredFields": true,
+      "allDeclaredMethods": true,
+      "allDeclaredConstructors": true
     },
     {
       "type": "org.miaixz.bus.core.lang.EnumValue$Type",
@@ -19353,6 +17736,54 @@
         }
       ],
       "jniAccessible": true
+    },
+    {
+      "type": "java.lang.Object",
+      "methods": [
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "getClass",
+          "parameterTypes": []
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "notify",
+          "parameterTypes": []
+        },
+        {
+          "name": "notifyAll",
+          "parameterTypes": []
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long",
+            "int"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": []
+        }
+      ]
     }
   ],
   "resources": [

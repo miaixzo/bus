@@ -49,7 +49,7 @@ import tools.jackson.databind.annotation.JsonSerialize;
 public class AbstractEpic<E extends AbstractEpic<E>> extends AbstractMinimalEpic<E> implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852233623053L;
+    private static final long serialVersionUID = 2550125595001L;
 
     /**
      * The start date value.

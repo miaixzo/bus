@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.tempus.crontab;
 
+import java.io.Serial;
 import java.util.concurrent.PriorityBlockingQueue;
 import java.util.concurrent.locks.Lock;
 
@@ -39,6 +40,9 @@ import org.miaixz.bus.tempus.pattern.CronPattern;
  * @author Kimi Liu
  */
 public class TriggerCrontab extends Repertoire {
+
+    @Serial
+    private static final long serialVersionUID = 2558298655001L;
 
     /**
      * Priority queue for managing trigger times of scheduled tasks.

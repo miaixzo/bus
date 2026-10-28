@@ -2123,7 +2123,6 @@ public class Mat extends CleanableMat {
      * @param col   the {@code col} value
      * @return the operation result
      */
-    @SuppressWarnings("unchecked")
     public <T> Atable<T> at(Class<T> clazz, int row, int col) {
         if (clazz == Byte.class || clazz == byte.class) {
             return (Atable<T>) new AtableByte(this, row, col);
@@ -2149,7 +2148,6 @@ public class Mat extends CleanableMat {
      * @param idx   the {@code idx} value
      * @return the operation result
      */
-    @SuppressWarnings("unchecked")
     public <T> Atable<T> at(Class<T> clazz, int[] idx) {
         if (clazz == Byte.class || clazz == byte.class) {
             return (Atable<T>) new AtableByte(this, idx);

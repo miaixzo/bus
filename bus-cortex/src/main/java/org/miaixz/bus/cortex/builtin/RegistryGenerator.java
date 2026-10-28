@@ -34,16 +34,16 @@ import org.miaixz.bus.cortex.magic.identity.CortexIdentity;
 /**
  * Built-in registry-side {@link Keying} implementation.
  * <p>
- * This implementation owns all default registry/runtime key semantics:
+ * This implementation owns all default registry/relationship key semantics:
  * </p>
  * <ul>
  * <li>{@link RegistrySpec#ENTRY}: durable registry entry keys and scan prefixes</li>
- * <li>{@link RegistrySpec#INSTANCE}: runtime instance keys and scan prefixes</li>
+ * <li>{@link RegistrySpec#INSTANCE}: service relationship keys and scan prefixes</li>
  * <li>{@link RegistrySpec#ROUTE}: strongest runtime route key plus the ordered type/application fallback chain</li>
  * </ul>
  * <p>
- * API entry and runtime-instance keys are global. MCP and Prompt entries retain their original length-prefixed tenant
- * segment. Route keys retain their existing tenant-independent type/application fallback coordinates.
+ * API entry and service relationship keys are global. MCP and Prompt entries retain their original length-prefixed
+ * tenant segment. Route keys retain their existing tenant-independent type/application fallback coordinates.
  * </p>
  *
  * @author Kimi Liu
@@ -81,8 +81,8 @@ public class RegistryGenerator implements Keying<RegistrySpec> {
             }
             case RegistrySpec.INSTANCE -> {
                 String prefix = prefix(spec);
-                String fingerprint = spec.fingerprintPart();
-                yield prefix == null || fingerprint == null ? null : prefix + fingerprint;
+                String checksum = spec.checksumPart();
+                yield prefix == null || checksum == null ? null : prefix + checksum;
             }
             case RegistrySpec.ROUTE -> {
                 List<String> keys = keys(spec);
@@ -144,7 +144,7 @@ public class RegistryGenerator implements Keying<RegistrySpec> {
             }
             case RegistrySpec.INSTANCE -> {
                 StringBuilder builder = new StringBuilder();
-                builder.append(Builder.REG_PREFIX).append("instance").append(Symbol.COLON);
+                builder.append(Builder.REG_PREFIX).append("process").append(Symbol.COLON);
                 String appId = spec.appIdPart();
                 if (appId != null) {
                     builder.append(segment(appId)).append(Symbol.COLON);
@@ -154,6 +154,8 @@ public class RegistryGenerator implements Keying<RegistrySpec> {
                         String version = spec.versionPart();
                         if (version != null) {
                             builder.append(segment(version)).append(Symbol.COLON);
+                            if (spec.verbPart() != null)
+                                builder.append(spec.verbPart()).append(Symbol.COLON);
                         }
                     }
                 }

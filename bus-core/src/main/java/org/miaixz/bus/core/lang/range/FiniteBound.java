@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.core.lang.range;
 
+import java.io.Serial;
 import java.util.Objects;
 
 import org.miaixz.bus.core.text.CharsBacker;
@@ -32,6 +33,9 @@ import org.miaixz.bus.core.xyz.ObjectKit;
  * @author Kimi Liu
  */
 public class FiniteBound<T extends Comparable<? super T>> implements Bound<T> {
+
+    @Serial
+    private static final long serialVersionUID = 2538060589291L;
 
     /**
      * The finite value that defines this boundary.

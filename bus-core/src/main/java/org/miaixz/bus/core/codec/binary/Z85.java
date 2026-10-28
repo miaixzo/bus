@@ -43,7 +43,7 @@ import org.miaixz.bus.core.lang.Symbol;
 public class Z85 implements Encoder<byte[], String>, Decoder<String, byte[]>, Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852282097928L;
+    private static final long serialVersionUID = 2536103956951L;
 
     /**
      * The Z85 character set for encoding.

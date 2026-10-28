@@ -259,27 +259,27 @@ public final class RouteTableDump {
         /**
          * macOS routing message layout.
          */
-        MACOS(92, -1, 8, 4, -1, 4, 8, 30, 0x20000, 0x400),
+        MACOS(92, -1, 8, 4, -1, 4, 8, 30, 0x20000, 0x400, 17),
 
         /**
          * FreeBSD routing message layout.
          */
-        FREEBSD(152, -1, 8, 4, -1, 8, 8, 28, 0, 0),
+        FREEBSD(152, -1, 8, 4, -1, 8, 8, 28, 0, 0, Normal._17),
 
         /**
          * DragonFly BSD routing message layout.
          */
-        DRAGONFLY(152, -1, 8, 4, -1, 8, 11, 28, 0x20000, 0x400),
+        DRAGONFLY(152, -1, 8, 4, -1, 8, 11, 28, 0x20000, 0x400, 17),
 
         /**
          * NetBSD routing message layout.
          */
-        NETBSD(120, -1, 8, 4, -1, 8, 9, 24, 0, 0),
+        NETBSD(120, -1, 8, 4, -1, 8, 9, 24, 0, 0, Normal._34),
 
         /**
          * OpenBSD routing message layout.
          */
-        OPENBSD(96, 4, 16, 6, 10, 8, 15, 24, 0, 0);
+        OPENBSD(96, 4, 16, 6, 10, 8, 15, 24, 0, 0, Normal._17);
 
         /**
          * Header size in bytes.
@@ -331,6 +331,9 @@ public final class RouteTableDump {
          */
         private final int linkInfoFlag;
 
+        /** Protocol family used to request this platform's routing table. */
+        private final int pfRoute;
+
         /**
          * Creates a new routing dump layout.
          *
@@ -344,9 +347,10 @@ public final class RouteTableDump {
          * @param afInet6        The IPv6 address family value.
          * @param clonedFlag     The cloned route flag.
          * @param linkInfoFlag   The link-info route flag.
+         * @param pfRoute        The routing protocol family.
          */
         Layout(int headerSize, int hdrLenOffset, int flagsOffset, int indexOffset, int priorityOffset, int paddingUnit,
-                int rtaxMax, int afInet6, int clonedFlag, int linkInfoFlag) {
+                int rtaxMax, int afInet6, int clonedFlag, int linkInfoFlag, int pfRoute) {
             this.headerSize = headerSize;
             this.hdrLenOffset = hdrLenOffset;
             this.flagsOffset = flagsOffset;
@@ -357,6 +361,16 @@ public final class RouteTableDump {
             this.afInet6 = afInet6;
             this.clonedFlag = clonedFlag;
             this.linkInfoFlag = linkInfoFlag;
+            this.pfRoute = pfRoute;
+        }
+
+        /**
+         * Gets the protocol family used in the routing-table sysctl MIB.
+         *
+         * @return the routing protocol family
+         */
+        public int getPfRoute() {
+            return pfRoute;
         }
     }
 

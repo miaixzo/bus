@@ -31,7 +31,7 @@ import org.miaixz.bus.core.basic.normal.Errors;
 public class PageException extends UncheckedException {
 
     @Serial
-    private static final long serialVersionUID = 2852262770632L;
+    private static final long serialVersionUID = 2536862161121L;
 
     /**
      * Constructs a new PageException with no detail message.

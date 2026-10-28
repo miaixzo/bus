@@ -65,70 +65,109 @@ final class FreeBsdGraphicsCard extends AbstractGraphicsCard {
      * @return List of {@link FreeBsdGraphicsCard} objects.
      */
     public static List<GraphicsCard> getGraphicsCards() {
+        return parsePciconf(Executor.runNative("pciconf -lv"));
+    }
+
+    /**
+     * Parses display-class devices from {@code pciconf -lv} output.
+     *
+     * @param devices the command output
+     * @return the graphics cards
+     */
+    static List<GraphicsCard> parsePciconf(List<String> devices) {
         List<GraphicsCard> cardList = new ArrayList<>();
-        // Enumerate all devices and add if required
-        List<String> devices = Executor.runNative("pciconf -lv");
-        if (devices.isEmpty()) {
-            return Collections.emptyList();
-        }
-        String name = Normal.UNKNOWN;
-        String vendorId = Normal.UNKNOWN;
-        String productId = Normal.UNKNOWN;
-        String classCode = Normal.EMPTY;
-        String versionInfo = Normal.UNKNOWN;
+        PciDevice device = null;
         for (String line : devices) {
-            if (line.contains("class=0x")) {
-                // Identifies start of a new device. Save previous if it's a graphics card
-                if (PCI_CLASS_DISPLAY.equals(classCode)) {
-                    cardList.add(
-                            new FreeBsdGraphicsCard(name.isEmpty() ? Normal.UNKNOWN : name,
-                                    productId.isEmpty() ? Normal.UNKNOWN : productId,
-                                    vendorId.isEmpty() ? Normal.UNKNOWN : vendorId,
-                                    versionInfo.isEmpty() ? Normal.UNKNOWN : versionInfo, 0L));
-                }
-                // Parse this line
+            if (line.contains("class=0x") && !Character.isWhitespace(line.charAt(Normal._0))) {
+                addIfDisplay(cardList, device);
+                device = new PciDevice();
                 String[] split = Pattern.SPACES_PATTERN.split(line);
                 for (String s : split) {
-                    String[] keyVal = s.split(Symbol.EQUAL);
-                    if (keyVal.length > 1) {
-                        if (keyVal[0].equals("class") && keyVal[1].length() >= 4) {
-                            // class=0x030000
-                            classCode = keyVal[1].substring(0, 4);
-                        } else if (keyVal[0].equals("chip") && keyVal[1].length() >= 10) {
-                            // chip=0x3ea08086
-                            productId = keyVal[1].substring(0, 6);
-                            vendorId = "0x" + keyVal[1].substring(6, 10);
-                        } else if (keyVal[0].contains("rev")) {
-                            // rev=0x00
-                            versionInfo = s;
-                        }
+                    String[] keyValue = s.split(Symbol.EQUAL, Normal._2);
+                    if (keyValue.length < Normal._2) {
+                        continue;
+                    }
+                    switch (keyValue[Normal._0]) {
+                        case "class":
+                            device.display = keyValue[Normal._1].startsWith(PCI_CLASS_DISPLAY);
+                            break;
+
+                        case "chip":
+                            if (keyValue[Normal._1].length() >= Normal._10) {
+                                device.deviceId = keyValue[Normal._1].substring(Normal._0, Normal._6);
+                                device.vendorId = "0x" + keyValue[Normal._1].substring(Normal._6, Normal._10);
+                            }
+                            break;
+
+                        case "vendor":
+                            device.vendorId = keyValue[Normal._1];
+                            break;
+
+                        case "device":
+                            device.deviceId = keyValue[Normal._1];
+                            break;
+
+                        case "rev":
+                            device.versionInfo = s;
+                            break;
+
+                        default:
+                            break;
                     }
                 }
-                // Reset name
-                name = Normal.UNKNOWN;
-            } else {
-                String[] split = line.trim().split(Symbol.EQUAL, 2);
-                if (split.length == 2) {
-                    String key = split[0].trim();
+            } else if (device != null) {
+                String[] split = line.trim().split(Symbol.EQUAL, Normal._2);
+                if (split.length == Normal._2) {
+                    String key = split[Normal._0].trim();
                     if (key.equals("vendor")) {
-                        vendorId = Parsing.getSingleQuoteStringValue(line)
-                                + (vendorId.equals(Normal.UNKNOWN) ? Normal.EMPTY
-                                        : " (" + vendorId + Symbol.PARENTHESE_RIGHT);
+                        device.vendorName = Parsing.getSingleQuoteStringValue(line);
                     } else if (key.equals("device")) {
-                        name = Parsing.getSingleQuoteStringValue(line);
+                        device.name = Parsing.getSingleQuoteStringValue(line);
                     }
                 }
             }
         }
-        // In case we reached end before saving
-        if (PCI_CLASS_DISPLAY.equals(classCode)) {
-            cardList.add(
-                    new FreeBsdGraphicsCard(name.isEmpty() ? Normal.UNKNOWN : name,
-                            productId.isEmpty() ? Normal.UNKNOWN : productId,
-                            vendorId.isEmpty() ? Normal.UNKNOWN : vendorId,
-                            versionInfo.isEmpty() ? Normal.UNKNOWN : versionInfo, 0L));
+        addIfDisplay(cardList, device);
+        return Collections.unmodifiableList(cardList);
+    }
+
+    /** Adds one parsed PCI device when it is a display controller. */
+    private static void addIfDisplay(List<GraphicsCard> cards, PciDevice device) {
+        if (device != null && device.display) {
+            String vendor = device.vendorName.isEmpty() ? device.vendorId
+                    : Normal.UNKNOWN.equals(device.vendorId) ? device.vendorName
+                            : device.vendorName + " (" + device.vendorId + Symbol.PARENTHESE_RIGHT;
+            cards.add(
+                    new FreeBsdGraphicsCard(Parsing.getStringValueOrUnknown(device.name), device.deviceId, vendor,
+                            device.versionInfo, 0L));
         }
-        return cardList;
+    }
+
+    /**
+     * Fields collected for one PCI device.
+     *
+     * @author Kimi Liu
+     */
+    private static final class PciDevice {
+
+        /** Whether the device belongs to the display class. */
+        private boolean display;
+        /** Vendor identifier. */
+        private String vendorId = Normal.UNKNOWN;
+        /** Device identifier. */
+        private String deviceId = Normal.UNKNOWN;
+        /** Revision information. */
+        private String versionInfo = Normal.UNKNOWN;
+        /** Vendor name. */
+        private String vendorName = Normal.EMPTY;
+        /** Device name. */
+        private String name = Normal.EMPTY;
+
+        /**
+         * Creates an empty PCI device record.
+         */
+        private PciDevice() {
+        }
     }
 
 }

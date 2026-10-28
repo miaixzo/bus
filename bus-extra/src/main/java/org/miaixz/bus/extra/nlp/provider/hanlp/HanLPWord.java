@@ -34,7 +34,7 @@ import org.miaixz.bus.extra.nlp.NLPWord;
 public class HanLPWord implements NLPWord {
 
     @Serial
-    private static final long serialVersionUID = 2852285886718L;
+    private static final long serialVersionUID = 2555035000001L;
 
     /**
      * The underlying HanLP {@link Term} object.

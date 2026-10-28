@@ -33,7 +33,7 @@ import java.util.Properties;
 public class MQConfig implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852266759152L;
+    private static final long serialVersionUID = 2555025803939L;
 
     /**
      * The URL or address of the MQ broker.

@@ -18,11 +18,8 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Setting item resource model package.
- * <p>
- * This package contains current item state, query coordinates, normalization, and durable-store composition. Labels and
- * extension values cross the store boundary as text. Shared-item references to applications are resolved through
- * {@code ReferenceStore}; application-owned items use {@code Item.app_id} directly.
+ * Current configuration data and pure typed definition parsing/merging. No application ownership pointers, formal
+ * version selection, gray routing, persistence orchestration or external sources.
  *
  * @author Kimi Liu
  */

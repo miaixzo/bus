@@ -22,6 +22,8 @@ package org.miaixz.bus.cortex.health;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 
+import org.miaixz.bus.core.net.Port;
+import org.miaixz.bus.core.xyz.DateKit;
 import org.miaixz.bus.cortex.Builder;
 import org.miaixz.bus.cortex.Instance;
 import org.miaixz.bus.cortex.Prober;
@@ -48,9 +50,10 @@ public class TcpProber implements Prober {
     }
 
     /**
-     * Creates a TCP prober with an explicit timeout.
+     * Stores a TCP timeout by clamping to at least 1 millisecond and then narrowing to int. There is no upper clamp;
+     * callers should supply a value no greater than Integer.MAX_VALUE to avoid narrowing overflow.
      *
-     * @param timeoutMs timeout in milliseconds
+     * @param timeoutMs requested connect timeout in milliseconds
      */
     public TcpProber(long timeoutMs) {
         this.timeoutMs = (int) Math.max(1L, timeoutMs);
@@ -60,7 +63,7 @@ public class TcpProber implements Prober {
      * Returns whether this prober can attempt a TCP connection to the supplied instance.
      *
      * @param instance candidate instance
-     * @return {@code true} when TCP probing is supported
+     * @return true when instance, host and port are non-null; host text and port range are not validated
      */
     @Override
     public boolean supports(Instance instance) {
@@ -70,18 +73,20 @@ public class TcpProber implements Prober {
     /**
      * Attempts a TCP socket connection to the instance's host and port.
      *
-     * @param instance instance to probe
-     * @return healthy result with latency on success, fail result on error
+     * @param instance non-null instance; an absent port defaults to 80, and supports is not called automatically
+     * @return healthy status on connection success; failed status for exceptions during socket creation, connection or
+     *         close
+     * @throws NullPointerException if instance is null before socket handling begins
      */
     @Override
     public Status check(Instance instance) {
         String host = instance.getHost();
-        int port = instance.getPort() != null ? instance.getPort() : 80;
-        long start = System.currentTimeMillis();
+        int port = instance.getPort() != null ? instance.getPort() : Port._80.getPort();
+        long start = DateKit.current();
         Logger.debug(true, "Cortex", "TCP health probe started: host={}, port={}, timeoutMs={}", host, port, timeoutMs);
         try (Socket socket = new Socket()) {
             socket.connect(new InetSocketAddress(host, port), timeoutMs);
-            long latency = System.currentTimeMillis() - start;
+            long latency = DateKit.current() - start;
             Logger.debug(
                     false,
                     "Cortex",

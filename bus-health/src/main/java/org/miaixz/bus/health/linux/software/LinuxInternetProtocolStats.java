@@ -21,6 +21,7 @@ package org.miaixz.bus.health.linux.software;
 
 import java.util.ArrayList;
 import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -179,24 +180,9 @@ public class LinuxInternetProtocolStats extends AbstractInternetProtocolStats {
     public UdpStats getUDPv4Stats() {
         byte[] fileBytes = Builder.readAllBytes(ProcPath.SNMP, true);
         List<String> lines = Parsing.parseByteArrayToStrings(fileBytes);
-        Map<UdpStat, Long> udpData = new EnumMap<>(UdpStat.class);
-
-        for (int line = 0; line < lines.size() - 1; line += 2) {
-            if (lines.get(line).startsWith(UDP_COLON) && lines.get(line + 1).startsWith(UDP_COLON)) {
-                Map<UdpStat, String> parsedData = Parsing.stringToEnumMap(
-                        UdpStat.class,
-                        lines.get(line + 1).substring(UDP_COLON.length()).trim(),
-                        Symbol.C_SPACE);
-                for (Map.Entry<UdpStat, String> entry : parsedData.entrySet()) {
-                    udpData.put(entry.getKey(), Parsing.parseLongOrDefault(entry.getValue(), 0L));
-                }
-                break;
-            }
-        }
-
-        return new UdpStats(udpData.getOrDefault(UdpStat.OutDatagrams, 0L),
-                udpData.getOrDefault(UdpStat.InDatagrams, 0L), udpData.getOrDefault(UdpStat.NoPorts, 0L),
-                udpData.getOrDefault(UdpStat.InErrors, 0L));
+        Map<String, Long> udpData = parseSnmpSection(lines, UDP_COLON);
+        return new UdpStats(udpData.getOrDefault("OutDatagrams", 0L), udpData.getOrDefault("InDatagrams", 0L),
+                udpData.getOrDefault("NoPorts", 0L), udpData.getOrDefault("InErrors", 0L));
     }
 
     /**
@@ -246,7 +232,29 @@ public class LinuxInternetProtocolStats extends AbstractInternetProtocolStats {
             }
         }
 
-        return new UdpStats(inDatagrams, noPorts, inErrors, outDatagrams);
+        return new UdpStats(outDatagrams, inDatagrams, noPorts, inErrors);
+    }
+
+    /**
+     * Parses one paired heading and value section from {@code /proc/net/snmp} by counter name.
+     *
+     * @param lines  the file contents
+     * @param prefix the section prefix including its colon
+     * @return the counter values keyed by heading
+     */
+    private static Map<String, Long> parseSnmpSection(List<String> lines, String prefix) {
+        Map<String, Long> values = new HashMap<>();
+        for (int line = 0; line < lines.size() - 1; line++) {
+            if (lines.get(line).startsWith(prefix) && lines.get(line + 1).startsWith(prefix)) {
+                String[] headings = Pattern.SPACES_PATTERN.split(lines.get(line).substring(prefix.length()).trim());
+                String[] counters = Pattern.SPACES_PATTERN.split(lines.get(line + 1).substring(prefix.length()).trim());
+                for (int index = 0; index < Math.min(headings.length, counters.length); index++) {
+                    values.put(headings[index], Parsing.parseLongOrDefault(counters[index], 0L));
+                }
+                break;
+            }
+        }
+        return values;
     }
 
     /**
@@ -331,51 +339,6 @@ public class LinuxInternetProtocolStats extends AbstractInternetProtocolStats {
          * TCP input checksum errors.
          */
         InCsumErrors;
-
-    }
-
-    /**
-     * The UdpStat enum.
-     *
-     * @author Kimi Liu
-     */
-    private enum UdpStat {
-        /**
-         * Sent UDP datagrams.
-         */
-        OutDatagrams,
-        /**
-         * Received UDP datagrams.
-         */
-        InDatagrams,
-        /**
-         * Datagrams received for unavailable ports.
-         */
-        NoPorts,
-        /**
-         * UDP input errors.
-         */
-        InErrors,
-        /**
-         * Receive-buffer allocation errors.
-         */
-        RcvbufErrors,
-        /**
-         * Send-buffer allocation errors.
-         */
-        SndbufErrors,
-        /**
-         * UDP input checksum errors.
-         */
-        InCsumErrors,
-        /**
-         * Ignored multicast datagrams.
-         */
-        IgnoredMulti,
-        /**
-         * UDP memory allocation errors.
-         */
-        MemErrors;
 
     }
 

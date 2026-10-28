@@ -33,7 +33,7 @@ import org.miaixz.bus.core.xyz.ObjectKit;
 public class StackTraceElementConverter extends AbstractConverter {
 
     @Serial
-    private static final long serialVersionUID = 2852271899317L;
+    private static final long serialVersionUID = 2536305661105L;
 
     /**
      * Constructs a new stack trace element converter.

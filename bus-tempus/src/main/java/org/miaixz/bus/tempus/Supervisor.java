@@ -33,7 +33,7 @@ import java.util.List;
 public class Supervisor implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852287618105L;
+    private static final long serialVersionUID = 2558283251615L;
 
     /**
      * A list of currently active launchers.

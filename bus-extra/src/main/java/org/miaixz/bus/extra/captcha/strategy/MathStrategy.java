@@ -35,7 +35,7 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class MathStrategy implements CodeStrategy {
 
     @Serial
-    private static final long serialVersionUID = 2852292238303L;
+    private static final long serialVersionUID = 2553988152081L;
 
     /**
      * Operators used in the math expression.

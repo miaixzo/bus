@@ -37,7 +37,7 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class Base16Provider implements Encoder<byte[], char[]>, Decoder<CharSequence, byte[]>, Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852258525806L;
+    private static final long serialVersionUID = 2536110150001L;
 
     /**
      * The lowercase Base16 codec.

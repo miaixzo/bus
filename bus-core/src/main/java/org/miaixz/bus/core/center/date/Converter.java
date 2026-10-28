@@ -20,6 +20,7 @@
 package org.miaixz.bus.core.center.date;
 
 import java.time.*;
+import java.time.Month;
 import java.time.chrono.Era;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
@@ -103,8 +104,8 @@ public class Converter extends Formatter {
      * @return The epoch millisecond timestamp.
      */
     public static long toEpochMilli(final TemporalAccessor temporalAccessor) {
-        if (temporalAccessor instanceof java.time.Month) {
-            return ((java.time.Month) temporalAccessor).getValue();
+        if (temporalAccessor instanceof Month) {
+            return ((Month) temporalAccessor).getValue();
         } else if (temporalAccessor instanceof DayOfWeek) {
             return ((DayOfWeek) temporalAccessor).getValue();
         } else if (temporalAccessor instanceof Era) {

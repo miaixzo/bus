@@ -53,7 +53,7 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class CopyOptions implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852291736328L;
+    private static final long serialVersionUID = 2535326031159L;
 
     /**
      * The class or interface to restrict the copy to. Only properties declared in this class or its

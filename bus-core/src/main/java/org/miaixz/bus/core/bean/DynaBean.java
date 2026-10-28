@@ -41,7 +41,7 @@ import org.miaixz.bus.core.xyz.*;
 public class DynaBean implements Cloneable, Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852291223632L;
+    private static final long serialVersionUID = 2535320620525L;
 
     /**
      * The class of the bean.

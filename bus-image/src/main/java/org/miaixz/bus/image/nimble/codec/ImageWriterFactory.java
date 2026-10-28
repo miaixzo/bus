@@ -46,7 +46,7 @@ import org.miaixz.bus.logger.Logger;
 public class ImageWriterFactory implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852288887239L;
+    private static final long serialVersionUID = 2556360162688L;
 
     /**
      * The default factory value.
@@ -307,7 +307,7 @@ public class ImageWriterFactory implements Serializable {
     public static class ImageWriterParam implements Serializable {
 
         @Serial
-        private static final long serialVersionUID = 2852289015819L;
+        private static final long serialVersionUID = 2556362305001L;
 
         /**
          * The format name value.

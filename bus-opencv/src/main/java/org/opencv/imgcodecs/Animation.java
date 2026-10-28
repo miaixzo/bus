@@ -22,6 +22,7 @@ package org.opencv.imgcodecs;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.opencv.core.CleanableMat;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfInt;
 import org.opencv.core.Scalar;
@@ -49,7 +50,7 @@ public class Animation {
     protected Animation(long addr) {
         nativeObj = addr;
         long nativeObjCopy = nativeObj;
-        org.opencv.core.CleanableMat.cleaner.register(this, () -> delete(nativeObjCopy));
+        CleanableMat.cleaner.register(this, () -> delete(nativeObjCopy));
     }
 
     /**
@@ -76,7 +77,7 @@ public class Animation {
     public Animation(int loopCount, Scalar bgColor) {
         nativeObj = Animation_0(loopCount, bgColor.val[0], bgColor.val[1], bgColor.val[2], bgColor.val[3]);
         long nativeObjCopy = nativeObj;
-        org.opencv.core.CleanableMat.cleaner.register(this, () -> delete(nativeObjCopy));
+        CleanableMat.cleaner.register(this, () -> delete(nativeObjCopy));
     }
 
     /**
@@ -102,7 +103,7 @@ public class Animation {
     public Animation(int loopCount) {
         nativeObj = Animation_1(loopCount);
         long nativeObjCopy = nativeObj;
-        org.opencv.core.CleanableMat.cleaner.register(this, () -> delete(nativeObjCopy));
+        CleanableMat.cleaner.register(this, () -> delete(nativeObjCopy));
     }
 
     //
@@ -128,7 +129,7 @@ public class Animation {
     public Animation() {
         nativeObj = Animation_2();
         long nativeObjCopy = nativeObj;
-        org.opencv.core.CleanableMat.cleaner.register(this, () -> delete(nativeObjCopy));
+        CleanableMat.cleaner.register(this, () -> delete(nativeObjCopy));
     }
 
     // internal usage only

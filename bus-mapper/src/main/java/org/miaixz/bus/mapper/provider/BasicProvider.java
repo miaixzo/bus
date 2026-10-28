@@ -59,7 +59,7 @@ public abstract class BasicProvider {
      */
     protected static final String CONDITION_SET_VALUES = "<set>"
             + "  <foreach collection=\"condition.setValues\" item=\"setValue\">\n" + "    <choose>\n"
-            + "      <when test=\"setValue.noValue\">\n" + "        ${setValue.condition},\n" + "      </when>\n"
+            + "      <when test=\"setValue.noValue\">\n" + "        ${setValue.condition}\n,\n" + "      </when>\n"
             + "      <when test=\"setValue.singleValue\">\n"
             + "        ${setValue.condition} = ${setValue.variables('setValue.value')},\n" + "      </when>\n"
             + "    </choose>\n" + "  </foreach>\n" + "</set>";
@@ -457,6 +457,16 @@ public abstract class BasicProvider {
     }
 
     /**
+     * Detects non-key insert-only columns that replacement-style UPSERT must preserve on conflicts.
+     *
+     * @param entity table metadata
+     * @return whether an inserted non-key column is not updatable
+     */
+    protected static boolean hasInsertOnlyColumns(TableMeta entity) {
+        return entity.insertColumns().stream().anyMatch(column -> !column.id() && !column.updatable());
+    }
+
+    /**
      * Creates a consistent exception for unsupported UPSERT operations.
      *
      * @param dialect the current dialect
@@ -538,34 +548,50 @@ public abstract class BasicProvider {
     }
 
     /**
-     * Builds a SQLite-style {@code INSERT OR REPLACE} statement.
+     * Builds a SQLite UPSERT, using conflict updates when insert-only columns must be preserved.
      *
      * @param entity    the table metadata
      * @param selective whether to include only non-null fields
      * @return the generated SQL
      */
     protected static String buildInsertOrReplace(TableMeta entity, boolean selective) {
+        boolean preserve = hasInsertOnlyColumns(entity);
+        String insert = preserve ? "INSERT INTO " : "INSERT OR REPLACE INTO ";
         StringBuilder sql = new StringBuilder();
         if (!selective) {
-            sql.append("INSERT OR REPLACE INTO ").append(entity.tableName()).append(" (")
-                    .append(insertColumnList(entity)).append(") VALUES (").append(insertValues(entity, null))
-                    .append(Symbol.PARENTHESE_RIGHT);
-            return sql.toString();
+            sql.append(insert).append(entity.tableName()).append(" (").append(insertColumnList(entity))
+                    .append(") VALUES (").append(insertValues(entity, null)).append(Symbol.PARENTHESE_RIGHT);
+        } else {
+            sql.append(insert).append(entity.tableName()).append(Symbol.LF).append(buildDynamicColumnListSingle(entity))
+                    .append(Symbol.LF).append("VALUES").append(Symbol.LF).append(buildDynamicValuesListSingle(entity));
         }
-        sql.append("INSERT OR REPLACE INTO ").append(entity.tableName()).append(Symbol.LF)
-                .append(buildDynamicColumnListSingle(entity)).append(Symbol.LF).append("VALUES").append(Symbol.LF)
-                .append(buildDynamicValuesListSingle(entity));
+        if (preserve) {
+            sql.append(Symbol.LF).append("ON CONFLICT DO UPDATE SET ")
+                    .append(buildUpdateAssignments(entity, "EXCLUDED", Normal.EMPTY, selective));
+        }
         return sql.toString();
     }
 
     /**
-     * Builds a Firebird-style {@code UPDATE OR INSERT} statement.
+     * Builds a Firebird UPSERT, using MERGE when insert-only columns must be preserved.
      *
      * @param entity    the table metadata
      * @param selective whether to include only non-null fields
      * @return the generated SQL
      */
     protected static String buildUpdateOrInsert(TableMeta entity, boolean selective) {
+        if (hasInsertOnlyColumns(entity)) {
+            String on = entity.idColumns().stream()
+                    .map(column -> "target." + column.column() + " = " + column.variables())
+                    .collect(Collectors.joining(" AND "));
+            String columns = selective ? buildDynamicColumnListSingle(entity) : "(" + insertColumnList(entity) + ")";
+            String values = selective ? buildDynamicValuesListSingle(entity) : "(" + insertValues(entity, null) + ")";
+            return "MERGE INTO " + entity.tableName() + " target USING RDB$DATABASE source ON (" + on + ")" + Symbol.LF
+                    + "WHEN MATCHED THEN UPDATE SET "
+                    + buildUpdateAssignments(entity, "PARAMETER", Normal.EMPTY, selective) + Symbol.LF
+                    + "WHEN NOT MATCHED THEN INSERT " + columns + " VALUES " + values;
+        }
+
         StringBuilder sql = new StringBuilder();
         if (!selective) {
             sql.append("UPDATE OR INSERT INTO ").append(entity.tableName()).append(" (")
@@ -581,13 +607,17 @@ public abstract class BasicProvider {
     }
 
     /**
-     * Builds an H2-style {@code MERGE INTO ... KEY (...)} statement.
+     * Builds an H2 UPSERT, separating matched updates when insert-only columns must be preserved.
      *
      * @param entity    the table metadata
      * @param selective whether to include only non-null fields
      * @return the generated SQL
      */
     protected static String buildMergeIntoKey(TableMeta entity, boolean selective) {
+        if (hasInsertOnlyColumns(entity)) {
+            return buildMergeUsingValues(entity, selective);
+        }
+
         StringBuilder sql = new StringBuilder();
         if (!selective) {
             sql.append("MERGE INTO ").append(entity.tableName()).append(" (").append(insertColumnList(entity))
@@ -603,6 +633,22 @@ public abstract class BasicProvider {
     }
 
     /**
+     * Builds a fixed MERGE source projection containing the union of insertable and updatable columns. Update-only
+     * values are available to matched rows without becoming columns of the unmatched INSERT branch.
+     *
+     * @param entity the table metadata
+     * @param prefix the value parameter prefix, including its trailing dot
+     * @param values whether to render bound values instead of column names
+     * @return the parenthesized source column list or value tuple
+     */
+    protected static String buildMergeSource(TableMeta entity, String prefix, boolean values) {
+        return entity.columns().stream().filter(column -> column.insertable() || column.updatable())
+                .map(column -> values ? column.variables(prefix) : column.column()).collect(
+                        Collectors
+                                .joining(Symbol.COMMA + Symbol.SPACE, Symbol.PARENTHESE_LEFT, Symbol.PARENTHESE_RIGHT));
+    }
+
+    /**
      * Builds a {@code MERGE} statement whose source is expressed as a {@code VALUES} clause.
      *
      * @param entity    the table metadata
@@ -612,31 +658,15 @@ public abstract class BasicProvider {
     protected static String buildMergeUsingValues(TableMeta entity, boolean selective) {
         String targetAlias = "target";
         String sourceAlias = "source";
-        StringBuilder sql = new StringBuilder();
-        sql.append("MERGE INTO ").append(entity.tableName()).append(Symbol.SPACE).append(targetAlias).append(Symbol.LF);
-        if (!selective) {
-            sql.append("USING (VALUES (").append(insertValues(entity, null)).append(")) ").append(sourceAlias)
-                    .append(" (").append(insertColumnList(entity)).append(Symbol.PARENTHESE_RIGHT).append(Symbol.LF);
-            sql.append("ON (").append(buildMergeOnClause(entity, targetAlias, sourceAlias))
-                    .append(Symbol.PARENTHESE_RIGHT).append(Symbol.LF);
-            sql.append("WHEN MATCHED THEN UPDATE SET ")
-                    .append(buildUpdateAssignments(entity, "SOURCE", sourceAlias, false)).append(Symbol.LF);
-            sql.append("WHEN NOT MATCHED THEN INSERT (").append(insertColumnList(entity))
-                    .append(Symbol.PARENTHESE_RIGHT).append(Symbol.LF);
-            sql.append("VALUES (").append(buildSourceReferenceList(entity, sourceAlias, false))
-                    .append(Symbol.PARENTHESE_RIGHT);
-            return sql.toString();
-        }
-        String columns = buildDynamicColumnListSingle(entity);
-        sql.append("USING (VALUES\n").append(buildDynamicValuesListSingle(entity)).append(") ").append(sourceAlias)
-                .append(Symbol.SPACE).append(columns).append(Symbol.LF);
-        sql.append("ON (").append(buildMergeOnClause(entity, targetAlias, sourceAlias)).append(Symbol.PARENTHESE_RIGHT)
-                .append(Symbol.LF);
-        sql.append("WHEN MATCHED THEN UPDATE SET").append(Symbol.LF)
-                .append(buildUpdateAssignments(entity, "SOURCE", Normal.EMPTY, true)).append(Symbol.LF);
-        sql.append("WHEN NOT MATCHED THEN INSERT").append(Symbol.LF).append(columns).append(Symbol.LF).append("VALUES")
-                .append(Symbol.LF).append(buildSourceReferenceList(entity, sourceAlias, true));
-        return sql.toString();
+        String columns = selective ? buildDynamicColumnListSingle(entity) : "(" + insertColumnList(entity) + ")";
+        String values = buildSourceReferenceList(entity, sourceAlias, selective);
+        return "MERGE INTO " + entity.tableName() + Symbol.SPACE + targetAlias + Symbol.LF + "USING (VALUES "
+                + buildMergeSource(entity, Normal.EMPTY, true) + ") " + sourceAlias + Symbol.SPACE
+                + buildMergeSource(entity, Normal.EMPTY, false) + Symbol.LF + "ON ("
+                + buildMergeOnClause(entity, targetAlias, sourceAlias) + ")" + Symbol.LF
+                + "WHEN MATCHED THEN UPDATE SET " + buildUpdateAssignments(entity, "SOURCE", sourceAlias, selective)
+                + Symbol.LF + "WHEN NOT MATCHED THEN INSERT " + columns + " VALUES "
+                + (selective ? values : "(" + values + ")");
     }
 
     /**
@@ -674,7 +704,7 @@ public abstract class BasicProvider {
         sql.append("ON (").append(buildMergeOnClause(entity, targetAlias, sourceAlias)).append(Symbol.PARENTHESE_RIGHT)
                 .append(Symbol.LF);
         sql.append("WHEN MATCHED THEN UPDATE SET").append(Symbol.LF)
-                .append(buildUpdateAssignments(entity, "SOURCE", Normal.EMPTY, true)).append(Symbol.LF);
+                .append(buildUpdateAssignments(entity, "SOURCE", sourceAlias, true)).append(Symbol.LF);
         sql.append("WHEN NOT MATCHED THEN INSERT").append(Symbol.LF).append(columns).append(Symbol.LF).append("VALUES")
                 .append(Symbol.LF).append(buildSourceReferenceList(entity, sourceAlias, true));
         return sql.toString();
@@ -717,7 +747,11 @@ public abstract class BasicProvider {
      * @param selective   whether to emit dynamic assignments only for non-null properties
      * @return the generated assignment segment
      */
-    private static String buildUpdateAssignments(TableMeta entity, String mode, String sourceAlias, boolean selective) {
+    protected static String buildUpdateAssignments(
+            TableMeta entity,
+            String mode,
+            String sourceAlias,
+            boolean selective) {
         if (!selective) {
             return entity.updateColumns().stream()
                     .map(col -> col.column() + Symbol.SPACE + Symbol.EQUAL + Symbol.SPACE + switch (mode) {
@@ -736,8 +770,10 @@ public abstract class BasicProvider {
                 sql.append("VALUES(").append(col.column()).append(Symbol.PARENTHESE_RIGHT);
             } else if ("EXCLUDED".equals(mode)) {
                 sql.append("EXCLUDED").append(Symbol.DOT).append(col.column());
-            } else {
+            } else if ("SOURCE".equals(mode)) {
                 sql.append(sourceAlias).append(Symbol.DOT).append(col.column());
+            } else {
+                sql.append(col.variables());
             }
             sql.append(",</if>\n");
         }
@@ -753,7 +789,7 @@ public abstract class BasicProvider {
      * @param sourceAlias the source alias
      * @return the merge predicate
      */
-    private static String buildMergeOnClause(TableMeta entity, String targetAlias, String sourceAlias) {
+    protected static String buildMergeOnClause(TableMeta entity, String targetAlias, String sourceAlias) {
         return entity.idColumns().stream()
                 .map(
                         col -> targetAlias + Symbol.DOT + col.column() + Symbol.SPACE + Symbol.EQUAL + Symbol.SPACE
@@ -769,7 +805,24 @@ public abstract class BasicProvider {
      * @param selective   whether to emit dynamic references only for included columns
      * @return the generated value list
      */
-    private static String buildSourceReferenceList(TableMeta entity, String sourceAlias, boolean selective) {
+    protected static String buildSourceReferenceList(TableMeta entity, String sourceAlias, boolean selective) {
+        return buildSourceReferenceList(entity, sourceAlias, selective, Normal.EMPTY);
+    }
+
+    /**
+     * Builds MERGE source references using the same inclusion path as the inserted row shape.
+     *
+     * @param entity      table metadata
+     * @param sourceAlias source relation alias
+     * @param selective   whether null-valued insert columns are omitted
+     * @param prefix      parameter path used to select the shared insert shape
+     * @return source value list, parenthesized when selective
+     */
+    protected static String buildSourceReferenceList(
+            TableMeta entity,
+            String sourceAlias,
+            boolean selective,
+            String prefix) {
         if (!selective) {
             return entity.insertColumns().stream().map(col -> sourceAlias + Symbol.DOT + col.column())
                     .collect(Collectors.joining(Symbol.COMMA + Symbol.SPACE));
@@ -777,7 +830,7 @@ public abstract class BasicProvider {
         StringBuilder sql = new StringBuilder();
         sql.append("<trim prefix=\"(\" suffix=\")\" suffixOverrides=\",\">\n");
         for (ColumnMeta col : entity.insertColumns()) {
-            sql.append("  <if test=\"").append(requiredUpsertColumnCondition(Normal.EMPTY, col)).append("\">")
+            sql.append("  <if test=\"").append(requiredUpsertColumnCondition(prefix, col)).append("\">")
                     .append(sourceAlias).append(Symbol.DOT).append(col.column()).append(",</if>\n");
         }
         sql.append("</trim>");

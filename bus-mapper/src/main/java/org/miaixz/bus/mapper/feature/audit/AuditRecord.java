@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.mapper.feature.audit;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Map;
 
@@ -138,7 +139,7 @@ public class AuditRecord {
     public AuditRecord end() {
         this.endTime = LocalDateTime.now();
         if (this.startTime != null) {
-            this.elapsedTime = java.time.Duration.between(this.startTime, this.endTime).toMillis();
+            this.elapsedTime = Duration.between(this.startTime, this.endTime).toMillis();
         }
         return this;
     }

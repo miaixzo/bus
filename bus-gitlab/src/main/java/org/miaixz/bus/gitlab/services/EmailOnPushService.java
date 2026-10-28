@@ -33,7 +33,7 @@ import org.miaixz.bus.gitlab.models.GitLabForm;
 public class EmailOnPushService extends NotificationService {
 
     @Serial
-    private static final long serialVersionUID = 2852283959961L;
+    private static final long serialVersionUID = 2551300165001L;
 
     /**
      * The recipient prop value.

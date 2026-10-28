@@ -31,7 +31,7 @@ import org.miaixz.bus.core.basic.normal.Errors;
 public class VersionException extends UncheckedException {
 
     @Serial
-    private static final long serialVersionUID = 2852267032578L;
+    private static final long serialVersionUID = 2536918251108L;
 
     /**
      * Constructs a new VersionException with no detail message.

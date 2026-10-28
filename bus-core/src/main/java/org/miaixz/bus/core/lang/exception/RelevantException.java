@@ -38,7 +38,7 @@ import org.miaixz.bus.core.basic.normal.Errors;
 public class RelevantException extends IOException {
 
     @Serial
-    private static final long serialVersionUID = 2852263392627L;
+    private static final long serialVersionUID = 2536880001829L;
 
     /**
      * The error code associated with this exception.

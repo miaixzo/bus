@@ -32,7 +32,7 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class GitLabCiTemplate implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852255181137L;
+    private static final long serialVersionUID = 2550602265012L;
 
     /**
      * The name value.

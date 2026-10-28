@@ -22,6 +22,7 @@ package org.miaixz.bus.cortex.health;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.net.Port;
 import org.miaixz.bus.core.net.Protocol;
+import org.miaixz.bus.core.xyz.DateKit;
 import org.miaixz.bus.cortex.*;
 
 /**
@@ -32,9 +33,8 @@ import org.miaixz.bus.cortex.*;
 public class McpPingProber implements Prober {
 
     /**
-     * Ping payload.
+     * Fixed MCP ping request body.
      */
-
     private static final String PING_PAYLOAD = "{\"jsonrpc\":\"2.0\",\"method\":\"ping\",\"id\":1}";
 
     /**
@@ -52,7 +52,7 @@ public class McpPingProber implements Prober {
     /**
      * Creates an MCP ping prober with an explicit timeout.
      *
-     * @param timeoutMs timeout in milliseconds
+     * @param timeoutMs timeout in milliseconds, clamped to at least 1
      */
     public McpPingProber(long timeoutMs) {
         this.timeoutMs = Math.max(1L, timeoutMs);
@@ -62,7 +62,7 @@ public class McpPingProber implements Prober {
      * Returns whether this prober can issue an MCP ping to the supplied instance.
      *
      * @param instance candidate instance
-     * @return {@code true} when MCP probing is supported
+     * @return true when the instance and host are non-null; blank hosts and protocol support are not validated
      */
     @Override
     public boolean supports(Instance instance) {
@@ -70,19 +70,22 @@ public class McpPingProber implements Prober {
     }
 
     /**
-     * Sends a JSON-RPC ping to the instance's MCP endpoint.
+     * Posts the fixed JSON-RPC ping body to http://host:port/mcp, using port 80 when unspecified. Success requires no
+     * reported call error, a 2xx HTTP status, and a response body containing the literal substring result; the body is
+     * not parsed as a JSON-RPC response.
      *
-     * @param instance instance to probe
-     * @return healthy result with latency if a response is received, fail result otherwise
+     * @param instance non-null instance with the host to probe
+     * @return healthy status only when all three checks pass; otherwise a failed status
+     * @throws NullPointerException if instance is null
      */
     @Override
     public Status check(Instance instance) {
         String host = instance.getHost();
         int port = instance.getPort() != null ? instance.getPort() : Port._80.getPort();
         String url = Protocol.HTTP_PREFIX + host + Symbol.COLON + port + Symbol.SLASH + "mcp";
-        long start = System.currentTimeMillis();
+        long start = DateKit.current();
         Callout.Response response = Callout.postJson(url, PING_PAYLOAD, timeoutMs);
-        long latency = System.currentTimeMillis() - start;
+        long latency = DateKit.current() - start;
         if (response.errorMessage() != null) {
             return Status.fail("MCP ping failed: " + response.errorMessage(), name()).detail("url", url);
         }

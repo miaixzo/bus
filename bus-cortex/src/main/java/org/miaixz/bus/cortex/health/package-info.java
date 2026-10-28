@@ -18,14 +18,15 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Active liveness and health probe implementations for registered service instances.
+ * Shared health JSON values and active probe implementations for registered service instances.
  * <p>
- * Every class in this package implements the {@link org.miaixz.bus.cortex.Prober} contract and returns a {@code Status}
- * carrying the health flag, measured latency, and diagnostic details. {@code HttpProber} performs an HTTP GET against
- * the instance health endpoint. {@code TcpProber} attempts a TCP socket connection within the configured timeout.
- * {@code ProcessProber} checks whether a local OS process with a given PID is still alive. {@code McpPingProber} posts
- * a JSON-RPC ping to the MCP endpoint. {@code CompositeProber} runs an ordered list of delegate probers, skips
- * delegates that do not support the target instance, and returns the first failure or a combined success result.
+ * {@link org.miaixz.bus.cortex.health.HealthInfo} owns the seven-member health protocol, including parsing, validation
+ * and serialization. Probe implementations follow the {@link org.miaixz.bus.cortex.Prober} contract and return a
+ * {@code Status} carrying the health flag, measured latency, and diagnostic details. {@code HttpProber} performs an
+ * HTTP GET against the instance health endpoint. {@code TcpProber} attempts a TCP socket connection within the
+ * configured timeout. {@code McpPingProber} posts a JSON-RPC ping to the MCP endpoint. {@code CompositeProber} runs an
+ * ordered list of delegate probers, skips delegates that do not support the target instance, and returns the first
+ * failure or a combined success result.
  *
  * @author Kimi Liu
  */

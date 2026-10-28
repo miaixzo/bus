@@ -35,7 +35,7 @@ import java.util.Objects;
 public class ConnectionException extends SocketException {
 
     @Serial
-    private static final long serialVersionUID = 2852299832471L;
+    private static final long serialVersionUID = 2536683500001L;
 
     /**
      * Connection lifecycle phase in which the failure occurred.

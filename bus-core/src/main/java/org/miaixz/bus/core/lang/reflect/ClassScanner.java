@@ -52,7 +52,7 @@ import org.miaixz.bus.core.xyz.*;
 public class ClassScanner implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852276616111L;
+    private static final long serialVersionUID = 2538081305138L;
 
     /**
      * The package name to scan.
@@ -294,7 +294,8 @@ public class ClassScanner implements Serializable {
                     break;
 
                 case "jar":
-                    scanJar(new JarResource(url).getJarFile());
+                    // scanJar closes its input, so it must not receive a shared cached JAR.
+                    scanJar(new JarResource(url).getJarFile(false));
                     break;
             }
         }

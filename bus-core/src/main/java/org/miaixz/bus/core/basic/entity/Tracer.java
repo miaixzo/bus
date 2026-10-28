@@ -40,7 +40,7 @@ import lombok.experimental.SuperBuilder;
 public class Tracer extends Authorize {
 
     @Serial
-    private static final long serialVersionUID = 2852291120377L;
+    private static final long serialVersionUID = 2535318369351L;
 
     /**
      * Unique identifier for the current request. This ID is used to track a specific request within the system.

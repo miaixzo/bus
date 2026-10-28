@@ -33,7 +33,6 @@ import lombok.experimental.Accessors;
 
 import org.apache.ibatis.type.JdbcType;
 import org.apache.ibatis.type.TypeHandler;
-import org.apache.ibatis.type.UnknownTypeHandler;
 
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Optional;
@@ -362,9 +361,9 @@ public class ColumnMeta extends PropertyMeta<ColumnMeta> {
     }
 
     /**
-     * Sets the type handler.
+     * Sets the explicit type handler, or delegates handler resolution to MyBatis when {@code null}.
      *
-     * @param typeHandler The type handler class.
+     * @param typeHandler The type handler class, or {@code null} for automatic resolution.
      * @return This MapperColumn instance.
      */
     public ColumnMeta typeHandler(Class<? extends TypeHandler> typeHandler) {
@@ -460,10 +459,11 @@ public class ColumnMeta extends PropertyMeta<ColumnMeta> {
     /**
      * Gets the type handler variable string, e.g., ", typeHandler=XXTypeHandler".
      *
-     * @return An {@link Optional} containing the type handler variable string.
+     * @return An {@link Optional} containing the type handler variable string, or empty when no explicit handler is
+     *         configured.
      */
     public Optional<String> typeHandlerVariables() {
-        if (this.typeHandler != null && this.typeHandler != UnknownTypeHandler.class) {
+        if (this.typeHandler != null) {
             return Optional.of(", typeHandler=" + typeHandler.getName());
         }
         return Optional.empty();

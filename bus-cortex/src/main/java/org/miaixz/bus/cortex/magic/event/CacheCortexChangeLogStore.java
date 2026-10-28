@@ -19,17 +19,15 @@
 */
 package org.miaixz.bus.cortex.magic.event;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.center.date.Chrono;
 import org.miaixz.bus.core.data.id.ID;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.DateKit;
+import org.miaixz.bus.cortex.Type;
 import org.miaixz.bus.cortex.magic.identity.CortexIdentity;
 import org.miaixz.bus.cortex.registry.RegistryIdentity;
 import org.miaixz.bus.extra.json.JsonKit;
@@ -109,33 +107,33 @@ public class CacheCortexChangeLogStore implements CortexChangeLogStore {
     }
 
     /**
-     * Appends or refreshes one outbox record by idempotency key.
+     * Appends one event or returns its existing record without changing delivery state.
      *
-     * @param record outbox record
+     * @param record outbox event
      * @return persisted outbox record
+     * @throws IllegalArgumentException if an idempotency key or record identifier is reused for a different event
      */
     @Override
     public synchronized CortexChangeRecord append(CortexChangeRecord record) {
         CortexChangeRecord prepared = prepare(record);
+        CortexChangeRecord retained = read(prepared.getId());
+        if (retained != null && !sameEvent(prepared, retained)) {
+            throw new IllegalArgumentException("Outbox record identifier belongs to a different event");
+        }
         CortexChangeRecord existing = findByIdempotencyKey(prepared.getTenant_id(), prepared.getIdempotencyKey());
         if (existing != null) {
-            prepared.setId(existing.getId());
-            prepared.setCreated(existing.getCreated());
-            prepared.setRetryCount(existing.getRetryCount());
-            if (record == null || record.getStatus() == null) {
-                prepared.setStatus(
-                        existing.getStatus() == CortexChangeStatus.DELIVERED ? CortexChangeStatus.DELIVERED
-                                : CortexChangeStatus.PENDING);
+            if (!sameEvent(prepared, existing)) {
+                throw new IllegalArgumentException("Outbox event identity conflicts with an existing record");
             }
+            return existing;
+        }
+        if (retained != null) {
+            cacheX.write(idempotencyKey(retained.getTenant_id(), retained.getIdempotencyKey()), retained.getId(), 0L);
+            return retained;
         }
         if (prepared.getStatus() != CortexChangeStatus.CLAIMED) {
             prepared.setClaimedBy(null);
             prepared.setClaimedUntil(0L);
-        }
-        CortexChangeRecord retained = read(prepared.getId());
-        if (retained != null && (!Objects.equals(prepared.getTenant_id(), retained.getTenant_id())
-                || !Objects.equals(prepared.getDomain(), retained.getDomain()))) {
-            throw new IllegalArgumentException("Outbox record scope or domain mismatch");
         }
         write(prepared);
         cacheX.write(idempotencyKey(prepared.getTenant_id(), prepared.getIdempotencyKey()), prepared.getId(), 0L);
@@ -143,39 +141,26 @@ public class CacheCortexChangeLogStore implements CortexChangeLogStore {
     }
 
     /**
-     * Marks a record as delivered.
+     * Marks a record as delivered when the supplied claim still owns delivery.
      *
-     * @param id outbox record identifier
-     * @return updated record or {@code null}
+     * @param claim unmodified snapshot returned by {@code claimPending}
+     * @return updated record, or {@code null} when the record is absent or the claim no longer matches
      */
     @Override
-    public synchronized CortexChangeRecord markDelivered(String id) {
-        return update(id, CortexChangeStatus.DELIVERED, null, false, false);
+    public synchronized CortexChangeRecord markDelivered(CortexChangeRecord claim) {
+        return update(claim, CortexChangeStatus.DELIVERED, null, false, false);
     }
 
     /**
-     * Marks a record as failed and schedules a retry when retries remain.
+     * Marks an owned record as failed and schedules a retry when retries remain.
      *
-     * @param id    outbox record identifier
+     * @param claim unmodified snapshot returned by {@code claimPending}
      * @param error failure message
-     * @return updated record or {@code null}
+     * @return updated record, or {@code null} when the record is absent or the claim no longer matches
      */
     @Override
-    public synchronized CortexChangeRecord markFailed(String id, String error) {
-        return update(id, CortexChangeStatus.FAILED, error, true, false);
-    }
-
-    /**
-     * Claims pending records without domain filtering.
-     *
-     * @param limit       maximum records to claim
-     * @param owner       worker owner name
-     * @param leaseMillis claim lease duration in milliseconds
-     * @return claimed records
-     */
-    @Override
-    public synchronized List<CortexChangeRecord> claimPending(int limit, String owner, long leaseMillis) {
-        return claimPending(limit, owner, leaseMillis, null, null);
+    public synchronized CortexChangeRecord markFailed(CortexChangeRecord claim, String error) {
+        return update(claim, CortexChangeStatus.FAILED, error, true, false);
     }
 
     /**
@@ -228,35 +213,42 @@ public class CacheCortexChangeLogStore implements CortexChangeLogStore {
     }
 
     /**
-     * Moves a record into dead letter state.
+     * Moves an owned record into dead letter state.
      *
-     * @param id    outbox record identifier
+     * @param claim unmodified snapshot returned by {@code claimPending}
      * @param error terminal failure message
-     * @return updated record or {@code null}
+     * @return updated record, or {@code null} when the record is absent or the claim no longer matches
      */
     @Override
-    public synchronized CortexChangeRecord deadLetter(String id, String error) {
-        return update(id, CortexChangeStatus.DEAD, error, true, true);
+    public synchronized CortexChangeRecord deadLetter(CortexChangeRecord claim, String error) {
+        return update(claim, CortexChangeStatus.DEAD, error, true, true);
     }
 
     /**
-     * Updates delivery state for one outbox record.
+     * Updates delivery state only when the current persisted claim matches the delivery snapshot.
      *
-     * @param id             outbox record identifier
+     * @param claim          unmodified snapshot returned by {@code claimPending}
      * @param status         target delivery status
      * @param error          failure message
      * @param incrementRetry whether to increase the retry count
      * @param deadLetter     whether to set the dead-letter reason
-     * @return updated record or {@code null}
+     * @return updated record, or {@code null} when the record is absent or the claim no longer matches
      */
     private CortexChangeRecord update(
-            String id,
+            CortexChangeRecord claim,
             CortexChangeStatus status,
             String error,
             boolean incrementRetry,
             boolean deadLetter) {
-        CortexChangeRecord record = read(id);
-        if (record == null) {
+        if (claim == null || claim.getId() == null || claim.getStatus() != CortexChangeStatus.CLAIMED
+                || claim.getClaimedBy() == null || claim.getClaimedBy().isBlank() || claim.getClaimedUntil() <= 0L) {
+            return null;
+        }
+        CortexChangeRecord record = read(claim.getId());
+        if (record == null || record.getStatus() != CortexChangeStatus.CLAIMED || !sameEvent(claim, record)
+                || !Objects.equals(claim.getClaimedBy(), record.getClaimedBy())
+                || claim.getClaimedUntil() != record.getClaimedUntil()
+                || claim.getRetryCount() != record.getRetryCount()) {
             return null;
         }
         long now = DateKit.current();
@@ -286,6 +278,23 @@ public class CacheCortexChangeLogStore implements CortexChangeLogStore {
     }
 
     /**
+     * Compares immutable event coordinates and payload, excluding delivery state and the generated record identifier.
+     *
+     * @param left  incoming event or delivery claim
+     * @param right persisted event
+     * @return {@code true} when both records represent the same event
+     */
+    private boolean sameEvent(CortexChangeRecord left, CortexChangeRecord right) {
+        return Objects.equals(left.getTenant_id(), right.getTenant_id())
+                && Objects.equals(left.getDomain(), right.getDomain())
+                && Objects.equals(left.getIdempotencyKey(), right.getIdempotencyKey())
+                && Objects.equals(left.getAction(), right.getAction())
+                && Objects.equals(left.getResourceType(), right.getResourceType())
+                && Objects.equals(left.getResourceId(), right.getResourceId())
+                && left.getSequence() == right.getSequence() && Objects.equals(left.getPayload(), right.getPayload());
+    }
+
+    /**
      * Normalizes a record before append.
      *
      * @param record raw outbox record
@@ -294,10 +303,10 @@ public class CacheCortexChangeLogStore implements CortexChangeLogStore {
     private CortexChangeRecord prepare(CortexChangeRecord record) {
         CortexChangeRecord prepared = record == null ? new CortexChangeRecord() : record;
         prepared.setTenant_id(
-                "registry".equals(prepared.getDomain()) ? RegistryIdentity
-                        .tenantId(org.miaixz.bus.cortex.Type.from(prepared.getResourceType()), prepared.getTenant_id())
+                "registry".equals(prepared.getDomain())
+                        ? RegistryIdentity.tenantId(Type.from(prepared.getResourceType()), prepared.getTenant_id())
                         : "bridge".equals(prepared.getDomain())
-                                ? RegistryIdentity.tenantId(org.miaixz.bus.cortex.Type.API, prepared.getTenant_id())
+                                ? RegistryIdentity.tenantId(Type.API, prepared.getTenant_id())
                                 : CortexIdentity.tenantId(prepared.getTenant_id()));
         long now = DateKit.current();
         if (prepared.getId() == null || prepared.getId().isBlank()) {
@@ -414,7 +423,7 @@ public class CacheCortexChangeLogStore implements CortexChangeLogStore {
      * @return idempotency cache key
      */
     private String idempotencyKey(String tenantId, String idempotencyKey) {
-        return IDEMPOTENCY_PREFIX + (tenantId == null ? "registry" : CortexIdentity.tenantKey(tenantId)) + ":"
+        return IDEMPOTENCY_PREFIX + (tenantId == null ? "registry" : CortexIdentity.tenantKey(tenantId)) + Symbol.COLON
                 + idempotencyKey;
     }
 

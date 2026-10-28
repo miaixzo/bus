@@ -20,12 +20,14 @@
 package org.miaixz.bus.cortex.registry;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
 import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.cortex.*;
+import org.miaixz.bus.cortex.builtin.MetadataMatcher;
 import org.miaixz.bus.cortex.builtin.RegistryGenerator;
 import org.miaixz.bus.cortex.magic.watch.WatchManager;
 import org.miaixz.bus.extra.json.JsonKit;
@@ -152,7 +154,7 @@ public abstract class AbstractRegistry<T extends Assets> implements Registry<T> 
     }
 
     /**
-     * Queries entries matching the given criteria with offset/limit pagination.
+     * Queries entries matching the given criteria with offset/limit pagination ordered by stable asset identity.
      *
      * @param vector vector parameters including tenantId, id filter, offset and limit
      * @return paginated list of matching entries
@@ -160,7 +162,6 @@ public abstract class AbstractRegistry<T extends Assets> implements Registry<T> 
     @Override
     public List<T> query(Vector vector) {
         RegistryQuery query = RegistryScopeMapping.query(vector, registryType);
-        Vector criteria = RegistryScopeMapping.toVector(query);
         String resolvedTenant = query.getTenant_id();
         String prefix = keying.prefix(Keying.RegistrySpec.entry(resolvedTenant, registryType, null));
         Logger.debug(
@@ -169,9 +170,12 @@ public abstract class AbstractRegistry<T extends Assets> implements Registry<T> 
                 "Registry query started: type={}, tenantId={}, id={}, prefix={}",
                 registryType,
                 resolvedTenant,
-                criteria.getId(),
+                query.getId(),
                 prefix);
         Map<String, Object> raw = cacheX.scan(prefix);
+        if (raw == null || raw.isEmpty()) {
+            return List.of();
+        }
         List<T> result = new ArrayList<>();
         for (Object value : raw.values()) {
             T entry = deserialize(value);
@@ -180,15 +184,15 @@ public abstract class AbstractRegistry<T extends Assets> implements Registry<T> 
             }
             RegistryIdentity.requireTenant(registryType, resolvedTenant, entry.getTenant_id());
             RegistryIdentity.normalize(entry, registryType);
-            if (criteria.getId() != null && !criteria.getId().equals(entry.getId())) {
-                continue;
+            if (matches(entry, query)) {
+                result.add(entry);
             }
-            result.add(entry);
         }
-        int offset = criteria.getOffset() > 0 ? criteria.getOffset() : 0;
-        int limit = criteria.getLimit() > 0 ? criteria.getLimit() : 100;
+        result.sort(Comparator.comparing(Assets::getId, Comparator.nullsFirst(String::compareTo)));
+        int offset = query.getOffset();
+        int limit = query.getLimit();
         int fromIdx = Math.min(offset, result.size());
-        int toIdx = Math.min(fromIdx + limit, result.size());
+        int toIdx = (int) Math.min((long) fromIdx + limit, result.size());
         List<T> page = result.subList(fromIdx, toIdx);
         Logger.debug(
                 false,
@@ -202,6 +206,23 @@ public abstract class AbstractRegistry<T extends Assets> implements Registry<T> 
                 offset,
                 limit);
         return page;
+    }
+
+    /**
+     * Tests asset coordinates and labels against normalized registry query criteria. Runtime instance state and
+     * store-specific visibility rules remain the responsibility of their existing owners.
+     *
+     * @param entry asset to test
+     * @param query normalized registry query
+     * @return whether every supplied asset constraint matches
+     */
+    protected boolean matches(T entry, RegistryQuery query) {
+        return entry != null && Objects.equals(query.getType().key(), entry.getType())
+                && (query.getId() == null || Objects.equals(query.getId(), entry.getId()))
+                && (query.getApp_id() == null || Objects.equals(query.getApp_id(), entry.getApp_id()))
+                && (query.getMethod() == null || Objects.equals(query.getMethod(), entry.getMethod()))
+                && (query.getVersion() == null || Objects.equals(query.getVersion(), entry.getVersion()))
+                && MetadataMatcher.matches(entry, query.getLabels(), query.getSelectors());
     }
 
     /**

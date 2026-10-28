@@ -32,8 +32,9 @@ import org.miaixz.bus.core.xyz.ArrayKit;
 import org.miaixz.bus.core.xyz.TypeKit;
 
 /**
- * Cache for mapping relationships between generic type variables and their actual types. This class provides shared
- * methods to resolve actual type arguments for generic types.
+ * Caches mappings from generic type variables to actual types discovered along the generic declaration path selected by
+ * {@link TypeKit#toParameterizedType(Type)}. Generic-array classes are derived without inserting them into the shared
+ * cached mapping.
  *
  * @author Kimi Liu
  */
@@ -42,11 +43,12 @@ public class ActualTypeMapper {
     /**
      * A weak concurrent map to cache the mapping between a generic type and its resolved actual type arguments. The
      * keys are generic types (e.g., ParameterizedType), and the values are maps from TypeVariable to their actual Type.
+     * Both keys and mapping objects are weakly held and may be reclaimed independently.
      */
     private static final WeakConcurrentMap<Type, Map<Type, Type>> CACHE = new WeakConcurrentMap<>();
 
     /**
-     * Keeps generic type-variable resolution on the static API.
+     * Creates an instance; generic type-variable resolution remains available through the static API.
      */
     public ActualTypeMapper() {
         // No initialization required.
@@ -54,10 +56,12 @@ public class ActualTypeMapper {
 
     /**
      * Retrieves the mapping between generic type variables and their actual types for a given type. The result is
-     * cached for performance.
+     * cached for reuse while its weak references remain live. The returned map is the shared mutable cache value, not a
+     * defensive copy; callers must not modify it concurrently with resolution.
      *
-     * @param type The type containing generic parameters to be resolved.
-     * @return A map where keys are generic type variables and values are their actual types.
+     * @param type The non-null type containing generic parameters to be resolved.
+     * @return The shared map where keys are generic type variables and values are their actual types.
+     * @throws NullPointerException If the context type is null.
      */
     public static Map<Type, Type> get(final Type type) {
         return CACHE.computeIfAbsent(type, (key) -> createTypeMap(type));
@@ -86,7 +90,7 @@ public class ActualTypeMapper {
     public static Type getActualType(final Type type, final TypeVariable<?> typeVariable) {
         final Map<Type, Type> typeTypeMap = get(type);
         Type result = typeTypeMap.get(typeVariable);
-        // Recursively resolve if the result is still a TypeVariable (e.g., A extends B, B extends C)
+        // Follow any type-variable links already present in the shared mapping.
         while (result instanceof TypeVariable) {
             result = typeTypeMap.get(result);
         }
@@ -94,8 +98,9 @@ public class ActualTypeMapper {
     }
 
     /**
-     * Retrieves the actual type corresponding to a given generic array type within the context of a specific type. If
-     * the generic array type does not have a corresponding actual type, {@code null} is returned.
+     * Retrieves an existing array mapping, or derives an array class when the component's mapping is a concrete class.
+     * The derived array class is returned without mutating the shared mapping. If neither case applies, {@code null} is
+     * returned.
      *
      * @param type             The context type (e.g., a class or parameterized type) from which to resolve the generic
      *                         array type.
@@ -110,8 +115,8 @@ public class ActualTypeMapper {
             // Resolve the actual type of the generic array component type
             final Type componentType = typeTypeMap.get(genericArrayType.getGenericComponentType());
             if (componentType instanceof Class) {
+                // The shared cached mapping need not be mutated to derive an array class.
                 actualType = ArrayKit.getArrayType((Class<?>) componentType);
-                typeTypeMap.put(genericArrayType, actualType);
             }
         }
 
@@ -119,18 +124,16 @@ public class ActualTypeMapper {
     }
 
     /**
-     * Retrieves the actual types corresponding to an array of generic type variables within the context of a specific
-     * type. The mapping between generic parameters in a subclass and those in a superclass (or interface) is
-     * one-to-one.
+     * Resolves each type-variable element against the context mapping and copies other type elements unchanged. In
+     * particular, this overload does not derive generic-array classes for non-type-variable elements.
      *
      * @param type          The actual type's declaring class, which holds the mapping of generic parameters to actual
      *                      types.
      * @param typeVariables An array of generic type variables for which to find the actual types.
-     * @return An array of actual types corresponding to the given generic type variables. If a type variable has no
-     *         corresponding actual type, the corresponding position in the array will be {@code null}.
+     * @return A new array in input order; unresolved type variables become null and other elements remain unchanged.
      */
     public static Type[] getActualTypes(final Type type, final Type... typeVariables) {
-        // Find the position of this generic parameter in the method definition's declaring class or interface.
+        // Resolve only type-variable inputs; preserve other type elements unchanged.
         final Type[] result = new Type[typeVariables.length];
         for (int i = 0; i < typeVariables.length; i++) {
             result[i] = (typeVariables[i] instanceof TypeVariable)
@@ -141,19 +144,10 @@ public class ActualTypeMapper {
     }
 
     /**
-     * Creates a map of all generic type variables to their actual types for a given type. This method traverses the
-     * inheritance hierarchy to resolve all generic type arguments.
-     * <p>
-     * The mapping process considers two main scenarios:
-     * <ol>
-     * <li>A superclass defines a type variable, and a subclass specifies its actual type.</li>
-     * <li>A superclass defines a type variable, and a subclass inherits this variable, leaving its resolution to a
-     * further subclass, and so on.</li>
-     * </ol>
-     * This method adds all such relationships at each level of the hierarchy to the map. When looking up an actual
-     * type, if the mapped value is still a type variable, the lookup continues recursively until an actual type is
-     * found or {@code null} is returned. If the input type is not a {@code Class} (e.g., {@code TypeReference}), it
-     * extracts the actual generic object class from its generic parameters and processes it as a class.
+     * Builds mappings along the parameterized declaration path selected by {@link TypeKit#toParameterizedType(Type)}.
+     * At each step, concrete type arguments are recorded for the raw type's parameters, while arguments that are
+     * themselves type variables are skipped. The next step examines that raw type. This is not an exhaustive traversal
+     * of every superclass and interface branch, and it does not add derived generic-array mappings.
      *
      * @param type The type (e.g., a class or parameterized type) to analyze for generic type mappings.
      * @return A map where keys are generic type variables and values are their actual types.

@@ -19,6 +19,8 @@
 */
 package org.opencv.imgproc;
 
+import org.opencv.core.CleanableMat;
+
 // C++: class Filter2DParams
 
 /**
@@ -39,7 +41,7 @@ public class Filter2DParams {
     protected Filter2DParams(long addr) {
         nativeObj = addr;
         long nativeObjCopy = nativeObj;
-        org.opencv.core.CleanableMat.cleaner.register(this, () -> delete(nativeObjCopy));
+        CleanableMat.cleaner.register(this, () -> delete(nativeObjCopy));
     }
 
     // internal usage only

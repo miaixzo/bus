@@ -36,7 +36,7 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class RepositoryFile implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852280333826L;
+    private static final long serialVersionUID = 2551185313931L;
 
     /**
      * The file name value.

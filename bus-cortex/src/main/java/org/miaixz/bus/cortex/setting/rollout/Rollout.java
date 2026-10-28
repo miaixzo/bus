@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.cortex.setting.rollout;
 
+import java.io.Serial;
+
 import jakarta.persistence.Lob;
 
 import lombok.Getter;
@@ -28,7 +30,8 @@ import lombok.experimental.SuperBuilder;
 import org.miaixz.bus.core.basic.entity.Tenant;
 
 /**
- * Persistent rollout attributes shared by configuration-center implementations.
+ * Publication workflow selection or frozen approval material, concurrency state and exact execution receipt. The
+ * inherited status property stores the explicit code returned by {@link State#key()}.
  *
  * @author Kimi Liu
  */
@@ -37,147 +40,116 @@ import org.miaixz.bus.core.basic.entity.Tenant;
 @SuperBuilder
 public class Rollout extends Tenant {
 
-    /**
-     * Persisted rollout mode from Mode.
-     */
-    private String mode;
+    @Serial
+    private static final long serialVersionUID = 2558926680001L;
 
     /**
-     * Persisted workflow state from State, distinct from the inherited record status.
-     */
-    private String state;
-
-    /**
-     * Human-readable rollout title.
+     * Display title of the publication workflow.
      */
     private String title;
 
     /**
-     * Human-readable rollout description.
-     */
-    private String description;
-
-    /**
-     * Approval policy identifier or serialized workflow, frozen on submission.
-     */
-    private String policy;
-
-    /**
-     * Digest of the frozen application selection, exact revisions, approval policy, mode, and gray rule.
+     * Checksum of the candidate material, immutable after submission.
      */
     private String checksum;
 
     /**
-     * Canonical immutable manifest containing selected scope, baseline, exact revisions, and reference policies.
+     * Selection parameters in {@link State#DRAFT}; the protected frozen plan after submission.
      */
     @Lob
     private String manifest;
 
     /**
-     * Creator-scoped idempotency key.
-     */
-    private String request;
-
-    /**
-     * Digest of the original semantic command.
-     */
-    private String digest;
-
-    /**
-     * Active gray selector JSON when present.
-     */
-    @Lob
-    private String rule;
-
-    /**
-     * Optimistic locking edition for every change to the rollout, including workflow transitions.
+     * Optimistic concurrency counter for the workflow.
      */
     private Long edition;
 
     /**
-     * Idempotency key of the latest publication attempt, separate from draft creation.
-     */
-    private String publication;
-
-    /**
-     * Authenticated actor who requested the latest publication attempt.
-     */
-    private String publisher;
-
-    /**
-     * Redacted failure code of the latest publication attempt.
+     * Execution error message containing no sensitive values.
      */
     private String error;
 
     /**
-     * Terminal completion timestamp when present.
+     * Workflow completion time in epoch milliseconds.
      */
     private Long finished;
 
     /**
-     * Creates an empty rollout entity.
+     * Identifier of the exact publication event receipt, independent of the formal release version.
+     */
+    private String publication;
+
+    /**
+     * Description of the publication workflow.
+     */
+    private String description;
+
+    /**
+     * Creates an empty publication workflow.
      */
     public Rollout() {
         // No initialization required.
     }
 
     /**
-     * Supported publication modes.
-     *
-     * @author Kimi Liu
-     */
-    public enum Mode {
-        /**
-         * Publishes to all instances within the selected application scope.
-         */
-        FORMAL,
-        /**
-         * Publishes to instances matching the frozen gray selector.
-         */
-        GRAY
-    }
-
-    /**
-     * Supported rollout workflow states.
+     * Approval and publication workflow states.
      *
      * @author Kimi Liu
      */
     public enum State {
 
         /**
-         * Editable publication plan.
+         * Publication draft that may be edited or deleted.
          */
         DRAFT,
         /**
-         * Frozen plan awaiting approval decisions.
+         * Frozen candidate awaiting approval.
          */
         REVIEWING,
         /**
-         * Approved plan awaiting execution.
+         * Approved candidate awaiting publication.
          */
         APPROVED,
         /**
-         * Plan rejected during approval.
+         * Rejected candidate; further changes require a new draft.
          */
         REJECTED,
         /**
-         * Frozen publication awaits or is undergoing atomic activation; recoverable after restart.
+         * Publication in progress, bound to an exact publication receipt.
          */
         PUBLISHING,
         /**
-         * Publication failed.
+         * Failed publication; retries must use the original approved material.
          */
         FAILED,
         /**
-         * Publication completed and the version is active.
+         * Formal release committed successfully in an atomic transaction.
          */
         PUBLISHED;
 
         /**
-         * Tests whether the workflow permits a transition, including an edition-guarded update within one state.
+         * Returns the stable workflow code stored in the inherited status property.
+         *
+         * @return explicit workflow status code
+         */
+        public int key() {
+            return switch (this) {
+                case DRAFT -> 0;
+                case REVIEWING -> 1;
+                case APPROVED -> 2;
+                case REJECTED -> 3;
+                case PUBLISHING -> 4;
+                case FAILED -> 5;
+                case PUBLISHED -> 6;
+            };
+        }
+
+        /**
+         * Checks whether the state graph permits a transition. Services must still verify request identity for
+         * same-state retries.
          *
          * @param target requested workflow state
-         * @return whether the transition is supported
+         * @return whether the transition is permitted by the state graph
          */
         public boolean canTransitionTo(State target) {
             if (target == this) {
@@ -191,6 +163,7 @@ public class Rollout extends Tenant {
                 case REJECTED, PUBLISHED -> false;
             };
         }
+
     }
 
 }

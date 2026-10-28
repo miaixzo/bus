@@ -31,7 +31,7 @@ import org.miaixz.bus.core.basic.normal.Errors;
 public class CryptoException extends UncheckedException {
 
     @Serial
-    private static final long serialVersionUID = 2852252876913L;
+    private static final long serialVersionUID = 2536692205501L;
 
     /**
      * Constructs a new CryptoException with no detail message.

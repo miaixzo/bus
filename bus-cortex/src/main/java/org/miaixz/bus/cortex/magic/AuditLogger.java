@@ -24,6 +24,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.miaixz.bus.cache.CacheX;
+import org.miaixz.bus.core.center.date.Chrono;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.DateKit;
 import org.miaixz.bus.cortex.Builder;
@@ -84,7 +85,7 @@ public class AuditLogger {
         if (details != null && !details.isEmpty()) {
             payload.put("details", new LinkedHashMap<>(details));
         }
-        cacheX.write(key, JsonKit.toJsonString(payload), 7 * 24 * 3600_000L);
+        cacheX.write(key, JsonKit.toJsonString(payload), Chrono.WEEK.getMillis());
     }
 
     /**

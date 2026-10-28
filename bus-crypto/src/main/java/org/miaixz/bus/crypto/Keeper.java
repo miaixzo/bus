@@ -23,6 +23,7 @@ import java.io.*;
 import java.math.BigInteger;
 import java.security.*;
 import java.security.Provider;
+import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
@@ -50,6 +51,8 @@ import org.bouncycastle.jcajce.provider.asymmetric.util.ECUtil;
 import org.bouncycastle.jcajce.spec.OpenSSHPrivateKeySpec;
 import org.bouncycastle.jcajce.spec.OpenSSHPublicKeySpec;
 import org.bouncycastle.jce.spec.ECNamedCurveSpec;
+import org.bouncycastle.jce.spec.ECParameterSpec;
+import org.bouncycastle.jce.spec.ECPrivateKeySpec;
 import org.bouncycastle.math.ec.ECCurve;
 import org.bouncycastle.math.ec.FixedPointCombMultiplier;
 import org.bouncycastle.util.BigIntegers;
@@ -787,7 +790,7 @@ public class Keeper {
      * @throws CryptoException if the algorithm is not found.
      */
     public static KeyPairGenerator getKeyPairGenerator(final String algorithm) {
-        final java.security.Provider provider = Holder.getProvider();
+        final Provider provider = Holder.getProvider();
 
         final KeyPairGenerator keyPairGen;
         try {
@@ -816,7 +819,7 @@ public class Keeper {
      * @throws CryptoException if the algorithm is not found.
      */
     public static KeyFactory getKeyFactory(final String algorithm) {
-        final java.security.Provider provider = Holder.getProvider();
+        final Provider provider = Holder.getProvider();
         try {
             return (null == provider) ? KeyFactory.getInstance(getMainAlgorithm(algorithm))
                     : KeyFactory.getInstance(getMainAlgorithm(algorithm), provider);
@@ -841,7 +844,7 @@ public class Keeper {
      * @throws CryptoException if the algorithm is not found.
      */
     public static SecretKeyFactory getSecretKeyFactory(final String algorithm) {
-        final java.security.Provider provider = Holder.getProvider();
+        final Provider provider = Holder.getProvider();
 
         final SecretKeyFactory keyFactory;
         try {
@@ -870,7 +873,7 @@ public class Keeper {
      * @throws CryptoException if the algorithm is not found.
      */
     public static KeyGenerator getKeyGenerator(final String algorithm) {
-        final java.security.Provider provider = Holder.getProvider();
+        final Provider provider = Holder.getProvider();
         final KeyGenerator generator;
         try {
             generator = (null == provider) //
@@ -944,7 +947,7 @@ public class Keeper {
      * @throws CryptoException if certificate reading fails.
      */
     public static PublicKey readPublicKeyFromCert(final InputStream in) {
-        final java.security.cert.Certificate certificate = readX509Certificate(in);
+        final Certificate certificate = readX509Certificate(in);
         if (null != certificate) {
             return certificate.getPublicKey();
         }
@@ -1097,7 +1100,7 @@ public class Keeper {
      * @throws CryptoException if the KeyStore type is not found.
      */
     public static KeyStore getKeyStore(final String type) {
-        final java.security.Provider provider = Holder.getProvider();
+        final Provider provider = Holder.getProvider();
         try {
             return null == provider ? KeyStore.getInstance(type) : KeyStore.getInstance(type, provider);
         } catch (final KeyStoreException e) {
@@ -1337,7 +1340,7 @@ public class Keeper {
      */
     public static PublicKey getECPublicKey(
             final org.bouncycastle.jce.interfaces.ECPrivateKey privateKey,
-            final org.bouncycastle.jce.spec.ECParameterSpec spec) {
+            final ECParameterSpec spec) {
         final org.bouncycastle.jce.spec.ECPublicKeySpec keySpec = new org.bouncycastle.jce.spec.ECPublicKeySpec(
                 getQFromD(privateKey.getD(), spec), spec);
         return generatePublicKey("EC", keySpec);
@@ -1350,9 +1353,7 @@ public class Keeper {
      * @param spec The EC parameter specification.
      * @return The public key's point coordinate (Q value).
      */
-    public static org.bouncycastle.math.ec.ECPoint getQFromD(
-            final BigInteger d,
-            final org.bouncycastle.jce.spec.ECParameterSpec spec) {
+    public static org.bouncycastle.math.ec.ECPoint getQFromD(final BigInteger d, final ECParameterSpec spec) {
         return spec.getG().multiply(d).normalize();
     }
 
@@ -1872,7 +1873,7 @@ public class Keeper {
      * @return The loaded {@link java.security.cert.Certificate}.
      * @throws CryptoException if certificate reading fails.
      */
-    public static java.security.cert.Certificate readX509Certificate(final InputStream in) {
+    public static Certificate readX509Certificate(final InputStream in) {
         return readCertificate(TYPE_X509, in);
     }
 
@@ -1887,10 +1888,7 @@ public class Keeper {
      * @return The loaded {@link java.security.cert.Certificate}.
      * @throws CryptoException if certificate reading fails.
      */
-    public static java.security.cert.Certificate readX509Certificate(
-            final InputStream in,
-            final char[] password,
-            final String alias) {
+    public static Certificate readX509Certificate(final InputStream in, final char[] password, final String alias) {
         return readCertificate(TYPE_X509, in, password, alias);
     }
 
@@ -1907,7 +1905,7 @@ public class Keeper {
      * @return The loaded {@link java.security.cert.Certificate}.
      * @throws CryptoException if certificate reading fails.
      */
-    public static java.security.cert.Certificate readCertificate(
+    public static Certificate readCertificate(
             final String type,
             final InputStream in,
             final char[] password,
@@ -1938,7 +1936,7 @@ public class Keeper {
      * @return The loaded {@link java.security.cert.Certificate}.
      * @throws CryptoException if certificate reading fails.
      */
-    public static java.security.cert.Certificate readCertificate(final String type, final InputStream in) {
+    public static Certificate readCertificate(final String type, final InputStream in) {
         try {
             return getCertificateFactory(type).generateCertificate(in);
         } catch (final CertificateException e) {
@@ -1962,7 +1960,7 @@ public class Keeper {
      * @return The {@link java.security.cert.Certificate}.
      * @throws CryptoException if certificate retrieval fails.
      */
-    public static java.security.cert.Certificate getCertificate(final KeyStore keyStore, final String alias) {
+    public static Certificate getCertificate(final KeyStore keyStore, final String alias) {
         try {
             return keyStore.getCertificate(alias);
         } catch (final Exception e) {
@@ -2054,9 +2052,7 @@ public class Keeper {
      * @param parameterSpec The {@code org.bouncycastle.jce.spec.ECParameterSpec}.
      * @return The {@code org.bouncycastle.jce.spec.ECPrivateKeySpec}.
      */
-    public static org.bouncycastle.jce.spec.ECPrivateKeySpec getPrivateKeySpec(
-            final byte[] d,
-            final org.bouncycastle.jce.spec.ECParameterSpec parameterSpec) {
+    public static ECPrivateKeySpec getPrivateKeySpec(final byte[] d, final ECParameterSpec parameterSpec) {
         return getPrivateKeySpec(BigIntegers.fromUnsignedByteArray(d), parameterSpec);
     }
 
@@ -2067,10 +2063,8 @@ public class Keeper {
      * @param parameterSpec The {@code org.bouncycastle.jce.spec.ECParameterSpec}.
      * @return The {@code org.bouncycastle.jce.spec.ECPrivateKeySpec}.
      */
-    public static org.bouncycastle.jce.spec.ECPrivateKeySpec getPrivateKeySpec(
-            final BigInteger d,
-            final org.bouncycastle.jce.spec.ECParameterSpec parameterSpec) {
-        return new org.bouncycastle.jce.spec.ECPrivateKeySpec(d, parameterSpec);
+    public static ECPrivateKeySpec getPrivateKeySpec(final BigInteger d, final ECParameterSpec parameterSpec) {
+        return new ECPrivateKeySpec(d, parameterSpec);
     }
 
     /**
@@ -2082,7 +2076,7 @@ public class Keeper {
      */
     public static org.bouncycastle.jce.spec.ECPublicKeySpec getPublicKeySpec(
             final byte[] q,
-            final org.bouncycastle.jce.spec.ECParameterSpec parameterSpec) {
+            final ECParameterSpec parameterSpec) {
         return getPublicKeySpec(parameterSpec.getCurve().decodePoint(q), parameterSpec);
     }
 
@@ -2098,7 +2092,7 @@ public class Keeper {
     public static org.bouncycastle.jce.spec.ECPublicKeySpec getPublicKeySpec(
             final byte[] x,
             final byte[] y,
-            final org.bouncycastle.jce.spec.ECParameterSpec parameterSpec) {
+            final ECParameterSpec parameterSpec) {
         return getPublicKeySpec(
                 BigIntegers.fromUnsignedByteArray(x),
                 BigIntegers.fromUnsignedByteArray(y),
@@ -2117,7 +2111,7 @@ public class Keeper {
     public static org.bouncycastle.jce.spec.ECPublicKeySpec getPublicKeySpec(
             final BigInteger x,
             final BigInteger y,
-            final org.bouncycastle.jce.spec.ECParameterSpec parameterSpec) {
+            final ECParameterSpec parameterSpec) {
         return getPublicKeySpec(parameterSpec.getCurve().createPoint(x, y), parameterSpec);
     }
 
@@ -2130,7 +2124,7 @@ public class Keeper {
      */
     public static org.bouncycastle.jce.spec.ECPublicKeySpec getPublicKeySpec(
             final org.bouncycastle.math.ec.ECPoint ecPoint,
-            final org.bouncycastle.jce.spec.ECParameterSpec parameterSpec) {
+            final ECParameterSpec parameterSpec) {
         return new org.bouncycastle.jce.spec.ECPublicKeySpec(ecPoint, parameterSpec);
     }
 

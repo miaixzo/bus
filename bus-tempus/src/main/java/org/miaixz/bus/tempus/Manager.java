@@ -40,7 +40,7 @@ import org.miaixz.bus.tempus.crontab.CronCrontab;
 public class Manager implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852287209701L;
+    private static final long serialVersionUID = 2558265001531L;
 
     /**
      * List of task launchers.

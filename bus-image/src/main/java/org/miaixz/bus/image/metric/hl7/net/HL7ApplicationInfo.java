@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.image.metric.hl7.net;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +32,9 @@ import org.miaixz.bus.image.metric.Connection;
  * @author Kimi Liu
  */
 public class HL7ApplicationInfo implements Serializable {
+
+    @Serial
+    private static final long serialVersionUID = 2556283151801L;
 
     /**
      * The conns value.

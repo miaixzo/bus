@@ -19,11 +19,8 @@
 */
 package org.miaixz.bus.cortex.registry.prompt;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.io.Serial;
+import java.util.*;
 
 import jakarta.persistence.Transient;
 
@@ -45,6 +42,9 @@ import org.miaixz.bus.logger.Logger;
  */
 @SuperBuilder
 public class PromptAssets extends Assets {
+
+    @Serial
+    private static final long serialVersionUID = 2558890951562L;
 
     /**
      * Prompt-specific metadata view.

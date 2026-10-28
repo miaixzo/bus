@@ -41,7 +41,7 @@ import org.miaixz.bus.core.lang.mutable.Mutable;
 public class TimedReentrantCache<K, V> extends LockedCache<K, V> {
 
     @Serial
-    private static final long serialVersionUID = 2852232313669L;
+    private static final long serialVersionUID = 2535631055155L;
 
     /**
      * The scheduled task for the pruning job.

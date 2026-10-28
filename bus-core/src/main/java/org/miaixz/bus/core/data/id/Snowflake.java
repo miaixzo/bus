@@ -50,7 +50,7 @@ import org.miaixz.bus.core.xyz.RandomKit;
 public class Snowflake implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852275920328L;
+    private static final long serialVersionUID = 2536380000001L;
 
     /**
      * Default start time: Thu, 04 Nov 2010 01:42:54 GMT

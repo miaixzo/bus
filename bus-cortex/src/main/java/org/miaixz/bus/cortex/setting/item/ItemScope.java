@@ -19,98 +19,56 @@
 */
 package org.miaixz.bus.cortex.setting.item;
 
-import java.util.List;
-import java.util.Map;
-
 import lombok.Builder.Default;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
-import org.miaixz.bus.core.basic.entity.Tenant;
-import org.miaixz.bus.cortex.builtin.Label;
-import org.miaixz.bus.cortex.builtin.LabelMapper;
-import org.miaixz.bus.cortex.builtin.Selector;
-
 /**
- * Filters items by tenant, ownership scope, and application.
+ * Request scope only; not a persistent configuration entity.
  *
  * @author Kimi Liu
  */
 @Getter
 @Setter
 @SuperBuilder
-public class ItemScope extends Tenant {
+public class ItemScope {
 
     /**
-     * Ownership scope; null permits both shared and application items.
+     * Optional exact source Item ID; this request is not a persisted entity.
      */
-    private String scope;
-
+    private String id;
     /**
-     * Item kind; defaults to SOURCE when unspecified.
+     * Required trusted tenant coordinate for the request.
      */
-    private String kind;
-
+    private String tenant_id;
     /**
-     * Optional application identifier used to match application-bound settings.
+     * Optional application context; required for runtime delivery and subscriptions.
      */
     private String app_id;
-
     /**
-     * Optional label selector.
-     */
-    private Map<String, String> labels;
-
-    /**
-     * Optional advanced metadata selectors.
-     */
-    private List<Selector> selectors;
-
-    /**
-     * Optional request identifier propagated across control-plane operations.
+     * Tracing identifier; never an authorization credential.
      */
     private String requestId;
-
     /**
-     * Whether deleted or tombstoned entries should be included.
+     * Management-only inclusion of logically deleted source definitions.
      */
     private boolean includeDeleted;
-
     /**
-     * Maximum number of entries to return.
+     * Positive bounded page size, defaulting to 100.
      */
     @Default
     private int limit = 100;
-
     /**
-     * Number of matching entries to skip.
+     * Nonnegative management page offset.
      */
     private int offset;
 
     /**
-     * Creates an empty setting scope.
+     * Creates an empty ItemScope for construction or deserialization.
      */
     public ItemScope() {
         this.limit = 100;
-    }
-
-    /**
-     * Returns management-facing label items converted from runtime labels.
-     *
-     * @return label items
-     */
-    public List<Label> labelItems() {
-        return LabelMapper.toLabels(labels);
-    }
-
-    /**
-     * Sets runtime labels from management-facing label items.
-     *
-     * @param labelItems label items
-     */
-    public void labelItems(List<Label> labelItems) {
-        this.labels = LabelMapper.toMap(labelItems);
     }
 
 }

@@ -36,7 +36,7 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class GroupFilter implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852256129063L;
+    private static final long serialVersionUID = 2550616800001L;
 
     /**
      * The skip groups value.

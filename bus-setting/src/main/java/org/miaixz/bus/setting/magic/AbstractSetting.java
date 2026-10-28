@@ -44,7 +44,7 @@ public abstract class AbstractSetting
         implements TypeGetter<CharSequence>, GroupedTypeGetter<CharSequence, CharSequence>, Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852777511686L;
+    private static final long serialVersionUID = 2552505500001L;
 
     /**
      * The default delimiter for array-type values.

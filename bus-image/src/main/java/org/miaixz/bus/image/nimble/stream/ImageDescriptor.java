@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.opencv.core.Core;
+import org.opencv.core.Core.MinMaxLocResult;
 
 import org.miaixz.bus.image.Builder;
 import org.miaixz.bus.image.Tag;
@@ -30,6 +31,8 @@ import org.miaixz.bus.image.galaxy.data.Attributes;
 import org.miaixz.bus.image.nimble.EmbeddedOverlay;
 import org.miaixz.bus.image.nimble.OverlayData;
 import org.miaixz.bus.image.nimble.Photometric;
+import org.miaixz.bus.image.nimble.RGBImageVoiLut;
+import org.miaixz.bus.image.nimble.opencv.LookupTableCV;
 import org.miaixz.bus.image.nimble.opencv.lut.ModalityLutModule;
 import org.miaixz.bus.image.nimble.opencv.lut.VoiLutModule;
 import org.miaixz.bus.logger.Logger;
@@ -172,6 +175,21 @@ public class ImageDescriptor {
     private final List<ModalityLutModule> modalityLutPerFrame;
 
     /**
+     * The SOP Instance UID used to select image-specific presentation state items.
+     */
+    private final String sopInstanceUID;
+
+    /**
+     * The validated stored pixel range reported for the series, when available.
+     */
+    private final MinMaxLocResult seriesPixelRange;
+
+    /**
+     * The standard or supplemental palette used by the image.
+     */
+    private final LookupTableCV paletteColorLookupTable;
+
+    /**
      * Creates a new instance.
      *
      * @param dcm the dcm.
@@ -210,6 +228,10 @@ public class ImageDescriptor {
         this.modalityLUT = new ModalityLutModule(dcm);
         this.voiLUT = new VoiLutModule(dcm);
         this.seriesInstanceUID = dcm.getString(Tag.SeriesInstanceUID);
+        this.sopInstanceUID = dcm.getString(Tag.SOPInstanceUID);
+        this.seriesPixelRange = readSeriesPixelRange(dcm, pixelRepresentation);
+        this.paletteColorLookupTable = hasPaletteColorLookupTable() ? RGBImageVoiLut.getPaletteColorLookupTable(dcm)
+                : null;
         this.minMaxPixelValues = new ArrayList<>(frames);
         this.voiLutPerFrame = new ArrayList<>(frames);
         this.modalityLutPerFrame = new ArrayList<>(frames);
@@ -221,12 +243,69 @@ public class ImageDescriptor {
     }
 
     /**
+     * Reads the series range, resolving ambiguous US/SS values using Pixel Representation.
+     *
+     * @param dcm            the image attributes
+     * @param representation zero for unsigned pixels or one for signed pixels
+     * @return the ordered range, or {@code null} when absent or invalid
+     */
+    private static MinMaxLocResult readSeriesPixelRange(Attributes dcm, int representation) {
+        Integer min = Builder.getIntegerFromDicomElement(dcm, Tag.SmallestPixelValueInSeries, null);
+        Integer max = Builder.getIntegerFromDicomElement(dcm, Tag.LargestPixelValueInSeries, null);
+        if (min == null || max == null) {
+            return null;
+        }
+        MinMaxLocResult range = new MinMaxLocResult();
+        range.minVal = representation == 1 ? (short) min.intValue() : min;
+        range.maxVal = representation == 1 ? (short) max.intValue() : max;
+        return range.minVal <= range.maxVal ? range : null;
+    }
+
+    /**
+     * Returns the SOP Instance UID.
+     *
+     * @return the SOP Instance UID
+     */
+    public String getSopInstanceUID() {
+        return sopInstanceUID;
+    }
+
+    /**
+     * Returns the stored pixel range reported for the series.
+     *
+     * @return the range, or {@code null} when unavailable
+     */
+    public MinMaxLocResult getSeriesPixelRange() {
+        return seriesPixelRange;
+    }
+
+    /**
+     * Returns the image's palette color lookup table.
+     *
+     * @return the lookup table, or {@code null} when unavailable
+     */
+    public LookupTableCV getPaletteColorLookupTable() {
+        return paletteColorLookupTable;
+    }
+
+    /**
+     * Tests whether a monochrome image carries a supplemental color palette.
+     *
+     * @return whether supplemental color is declared
+     */
+    public boolean hasSupplementalPaletteColorLookupTable() {
+        return photometric.isMonochrome()
+                && ("MIXED".equalsIgnoreCase(pixelPresentation) || "COLOR".equalsIgnoreCase(pixelPresentation));
+    }
+
+    /**
      * Gets the lut module.
      *
      * @param list    the list.
      * @param baseLut the base lut.
      * @param frame   the frame.
      * @return the lut module.
+     * @param <T> the modality or VOI module type stored for each frame
      */
     private static <T> T getLutModule(List<T> list, T baseLut, int frame) {
         if (frame < 0 || frame >= list.size()) {
@@ -316,7 +395,7 @@ public class ImageDescriptor {
      * @return true if the condition is met; otherwise false.
      */
     public boolean hasPaletteColorLookupTable() {
-        return photometric == Photometric.PALETTE_COLOR || "COLOR".equals(pixelPresentation);
+        return photometric == Photometric.PALETTE_COLOR || hasSupplementalPaletteColorLookupTable();
     }
 
     /**

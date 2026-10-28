@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.cortex.setting.approval;
 
+import java.io.Serial;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
@@ -26,7 +28,7 @@ import lombok.experimental.SuperBuilder;
 import org.miaixz.bus.core.basic.entity.Tenant;
 
 /**
- * Immutable approval decision for a rollout stage.
+ * Immutable policy-stage decision bound to one frozen publication checksum.
  *
  * @author Kimi Liu
  */
@@ -35,33 +37,41 @@ import org.miaixz.bus.core.basic.entity.Tenant;
 @SuperBuilder
 public class Approval extends Tenant {
 
+    @Serial
+    private static final long serialVersionUID = 2558902800001L;
+
     /**
-     * Rollout being approved.
+     * Identifier of the publication workflow under review.
      */
     private String rollout_id;
+
     /**
-     * Transfer target when applicable.
+     * Principal receiving the approval assignment, independent of application relationships.
      */
     private String target_id;
+
     /**
      * Approval policy stage.
      */
     private String stage;
+
     /**
-     * Rollout checksum observed by the approver.
+     * Checksum of the frozen plan bound to this decision.
      */
     private String checksum;
+
     /**
-     * Approval decision.
+     * Stage decision permitted by the applicable approval policy.
      */
     private String decision;
+
     /**
-     * Optional approval comment.
+     * Reviewer comment for the approval decision.
      */
     private String comment;
 
     /**
-     * Creates an empty approval record.
+     * Creates an empty approval decision.
      */
     public Approval() {
         // No initialization required.

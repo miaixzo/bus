@@ -25,6 +25,7 @@ import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.charset.*;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.StringTokenizer;
 
 import org.miaixz.bus.core.lang.Charset;
@@ -45,6 +46,11 @@ public class SpecificCharacterSet {
      * Provides DICOM processing details.
      */
     public static final SpecificCharacterSet ASCII = new SpecificCharacterSet(new Codec[] { Codec.ISO_646 });
+
+    /**
+     * The DICOM UTF-8 character set.
+     */
+    public static final SpecificCharacterSet UTF8 = new SpecificCharacterSet(new Codec[] { Codec.UTF_8 }, "ISO_IR 192");
 
     /**
      * Encodes the related value.
@@ -404,6 +410,44 @@ public class SpecificCharacterSet {
     }
 
     /**
+     * Determines whether every supplied character set contains this character set.
+     *
+     * @param others the character sets to check
+     * @return true if every supplied character set contains this character set
+     */
+    public boolean containedByAll(Collection<SpecificCharacterSet> others) {
+        for (SpecificCharacterSet other : others) {
+            if (!other.contains(this))
+                return false;
+        }
+        return true;
+    }
+
+    /**
+     * Finds a common character set, falling back to UTF-8 for incompatible character sets.
+     *
+     * @param cs1 the first character set
+     * @param cs2 the second character set
+     * @return the common character set
+     */
+    public static SpecificCharacterSet common(SpecificCharacterSet cs1, SpecificCharacterSet cs2) {
+        return cs1.contains(cs2) ? cs1 : cs2.contains(cs1) ? cs2 : UTF8;
+    }
+
+    /**
+     * Finds a common character set for the supplied character sets.
+     *
+     * @param cs     the initial character set
+     * @param others the other character sets
+     * @return the common character set
+     */
+    public static SpecificCharacterSet common(SpecificCharacterSet cs, Collection<SpecificCharacterSet> others) {
+        for (SpecificCharacterSet other : others)
+            cs = common(cs, other);
+        return cs;
+    }
+
+    /**
      * Provides DICOM processing details.
      *
      * @param s the s.
@@ -439,6 +483,16 @@ public class SpecificCharacterSet {
     @Override
     public int hashCode() {
         return Arrays.hashCode(this.codecs);
+    }
+
+    /**
+     * Returns the string representation.
+     *
+     * @return the character set and its DICOM codes
+     */
+    @Override
+    public String toString() {
+        return "SpecificCharacterSet" + Arrays.toString(dicomCodes);
     }
 
     /**

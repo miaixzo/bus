@@ -31,7 +31,10 @@ import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.ConvertException;
 import org.miaixz.bus.core.lang.exception.TimeoutException;
+import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
+import org.miaixz.bus.core.xyz.DateKit;
+import org.miaixz.bus.core.xyz.ExceptionKit;
 import org.miaixz.bus.cortex.magic.runtime.DiagnosticsSnapshot;
 import org.miaixz.bus.fabric.*;
 import org.miaixz.bus.fabric.codec.DataCodec;
@@ -100,7 +103,7 @@ public class Callout {
      * Executes one synchronous GET request.
      *
      * @param url       target URL
-     * @param timeoutMs timeout in milliseconds
+     * @param timeoutMs timeout in milliseconds, clamped to at least 1
      * @return normalized response snapshot
      */
     public static Response get(String url, long timeoutMs) {
@@ -112,7 +115,7 @@ public class Callout {
      *
      * @param url       target URL
      * @param body      request body
-     * @param timeoutMs timeout in milliseconds
+     * @param timeoutMs timeout in milliseconds, clamped to at least 1
      * @return normalized response snapshot
      */
     public static Response postJson(String url, String body, long timeoutMs) {
@@ -120,13 +123,30 @@ public class Callout {
     }
 
     /**
-     * Cancels outstanding calls and clears all shared HTTP clients.
+     * Detaches the current shared HTTP clients and closes them without holding the pool monitor. Clients published
+     * after detachment belong to the next pool and are not closed by this operation.
      */
     public static void shutdown() {
-        Logger.info(true, "Cortex", "Callout shutdown requested: clientCount={}", CLIENTS.size());
-        CLIENTS.values().forEach(Client::closeQuietly);
-        CLIENTS.clear();
-        Logger.info(false, "Cortex", "Callout shutdown completed: clientCount={}", CLIENTS.size());
+        shutdownTask().run();
+    }
+
+    /**
+     * Detaches the currently published clients and returns their cleanup for execution outside lifecycle monitors.
+     * Acquisition and detachment share the pool monitor; HTTP requests and client closure do not hold that monitor.
+     *
+     * @return cleanup task for only the detached clients; the caller must execute it once
+     */
+    static Runnable shutdownTask() {
+        List<Client> clients;
+        synchronized (CLIENTS) {
+            clients = new ArrayList<>(CLIENTS.values());
+            CLIENTS.clear();
+        }
+        return () -> {
+            Logger.info(true, "Cortex", "Callout shutdown requested: clientCount={}", clients.size());
+            clients.forEach(Client::closeQuietly);
+            Logger.info(false, "Cortex", "Callout shutdown completed: clientCount={}", CLIENTS.size());
+        };
     }
 
     /**
@@ -141,19 +161,22 @@ public class Callout {
         snapshot.setComponent("callout");
         snapshot.setStatus("running");
         snapshot.setMetrics(Map.of("clientCount", CLIENTS.size(), "timeoutBuckets", List.copyOf(timeoutBuckets)));
-        snapshot.setUpdatedAt(System.currentTimeMillis());
+        snapshot.setUpdatedAt(DateKit.current());
         return snapshot;
     }
 
     /**
-     * Returns a shared HTTP client for the normalized timeout bucket.
+     * Returns a shared HTTP client for the normalized timeout bucket, serialized with pool detachment. The caller
+     * performs its HTTP request after the pool monitor has been released.
      *
-     * @param timeoutMs requested timeout in milliseconds
+     * @param timeoutMs requested timeout in milliseconds, clamped to at least 1
      * @return reusable HTTP client
      */
     private static Client client(long timeoutMs) {
         long normalizedTimeout = Math.max(1L, timeoutMs);
-        return CLIENTS.computeIfAbsent(normalizedTimeout, Client::new);
+        synchronized (CLIENTS) {
+            return CLIENTS.computeIfAbsent(normalizedTimeout, Client::new);
+        }
     }
 
     /**
@@ -164,7 +187,7 @@ public class Callout {
      */
     private static Response adapt(Result result) {
         if (result == null) {
-            return new Response(0, null, "unknown", false);
+            return new Response(0, null, Normal.UNKNOWN, false);
         }
         if (result.state() != ResultState.RESPONDED) {
             return new Response(result.status(), null, failureMessage(result), result.state() == ResultState.TIMEOUT);
@@ -193,6 +216,7 @@ public class Callout {
      *
      * @param payload response payload
      * @return decoded text
+     * @throws ConvertException if the response bytes are not valid UTF-8
      */
     private static String decodeText(Payload payload) {
         byte[] bytes = payload == null ? Normal.EMPTY_BYTE_ARRAY : payload.bytes();
@@ -211,14 +235,7 @@ public class Callout {
      * @return true when timeout-related
      */
     private static boolean isTimeout(Throwable error) {
-        Throwable current = error;
-        while (current != null) {
-            if (current instanceof TimeoutException || current instanceof java.util.concurrent.TimeoutException) {
-                return true;
-            }
-            current = current.getCause();
-        }
-        return false;
+        return ExceptionKit.isCausedBy(error, TimeoutException.class, java.util.concurrent.TimeoutException.class);
     }
 
     /**
@@ -386,7 +403,7 @@ public class Callout {
          * @return {@code true} when the response is in the 2xx range
          */
         public boolean successful() {
-            return statusCode >= 200 && statusCode < 300;
+            return statusCode >= Http.Status.OK && statusCode < Http.Status.MULTIPLE_CHOICES;
         }
 
     }

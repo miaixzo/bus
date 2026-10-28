@@ -227,14 +227,14 @@ public class MacInternetProtocolStats extends AbstractInternetProtocolStats {
     private static CLibrary.BsdIpstat queryIpstat() {
         CLibrary.BsdIpstat mi = new CLibrary.BsdIpstat();
         try (Memory m = SysctlKit.sysctl("net.inet.ip.stats")) {
-            if (m != null && m.size() >= 60) {
+            if (m != null && m.size() >= 64) {
                 mi.ips_total = m.getInt(0);
                 mi.ips_badsum = m.getInt(4);
                 mi.ips_tooshort = m.getInt(8);
                 mi.ips_toosmall = m.getInt(12);
                 mi.ips_badhlen = m.getInt(16);
                 mi.ips_badlen = m.getInt(20);
-                mi.ips_delivered = m.getInt(56);
+                mi.ips_localout = m.getInt(60);
             }
         }
         return mi;
@@ -293,8 +293,9 @@ public class MacInternetProtocolStats extends AbstractInternetProtocolStats {
                 ut.udps_hdrops = m.getInt(4);
                 ut.udps_badsum = m.getInt(8);
                 ut.udps_badlen = m.getInt(12);
+                ut.udps_noport = m.getInt(16);
+                ut.udps_noportbcast = m.getInt(20);
                 ut.udps_opackets = m.getInt(36);
-                ut.udps_noportmcast = m.getInt(48);
                 ut.udps_rcv6_swcsum = m.getInt(64);
                 ut.udps_snd6_swcsum = m.getInt(80);
             }
@@ -324,7 +325,7 @@ public class MacInternetProtocolStats extends AbstractInternetProtocolStats {
         return new InternetProtocolStats.TcpStats(establishedv4v6.get().getLeft(),
                 Parsing.unsignedIntToLong(tcp.tcps_connattempt), Parsing.unsignedIntToLong(tcp.tcps_accepts),
                 Parsing.unsignedIntToLong(tcp.tcps_conndrops), Parsing.unsignedIntToLong(tcp.tcps_drops),
-                Math.max(0L, Parsing.unsignedIntToLong(ip.ips_delivered - udp.udps_opackets)),
+                Math.max(0L, Parsing.unsignedIntToLong(ip.ips_localout - udp.udps_opackets)),
                 Math.max(0L, Parsing.unsignedIntToLong(ip.ips_total - udp.udps_ipackets)),
                 Parsing.unsignedIntToLong(tcp.tcps_sndrexmitpack),
                 Math.max(
@@ -364,20 +365,9 @@ public class MacInternetProtocolStats extends AbstractInternetProtocolStats {
     public InternetProtocolStats.UdpStats getUDPv4Stats() {
         CLibrary.BsdUdpstat stat = udpstat.get();
         return new InternetProtocolStats.UdpStats(Parsing.unsignedIntToLong(stat.udps_opackets),
-                Parsing.unsignedIntToLong(stat.udps_ipackets), Parsing.unsignedIntToLong(stat.udps_noportmcast),
+                Parsing.unsignedIntToLong(stat.udps_ipackets),
+                Parsing.unsignedIntToLong(stat.udps_noport) + Parsing.unsignedIntToLong(stat.udps_noportbcast),
                 Parsing.unsignedIntToLong(stat.udps_hdrops + stat.udps_badsum + stat.udps_badlen));
-    }
-
-    /**
-     * Returns the ud pv6 stats.
-     *
-     * @return the get ud pv6 stats result
-     */
-    @Override
-    public InternetProtocolStats.UdpStats getUDPv6Stats() {
-        CLibrary.BsdUdpstat stat = udpstat.get();
-        return new InternetProtocolStats.UdpStats(Parsing.unsignedIntToLong(stat.udps_snd6_swcsum),
-                Parsing.unsignedIntToLong(stat.udps_rcv6_swcsum), 0L, 0L);
     }
 
     /**

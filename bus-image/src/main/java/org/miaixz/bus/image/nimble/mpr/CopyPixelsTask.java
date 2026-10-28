@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.image.nimble.mpr;
 
+import java.io.Serial;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.RecursiveAction;
 import java.util.function.IntBinaryOperator;
@@ -29,6 +30,9 @@ import java.util.function.IntBinaryOperator;
  * @author Kimi Liu
  */
 public class CopyPixelsTask extends RecursiveAction {
+
+    @Serial
+    private static final long serialVersionUID = 2556500000001L;
 
     /**
      * The threshold value.

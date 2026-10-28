@@ -42,7 +42,7 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class Message extends org.miaixz.bus.core.basic.entity.Message<Void> {
 
     @Serial
-    private static final long serialVersionUID = 2852292670363L;
+    private static final long serialVersionUID = 2560080000001L;
 
     /**
      * The body of the message.

@@ -31,7 +31,7 @@ import org.miaixz.bus.core.basic.normal.Errors;
 public class NoSuchException extends UncheckedException {
 
     @Serial
-    private static final long serialVersionUID = 2852261630680L;
+    private static final long serialVersionUID = 2536831500001L;
 
     /**
      * Constructs a new NoSuchException with no detail message.

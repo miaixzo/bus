@@ -75,9 +75,9 @@ public class RegistryChange<T extends Assets> implements Change<T> {
     private String version;
 
     /**
-     * Runtime instance fingerprint associated with the change, when applicable.
+     * Runtime instance checksum associated with the change, when applicable.
      */
-    private String fingerprint;
+    private String checksum;
 
     /**
      * Optional upstream source identifier attached during forwarding.
@@ -105,12 +105,12 @@ public class RegistryChange<T extends Assets> implements Change<T> {
     private T previousAsset;
 
     /**
-     * Runtime instance snapshot associated with API registration changes.
+     * Shared process snapshot associated with the service asset in this event.
      */
     private Instance instance;
 
     /**
-     * Runtime instance snapshot before the mutation.
+     * Shared process snapshot before the service registration mutation.
      */
     private Instance previousInstance;
 

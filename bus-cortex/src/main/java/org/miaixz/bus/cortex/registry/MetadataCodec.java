@@ -22,6 +22,8 @@ package org.miaixz.bus.cortex.registry;
 import java.util.*;
 
 import org.miaixz.bus.core.lang.Charset;
+import org.miaixz.bus.core.xyz.CollKit;
+import org.miaixz.bus.core.xyz.EnumKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.extra.json.JsonValue;
@@ -245,8 +247,8 @@ public class MetadataCodec {
      * Converts one metadata value into the requested enum constant.
      *
      * @param value metadata value
-     * @param type  target enum type
      * @param <E>   enum type
+     * @param type  target enum type
      * @return enum constant or {@code null}
      */
     public static <E extends Enum<E>> E enumValue(Object value, Class<E> type) {
@@ -254,18 +256,7 @@ public class MetadataCodec {
         if (StringKit.isBlank(text)) {
             return null;
         }
-        try {
-            return Enum.valueOf(type, text.toUpperCase(Locale.ROOT));
-        } catch (IllegalArgumentException ignore) {
-            Logger.debug(
-                    false,
-                    "Cortex",
-                    "Cortex operation skipped: provider={}, recoverable={}, exception={}",
-                    "MetadataCodec",
-                    true,
-                    ignore.getClass().getSimpleName());
-            return null;
-        }
+        return EnumKit.fromStringQuietly(Objects.requireNonNull(type), text.toUpperCase(Locale.ROOT));
     }
 
     /**
@@ -279,28 +270,14 @@ public class MetadataCodec {
             return null;
         }
         if (value instanceof Iterable<?> iterable) {
-            List<String> result = new ArrayList<>();
-            for (Object item : iterable) {
-                String text = scalarString(item);
-                if (text != null) {
-                    result.add(text);
-                }
-            }
-            return result;
+            return CollKit.map(iterable, MetadataCodec::scalarString);
         }
         try {
             List<Object> parsed = JsonKit.toList(JsonKit.toJsonString(value), Object.class);
             if (parsed == null) {
                 return null;
             }
-            List<String> result = new ArrayList<>(parsed.size());
-            for (Object item : parsed) {
-                String text = scalarString(item);
-                if (text != null) {
-                    result.add(text);
-                }
-            }
-            return result;
+            return CollKit.map(parsed, MetadataCodec::scalarString);
         } catch (Exception ignore) {
             Logger.debug(
                     false,

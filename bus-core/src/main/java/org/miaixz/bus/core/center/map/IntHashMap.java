@@ -21,6 +21,7 @@ package org.miaixz.bus.core.center.map;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.Arrays;
@@ -30,7 +31,7 @@ import java.util.Arrays;
  * probing. This class is designed to be a more memory and performance-efficient alternative to
  * {@code java.util.HashMap<Integer, V>} by avoiding the overhead of key boxing/unboxing.
  * <p>
- * This implementation allows {@code null} values. It does not guarantee the order of iteration.
+ * This implementation allows {@code null} values. It does not guarantee traversal order and is not thread-safe.
  *
  * @param <V> The type of values in the map.
  * @author Kimi Liu
@@ -38,7 +39,7 @@ import java.util.Arrays;
 public class IntHashMap<V> implements Cloneable, Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852273966013L;
+    private static final long serialVersionUID = 2535853152366L;
 
     /**
      * The default initial capacity of the hash map.
@@ -86,7 +87,8 @@ public class IntHashMap<V> implements Cloneable, Serializable {
     private transient byte[] states;
 
     /**
-     * The number of free slots available before resizing is needed.
+     * Remaining insertion budget for previously free slots before rehashing or resizing is needed. Reusing a removed
+     * slot does not consume this budget.
      */
     private transient int free;
 
@@ -106,6 +108,7 @@ public class IntHashMap<V> implements Cloneable, Serializable {
      * Constructs an empty {@code IntHashMap} with an initial capacity sized for the expected number of elements.
      *
      * @param expectedMaxSize The expected maximum number of elements this map will hold.
+     * @throws IllegalArgumentException if the expected size is negative
      */
     public IntHashMap(int expectedMaxSize) {
         if (expectedMaxSize < 0)
@@ -146,7 +149,7 @@ public class IntHashMap<V> implements Cloneable, Serializable {
         int mask = keys.length - 1;
         int i = key & mask;
         while (states[i] != FREE) {
-            if (keys[i] == key)
+            if (states[i] == FULL && keys[i] == key)
                 return (V) values[i];
             i = (i + 1) & mask;
         }
@@ -165,8 +168,8 @@ public class IntHashMap<V> implements Cloneable, Serializable {
         int mask = keys.length - 1;
         int i = key & mask;
         while (states[i] != FREE) {
-            if (keys[i] == key)
-                return states[i] > FREE;
+            if (states[i] == FULL && keys[i] == key)
+                return true;
             i = (i + 1) & mask;
         }
         return false;
@@ -185,15 +188,21 @@ public class IntHashMap<V> implements Cloneable, Serializable {
         int[] keys = this.keys;
         int mask = keys.length - 1;
         int i = key & mask;
+        int removed = -1;
 
-        while (states[i] > FREE) {
-            if (keys[i] == key) {
+        while (states[i] != FREE) {
+            if (states[i] == FULL && keys[i] == key) {
                 V oldValue = (V) values[i];
                 values[i] = value;
                 return oldValue;
             }
+            // A tombstone is reusable only after checking the rest of the probe chain for the same key.
+            if (states[i] == REMOVED && removed < 0)
+                removed = i;
             i = (i + 1) & mask;
         }
+        if (removed >= 0)
+            i = removed;
         byte oldState = states[i];
         states[i] = FULL;
         keys[i] = key;
@@ -205,7 +214,8 @@ public class IntHashMap<V> implements Cloneable, Serializable {
     }
 
     /**
-     * Trims the capacity of this map to be its current size. This can be used to minimize the map's storage.
+     * Rebuilds the table using the power-of-two capacity selected for the current entry count. The load-factor reserve
+     * and minimum capacity are retained; the array length is not necessarily equal to {@link #size()}.
      */
     public void trimToSize() {
         resize(capacity(size));
@@ -231,10 +241,7 @@ public class IntHashMap<V> implements Cloneable, Serializable {
         int mask = keys.length - 1;
         int i = key & mask;
         while (states[i] != FREE) {
-            if (keys[i] == key) {
-                if (states[i] < FREE)
-                    return null; // Already removed
-
+            if (states[i] == FULL && keys[i] == key) {
                 states[i] = REMOVED;
                 V oldValue = (V) values[i];
                 values[i] = null;
@@ -361,9 +368,9 @@ public class IntHashMap<V> implements Cloneable, Serializable {
      * Serializes this {@code IntHashMap} instance.
      *
      * @param s The {@link java.io.ObjectOutputStream} to write to.
-     * @throws java.io.IOException if an I/O error occurs.
+     * @throws IOException if an I/O error occurs or a stored value cannot be serialized
      */
-    private void writeObject(java.io.ObjectOutputStream s) throws java.io.IOException {
+    private void writeObject(ObjectOutputStream s) throws IOException {
         s.defaultWriteObject();
 
         byte[] states = this.states;

@@ -61,7 +61,7 @@ import org.miaixz.bus.crypto.builtin.symmetric.Crypto;
 public class AES extends Crypto {
 
     @Serial
-    private static final long serialVersionUID = 2852289387881L;
+    private static final long serialVersionUID = 2539228818001L;
 
     /**
      * Constructs an AES encryptor/decryptor with default settings: AES/ECB/PKCS5Padding. A random key is generated.

@@ -36,7 +36,7 @@ import org.miaixz.bus.core.center.function.FunctionX;
 public class FunctionKeyMap<K, V> extends CustomKeyMap<K, V> {
 
     @Serial
-    private static final long serialVersionUID = 2852273768203L;
+    private static final long serialVersionUID = 2535839612181L;
 
     /**
      * The function used to transform keys.

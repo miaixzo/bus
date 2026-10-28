@@ -34,7 +34,7 @@ import org.apache.poi.sl.usermodel.ShapeType;
 public class ShapeConfig implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852286218800L;
+    private static final long serialVersionUID = 2551925001801L;
 
     /**
      * The type of the shape, such as rectangle, circle, etc. Default is a line.

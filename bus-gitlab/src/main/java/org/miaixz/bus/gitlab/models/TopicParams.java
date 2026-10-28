@@ -35,7 +35,7 @@ import org.miaixz.bus.gitlab.TopicsApi;
 public class TopicParams implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852282251187L;
+    private static final long serialVersionUID = 2551255636801L;
 
     /**
      * The name value.

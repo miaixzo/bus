@@ -139,6 +139,14 @@
         {
           "name": "<init>",
           "parameterTypes": []
+        },
+        {
+          "name": "contextBindingFilter",
+          "parameterTypes": [
+            "java.util.List",
+            "org.miaixz.bus.spring.web.RequestContext",
+            "org.springframework.core.env.Environment"
+          ]
         }
       ]
     },
@@ -189,14 +197,6 @@
           "name": "<init>",
           "parameterTypes": [
             "boolean",
-            "java.lang.String",
-            "java.lang.String",
-            "boolean",
-            "boolean",
-            "boolean",
-            "java.lang.String",
-            "java.lang.String",
-            "int",
             "int",
             "java.time.Duration",
             "java.time.Duration",
@@ -205,7 +205,7 @@
             "org.miaixz.bus.starter.cortex.CortexProperties$Bridge",
             "org.miaixz.bus.starter.cortex.CortexProperties$Guard",
             "org.miaixz.bus.starter.cortex.CortexProperties$Audit",
-            "org.miaixz.bus.starter.cortex.CortexProperties$Version"
+            "org.miaixz.bus.starter.cortex.CortexProperties$Release"
           ]
         }
       ]
@@ -265,7 +265,7 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.starter.cortex.CortexProperties$Version",
+      "type": "org.miaixz.bus.starter.cortex.CortexProperties$Release",
       "methods": [
         {
           "name": "<init>",
@@ -1496,6 +1496,18 @@
         {
           "name": "<init>",
           "parameterTypes": []
+        },
+        {
+          "name": "authorizeRequestBodyAdvice",
+          "parameterTypes": [
+            "org.miaixz.bus.spring.web.resolver.RequestObjectArgumentResolver"
+          ]
+        },
+        {
+          "name": "authorizeModelAttributeResolver",
+          "parameterTypes": [
+            "org.springframework.beans.factory.ObjectProvider"
+          ]
         }
       ]
     },

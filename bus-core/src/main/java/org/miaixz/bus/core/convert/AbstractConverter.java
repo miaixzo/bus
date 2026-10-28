@@ -46,7 +46,7 @@ import org.miaixz.bus.core.xyz.TypeKit;
 public abstract class AbstractConverter implements Converter, Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852263159195L;
+    private static final long serialVersionUID = 2536169355181L;
 
     /**
      * Creates a new {@code AbstractConverter} instance.

@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.spring.aop;
 
+import java.io.Serial;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,6 +38,9 @@ import org.miaixz.bus.core.xyz.PatternKit;
  * @author Kimi Liu
  */
 public class ExcludeBeanNameAutoProxy extends BeanNameAutoProxyCreator {
+
+    @Serial
+    private static final long serialVersionUID = 2558000000001L;
 
     /**
      * Bean name patterns excluded from automatic proxy creation.

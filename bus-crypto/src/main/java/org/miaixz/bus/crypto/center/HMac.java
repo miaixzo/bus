@@ -47,7 +47,7 @@ import org.miaixz.bus.crypto.builtin.digest.mac.MacFactory;
 public class HMac extends org.miaixz.bus.crypto.center.Mac {
 
     @Serial
-    private static final long serialVersionUID = 2852290076863L;
+    private static final long serialVersionUID = 2539253150001L;
 
     /**
      * Constructs an HMAC instance with the specified algorithm, generating a random key.

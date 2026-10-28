@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.auth.source.protocol.scim.codec;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -75,7 +76,7 @@ public class ScimListResponseCodec {
      * @return implementation-neutral number
      */
     private static JsonValue.NumberValue number(final long value) {
-        return new JsonValue.NumberValue(java.math.BigDecimal.valueOf(value));
+        return new JsonValue.NumberValue(BigDecimal.valueOf(value));
     }
 
     /**

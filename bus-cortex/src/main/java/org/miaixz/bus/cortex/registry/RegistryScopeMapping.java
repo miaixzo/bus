@@ -57,7 +57,7 @@ public class RegistryScopeMapping {
         query.setVersion(source.getVersion());
         query.setLabels(source.getLabels() == null ? null : new LinkedHashMap<>(source.getLabels()));
         query.setSelectors(source.getSelectors() == null ? null : new ArrayList<>(source.getSelectors()));
-        query.setState(source.getState());
+        query.setStatus(source.getStatus());
         query.setIncludeDisabled(source.isIncludeDisabled());
         query.setOffset(Math.max(source.getOffset(), 0));
         query.setLimit(source.getLimit() > 0 ? source.getLimit() : 100);
@@ -118,7 +118,7 @@ public class RegistryScopeMapping {
         vector.setVersion(query.getVersion());
         vector.setLabels(query.getLabels() == null ? null : new LinkedHashMap<>(query.getLabels()));
         vector.setSelectors(query.getSelectors() == null ? null : new ArrayList<>(query.getSelectors()));
-        vector.setState(query.getState());
+        vector.setStatus(query.getStatus());
         vector.setIncludeDisabled(query.isIncludeDisabled());
         vector.setOffset(Math.max(query.getOffset(), 0));
         vector.setLimit(query.getLimit() > 0 ? query.getLimit() : 100);

@@ -32,7 +32,7 @@ import org.miaixz.bus.core.xyz.CompareKit;
 public class MutableFloat extends Number implements Comparable<MutableFloat>, Mutable<Number> {
 
     @Serial
-    private static final long serialVersionUID = 2852270352052L;
+    private static final long serialVersionUID = 2538018161981L;
 
     /**
      * The mutable value.

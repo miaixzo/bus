@@ -40,7 +40,7 @@ import org.miaixz.bus.core.lang.Normal;
 public class CaseInsensitiveLinkedMap<K, V> extends CaseInsensitiveMap<K, V> {
 
     @Serial
-    private static final long serialVersionUID = 2852268758380L;
+    private static final long serialVersionUID = 2535822500001L;
 
     /**
      * Constructs an empty {@code CaseInsensitiveLinkedMap} with the default initial capacity (16).

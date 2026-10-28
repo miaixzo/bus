@@ -34,7 +34,7 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class Assets implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852237093233L;
+    private static final long serialVersionUID = 2550191902801L;
 
     /**
      * The count value.
@@ -162,7 +162,7 @@ public class Assets implements Serializable {
     public static class Source implements Serializable {
 
         @Serial
-        private static final long serialVersionUID = 2852237123112L;
+        private static final long serialVersionUID = 2550195053822L;
 
         /**
          * The format value.
@@ -242,7 +242,7 @@ public class Assets implements Serializable {
     public static class Link implements Serializable {
 
         @Serial
-        private static final long serialVersionUID = 2852237162837L;
+        private static final long serialVersionUID = 2550198215322L;
 
         /**
          * The id value.

@@ -37,6 +37,11 @@ import org.miaixz.bus.logger.Logger;
 public class OpenCVNativeLoader extends org.opencv.osgi.OpenCVNativeLoader {
 
     /**
+     * Whether the native library has completed initialization in this class loader.
+     */
+    private static volatile boolean loaded;
+
+    /**
      * Constructs a new {@code OpenCVNativeLoader} instance.
      */
     public OpenCVNativeLoader() {
@@ -54,18 +59,28 @@ public class OpenCVNativeLoader extends org.opencv.osgi.OpenCVNativeLoader {
      * Executes the init operation.
      */
     public void init() {
-        try {
-            super.init();
-        } catch (UnsatisfiedLinkError e) {
-            try {
-                Loaders.nat().load(
-                        Symbol.SLASH + Normal.LIB_PROTOCOL_JAR + Symbol.SLASH
-                                + Platform.getNativeLibraryResourcePrefix() + Symbol.SLASH
-                                + System.mapLibraryName(Core.NATIVE_LIBRARY_NAME),
-                        org.opencv.osgi.OpenCVNativeLoader.class);
-            } catch (IOException ie) {
-                Logger.error(false, "Image", "Failed to load the native OpenCV library.");
+        if (loaded) {
+            return;
+        }
+        synchronized (OpenCVNativeLoader.class) {
+            if (loaded) {
+                return;
             }
+            try {
+                System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
+            } catch (UnsatisfiedLinkError e) {
+                try {
+                    Loaders.nat().load(
+                            Symbol.SLASH + Normal.LIB_PROTOCOL_JAR + Symbol.SLASH
+                                    + Platform.getNativeLibraryResourcePrefix() + Symbol.SLASH
+                                    + System.mapLibraryName(Core.NATIVE_LIBRARY_NAME),
+                            org.opencv.osgi.OpenCVNativeLoader.class);
+                } catch (IOException failure) {
+                    e.addSuppressed(failure);
+                    throw e;
+                }
+            }
+            loaded = true;
             Logger.info(false, "Image", "Successfully loaded OpenCV native library.");
         }
     }

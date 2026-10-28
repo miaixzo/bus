@@ -36,7 +36,7 @@ import lombok.Setter;
 public class PropertyInfo implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2812590683152L;
+    private static final long serialVersionUID = 2552811362523L;
 
     /**
      * The name of the database column.

@@ -32,7 +32,7 @@ import java.util.Iterator;
 public class CacheValuesIterator<V> implements Iterator<V>, Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852231336892L;
+    private static final long serialVersionUID = 2535505512358L;
 
     /**
      * The underlying cache object iterator.

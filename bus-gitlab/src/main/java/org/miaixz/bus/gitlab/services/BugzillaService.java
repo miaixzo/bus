@@ -31,7 +31,7 @@ import org.miaixz.bus.gitlab.models.GitLabForm;
 public class BugzillaService extends NotificationService {
 
     @Serial
-    private static final long serialVersionUID = 2852283785895L;
+    private static final long serialVersionUID = 2551293963915L;
 
     /**
      * Constructs a new {@code BugzillaService} instance.

@@ -21,6 +21,7 @@ package org.miaixz.bus.shade.screw.engine;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.Serial;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -40,6 +41,9 @@ import org.miaixz.bus.shade.screw.Builder;
 @Getter
 @Setter
 public abstract class AbstractEngine implements TemplateEngine {
+
+    @Serial
+    private static final long serialVersionUID = 2552880000001L;
 
     /**
      * The configuration for the template engine.

@@ -44,7 +44,7 @@ import org.miaixz.bus.core.xyz.ListKit;
 public class TripletTable<L, M, R> implements Iterable<Triplet<L, M, R>>, Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852276252739L;
+    private static final long serialVersionUID = 2535882500001L;
 
     /**
      * The list storing the left values of the triplets.

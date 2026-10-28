@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.logger.nimble.apache.log4j;
 
+import org.apache.logging.log4j.LogManager;
+
 import org.miaixz.bus.logger.Provider;
 import org.miaixz.bus.logger.magic.AbstractFactory;
 
@@ -35,7 +37,7 @@ public class Log4jLoggingFactory extends AbstractFactory {
      */
     public Log4jLoggingFactory() {
         super("org.apache.logging.log4j.Logger");
-        exists(org.apache.logging.log4j.LogManager.class);
+        exists(LogManager.class);
     }
 
     /**

@@ -31,7 +31,7 @@ import org.miaixz.bus.core.basic.normal.Errors;
 public class TerminateException extends UncheckedException {
 
     @Serial
-    private static final long serialVersionUID = 2852266057819L;
+    private static final long serialVersionUID = 2536903800001L;
 
     /**
      * Constructs a new TerminateException with a default message indicating user termination.

@@ -33,7 +33,7 @@ import org.miaixz.bus.core.lang.Assert;
 public abstract class AbstractFilter implements BloomFilter {
 
     @Serial
-    private static final long serialVersionUID = 2852235255163L;
+    private static final long serialVersionUID = 2538166555001L;
 
     /**
      * The underlying {@link BitSet} used to store the presence of elements. This bit set represents the Bloom filter's

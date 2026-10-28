@@ -32,6 +32,7 @@ import java.util.function.LongSupplier;
 
 import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.cache.magic.CacheExpire;
+import org.miaixz.bus.core.cache.CacheListener;
 import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.xyz.StringKit;
@@ -43,8 +44,9 @@ import org.miaixz.bus.logger.Logger;
  * <p>
  * Ordinary reads use {@link ConcurrentHashMap} without a global read lock. Ordinary writes are serialized only while
  * updating the entry map and FIFO write-order metadata. Capacity eviction removes the oldest current write, not the
- * least recently read entry. Instances created with {@link #MemoryCache(LongSupplier)} additionally expose the atomic
- * asynchronous methods and coordinate those methods with terminal close.
+ * least recently read entry. Conditional replacement is available in both modes. Instances created with
+ * {@link #MemoryCache(LongSupplier)} additionally expose the atomic asynchronous methods and coordinate those methods
+ * with terminal close.
  * </p>
  *
  * @param <K> key type
@@ -57,7 +59,7 @@ public class MemoryCache<K, V> implements CacheX<K, V> {
      * Optional ordinary-cache removal callback. It is configured before use and must not throw or reenter this cache.
      * Atomic mode deliberately excludes callbacks because take operations transfer value ownership to the caller.
      */
-    private org.miaixz.bus.core.cache.CacheListener<K, V> removalListener;
+    private CacheListener<K, V> removalListener;
 
     /**
      * Installs one synchronous removal listener before the cache is shared with readers or writers. The listener
@@ -67,9 +69,9 @@ public class MemoryCache<K, V> implements CacheX<K, V> {
      * @param listener non-null callback; it must not throw, block indefinitely, or modify this cache
      * @return this cache for configuration chaining
      * @throws IllegalStateException if atomic mode is active or a listener has already been installed
-     * @throws NullPointerException if listener is null
+     * @throws NullPointerException  if listener is null
      */
-    public MemoryCache<K, V> setRemovalListener(org.miaixz.bus.core.cache.CacheListener<K, V> listener) {
+    public MemoryCache<K, V> setRemovalListener(CacheListener<K, V> listener) {
         if (atomicMode || removalListener != null) {
             throw new IllegalStateException("A removal listener requires an unconfigured ordinary cache");
         }
@@ -81,7 +83,7 @@ public class MemoryCache<K, V> implements CacheX<K, V> {
      * Delivers a removed entry to its optional listener. Callers invoke this only after winning physical removal or
      * replacement, so a racing expiration or capacity sweep cannot notify for the same entry twice.
      *
-     * @param key removed entry key
+     * @param key   removed entry key
      * @param entry removed entry, or null when no mapping existed
      */
     private void removed(K key, Entry<V> entry) {
@@ -507,10 +509,7 @@ public class MemoryCache<K, V> implements CacheX<K, V> {
             Objects.requireNonNull(value, "value");
         });
         if (expire == CacheExpire.NO) {
-            keyValueMap.keySet().forEach(key -> {
-                removed(key, cache.remove(key));
-                counters.remove(key);
-            });
+            keyValueMap.keySet().forEach(key -> remove(key));
             return;
         }
         long now = clock.getAsLong();
@@ -542,8 +541,7 @@ public class MemoryCache<K, V> implements CacheX<K, V> {
         V checkedValue = Objects.requireNonNull(value, "value");
         validateEntryExpire(expire);
         if (expire == CacheExpire.NO) {
-            removed(checkedKey, cache.remove(checkedKey));
-            counters.remove(checkedKey);
+            remove(checkedKey);
             return;
         }
         mutationLock.lock();
@@ -598,10 +596,15 @@ public class MemoryCache<K, V> implements CacheX<K, V> {
     @Override
     public void remove(K... keys) {
         Objects.requireNonNull(keys, "keys");
-        for (K key : keys) {
-            K checkedKey = Objects.requireNonNull(key, "key");
-            removed(checkedKey, cache.remove(checkedKey));
-            counters.remove(checkedKey);
+        mutationLock.lock();
+        try {
+            for (K key : keys) {
+                K checkedKey = Objects.requireNonNull(key, "key");
+                removed(checkedKey, cache.remove(checkedKey));
+                counters.remove(checkedKey);
+            }
+        } finally {
+            mutationLock.unlock();
         }
     }
 
@@ -731,38 +734,79 @@ public class MemoryCache<K, V> implements CacheX<K, V> {
     }
 
     /**
-     * Atomically replaces a live entry when its value equals the expected value. Byte arrays are compared by content,
-     * and the replacement byte array is copied before storage. An expired current entry is removed. This operation is
-     * available only to instances created with the {@link #MemoryCache(LongSupplier)} constructor.
+     * Atomically replaces a live entry when its value equals the expected value. Byte arrays are compared by content
+     * and copied before storage. Ordinary caches retain their TTL, TTI, capacity order and removal callbacks; atomic
+     * caches retain their inclusive deadline and terminal-close boundary. The complete atomic contract remains enabled
+     * only by the clock-based constructor.
      *
      * @param key       non-null cache key
      * @param expected  non-null expected current value
      * @param update    non-null replacement value
      * @param ttlMillis positive replacement lifetime in milliseconds
-     * @return completed stage containing {@code true} when replacement occurred; a failed unsupported-operation stage
-     *         for ordinary cache instances; or a failed stage after an atomic cache is closed
-     * @throws NullPointerException     when {@code key}, {@code expected}, or {@code update} is {@code null}
-     * @throws IllegalArgumentException when {@code ttlMillis} is not positive
+     * @return completed stage containing whether replacement occurred, or a failed stage after atomic-mode close
+     * @throws NullPointerException     when key, expected, or update is null
+     * @throws IllegalArgumentException when ttlMillis is not positive
      */
     @Override
     public CompletionStage<Boolean> replace(K key, V expected, V update, long ttlMillis) {
-        if (!atomicMode) {
-            return CacheX.super.replace(key, expected, update, ttlMillis);
-        }
+        Objects.requireNonNull(expected, "expected");
+        return replace(key, expected, update, ttlMillis, null, null);
+    }
+
+    /**
+     * Compares or creates an entry under the existing cache mutation lock after checking the optional guard at the same
+     * time snapshot. Ordinary writes, removals and atomic commands share this boundary. Expiration, capacity ordering,
+     * defensive byte-array copies and removal callbacks retain their existing mode-specific behavior.
+     *
+     * @param key        non-null replacement key
+     * @param expected   expected current value, or null to require absence
+     * @param update     non-null replacement value
+     * @param ttlMillis  positive replacement lifetime in milliseconds
+     * @param guardKey   additional key, or null for a single-entry comparison
+     * @param guardValue expected non-null guard value when guardKey is supplied
+     * @return completed stage containing whether the guarded replacement occurred
+     * @throws NullPointerException     when a required key or value is null
+     * @throws IllegalArgumentException when ttlMillis is not positive
+     */
+    @Override
+    public CompletionStage<Boolean> replace(K key, V expected, V update, long ttlMillis, K guardKey, V guardValue) {
         requirePositiveTtl(ttlMillis);
         K checkedKey = Objects.requireNonNull(key, "key");
-        V checkedExpected = Objects.requireNonNull(expected, "expected");
+        V checkedExpected = expected;
         V checkedUpdate = Objects.requireNonNull(update, "update");
+        if (guardKey != null)
+            Objects.requireNonNull(guardValue, "guardValue");
         return atomicOperation(() -> {
             long now = clock.getAsLong();
+            if (guardKey != null) {
+                Entry<V> guard = liveEntry(guardKey, now, false, atomicMode);
+                if (guard == null || !valuesEqual(guard.value, guardValue))
+                    return false;
+            }
             Entry<V> replacement = newEntry(copyValue(checkedUpdate), ttlMillis, now);
             Entry<V> result = cache.compute(checkedKey, (ignored, current) -> {
-                if (current == null || current.isAtomicExpired(now)) {
-                    return null;
+                if (current == null)
+                    return checkedExpected == null ? replacement : null;
+                if (atomicMode ? current.isAtomicExpired(now)
+                        : current.isStandardExpired(now, expireAfterWrite, expireAfterAccess)) {
+                    removed(checkedKey, current);
+                    return checkedExpected == null ? replacement : null;
                 }
-                return valuesEqual(current.value, checkedExpected) ? replacement : current;
+                if (checkedExpected == null || !valuesEqual(current.value, checkedExpected))
+                    return current;
+                if (current.value != replacement.value)
+                    removed(checkedKey, current);
+                return replacement;
             });
-            return result == replacement;
+            if (result != replacement)
+                return false;
+            if (!atomicMode) {
+                writeOrder.offer(new WriteToken<>(checkedKey, replacement));
+                writeTokenCount++;
+                evictOverflow();
+                compactWriteOrderIfNeeded();
+            }
+            return true;
         });
     }
 
@@ -856,9 +900,10 @@ public class MemoryCache<K, V> implements CacheX<K, V> {
     /**
      * Cancels this instance's periodic maintenance task. For an ordinary cache without a removal listener, existing
      * values remain available. With a removal listener, current entries are removed and delivered to the listener;
-     * ordinary reads and writes remain permitted, so owners must exclude concurrent mutation during close. For an atomic cache, this method additionally waits for admitted
-     * atomic operations, marks the instance terminally closed, clears entries and counters, and causes later atomic
-     * operations to return failed stages. Repeated calls are safe.
+     * ordinary reads and writes remain permitted, so owners must exclude concurrent mutation during close. For an
+     * atomic cache, this method additionally waits for admitted atomic operations, marks the instance terminally
+     * closed, clears entries and counters, and causes later atomic operations to return failed stages. Repeated calls
+     * are safe.
      */
     @Override
     public void close() {
@@ -1023,9 +1068,9 @@ public class MemoryCache<K, V> implements CacheX<K, V> {
     }
 
     /**
-     * Executes one atomic operation synchronously while holding the lifecycle read lock. The returned stage is already
-     * completed when this method returns; thrown failures and closed-state rejection are converted to failed stages.
-     * Holding the read lock prevents atomic-mode {@link #close()} from clearing state during an admitted operation.
+     * Executes one atomic operation synchronously under the lifecycle read lock and shared mutation lock. The stage is
+     * completed when this method returns; failures and closed-state rejection are converted to failed stages. Holding
+     * the read lock prevents atomic-mode {@link #close()} from clearing state during an admitted operation.
      *
      * @param command non-null atomic cache command
      * @param <T>     result type
@@ -1037,7 +1082,12 @@ public class MemoryCache<K, V> implements CacheX<K, V> {
             if (closed) {
                 return CompletableFuture.failedFuture(new IllegalStateException("Atomic cache is closed"));
             }
-            return CompletableFuture.completedFuture(command.get());
+            mutationLock.lock();
+            try {
+                return CompletableFuture.completedFuture(command.get());
+            } finally {
+                mutationLock.unlock();
+            }
         } catch (Throwable failure) {
             return CompletableFuture.failedFuture(failure);
         } finally {
@@ -1174,7 +1224,7 @@ public class MemoryCache<K, V> implements CacheX<K, V> {
     private static final class Entry<V> implements Serializable {
 
         @Serial
-        private static final long serialVersionUID = 2801356892053L;
+        private static final long serialVersionUID = 2555882250001L;
 
         /**
          * Stored value.

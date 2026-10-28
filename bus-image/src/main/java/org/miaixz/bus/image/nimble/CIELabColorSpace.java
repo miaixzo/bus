@@ -20,6 +20,7 @@
 package org.miaixz.bus.image.nimble;
 
 import java.awt.color.ColorSpace;
+import java.io.Serial;
 
 /**
  * Represents the CIELabColorSpace type.
@@ -27,6 +28,9 @@ import java.awt.color.ColorSpace;
  * @author Kimi Liu
  */
 public class CIELabColorSpace extends ColorSpace {
+
+    @Serial
+    private static final long serialVersionUID = 2556330500001L;
 
     /**
      * The d value.

@@ -36,6 +36,7 @@ import org.miaixz.bus.core.net.Http.Method;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.fabric.*;
+import org.miaixz.bus.fabric.Context;
 import org.miaixz.bus.fabric.codec.frame.Frame;
 import org.miaixz.bus.fabric.codec.frame.FrameCodec;
 import org.miaixz.bus.fabric.network.tls.TlsPolicy;
@@ -70,7 +71,7 @@ public class FabricX {
     /**
      * Shared Fabric execution context used by every static authentication transport entry point.
      */
-    private static final org.miaixz.bus.fabric.Context CONTEXT = org.miaixz.bus.fabric.Context.create();
+    private static final Context CONTEXT = Context.create();
 
     /**
      * Prevents construction because every supported operation is exposed through a static entry point.

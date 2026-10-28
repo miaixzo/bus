@@ -42,7 +42,7 @@ import org.miaixz.bus.core.center.function.SupplierX;
 public class CollectionValueMap<K, V> extends AbstractCollValueMap<K, V> {
 
     @Serial
-    private static final long serialVersionUID = 2852277301182L;
+    private static final long serialVersionUID = 2535918968651L;
 
     /**
      * The supplier for creating new {@link Collection} instances to hold values for a key.

@@ -26,8 +26,15 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.function.Supplier;
 
+import org.miaixz.bus.core.center.regex.Pattern;
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.CryptoException;
 import org.miaixz.bus.core.lang.exception.ForbiddenException;
+import org.miaixz.bus.core.net.Http;
+import org.miaixz.bus.core.net.MediaType;
+import org.miaixz.bus.core.net.Protocol;
+import org.miaixz.bus.core.xyz.PatternKit;
 import org.miaixz.bus.cortex.setting.secret.SecretContext;
 import org.miaixz.bus.cortex.setting.secret.SecretMaterial;
 import org.miaixz.bus.cortex.setting.secret.SecretProvider;
@@ -37,6 +44,8 @@ import org.miaixz.bus.fabric.protocol.http.HttpX;
 
 /**
  * Direct Azure Key Vault Secrets REST reads with an externally supplied OAuth access token.
+ *
+ * @author Kimi Liu
  */
 public final class AzureSecretProvider implements SecretProvider {
 
@@ -128,8 +137,8 @@ public final class AzureSecretProvider implements SecretProvider {
      */
     AzureSecretProvider(URI endpoint, String apiVersion, long generation, CloudCredentials.Source tokens,
             Supplier<HttpX.Builder> http) {
-        if (generation < 0 || apiVersion == null
-                || !apiVersion.matches("([0-9]{4}-[0-9]{2}-[0-9]{2}|[0-9]+[.][0-9]+)(-preview)?")) {
+        if (generation < 0 || apiVersion == null || !PatternKit
+                .isMatch(Pattern.get("([0-9]{4}-[0-9]{2}-[0-9]{2}|[0-9]+[.][0-9]+)(-preview)?", 0), apiVersion)) {
             throw new IllegalArgumentException("Invalid Azure secret connection");
         }
         this.endpoint = CloudProtocol.endpoint(endpoint);
@@ -142,14 +151,14 @@ public final class AzureSecretProvider implements SecretProvider {
     /**
      * Validates one Azure secret name or version component before adding it to the request path.
      *
-     * @param value   input value whose interpretation is described by this operation
+     * @param value   secret name or version component to validate
      * @param maximum maximum permitted component length
      * @return validated alphanumeric/hyphen component
      * @throws org.miaixz.bus.core.lang.exception.CryptoException if the documented validation, expiration or lifecycle
      *                                                            constraint fails
      */
     private static String component(String value, int maximum) {
-        if (value == null || value.length() > maximum || !value.matches("[a-zA-Z0-9-]+")) {
+        if (value == null || value.length() > maximum || !PatternKit.isMatch(Pattern.get("[a-zA-Z0-9-]+", 0), value)) {
             throw new CryptoException("Invalid secret reference");
         }
         return value;
@@ -194,7 +203,8 @@ public final class AzureSecretProvider implements SecretProvider {
         String name = component(reference.resource(), 127);
         String selected = reference.version() != null ? component(reference.version(), 128) : null;
         URI uri = URI.create(
-                endpoint + "secrets/" + name + (selected == null ? "" : "/" + selected) + "?api-version=" + apiVersion);
+                endpoint + "secrets/" + name + (selected == null ? Normal.EMPTY : Symbol.SLASH + selected)
+                        + "?api-version=" + apiVersion);
         Map<?, ?> response = CloudProtocol.exchange(
                 attempt -> request(uri, attempt),
                 context,
@@ -243,8 +253,9 @@ public final class AzureSecretProvider implements SecretProvider {
      */
     private HttpX.Builder request(URI uri, SecretContext context) {
         try (CloudCredentials token = tokens.acquire(context)) {
-            return http.get().to(uri.toString()).header("Authorization", "Bearer " + token.header())
-                    .header("Accept", "application/json").get();
+            return http.get().to(uri.toString())
+                    .header(Http.Header.AUTHORIZATION, Http.Auth.BEARER_PREFIX + token.header())
+                    .header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON).get();
         }
     }
 
@@ -262,11 +273,11 @@ public final class AzureSecretProvider implements SecretProvider {
             URI parsed = URI.create(id);
             int expectedPort = endpoint.getPort() == -1 ? 443 : endpoint.getPort();
             int actualPort = parsed.getPort() == -1 ? 443 : parsed.getPort();
-            String[] parts = parsed.getRawPath().split("/", -1);
-            if (!"https".equalsIgnoreCase(parsed.getScheme()) || !endpoint.getHost().equalsIgnoreCase(parsed.getHost())
-                    || expectedPort != actualPort || parsed.getUserInfo() != null || parsed.getRawQuery() != null
-                    || parsed.getFragment() != null || parts.length != 4 || !parts[1].equals("secrets")
-                    || !parts[2].equalsIgnoreCase(name)) {
+            String[] parts = parsed.getRawPath().split(Symbol.SLASH, -1);
+            if (!Protocol.HTTPS.name.equalsIgnoreCase(parsed.getScheme())
+                    || !endpoint.getHost().equalsIgnoreCase(parsed.getHost()) || expectedPort != actualPort
+                    || parsed.getUserInfo() != null || parsed.getRawQuery() != null || parsed.getFragment() != null
+                    || parts.length != 4 || !parts[1].equals("secrets") || !parts[2].equalsIgnoreCase(name)) {
                 throw new IllegalArgumentException();
             }
             return component(parts[3], 128);

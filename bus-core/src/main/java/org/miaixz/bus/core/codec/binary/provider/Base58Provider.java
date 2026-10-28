@@ -35,7 +35,7 @@ import org.miaixz.bus.core.codec.binary.encoder.Base58Encoder;
 public class Base58Provider implements Encoder<byte[], String>, Decoder<CharSequence, byte[]>, Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852258919299L;
+    private static final long serialVersionUID = 2536115800001L;
 
     /**
      * Singleton instance of the Base58Provider.

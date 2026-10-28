@@ -59,7 +59,7 @@ perform computer vision tasks, image processing, and video analysis in your Java
 import org.miaixz.bus.opengl.OpenCVKit;
 
 public class Application {
-    
+
     static {
         // Load OpenCV native library
         OpenCVKit.loadLib();
@@ -68,7 +68,7 @@ public class Application {
     public static void main(String[] args) {
         // Your code here
     }
-    
+
 }
 ```
 
@@ -159,8 +159,7 @@ public class ImageFilterExample {
         Mat blurred = ImageProcessor.gaussianBlur(image, 21);
         Mat sharpened = ImageProcessor.sharpen(image);
         Mat edged = ImageProcessor.canny(image, 100, 200);
-
-        // Display or save results
+        
         // ...
     }
 

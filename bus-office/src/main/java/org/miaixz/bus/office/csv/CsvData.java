@@ -34,7 +34,7 @@ import org.miaixz.bus.core.xyz.ListKit;
 public class CsvData implements Iterable<CsvRow>, Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852282752523L;
+    private static final long serialVersionUID = 2551898000001L;
 
     /**
      * The header information of the CSV data.

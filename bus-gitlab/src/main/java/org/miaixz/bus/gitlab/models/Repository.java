@@ -32,7 +32,7 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class Repository implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852279891721L;
+    private static final long serialVersionUID = 2551182150001L;
 
     /**
      * The description value.

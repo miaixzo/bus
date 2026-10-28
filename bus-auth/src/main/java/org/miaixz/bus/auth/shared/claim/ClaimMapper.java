@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.auth.shared.claim;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -98,7 +99,7 @@ public class ClaimMapper {
             final ClaimMapping mapping,
             final JsonValue value,
             final Optional<String> issuer,
-            final Optional<java.time.Instant> verifiedAt) {
+            final Optional<Instant> verifiedAt) {
         final ClaimSet.Origin origin = new ClaimSet.Origin(mapping.source(), mapping.sourceName(), issuer, verifiedAt);
         return new ClaimSet.Entry(mapping.targetName(), value, origin, mapping.sensitive());
     }

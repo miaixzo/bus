@@ -30,7 +30,7 @@ import java.io.Serializable;
 public class CsvReadConfig extends CsvConfig<CsvReadConfig> implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852283116503L;
+    private static final long serialVersionUID = 2551905000001L;
 
     /**
      * Specifies the header line number. A value of -1 indicates no header line.

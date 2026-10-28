@@ -41,7 +41,7 @@ import org.miaixz.bus.core.xyz.ThreadKit;
 public class PartitionObjectPool<T> implements ObjectPool<T> {
 
     @Serial
-    private static final long serialVersionUID = 2852272377912L;
+    private static final long serialVersionUID = 2538039880001L;
 
     /**
      * The configuration for this partitioned object pool.

@@ -28,8 +28,10 @@ import com.sun.jna.Native;
 import com.sun.jna.Pointer;
 import com.sun.jna.Structure;
 import com.sun.jna.Structure.FieldOrder;
+import com.sun.jna.platform.win32.BaseTSD;
 import com.sun.jna.platform.win32.COM.COMInvoker;
 import com.sun.jna.platform.win32.COM.COMUtils;
+import com.sun.jna.platform.win32.Guid;
 import com.sun.jna.platform.win32.Guid.REFIID;
 import com.sun.jna.platform.win32.WinNT.HRESULT;
 import com.sun.jna.ptr.PointerByReference;
@@ -71,8 +73,7 @@ public class WindowsDxgi {
     /**
      * The IID_IDXGI_FACTORY constant.
      */
-    private static final com.sun.jna.platform.win32.Guid.IID IID_IDXGI_FACTORY = new com.sun.jna.platform.win32.Guid.IID(
-            "{7B7166EC-21C7-44AE-B21A-C9AE321AE369}");
+    private static final Guid.IID IID_IDXGI_FACTORY = new Guid.IID("{7B7166EC-21C7-44AE-B21A-C9AE321AE369}");
 
     // DXGI_ERROR_NOT_FOUND: returned by EnumAdapters when index is out of range
     /**
@@ -370,17 +371,17 @@ public class WindowsDxgi {
         /**
          * The DedicatedVideoMemory value.
          */
-        public com.sun.jna.platform.win32.BaseTSD.SIZE_T DedicatedVideoMemory;
+        public BaseTSD.SIZE_T DedicatedVideoMemory;
 
         /**
          * The DedicatedSystemMemory value.
          */
-        public com.sun.jna.platform.win32.BaseTSD.SIZE_T DedicatedSystemMemory;
+        public BaseTSD.SIZE_T DedicatedSystemMemory;
 
         /**
          * The SharedSystemMemory value.
          */
-        public com.sun.jna.platform.win32.BaseTSD.SIZE_T SharedSystemMemory;
+        public BaseTSD.SIZE_T SharedSystemMemory;
 
         /**
          * The AdapterLuidLowPart value.

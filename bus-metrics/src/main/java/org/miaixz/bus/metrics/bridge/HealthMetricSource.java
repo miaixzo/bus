@@ -20,6 +20,7 @@
 package org.miaixz.bus.metrics.bridge;
 
 import java.util.*;
+import java.util.Objects;
 
 import org.miaixz.bus.health.Collector;
 import org.miaixz.bus.health.Platform;
@@ -58,8 +59,8 @@ final class HealthMetricSource implements HostMetricSource {
      * @param options   host metric options
      */
     HealthMetricSource(Collector collector, HostMetricsOptions options) {
-        this.collector = java.util.Objects.requireNonNull(collector, "Health collector must not be null");
-        this.options = java.util.Objects.requireNonNull(options, "Host options must not be null");
+        this.collector = Objects.requireNonNull(collector, "Health collector must not be null");
+        this.options = Objects.requireNonNull(options, "Host options must not be null");
         this.capabilities = capabilities(Platform.getCurrentPlatform());
     }
 

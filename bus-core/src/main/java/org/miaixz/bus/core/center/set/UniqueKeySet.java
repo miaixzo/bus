@@ -50,7 +50,7 @@ import org.miaixz.bus.core.xyz.ObjectKit;
 public class UniqueKeySet<K, V> extends AbstractSet<V> implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852280266036L;
+    private static final long serialVersionUID = 2536069500001L;
 
     /**
      * The function used to generate a unique key for each element.

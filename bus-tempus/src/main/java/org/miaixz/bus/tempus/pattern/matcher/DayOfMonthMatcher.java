@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.tempus.pattern.matcher;
 
+import java.io.Serial;
 import java.util.List;
 
 import org.miaixz.bus.core.center.date.Month;
@@ -31,6 +32,9 @@ import org.miaixz.bus.core.center.date.Month;
  * @author Kimi Liu
  */
 public class DayOfMonthMatcher extends BoolArrayMatcher {
+
+    @Serial
+    private static final long serialVersionUID = 2558312662383L;
 
     /**
      * Constructs a new DayOfMonthMatcher.

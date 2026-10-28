@@ -304,16 +304,7 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.vortex.Filter",
-      "methods": [
-        {
-          "name": "filter",
-          "parameterTypes": [
-            "org.springframework.web.server.ServerWebExchange",
-            "org.springframework.web.server.WebFilterChain"
-          ]
-        }
-      ]
+      "type": "org.miaixz.bus.vortex.Filter"
     },
     {
       "type": "org.miaixz.bus.vortex.filter.AbstractFilter",
@@ -326,66 +317,11 @@
         {
           "name": "<init>",
           "parameterTypes": []
-        },
-        {
-          "name": "equals",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "filter",
-          "parameterTypes": [
-            "org.springframework.web.server.ServerWebExchange",
-            "org.springframework.web.server.WebFilterChain"
-          ]
-        },
-        {
-          "name": "getClass",
-          "parameterTypes": []
-        },
-        {
-          "name": "hashCode",
-          "parameterTypes": []
-        },
-        {
-          "name": "notify",
-          "parameterTypes": []
-        },
-        {
-          "name": "notifyAll",
-          "parameterTypes": []
-        },
-        {
-          "name": "toString",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long",
-            "int"
-          ]
         }
       ]
     },
     {
       "type": "org.miaixz.bus.vortex.filter.PrimaryFilter",
-      "fields": [
-        {
-          "name": "factory"
-        }
-      ],
       "methods": [
         {
           "name": "<init>",
@@ -394,25 +330,11 @@
           ]
         },
         {
-          "name": "equals",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
           "name": "filter",
           "parameterTypes": [
             "org.springframework.web.server.ServerWebExchange",
             "org.springframework.web.server.WebFilterChain"
           ]
-        },
-        {
-          "name": "getClass",
-          "parameterTypes": []
-        },
-        {
-          "name": "hashCode",
-          "parameterTypes": []
         },
         {
           "name": "isPathTraversalAttempt",
@@ -439,35 +361,6 @@
           "parameterTypes": [
             "org.miaixz.bus.vortex.Context",
             "reactor.util.context.Context"
-          ]
-        },
-        {
-          "name": "notify",
-          "parameterTypes": []
-        },
-        {
-          "name": "notifyAll",
-          "parameterTypes": []
-        },
-        {
-          "name": "toString",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long",
-            "int"
           ]
         }
       ]
@@ -510,49 +403,6 @@
           "parameterTypes": [
             "org.springframework.web.server.ServerWebExchange"
           ]
-        },
-        {
-          "name": "equals",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "getClass",
-          "parameterTypes": []
-        },
-        {
-          "name": "hashCode",
-          "parameterTypes": []
-        },
-        {
-          "name": "notify",
-          "parameterTypes": []
-        },
-        {
-          "name": "notifyAll",
-          "parameterTypes": []
-        },
-        {
-          "name": "toString",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long",
-            "int"
-          ]
         }
       ]
     },
@@ -590,12 +440,6 @@
           ]
         },
         {
-          "name": "equals",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
           "name": "findCause",
           "parameterTypes": [
             "java.lang.Throwable",
@@ -603,19 +447,11 @@
           ]
         },
         {
-          "name": "getClass",
-          "parameterTypes": []
-        },
-        {
           "name": "handle",
           "parameterTypes": [
             "org.springframework.web.server.ServerWebExchange",
             "java.lang.Throwable"
           ]
-        },
-        {
-          "name": "hashCode",
-          "parameterTypes": []
         },
         {
           "name": "lambda$handle$0",
@@ -650,35 +486,6 @@
             "java.lang.String",
             "java.util.concurrent.atomic.AtomicInteger"
           ]
-        },
-        {
-          "name": "notify",
-          "parameterTypes": []
-        },
-        {
-          "name": "notifyAll",
-          "parameterTypes": []
-        },
-        {
-          "name": "toString",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long",
-            "int"
-          ]
         }
       ]
     },
@@ -708,33 +515,11 @@
           "parameterTypes": []
         },
         {
-          "name": "equals",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "getClass",
-          "parameterTypes": []
-        },
-        {
           "name": "getErrcode",
           "parameterTypes": []
         },
         {
           "name": "getErrmsg",
-          "parameterTypes": []
-        },
-        {
-          "name": "hashCode",
-          "parameterTypes": []
-        },
-        {
-          "name": "notify",
-          "parameterTypes": []
-        },
-        {
-          "name": "notifyAll",
           "parameterTypes": []
         },
         {
@@ -747,27 +532,6 @@
           "name": "setErrmsg",
           "parameterTypes": [
             "java.lang.String"
-          ]
-        },
-        {
-          "name": "toString",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long",
-            "int"
           ]
         }
       ]
@@ -792,12 +556,6 @@
           "parameterTypes": []
         },
         {
-          "name": "equals",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
           "name": "errcode",
           "parameterTypes": [
             "java.lang.String"
@@ -810,41 +568,8 @@
           ]
         },
         {
-          "name": "getClass",
-          "parameterTypes": []
-        },
-        {
-          "name": "hashCode",
-          "parameterTypes": []
-        },
-        {
-          "name": "notify",
-          "parameterTypes": []
-        },
-        {
-          "name": "notifyAll",
-          "parameterTypes": []
-        },
-        {
           "name": "toString",
           "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long",
-            "int"
-          ]
         }
       ]
     },
@@ -2665,12 +2390,6 @@
           ]
         },
         {
-          "name": "equals",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
           "name": "get",
           "parameterTypes": [
             "java.lang.String"
@@ -2681,31 +2400,11 @@
           "parameterTypes": []
         },
         {
-          "name": "getClass",
-          "parameterTypes": []
-        },
-        {
           "name": "getStats",
           "parameterTypes": []
         },
         {
-          "name": "hashCode",
-          "parameterTypes": []
-        },
-        {
-          "name": "init",
-          "parameterTypes": []
-        },
-        {
           "name": "lambda$refresh$0",
-          "parameterTypes": []
-        },
-        {
-          "name": "notify",
-          "parameterTypes": []
-        },
-        {
-          "name": "notifyAll",
           "parameterTypes": []
         },
         {
@@ -2738,10 +2437,6 @@
           ]
         },
         {
-          "name": "toString",
-          "parameterTypes": []
-        },
-        {
           "name": "update",
           "parameterTypes": [
             "java.lang.Object"
@@ -2752,23 +2447,6 @@
           "parameterTypes": [
             "java.lang.String",
             "java.lang.Object"
-          ]
-        },
-        {
-          "name": "wait",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long",
-            "int"
           ]
         }
       ]
@@ -2812,10 +2490,6 @@
           ]
         },
         {
-          "name": "afterPropertiesSet",
-          "parameterTypes": []
-        },
-        {
           "name": "destroy",
           "parameterTypes": [
             "java.lang.Object"
@@ -2831,12 +2505,6 @@
           "name": "destroy",
           "parameterTypes": [
             "org.miaixz.bus.cortex.Assets"
-          ]
-        },
-        {
-          "name": "equals",
-          "parameterTypes": [
-            "java.lang.Object"
           ]
         },
         {
@@ -2871,17 +2539,6 @@
         {
           "name": "get",
           "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.Integer"
-          ]
-        },
-        {
-          "name": "get",
-          "parameterTypes": [
-            "java.lang.String",
             "org.miaixz.bus.cortex.Type",
             "java.lang.String",
             "java.lang.String",
@@ -2891,7 +2548,6 @@
         {
           "name": "get",
           "parameterTypes": [
-            "java.lang.String",
             "org.miaixz.bus.cortex.Type",
             "java.lang.String",
             "java.lang.String",
@@ -2904,26 +2560,6 @@
           "parameterTypes": [
             "org.miaixz.bus.cortex.Keying$RegistrySpec"
           ]
-        },
-        {
-          "name": "getAll",
-          "parameterTypes": []
-        },
-        {
-          "name": "getClass",
-          "parameterTypes": []
-        },
-        {
-          "name": "getStats",
-          "parameterTypes": []
-        },
-        {
-          "name": "hashCode",
-          "parameterTypes": []
-        },
-        {
-          "name": "init",
-          "parameterTypes": []
         },
         {
           "name": "isMcp",
@@ -2974,14 +2610,6 @@
           ]
         },
         {
-          "name": "notify",
-          "parameterTypes": []
-        },
-        {
-          "name": "notifyAll",
-          "parameterTypes": []
-        },
-        {
           "name": "prefixRouteMatch",
           "parameterTypes": [
             "org.miaixz.bus.cortex.Keying$RegistrySpec"
@@ -2994,13 +2622,6 @@
         {
           "name": "register",
           "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "register",
-          "parameterTypes": [
-            "java.lang.String",
             "java.lang.Object"
           ]
         },
@@ -3031,22 +2652,6 @@
           ]
         },
         {
-          "name": "setMonitor",
-          "parameterTypes": [
-            "org.miaixz.bus.vortex.Monitor"
-          ]
-        },
-        {
-          "name": "toString",
-          "parameterTypes": []
-        },
-        {
-          "name": "update",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
           "name": "update",
           "parameterTypes": [
             "java.lang.String",
@@ -3058,23 +2663,6 @@
           "parameterTypes": [
             "java.lang.String",
             "org.miaixz.bus.cortex.Assets"
-          ]
-        },
-        {
-          "name": "wait",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long",
-            "int"
           ]
         }
       ]
@@ -3108,19 +2696,7 @@
           ]
         },
         {
-          "name": "getClass",
-          "parameterTypes": []
-        },
-        {
           "name": "hashCode",
-          "parameterTypes": []
-        },
-        {
-          "name": "notify",
-          "parameterTypes": []
-        },
-        {
-          "name": "notifyAll",
           "parameterTypes": []
         },
         {
@@ -3130,23 +2706,6 @@
         {
           "name": "toString",
           "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long",
-            "int"
-          ]
         }
       ]
     },
@@ -3164,130 +2723,17 @@
           "parameterTypes": []
         },
         {
-          "name": "afterPropertiesSet",
-          "parameterTypes": []
-        },
-        {
-          "name": "destroy",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "destroy",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "equals",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "get",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
           "name": "get",
           "parameterTypes": [
             "java.lang.String",
             "java.lang.String",
             "java.lang.String"
           ]
-        },
-        {
-          "name": "getAll",
-          "parameterTypes": []
-        },
-        {
-          "name": "getClass",
-          "parameterTypes": []
-        },
-        {
-          "name": "getStats",
-          "parameterTypes": []
-        },
-        {
-          "name": "hashCode",
-          "parameterTypes": []
-        },
-        {
-          "name": "init",
-          "parameterTypes": []
         },
         {
           "name": "lambda$new$319fb085$1",
           "parameterTypes": [
             "org.miaixz.bus.vortex.magic.Limiter"
-          ]
-        },
-        {
-          "name": "notify",
-          "parameterTypes": []
-        },
-        {
-          "name": "notifyAll",
-          "parameterTypes": []
-        },
-        {
-          "name": "refresh",
-          "parameterTypes": []
-        },
-        {
-          "name": "register",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "register",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "setMonitor",
-          "parameterTypes": [
-            "org.miaixz.bus.vortex.Monitor"
-          ]
-        },
-        {
-          "name": "toString",
-          "parameterTypes": []
-        },
-        {
-          "name": "update",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "update",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "wait",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long",
-            "int"
           ]
         }
       ]
@@ -4002,6 +3448,15 @@
       ]
     },
     {
+      "type": "org.miaixz.bus.vortex.routing.rest.RestExecutor",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
       "type": "org.miaixz.bus.vortex.routing.ws.WsExecutor$SessionMetadata",
       "fields": [
         {
@@ -4042,6 +3497,18 @@
         {
           "name": "getUpstreamTarget",
           "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.vortex.strategy.QualifierStrategy",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.vortex.provider.AuthorizeProvider",
+            "org.miaixz.bus.vortex.registry.AssetsRegistry"
+          ]
         }
       ]
     },
@@ -4138,9 +3605,6 @@
       "type": "org.miaixz.bus.vortex.Vortex",
       "fields": [
         {
-          "name": "DEFAULT_PHASE"
-        },
-        {
           "name": "disposableServer"
         },
         {
@@ -4158,6 +3622,23 @@
           ]
         },
         {
+          "name": "isRunning",
+          "parameterTypes": []
+        },
+        {
+          "name": "start",
+          "parameterTypes": []
+        },
+        {
+          "name": "stop",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "java.lang.Object",
+      "methods": [
+        {
           "name": "equals",
           "parameterTypes": [
             "java.lang.Object"
@@ -4168,19 +3649,7 @@
           "parameterTypes": []
         },
         {
-          "name": "getPhase",
-          "parameterTypes": []
-        },
-        {
           "name": "hashCode",
-          "parameterTypes": []
-        },
-        {
-          "name": "isAutoStartup",
-          "parameterTypes": []
-        },
-        {
-          "name": "isRunning",
           "parameterTypes": []
         },
         {
@@ -4192,26 +3661,15 @@
           "parameterTypes": []
         },
         {
-          "name": "start",
-          "parameterTypes": []
-        },
-        {
-          "name": "stop",
-          "parameterTypes": []
-        },
-        {
-          "name": "stop",
-          "parameterTypes": [
-            "java.lang.Runnable"
-          ]
-        },
-        {
           "name": "toString",
           "parameterTypes": []
         },
         {
           "name": "wait",
-          "parameterTypes": []
+          "parameterTypes": [
+            "long",
+            "int"
+          ]
         },
         {
           "name": "wait",
@@ -4221,9 +3679,51 @@
         },
         {
           "name": "wait",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.vortex.Registry",
+      "methods": [
+        {
+          "name": "init",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.springframework.context.SmartLifecycle",
+      "fields": [
+        {
+          "name": "DEFAULT_PHASE"
+        }
+      ],
+      "methods": [
+        {
+          "name": "getPhase",
+          "parameterTypes": []
+        },
+        {
+          "name": "isAutoStartup",
+          "parameterTypes": []
+        },
+        {
+          "name": "stop",
           "parameterTypes": [
-            "long",
-            "int"
+            "java.lang.Runnable"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.springframework.web.server.WebFilter",
+      "methods": [
+        {
+          "name": "filter",
+          "parameterTypes": [
+            "org.springframework.web.server.ServerWebExchange",
+            "org.springframework.web.server.WebFilterChain"
           ]
         }
       ]

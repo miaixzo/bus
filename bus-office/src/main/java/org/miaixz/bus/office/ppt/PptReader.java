@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.office.ppt;
 
+import java.awt.Dimension;
 import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
@@ -216,7 +217,7 @@ public class PptReader implements Closeable {
      *
      * @return The slide size.
      */
-    public java.awt.Dimension getSlideSize() {
+    public Dimension getSlideSize() {
         return this.ppt.getPageSize();
     }
 

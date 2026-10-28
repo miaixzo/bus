@@ -32,7 +32,7 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class WikiPage implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852283502293L;
+    private static final long serialVersionUID = 2551290802651L;
 
     /**
      * The title value.

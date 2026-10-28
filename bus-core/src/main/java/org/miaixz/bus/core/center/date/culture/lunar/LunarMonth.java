@@ -20,6 +20,7 @@
 package org.miaixz.bus.core.center.date.culture.lunar;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.miaixz.bus.core.center.date.Galaxy;
@@ -45,6 +46,11 @@ public class LunarMonth extends AbstractLeapMonth {
      * Chinese names for lunar months.
      */
     public static final String[] NAMES = { "正月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月" };
+
+    /**
+     * New moon estimates indexed by year + 1 and month index, covering lunar years -1 through 9999.
+     */
+    protected static final double[][] NEW_MOON_CACHE = new double[10001][];
 
     /**
      * Constructs a LunarMonth instance.
@@ -110,25 +116,41 @@ public class LunarMonth extends AbstractLeapMonth {
      * @return the Julian Day
      */
     protected double getNewMoon() {
-        // Winter solstice
-        double dongZhiJd = SolarTerms.fromIndex(year, 0).getCursoryJulianDay();
-
-        // The first day of lunar month before winter solstice, this year's first sun-moon longitude difference
-        double w = Galaxy.calcShuo(dongZhiJd);
-        if (w > dongZhiJd) {
-            w -= 29.53;
+        int m = getIndexInYear();
+        double[] months;
+        synchronized (NEW_MOON_CACHE) {
+            months = NEW_MOON_CACHE[year + 1];
+            if (months == null) {
+                months = new double[13];
+                Arrays.fill(months, Double.NaN);
+                NEW_MOON_CACHE[year + 1] = months;
+            }
         }
+        synchronized (months) {
+            double v = months[m];
+            if (Double.isNaN(v)) {
+                // Winter solstice
+                double dongZhiJd = new SolarTerms(year, 0).getCursoryJulianDay();
 
-        // Normally the first day of the first lunar month is the 3rd new moon, but there are special cases
-        int offset = 2;
-        if (year > 8 && year < 24) {
-            offset = 1;
-        } else if (LunarYear.fromYear(year - 1).getLeapMonth() > 10 && year != 239 && year != 240) {
-            offset = 3;
+                // The new moon before winter solstice.
+                double w = Galaxy.calcShuo(dongZhiJd);
+                if (w > dongZhiJd) {
+                    w -= 29.53;
+                }
+
+                // Normally lunar New Year is the third new moon, with historical exceptions.
+                int offset = 2;
+                if (year > 8 && year < 24) {
+                    offset = 1;
+                } else if (new LunarYear(year - 1).getLeapMonth() > 10 && year != 239 && year != 240) {
+                    offset = 3;
+                }
+
+                v = w + 29.5306 * (offset + m);
+                months[m] = v;
+            }
+            return v;
         }
-
-        // The first day of this month
-        return w + 29.5306 * (offset + getIndexInYear());
     }
 
     /**

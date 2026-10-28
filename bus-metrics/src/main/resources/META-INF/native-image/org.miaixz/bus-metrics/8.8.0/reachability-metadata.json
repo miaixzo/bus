@@ -242,10 +242,6 @@
           "parameterTypes": []
         },
         {
-          "name": "destroy",
-          "parameterTypes": []
-        },
-        {
           "name": "doFilter",
           "parameterTypes": [
             "jakarta.servlet.ServletRequest",
@@ -254,62 +250,13 @@
           ]
         },
         {
-          "name": "equals",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "getClass",
-          "parameterTypes": []
-        },
-        {
-          "name": "hashCode",
-          "parameterTypes": []
-        },
-        {
-          "name": "init",
-          "parameterTypes": [
-            "jakarta.servlet.FilterConfig"
-          ]
-        },
-        {
-          "name": "notify",
-          "parameterTypes": []
-        },
-        {
-          "name": "notifyAll",
-          "parameterTypes": []
-        },
-        {
           "name": "record",
           "parameterTypes": [
-            "org.miaixz.bus.metrics.nimble.Sample",
+            "long",
             "java.lang.String",
             "java.lang.String",
             "int",
             "java.lang.Throwable"
-          ]
-        },
-        {
-          "name": "toString",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long",
-            "int"
           ]
         }
       ]
@@ -446,15 +393,6 @@
           ]
         },
         {
-          "name": "recordViolation",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
           "name": "setDefaultMax",
           "parameterTypes": [
             "int"
@@ -531,18 +469,10 @@
           ]
         },
         {
-          "name": "computeThreshold",
-          "parameterTypes": []
-        },
-        {
           "name": "evaluate",
           "parameterTypes": [
             "java.lang.String"
           ]
-        },
-        {
-          "name": "prune",
-          "parameterTypes": []
         }
       ]
     },
@@ -1141,18 +1071,6 @@
       "type": "org.miaixz.bus.metrics.nimble.indigenous.NativeSloTracker$SloDefinition",
       "methods": [
         {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "boolean",
-            "long",
-            "double",
-            "double",
-            "org.miaixz.bus.metrics.observe.tag.Tag[]",
-            "org.miaixz.bus.metrics.observe.slo.ErrorBudget"
-          ]
-        },
-        {
           "name": "budget",
           "parameterTypes": []
         },
@@ -1193,6 +1111,19 @@
         {
           "name": "toString",
           "parameterTypes": []
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "boolean",
+            "long",
+            "double",
+            "double",
+            "org.miaixz.bus.metrics.observe.tag.Tag[]",
+            "org.miaixz.bus.metrics.observe.slo.ErrorBudget",
+            "java.util.concurrent.atomic.AtomicBoolean"
+          ]
         }
       ]
     },
@@ -1709,6 +1640,69 @@
         },
         {
           "name": "tick",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "jakarta.servlet.Filter",
+      "methods": [
+        {
+          "name": "destroy",
+          "parameterTypes": []
+        },
+        {
+          "name": "init",
+          "parameterTypes": [
+            "jakarta.servlet.FilterConfig"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "java.lang.Object",
+      "methods": [
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "getClass",
+          "parameterTypes": []
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "notify",
+          "parameterTypes": []
+        },
+        {
+          "name": "notifyAll",
+          "parameterTypes": []
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long",
+            "int"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "wait",
           "parameterTypes": []
         }
       ]

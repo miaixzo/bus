@@ -32,7 +32,7 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class CommitStats implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852250082857L;
+    private static final long serialVersionUID = 2550268508001L;
 
     /**
      * The additions value.

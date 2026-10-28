@@ -46,7 +46,7 @@ import org.miaixz.bus.logger.Logger;
 public class ThymeleafTemplate implements Template, Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852289111659L;
+    private static final long serialVersionUID = 2555088261295L;
 
     /**
      * The raw Thymeleaf template engine object.

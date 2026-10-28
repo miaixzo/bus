@@ -31,7 +31,7 @@ import java.util.List;
 public class ApprovalRuleParams implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852236337509L;
+    private static final long serialVersionUID = 2550168936311L;
 
     /**
      * The approvals required value.

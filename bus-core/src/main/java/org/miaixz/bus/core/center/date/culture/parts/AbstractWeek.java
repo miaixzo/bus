@@ -43,7 +43,9 @@ public abstract class AbstractWeek extends WeekParts {
      *
      * @return the abstract month
      */
-    public abstract AbstractMonth getAbstractMonth();
+    public AbstractMonth getAbstractMonth() {
+        throw new UnsupportedOperationException();
+    }
 
     @Override
     public AbstractWeek next(final int n) {
@@ -68,14 +70,7 @@ public abstract class AbstractWeek extends WeekParts {
                 d += m.getWeekCount(start);
             }
         }
-        final AbstractMonth month = m;
-        final int index = d;
-        return new AbstractWeek(month.getYear(), month.getMonthValue(), index, start) {
-
-            @Override
-            public AbstractMonth getAbstractMonth() {
-                return null;
-            }
+        return new AbstractWeek(m.getYear(), m.getMonthValue(), d, start) {
         };
     }
 

@@ -61,7 +61,7 @@ import org.miaixz.bus.logger.Logger;
 public class Certificate implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852288292676L;
+    private static final long serialVersionUID = 2539212362986L;
 
     /**
      * The serial number of the certificate.

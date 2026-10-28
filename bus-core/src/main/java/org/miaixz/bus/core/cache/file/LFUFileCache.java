@@ -34,7 +34,7 @@ import org.miaixz.bus.core.cache.provider.LFUCache;
 public class LFUFileCache extends AbstractFileCache {
 
     @Serial
-    private static final long serialVersionUID = 2852230262897L;
+    private static final long serialVersionUID = 2535368555001L;
 
     /**
      * Constructs an LFU file cache with a default max file size (half of the capacity) and no timeout.
@@ -79,7 +79,7 @@ public class LFUFileCache extends AbstractFileCache {
         return new LFUCache<>(this.capacity, this.timeout) {
 
             @Serial
-            private static final long serialVersionUID = 2852368337873L;
+            private static final long serialVersionUID = 2535380000001L;
 
             /**
              * Determines if the cache is full by comparing the used byte size against the capacity.

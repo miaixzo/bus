@@ -24,6 +24,7 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.List;
 
 import org.miaixz.bus.core.lang.Symbol;
@@ -31,6 +32,8 @@ import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.image.galaxy.ImageParam;
 import org.miaixz.bus.image.galaxy.ImageProgress;
 import org.miaixz.bus.image.galaxy.data.Attributes;
+import org.miaixz.bus.image.galaxy.data.VR;
+import org.miaixz.bus.image.metric.QueryOption;
 
 /**
  * Represents the status of a DICOM operation, providing detailed information about its progress, results, and any
@@ -40,6 +43,11 @@ import org.miaixz.bus.image.galaxy.data.Attributes;
  * @author Kimi Liu
  */
 public class Status {
+
+    /**
+     * The requested query options rejected by the remote application entity.
+     */
+    private final EnumSet<QueryOption> rejectedQueryOptions = EnumSet.noneOf(QueryOption.class);
 
     /**
      * Success: The operation was successful.
@@ -533,6 +541,8 @@ public class Status {
         } else {
             if (Status.isPending(s) || s == -1) {
                 state.setStatus(Status.UnableToProcess);
+            } else if (s == Status.Success) {
+                state.setStatus(Status.OneOrMoreFailures);
             }
         }
         state.setMessage(msg.toString());
@@ -559,6 +569,31 @@ public class Status {
      */
     public void setStatus(int status) {
         this.status = status;
+        if (progress != null) {
+            Attributes attributes = progress.getAttributes();
+            if (attributes != null) {
+                attributes.setInt(Tag.Status, VR.US, status);
+            }
+        }
+    }
+
+    /**
+     * Returns a defensive copy of the rejected query options.
+     *
+     * @return the options rejected during association negotiation
+     */
+    public synchronized EnumSet<QueryOption> getRejectedQueryOptions() {
+        return EnumSet.copyOf(rejectedQueryOptions);
+    }
+
+    /**
+     * Records the query options rejected during association negotiation.
+     *
+     * @param options the rejected options
+     */
+    public synchronized void setRejectedQueryOptions(EnumSet<QueryOption> options) {
+        rejectedQueryOptions.clear();
+        rejectedQueryOptions.addAll(options);
     }
 
     /**

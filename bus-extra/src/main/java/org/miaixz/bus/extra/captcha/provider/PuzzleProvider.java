@@ -36,7 +36,7 @@ import org.miaixz.bus.extra.captcha.strategy.CodeStrategy;
 public class PuzzleProvider extends AbstractProvider {
 
     @Serial
-    private static final long serialVersionUID = -2852291851366L;
+    private static final long serialVersionUID = 2553980000001L;
 
     /**
      * Constructor.

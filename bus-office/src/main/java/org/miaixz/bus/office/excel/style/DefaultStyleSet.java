@@ -40,7 +40,7 @@ import org.miaixz.bus.office.excel.StyleKit;
 public class DefaultStyleSet implements StyleSet, Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852286072270L;
+    private static final long serialVersionUID = 2551921058001L;
 
     /**
      * Workbook reference.

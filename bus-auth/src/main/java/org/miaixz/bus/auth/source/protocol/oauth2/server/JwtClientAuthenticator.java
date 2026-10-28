@@ -26,6 +26,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
 import org.miaixz.bus.auth.*;
+import org.miaixz.bus.auth.guard.AlgorithmGuard;
 import org.miaixz.bus.auth.guard.ReplayGuard;
 import org.miaixz.bus.auth.guard.TimeGuard;
 import org.miaixz.bus.auth.resolver.ConsumerMetadata;
@@ -121,10 +122,10 @@ public class JwtClientAuthenticator {
                         () -> new ValidateException("OAuth 2.x JWT client authentication requires a token endpoint"))
                 .url().toString();
         this.rule = services.policies().require(Protocol.OAUTH2);
-        this.timeGuard = new org.miaixz.bus.auth.guard.TimeGuard(FabricX.clock(),
+        this.timeGuard = new TimeGuard(FabricX.clock(),
                 services.policies().require(Protocol.OAUTH2).maximumClockSkew());
-        this.replayGuard = new org.miaixz.bus.auth.guard.ReplayGuard(services.replayCache());
-        this.jwsService = new JwsService(new org.miaixz.bus.auth.guard.AlgorithmGuard(), rule.algorithms());
+        this.replayGuard = new ReplayGuard(services.replayCache());
+        this.jwsService = new JwsService(new AlgorithmGuard(), rule.algorithms());
     }
 
     /**

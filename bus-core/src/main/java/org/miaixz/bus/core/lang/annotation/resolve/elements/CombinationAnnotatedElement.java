@@ -42,7 +42,7 @@ import org.miaixz.bus.core.xyz.ArrayKit;
 public class CombinationAnnotatedElement implements AnnotatedElement, Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852250737317L;
+    private static final long serialVersionUID = 2536635500001L;
 
     /**
      * The predicate used to filter annotations. Only annotations for which the predicate returns {@code true} are

@@ -22,6 +22,7 @@ package org.miaixz.bus.image.nimble.opencv.seg;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
+import java.io.Serial;
 import java.util.*;
 import java.util.List;
 
@@ -32,6 +33,9 @@ import java.util.List;
  * @author Kimi Liu
  */
 public class Segment extends ArrayList<Point2D> {
+
+    @Serial
+    private static final long serialVersionUID = 2556502151193L;
 
     /**
      * The children value.

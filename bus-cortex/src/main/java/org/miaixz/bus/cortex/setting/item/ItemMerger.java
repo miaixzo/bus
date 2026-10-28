@@ -21,483 +21,330 @@ package org.miaixz.bus.cortex.setting.item;
 
 import java.util.*;
 
+import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.cortex.setting.reference.Reference;
+import org.miaixz.bus.cortex.setting.reference.ReferenceCodec;
 import org.miaixz.bus.extra.json.JsonSchema;
 import org.miaixz.bus.extra.json.JsonValue;
 
 /**
- * Materializes bounded configuration values without persistence, identity, codecs or environment lookups. The host
- * supplies exact immutable revisions and freezes relationship options in the existing revision envelope.
+ * Pure typed configuration materialization; never parses, persists or selects a release.
  *
  * @author Kimi Liu
  */
 public final class ItemMerger {
 
     /**
-     * Schema used only to apply the shared structural bounds.
-     */
-    private static final JsonValue UNCONSTRAINED = new JsonValue.BooleanValue(true);
-
-    /**
-     * Prevents construction of the shared pure-value merger.
+     * Prevents construction.
      */
     private ItemMerger() {
         // No initialization required.
     }
 
     /**
-     * Carries one plaintext source whose identity has already been authorized by its host service.
+     * Applies defaults, shared definitions/overlays and application definitions with one operation budget.
      *
-     * @param item_id     immutable source owner
-     * @param revision_id exact source revision, never a dynamic LATEST marker
-     * @param value       parsed source value
-     * @param extension   parsed source metadata, or null
-     * @param schema      optional source schema
+     * @param sources      resolved sources
+     * @param options      matching usage options
+     * @param maximumDepth maximum depth
+     * @param maximumSteps total work
+     * @return exact values and provenance
+     */
+    public static Result merge(
+            List<Source> sources,
+            List<ReferenceCodec.Options> options,
+            int maximumDepth,
+            long maximumSteps) {
+        if (sources.size() != options.size())
+            throw new IllegalArgumentException("Source/options mismatch");
+        return new Merge(sources, options, maximumDepth, maximumSteps).materialize();
+    }
+
+    /**
+     * One resolved source, independent of version-domain objects.
+     *
+     * @param key      opaque source identity
+     * @param document parsed definition
      * @author Kimi Liu
      */
-    public record Source(String item_id, String revision_id, JsonValue value, JsonValue extension, JsonValue schema) {
+    public record Source(String key, ItemCodec.Document document) {
 
         /**
-         * Requires exact identities and a materialized value.
+         * Requires complete source data.
          *
-         * @param item_id     source owner
-         * @param revision_id exact revision
-         * @param value       materialized plaintext
-         * @param extension   optional source metadata
-         * @param schema      optional source schema
+         * @param key      source identity
+         * @param document parsed definition
          */
         public Source {
-            if (item_id == null || item_id.isBlank() || revision_id == null || revision_id.isBlank() || value == null) {
-                throw invalid("source");
-            }
+            if (key == null || key.isBlank())
+                throw new IllegalArgumentException("Source required");
+            Objects.requireNonNull(document);
         }
+
     }
 
     /**
-     * Supplies the existing shared-reference options and the optional application override source.
+     * Materialized values and safe provenance.
      *
-     * @param shared      optional shared source
-     * @param application optional application source
-     * @param overlay     optional reference-local object overlay, in unprefixed source coordinates
-     * @param prefix      optional literal root member name
-     * @param override    existing NONE, KEYS or ALL policy
-     * @param keys        exact non-root source pointers allowed by KEYS
+     * @param value   business values
+     * @param sources path to source identity
+     * @param schema  composed constraints
      * @author Kimi Liu
      */
-    public record Input(Source shared, Source application, JsonValue.ObjectValue overlay, String prefix,
-            String override, Set<String> keys) {
+    public record Result(JsonValue value, Map<String, String> sources, JsonValue schema) {
 
         /**
-         * Freezes normalized options without inventing endpoint aliases or path hierarchies.
+         * Freezes provenance.
          *
-         * @param shared      optional shared source
-         * @param application optional application source
-         * @param overlay     optional object overlay
-         * @param prefix      literal root member name
-         * @param override    existing override mode
-         * @param keys        exact allowed collision paths
-         */
-        public Input {
-            if (shared == null && application == null)
-                throw invalid("source");
-            prefix = prefix == null ? "" : prefix.trim();
-            if (prefix.codePointCount(0, prefix.length()) > 255)
-                throw invalid("prefix");
-            override = override == null ? "NONE" : override;
-            if (!Set.of("NONE", "KEYS", "ALL").contains(override))
-                throw invalid("override");
-            keys = Collections.unmodifiableSet(new TreeSet<>(keys == null ? Set.of() : keys));
-            for (String key : keys) {
-                if (key.isEmpty() || key.codePointCount(0, key.length()) > 4096)
-                    throw invalid("keys");
-                JsonSchema.tokens(key);
-            }
-            if ("KEYS".equals(override) == keys.isEmpty())
-                throw invalid("keys");
-            if (shared == null && (!prefix.isEmpty() || overlay != null && !overlay.values().isEmpty())) {
-                throw invalid("reference");
-            }
-        }
-    }
-
-    /**
-     * Contains one exact materialization and safe provenance; callers must protect sensitive values before exposure.
-     *
-     * @param value     merged plaintext value
-     * @param revisions source item identifiers mapped to exact revisions
-     * @param sources   canonical value pointers mapped to exact source revisions
-     * @param keys      merged key metadata with sensitivity preserved
-     * @param overrides exact paths changed over shared source values
-     * @param findings  bounded path-only Schema findings
-     * @param schema    optional composed whole-effective schema with source-local references relocated
-     * @author Kimi Liu
-     */
-    public record Result(JsonValue value, Map<String, String> revisions, Map<String, String> sources,
-            Map<String, ItemMetadata.Key> keys, Set<String> overrides, List<JsonSchema.Violation> findings,
-            JsonValue schema) {
-
-        /**
-         * Defensively freezes all projections accompanying the immutable JSON tree.
-         *
-         * @param value     merged plaintext
-         * @param revisions immutable source coordinates
-         * @param sources   per-path origins
-         * @param keys      merged metadata
-         * @param overrides actual overridden paths
-         * @param findings  safe validation results
-         * @param schema    optional composed whole-effective schema
+         * @param value   business tree
+         * @param sources origins
+         * @param schema  composed Schema
          */
         public Result {
-            Objects.requireNonNull(value);
-            revisions = Collections.unmodifiableMap(new TreeMap<>(revisions));
             sources = Collections.unmodifiableMap(new TreeMap<>(sources));
-            keys = Collections.unmodifiableMap(new TreeMap<>(keys));
-            overrides = Collections.unmodifiableSet(new TreeSet<>(overrides));
-            findings = List.copyOf(findings);
         }
+
     }
 
     /**
-     * Applies explicit defaults, shared content, authorized overlay, and application content in that order.
-     * Equal-priority defaults must agree. Objects recurse; arrays and scalars replace atomically.
-     *
-     * @param input        exact source snapshots and normalized reference options
-     * @param maximumDepth existing structural depth bound
-     * @param maximumSteps existing node/work bound
-     * @return immutable value, provenance, metadata and path-only findings
-     */
-    public static Result merge(Input input, int maximumDepth, long maximumSteps) {
-        Objects.requireNonNull(input);
-        Merge merge = new Merge(input, maximumDepth, maximumSteps);
-        return merge.materialize();
-    }
-
-    /**
-     * Holds invocation-local counters and projections only; no process-global merge state is retained.
+     * Invocation-local bounded merge state.
      *
      * @author Kimi Liu
      */
     private static final class Merge {
 
         /**
-         * Immutable options for this materialization.
+         * Resolved sources.
          */
-        private final Input input;
+        private final List<Source> input;
         /**
-         * Existing tree-depth limit.
+         * Matching options.
+         */
+        private final List<ReferenceCodec.Options> options;
+        /**
+         * Maximum tree depth.
          */
         private final int maximumDepth;
         /**
-         * Existing work budget.
+         * Maximum total work.
          */
         private final long maximumSteps;
         /**
-         * Number of recursive merge and origin operations performed.
+         * Per-path origin identities.
+         */
+        private final Map<String, String> origins = new TreeMap<>();
+        /**
+         * Consumed work.
          */
         private long steps;
-        /**
-         * Exact source revisions selected by the host.
-         */
-        private final Map<String, String> revisions = new TreeMap<>();
-        /**
-         * Per-leaf or atomic-container origins.
-         */
-        private final Map<String, String> sources = new TreeMap<>();
-        /**
-         * Merged exact key metadata.
-         */
-        private final Map<String, ItemMetadata.Key> keys = new TreeMap<>();
-        /**
-         * Paths actually changed over original shared source values.
-         */
-        private final Set<String> overrides = new TreeSet<>();
-        /**
-         * Shared content in effective coordinates, excluding defaults.
-         */
-        private final JsonValue shared;
-        /**
-         * Literal prefix encoded as a canonical pointer.
-         */
-        private final String prefix;
 
         /**
-         * Validates every input tree through the existing shared bounds implementation.
+         * Creates local merge state.
          *
-         * @param input        frozen merge options
-         * @param maximumDepth structural depth bound
+         * @param input        sources
+         * @param options      relationships
+         * @param maximumDepth depth bound
          * @param maximumSteps work bound
          */
-        private Merge(Input input, int maximumDepth, long maximumSteps) {
-            this.input = input;
+        private Merge(List<Source> input, List<ReferenceCodec.Options> options, int maximumDepth, long maximumSteps) {
+            this.input = List.copyOf(input);
+            this.options = List.copyOf(options);
             this.maximumDepth = maximumDepth;
             this.maximumSteps = maximumSteps;
-            this.prefix = input.prefix().isEmpty() ? "" : JsonSchema.pointer("", input.prefix());
-            for (Source source : new Source[] { input.shared(), input.application() }) {
-                if (source == null)
-                    continue;
-                JsonSchema.validate(UNCONSTRAINED, source.value(), maximumDepth, maximumSteps);
-                ItemMetadata.keys(source.extension(), maximumDepth, maximumSteps);
-                if (source.schema() != null)
-                    JsonSchema.requireSchema(source.schema(), maximumDepth, maximumSteps);
-                if (revisions.putIfAbsent(source.item_id(), source.revision_id()) != null)
-                    throw invalid("duplicateSource");
-            }
-            if (input.overlay() != null)
-                JsonSchema.validate(UNCONSTRAINED, input.overlay(), maximumDepth, maximumSteps);
-            this.shared = input.shared() == null ? null : wrap(input.shared().value());
         }
 
         /**
-         * Executes the frozen layer order and validates the final shared and application projections.
+         * Materializes in deterministic domain order.
          *
-         * @return detached immutable merge result
+         * @return merged values
          */
         private Result materialize() {
-            JsonValue value = null;
-            if (input.shared() != null) {
+            JsonValue value = new JsonValue.ObjectValue(Map.of());
+            List<JsonValue> schemas = new ArrayList<>();
+            for (int i = 0; i < input.size(); i++)
                 value = layer(
                         value,
-                        wrap(ItemMetadata.defaults(input.shared().extension())),
+                        wrap(input.get(i).document().applicableDefaults(), options.get(i).prefix()),
                         "",
-                        input.shared().revision_id(),
-                        false,
+                        input.get(i).key(),
                         true,
                         0);
-            }
-            if (input.application() != null) {
-                value = layer(
-                        value,
-                        ItemMetadata.defaults(input.application().extension()),
-                        "",
-                        input.application().revision_id(),
-                        false,
-                        true,
-                        0);
-            }
-            if (input.shared() != null) {
-                value = layer(value, shared, "", input.shared().revision_id(), false, false, 0);
-                metadata(input.shared(), prefix);
-                if (input.overlay() != null && !input.overlay().values().isEmpty()) {
-                    value = layer(value, wrap(input.overlay()), "", input.shared().revision_id(), true, false, 0);
+            List<Integer> order = new ArrayList<>();
+            for (int i = 0; i < input.size(); i++)
+                order.add(i);
+            order.sort(
+                    Comparator.comparing((Integer i) -> options.get(i).type() == Reference.Type.ITEM_OWNER)
+                            .thenComparing(i -> options.get(i).alias()).thenComparing(i -> input.get(i).key()));
+            for (int i : order) {
+                Source source = input.get(i);
+                ReferenceCodec.Options usage = options.get(i);
+                JsonValue addition = wrap(source.document().values(), usage.prefix());
+                if (usage.type() == Reference.Type.ITEM_OWNER)
+                    for (int j = 0; j < input.size(); j++)
+                        if (options.get(j).type() == Reference.Type.ITEM_APP)
+                            authorize(
+                                    wrap(input.get(j).document().effective(), options.get(j).prefix()),
+                                    addition,
+                                    "",
+                                    options.get(j),
+                                    0);
+                value = layer(value, addition, "", source.key(), false, 0);
+                if (usage.overlay() != null && !usage.overlay().values().isEmpty()) {
+                    JsonValue overlay = wrap(usage.overlay(), usage.prefix());
+                    authorize(wrap(source.document().effective(), usage.prefix()), overlay, "", usage, 0);
+                    value = layer(value, overlay, "", source.key(), false, 0);
                 }
-            }
-            if (input.application() != null) {
-                value = layer(
-                        value,
-                        input.application().value(),
-                        "",
-                        input.application().revision_id(),
-                        true,
-                        false,
-                        0);
-                metadata(input.application(), "");
-            }
-            JsonValue materialized = value;
-            overrides.removeIf(path -> {
-                tick(0);
-                JsonValue original = selected(shared, path), current = selected(materialized, path);
-                return original == null ? current == null : current != null && equal(original, current);
-            });
-            JsonSchema.validate(UNCONSTRAINED, value, maximumDepth, maximumSteps);
-            // Preserve outer protection while retaining descendant descriptions and validation rules.
-            for (var entry : new TreeMap<>(keys).entrySet()) {
-                if (!entry.getValue().sensitive())
-                    continue;
-                String parent = entry.getKey();
-                while (parent.lastIndexOf('/') > 0) {
-                    parent = parent.substring(0, parent.lastIndexOf('/'));
-                    if (keys.containsKey(parent) && keys.get(parent).sensitive()) {
-                        ItemMetadata.Key key = entry.getValue();
-                        keys.put(entry.getKey(), new ItemMetadata.Key(false, key.description(), key.schema()));
-                        break;
+                JsonValue schema = source.document().schema();
+                if (schema != null) {
+                    if (!usage.prefix().isEmpty()) {
+                        String path = JsonSchema.pointer("/properties", usage.prefix());
+                        schema = new JsonValue.ObjectValue(Map.of(
+                                "type",
+                                new JsonValue.StringValue("object"),
+                                "properties",
+                                new JsonValue.ObjectValue(Map.of(usage.prefix(), scoped(schema, path))),
+                                "required",
+                                new JsonValue.ArrayValue(List.of(new JsonValue.StringValue(usage.prefix())))));
                     }
+                    schemas.add(scoped(schema, "/allOf/" + schemas.size()));
                 }
             }
-            JsonValue schema = schema();
-            List<JsonSchema.Violation> findings = ItemMetadata
-                    .validate(value, schema, keys, maximumDepth, maximumSteps);
-            return new Result(value, revisions, sources, keys, overrides,
-                    findings.subList(0, Math.min(findings.size(), JsonSchema.MAX_FINDINGS)), schema);
+            JsonValue schema = schemas.isEmpty() ? new JsonValue.BooleanValue(true)
+                    : new JsonValue.ObjectValue(Map.of("allOf", new JsonValue.ArrayValue(schemas)));
+            JsonSchema.validate(new JsonValue.BooleanValue(true), value, maximumDepth, maximumSteps - steps);
+            if (!JsonSchema.validate(schema, value, maximumDepth, maximumSteps - steps).isEmpty())
+                throw new IllegalArgumentException("Effective Schema validation failed");
+            for (int i = 0; i < input.size(); i++)
+                for (var rule : input.get(i).document().rules().entrySet()) {
+                    tick(0);
+                    String path = options.get(i).prefix().isEmpty() ? rule.getKey()
+                            : JsonSchema.pointer("", options.get(i).prefix()) + rule.getKey();
+                    JsonValue selected = ItemCodec.at(value, path);
+                    if (selected != null && rule.getValue().schema() != null && !JsonSchema
+                            .validate(rule.getValue().schema(), selected, maximumDepth, maximumSteps - steps).isEmpty())
+                        throw new IllegalArgumentException("Effective key Schema validation failed");
+                }
+            return new Result(value, origins, schema);
         }
 
         /**
-         * Freezes the same source constraints as one whole-effective schema; no annotation default is inserted.
+         * Combines objects recursively and replaces atomic values.
          *
-         * @return optional equivalent schema with each local reference retaining its original source root
-         */
-        private JsonValue schema() {
-            JsonValue sharedSchema = input.shared() == null ? null : input.shared().schema();
-            JsonValue applicationSchema = input.application() == null ? null : input.application().schema();
-            if (sharedSchema != null && !prefix.isEmpty()) {
-                String location = JsonSchema.pointer("/properties", input.prefix());
-                sharedSchema = new JsonValue.ObjectValue(Map.of(
-                        "type",
-                        new JsonValue.StringValue("object"),
-                        "required",
-                        new JsonValue.ArrayValue(List.of(new JsonValue.StringValue(input.prefix()))),
-                        "properties",
-                        new JsonValue.ObjectValue(Map.of(input.prefix(), scoped(sharedSchema, location)))));
-            }
-            if (sharedSchema == null)
-                return applicationSchema;
-            if (applicationSchema == null)
-                return sharedSchema;
-            return new JsonValue.ObjectValue(Map.of(
-                    "allOf",
-                    new JsonValue.ArrayValue(
-                            List.of(scoped(sharedSchema, "/allOf/0"), scoped(applicationSchema, "/allOf/1")))));
-        }
-
-        /**
-         * Merges one layer and checks authorization against actual shared content, never default-only paths.
-         *
-         * @param before    prior value, or null for an absent member
-         * @param after     incoming immutable value
-         * @param path      canonical effective pointer
-         * @param revision  exact origin revision
-         * @param authorize whether shared collisions require the reference policy
-         * @param defaults  whether same-priority collisions must agree
-         * @param depth     current recursion depth
-         * @return merged immutable value
+         * @param before   prior tree
+         * @param after    incoming tree
+         * @param path     exact path
+         * @param source   origin
+         * @param defaults same-priority defaults
+         * @param depth    recursion depth
+         * @return combined tree
          */
         private JsonValue layer(
                 JsonValue before,
                 JsonValue after,
                 String path,
-                String revision,
-                boolean authorize,
+                String source,
                 boolean defaults,
                 int depth) {
             tick(depth);
             if (before instanceof JsonValue.ObjectValue left && after instanceof JsonValue.ObjectValue right) {
                 Map<String, JsonValue> result = new TreeMap<>(left.values());
-                if (!right.values().isEmpty())
-                    sources.remove(path);
-                for (var member : right.values().entrySet()) {
-                    String child = JsonSchema.pointer(path, member.getKey());
+                for (var e : right.values().entrySet()) {
+                    String child = JsonSchema.pointer(path, e.getKey());
                     result.put(
-                            member.getKey(),
-                            layer(
-                                    result.get(member.getKey()),
-                                    member.getValue(),
-                                    child,
-                                    revision,
-                                    authorize,
-                                    defaults,
-                                    depth + 1));
+                            e.getKey(),
+                            layer(result.get(e.getKey()), e.getValue(), child, source, defaults, depth + 1));
                 }
                 return new JsonValue.ObjectValue(result);
             }
-            if (before != null && equal(before, after)) {
-                if (!defaults) {
-                    sources.keySet().removeIf(key -> key.equals(path) || key.startsWith(path + "/"));
-                    origin(after, path, revision, depth);
-                }
-                return before;
-            }
-            if (before != null && defaults)
-                throw invalid("defaultConflict");
-            if (authorize && shared != null)
-                collision(after, path, depth);
-            sources.keySet().removeIf(key -> key.equals(path) || key.startsWith(path + "/"));
-            origin(after, path, revision, depth);
+            if (before != null && defaults && !same(before, after))
+                throw new IllegalArgumentException("Conflicting defaults");
+            origins.keySet().removeIf(p -> p.equals(path) || p.startsWith(path + "/"));
+            origin(after, path, source, depth);
             return after;
         }
 
         /**
-         * Checks exact conflicting paths, including destruction of an ancestor containing shared members.
+         * Checks actual destructive changes against source-local override rights.
          *
-         * @param value replacement value
-         * @param path  replacement pointer
+         * @param before shared source values
+         * @param after  incoming layer
+         * @param path   path
+         * @param policy source usage rights
+         * @param depth  recursion depth
+         */
+        private void authorize(
+                JsonValue before,
+                JsonValue after,
+                String path,
+                ReferenceCodec.Options policy,
+                int depth) {
+            tick(depth);
+            if (before == null || same(before, after))
+                return;
+            if (before instanceof JsonValue.ObjectValue left && after instanceof JsonValue.ObjectValue right) {
+                for (var e : right.values().entrySet())
+                    authorize(
+                            left.values().get(e.getKey()),
+                            e.getValue(),
+                            JsonSchema.pointer(path, e.getKey()),
+                            policy,
+                            depth + 1);
+                return;
+            }
+            String prefix = policy.prefix().isEmpty() ? "" : JsonSchema.pointer("", policy.prefix());
+            String local = path.startsWith(prefix) ? path.substring(prefix.length()) : "";
+            if (policy.override() != ReferenceCodec.Override.ALL
+                    && !(policy.override() == ReferenceCodec.Override.KEYS && policy.keys().contains(local)))
+                throw new IllegalArgumentException("Override denied");
+        }
+
+        /**
+         * Records leaf/container origins.
+         *
+         * @param value  tree
+         * @param path   path
+         * @param source origin
+         * @param depth  recursion depth
+         */
+        private void origin(JsonValue value, String path, String source, int depth) {
+            tick(depth);
+            if (value instanceof JsonValue.ObjectValue object && !object.values().isEmpty())
+                for (var e : object.values().entrySet())
+                    origin(e.getValue(), JsonSchema.pointer(path, e.getKey()), source, depth + 1);
+            else
+                origins.put(path, source);
+        }
+
+        /**
+         * Applies a literal root prefix.
+         *
+         * @param value  source tree
+         * @param prefix literal root key
+         * @return wrapped tree
+         */
+        private JsonValue wrap(JsonValue value, String prefix) {
+            return prefix.isEmpty() ? value : new JsonValue.ObjectValue(Map.of(prefix, value));
+        }
+
+        /**
+         * Compares semantic exact values.
+         *
+         * @param left  first tree
+         * @param right second tree
+         * @return whether equal
+         */
+        private boolean same(JsonValue left, JsonValue right) {
+            return Objects.equals(ItemCodec.encode(left), ItemCodec.encode(right));
+        }
+
+        /**
+         * Charges shared work.
+         *
          * @param depth recursion depth
          */
-        private void collision(JsonValue value, String path, int depth) {
-            tick(depth);
-            JsonValue original = selected(shared, path);
-            if (original == null || equal(original, value))
-                return;
-            String sourcePath = prefix.isEmpty() ? path
-                    : path.equals(prefix) ? "" : path.startsWith(prefix + "/") ? path.substring(prefix.length()) : null;
-            // Replacing an ancestor destroys the wrapped source and therefore needs whole-source authorization.
-            if (sourcePath == null && prefix.startsWith(path + "/"))
-                sourcePath = "";
-            if (sourcePath == null)
-                return;
-            if (!"ALL".equals(input.override())
-                    && !("KEYS".equals(input.override()) && input.keys().contains(sourcePath))) {
-                throw invalid("overrideDenied");
-            }
-            overrides.add(path);
-        }
-
-        /**
-         * Looks up an internally generated path across layers whose container types may have changed. An object member
-         * is absent from an array with an incompatible index token; client pointer validation remains strict in the
-         * shared metadata contract rather than being relaxed by this merge-only projection.
-         *
-         * @param value optional immutable layer
-         * @param path  internally generated canonical pointer
-         * @return exact member, or null when this layer has no corresponding coordinate
-         */
-        private JsonValue selected(JsonValue value, String path) {
-            if (value == null)
-                return null;
-            try {
-                return JsonSchema.at(value, path);
-            } catch (IllegalArgumentException absentArrayMember) {
-                return null;
-            }
-        }
-
-        /**
-         * Records leaf origins while treating arrays as atomic replacement values.
-         *
-         * @param value    incoming value
-         * @param path     canonical value pointer
-         * @param revision exact source revision
-         * @param depth    recursion depth
-         */
-        private void origin(JsonValue value, String path, String revision, int depth) {
-            tick(depth);
-            if (value instanceof JsonValue.ObjectValue object && !object.values().isEmpty()) {
-                for (var member : object.values().entrySet()) {
-                    origin(member.getValue(), JsonSchema.pointer(path, member.getKey()), revision, depth + 1);
-                }
-            } else {
-                sources.put(path, revision);
-            }
-        }
-
-        /**
-         * Combines metadata without declassifying an inherited sensitive key or dropping inherited Schema rules.
-         *
-         * @param source immutable source metadata
-         * @param base   canonical prefix for the source
-         */
-        private void metadata(Source source, String base) {
-            for (var entry : ItemMetadata.keys(source.extension(), maximumDepth, maximumSteps).entrySet()) {
-                tick(0);
-                String path = base + entry.getKey();
-                if (path.codePointCount(0, path.length()) > 4096)
-                    throw invalid("metadataPath");
-                ItemMetadata.Key next = entry.getValue();
-                ItemMetadata.Key previous = keys.get(path);
-                if (previous == null) {
-                    keys.put(path, next);
-                } else {
-                    JsonValue schema = previous.schema() == null ? next.schema()
-                            : next.schema() == null ? previous.schema()
-                                    : new JsonValue.ObjectValue(Map.of(
-                                            "allOf",
-                                            new JsonValue.ArrayValue(List.of(
-                                                    scoped(previous.schema(), "/allOf/0"),
-                                                    scoped(next.schema(), "/allOf/1")))));
-                    keys.put(
-                            path,
-                            new ItemMetadata.Key(previous.sensitive() || next.sensitive(),
-                                    next.description().isEmpty() ? previous.description() : next.description(),
-                                    schema));
-                }
-            }
+        private void tick(int depth) {
+            if (depth > maximumDepth || ++steps >= maximumSteps)
+                throw new IllegalArgumentException("Merge budget exceeded");
         }
 
         /**
@@ -520,7 +367,7 @@ public final class ItemMerger {
                     result.put(
                             name,
                             new JsonValue.StringValue(
-                                    "#" + base + ((JsonValue.StringValue) value).value().substring(1)));
+                                    Symbol.HASH + base + ((JsonValue.StringValue) value).value().substring(1)));
                 } else if (Set.of("properties", "$defs").contains(name)) {
                     Map<String, JsonValue> children = new TreeMap<>();
                     ((JsonValue.ObjectValue) value).values()
@@ -538,46 +385,6 @@ public final class ItemMerger {
             return new JsonValue.ObjectValue(result);
         }
 
-        /**
-         * Wraps shared values under one literal member rather than interpreting dotted or slash-separated paths.
-         *
-         * @param value unprefixed source value
-         * @return effective-coordinate value
-         */
-        private JsonValue wrap(JsonValue value) {
-            return prefix.isEmpty() ? value : new JsonValue.ObjectValue(Map.of(input.prefix(), value));
-        }
-
-        /**
-         * Reuses the shared exact comparator without adding a synthetic Schema layer to the value depth.
-         *
-         * @param left  first immutable value
-         * @param right second immutable value
-         * @return whether values are semantically identical
-         */
-        private boolean equal(JsonValue left, JsonValue right) {
-            return JsonSchema.equivalent(left, right, maximumDepth, maximumSteps);
-        }
-
-        /**
-         * Bounds recursive merge and provenance work independently from the reused input validation limits.
-         *
-         * @param depth current recursion depth
-         */
-        private void tick(int depth) {
-            if (depth > maximumDepth || ++steps > maximumSteps)
-                throw invalid("budget");
-        }
-    }
-
-    /**
-     * Creates a fixed error without including source values or identities.
-     *
-     * @param rule fixed contract failure code
-     * @return sanitized failure
-     */
-    private static IllegalArgumentException invalid(String rule) {
-        return new IllegalArgumentException("Invalid configuration merge: " + rule);
     }
 
 }

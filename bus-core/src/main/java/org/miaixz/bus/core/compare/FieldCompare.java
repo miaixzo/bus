@@ -35,7 +35,7 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class FieldCompare<T> extends FunctionCompare<T> {
 
     @Serial
-    private static final long serialVersionUID = 2852260880753L;
+    private static final long serialVersionUID = 2536138251501L;
 
     /**
      * Constructs a new {@code FieldCompare}.

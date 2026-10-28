@@ -19,6 +19,9 @@
 */
 package org.miaixz.bus.core.center.date;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 import org.miaixz.bus.core.lang.Symbol;
 
 /**
@@ -67,7 +70,12 @@ public class Galaxy {
             -1.81, 0.416, -0.0247, 1860, 8.3, -0.13, -0.406, 0.0292, 1880, -5.4, 0.32, -0.183, 0.0173, 1900, -2.3, 2.06,
             0.169, -0.0135, 1920, 21.2, 1.69, -0.304, 0.0167, 1940, 24.2, 1.22, -0.064, 0.0031, 1960, 33.2, 0.51, 0.231,
             -0.0109, 1980, 51.0, 1.29, -0.026, 0.0032, 2000, 63.87, 0.1, 0, 0, 2005, 64.7, 0.21, 0, 0, 2012, 66.8, 0.22,
-            0, 0, 2018, 73.6, 0.40, 0, 0, 2021, 78.1, 0.44, 0, 0, 2024, 83.1, 0.55, 0, 0, 2028, 98.6 };
+            0, 0,
+            // Fitted to the DE440s Delta-T predictions used by the upstream calendar.
+            2016, 68.1024, 0.5456, -0.0542, -0.001172, 2020, 69.3612, 0.0422, -0.0502, 0.006216, 2024, 69.1752, -0.0335,
+            -0.0048, 0.000811, 2028, 69.0206, -0.0275, 0.0055, -0.000014, 2032, 68.9981, 0.0163, 0.0054, 0.000006, 2036,
+            69.1498, 0.0599, 0.0053, 0.000026, 2040, 69.4751, 0.1035, 0.0051, 0.000046, 2044, 69.9737, 0.1469, 0.0050,
+            0.000066, 2048, 70.6451, 0.1903, 0.0049, 0.000085, 2050, 71.0457 };
 
     /**
      * Predefined constants for longitude calculations.
@@ -646,8 +654,6 @@ public class Galaxy {
      * @return The mean longitude.
      */
     public static double mLon(double t, int n) {
-        int obl0 = 2652;
-        int[] obl = { obl0, 893, 204, 12 };
         double tn = 1;
         double v = 0;
         int j;
@@ -664,12 +670,12 @@ public class Galaxy {
 
         n *= 6;
         if (n < 0) {
-            n = obl0;
+            n = 2652;
         }
         for (int i = 0; i < 4; i++, tn *= t) {
             double[] f = XL1[i];
-            int l = obl[i];
-            int m = (int) (n * l * 1.0 / obl0 + 0.5);
+            int l = f.length;
+            int m = (int) (n * l / 2652.0 + 0.5);
             if (i > 0) {
                 m += 6;
             }
@@ -849,6 +855,10 @@ public class Galaxy {
         double v = 7771.37714500204;
         double t = (w + 1.08472) / v;
         double t2 = t * t;
+        t -= (-0.00003309 * t2 + 0.10976 * Math.cos(0.784758 + 8328.6914246 * t + 0.000152292 * t2)
+                + 0.02224 * Math.cos(0.18740 + 7214.0628654 * t - 0.00021848 * t2)
+                - 0.03342 * Math.cos(4.669257 + 628.307585 * t)) / v;
+        t2 = t * t;
         return t + (w - (mLon(t, 20) - (4.8950632 + 628.3319653318 * t + 0.000005297 * t2
                 + 0.0334166 * Math.cos(4.669257 + 628.307585 * t) + 0.0002061 * Math.cos(2.67823 + 628.307585 * t) * t
                 + 0.000349 * Math.cos(4.6261 + 1256.61517 * t) - 20.5 / SECOND_PER_RAD)))
@@ -996,13 +1006,45 @@ public class Galaxy {
     }
 
     /**
+     * Recently calculated solar terms.
+     */
+    private static final Map<Double, Double> QI_CACHE = new LinkedHashMap<Double, Double>(18, 0.75f, true) {
+
+        @Override
+        protected boolean removeEldestEntry(Map.Entry<Double, Double> eldest) {
+            return size() > 13;
+        }
+    };
+
+    /**
+     * Recently calculated new moons.
+     */
+    private static final Map<Double, Double> SHUO_CACHE = new LinkedHashMap<Double, Double>(18, 0.75f, true) {
+
+        @Override
+        protected boolean removeEldestEntry(Map.Entry<Double, Double> eldest) {
+            return size() > 13;
+        }
+    };
+
+    /**
      * Calculates the Julian day of the new moon ('shuo') for a given Julian day.
      *
      * @param jd The Julian day.
      * @return The Julian day of the new moon.
      */
     public static double calcShuo(double jd) {
-        return calc(false, jd, SHUO_KB, 14, SB);
+        synchronized (SHUO_CACHE) {
+            Double v = SHUO_CACHE.get(jd);
+            if (v != null) {
+                return v;
+            }
+        }
+        double v = calc(false, jd, SHUO_KB, 14, SB);
+        synchronized (SHUO_CACHE) {
+            SHUO_CACHE.put(jd, v);
+        }
+        return v;
     }
 
     /**
@@ -1012,7 +1054,17 @@ public class Galaxy {
      * @return The Julian day of the solar term.
      */
     public static double calcQi(double jd) {
-        return calc(true, jd, QI_KB, 7, QB);
+        synchronized (QI_CACHE) {
+            Double v = QI_CACHE.get(jd);
+            if (v != null) {
+                return v;
+            }
+        }
+        double v = calc(true, jd, QI_KB, 7, QB);
+        synchronized (QI_CACHE) {
+            Double previous = QI_CACHE.putIfAbsent(jd, v);
+            return previous != null ? previous : v;
+        }
     }
 
     /**

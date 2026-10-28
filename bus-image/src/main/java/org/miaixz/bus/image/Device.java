@@ -62,7 +62,7 @@ import org.miaixz.bus.image.metric.pdu.AAssociateRQ;
 public class Device implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852253317829L;
+    private static final long serialVersionUID = 2556150000001L;
 
     /**
      * Maps calling AE titles to the maximum number of associations they can initiate.

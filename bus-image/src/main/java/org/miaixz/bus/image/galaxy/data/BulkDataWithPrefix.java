@@ -23,6 +23,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.SequenceInputStream;
+import java.io.Serial;
 
 /**
  * Represents DICOM Bulk Data that includes a prefix byte array before the actual bulk data content. This class extends
@@ -31,6 +32,9 @@ import java.io.SequenceInputStream;
  * @author Kimi Liu
  */
 public class BulkDataWithPrefix extends BulkData {
+
+    @Serial
+    private static final long serialVersionUID = 2556186303991L;
 
     /**
      * The byte array prefix to be prepended to the bulk data stream.

@@ -77,7 +77,7 @@ public class PreventObjects {
     private static final class NullMarker implements Serializable {
 
         @Serial
-        private static final long serialVersionUID = 2852290208329L;
+        private static final long serialVersionUID = 2555880000001L;
 
         /**
          * The singleton instance.

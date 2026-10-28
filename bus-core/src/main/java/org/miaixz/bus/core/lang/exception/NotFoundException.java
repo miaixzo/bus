@@ -31,7 +31,7 @@ import org.miaixz.bus.core.basic.normal.Errors;
 public class NotFoundException extends UncheckedException {
 
     @Serial
-    private static final long serialVersionUID = 2852262037609L;
+    private static final long serialVersionUID = 2536835961122L;
 
     /**
      * Constructs a new NotFoundException with no detail message.

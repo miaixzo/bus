@@ -30,6 +30,7 @@ import org.miaixz.bus.auth.*;
 import org.miaixz.bus.auth.cache.AuthorizationCodeCache;
 import org.miaixz.bus.auth.cache.ExpiringValue;
 import org.miaixz.bus.auth.cache.IdTokenCache;
+import org.miaixz.bus.auth.guard.AlgorithmGuard;
 import org.miaixz.bus.auth.resolver.ConsumerMetadata;
 import org.miaixz.bus.auth.resolver.KeyMaterial;
 import org.miaixz.bus.auth.shared.jose.JoseHeader;
@@ -117,11 +118,11 @@ public class IdTokenIssuer implements AccessTokenIssuer.Augmenter {
                 .filter(options.idTokenSigningAlgorithm().name()::equals).findFirst().orElseThrow(
                         () -> new ValidateException(
                                 "OpenID Connect ID Token signing algorithm is not permitted by the security rules"));
-        final JwsService jwsService = new JwsService(new org.miaixz.bus.auth.guard.AlgorithmGuard(),
+        final JwsService jwsService = new JwsService(new AlgorithmGuard(),
                 Set.of(options.idTokenSigningAlgorithm().name()));
         this.jwtIssuer = new JwtIssuer(jwsService, FabricX.clock());
         this.jweService = options.idTokenEncryptionAlgorithmsSupported().isEmpty() ? null
-                : new JweService(new org.miaixz.bus.auth.guard.AlgorithmGuard(),
+                : new JweService(new AlgorithmGuard(),
                         options.idTokenEncryptionAlgorithmsSupported().stream().map(JwaAlgorithm::name)
                                 .collect(Collectors.toUnmodifiableSet()),
                         options.idTokenEncryptionMethodsSupported().stream().map(JwaAlgorithm::name)

@@ -137,6 +137,7 @@ public class ImageAdapter {
      * @param paddingValueMin Padding value excluded from the minimum value search.
      * @param paddingValueMax Padding value excluded from the maximum value search.
      * @return Minimum and maximum value result.
+     * @param image the image to process
      */
     private static MinMaxLocResult findMinMaxValues(
             PlanarImage image,
@@ -645,9 +646,21 @@ public class ImageAdapter {
                 wl.getLevel(),
                 minValue,
                 maxValue,
-                8,
+                voiOutputBits(wl),
                 false,
                 isPhotometricInterpretationInverse(wl.getPresentationState()));
+    }
+
+    /**
+     * Returns the VOI output depth, retaining byte indices for an explicit presentation LUT.
+     *
+     * @param wl the window and level parameters
+     * @return the output depth in bits
+     */
+    static int voiOutputBits(WlParams wl) {
+        boolean presentationLut = wl.getPresentationState() instanceof PresentationLutObject pr
+                && pr.getPrLut().isPresent();
+        return presentationLut ? 8 : wl.getOutputBits();
     }
 
 }

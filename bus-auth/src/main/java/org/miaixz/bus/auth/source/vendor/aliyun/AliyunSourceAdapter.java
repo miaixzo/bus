@@ -28,7 +28,9 @@ import java.util.concurrent.CompletionStage;
 import org.miaixz.bus.auth.*;
 import org.miaixz.bus.auth.FabricX.Url;
 import org.miaixz.bus.auth.Identity.Evidence;
+import org.miaixz.bus.auth.guard.AlgorithmGuard;
 import org.miaixz.bus.auth.guard.IssuerValidator;
+import org.miaixz.bus.auth.guard.TimeGuard;
 import org.miaixz.bus.auth.shared.jose.*;
 import org.miaixz.bus.auth.shared.jwt.JwtClaims;
 import org.miaixz.bus.auth.shared.jwt.JwtVerifier;
@@ -168,14 +170,12 @@ public class AliyunSourceAdapter implements VendorAdapter {
         this.jwkSetCodec = new JwkSetCodec();
         this.jwkSelector = new JwkSelector();
         this.issuerValidator = new IssuerValidator();
-        this.jwsService = new JwsService(new org.miaixz.bus.auth.guard.AlgorithmGuard(),
-                Set.of(JwaAlgorithm.RS256.name()));
-        final JweService dormantJweService = new JweService(new org.miaixz.bus.auth.guard.AlgorithmGuard(),
+        this.jwsService = new JwsService(new AlgorithmGuard(), Set.of(JwaAlgorithm.RS256.name()));
+        final JweService dormantJweService = new JweService(new AlgorithmGuard(),
                 Set.of(JwaAlgorithm.RSA_OAEP_256.name()), Set.of(JwaAlgorithm.A256GCM.name()));
         final IdTokenCodec idTokenCodec = new IdTokenCodec(new JwtVerifier(jwsService, dormantJweService));
         this.idTokenVerifier = new IdTokenVerifier(idTokenCodec, issuerValidator,
-                new org.miaixz.bus.auth.guard.TimeGuard(FabricX.clock(),
-                        services.policies().require(Protocol.OIDC).maximumClockSkew()));
+                new TimeGuard(FabricX.clock(), services.policies().require(Protocol.OIDC).maximumClockSkew()));
     }
 
     /**

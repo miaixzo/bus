@@ -34,7 +34,7 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class Metadata implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852265316087L;
+    private static final long serialVersionUID = 2550886305001L;
 
     /**
      * The version value.

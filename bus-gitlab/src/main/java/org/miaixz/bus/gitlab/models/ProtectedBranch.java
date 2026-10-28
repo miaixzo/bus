@@ -33,7 +33,7 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class ProtectedBranch implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852275321353L;
+    private static final long serialVersionUID = 2551118251951L;
 
     /**
      * The id value.

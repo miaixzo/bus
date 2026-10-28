@@ -19,8 +19,9 @@
 */
 package org.miaixz.bus.health.unix.freebsd.hardware;
 
-import org.miaixz.bus.core.center.function.SupplierX;
+import java.util.Map;
 
+import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.annotation.Immutable;
 import org.miaixz.bus.core.lang.tuple.Triplet;
@@ -29,9 +30,10 @@ import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.Memoizer;
 import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.hardware.common.AbstractFirmware;
+import org.miaixz.bus.health.unix.freebsd.driver.Kenv;
 
 /**
- * Firmware information from dmidecode
+ * Firmware information from SMBIOS kernel environment values with a {@code dmidecode} fallback.
  *
  * @author Kimi Liu
  */
@@ -42,17 +44,19 @@ final class FreeBsdFirmware extends AbstractFirmware {
      * The manufVersRelease value.
      */
     private final SupplierX<Triplet<String, String, String>> manufVersRelease = Memoizer
-            .memoize(FreeBsdFirmware::readDmiDecode);
+            .memoize(FreeBsdFirmware::readFirmware);
 
     /**
-     * Reads the dmi decode.
+     * Reads firmware values from the kernel environment and fills missing values from {@code dmidecode}.
      *
      * @return the read dmi decode result
      */
-    private static Triplet<String, String, String> readDmiDecode() {
-        String manufacturer = null;
-        String version = null;
-        String releaseDate = Normal.EMPTY;
+    private static Triplet<String, String, String> readFirmware() {
+        Map<String, String> environment = Kenv.queryKenv();
+        String manufacturer = environment.get("smbios.bios.vendor");
+        String version = environment.get("smbios.bios.version");
+        String releaseDate = Parsing
+                .parseMmDdYyyyToYyyyMmDD(environment.getOrDefault("smbios.bios.reldate", Normal.EMPTY));
 
         // $ sudo dmidecode -t bios
         // # dmidecode 3.0
@@ -72,14 +76,15 @@ final class FreeBsdFirmware extends AbstractFirmware {
         final String versionMarker = "Version:";
         final String releaseDateMarker = "Release Date:";
 
-        // Only works with root permissions but it's all we've got
-        for (final String checkLine : Executor.runNative("dmidecode -t bios")) {
-            if (checkLine.contains(manufacturerMarker)) {
-                manufacturer = Parsing.getTextAfterString(checkLine, manufacturerMarker).trim();
-            } else if (checkLine.contains(versionMarker)) {
-                version = Parsing.getTextAfterString(checkLine, versionMarker).trim();
-            } else if (checkLine.contains(releaseDateMarker)) {
-                releaseDate = Parsing.getTextAfterString(checkLine, releaseDateMarker).trim();
+        if (StringKit.isBlank(manufacturer) || StringKit.isBlank(version) || StringKit.isBlank(releaseDate)) {
+            for (String checkLine : Executor.runNative("dmidecode -t bios")) {
+                if (checkLine.contains(manufacturerMarker) && StringKit.isBlank(manufacturer)) {
+                    manufacturer = Parsing.getTextAfterString(checkLine, manufacturerMarker).trim();
+                } else if (checkLine.contains(versionMarker) && StringKit.isBlank(version)) {
+                    version = Parsing.getTextAfterString(checkLine, versionMarker).trim();
+                } else if (checkLine.contains(releaseDateMarker) && StringKit.isBlank(releaseDate)) {
+                    releaseDate = Parsing.getTextAfterString(checkLine, releaseDateMarker).trim();
+                }
             }
         }
         releaseDate = Parsing.parseMmDdYyyyToYyyyMmDD(releaseDate);

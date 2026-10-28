@@ -31,7 +31,7 @@ import org.miaixz.bus.core.basic.normal.Errors;
 public class DependencyException extends InternalException {
 
     @Serial
-    private static final long serialVersionUID = 2852253152677L;
+    private static final long serialVersionUID = 2536698151802L;
 
     /**
      * Constructs a new DependencyException with no detail message.

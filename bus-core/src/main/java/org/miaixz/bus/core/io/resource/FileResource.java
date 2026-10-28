@@ -41,7 +41,7 @@ import org.miaixz.bus.core.xyz.UrlKit;
 public class FileResource implements Resource, Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852230925613L;
+    private static final long serialVersionUID = 2536591359501L;
 
     /**
      * The underlying {@link File} object.

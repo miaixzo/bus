@@ -33,7 +33,7 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 public class CommitStatus implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852250191072L;
+    private static final long serialVersionUID = 2550280800001L;
 
     /**
      * The allow failure value.

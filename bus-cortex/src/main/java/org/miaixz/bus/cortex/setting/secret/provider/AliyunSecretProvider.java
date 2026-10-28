@@ -26,7 +26,17 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.function.Supplier;
 
+import org.miaixz.bus.core.center.regex.Pattern;
+import org.miaixz.bus.core.codec.binary.Base64;
+import org.miaixz.bus.core.data.id.ID;
+import org.miaixz.bus.core.lang.Algorithm;
+import org.miaixz.bus.core.lang.Fields;
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.CryptoException;
+import org.miaixz.bus.core.net.Http;
+import org.miaixz.bus.core.net.MediaType;
+import org.miaixz.bus.core.xyz.PatternKit;
 import org.miaixz.bus.cortex.setting.secret.SecretContext;
 import org.miaixz.bus.cortex.setting.secret.SecretMaterial;
 import org.miaixz.bus.cortex.setting.secret.SecretProvider;
@@ -36,6 +46,8 @@ import org.miaixz.bus.fabric.protocol.http.HttpX;
 
 /**
  * Alibaba KMS 2016-01-20 shared-gateway RPC API; not the dedicated KMS gateway protocol.
+ *
+ * @author Kimi Liu
  */
 public final class AliyunSecretProvider implements SecretProvider {
 
@@ -66,7 +78,7 @@ public final class AliyunSecretProvider implements SecretProvider {
     /**
      * Generator of a new Aliyun signature nonce on every actual attempt.
      */
-    private final java.util.function.Supplier<String> nonce;
+    private final Supplier<String> nonce;
 
     /**
      * Creates a connection-bound AliyunSecretProvider. The provider borrows its Fabric runtime and obtains fresh
@@ -102,7 +114,7 @@ public final class AliyunSecretProvider implements SecretProvider {
      * @throws IllegalArgumentException if configuration values violate the documented constraints
      */
     public AliyunSecretProvider(String region, URI endpoint, long generation, CloudCredentials.Source credentials,
-            Context fabricContext, Clock clock, java.util.function.Supplier<String> nonce) {
+            Context fabricContext, Clock clock, Supplier<String> nonce) {
         this(region, endpoint, generation, credentials, CloudProtocol.http(fabricContext), clock, nonce);
     }
 
@@ -120,7 +132,7 @@ public final class AliyunSecretProvider implements SecretProvider {
      */
     AliyunSecretProvider(String region, URI endpoint, long generation, CloudCredentials.Source credentials,
             Supplier<HttpX.Builder> http) {
-        this(region, endpoint, generation, credentials, http, Clock.systemUTC(), () -> UUID.randomUUID().toString());
+        this(region, endpoint, generation, credentials, http, Clock.systemUTC(), ID::randomUUID);
     }
 
     /**
@@ -138,8 +150,8 @@ public final class AliyunSecretProvider implements SecretProvider {
      * @throws IllegalArgumentException if configuration values violate the documented constraints
      */
     AliyunSecretProvider(String region, URI endpoint, long generation, CloudCredentials.Source credentials,
-            Supplier<HttpX.Builder> http, Clock clock, java.util.function.Supplier<String> nonce) {
-        if (region == null || !region.matches("[a-z0-9-]+") || generation < 0) {
+            Supplier<HttpX.Builder> http, Clock clock, Supplier<String> nonce) {
+        if (region == null || !PatternKit.isMatch(Pattern.get("[a-z0-9-]+", 0), region) || generation < 0) {
             throw new IllegalArgumentException("Invalid Alibaba connection");
         }
         this.region = region;
@@ -160,11 +172,11 @@ public final class AliyunSecretProvider implements SecretProvider {
      * @return Base64-encoded signature text
      */
     static String signature(Map<String, String> parameters, CloudCredentials identity) {
-        byte[] key = identity.signingKey("", "&");
+        byte[] key = identity.signingKey(Normal.EMPTY, Symbol.AND);
         try {
-            return org.miaixz.bus.core.codec.binary.Base64.encode(
+            return Base64.encode(
                     CloudProtocol.hmac(
-                            "HmacSHA1",
+                            Algorithm.HMACSHA1,
                             key,
                             "POST&%2F&" + CloudProtocol.encode(CloudProtocol.query(parameters))));
         } finally {
@@ -182,7 +194,7 @@ public final class AliyunSecretProvider implements SecretProvider {
      */
     private static boolean retryable(int status, Map<?, ?> body) {
         Object raw = body.containsKey("Code") ? body.get("Code") : body.get("__type");
-        String code = raw instanceof String text ? text : "";
+        String code = raw instanceof String text ? text : Normal.EMPTY;
         if (code.contains("NotFound") || code.contains("InvalidParameter") || code.contains("InvalidArgument")
                 || code.contains("InvalidRequest")) {
             return false;
@@ -265,8 +277,7 @@ public final class AliyunSecretProvider implements SecretProvider {
         parameters.put("SignatureNonce", nonce.get());
         parameters.put(
                 "Timestamp",
-                DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'").withZone(ZoneOffset.UTC)
-                        .format(clock.instant()));
+                DateTimeFormatter.ofPattern(Fields.UTC).withZone(ZoneOffset.UTC).format(clock.instant()));
         parameters.put("SecretName", reference.resource());
         if (reference.version() != null) {
             parameters.put("VersionId", reference.version());
@@ -280,7 +291,8 @@ public final class AliyunSecretProvider implements SecretProvider {
             }
             parameters.put("Signature", signature(parameters, identity));
             // POST form keeps the signed identity and resource out of the request URI.
-            return http.get().to(endpoint.toString()).header("Content-Type", "application/x-www-form-urlencoded").post()
+            return http.get().to(endpoint.toString())
+                    .header(Http.Header.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED).post()
                     .body(CloudProtocol.query(parameters));
         }
     }

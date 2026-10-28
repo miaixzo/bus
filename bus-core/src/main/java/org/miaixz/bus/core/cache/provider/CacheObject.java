@@ -36,7 +36,7 @@ import org.miaixz.bus.core.xyz.DateKit;
 public class CacheObject<K, V> implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852231019717L;
+    private static final long serialVersionUID = 2535500000001L;
 
     /**
      * The key of the cached object.

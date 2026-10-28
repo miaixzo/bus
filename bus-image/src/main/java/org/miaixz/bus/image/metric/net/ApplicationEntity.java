@@ -46,7 +46,7 @@ import org.miaixz.bus.logger.Logger;
 public class ApplicationEntity implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852269956092L;
+    private static final long serialVersionUID = 2556295000001L;
 
     /**
      * Provides DICOM processing details.

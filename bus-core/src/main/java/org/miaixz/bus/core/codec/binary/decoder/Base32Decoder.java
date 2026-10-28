@@ -97,6 +97,11 @@ public class Base32Decoder implements Decoder<CharSequence, byte[]> {
                 continue;
             }
 
+            // A trailing group with fewer than eight bits cannot fill another output byte.
+            if (offset >= bytes.length) {
+                break;
+            }
+
             if (index <= 3) {
                 index = (index + 5) % 8;
                 if (index == 0) {

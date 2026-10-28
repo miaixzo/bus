@@ -36,7 +36,7 @@ import org.miaixz.bus.crypto.builtin.symmetric.Crypto;
 public class ZUC extends Crypto {
 
     @Serial
-    private static final long serialVersionUID = 2852291166600L;
+    private static final long serialVersionUID = 2539310151221L;
 
     /**
      * Constructor.

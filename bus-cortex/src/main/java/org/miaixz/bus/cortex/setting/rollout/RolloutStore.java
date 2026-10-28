@@ -19,88 +19,93 @@
 */
 package org.miaixz.bus.cortex.setting.rollout;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import org.miaixz.bus.cortex.Suite;
-import org.miaixz.bus.cortex.Trait;
+import org.miaixz.bus.cortex.setting.SettingProvider;
 
 /**
- * Durable store contract for tenant-scoped rollout entities. Tenant identifiers are mandatory and must match the
- * authenticated tenant. Application and configuration membership belongs to Reference relationships, not rollout
- * fields. Publication intent is persisted on the rollout itself; no separate task entity or in-memory queue is
- * required. Recovery resumes PUBLISHING rollouts using the frozen plan and an atomic tenant-scoped activation
- * transaction. Client fetch/application evidence belongs to Watch, and audit history belongs to Event.
+ * Atomic workflow persistence; host entity transactions enforce state and read-set invariants.
  *
  * @author Kimi Liu
  */
 public interface RolloutStore {
 
     /**
-     * Inserts a new draft rollout without overwriting any existing identifier or idempotency key.
+     * Reads one tenant-qualified workflow.
      *
-     * @param rollout new rollout with tenant, identifier, mode, DRAFT state, and initial edition 1
-     * @return saved rollout
+     * @param tenant  exact tenant identifier
+     * @param rollout exact workflow identifier
+     * @return requested workflow, or null if absent
      */
-    Rollout save(Rollout rollout);
+    Rollout find(String tenant, String rollout);
 
     /**
-     * Applies a selective update using an atomic tenant, identifier, edition, and state comparison. Implementations
-     * increment the edition by one and reject stale or mismatched coordinates. Workflow changes must satisfy
-     * State.canTransitionTo and cannot bypass approval. Approval policy, mode, rule, and frozen plan must not change
-     * after draft submission. Creator identity and original request identity must never be replaced. Starting
-     * publication requires a new publication idempotency key and an authenticated publisher. The publication identity
-     * must remain unchanged throughout execution and completion.
+     * Queries bounded workflow records.
      *
-     * @param rollout  changes with matching tenant and identifier; null fields remain unchanged
-     * @param expected tenant, identifier, positive previous edition, and previous workflow state
-     * @return updated rollout
-     * @throws IllegalStateException if the expected state or edition no longer matches
+     * @param tenant exact tenant identifier
+     * @param offset zero-based page offset
+     * @param limit  maximum number of workflows to return
+     * @return page of tenant-qualified workflow records
      */
-    Rollout update(Rollout rollout, Rollout expected);
+    List<Rollout> query(String tenant, int offset, int limit);
 
     /**
-     * Inserts a batch of new rollouts.
+     * Creates or CAS-updates DRAFT only; submitted records are immutable.
      *
-     * @param rollouts rollout entities
-     * @return saved non-null rollouts
+     * @param draft           editable workflow in the DRAFT state
+     * @param expectedEdition expected current edition, or null for insert only
+     * @return saved draft with its resulting edition
      */
-    default List<Rollout> saveAll(List<Rollout> rollouts) {
-        if (rollouts == null || rollouts.isEmpty()) {
-            return List.of();
-        }
-        List<Rollout> result = new ArrayList<>(rollouts.size());
-        for (Rollout rollout : rollouts) {
-            if (rollout != null) {
-                result.add(save(rollout));
-            }
-        }
-        return result;
-    }
+    Rollout saveDraft(Rollout draft, Long expectedEdition);
 
     /**
-     * Finds one rollout by identifier.
+     * Deletes only DRAFT with exact edition; submitted records cannot be deleted.
      *
-     * @param rollout mandatory tenant and rollout identifiers
-     * @return matched rollout, or {@code null}
+     * @param tenant  exact tenant identifier
+     * @param rollout exact draft workflow identifier
+     * @param edition expected workflow concurrency counter
      */
-    Rollout find(Rollout rollout);
+    void deleteDraft(String tenant, String rollout, long edition);
 
     /**
-     * Queries rollouts within one tenant, optionally narrowed by workflow state and publication mode.
+     * Atomically rechecks complete Item/Reference/App memberships, editions, application states and active baselines;
+     * freezes the plan and transitions DRAFT to REVIEWING.
      *
-     * @param rollout mandatory tenant identifier with optional supported state and mode
-     * @return matching rollouts
+     * @param context  operation-scoped submitter and request identity
+     * @param rollout  exact draft workflow identifier
+     * @param edition  expected workflow concurrency counter
+     * @param frozen   protected candidate plan to freeze for approval
+     * @param expected complete source graph and active baseline expectations
+     * @return workflow containing the frozen plan in the REVIEWING state
      */
-    List<Rollout> query(Rollout rollout);
+    Rollout submit(
+            SettingProvider.Context context,
+            String rollout,
+            long edition,
+            Plan.Frozen frozen,
+            Plan.ReadSet expected);
 
     /**
-     * Returns strongly typed durable-store capabilities.
+     * Atomically verifies approvals and identical intent, claims or reuses the exact publication receipt and enters
+     * PUBLISHING. Same request returns the original intent/result; different input conflicts.
      *
-     * @return fixed rollout store capabilities
+     * @param context        operation-scoped publisher and idempotent request identity
+     * @param rollout        exact approved workflow identifier
+     * @param edition        expected workflow concurrency counter
+     * @param frozenChecksum checksum of the approved frozen plan
+     * @return workflow bound to the exact claimed or reused publication receipt
      */
-    default Suite storeCapabilities() {
-        return Suite.of(Trait.BATCH, Trait.QUERY, Trait.DURABLE);
-    }
+    Rollout beginPublication(SettingProvider.Context context, String rollout, long edition, String frozenChecksum);
+
+    /**
+     * Records failure only for the matching unfinished receipt; cannot overwrite a successful publication.
+     *
+     * @param context   operation-scoped publisher and request identity
+     * @param rollout   exact workflow identifier
+     * @param receipt   exact unfinished publication receipt identifier
+     * @param safeError failure description containing no sensitive values
+     * @return workflow after recording the matching publication failure
+     */
+    Rollout failPublication(SettingProvider.Context context, String rollout, String receipt, String safeError);
 
 }

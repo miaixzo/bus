@@ -109,7 +109,9 @@ public final class DisplayModeImpl implements DisplayMode {
     }
 
     /**
-     * {@inheritDoc}
+     * Returns the stored logical width in desktop coordinates.
+     *
+     * @return the logical width in the current display orientation
      */
     @Override
     public int getWidth() {
@@ -117,7 +119,9 @@ public final class DisplayModeImpl implements DisplayMode {
     }
 
     /**
-     * {@inheritDoc}
+     * Returns the stored logical height in desktop coordinates.
+     *
+     * @return the logical height in the current display orientation
      */
     @Override
     public int getHeight() {
@@ -125,7 +129,9 @@ public final class DisplayModeImpl implements DisplayMode {
     }
 
     /**
-     * {@inheritDoc}
+     * Returns the stored native pixel width driven to the display.
+     *
+     * @return the native pixel width in the current display orientation
      */
     @Override
     public int getPixelWidth() {
@@ -133,7 +139,9 @@ public final class DisplayModeImpl implements DisplayMode {
     }
 
     /**
-     * {@inheritDoc}
+     * Returns the stored native pixel height driven to the display.
+     *
+     * @return the native pixel height in the current display orientation
      */
     @Override
     public int getPixelHeight() {
@@ -141,7 +149,9 @@ public final class DisplayModeImpl implements DisplayMode {
     }
 
     /**
-     * {@inheritDoc}
+     * Returns the stored refresh rate after non-positive constructor values have been normalized to zero.
+     *
+     * @return the refresh rate in hertz, or zero when unknown or not fixed
      */
     @Override
     public double getRefreshRate() {
@@ -149,7 +159,9 @@ public final class DisplayModeImpl implements DisplayMode {
     }
 
     /**
-     * {@inheritDoc}
+     * Returns the stored clockwise rotation normalized to the nearest quarter turn.
+     *
+     * @return the rotation in degrees: 0, 90, 180, or 270
      */
     @Override
     public int getRotation() {
@@ -157,7 +169,9 @@ public final class DisplayModeImpl implements DisplayMode {
     }
 
     /**
-     * {@inheritDoc}
+     * Returns the horizontal desktop position of the display's top-left corner.
+     *
+     * @return the x coordinate in logical desktop units
      */
     @Override
     public int getX() {
@@ -165,7 +179,9 @@ public final class DisplayModeImpl implements DisplayMode {
     }
 
     /**
-     * {@inheritDoc}
+     * Returns the vertical desktop position of the display's top-left corner.
+     *
+     * @return the y coordinate in logical desktop units
      */
     @Override
     public int getY() {
@@ -173,7 +189,10 @@ public final class DisplayModeImpl implements DisplayMode {
     }
 
     /**
-     * {@inheritDoc}
+     * Compares this mode with another {@code DisplayModeImpl} using all stored mode fields.
+     *
+     * @param object the object to compare with this mode
+     * @return {@code true} when both objects have equal dimensions, refresh rate, rotation, and desktop position
      */
     @Override
     public boolean equals(Object object) {
@@ -190,7 +209,9 @@ public final class DisplayModeImpl implements DisplayMode {
     }
 
     /**
-     * {@inheritDoc}
+     * Computes a hash code from the dimensions, refresh rate, rotation, and desktop position used by equality.
+     *
+     * @return the hash code for all stored mode fields
      */
     @Override
     public int hashCode() {
@@ -206,7 +227,10 @@ public final class DisplayModeImpl implements DisplayMode {
     }
 
     /**
-     * {@inheritDoc}
+     * Formats the logical dimensions and desktop position, including different native dimensions, a known refresh
+     * rate, and nonzero rotation when present.
+     *
+     * @return a human-readable description of this display mode
      */
     @Override
     public String toString() {

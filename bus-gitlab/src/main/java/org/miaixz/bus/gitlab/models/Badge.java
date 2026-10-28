@@ -36,7 +36,7 @@ import org.miaixz.bus.gitlab.support.JacksonJsonEnumCodec;
 public class Badge implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2852238086816L;
+    private static final long serialVersionUID = 2550216569801L;
 
     /**
      * The id value.
