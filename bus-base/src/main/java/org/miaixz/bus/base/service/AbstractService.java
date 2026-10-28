@@ -19,7 +19,13 @@
 */
 package org.miaixz.bus.base.service;
 
+import java.io.Serializable;
+import java.util.*;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
 import org.miaixz.bus.base.mapper.SharedMapper;
+import org.miaixz.bus.core.basic.entity.Audit;
 import org.miaixz.bus.core.basic.entity.Entity;
 import org.miaixz.bus.core.basic.entity.Result;
 import org.miaixz.bus.core.basic.normal.Consts;
@@ -38,10 +44,6 @@ import org.miaixz.bus.mapper.feature.paging.PageContext;
 import org.miaixz.bus.mapper.parsing.ColumnMeta;
 import org.miaixz.bus.mapper.parsing.MapperFactory;
 import org.miaixz.bus.mapper.parsing.TableMeta;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import java.io.Serializable;
-import java.util.*;
 
 /**
  * Abstract base implementation of {@link SharedService} providing standard CRUD functionality.
@@ -920,10 +922,10 @@ public abstract class AbstractService<T, I extends Serializable, M extends Share
         this.setUpdate(audit);
         for (ColumnMeta column : table.updateColumns()) {
             if (!command.assigns(column)) {
-                if ("modified".equals(column.property())) {
+                if (Audit.FIELD_MODIFIED.equals(column.property())) {
                     Object value = audit == null ? DateKit.current() : getFieldValue(audit, column.property());
                     command.getSetValues().add(new Criterion(column.column(), value, column));
-                } else if ("modifier".equals(column.property())) {
+                } else if (Audit.FIELD_MODIFIER.equals(column.property())) {
                     Object value = audit == null ? String.valueOf(Normal.__1) : getFieldValue(audit, column.property());
                     command.getSetValues().add(new Criterion(column.column(), value, column));
                 }
@@ -1135,7 +1137,7 @@ public abstract class AbstractService<T, I extends Serializable, M extends Share
             if (selected.contains(column.property()) && !column.updatable()) {
                 throw new IllegalArgumentException("Column is not updatable: " + column.property());
             }
-            if (column.updatable() && Set.of("modifier", "modified").contains(column.property())) {
+            if (column.updatable() && Set.of(Audit.FIELD_MODIFIER, Audit.FIELD_MODIFIED).contains(column.property())) {
                 selected.add(column.property());
             }
         }
@@ -1152,11 +1154,13 @@ public abstract class AbstractService<T, I extends Serializable, M extends Share
     private Fn.FnArray<T> removalFields(T entity) {
         Assert.notNull(entity, "Entity cannot be null");
         TableMeta table = MapperFactory.of(entityClass());
-        if (table.updateColumns().stream().noneMatch(column -> "status".equals(column.property()))) {
+        if (table.updateColumns().stream().noneMatch(column -> Audit.FIELD_STATUS.equals(column.property()))) {
             throw new IllegalArgumentException("Logical removal requires an updatable status field");
         }
         String[] fields = table.updateColumns().stream()
-                .filter(column -> Set.of("status", "modifier", "modified").contains(column.property()))
+                .filter(
+                        column -> Set.of(Audit.FIELD_STATUS, Audit.FIELD_MODIFIER, Audit.FIELD_MODIFIED)
+                                .contains(column.property()))
                 .map(ColumnMeta::property).toArray(String[]::new);
         return Fn.of(entityClass(), fields);
     }
@@ -1190,21 +1194,21 @@ public abstract class AbstractService<T, I extends Serializable, M extends Share
         if (!hasFieldValue(entity, "id")) {
             setFieldValue(entity, "id", ID.objectId());
         }
-        if (!hasFieldValue(entity, "status")) {
-            setFieldValue(entity, "status", Consts.ONE);
+        if (!hasFieldValue(entity, Audit.FIELD_STATUS)) {
+            setFieldValue(entity, Audit.FIELD_STATUS, Consts.ONE);
         }
-        if (!hasFieldValue(entity, "creator")) {
+        if (!hasFieldValue(entity, Audit.FIELD_CREATOR)) {
             userId = operatorId(entity);
-            setFieldValue(entity, "creator", userId);
+            setFieldValue(entity, Audit.FIELD_CREATOR, userId);
         }
-        setFieldValue(entity, "created", now);
-        if (!hasFieldValue(entity, "modifier")) {
+        setFieldValue(entity, Audit.FIELD_CREATED, now);
+        if (!hasFieldValue(entity, Audit.FIELD_MODIFIER)) {
             if (userId == null) {
                 userId = operatorId(entity);
             }
-            setFieldValue(entity, "modifier", userId);
+            setFieldValue(entity, Audit.FIELD_MODIFIER, userId);
         }
-        setFieldValue(entity, "modified", now);
+        setFieldValue(entity, Audit.FIELD_MODIFIED, now);
         return CastKit.cast(getFieldValue(entity, "id"));
     }
 
@@ -1221,11 +1225,11 @@ public abstract class AbstractService<T, I extends Serializable, M extends Share
         if (entity == null) {
             return;
         }
-        if (FieldKit.hasField(entity.getClass(), "modified")) {
-            setFieldValue(entity, "modified", DateKit.current());
+        if (FieldKit.hasField(entity.getClass(), Audit.FIELD_MODIFIED)) {
+            setFieldValue(entity, Audit.FIELD_MODIFIED, DateKit.current());
         }
-        if (FieldKit.hasField(entity.getClass(), "modifier")) {
-            setFieldValue(entity, "modifier", operatorId(entity));
+        if (FieldKit.hasField(entity.getClass(), Audit.FIELD_MODIFIER)) {
+            setFieldValue(entity, Audit.FIELD_MODIFIER, operatorId(entity));
         }
     }
 
@@ -1238,7 +1242,7 @@ public abstract class AbstractService<T, I extends Serializable, M extends Share
         if (entity == null) {
             return;
         }
-        setFieldValue(entity, "status", Consts.MINUS_ONE);
+        setFieldValue(entity, Audit.FIELD_STATUS, Consts.MINUS_ONE);
         this.setUpdate(entity);
     }
 
@@ -1296,7 +1300,7 @@ public abstract class AbstractService<T, I extends Serializable, M extends Share
             return;
         }
         if (entity instanceof Entity baseEntity) {
-            baseEntity.setValue(entity, new String[]{field}, new Object[]{value});
+            baseEntity.setValue(entity, new String[] { field }, new Object[] { value });
             return;
         }
         if (!FieldKit.hasField(entity.getClass(), field)) {
