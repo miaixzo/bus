@@ -141,7 +141,7 @@
         <bcpkix.version>1.85</bcpkix.version>
         <javassist.version>3.31.0-GA</javassist.version>
         <jcseg.version>2.6.3</jcseg.version>
-        <mybatis.version>3.5.19</mybatis.version>
+        <mybatis.version>3.6.0</mybatis.version>
         <mybatis.spring.version>4.1.0</mybatis.spring.version>
         <ofdrw.version>2.3.9</ofdrw.version>
         <postgresql.version>42.7.11</postgresql.version>
