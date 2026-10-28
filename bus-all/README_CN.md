@@ -26,6 +26,7 @@
 ## Maven 使用
 
 ```xml
+
 <dependency>
     <groupId>org.miaixz</groupId>
     <artifactId>bus-all</artifactId>
@@ -36,6 +37,7 @@
 如果项目已经导入 `bus-bom`，可以省略版本：
 
 ```xml
+
 <dependencyManagement>
     <dependencies>
         <dependency>
@@ -49,10 +51,10 @@
 </dependencyManagement>
 
 <dependencies>
-    <dependency>
-        <groupId>org.miaixz</groupId>
-        <artifactId>bus-all</artifactId>
-    </dependency>
+<dependency>
+    <groupId>org.miaixz</groupId>
+    <artifactId>bus-all</artifactId>
+</dependency>
 </dependencies>
 ```
 

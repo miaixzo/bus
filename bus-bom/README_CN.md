@@ -30,6 +30,7 @@
 在项目的 `pom.xml` 中导入 BOM:
 
 ```xml
+
 <dependencyManagement>
     <dependencies>
         <dependency>
@@ -48,6 +49,7 @@
 导入 BOM 后，添加 Bus 依赖时无需指定版本:
 
 ```xml
+
 <dependencies>
     <!-- 核心模块 -->
     <dependency>
@@ -65,7 +67,7 @@
         <groupId>org.miaixz</groupId>
         <artifactId>bus-health</artifactId>
     </dependency>
-    
+
     <dependency>
         <groupId>org.miaixz</groupId>
         <artifactId>bus-mapper</artifactId>
@@ -78,6 +80,7 @@
 对于 Spring Boot 项目，可以与 Spring Boot 的 BOM 结合使用:
 
 ```xml
+
 <dependencyManagement>
     <dependencies>
         <!-- Spring Boot BOM -->
@@ -160,6 +163,7 @@ Bus BOM 管理所有 Bus 框架模块的版本:
 **推荐**:
 
 ```xml
+
 <dependency>
     <groupId>org.miaixz</groupId>
     <artifactId>bus-core</artifactId>
@@ -170,6 +174,7 @@ Bus BOM 管理所有 Bus 框架模块的版本:
 **不推荐**:
 
 ```xml
+
 <dependency>
     <groupId>org.miaixz</groupId>
     <artifactId>bus-core</artifactId>
@@ -186,6 +191,7 @@ Bus BOM 管理所有 Bus 框架模块的版本:
 如果需要覆盖特定版本 (不推荐):
 
 ```xml
+
 <dependency>
     <groupId>org.miaixz</groupId>
     <artifactId>bus-core</artifactId>
@@ -198,6 +204,7 @@ Bus BOM 管理所有 Bus 框架模块的版本:
 通过更改 BOM 版本同时更新所有 Bus 模块:
 
 ```xml
+
 <dependency>
     <groupId>org.miaixz</groupId>
     <artifactId>bus-bom</artifactId>
@@ -220,6 +227,7 @@ mvn help:effective-pom
 或检查实际的 `bus-bom/pom.xml` 文件:
 
 ```xml
+
 <dependencyManagement>
     <dependencies>
         <dependency>
