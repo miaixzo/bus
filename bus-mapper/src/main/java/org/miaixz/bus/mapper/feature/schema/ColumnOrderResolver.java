@@ -22,6 +22,7 @@ package org.miaixz.bus.mapper.feature.schema;
 import java.lang.reflect.Field;
 import java.util.*;
 
+import org.miaixz.bus.core.basic.entity.Audit;
 import org.miaixz.bus.core.xyz.FieldKit;
 import org.miaixz.bus.mapper.annotation.ColumnOrder;
 import org.miaixz.bus.mapper.parsing.ColumnMeta;
@@ -37,8 +38,12 @@ public class ColumnOrderResolver {
     /**
      * Common mapped properties appended after every user-defined column group, in their fixed order.
      */
-    private static final List<String> COMMON_LAST_PROPERTIES = List.of("status", "creator", "created", "modifier",
-            "modified");
+    private static final List<String> COMMON_LAST_PROPERTIES = List.of(
+            Audit.FIELD_STATUS,
+            Audit.FIELD_CREATOR,
+            Audit.FIELD_CREATED,
+            Audit.FIELD_MODIFIER,
+            Audit.FIELD_MODIFIED);
 
     /**
      * Resolves primary-key-first declaration order and explicit hierarchy rules, then appends common mapped properties.

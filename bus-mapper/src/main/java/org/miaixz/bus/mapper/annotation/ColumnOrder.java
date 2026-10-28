@@ -28,10 +28,10 @@ import java.lang.annotation.Target;
 /**
  * Orders mapped Java properties in newly created tables only. Rules are merged from ancestors to descendants. Does not
  * reorder existing tables, CRUD columns, composite keys, or indexes. Excluded superclasses contribute no rules.
- * Property references are checked after merging; replaced rules do not constrain the final mapped properties.
- * Common mapped properties {@code status}, {@code creator}, {@code created}, {@code modifier}, and {@code modified}
- * always follow all user-defined groups in that fixed order. Declaration errors such as duplicates and mutually
- * exclusive modes are always rejected.
+ * Property references are checked after merging; replaced rules do not constrain the final mapped properties. Common
+ * mapped properties {@code status}, {@code creator}, {@code created}, {@code modifier}, and {@code modified} always
+ * follow all user-defined groups in that fixed order. Declaration errors such as duplicates and mutually exclusive
+ * modes are always rejected.
  *
  * @author Kimi Liu
  */
@@ -41,17 +41,17 @@ import java.lang.annotation.Target;
 public @interface ColumnOrder {
 
     /**
-     * Complete property order, replacing inherited user rules. Must cover all mapped properties. Common properties
-     * are moved to the fixed final group after this order is applied. Mutually exclusive with nonempty
-     * {@link #first()} and {@link #last()}.
+     * Complete property order, replacing inherited user rules. Must cover all mapped properties. Common properties are
+     * moved to the fixed final group after this order is applied. Mutually exclusive with nonempty {@link #first()} and
+     * {@link #last()}.
      *
      * @return the complete property order
      */
     String[] value() default {};
 
     /**
-     * Non-common properties moved to the front, in the specified order. Common properties listed here still belong
-     * to the fixed final group. Other inherited rules remain effective.
+     * Non-common properties moved to the front, in the specified order. Common properties listed here still belong to
+     * the fixed final group. Other inherited rules remain effective.
      *
      * @return the leading properties
      */

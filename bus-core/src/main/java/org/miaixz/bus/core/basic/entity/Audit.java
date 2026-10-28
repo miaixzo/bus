@@ -43,6 +43,31 @@ public class Audit extends Entity {
     private static final long serialVersionUID = 2535295951883L;
 
     /**
+     * Name of the {@link #status} property.
+     */
+    public static final String FIELD_STATUS = "status";
+
+    /**
+     * Name of the {@link #creator} property.
+     */
+    public static final String FIELD_CREATOR = "creator";
+
+    /**
+     * Name of the {@link #created} property.
+     */
+    public static final String FIELD_CREATED = "created";
+
+    /**
+     * Name of the {@link #modifier} property.
+     */
+    public static final String FIELD_MODIFIER = "modifier";
+
+    /**
+     * Name of the {@link #modified} property.
+     */
+    public static final String FIELD_MODIFIED = "modified";
+
+    /**
      * Logical data status:
      * <ul>
      * <li>-1: logically deleted</li>

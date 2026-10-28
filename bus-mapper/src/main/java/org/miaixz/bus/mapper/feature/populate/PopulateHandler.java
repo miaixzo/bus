@@ -26,6 +26,7 @@ import org.apache.ibatis.executor.Executor;
 import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.mapping.SqlCommandType;
 
+import org.miaixz.bus.core.basic.entity.Audit;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.Created;
 import org.miaixz.bus.core.lang.annotation.Creator;
@@ -162,20 +163,20 @@ public class PopulateHandler<T> extends ScopedProviderHandler<T, PopulateConfig,
 
         boolean created = Boolean.parseBoolean(
                 properties.getProperty(
-                        dsPrefix + Args.POPULATE_CREATED,
-                        properties.getProperty(sharedPrefix + Args.POPULATE_CREATED, "true")));
+                        dsPrefix + Audit.FIELD_CREATED,
+                        properties.getProperty(sharedPrefix + Audit.FIELD_CREATED, "true")));
         boolean modified = Boolean.parseBoolean(
                 properties.getProperty(
-                        dsPrefix + Args.POPULATE_MODIFIED,
-                        properties.getProperty(sharedPrefix + Args.POPULATE_MODIFIED, "true")));
+                        dsPrefix + Audit.FIELD_MODIFIED,
+                        properties.getProperty(sharedPrefix + Audit.FIELD_MODIFIED, "true")));
         boolean creator = Boolean.parseBoolean(
                 properties.getProperty(
-                        dsPrefix + Args.POPULATE_CREATOR,
-                        properties.getProperty(sharedPrefix + Args.POPULATE_CREATOR, "true")));
+                        dsPrefix + Audit.FIELD_CREATOR,
+                        properties.getProperty(sharedPrefix + Audit.FIELD_CREATOR, "true")));
         boolean modifier = Boolean.parseBoolean(
                 properties.getProperty(
-                        dsPrefix + Args.POPULATE_MODIFIER,
-                        properties.getProperty(sharedPrefix + Args.POPULATE_MODIFIER, "true")));
+                        dsPrefix + Audit.FIELD_MODIFIER,
+                        properties.getProperty(sharedPrefix + Audit.FIELD_MODIFIER, "true")));
 
         return PopulateConfig.builder().created(created).modified(modified).creator(creator).modifier(modifier)
                 .provider(provider).build();
