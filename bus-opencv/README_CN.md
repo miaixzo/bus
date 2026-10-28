@@ -158,8 +158,7 @@ public class ImageFilterExample {
         Mat blurred = ImageProcessor.gaussianBlur(image, 21);
         Mat sharpened = ImageProcessor.sharpen(image);
         Mat edged = ImageProcessor.canny(image, 100, 200);
-
-        // 显示或保存结果
+        
         // ...
     }
 

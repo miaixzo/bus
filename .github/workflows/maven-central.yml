@@ -114,7 +114,7 @@ jobs:
   publish:
     name: Publish to Maven Central
     needs: build
-    if: ${{ github.repository == '818000/bus' }}
+    if: ${{ github.repository == 'miaixzo/bus' }}
     runs-on: ubuntu-latest
     environment:
       name: release
