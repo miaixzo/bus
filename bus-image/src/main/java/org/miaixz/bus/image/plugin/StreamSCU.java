@@ -112,7 +112,21 @@ public class StreamSCU {
     /**
      * A scheduled executor for closing idle associations.
      */
-    private final ScheduledExecutorService closeAssociationExecutor = Executors.newSingleThreadScheduledExecutor();
+    private final ScheduledThreadPoolExecutor closeAssociationExecutor = createCloseAssociationExecutor();
+
+    /**
+     * Creates an idle-close scheduler whose worker exits when no delayed close remains.
+     *
+     * @return the configured scheduler
+     */
+    private static ScheduledThreadPoolExecutor createCloseAssociationExecutor() {
+        ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(1,
+                Builder.getThreadFactory("storescu-close"));
+        executor.setRemoveOnCancelPolicy(true);
+        executor.setKeepAliveTime(20, TimeUnit.SECONDS);
+        executor.allowCoreThreadTimeOut(true);
+        return executor;
+    }
 
     /**
      * The task to be executed for closing an idle association.
@@ -312,6 +326,61 @@ public class StreamSCU {
             throw new IllegalStateException("Association is null!");
         }
         as.cstore(cuid, iuid, priority, dataWriter, tsuid, rspHandlerFactory.createDimseRSPHandler());
+    }
+
+    /**
+     * Sends an object and returns the response belonging to this request only.
+     *
+     * @param cuid       the SOP Class UID
+     * @param iuid       the SOP Instance UID
+     * @param priority   the DIMSE priority
+     * @param dataWriter the dataset writer
+     * @param tsuid      the transfer syntax UID
+     * @return a future completed with the C-STORE response, or exceptionally on association closure
+     * @throws IOException          if the request cannot be sent
+     * @throws InterruptedException if the operation is interrupted
+     */
+    public CompletableFuture<Attributes> cstoreAsync(
+            String cuid,
+            String iuid,
+            int priority,
+            DataWriter dataWriter,
+            String tsuid) throws IOException, InterruptedException {
+        if (as == null) {
+            throw new IllegalStateException("Association is null!");
+        }
+        CompletableFuture<Attributes> response = new CompletableFuture<>();
+        DimseRSPHandler delegate = rspHandlerFactory.createDimseRSPHandler();
+        as.cstore(cuid, iuid, priority, dataWriter, tsuid, new DimseRSPHandler(delegate.getMessageID()) {
+
+            /**
+             * Updates the existing response handler and completes this request future with the destination command.
+             *
+             * @param association the association carrying this storage request
+             * @param command     the destination C-STORE response command
+             * @param data        the current text fragment or DICOM response dataset
+             */
+            @Override
+            public void onDimseRSP(Association association, Attributes command, Attributes data) {
+                super.onDimseRSP(association, command, data);
+                delegate.onDimseRSP(association, command, data);
+                response.complete(command);
+            }
+
+            /**
+             * Notifies the existing response handler and fails an unfinished request when its association closes.
+             *
+             * @param association the association carrying this storage request
+             */
+            @Override
+            public void onClose(Association association) {
+                super.onClose(association);
+                delegate.onClose(association);
+                response.completeExceptionally(new IOException("Association closed before receiving the C-STORE-RSP"));
+            }
+
+        });
+        return response;
     }
 
     /**

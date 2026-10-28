@@ -33,6 +33,21 @@ import org.miaixz.bus.image.nimble.PresentationLutObject;
 public class WindLevelParameters implements WlParams {
 
     /**
+     * Default precision of a windowed grayscale image.
+     */
+    private static final int DEFAULT_OUTPUT_BITS = 8;
+
+    /**
+     * Maximum precision supported by the unsigned-short VOI output.
+     */
+    private static final int MAX_OUTPUT_BITS = 16;
+
+    /**
+     * Requested VOI output precision; rendering clamps configured values to the supported 8-to-16-bit range.
+     */
+    private final int outputBits;
+
+    /**
      * The window value.
      */
     private final double window;
@@ -92,13 +107,21 @@ public class WindLevelParameters implements WlParams {
     }
 
     /**
-     * Creates a new instance.
+     * Creates window/level parameters using values from the adapter and optional parameters.
      *
-     * @param adapter the adapter.
-     * @param params  the params.
+     * <p>
+     * Parameter values are extracted from ImageReadParam with fallback to adapter defaults when not specified. Level
+     * bounds are calculated as min/max of specified values and adapter bounds.
+     *
+     * @param adapter the DICOM image adapter to extract default values from
+     * @param params  optional parameters to override defaults, may be null
+     * @throws NullPointerException if adapter is null
      */
     public WindLevelParameters(ImageAdapter adapter, ImageReadParam params) {
         Objects.requireNonNull(adapter);
+        this.outputBits = params == null ? DEFAULT_OUTPUT_BITS
+                : params.getOutputBits().map(b -> Math.max(DEFAULT_OUTPUT_BITS, Math.min(MAX_OUTPUT_BITS, b)))
+                        .orElse(DEFAULT_OUTPUT_BITS);
         if (params == null) {
             this.dcmPR = null;
             this.fillOutsideLutRange = false;
@@ -227,6 +250,74 @@ public class WindLevelParameters implements WlParams {
     @Override
     public PresentationLutObject getPresentationState() {
         return dcmPR;
+    }
+
+    /**
+     * Returns the resolved VOI output precision after clamping to the supported range.
+     *
+     * @return the output precision, from 8 through 16 bits
+     */
+    @Override
+    public int getOutputBits() {
+        return outputBits;
+    }
+
+    /**
+     * Compares all resolved rendering settings, including output precision, LUT shape and presentation state.
+     *
+     * @param obj the object compared with these resolved settings
+     * @return whether the other object is a window/level configuration with equal settings
+     */
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof WindLevelParameters other && Double.compare(window, other.window) == 0
+                && Double.compare(level, other.level) == 0 && Double.compare(levelMin, other.levelMin) == 0
+                && Double.compare(levelMax, other.levelMax) == 0 && pixelPadding == other.pixelPadding
+                && inverseLut == other.inverseLut && fillOutsideLutRange == other.fillOutsideLutRange
+                && allowWinLevelOnColorImage == other.allowWinLevelOnColorImage && outputBits == other.outputBits
+                && Objects.equals(lutShape, other.lutShape) && Objects.equals(dcmPR, other.dcmPR);
+    }
+
+    /**
+     * Hashes the rendering settings used by the equality comparison.
+     *
+     * @return the hash of the resolved rendering configuration
+     */
+    @Override
+    public int hashCode() {
+        return Objects.hash(
+                window,
+                level,
+                levelMin,
+                levelMax,
+                pixelPadding,
+                inverseLut,
+                fillOutsideLutRange,
+                allowWinLevelOnColorImage,
+                outputBits,
+                lutShape,
+                dcmPR);
+    }
+
+    /**
+     * Formats the resolved window, level and presentation settings for diagnostics.
+     *
+     * @return the rendering configuration description
+     */
+    @Override
+    public String toString() {
+        return "WindLevelParameters{window=%.2f, level=%.2f, levelMin=%.2f, levelMax=%.2f, pixelPadding=%s, inverseLut=%s, fillOutsideLutRange=%s, allowWinLevelOnColorImage=%s, lutShape=%s, dcmPR=%s}"
+                .formatted(
+                        window,
+                        level,
+                        levelMin,
+                        levelMax,
+                        pixelPadding,
+                        inverseLut,
+                        fillOutsideLutRange,
+                        allowWinLevelOnColorImage,
+                        lutShape,
+                        dcmPR);
     }
 
 }

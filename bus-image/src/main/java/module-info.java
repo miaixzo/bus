@@ -411,7 +411,6 @@ module bus.image {
     exports org.miaixz.bus.image.metric.net;
     exports org.miaixz.bus.image.metric.pdu;
     exports org.miaixz.bus.image.metric.service;
-    exports org.miaixz.bus.image.metric.web;
     exports org.miaixz.bus.image.nimble;
     exports org.miaixz.bus.image.nimble.codec;
     exports org.miaixz.bus.image.nimble.codec.jpeg;

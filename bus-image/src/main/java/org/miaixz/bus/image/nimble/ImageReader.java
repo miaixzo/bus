@@ -37,7 +37,6 @@ import javax.imageio.spi.ImageReaderSpi;
 import org.opencv.core.*;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
-import org.opencv.osgi.OpenCVNativeLoader;
 
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.tuple.Pair;
@@ -58,6 +57,7 @@ import org.miaixz.bus.image.nimble.codec.jpeg.JPEGParser;
 import org.miaixz.bus.image.nimble.opencv.ImageCV;
 import org.miaixz.bus.image.nimble.opencv.ImageConversion;
 import org.miaixz.bus.image.nimble.opencv.ImageTransformer;
+import org.miaixz.bus.image.nimble.opencv.OpenCVNativeLoader;
 import org.miaixz.bus.image.nimble.opencv.PlanarImage;
 import org.miaixz.bus.image.nimble.opencv.lut.ModalityLutModule;
 import org.miaixz.bus.image.nimble.stream.*;
@@ -269,7 +269,7 @@ public class ImageReader extends javax.imageio.ImageReader {
      */
     public static boolean isSupportedSyntax(String uid) {
         return switch (UID.from(uid)) {
-            case UID.ImplicitVRLittleEndian, UID.ExplicitVRLittleEndian, UID.ExplicitVRBigEndian, UID.RLELossless, UID.JPEGBaseline8Bit, UID.JPEGExtended12Bit, UID.JPEGSpectralSelectionNonHierarchical68, UID.JPEGFullProgressionNonHierarchical1012, UID.JPEGLossless, UID.JPEGLosslessSV1, UID.JPEGLSLossless, UID.JPEGLSNearLossless, UID.JPEG2000Lossless, UID.JPEG2000, UID.JPEG2000MCLossless, UID.JPEG2000MC -> true;
+            case UID.ImplicitVRLittleEndian, UID.ExplicitVRLittleEndian, UID.ExplicitVRBigEndian, UID.RLELossless, UID.JPEGBaseline8Bit, UID.JPEGExtended12Bit, UID.JPEGSpectralSelectionNonHierarchical68, UID.JPEGFullProgressionNonHierarchical1012, UID.JPEGLossless, UID.JPEGLosslessSV1, UID.JPEGLSLossless, UID.JPEGLSNearLossless, UID.JPEG2000Lossless, UID.JPEG2000, UID.JPEG2000MCLossless, UID.JPEG2000MC, UID.HTJ2KLossless, UID.HTJ2KLosslessRPCL, UID.HTJ2K, UID.JPEGXL, UID.JPEGXLLossless, UID.JPEGXLJPEGRecompression -> true;
             default -> false;
         };
     }
@@ -656,14 +656,32 @@ public class ImageReader extends javax.imageio.ImageReader {
             final int index = i;
             suppliers.add(new SupplierEx<>() {
 
+                /**
+                 * Whether the memoized supplier has completed its first invocation.
+                 */
                 boolean initialized;
+                /**
+                 * Current supplier used to initialize or return the memoized result.
+                 */
                 SupplierEx<PlanarImage, IOException> delegate = this::firstTime;
 
+                /**
+                 * Decodes and optionally edits the frame once, then returns the cached image for later requests.
+                 *
+                 * @return the cached frame image owned by the consumer
+                 * @throws IOException if frame decoding or payload serialization fails
+                 */
                 @Override
                 public PlanarImage get() throws IOException {
                     return delegate.get();
                 }
 
+                /**
+                 * Initializes the memoized supplier once and publishes its cached result.
+                 *
+                 * @return the initialized supplier result
+                 * @throws IOException if reading, writing or the transport fails
+                 */
                 private synchronized PlanarImage firstTime() throws IOException {
                     if (!initialized) {
                         PlanarImage img = getPlanarImage(index, param);
@@ -671,8 +689,15 @@ public class ImageReader extends javax.imageio.ImageReader {
                         if (editor == null) {
                             value = img;
                         } else {
-                            value = editor.process(img);
-                            img.release();
+                            try {
+                                value = Objects.requireNonNull(editor.process(img), "Frame editor returned no image");
+                            } catch (RuntimeException | Error e) {
+                                img.release();
+                                throw e;
+                            }
+                            if (value != img) {
+                                img.release();
+                            }
                         }
                         delegate = () -> value;
                         initialized = true;
@@ -731,7 +756,7 @@ public class ImageReader extends javax.imageio.ImageReader {
         PlanarImage img = getRawImage(frame, param);
         ImageDescriptor desc = dis == null ? bdis.getImageDescriptor() : dis.getMetadata().getImageDescriptor();
         PlanarImage out = img;
-        if (getImageDescriptor().hasPaletteColorLookupTable()) {
+        if (desc.getPhotometricInterpretation() == Photometric.PALETTE_COLOR) {
             Attributes paletteAttributes = dis == null ? bdis.getPaletteColorLookupTable()
                     : dis.getMetadata().getDicomObject();
             out = RGBImageVoiLut.getRGBImageFromPaletteColorModel(
@@ -745,7 +770,9 @@ public class ImageReader extends javax.imageio.ImageReader {
             out = ImageTransformer.scale(out.toMat(), param.getSourceRenderSize(), Imgproc.INTER_LANCZOS4);
         }
         String seriesUID = desc.getSeriesInstanceUID();
-        if (allowFloatImageConversion && StringKit.hasText(seriesUID)) {
+        boolean floatConversion = param == null ? allowFloatImageConversion
+                : param.resolveFloatImageConversion(allowFloatImageConversion);
+        if (floatConversion && StringKit.hasText(seriesUID)) {
             Boolean isFloatPixelData = series2FloatImages.get(seriesUID);
             if (isFloatPixelData != Boolean.FALSE) {
                 if (isFloatPixelData == null) {
@@ -851,7 +878,7 @@ public class ImageReader extends javax.imageio.ImageReader {
         if (floatPixData) {
             dcmFlags |= Imgcodecs.DICOM_FLAG_FLOAT;
         }
-        if (UID.RLELossless.equals(tsuid)) {
+        if (UID.RLELossless.uid.equals(tsuid)) {
             dcmFlags |= Imgcodecs.DICOM_FLAG_RLE;
         }
         MatOfDouble positions = null;
@@ -915,7 +942,7 @@ public class ImageReader extends javax.imageio.ImageReader {
         if (bdis.isFloatPixelData()) {
             dcmFlags |= Imgcodecs.DICOM_FLAG_FLOAT;
         }
-        if (UID.RLELossless.equals(tsuid)) {
+        if (UID.RLELossless.uid.equals(tsuid)) {
             dcmFlags |= Imgcodecs.DICOM_FLAG_RLE;
         }
         Mat buf = null;

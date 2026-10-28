@@ -304,8 +304,8 @@ public class RGBImageVoiLut {
         double win = Math.max(window, 1.0);
 
         int bitsAllocated = (bStored <= 8) ? 8 : 16;
-        int outRangeSize = (1 << bitsAllocated) - 1;
-        int maxOutValue = isSigned ? (1 << (bitsAllocated - 1)) - 1 : outRangeSize;
+        int outRangeSize = (1 << bStored) - 1;
+        int maxOutValue = isSigned ? (1 << (bStored - 1)) - 1 : outRangeSize;
         int minOutValue = isSigned ? -(maxOutValue + 1) : 0;
 
         int minInValue = Math.min(maxValue, minValue);
@@ -317,6 +317,10 @@ public class RGBImageVoiLut {
         if (lutShape.getFunctionType() != null) {
             switch (lutShape.getFunctionType()) {
                 case LINEAR:
+                    setWindowLevelLinearLutLegacy(win, level, minInValue, outLut, minOutValue, maxOutValue, inverse);
+                    break;
+
+                case LINEAR_EXACT:
                     setWindowLevelLinearLut(win, level, minInValue, outLut, minOutValue, maxOutValue, inverse);
                     break;
 
@@ -353,7 +357,7 @@ public class RGBImageVoiLut {
         }
 
         return (outLut instanceof byte[]) ? new LookupTableCV((byte[]) outLut, minInValue) : //
-                new LookupTableCV((short[]) outLut, minInValue, isSigned);
+                new LookupTableCV((short[]) outLut, minInValue, !isSigned);
     }
 
     /**
@@ -1074,7 +1078,7 @@ public class RGBImageVoiLut {
                 throw new IllegalArgumentException("Segmented LUT Data with LUT Descriptor: bits=8");
             }
             data = new byte[len];
-            new InflateSegmentedLut(lut, 0, data, 0).inflate(-1, 0);
+            inflateSegmentedLut(lut, data);
         } else if (bits == 16 || odata.get().length != len) {
             data = odata.get();
             if (data.length != len << 1) {
@@ -1109,7 +1113,19 @@ public class RGBImageVoiLut {
     }
 
     /**
-     * Represents the InflateSegmentedLut type.
+     * Expands segmented palette data for both native rendering and the Java color model. Each 16-bit palette value
+     * contributes its high byte to the output; the caller owns both arrays.
+     *
+     * @param segments the encoded discrete, linear and indirect segment words
+     * @param output   the array receiving expanded eight-bit palette entries
+     * @throws IllegalArgumentException if a segment is malformed or exceeds the output capacity
+     */
+    static void inflateSegmentedLut(int[] segments, byte[] output) {
+        new InflateSegmentedLut(segments, 0, output, 0).inflate(-1, 0);
+    }
+
+    /**
+     * Expands segmented palette words into eight-bit display entries for both rendering backends.
      *
      * @author Kimi Liu
      */
@@ -1240,17 +1256,52 @@ public class RGBImageVoiLut {
         }
 
         /**
-         * Executes the indirect segment operation.
+         * Copies referenced segments using their unsigned byte offset and preserves the shared output cursor.
          *
-         * @param n  the n.
-         * @param y0 the y 0.
-         * @return the operation result.
+         * @param n  the number of referenced segments to copy
+         * @param y0 the preceding unsigned 16-bit palette value
+         * @return the final value produced by the referenced segments
+         * @throws IllegalArgumentException if the offset is unaligned, outside the encoded data or references an
+         *                                  indirect segment
+         * @see <a href="https://dicom.nema.org/medical/Dicom/2025c/output/chtml/part03/sect_C.7.9.2.3.html">DICOM
+         *      indirect palette segments</a>
          */
         private int indirectSegment(int n, int y0) {
-            int readPos = read() | (read() << 16);
-            return new InflateSegmentedLut(segm, readPos, data, writePos).inflate(n, y0);
+            long byteOffset = read() | ((long) read() << 16);
+            if ((byteOffset & 1) != 0 || byteOffset / 2 >= segm.length) {
+                throw new IllegalArgumentException("Invalid indirect palette byte offset: " + byteOffset);
+            }
+            InflateSegmentedLut referenced = new InflateSegmentedLut(segm, (int) (byteOffset / 2), data, writePos);
+            int lastValue = referenced.inflate(n, y0);
+            writePos = referenced.writePos;
+            return lastValue;
         }
 
+    }
+
+    /**
+     * Attributes belonging to the Palette Color Lookup Table Module that must be removed after RGB expansion.
+     */
+    private static final int[] PALETTE_COLOR_LOOKUP_TABLE_TAGS = { Tag.RedPaletteColorLookupTableDescriptor,
+            Tag.GreenPaletteColorLookupTableDescriptor, Tag.BluePaletteColorLookupTableDescriptor,
+            Tag.AlphaPaletteColorLookupTableDescriptor, Tag.PaletteColorLookupTableUID,
+            Tag.RedPaletteColorLookupTableData, Tag.GreenPaletteColorLookupTableData,
+            Tag.BluePaletteColorLookupTableData, Tag.AlphaPaletteColorLookupTableData,
+            Tag.SegmentedRedPaletteColorLookupTableData, Tag.SegmentedGreenPaletteColorLookupTableData,
+            Tag.SegmentedBluePaletteColorLookupTableData, Tag.SegmentedAlphaPaletteColorLookupTableData };
+
+    /**
+     * Removes the Palette Color Lookup Table Module attributes (PS3.3 C.7.6.3) from the dataset.
+     *
+     * @param ds the mutable DICOM dataset
+     */
+    public static void removePaletteColorLookupTable(Attributes ds) {
+        if (ds == null) {
+            return;
+        }
+        for (int tag : PALETTE_COLOR_LOOKUP_TABLE_TAGS) {
+            ds.remove(tag);
+        }
     }
 
 }

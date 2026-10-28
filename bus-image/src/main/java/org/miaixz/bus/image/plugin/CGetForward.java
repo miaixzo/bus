@@ -27,6 +27,10 @@ import java.text.MessageFormat;
 import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
@@ -64,6 +68,64 @@ import org.miaixz.bus.logger.Logger;
  * @author Kimi Liu
  */
 public class CGetForward implements AutoCloseable {
+
+    /**
+     * The maximum wait for a final destination's C-STORE response, in milliseconds.
+     */
+    static final long DESTINATION_RSP_TIMEOUT_MS = 60_000;
+
+    /**
+     * Carries the final destination's refusal status back to the C-GET source.
+     *
+     * @author Kimi Liu
+     */
+    static final class DestinationRefusedException extends ImageServiceException {
+
+        /**
+         * Serialization identifier for destination refusal exceptions.
+         */
+        @Serial
+        private static final long serialVersionUID = 4290567021474434745L;
+
+        /**
+         * Creates a destination refusal retaining the receiver status.
+         *
+         * @param status  the DIMSE or HTTP status code being evaluated
+         * @param message the failure description
+         */
+        DestinationRefusedException(int status, String message) {
+            super(status, message);
+        }
+
+    }
+
+    /**
+     * Waits for the final destination to confirm storage and preserves warning status codes.
+     *
+     * @param response  the response for one forwarded object
+     * @param timeoutMs the maximum wait in milliseconds
+     * @return success or the destination's warning status
+     * @throws IOException          if storage is refused, the wait expires, or the association closes
+     * @throws InterruptedException if interrupted while waiting
+     */
+    static int destinationStatus(CompletableFuture<Attributes> response, long timeoutMs)
+            throws IOException, InterruptedException {
+        Attributes command;
+        try {
+            command = response.get(timeoutMs, TimeUnit.MILLISECONDS);
+        } catch (TimeoutException e) {
+            throw new IOException("No C-STORE response from the final destination in " + timeoutMs + " ms", e);
+        } catch (ExecutionException e) {
+            throw e.getCause() instanceof IOException io ? io
+                    : new IOException("C-STORE to the final destination failed", e.getCause());
+        }
+        int status = command.getInt(Tag.Status, -1);
+        if (status == Status.Success || (status & 0xF000) == 0xB000) {
+            return status;
+        }
+        throw new DestinationRefusedException(status,
+                "Final destination refused the object with status " + Tag.shortToHexString(status) + "H");
+    }
 
     /**
      * The DICOM device for the C-GET operation.
@@ -187,7 +249,11 @@ public class CGetForward implements AutoCloseable {
                         dataWriter = ImageAdapter.buildDataWriter(attributes, syntax, context.getEditable(), desc);
                     }
 
-                    streamSCU.cstore(cuid, iuid, priority, dataWriter, syntax.getSuitable());
+                    CompletableFuture<Attributes> response = streamSCU
+                            .cstoreAsync(cuid, iuid, priority, dataWriter, syntax.getSuitable());
+                    rsp.setInt(Tag.Status, VR.US, destinationStatus(response, DESTINATION_RSP_TIMEOUT_MS));
+                } catch (DestinationRefusedException e) {
+                    throw e;
                 } catch (AbortException e) {
                     Builder.notifyProgession(
                             streamSCU.getState(),
@@ -209,10 +275,13 @@ public class CGetForward implements AutoCloseable {
                             Status.ProcessingFailure,
                             ProgressStatus.FAILED,
                             streamSCU.getNumberOfSuboperations());
+                    throw new ImageServiceException(Status.ProcessingFailure, e);
                 } finally {
                     IoKit.close(in);
                 }
 
+            } catch (DestinationRefusedException e) {
+                throw e;
             } catch (Exception e) {
                 throw new ImageServiceException(Status.ProcessingFailure, e);
             }
@@ -422,7 +491,9 @@ public class CGetForward implements AutoCloseable {
                         forward.getAAssociateRQ().getCalledAET(),
                         t2 - t1,
                         t3 - t2);
-                return Status.buildMessage(dcmState, timeMsg, null);
+                Status result = Status.buildMessage(dcmState, timeMsg, null);
+                result.addProcessTime(t1, t2, t3);
+                return result;
             } catch (Exception e) {
                 if (e instanceof InterruptedException) {
                     Thread.currentThread().interrupt();
@@ -436,6 +507,9 @@ public class CGetForward implements AutoCloseable {
                 forward.getStreamSCUService().stop();
             }
         } catch (Exception e) {
+            if (e instanceof InterruptedException) {
+                Thread.currentThread().interrupt();
+            }
             Logger.error(false, "Image", "getscu", e);
             return new Status(Status.UnableToProcess, "DICOM Get failed" + Symbol.COLON + Symbol.SPACE + e.getMessage(),
                     null);
@@ -670,6 +744,10 @@ public class CGetForward implements AutoCloseable {
             @Override
             public void onDimseRSP(Association as, Attributes cmd, Attributes data) {
                 super.onDimseRSP(as, cmd, data);
+                int status = cmd.getInt(Tag.Status, -1);
+                if (!Status.isPending(status)) {
+                    streamSCU.getState().setStatus(status);
+                }
                 ImageProgress p = streamSCU.getState().getProgress();
                 if (p != null) {
                     // Set only the initial state
@@ -700,6 +778,7 @@ public class CGetForward implements AutoCloseable {
      */
     private void retrieve(Attributes keys, DimseRSPHandler rspHandler) throws IOException, InterruptedException {
         as.cget(model.cuid, priority, keys, null, rspHandler);
+        as.waitForOutstandingRSP();
     }
 
     /**

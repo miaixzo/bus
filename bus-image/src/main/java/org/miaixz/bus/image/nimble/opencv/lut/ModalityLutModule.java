@@ -73,6 +73,27 @@ public class ModalityLutModule {
     private boolean reset;
 
     /**
+     * Whether the rescale slope already compensates for low-order overlay bits.
+     */
+    private boolean overlayBitMaskApplied;
+
+    /**
+     * Copies the modality values without duplicating the immutable lookup-table references.
+     *
+     * @param source the modality module whose values are copied
+     */
+    private ModalityLutModule(ModalityLutModule source) {
+        rescaleSlope = source.rescaleSlope;
+        rescaleIntercept = source.rescaleIntercept;
+        rescaleType = source.rescaleType;
+        lutType = source.lutType;
+        lutExplanation = source.lutExplanation;
+        lut = source.lut;
+        reset = source.reset;
+        overlayBitMaskApplied = source.overlayBitMaskApplied;
+    }
+
+    /**
      * Modality LUT Module
      * <p>
      * Note: Either a Modality LUT Sequence containing a single Item or Rescale Slope and Intercept values shall be
@@ -280,13 +301,37 @@ public class ModalityLutModule {
     }
 
     /**
-     * Executes the adapt with overlay bit mask operation.
+     * Returns a frame-local module whose slope compensates for low-order overlay bits. An already adapted module is
+     * returned unchanged; the original module is otherwise left untouched.
      *
-     * @param shiftHighBit the shift high bit.
+     * @param shiftHighBit the number of low-order bits to discard, from 0 through 15
+     * @return the adapted module, sharing the original LUT references
+     * @throws IllegalArgumentException if the shift is outside the supported 16-bit pixel range
+     */
+    public ModalityLutModule withOverlayBitMask(int shiftHighBit) {
+        if (overlayBitMaskApplied) {
+            return this;
+        }
+        ModalityLutModule adapted = new ModalityLutModule(this);
+        adapted.adaptWithOverlayBitMask(shiftHighBit);
+        return adapted;
+    }
+
+    /**
+     * Adjusts this module once to compensate for low-order overlay bits, retaining its original rescale slope and
+     * intercept. Use {@link #withOverlayBitMask(int)} for modules shared between frames.
+     *
+     * @param shiftHighBit the number of low-order bits to discard, from 0 through 15
+     * @throws IllegalArgumentException if the shift is outside the supported 16-bit pixel range
      */
     public void adaptWithOverlayBitMask(int shiftHighBit) {
-        // Combine to the slope value
-        double rs = 1.0; // FIXME: 1.0 should we use rescaleSlope.orElse(1.0) instead?
+        if (shiftHighBit < 0 || shiftHighBit > 15) {
+            throw new IllegalArgumentException("Overlay bit shift must be between 0 and 15");
+        }
+        if (overlayBitMaskApplied) {
+            return;
+        }
+        double rs = rescaleSlope.orElse(1.0);
         if (rescaleSlope.isEmpty()) {
             // Set valid modality LUT values
             if (rescaleIntercept.isEmpty()) {
@@ -299,6 +344,7 @@ public class ModalityLutModule {
         // Divide pixel value by (2 ^ rightBit) => remove right bits
         rs /= 1 << shiftHighBit;
         this.rescaleSlope = OptionalDouble.of(rs);
+        overlayBitMaskApplied = true;
     }
 
 }
