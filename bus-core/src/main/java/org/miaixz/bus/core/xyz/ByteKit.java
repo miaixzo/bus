@@ -396,8 +396,8 @@ public class ByteKit {
      * @return The int value.
      */
     public static int toInt(final byte[] bytes, final int start, final ByteOrder byteOrder) {
-        if (bytes.length - start < Integer.BYTES) {
-            throw new IllegalArgumentException("bytes length must be greater than or equal to " + Integer.BYTES);
+        if (bytes == null || start < 0 || start > bytes.length - Integer.BYTES) {
+            throw new IllegalArgumentException("bytes must contain at least four bytes at a non-negative offset");
         }
 
         int values = 0;
