@@ -21,7 +21,6 @@ package org.miaixz.bus.health.windows.hardware;
 
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiResult;
@@ -29,6 +28,7 @@ import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiResult;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.tuple.Pair;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.health.builtin.gpu.AdlKit;
 import org.miaixz.bus.health.builtin.gpu.NvmlKit;
 import org.miaixz.bus.health.builtin.hardware.GpuStats;
@@ -175,10 +175,10 @@ final class WindowsGpuStats implements GpuStats {
         }
         Map<String, Long> activeByType = new HashMap<>();
         Map<String, Long> baseByType = new HashMap<>();
-        String luidLower = luidPrefix.toLowerCase(Locale.ROOT);
+        String luidLower = StringKit.toLowerCase(luidPrefix);
         int limit = Math.min(instances.size(), Math.min(runningTimes.size(), runningTimeBases.size()));
         for (int i = 0; i < limit; i++) {
-            String inst = instances.get(i).toLowerCase(Locale.ROOT);
+            String inst = StringKit.toLowerCase(instances.get(i));
             if (!inst.contains(luidLower)) {
                 continue;
             }
@@ -453,10 +453,10 @@ final class WindowsGpuStats implements GpuStats {
         List<String> instances = adapterData.getLeft();
         List<Long> values = adapterData.getRight().get(property);
         if (values != null) {
-            String luidLower = luidPrefix.toLowerCase(Locale.ROOT);
+            String luidLower = StringKit.toLowerCase(luidPrefix);
             int limit = Math.min(instances.size(), values.size());
             for (int i = 0; i < limit; i++) {
-                if (instances.get(i).toLowerCase(Locale.ROOT).contains(luidLower)) {
+                if (StringKit.toLowerCase(instances.get(i)).contains(luidLower)) {
                     return values.get(i);
                 }
             }

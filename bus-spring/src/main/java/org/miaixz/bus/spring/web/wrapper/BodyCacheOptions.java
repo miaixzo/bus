@@ -19,12 +19,11 @@
 */
 package org.miaixz.bus.spring.web.wrapper;
 
-import java.util.Locale;
-
 import jakarta.servlet.http.HttpServletRequest;
 
 import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
+import org.miaixz.bus.core.xyz.StringKit;
 
 /**
  * Immutable request and response body-cache boundaries for one application context.
@@ -143,7 +142,7 @@ public class BodyCacheOptions {
         if (contentType == null) {
             return false;
         }
-        String normalized = contentType.toLowerCase(Locale.ROOT);
+        String normalized = StringKit.toLowerCase(contentType);
         if (normalized.startsWith(MediaType.MULTIPART_FORM_DATA)) {
             return this.includeMultipart;
         }

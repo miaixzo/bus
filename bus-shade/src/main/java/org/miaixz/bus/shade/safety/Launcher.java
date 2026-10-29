@@ -32,6 +32,7 @@ import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.shade.safety.algorithm.Key;
 import org.miaixz.bus.shade.safety.provider.DecryptorProvider;
@@ -89,19 +90,19 @@ public class Launcher {
         String password = null;
         String keypath = null;
         for (String arg : args) {
-            if (arg.toLowerCase().startsWith(Builder.XJAR_ALGORITHM)) {
+            if (StringKit.toLowerCase(arg).startsWith(Builder.XJAR_ALGORITHM)) {
                 algorithm = arg.substring(Builder.XJAR_ALGORITHM.length());
             }
-            if (arg.toLowerCase().startsWith(Builder.XJAR_KEYSIZE)) {
+            if (StringKit.toLowerCase(arg).startsWith(Builder.XJAR_KEYSIZE)) {
                 keysize = Integer.valueOf(arg.substring(Builder.XJAR_KEYSIZE.length()));
             }
-            if (arg.toLowerCase().startsWith(Builder.XJAR_IVSIZE)) {
+            if (StringKit.toLowerCase(arg).startsWith(Builder.XJAR_IVSIZE)) {
                 ivsize = Integer.valueOf(arg.substring(Builder.XJAR_IVSIZE.length()));
             }
-            if (arg.toLowerCase().startsWith(Builder.XJAR_PASSWORD)) {
+            if (StringKit.toLowerCase(arg).startsWith(Builder.XJAR_PASSWORD)) {
                 password = arg.substring(Builder.XJAR_PASSWORD.length());
             }
-            if (arg.toLowerCase().startsWith(Builder.XJAR_KEYFILE)) {
+            if (StringKit.toLowerCase(arg).startsWith(Builder.XJAR_KEYFILE)) {
                 keypath = arg.substring(Builder.XJAR_KEYFILE.length());
             }
         }
@@ -185,7 +186,7 @@ public class Launcher {
         if (null != key) {
             Set<String> names = key.stringPropertyNames();
             for (String name : names) {
-                switch (name.toLowerCase()) {
+                switch (StringKit.toLowerCase(name)) {
                     case Builder.XJAR_KEY_ALGORITHM:
                         algorithm = key.getProperty(name);
                         break;
@@ -210,7 +211,8 @@ public class Launcher {
             }
         }
 
-        if (null == hold || !Arrays.asList("true", Symbol.ONE, "yes", "y").contains(hold.trim().toLowerCase())) {
+        if (null == hold
+                || !Arrays.asList("true", Symbol.ONE, "yes", "y").contains(StringKit.toLowerCase(hold.trim()))) {
             if (null != keyfile && keyfile.exists() && !keyfile.delete() && keyfile.exists()) {
                 Logger.warn(false, "Shade", "Safety launcher key file delete failed: keyFile={}", keyfile.getName());
                 throw new IOException("could not delete key file : " + keyfile.getCanonicalPath());

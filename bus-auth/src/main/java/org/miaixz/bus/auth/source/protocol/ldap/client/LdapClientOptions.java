@@ -31,6 +31,7 @@ import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.core.xyz.StringKit;
 
 /**
  * Holds immutable deployment options for one LDAPv3 directory Source.
@@ -136,13 +137,13 @@ public record LdapClientOptions(String host, int port, SecurityMode securityMode
         final Set<String> names = new HashSet<>(values.size());
         for (String value : values) {
             final String attribute = attributeDescription(value, "LDAP Source identity attribute");
-            final String canonical = attribute.toLowerCase(Locale.ROOT);
+            final String canonical = StringKit.toLowerCase(attribute);
             if (!names.add(canonical)) {
                 throw new ValidateException("LDAP Source identity attributes must be case-insensitively unique");
             }
             copy.add(attribute);
         }
-        if (!names.contains(usernameAttribute.toLowerCase(Locale.ROOT))) {
+        if (!names.contains(StringKit.toLowerCase(usernameAttribute))) {
             throw new ValidateException("LDAP Source identity attributes must include the username attribute");
         }
         return List.copyOf(copy);

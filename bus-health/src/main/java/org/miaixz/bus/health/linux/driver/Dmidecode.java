@@ -20,12 +20,12 @@
 package org.miaixz.bus.health.linux.driver;
 
 import java.util.List;
-import java.util.Locale;
 
 import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.tuple.Pair;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.Parsing;
 
@@ -160,7 +160,7 @@ public class Dmidecode {
                     biosName = biosArr[0] + Symbol.SPACE + biosArr[1];
                 }
             }
-            int revIdx = checkLine.toLowerCase(Locale.ROOT).indexOf(revMarker);
+            int revIdx = StringKit.toLowerCase(checkLine).indexOf(revMarker);
             if (revIdx >= 0) {
                 revision = checkLine.substring(revIdx + revMarker.length()).trim();
                 // SMBIOS should be first line so if we're here we are done iterating

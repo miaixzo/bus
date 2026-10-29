@@ -22,7 +22,6 @@ package org.miaixz.bus.health.windows.jna;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Locale;
 
 import com.sun.jna.Native;
 import com.sun.jna.Pointer;
@@ -39,6 +38,7 @@ import com.sun.jna.win32.StdCallLibrary;
 
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.health.windows.driver.DxgiAdapterInfo;
 import org.miaixz.bus.logger.Logger;
 
@@ -288,7 +288,7 @@ public class WindowsDxgi {
         if (name == null) {
             return Normal.EMPTY;
         }
-        return name.toLowerCase(Locale.ROOT).replace("(r)", Normal.EMPTY).replace("(tm)", Normal.EMPTY)
+        return StringKit.toLowerCase(name).replace("(r)", Normal.EMPTY).replace("(tm)", Normal.EMPTY)
                 .replaceAll("\\s+", Symbol.SPACE).trim();
     }
 

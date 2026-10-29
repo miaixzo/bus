@@ -52,6 +52,7 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.net.Protocol;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.extra.json.JsonValue;
 
@@ -567,8 +568,8 @@ public class GiteeSourceAdapter implements VendorAdapter {
             final String accessToken = requiredString(object, OAuth2.Parameters.ACCESS_TOKEN);
             requiredString(object, OAuth2.Parameters.REFRESH_TOKEN);
             final Scope scope = Scope.parse(requiredString(object, OAuth2.Parameters.SCOPE));
-            if (!scope.values().contains("user_info") || !"bearer"
-                    .equals(requiredString(object, OAuth2.Parameters.TOKEN_TYPE).toLowerCase(Locale.ROOT))) {
+            if (!scope.values().contains("user_info")
+                    || !"bearer".equals(StringKit.toLowerCase(requiredString(object, OAuth2.Parameters.TOKEN_TYPE)))) {
                 throw new ValidateException("Gitee token response does not retain the required authorization");
             }
             final long expiresIn = requiredPositiveLong(object, OAuth2.Parameters.EXPIRES_IN);

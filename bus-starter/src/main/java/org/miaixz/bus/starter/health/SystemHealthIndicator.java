@@ -26,6 +26,7 @@ import org.springframework.boot.health.contributor.HealthIndicator;
 
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.health.Collector;
 import org.miaixz.bus.health.builtin.TID;
 
@@ -70,7 +71,7 @@ public class SystemHealthIndicator implements HealthIndicator {
     private static Map<String, String> allowedDetails() {
         Map<String, String> values = new LinkedHashMap<>();
         for (String value : TID.ALL_TID) {
-            values.put(value.toLowerCase(Locale.ROOT), value);
+            values.put(StringKit.toLowerCase(value), value);
         }
         return Map.copyOf(values);
     }
@@ -91,7 +92,7 @@ public class SystemHealthIndicator implements HealthIndicator {
             if (detail == null || detail.isBlank()) {
                 throw new ValidateException(ErrorCode._400, "Health detail identifier must not be blank");
             }
-            String canonical = ALLOWED_DETAILS.get(detail.trim().toLowerCase(Locale.ROOT));
+            String canonical = ALLOWED_DETAILS.get(StringKit.toLowerCase(detail.trim()));
             if (canonical == null) {
                 throw new ValidateException(ErrorCode._400, "Unknown health detail identifier");
             }

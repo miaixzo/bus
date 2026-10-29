@@ -28,6 +28,7 @@ import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.fabric.network.dns.cache.DnsValidationCache;
 import org.miaixz.bus.fabric.network.dns.cache.DnsValidationCache.Kind;
 import org.miaixz.bus.fabric.network.dns.message.*;
@@ -463,7 +464,7 @@ public class DnsNsec3ProofValidator {
         if (bits > 0) {
             output.append(BASE32_HEX[(buffer << (5 - bits)) & 0x1f]);
         }
-        return output.toString().toLowerCase(Locale.ROOT);
+        return StringKit.toLowerCase(output.toString());
     }
 
     /**
@@ -666,7 +667,7 @@ public class DnsNsec3ProofValidator {
         if (value == null || value.isBlank()) {
             throw new ProtocolException("DNSSEC NSEC3 hash label must not be blank");
         }
-        return value.toLowerCase(Locale.ROOT);
+        return StringKit.toLowerCase(value);
     }
 
     /**

@@ -21,7 +21,6 @@ package org.miaixz.bus.health.builtin.gpu;
 
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Locale;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -32,6 +31,7 @@ import com.sun.jna.ptr.IntByReference;
 import com.sun.jna.ptr.PointerByReference;
 
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.health.builtin.jna.Nvml;
 import org.miaixz.bus.logger.Logger;
 
@@ -148,11 +148,11 @@ public class NvmlKit {
             Nvml.NvmlPciInfo pci = new Nvml.NvmlPciInfo();
             if (Holder.LIB.nvmlDeviceGetPciInfo_v3(handle, pci) == Nvml.NVML_SUCCESS) {
                 pci.read();
-                String busId = Native.toString(pci.busId).toLowerCase(Locale.ROOT);
+                String busId = StringKit.toLowerCase(Native.toString(pci.busId));
                 if (!busId.isEmpty()) {
                     ids.add(busId);
                 }
-                String legacyId = Native.toString(pci.busIdLegacy).toLowerCase(Locale.ROOT);
+                String legacyId = StringKit.toLowerCase(Native.toString(pci.busIdLegacy));
                 if (!legacyId.isEmpty()) {
                     ids.add(legacyId);
                 }
@@ -184,7 +184,7 @@ public class NvmlKit {
         if (Holder.LIB.nvmlDeviceGetCount_v2(countRef) != Nvml.NVML_SUCCESS) {
             return null;
         }
-        String needle = pciBusId.toLowerCase(Locale.ROOT);
+        String needle = StringKit.toLowerCase(pciBusId);
         int count = countRef.getValue();
         for (int i = 0; i < count; i++) {
             PointerByReference handleRef = new PointerByReference();
@@ -195,8 +195,8 @@ public class NvmlKit {
             Nvml.NvmlPciInfo pci = new Nvml.NvmlPciInfo();
             if (Holder.LIB.nvmlDeviceGetPciInfo_v3(handle, pci) == Nvml.NVML_SUCCESS) {
                 pci.read();
-                String busId = Native.toString(pci.busId).toLowerCase(Locale.ROOT);
-                String legacyId = Native.toString(pci.busIdLegacy).toLowerCase(Locale.ROOT);
+                String busId = StringKit.toLowerCase(Native.toString(pci.busId));
+                String legacyId = StringKit.toLowerCase(Native.toString(pci.busIdLegacy));
                 if (matches(busId, needle) || matches(legacyId, needle)) {
                     return handle;
                 }
@@ -217,7 +217,7 @@ public class NvmlKit {
         if (Holder.LIB.nvmlDeviceGetCount_v2(countRef) != Nvml.NVML_SUCCESS) {
             return null;
         }
-        String needle = gpuName.toLowerCase(Locale.ROOT);
+        String needle = StringKit.toLowerCase(gpuName);
         int count = countRef.getValue();
         for (int i = 0; i < count; i++) {
             PointerByReference handleRef = new PointerByReference();
@@ -227,7 +227,7 @@ public class NvmlKit {
             Pointer handle = handleRef.getValue();
             byte[] nameBuf = new byte[Nvml.NVML_DEVICE_NAME_BUFFER_SIZE];
             if (Holder.LIB.nvmlDeviceGetName(handle, nameBuf, nameBuf.length) == Nvml.NVML_SUCCESS) {
-                String name = Native.toString(nameBuf).toLowerCase(Locale.ROOT);
+                String name = StringKit.toLowerCase(Native.toString(nameBuf));
                 if (matches(name, needle)) {
                     return handle;
                 }
@@ -247,7 +247,7 @@ public class NvmlKit {
         if (Holder.LIB.nvmlDeviceGetCount_v2(countRef) != Nvml.NVML_SUCCESS) {
             return -1;
         }
-        String needle = gpuName.toLowerCase(Locale.ROOT);
+        String needle = StringKit.toLowerCase(gpuName);
         int total = countRef.getValue();
         int matches = 0;
         for (int i = 0; i < total; i++) {
@@ -257,7 +257,7 @@ public class NvmlKit {
             }
             byte[] nameBuf = new byte[Nvml.NVML_DEVICE_NAME_BUFFER_SIZE];
             if (Holder.LIB.nvmlDeviceGetName(handleRef.getValue(), nameBuf, nameBuf.length) == Nvml.NVML_SUCCESS) {
-                String name = Native.toString(nameBuf).toLowerCase(Locale.ROOT);
+                String name = StringKit.toLowerCase(Native.toString(nameBuf));
                 if (matches(name, needle)) {
                     matches++;
                 }
@@ -305,7 +305,7 @@ public class NvmlKit {
             ensureDevicesEnumerated();
             // Verify a handle can be acquired (device exists), then return the canonical bus ID
             // from the enumerated set that matches — not the handle itself.
-            String needle = pciBusId.toLowerCase(Locale.ROOT);
+            String needle = StringKit.toLowerCase(pciBusId);
             String best = null;
             for (String id : DEVICE_BUS_IDS.get()) {
                 if (matches(id, needle) && (best == null || id.length() > best.length())) {
@@ -365,11 +365,11 @@ public class NvmlKit {
             Nvml.NvmlPciInfo pci = new Nvml.NvmlPciInfo();
             if (Holder.LIB.nvmlDeviceGetPciInfo_v3(handle, pci) == Nvml.NVML_SUCCESS) {
                 pci.read();
-                String busId = Native.toString(pci.busId).toLowerCase(Locale.ROOT);
+                String busId = StringKit.toLowerCase(Native.toString(pci.busId));
                 if (!busId.isEmpty()) {
                     return busId;
                 }
-                String legacyId = Native.toString(pci.busIdLegacy).toLowerCase(Locale.ROOT);
+                String legacyId = StringKit.toLowerCase(Native.toString(pci.busIdLegacy));
                 if (!legacyId.isEmpty()) {
                     return legacyId;
                 }

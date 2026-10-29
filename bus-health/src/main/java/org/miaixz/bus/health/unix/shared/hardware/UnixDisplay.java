@@ -172,8 +172,8 @@ public class UnixDisplay extends AbstractDisplay {
     }
 
     /**
-     * Classifies a known device-port name as built-in or external, falling back to the matched xrandr output name
-     * only when the device-port name is unknown.
+     * Classifies a known device-port name as built-in or external, falling back to the matched xrandr output name only
+     * when the device-port name is unknown.
      *
      * @return the connector classification, or an empty optional when the name is unavailable or ambiguous
      */

@@ -19,7 +19,6 @@
 */
 package org.miaixz.bus.health.windows.driver;
 
-import java.util.Locale;
 import java.util.Optional;
 import java.util.function.LongToIntFunction;
 
@@ -208,7 +207,7 @@ public final class DisplayConnector {
         if (StringKit.isBlank(devicePath)) {
             return Normal.UNKNOWN;
         }
-        return devicePath.toLowerCase(Locale.ROOT);
+        return StringKit.toLowerCase(devicePath);
     }
 
     /**

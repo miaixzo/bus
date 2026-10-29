@@ -117,10 +117,14 @@ public record ColorMap(String id, String name, ColorMapType type, Set<String> mo
 
     /**
      * Lower-case identifier derived from a display name: Unicode letters, digits and dashes only.
+     *
+     * @param name the non-null display name
+     * @return the normalized identifier, or an empty string if the name has no letters or digits
+     * @throws NullPointerException if {@code name} is null
      */
     public static String slug(String name) {
-        String dashed = Objects.requireNonNull(name, "Name cannot be null").toLowerCase(Locale.ROOT)
-                .replaceAll("[^\\p{L}\\p{N}]+", "-");
+        Objects.requireNonNull(name, "Name cannot be null");
+        String dashed = StringKit.toLowerCase(name).replaceAll("[^\\p{L}\\p{N}]+", "-");
         // Separator runs are already collapsed, so at most one dash remains at each end
         int start = dashed.startsWith("-") ? 1 : 0;
         int end = dashed.endsWith("-") ? dashed.length() - 1 : dashed.length();

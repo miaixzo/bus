@@ -22,6 +22,7 @@ package org.miaixz.bus.image.builtin;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.image.Tag;
 import org.miaixz.bus.image.galaxy.data.Attributes;
 import org.miaixz.bus.image.galaxy.data.Code;
@@ -2163,7 +2164,7 @@ public class AnatomicRegion {
             return null;
         }
         String value = bodyPartExamined.trim();
-        return value.isEmpty() ? null : value.toUpperCase(Locale.ROOT);
+        return value.isEmpty() ? null : StringKit.toUpperCase(value);
     }
 
     /**

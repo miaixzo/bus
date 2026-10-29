@@ -157,7 +157,7 @@ public class CacheConfiguration {
         if (cfg == null || StringKit.isEmpty(cfg.getKey())) {
             return null;
         }
-        return switch (cfg.getKey().toLowerCase()) {
+        return switch (StringKit.toLowerCase(cfg.getKey())) {
             case "memory" -> new MemoryCollector();
             case "h2" -> new H2Collector(cfg.getUrl(), cfg.getUsername(), cfg.getPassword());
             case "mysql" -> new MySQLCollector(cfg.getUrl(), cfg.getUsername(), cfg.getPassword());

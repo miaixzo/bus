@@ -36,6 +36,7 @@ import org.opencv.imgcodecs.Imgcodecs;
 
 import org.miaixz.bus.core.io.file.FileName;
 import org.miaixz.bus.core.xyz.FileKit;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.image.Builder;
 import org.miaixz.bus.logger.Logger;
 
@@ -332,7 +333,7 @@ public class ImageIOHandler {
      */
     private static Path ensurePngExtension(Path path) {
         var fileName = path.getFileName().toString();
-        if (!fileName.toLowerCase().endsWith(".png")) {
+        if (!StringKit.toLowerCase(fileName).endsWith(".png")) {
             return path.resolveSibling(FileName.mainName(fileName) + ".png");
         }
         return path;

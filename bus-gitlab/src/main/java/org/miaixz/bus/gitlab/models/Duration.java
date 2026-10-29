@@ -27,6 +27,7 @@ import java.util.regex.Pattern;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
 
 /**
@@ -197,7 +198,7 @@ public class Duration implements Serializable {
      */
     public static int parse(String durationString) {
 
-        durationString = durationString.toLowerCase();
+        durationString = StringKit.toLowerCase(durationString);
         Matcher matcher = durationPattern.matcher(durationString);
 
         int currentUnitIndex = -1;

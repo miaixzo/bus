@@ -19,7 +19,6 @@
 */
 package org.miaixz.bus.fabric.protocol.stomp.frame;
 
-import java.util.Locale;
 import java.util.Objects;
 
 import org.miaixz.bus.core.lang.Assert;
@@ -123,7 +122,7 @@ public class StompFrame {
         if (StringKit.isBlank(value) || StringKit.containsAny(value, Symbol.C_CR, Symbol.C_LF)) {
             throw new ValidateException("STOMP command must be non-blank and single-line");
         }
-        return value.trim().toUpperCase(Locale.ROOT);
+        return StringKit.toUpperCase(value.trim());
     }
 
     /**

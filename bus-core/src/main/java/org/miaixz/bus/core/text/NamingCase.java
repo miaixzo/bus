@@ -227,7 +227,7 @@ public class NamingCase {
         } else {
             if (otherCharToLower) {
                 if (StringKit.isUpperCase(name2)) {
-                    return name2.toLowerCase();
+                    return StringKit.toLowerCase(name2);
                 }
                 return StringKit.lowerFirst(name2);
             }

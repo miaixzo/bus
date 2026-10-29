@@ -227,8 +227,8 @@ public final class DisplayModeImpl implements DisplayMode {
     }
 
     /**
-     * Formats the logical dimensions and desktop position, including different native dimensions, a known refresh
-     * rate, and nonzero rotation when present.
+     * Formats the logical dimensions and desktop position, including different native dimensions, a known refresh rate,
+     * and nonzero rotation when present.
      *
      * @return a human-readable description of this display mode
      */

@@ -21,6 +21,7 @@ package org.miaixz.bus.core.net.url;
 
 import java.io.Serial;
 import java.net.*;
+import java.util.Objects;
 
 import org.miaixz.bus.core.Builder;
 import org.miaixz.bus.core.lang.Assert;
@@ -612,10 +613,16 @@ public class UrlBuilder implements Builder<String> {
     }
 
     /**
-     * Check if the given port is the default port for the scheme.
+     * Checks whether the port is the default for a non-null scheme.
+     *
+     * @param scheme  the non-null URL scheme
+     * @param portNum the candidate port
+     * @return whether the port is the scheme's default
+     * @throws NullPointerException if {@code scheme} is null
      */
     private boolean isDefaultPort(String scheme, int portNum) {
-        String lowerScheme = scheme.toLowerCase();
+        Objects.requireNonNull(scheme, "URL scheme must not be null");
+        String lowerScheme = StringKit.toLowerCase(scheme);
         if (Protocol.HTTP.name.equals(lowerScheme)) {
             return portNum == Port._80.getPort();
         }

@@ -22,7 +22,6 @@ package org.miaixz.bus.mapper.feature.tenant;
 import java.io.Serial;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Locale;
 import java.util.Properties;
 import java.util.stream.Collectors;
 
@@ -38,6 +37,7 @@ import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ForbiddenException;
 import org.miaixz.bus.core.xyz.ObjectKit;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.mapper.Args;
 import org.miaixz.bus.mapper.Charter.Isolation;
@@ -176,7 +176,7 @@ public class TenantHandler<T> extends ScopedProviderHandler<T, TenantConfig, Ten
         String modeValue = properties.getProperty(
                 datasourceTenantScope + Args.TENANT_MODE,
                 properties.getProperty(sharedTenantScope + Args.TENANT_MODE, Isolation.COLUMN.name()));
-        Isolation mode = Isolation.valueOf(modeValue.trim().toUpperCase(Locale.ROOT));
+        Isolation mode = Isolation.valueOf(StringKit.toUpperCase(modeValue.trim()));
         String ignoreMappersStr = properties.getProperty(
                 datasourceTenantScope + Args.TENANT_IGNORE_MAPPERS,
                 properties.getProperty(sharedTenantScope + Args.TENANT_IGNORE_MAPPERS, Normal.EMPTY));
@@ -427,13 +427,13 @@ public class TenantHandler<T> extends ScopedProviderHandler<T, TenantConfig, Ten
         if (sql == null || tenantColumn == null || tenantColumn.isBlank()) {
             return false;
         }
-        String lowerSql = sql.toLowerCase(Locale.ROOT);
+        String lowerSql = StringKit.toLowerCase(sql);
         int whereIndex = lowerSql.indexOf(" where ");
         if (whereIndex < 0) {
             return false;
         }
         String whereClause = lowerSql.substring(whereIndex);
-        String column = tenantColumn.toLowerCase(Locale.ROOT);
+        String column = StringKit.toLowerCase(tenantColumn);
         return whereClause.contains(column + Symbol.SPACE + Symbol.EQUAL)
                 || whereClause.contains(column + Symbol.EQUAL);
     }

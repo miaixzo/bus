@@ -22,11 +22,11 @@ package org.miaixz.bus.health.mac.hardware;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Locale;
 
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.Immutable;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.hardware.BluetoothDevice;
@@ -129,9 +129,9 @@ public class MacBluetoothDevice extends AbstractBluetoothDevice {
                     majorClass = Normal.EMPTY;
                     batteryLevel = -1;
                 } else if (inDevice) {
-                    switch (key.toLowerCase(Locale.ROOT)) {
+                    switch (StringKit.toLowerCase(key)) {
                         case "address":
-                            address = value.toUpperCase(Locale.ROOT);
+                            address = StringKit.toUpperCase(value);
                             break;
 
                         case "major type":

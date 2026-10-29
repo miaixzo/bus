@@ -21,7 +21,6 @@ package org.miaixz.bus.cortex.registry;
 
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ExecutorService;
@@ -36,6 +35,7 @@ import org.miaixz.bus.core.net.Port;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.xyz.BeanKit;
 import org.miaixz.bus.core.xyz.DateKit;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.core.xyz.ThreadKit;
 import org.miaixz.bus.cortex.*;
 import org.miaixz.bus.cortex.health.HealthInfo;
@@ -342,7 +342,7 @@ public class HealthProbeScheduler implements AutoCloseable, CortexLifecycle, Cor
         Instance target = BeanKit.toBean(instance, Instance.class);
         HealthInfo health = target.healthView();
         String scheme = health.getScheme() == null ? Protocol.HTTP.name
-                : health.getScheme().strip().toLowerCase(Locale.ROOT);
+                : StringKit.toLowerCase(health.getScheme().strip());
         if (!List.of(Protocol.HTTP.name, Protocol.HTTPS.name, Protocol.TCP.name).contains(scheme)
                 || target.getHost() == null || target.getHost().isBlank())
             throw new IllegalArgumentException("Invalid probe endpoint");

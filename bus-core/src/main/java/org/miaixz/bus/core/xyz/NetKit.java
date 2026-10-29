@@ -541,7 +541,7 @@ public class NetKit {
         if (StringKit.isBlank(host) || StringKit.containsAny(host, Symbol.C_CR, Symbol.C_LF)) {
             throw new ValidateException(name + " must be non-blank and single-line");
         }
-        String normalized = host.trim().toLowerCase(Locale.ROOT);
+        String normalized = StringKit.toLowerCase(host.trim());
         while (normalized.endsWith(Symbol.DOT)) {
             normalized = normalized.substring(0, normalized.length() - Normal._1);
         }
@@ -552,7 +552,7 @@ public class NetKit {
             return normalized;
         }
         try {
-            return IDN.toASCII(normalized, IDN.USE_STD3_ASCII_RULES).toLowerCase(Locale.ROOT);
+            return StringKit.toLowerCase(IDN.toASCII(normalized, IDN.USE_STD3_ASCII_RULES));
         } catch (final IllegalArgumentException e) {
             throw new ValidateException(name + " must be a valid domain", e);
         }

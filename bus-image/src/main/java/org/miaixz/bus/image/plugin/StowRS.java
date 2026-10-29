@@ -53,6 +53,7 @@ import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.xyz.IoKit;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.image.Tag;
 import org.miaixz.bus.image.UID;
 import org.miaixz.bus.image.galaxy.data.Attributes;
@@ -323,7 +324,7 @@ public class StowRS {
      * @throws IllegalArgumentException if the type is not supported.
      */
     private static FileContentType fileContentType(String s) {
-        switch (s.toLowerCase(Locale.ENGLISH)) {
+        switch (StringKit.toLowerCase(s, Locale.ENGLISH)) {
             case "stl":
             case "model/stl":
                 return FileContentType.STL;

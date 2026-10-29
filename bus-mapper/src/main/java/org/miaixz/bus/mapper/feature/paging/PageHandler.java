@@ -623,7 +623,7 @@ public class PageHandler<T> extends AbstractSqlHandler implements MapperHandler<
                 }
 
                 if (fieldAndDirection.length > 1) {
-                    String direction = fieldAndDirection[1].trim().toUpperCase();
+                    String direction = StringKit.toUpperCase(fieldAndDirection[1].trim());
                     if ("DESC".equals(direction)) {
                         sort = sort.and(Sort.by(field).descending());
                     } else {

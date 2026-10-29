@@ -31,6 +31,7 @@ import org.apache.poi.xslf.usermodel.XMLSlideShow;
 import org.miaixz.bus.core.io.file.FileName;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.FileKit;
+import org.miaixz.bus.core.xyz.StringKit;
 
 /**
  * Reads, creates, and modifies PowerPoint (PPTX) documents.
@@ -85,7 +86,7 @@ public class PptKit {
      *         the type is unknown.
      */
     public static PictureData.PictureType toPictureType(final String fileName) {
-        String extName = FileName.extName(fileName).toUpperCase();
+        String extName = StringKit.toUpperCase(FileName.extName(fileName));
         if ("JPG".equals(extName)) {
             extName = "JPEG";
         }

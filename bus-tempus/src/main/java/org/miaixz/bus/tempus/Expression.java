@@ -28,6 +28,7 @@ import java.util.*;
 
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.DateKit;
+import org.miaixz.bus.core.xyz.StringKit;
 
 /**
  * Provides a parser and evaluator for unix-like cron expressions. Cron expressions provide the ability to specify
@@ -217,7 +218,7 @@ public class Expression implements Serializable, Cloneable {
             throw new IllegalArgumentException("cronExpression cannot be null");
         }
 
-        this.cronExpression = cronExpression.toUpperCase(Locale.US);
+        this.cronExpression = StringKit.toUpperCase(cronExpression, Locale.US);
 
         buildExpression(this.cronExpression);
     }

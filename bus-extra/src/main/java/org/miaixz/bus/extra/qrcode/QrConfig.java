@@ -30,6 +30,7 @@ import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.xyz.FileKit;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.extra.image.ImageKit;
 
 /**
@@ -500,7 +501,7 @@ public class QrConfig {
         // If the QR code content is just English characters, it's recommended not to set the encoding; it works fine.
         // For Chinese, it will be garbled.
         if (null != this.charset) {
-            hints.put(EncodeHintType.CHARACTER_SET, charset.toString().toLowerCase());
+            hints.put(EncodeHintType.CHARACTER_SET, StringKit.toLowerCase(charset.toString()));
         }
         if (null != this.errorCorrection) {
             final Object value;

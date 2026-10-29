@@ -27,6 +27,7 @@ import jakarta.ws.rs.core.GenericType;
 import jakarta.ws.rs.core.Response;
 
 import org.miaixz.bus.core.lang.exception.RelevantException;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.gitlab.models.Event;
 
 /**
@@ -158,10 +159,10 @@ public class EventsApi extends AbstractApi {
             EventScope scope) throws RelevantException {
 
         GitLabApiForm formData = new GitLabApiForm().withParam("action", action)
-                .withParam("target_type", targetType != null ? targetType.toValue().toLowerCase() : null)
+                .withParam("target_type", targetType != null ? StringKit.toLowerCase(targetType.toValue()) : null)
                 .withParam("before", before).withParam("after", after).withParam("sort", sortOrder)
                 .withParam(PAGE_PARAM, page).withParam(PER_PAGE_PARAM, perPage)
-                .withParam("scope", scope != null ? scope.toValue().toLowerCase() : null);
+                .withParam("scope", scope != null ? StringKit.toLowerCase(scope.toValue()) : null);
 
         Response response = get(Response.Status.OK, formData.asMap(), "events");
         return (response.readEntity(new GenericType<>() {
@@ -221,9 +222,9 @@ public class EventsApi extends AbstractApi {
             EventScope scope) throws RelevantException {
 
         GitLabApiForm formData = new GitLabApiForm().withParam("action", action)
-                .withParam("target_type", targetType != null ? targetType.toValue().toLowerCase() : null)
+                .withParam("target_type", targetType != null ? StringKit.toLowerCase(targetType.toValue()) : null)
                 .withParam("before", before).withParam("after", after).withParam("sort", sortOrder)
-                .withParam("scope", scope != null ? scope.toValue().toLowerCase() : null);
+                .withParam("scope", scope != null ? StringKit.toLowerCase(scope.toValue()) : null);
 
         return (new Pager<Event>(this, Event.class, itemsPerPage, formData.asMap(), "events"));
     }
@@ -340,7 +341,7 @@ public class EventsApi extends AbstractApi {
             int perPage) throws RelevantException {
 
         GitLabApiForm formData = new GitLabApiForm().withParam("action", action)
-                .withParam("target_type", targetType != null ? targetType.toValue().toLowerCase() : null)
+                .withParam("target_type", targetType != null ? StringKit.toLowerCase(targetType.toValue()) : null)
                 .withParam("before", before).withParam("after", after).withParam("sort", sortOrder)
                 .withParam(PAGE_PARAM, page).withParam(PER_PAGE_PARAM, perPage);
 
@@ -381,7 +382,7 @@ public class EventsApi extends AbstractApi {
             int itemsPerPage) throws RelevantException {
 
         GitLabApiForm formData = new GitLabApiForm().withParam("action", action)
-                .withParam("target_type", targetType != null ? targetType.toValue().toLowerCase() : null)
+                .withParam("target_type", targetType != null ? StringKit.toLowerCase(targetType.toValue()) : null)
                 .withParam("before", before).withParam("after", after).withParam("sort", sortOrder);
 
         return (new Pager<Event>(this, Event.class, itemsPerPage, formData.asMap(), "users",
@@ -471,7 +472,7 @@ public class EventsApi extends AbstractApi {
             int perPage) throws RelevantException {
 
         GitLabApiForm formData = new GitLabApiForm().withParam("action", action)
-                .withParam("target_type", targetType != null ? targetType.toValue().toLowerCase() : null)
+                .withParam("target_type", targetType != null ? StringKit.toLowerCase(targetType.toValue()) : null)
                 .withParam("before", before).withParam("after", after).withParam("sort", sortOrder)
                 .withParam(PAGE_PARAM, page).withParam(PER_PAGE_PARAM, perPage);
 
@@ -512,7 +513,7 @@ public class EventsApi extends AbstractApi {
             int itemsPerPage) throws RelevantException {
 
         GitLabApiForm formData = new GitLabApiForm().withParam("action", action)
-                .withParam("target_type", targetType != null ? targetType.toValue().toLowerCase() : null)
+                .withParam("target_type", targetType != null ? StringKit.toLowerCase(targetType.toValue()) : null)
                 .withParam("before", before).withParam("after", after).withParam("sort", sortOrder);
 
         return (new Pager<Event>(this, Event.class, itemsPerPage, formData.asMap(), "projects",

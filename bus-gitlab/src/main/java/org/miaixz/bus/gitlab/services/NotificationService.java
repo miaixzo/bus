@@ -29,6 +29,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.gitlab.models.GitLabForm;
 import org.miaixz.bus.gitlab.support.JacksonJson;
 
@@ -862,7 +863,7 @@ public abstract class NotificationService implements Serializable {
 
         @Override
         public String toString() {
-            return (name().toLowerCase());
+            return (StringKit.toLowerCase(name()));
         }
 
     }

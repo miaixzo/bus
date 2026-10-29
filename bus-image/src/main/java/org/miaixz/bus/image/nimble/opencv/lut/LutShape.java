@@ -143,7 +143,7 @@ public class LutShape {
         if (!StringKit.hasText(shape)) {
             return null;
         }
-        return switch (shape.trim().toUpperCase()) {
+        return switch (StringKit.toUpperCase(shape.trim())) {
             case "LINEAR" -> LINEAR;
             case "LINEAR_EXACT" -> LINEAR_EXACT;
             case "SIGMOID" -> SIGMOID;

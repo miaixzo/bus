@@ -31,6 +31,7 @@ import javax.sql.DataSource;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.MapperException;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.mapper.Args;
 import org.miaixz.bus.mapper.Order;
 import org.miaixz.bus.mapper.feature.affix.AffixRuleConfig;
@@ -332,7 +333,7 @@ public class IdentifierValidator {
      * Normalizes a keyword.
      */
     private static String normalize(String value) {
-        return value == null ? Normal.EMPTY : value.trim().toUpperCase(Locale.ROOT);
+        return value == null ? Normal.EMPTY : StringKit.toUpperCase(value.trim());
     }
 
     /**
@@ -452,7 +453,7 @@ public class IdentifierValidator {
      */
     private Policy policy(Connection connection, DatabaseMetaData metadata, DatabaseKey key) throws SQLException {
         Set<String> reservedWords = new LinkedHashSet<>(STANDARD_RESERVED_WORDS);
-        String product = key.product().toLowerCase(Locale.ROOT);
+        String product = StringKit.toLowerCase(key.product());
         if (product.contains("postgresql")) {
             addPostgreSqlReservedWords(connection, reservedWords);
         } else {
@@ -735,8 +736,9 @@ public class IdentifierValidator {
      * Builds one stable replacement suggestion without applying it.
      */
     private String suggestion(Policy policy, Entry entry) {
-        String value = plain(entry.candidate()).replaceAll("[^A-Za-z0-9_]+", Symbol.UNDERLINE)
-                .replaceAll("_+", Symbol.UNDERLINE).replaceAll("^_+|_+$", Normal.EMPTY).toLowerCase(Locale.ROOT);
+        String value = StringKit.toLowerCase(
+                plain(entry.candidate()).replaceAll("[^A-Za-z0-9_]+", Symbol.UNDERLINE)
+                        .replaceAll("_+", Symbol.UNDERLINE).replaceAll("^_+|_+$", Normal.EMPTY));
         if (value.isBlank() || Character.isDigit(value.charAt(0))) {
             value = "mapper" + Symbol.UNDERLINE + value;
         }

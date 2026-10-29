@@ -752,7 +752,7 @@ public class PresetWindowLevel {
          * @return the resolved VOI lookup shape
          */
         private LutShape getLutShape(VoiLutModule voi) {
-            return voi.getVoiLutFunction().map(function -> switch (function.trim().toUpperCase(Locale.ROOT)) {
+            return voi.getVoiLutFunction().map(function -> switch (StringKit.toUpperCase(function.trim())) {
                 case "SIGMOID" -> new LutShape(Function.SIGMOID, Function.SIGMOID + dicomKeyWord);
                 case "LINEAR_EXACT" -> new LutShape(Function.LINEAR_EXACT, Function.LINEAR_EXACT + dicomKeyWord);
                 case "LINEAR" -> new LutShape(Function.LINEAR, Function.LINEAR + dicomKeyWord);

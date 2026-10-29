@@ -22,12 +22,12 @@ package org.miaixz.bus.auth.source.protocol.scim;
 import java.net.URI;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Locale;
 import java.util.Set;
 
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.core.xyz.StringKit;
 
 /**
  * Models the RFC 7643 ServiceProviderConfig discovery resource.
@@ -73,7 +73,7 @@ public record ServiceProviderConfig(List<String> schemas, Optional<String> docum
         for (AuthenticationMechanism mechanism : authenticationSchemes) {
             final AuthenticationMechanism item = Assert
                     .notNull(mechanism, "SCIM authenticationScheme must not be null");
-            if (!mechanismTypes.add(item.type().toLowerCase(Locale.ROOT))) {
+            if (!mechanismTypes.add(StringKit.toLowerCase(item.type()))) {
                 throw new ValidateException("SCIM authenticationScheme types must be unique ignoring case");
             }
         }

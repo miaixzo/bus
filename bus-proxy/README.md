@@ -352,6 +352,8 @@ public class ArgumentModifierAspect implements Aspect {
 ### Modifying Return Value
 
 ```java
+import org.miaixz.bus.core.xyz.StringKit;
+
 public class ReturnValueAspect implements Aspect {
     @Override
     public Object intercept(Invocation invocation) throws Throwable {
@@ -359,7 +361,7 @@ public class ReturnValueAspect implements Aspect {
 
         // Modify return value
         if (result instanceof String) {
-            result = ((String) result).toUpperCase();
+            result = StringKit.toUpperCase((String) result);
         }
 
         return result;

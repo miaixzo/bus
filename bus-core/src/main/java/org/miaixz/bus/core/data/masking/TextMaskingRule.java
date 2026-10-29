@@ -20,10 +20,12 @@
 package org.miaixz.bus.core.data.masking;
 
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 import org.miaixz.bus.core.lang.EnumValue;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.xyz.StringKit;
 
 /**
  * Rich text masking rule, used to configure how to mask rich text content.
@@ -309,11 +311,13 @@ public class TextMaskingRule {
     /**
      * Adds an HTML tag to be excluded.
      *
-     * @param tag The HTML tag to be excluded.
+     * @param tag The non-null HTML tag to be excluded.
      * @return this
+     * @throws NullPointerException if {@code tag} is null
      */
     public TextMaskingRule addExcludeTag(final String tag) {
-        this.excludeTags.add(tag.toLowerCase());
+        Objects.requireNonNull(tag, "HTML tag must not be null");
+        this.excludeTags.add(StringKit.toLowerCase(tag));
         return this;
     }
 
@@ -340,11 +344,13 @@ public class TextMaskingRule {
     /**
      * Adds an HTML tag to be processed exclusively.
      *
-     * @param tag The HTML tag to be processed exclusively.
+     * @param tag The non-null HTML tag to be processed exclusively.
      * @return this
+     * @throws NullPointerException if {@code tag} is null
      */
     public TextMaskingRule addIncludeTag(final String tag) {
-        this.includeTags.add(tag.toLowerCase());
+        Objects.requireNonNull(tag, "HTML tag must not be null");
+        this.includeTags.add(StringKit.toLowerCase(tag));
         return this;
     }
 

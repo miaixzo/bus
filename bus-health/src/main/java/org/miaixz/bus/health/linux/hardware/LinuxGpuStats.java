@@ -20,11 +20,12 @@
 package org.miaixz.bus.health.linux.hardware;
 
 import java.io.File;
-import java.util.Locale;
+import java.util.Objects;
 
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.health.Builder;
 import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.gpu.NvmlKit;
@@ -92,13 +93,14 @@ final class LinuxGpuStats implements GpuStats {
      * Creates a new LinuxGpuStats instance.
      *
      * @param drmDevicePath the drm device path
-     * @param driverName    the driver name
+     * @param driverName    the non-null driver name, or an empty string if unknown
      * @param pciBusId      the pci bus id
      * @param cardName      the card name
+     * @throws NullPointerException if {@code driverName} or {@code drmDevicePath} is null
      */
     LinuxGpuStats(String drmDevicePath, String driverName, String pciBusId, String cardName) {
         this.drmDevicePath = drmDevicePath;
-        this.driverName = driverName;
+        this.driverName = Objects.requireNonNull(driverName, "GPU driver name must not be null");
         this.pciBusId = pciBusId;
         this.cardName = cardName;
         this.hwmonPath = resolveHwmonPath(drmDevicePath);
@@ -132,7 +134,7 @@ final class LinuxGpuStats implements GpuStats {
     private static long parseDpmActiveMhz(String path) {
         for (String line : Builder.readFile(path, false)) {
             if (line.endsWith(Symbol.STAR)) {
-                int mhzIdx = line.toLowerCase(Locale.ROOT).indexOf("mhz");
+                int mhzIdx = StringKit.toLowerCase(line).indexOf("mhz");
                 if (mhzIdx > 0) {
                     int start = line.lastIndexOf(Symbol.C_SPACE, mhzIdx - 1);
                     if (start >= 0) {
@@ -191,7 +193,7 @@ final class LinuxGpuStats implements GpuStats {
         if (drmDevicePath.isEmpty()) {
             return -1d;
         }
-        String driver = driverName.toLowerCase(Locale.ROOT);
+        String driver = StringKit.toLowerCase(driverName);
         if ("amdgpu".equals(driver)) {
             return Builder.getIntFromFile(drmDevicePath + "/gpu_busy_percent", -1);
         }
@@ -225,7 +227,7 @@ final class LinuxGpuStats implements GpuStats {
         if (drmDevicePath.isEmpty()) {
             return -1L;
         }
-        if ("amdgpu".equals(driverName.toLowerCase(Locale.ROOT))) {
+        if ("amdgpu".equals(StringKit.toLowerCase(driverName))) {
             return Builder.getLongFromFile(drmDevicePath + "/mem_info_vram_used", -1L);
         }
         return -1L;
@@ -242,7 +244,7 @@ final class LinuxGpuStats implements GpuStats {
         if (drmDevicePath.isEmpty()) {
             return -1L;
         }
-        if ("amdgpu".equals(driverName.toLowerCase(Locale.ROOT))) {
+        if ("amdgpu".equals(StringKit.toLowerCase(driverName))) {
             // GTT is the system memory the GPU has mapped, the counterpart of the Windows Shared Usage counter.
             return Builder.getLongFromFile(drmDevicePath + "/mem_info_gtt_used", -1L);
         }
@@ -315,7 +317,7 @@ final class LinuxGpuStats implements GpuStats {
         if (drmDevicePath.isEmpty()) {
             return -1L;
         }
-        String driver = driverName.toLowerCase(Locale.ROOT);
+        String driver = StringKit.toLowerCase(driverName);
         if ("amdgpu".equals(driver)) {
             if (!hwmonPath.isEmpty()) {
                 long hz = Builder.getLongFromFile(hwmonPath + "/freq1_input");
@@ -350,7 +352,7 @@ final class LinuxGpuStats implements GpuStats {
         if (drmDevicePath.isEmpty()) {
             return -1L;
         }
-        if ("amdgpu".equals(driverName.toLowerCase(Locale.ROOT))) {
+        if ("amdgpu".equals(StringKit.toLowerCase(driverName))) {
             if (!hwmonPath.isEmpty()) {
                 long hz = Builder.getLongFromFile(hwmonPath + "/freq2_input");
                 if (hz > 0) {

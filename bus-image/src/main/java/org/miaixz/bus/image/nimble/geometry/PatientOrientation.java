@@ -20,8 +20,9 @@
 package org.miaixz.bus.image.nimble.geometry;
 
 import java.awt.*;
-import java.util.Locale;
 import java.util.Objects;
+
+import org.miaixz.bus.core.xyz.StringKit;
 
 /**
  * Patient orientation utilities for DICOM geometry.
@@ -251,7 +252,7 @@ public class PatientOrientation {
                 return null;
             }
             try {
-                return valueOf(value.trim().toUpperCase(Locale.ROOT));
+                return valueOf(StringKit.toUpperCase(value.trim()));
             } catch (IllegalArgumentException exception) {
                 return null;
             }
@@ -353,7 +354,7 @@ public class PatientOrientation {
                 return null;
             }
             try {
-                return valueOf(value.trim().toUpperCase(Locale.ROOT));
+                return valueOf(StringKit.toUpperCase(value.trim()));
             } catch (IllegalArgumentException exception) {
                 return null;
             }

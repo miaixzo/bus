@@ -171,7 +171,7 @@ boolean isEmpty = StringKit.isEmpty("");        // true
 
         // 字符串操作
         String trimmed = StringKit.trim("  hello  ");              // "hello"
-        String upper = StringKit.upperCase("hello");               // "HELLO"
+        String upper = StringKit.toUpperCase("hello");               // "HELLO"
         String substring = StringKit.sub("hello", 0, 3);          // "hel"
 
         // 字符串模板
@@ -966,3 +966,29 @@ System.setProperty("bus.core.cache.size", "1000");
 -----
 
 **由Miaixz团队用❤️制作**
+
+## 字符串大小写与空值约定
+
+字符串大小写转换统一使用 `StringKit.toUpperCase(text)` 和 `StringKit.toLowerCase(text)`，默认采用 `Locale.ROOT`，不依赖系统语言环境。需要语言相关的转换时显式传入 Locale；需要旧的系统默认语言规则时传入 `Locale.getDefault()`。
+
+`StringKit` 保持 null 安全：null 输入返回 null，空输入返回空字符串。显式 Locale 仅用于非空输入，此时 null Locale 会抛出 `NullPointerException`。
+
+非空约束由业务入口负责。构造方法、公共方法或配置解析入口校验必填值，后续直接转换，避免在每次转换时嵌套 `Objects.requireNonNull`。已有校验、确定非空的内部值以及允许 null 的参数无需重复检查。集合元素同样按业务契约在入口校验，保留原有允许 null 的接口行为。
+
+```java
+import java.util.Locale;
+import java.util.Objects;
+import org.miaixz.bus.core.xyz.StringKit;
+
+// 业务入口：必填参数校验一次，再直接转换。
+Objects.requireNonNull(scheme, "scheme must not be null");
+String normalized = StringKit.toLowerCase(scheme);
+
+// 可选值：沿用工具方法的 null 安全约定。
+String optional = StringKit.toLowerCase(null); // null
+String turkish = StringKit.toUpperCase("i", Locale.forLanguageTag("tr")); // İ
+```
+
+字符级转换继续使用 `Character`；仅在 `CharsBacker` 的两个底层实现中直接调用 String 大小写方法，以避免递归。
+
+对于短路匹配，只校验实际访问的元素；不要提前校验整批数据，导致已经匹配成功后仍因后续 null 项报错。校验前移时，也应保留原有分支的异常类型和提前返回行为。

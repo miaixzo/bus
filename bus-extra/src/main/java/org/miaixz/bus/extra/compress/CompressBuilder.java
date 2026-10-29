@@ -200,7 +200,7 @@ public class CompressBuilder {
         }
 
         if (StringKit.isBlank(archiverName)) {
-            final String name = file.getName().toLowerCase();
+            final String name = StringKit.toLowerCase(file.getName());
             if (name.endsWith(".tgz")) {
                 archiverName = "tgz";
             } else if (name.endsWith(".tar.gz")) {

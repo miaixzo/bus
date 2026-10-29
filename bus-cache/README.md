@@ -319,7 +319,7 @@ public class ProductService {
     @Cached(name = "redis", prefix = "product:")
     public Product getProduct(
         @CacheKey String productId,
-        @CacheKey("#region.toUpperCase()") String region
+        @CacheKey String region
     ) {
         // Cache key: product:{productId}{region}
         // Example: product:12345US
@@ -336,6 +336,15 @@ public class ProductService {
         return userRepository.findByIdAndType(userId, type);
     }
 }
+```
+
+Normalize region codes before invoking the proxied service so cache key generation and data access use the same value:
+
+```java
+import org.miaixz.bus.core.xyz.StringKit;
+
+String normalizedRegion = StringKit.toUpperCase(region);
+productService.getProduct(productId, normalizedRegion);
 ```
 
 #### Multi-Key Batch Operations
