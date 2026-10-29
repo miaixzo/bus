@@ -20,7 +20,6 @@
 package org.miaixz.bus.fabric.observe;
 
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 import org.miaixz.bus.core.lang.Assert;
@@ -113,7 +112,7 @@ public class EventListenerBridge implements EventObserver {
         if (StringKit.isBlank(callbackName)) {
             throw new ValidateException("Event callback must be non-blank");
         }
-        final String normalizedCallback = StringKit.trim(callbackName).toLowerCase(Locale.ROOT);
+        final String normalizedCallback = StringKit.toLowerCase(StringKit.trim(callbackName));
         final List<ObservationMarker> markers = CALLBACK_MARKERS.get(normalizedCallback);
         if (markers == null) {
             throw new ValidateException("Unknown event callback: " + callbackName);

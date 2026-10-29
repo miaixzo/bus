@@ -540,7 +540,7 @@ public class RequestContext {
      */
     public boolean isMultipartContent(HttpServletRequest request) {
         String contentType = request == null ? null : request.getContentType();
-        return contentType != null && contentType.toLowerCase(Locale.ROOT).startsWith("multipart/");
+        return contentType != null && StringKit.toLowerCase(contentType).startsWith("multipart/");
     }
 
     /**

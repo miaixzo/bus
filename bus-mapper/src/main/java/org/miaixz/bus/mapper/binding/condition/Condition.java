@@ -25,7 +25,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Locale;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.stream.Collectors;
@@ -38,6 +37,7 @@ import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.PatternKit;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.mapper.Order;
 import org.miaixz.bus.mapper.binding.function.Fn;
 import org.miaixz.bus.mapper.criteria.Criteria;
@@ -503,12 +503,12 @@ public class Condition<T> {
             } else if (current == Symbol.C_PARENTHESE_RIGHT) {
                 depth--;
             } else if (current == Symbol.C_EQUAL && depth == Normal._0 && !value) {
-                columns.add(target.toString().toLowerCase(Locale.ROOT));
+                columns.add(StringKit.toLowerCase(target.toString()));
                 target.setLength(Normal._0);
                 value = true;
             } else if (current == Symbol.C_COMMA && (depth == Normal._0 || !value && depth == Normal._1)) {
                 if (!value) {
-                    columns.add(target.toString().toLowerCase(Locale.ROOT));
+                    columns.add(StringKit.toLowerCase(target.toString()));
                 }
                 target.setLength(Normal._0);
                 if (depth == Normal._0) {

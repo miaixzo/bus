@@ -58,6 +58,7 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.xml.XXE;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.crypto.builtin.CertificateChain;
 import org.miaixz.bus.crypto.builtin.CertificateChainCleaner;
 import org.miaixz.bus.extra.json.JsonValue;
@@ -154,7 +155,7 @@ public class SamlSignatureValidator {
      * @return whether the identifier selects SHA-1
      */
     private static boolean sha1(final String algorithm) {
-        return algorithm == null || algorithm.toLowerCase(Locale.ROOT).contains("sha1");
+        return algorithm == null || StringKit.toLowerCase(algorithm).contains("sha1");
     }
 
     /**

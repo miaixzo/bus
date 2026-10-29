@@ -32,6 +32,7 @@ import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.tuple.Pair;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.hardware.HWDiskStore;
 import org.miaixz.bus.health.builtin.hardware.HWPartition;
@@ -361,7 +362,7 @@ public class WindowsHWDiskStore extends AbstractHWDiskStore {
         if (mediaType == null || mediaType.isEmpty()) {
             return "Unknown";
         }
-        String lower = mediaType.toLowerCase(Locale.ROOT);
+        String lower = StringKit.toLowerCase(mediaType);
         if (lower.contains("removable")) {
             return "Removable";
         } else if (lower.contains("fixed") || lower.contains("external")) {

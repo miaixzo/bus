@@ -20,7 +20,6 @@
 package org.miaixz.bus.vortex.strategy;
 
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -142,7 +141,7 @@ public class QualifierStrategy extends AbstractStrategy {
                         // The array body is preserved. Query identity claims must never survive verification as
                         // fallback values for absent principal attributes; routing coordinates stay unchanged.
                         context.getParameters().keySet().removeIf(name -> {
-                            String key = name.toLowerCase(Locale.ROOT);
+                            String key = StringKit.toLowerCase(name);
                             return key.startsWith("x_user_") || key.startsWith("x_tenant_")
                                     || key.startsWith("x_space_") || key.startsWith("x_role_")
                                     || key.startsWith("x_duty_") || key.equals("x_raw_data");

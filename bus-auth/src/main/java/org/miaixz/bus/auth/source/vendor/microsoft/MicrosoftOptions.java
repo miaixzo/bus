@@ -24,7 +24,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.Credential;
@@ -37,6 +36,7 @@ import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Protocol;
+import org.miaixz.bus.core.xyz.StringKit;
 
 /**
  * Carries externally managed Microsoft login or enterprise application and tenant values.
@@ -196,7 +196,7 @@ public record MicrosoftOptions(Vendor.Id vendor, Vendor.Variant variant, String 
      */
     private static String tenant(final String value) {
         final String checked = Assert.notBlank(value, "Microsoft tenant must not be blank");
-        final String lower = checked.toLowerCase(Locale.ROOT);
+        final String lower = StringKit.toLowerCase(checked);
         if (tenantAlias(lower)) {
             if (!checked.equals(lower)) {
                 throw new ValidateException("Microsoft tenant aliases must use lowercase canonical spelling");
@@ -234,7 +234,7 @@ public record MicrosoftOptions(Vendor.Id vendor, Vendor.Variant variant, String 
     private static String domain(final String value) {
         final String ascii;
         try {
-            ascii = IDN.toASCII(value, IDN.USE_STD3_ASCII_RULES).toLowerCase(Locale.ROOT);
+            ascii = StringKit.toLowerCase(IDN.toASCII(value, IDN.USE_STD3_ASCII_RULES));
         } catch (IllegalArgumentException cause) {
             throw new ValidateException("Microsoft tenant must be an alias, UUID, or DNS domain", cause);
         }

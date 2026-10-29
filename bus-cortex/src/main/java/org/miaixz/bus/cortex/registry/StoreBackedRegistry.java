@@ -590,7 +590,7 @@ public class StoreBackedRegistry<T extends Assets> extends AbstractRegistry<T> {
             event.setEventType(registryEventType(action, instance, previousInstance));
             event.setChangeSet(changeSet(entry, previousEntry, instance, previousInstance));
             long now = DateKit.current();
-            event.setSequence(sequence.next("registry:" + StringKit.toLowerCase(registryType.name(), Locale.ROOT)));
+            event.setSequence(sequence.next("registry:" + StringKit.toLowerCase(registryType.name())));
             event.setTimestamp(now);
             appendChangeLog(event);
             for (Listener<RegistryChange<T>> listener : listeners) {
@@ -655,7 +655,7 @@ public class StoreBackedRegistry<T extends Assets> extends AbstractRegistry<T> {
         if (event.getEventType() != null && event.getEventType().startsWith("registry-instance-")) {
             return StringKit.removePrefix(event.getEventType(), "registry-");
         }
-        return event.getAction() == null ? null : StringKit.toLowerCase(event.getAction().name(), Locale.ROOT);
+        return event.getAction() == null ? null : StringKit.toLowerCase(event.getAction().name());
     }
 
     /**

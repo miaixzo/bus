@@ -21,7 +21,6 @@ package org.miaixz.bus.starter.metrics;
 
 import java.time.Duration;
 import java.util.List;
-import java.util.Locale;
 
 import lombok.Getter;
 
@@ -31,6 +30,7 @@ import org.springframework.boot.context.properties.bind.DefaultValue;
 import org.springframework.validation.annotation.Validated;
 
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.starter.GeniusBuilder;
 
 /**
@@ -440,7 +440,7 @@ public class MetricsProperties {
          */
         @ConstructorBinding
         public Host {
-            convention = convention == null ? "otel-1.44.0" : convention.trim().toLowerCase(Locale.ROOT);
+            convention = convention == null ? "otel-1.44.0" : StringKit.toLowerCase(convention.trim());
             if (!"otel-1.44.0".equals(convention)) {
                 throw new IllegalArgumentException("bus.metrics.host.convention must be otel-1.44.0");
             }
@@ -598,7 +598,7 @@ public class MetricsProperties {
          */
         @ConstructorBinding
         public FileSystem {
-            mountpointMode = mountpointMode == null ? "keep" : mountpointMode.trim().toLowerCase(Locale.ROOT);
+            mountpointMode = mountpointMode == null ? "keep" : StringKit.toLowerCase(mountpointMode.trim());
             if (!List.of("keep", "hash", "drop").contains(mountpointMode)) {
                 throw new IllegalArgumentException("mountpoint-mode must be keep, hash or drop");
             }

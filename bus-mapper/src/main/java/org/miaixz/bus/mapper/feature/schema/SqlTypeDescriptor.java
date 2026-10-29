@@ -19,7 +19,6 @@
 */
 package org.miaixz.bus.mapper.feature.schema;
 
-import java.util.Locale;
 import java.util.Objects;
 
 import lombok.Getter;
@@ -30,6 +29,7 @@ import org.apache.ibatis.type.JdbcType;
 
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.xyz.StringKit;
 
 /**
  * SQL column type descriptor.
@@ -120,7 +120,7 @@ public class SqlTypeDescriptor {
         if (value == null || value.isBlank()) {
             return Normal.EMPTY;
         }
-        String type = value.trim().toUpperCase(Locale.ROOT);
+        String type = StringKit.toUpperCase(value.trim());
         return switch (type) {
             case "INT4" -> "INTEGER";
             case "INT8" -> "BIGINT";

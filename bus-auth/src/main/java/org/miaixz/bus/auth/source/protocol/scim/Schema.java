@@ -22,13 +22,13 @@ package org.miaixz.bus.auth.source.protocol.scim;
 import java.net.URI;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Locale;
 import java.util.Set;
 
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.core.xyz.StringKit;
 
 /**
  * Models an RFC 7643 Schema discovery resource and its recursive attribute definitions.
@@ -78,7 +78,7 @@ public record Schema(List<String> schemas, String id, Optional<String> name, Opt
         final Set<String> names = new HashSet<>(values.size());
         for (AttributeDefinition attribute : values) {
             final AttributeDefinition item = Assert.notNull(attribute, label + " entry must not be null");
-            if (!names.add(item.name().toLowerCase(Locale.ROOT))) {
+            if (!names.add(StringKit.toLowerCase(item.name()))) {
                 throw new ValidateException(label + " names must be unique ignoring case");
             }
         }

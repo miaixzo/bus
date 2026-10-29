@@ -48,6 +48,7 @@ import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.xml.XXE;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.crypto.builtin.CertificateChain;
 
 /**
@@ -844,7 +845,7 @@ public class MetadataCodec {
         final String subtype = media.subtype();
         return subtype != null && (("application".equalsIgnoreCase(type) && "xml".equalsIgnoreCase(subtype))
                 || ("text".equalsIgnoreCase(type) && "xml".equalsIgnoreCase(subtype))
-                || subtype.toLowerCase(Locale.ROOT).endsWith("+xml"));
+                || StringKit.toLowerCase(subtype).endsWith("+xml"));
     }
 
     /**

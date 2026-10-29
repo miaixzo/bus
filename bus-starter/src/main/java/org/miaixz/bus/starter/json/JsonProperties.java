@@ -19,14 +19,13 @@
 */
 package org.miaixz.bus.starter.json;
 
-import java.util.Locale;
-
 import lombok.Getter;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.bind.DefaultValue;
 import org.springframework.validation.annotation.Validated;
 
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.starter.GeniusBuilder;
 
 /**
@@ -88,7 +87,7 @@ public class JsonProperties {
          * @return canonical provider name consumed by the JSON factory
          */
         public String key() {
-            return name().toLowerCase(Locale.ROOT);
+            return StringKit.toLowerCase(name());
         }
     }
 

@@ -116,7 +116,7 @@ public class AffixSqlRewriter {
             String tableName = matcher.group(4);
             String endDelimiter = matcher.group(5);
 
-            if (TABLE_NAME_STOP_WORDS.contains(tableName.toUpperCase())) {
+            if (TABLE_NAME_STOP_WORDS.contains(StringKit.toUpperCase(tableName))) {
                 continue;
             }
 

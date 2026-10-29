@@ -22,7 +22,6 @@ package org.miaixz.bus.health.windows.hardware;
 import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.List;
-import java.util.Locale;
 import java.util.Objects;
 
 import com.sun.jna.platform.win32.COM.COMException;
@@ -32,6 +31,7 @@ import org.miaixz.bus.core.center.function.BiFunctionX;
 import org.miaixz.bus.core.center.function.BiPredicateX;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.health.builtin.hardware.common.AbstractSensors;
 import org.miaixz.bus.health.windows.WmiKit;
 import org.miaixz.bus.health.windows.WmiQueryHandler;
@@ -310,7 +310,7 @@ final class WindowsSensors extends AbstractSensors {
         return getAverageValueFromLhmJar(
                 "SuperIO",
                 VOLTAGE,
-                (name, value) -> name.toLowerCase(Locale.ROOT).contains("vcore") && value > 0);
+                (name, value) -> StringKit.toLowerCase(name).contains("vcore") && value > 0);
     }
 
     /**

@@ -29,6 +29,7 @@ import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.tuple.Tuple;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.hardware.CentralProcessor;
@@ -241,7 +242,7 @@ final class SolarisCentralProcessor extends AbstractCentralProcessor {
                 stepping,
                 model,
                 family,
-                Pattern.SPACES_PATTERN.split(flags.toString().toLowerCase(Locale.ROOT)));
+                Pattern.SPACES_PATTERN.split(StringKit.toLowerCase(flags.toString())));
     }
 
     /**

@@ -113,8 +113,8 @@ public class FreeBsdInternetProtocolStats extends AbstractInternetProtocolStats 
     }
 
     /**
-     * Returns memoized IPv4 TCP statistics obtained from the FreeBSD kernel structure, with a netstat command
-     * fallback when the structure layout is unsupported.
+     * Returns memoized IPv4 TCP statistics obtained from the FreeBSD kernel structure, with a netstat command fallback
+     * when the structure layout is unsupported.
      *
      * @return the cached IPv4 TCP counters and established connection count
      */
@@ -124,8 +124,8 @@ public class FreeBsdInternetProtocolStats extends AbstractInternetProtocolStats 
     }
 
     /**
-     * Returns memoized IPv4 UDP statistics obtained from the FreeBSD kernel structure, with a netstat command
-     * fallback when the structure layout is unsupported.
+     * Returns memoized IPv4 UDP statistics obtained from the FreeBSD kernel structure, with a netstat command fallback
+     * when the structure layout is unsupported.
      *
      * @return the cached IPv4 UDP datagram and error counters
      */

@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.shade.beans;
 
+import org.miaixz.bus.core.xyz.StringKit;
+
 /**
  * MySQL database field type converter. This class provides logic to convert MySQL column types to appropriate Java
  * {@link ColumnType}s.
@@ -45,7 +47,7 @@ public class MySQLTypeConvert implements TypeConvert {
      */
     @Override
     public ColumnType processTypeConvert(DateType dateType, String fieldType) {
-        String t = fieldType.toLowerCase();
+        String t = StringKit.toLowerCase(fieldType);
         if (t.contains("char")) {
             return MySQLColumnType.STRING;
         } else if (t.contains("bigint")) {

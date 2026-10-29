@@ -256,7 +256,7 @@ public class MetadataCodec {
         if (StringKit.isBlank(text)) {
             return null;
         }
-        return EnumKit.fromStringQuietly(Objects.requireNonNull(type), text.toUpperCase(Locale.ROOT));
+        return EnumKit.fromStringQuietly(Objects.requireNonNull(type), StringKit.toUpperCase(text));
     }
 
     /**

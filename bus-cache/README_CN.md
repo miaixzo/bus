@@ -316,7 +316,7 @@ public class ProductService {
     @Cached(name = "redis", prefix = "product:")
     public Product getProduct(
         @CacheKey String productId,
-        @CacheKey("#region.toUpperCase()") String region
+        @CacheKey String region
     ) {
         // 缓存键：product:{productId}{region}
         // 示例：product:12345US
@@ -333,6 +333,15 @@ public class ProductService {
         return userRepository.findByIdAndType(userId, type);
     }
 }
+```
+
+在调用代理服务之前规范化地区代码，确保缓存键生成和数据访问使用相同的值：
+
+```java
+import org.miaixz.bus.core.xyz.StringKit;
+
+String normalizedRegion = StringKit.toUpperCase(region);
+productService.getProduct(productId, normalizedRegion);
 ```
 
 #### 多键批量操作

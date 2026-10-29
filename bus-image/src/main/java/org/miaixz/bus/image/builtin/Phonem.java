@@ -21,6 +21,7 @@ package org.miaixz.bus.image.builtin;
 
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.xyz.StringKit;
 
 /**
  * Implements the Phonem algorithm for fuzzy string matching, based on the work of Martin Wilz. This algorithm
@@ -64,7 +65,7 @@ public class Phonem implements FuzzyString {
         if (s == null || s.length() == 0)
             return Normal.EMPTY;
 
-        char[] in = s.toUpperCase().toCharArray();
+        char[] in = StringKit.toUpperCase(s).toCharArray();
         char next = in[0];
         int j = 0;
         for (int i = 1; i < in.length; i++) {

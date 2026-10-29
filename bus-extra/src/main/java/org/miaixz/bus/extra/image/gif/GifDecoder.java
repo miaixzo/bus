@@ -30,6 +30,7 @@ import java.net.URL;
 import java.util.ArrayList;
 
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.xyz.StringKit;
 
 /**
  * Class GifDecoder - Decodes a GIF file into one or more frames.
@@ -452,7 +453,7 @@ public class GifDecoder {
     public int read(String name) {
         status = STATUS_OK;
         try {
-            name = name.trim().toLowerCase();
+            name = StringKit.toLowerCase(name.trim());
             if ((name.indexOf("file:") >= 0) || (name.indexOf(":/") > 0)) {
                 URL url = new URL(name);
                 in = new BufferedInputStream(url.openStream());

@@ -25,6 +25,8 @@ import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
+import org.miaixz.bus.core.xyz.StringKit;
+
 /**
  * Enum for the various Pipeline status values.
  *
@@ -111,7 +113,7 @@ public enum PipelineStatus {
 
     @JsonValue
     public String toValue() {
-        return (name().toLowerCase());
+        return (StringKit.toLowerCase(name()));
     }
 
     /**
@@ -122,7 +124,7 @@ public enum PipelineStatus {
 
     @Override
     public String toString() {
-        return (name().toLowerCase());
+        return (StringKit.toLowerCase(name()));
     }
 
 }

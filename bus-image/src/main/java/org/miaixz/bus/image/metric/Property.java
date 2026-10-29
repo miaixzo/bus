@@ -25,6 +25,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Locale;
 
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.xyz.StringKit;
 
 /**
  * Provides DICOM processing details.
@@ -186,7 +187,7 @@ public class Property implements Serializable {
      * @throws IllegalArgumentException if the operation cannot be completed.
      */
     public void setAt(Object o) {
-        String setterName = "set" + name.substring(0, 1).toUpperCase(Locale.ENGLISH) + name.substring(1);
+        String setterName = "set" + StringKit.toUpperCase(name.substring(0, 1), Locale.ENGLISH) + name.substring(1);
         try {
             Class<?> clazz = o.getClass();
             if (value instanceof String) {

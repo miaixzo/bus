@@ -32,6 +32,7 @@ import org.miaixz.bus.auth.source.protocol.ldap.SearchResultEntry;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.extra.json.JsonValue;
 
 /**
@@ -102,7 +103,7 @@ public class LdapIdentityParser {
         final Map<String, List<JsonValue>> projectedValues = new LinkedHashMap<>();
         options.attributes().forEach(name -> projectedValues.put(name, new ArrayList<>()));
         for (LdapAttribute attribute : input.attributes()) {
-            final String configured = configuredNames.get(attribute.type().toLowerCase(Locale.ROOT));
+            final String configured = configuredNames.get(StringKit.toLowerCase(attribute.type()));
             if (configured == null) {
                 continue;
             }
@@ -131,7 +132,7 @@ public class LdapIdentityParser {
      */
     private Map<String, String> configuredNames() {
         final Map<String, String> names = new LinkedHashMap<>(options.attributes().size());
-        options.attributes().forEach(name -> names.put(name.toLowerCase(Locale.ROOT), name));
+        options.attributes().forEach(name -> names.put(StringKit.toLowerCase(name), name));
         return names;
     }
 

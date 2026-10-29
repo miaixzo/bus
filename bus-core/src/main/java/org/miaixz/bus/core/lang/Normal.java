@@ -27,6 +27,7 @@ import java.util.Set;
 
 import org.miaixz.bus.core.io.file.FileType;
 import org.miaixz.bus.core.xyz.SetKit;
+import org.miaixz.bus.core.xyz.StringKit;
 
 /**
  * Provides a collection of common constants and methods.
@@ -1034,12 +1035,12 @@ public class Normal {
     /**
      * String containing all uppercase English alphabet characters and numeric digits.
      */
-    public static final String UPPER_ALPHABET_NUMBER = ALPHABET.toUpperCase() + NUMBER;
+    public static final String UPPER_ALPHABET_NUMBER = StringKit.toUpperCase(ALPHABET) + NUMBER;
 
     /**
      * String containing all uppercase English alphabet characters and numeric digits.
      */
-    public static final String ALL_ALPHABET_NUMBER = ALPHABET.toUpperCase() + ALPHABET + NUMBER;
+    public static final String ALL_ALPHABET_NUMBER = StringKit.toUpperCase(ALPHABET) + ALPHABET + NUMBER;
 
     /**
      * An empty string: "".
@@ -1428,7 +1429,8 @@ public class Normal {
      */
     public static boolean isJarFileURL(final URL url) {
         Assert.notNull(url, "URL must be not null");
-        return (URL_PROTOCOL_FILE.equals(url.getProtocol()) && url.getPath().toLowerCase().endsWith(FileType.JAR));
+        return (URL_PROTOCOL_FILE.equals(url.getProtocol())
+                && StringKit.toLowerCase(url.getPath()).endsWith(FileType.JAR));
     }
 
 }

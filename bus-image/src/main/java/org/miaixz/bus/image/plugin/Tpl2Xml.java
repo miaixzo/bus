@@ -40,6 +40,7 @@ import org.w3c.dom.Element;
 
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.xyz.StringKit;
 
 /**
  * The {@code Tpl2Xml} class converts a proprietary text-based template file for private DICOM dictionaries into
@@ -337,8 +338,8 @@ public class Tpl2Xml {
          * @param keyword The raw keyword string from the template.
          */
         private void setTagAndKeyword(String tag, String keyword) {
-            String groupTag = tag.substring(1, 5).toUpperCase();
-            String elementTag = "xx" + tag.substring(8, 10).toUpperCase();
+            String groupTag = StringKit.toUpperCase(tag.substring(1, 5));
+            String elementTag = "xx" + StringKit.toUpperCase(tag.substring(8, 10));
             this.keyword = keyword.equals(Symbol.QUESTION_MARK)
                     ? Symbol.UNDERLINE + groupTag + Symbol.UNDERLINE + elementTag + Symbol.UNDERLINE
                     : !Pattern.compile("^[a-zA-Z][a-zA-Z0-9]*$").matcher(keyword).matches()

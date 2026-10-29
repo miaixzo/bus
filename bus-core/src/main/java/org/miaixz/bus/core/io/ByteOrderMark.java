@@ -27,6 +27,7 @@ import org.miaixz.bus.core.center.function.PredicateX;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.xyz.ArrayKit;
+import org.miaixz.bus.core.xyz.StringKit;
 
 /**
  * Description of a Byte Order Mark (BOM) header. BOM definitions:
@@ -223,7 +224,7 @@ public record ByteOrderMark(String charsetName, byte... bytes)
                 builder.append(",");
             }
             builder.append("0x");
-            builder.append(Integer.toHexString(0xFF & bytes[i]).toUpperCase());
+            builder.append(StringKit.toUpperCase(Integer.toHexString(0xFF & bytes[i])));
         }
         builder.append(']');
         return builder.toString();

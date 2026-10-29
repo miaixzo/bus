@@ -90,7 +90,7 @@ public enum Formats {
             return JSON;
         }
         try {
-            return Formats.valueOf(name.toUpperCase());
+            return Formats.valueOf(StringKit.toUpperCase(name));
         } catch (IllegalArgumentException e) {
             return JSON;
         }

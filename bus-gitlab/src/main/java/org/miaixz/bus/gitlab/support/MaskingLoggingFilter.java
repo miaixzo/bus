@@ -43,6 +43,7 @@ import org.glassfish.jersey.message.MessageUtils;
 
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.net.Http;
+import org.miaixz.bus.core.xyz.StringKit;
 
 /**
  * This class logs request and response info masking HTTP header values that are known to contain sensitive information.
@@ -140,7 +141,8 @@ public class MaskingLoggingFilter implements ClientRequestFilter, ClientResponse
      *
      * @param logger            the logger to log messages to
      * @param level             level at which the messages will be logged
-     * @param maskedHeaderNames a list of header names that should have the values masked
+     * @param maskedHeaderNames a nullable list of non-null header names whose values should be masked
+     * @throws NullPointerException if the list contains a null header name
      */
     public MaskingLoggingFilter(final Logger logger, final Level level, final List<String> maskedHeaderNames) {
         this(logger, level, 0, maskedHeaderNames);
@@ -155,7 +157,8 @@ public class MaskingLoggingFilter implements ClientRequestFilter, ClientResponse
      *                          reached, the entity logging will be truncated at maxEntitySize and "...more..." will be
      *                          added at the end of the log entry. If maxEntitySize is &lt;= 0, entity logging will be
      *                          disabled
-     * @param maskedHeaderNames a list of header names that should have the values masked
+     * @param maskedHeaderNames a nullable list of non-null header names whose values should be masked
+     * @throws NullPointerException if the list contains a null header name
      */
     public MaskingLoggingFilter(final Logger logger, final Level level, final int maxEntitySize,
             final List<String> maskedHeaderNames) {
@@ -164,7 +167,7 @@ public class MaskingLoggingFilter implements ClientRequestFilter, ClientResponse
         this.maxEntitySize = maxEntitySize;
 
         if (maskedHeaderNames != null) {
-            maskedHeaderNames.forEach(h -> this.maskedHeaderNames.add(h.toLowerCase()));
+            List.copyOf(maskedHeaderNames).forEach(h -> this.maskedHeaderNames.add(StringKit.toLowerCase(h)));
         }
     }
 
@@ -192,7 +195,7 @@ public class MaskingLoggingFilter implements ClientRequestFilter, ClientResponse
         if (maskedHeaderName != null) {
             maskedHeaderName = maskedHeaderName.trim();
             if (maskedHeaderName.length() > 0) {
-                maskedHeaderNames.add(maskedHeaderName.toLowerCase());
+                maskedHeaderNames.add(StringKit.toLowerCase(maskedHeaderName));
             }
         }
     }
@@ -282,6 +285,7 @@ public class MaskingLoggingFilter implements ClientRequestFilter, ClientResponse
      * @param id      the ID for the logging line
      * @param prefix  the logging line prefix character
      * @param headers a MultiValue map holding the header keys and values
+     * @throws NullPointerException if a processed header name is null
      */
     protected void printHeaders(
             final StringBuilder sb,
@@ -292,7 +296,8 @@ public class MaskingLoggingFilter implements ClientRequestFilter, ClientResponse
         getSortedHeaders(headers.entrySet()).forEach(h -> {
             final List<?> values = h.getValue();
             final String header = h.getKey();
-            final boolean isMaskedHeader = maskedHeaderNames.contains(header.toLowerCase());
+            Objects.requireNonNull(header, "HTTP header name must not be null");
+            final boolean isMaskedHeader = maskedHeaderNames.contains(StringKit.toLowerCase(header));
 
             if (values.size() == 1) {
                 String value = (isMaskedHeader ? "********" : values.get(0).toString());

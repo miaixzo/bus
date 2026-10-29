@@ -174,7 +174,7 @@ boolean isEmpty = StringKit.isEmpty("");        // true
 
         // String manipulation
         String trimmed = StringKit.trim("  hello  ");              // "hello"
-        String upper = StringKit.upperCase("hello");               // "HELLO"
+        String upper = StringKit.toUpperCase("hello");               // "HELLO"
         String substring = StringKit.sub("hello", 0, 3);          // "hel"
 
         // String templates
@@ -974,3 +974,29 @@ Contributions are welcome! Please read our contributing guidelines before submit
 -----
 
 **Made with ❤️ by the Miaixz Team**
+
+## String case conversion and null contracts
+
+Use `StringKit.toUpperCase(text)` and `StringKit.toLowerCase(text)` for string case conversion. Their default is `Locale.ROOT`, independently of the system locale. Pass an explicit Locale for language-specific conversion, or `Locale.getDefault()` to request the previous system-locale behavior.
+
+`StringKit` remains null-safe: null input returns null and empty input returns an empty string. An explicit Locale is only used for non-empty input, where a null Locale throws `NullPointerException`.
+
+Validate required inputs at the business boundary: a constructor, public method, or configuration parser. Subsequent conversions should use the validated value directly instead of nesting `Objects.requireNonNull` in each conversion. Existing validation, known non-null internal values, and optional parameters need no duplicate checks. Validate collection elements at their input boundary when required, while preserving existing nullable API contracts.
+
+```java
+import java.util.Locale;
+import java.util.Objects;
+import org.miaixz.bus.core.xyz.StringKit;
+
+// Business boundary: validate a required argument once, then normalize it.
+Objects.requireNonNull(scheme, "scheme must not be null");
+String normalized = StringKit.toLowerCase(scheme);
+
+// Optional input retains the helper's null-safe behavior.
+String optional = StringKit.toLowerCase(null); // null
+String turkish = StringKit.toUpperCase("i", Locale.forLanguageTag("tr")); // İ
+```
+
+Character-level conversions retain the `Character` API. Direct String case conversion remains only in the two underlying `CharsBacker` implementations to avoid recursion.
+
+For short-circuit searches, validate each item only when it is visited. Do not validate an entire collection up front if that would reject null items after a successful match. Preserve existing conditional exception types and early-return paths when moving validation to an input boundary.

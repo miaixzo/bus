@@ -45,7 +45,7 @@ public class RandomKit {
     /**
      * A string of characters and numbers (uppercase and lowercase) for random selection.
      */
-    public static final String BASE_CHAR_NUMBER = Normal.ALPHABET.toUpperCase() + Normal.LOWER_ALPHABET_NUMBER;
+    public static final String BASE_CHAR_NUMBER = StringKit.toUpperCase(Normal.ALPHABET) + Normal.LOWER_ALPHABET_NUMBER;
 
     /**
      * Constructs a new RandomKit instance.
@@ -601,7 +601,7 @@ public class RandomKit {
      * @return The random string.
      */
     public static String randomStringUpper(final int length) {
-        return randomString(Normal.LOWER_ALPHABET_NUMBER, length).toUpperCase();
+        return StringKit.toUpperCase(randomString(Normal.LOWER_ALPHABET_NUMBER, length));
     }
 
     /**
@@ -626,7 +626,7 @@ public class RandomKit {
      */
     public static String randomStringLowerWithoutString(final int length, final String elemData) {
         String baseStr = Normal.LOWER_ALPHABET_NUMBER;
-        baseStr = StringKit.removeAll(baseStr, elemData.toLowerCase().toCharArray());
+        baseStr = StringKit.removeAll(baseStr, StringKit.toLowerCase(elemData).toCharArray());
         return randomString(baseStr, length);
     }
 

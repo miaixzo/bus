@@ -94,7 +94,8 @@ public class PerfCounterWildcardQuery {
      * @param perfObject   The PDH object for this counter; all counters on this object will be refreshed at the same
      *                     time
      * @param perfWmiClass The WMI PerfData_RawData_* class corresponding to the PDH object
-     * @param customFilter a custom instance filter to use. If null, uses the first element of the property enum
+     * @param customFilter a custom instance filter to use. If null or blank, uses the non-null filter from the first
+     *                     element of the property enum
      * @return A pair containing a list of instances and an {@link EnumMap} of the corresponding values indexed by
      *         {@code propertyEnum} on success, or an empty list and empty map if both PDH and WMI queries failed.
      */
@@ -135,6 +136,7 @@ public class PerfCounterWildcardQuery {
      *                     time
      * @return An pair containing a list of instances and an {@link EnumMap} of the corresponding values indexed by
      *         {@code propertyEnum} on success, or an empty list and empty map if the PDH query failed.
+     * @throws NullPointerException if {@code propertyEnum} or the selected instance filter is null
      */
     public static <T extends Enum<T>> Pair<List<String>, Map<T, List<Long>>> queryInstancesAndValuesFromPDH(
             Class<T> propertyEnum,
@@ -150,9 +152,11 @@ public class PerfCounterWildcardQuery {
      *                     field (Enum value) and PDH Counter string (instance and counter)
      * @param perfObject   The PDH object for this counter; all counters on this object will be refreshed at the same
      *                     time
-     * @param customFilter a custom instance filter to use. If null, uses the first element of the property enum
+     * @param customFilter a custom instance filter to use. If null or blank, uses the non-null filter from the first
+     *                     element of the property enum
      * @return An pair containing a list of instances and an {@link EnumMap} of the corresponding values indexed by
      *         {@code propertyEnum} on success, or an empty list and empty map if the PDH query failed.
+     * @throws NullPointerException if {@code propertyEnum} or the selected instance filter is null
      */
     public static <T extends Enum<T>> Pair<List<String>, Map<T, List<Long>>> queryInstancesAndValuesFromPDH(
             Class<T> propertyEnum,
@@ -163,10 +167,10 @@ public class PerfCounterWildcardQuery {
             throw new IllegalArgumentException("Enum " + propertyEnum.getName()
                     + " must have at least two elements, an instance filter and a counter.");
         }
-        String instanceFilter = (StringKit.isBlank(customFilter)
-                ? ((PdhCounterWildcardProperty) propertyEnum.getEnumConstants()[0]).getCounter()
-                        .toLowerCase(Locale.ROOT)
-                : customFilter).toLowerCase(Locale.ROOT);
+        String filter = StringKit.isBlank(customFilter) ? ((PdhCounterWildcardProperty) props[0]).getCounter()
+                : customFilter;
+        Objects.requireNonNull(filter, "Instance filter must not be null");
+        String instanceFilter = StringKit.toLowerCase(filter);
         // Localize the perfObject using different variable for the EnumObjectItems
         // Will still use unlocalized perfObject for the query
         String perfObjectLocalized = PerfCounterQuery.localizeIfNeeded(perfObject, true);
@@ -188,7 +192,7 @@ public class PerfCounterWildcardQuery {
         }
         List<String> instances = objectItems.getInstances();
         // Filter out instances not matching filter
-        instances.removeIf(i -> !Parsing.wildcardMatch(i.toLowerCase(Locale.ROOT), instanceFilter));
+        instances.removeIf(i -> !Parsing.wildcardMatch(StringKit.toLowerCase(i), instanceFilter));
         EnumMap<T, List<Long>> valuesMap = new EnumMap<>(propertyEnum);
         try (PerfCounterQueryHandler pdhQueryHandler = new PerfCounterQueryHandler()) {
             // Set up the query and counter handles

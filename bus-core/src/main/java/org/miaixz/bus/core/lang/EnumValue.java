@@ -20,13 +20,13 @@
 package org.miaixz.bus.core.lang;
 
 import java.awt.*;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
 import lombok.Getter;
 
 import org.miaixz.bus.core.center.map.BiMap;
+import org.miaixz.bus.core.xyz.StringKit;
 
 /**
  * Generic interface for enum elements, allowing custom enums to implement this interface for data conversion. It is
@@ -670,7 +670,7 @@ public interface EnumValue<E extends EnumValue<E>> extends Enumers {
             }
 
             try {
-                String normalized = name.toUpperCase().replace(Symbol.C_MINUS, Symbol.C_UNDERLINE);
+                String normalized = StringKit.toUpperCase(name).replace(Symbol.C_MINUS, Symbol.C_UNDERLINE);
                 return valueOf(normalized);
             } catch (IllegalArgumentException e) {
                 return NORMAL;
@@ -885,7 +885,7 @@ public interface EnumValue<E extends EnumValue<E>> extends Enumers {
          */
         public static Sort fromString(String value) {
             try {
-                return Sort.valueOf(value.toUpperCase());
+                return Sort.valueOf(StringKit.toUpperCase(value));
             } catch (Exception e) {
                 throw new IllegalArgumentException(String.format(
                         "Invalid value '%s' for orders given; Has to be either 'desc' or 'asc' (case insensitive)",
@@ -1017,7 +1017,7 @@ public interface EnumValue<E extends EnumValue<E>> extends Enumers {
          * @return normalized release track key
          */
         public static String normalize(String track) {
-            return track == null || track.isBlank() ? STABLE.key : track.trim().toLowerCase(Locale.ROOT);
+            return track == null || track.isBlank() ? STABLE.key : StringKit.toLowerCase(track.trim());
         }
 
         /**

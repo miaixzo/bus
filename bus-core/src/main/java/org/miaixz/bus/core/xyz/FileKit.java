@@ -163,7 +163,7 @@ public class FileKit extends PathResolve {
                 return true;
             }
             // Check for temporary files (ending with .tmp)
-            if (fileName.toLowerCase().endsWith(".tmp")) {
+            if (StringKit.toLowerCase(fileName).endsWith(".tmp")) {
                 return true;
             }
             // Check for Windows style hidden files (using file attribute)
@@ -1434,7 +1434,7 @@ public class FileKit extends PathResolve {
      * @return `true` if the path ends with the suffix.
      */
     public static boolean pathEndsWith(final File file, final String suffix) {
-        return file.getPath().toLowerCase().endsWith(suffix);
+        return StringKit.toLowerCase(file.getPath()).endsWith(suffix);
     }
 
     /**

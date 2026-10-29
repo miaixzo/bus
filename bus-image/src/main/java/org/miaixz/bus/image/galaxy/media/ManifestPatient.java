@@ -26,6 +26,7 @@ import java.util.Map.Entry;
 
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.image.Tag;
 
 /**
@@ -92,7 +93,7 @@ public class ManifestPatient implements ManifestXml, Comparable<ManifestPatient>
         if (sex == null) {
             return null;
         }
-        String upperSex = sex.toUpperCase(Locale.ROOT);
+        String upperSex = StringKit.toUpperCase(sex);
         if (upperSex.startsWith("M")) {
             return "M";
         }

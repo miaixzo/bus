@@ -219,7 +219,8 @@ public class StringKit extends CharsBacker {
     }
 
     /**
-     * Reverses a string. Example: "abcd" becomes "dcba".
+     * Reverses a string by Unicode code points. Example: "A😀B" becomes "B😀A". Valid surrogate pairs are preserved;
+     * combining sequences and ZWJ sequences are not treated as a single grapheme cluster.
      *
      * @param text The string to reverse.
      * @return The reversed string.
@@ -228,7 +229,7 @@ public class StringKit extends CharsBacker {
         if (isBlank(text)) {
             return text;
         }
-        return new String(ArrayKit.reverse(text.toCharArray()));
+        return reverseByCodePoint(text);
     }
 
     /**
@@ -467,8 +468,9 @@ public class StringKit extends CharsBacker {
     /**
      * Reverses a string.
      * <p>
-     * This method reverses the string by Unicode code points, correctly handling supplementary characters (such as
-     * emojis, combining marks, and other multi-char Unicode sequences) to ensure they are not split incorrectly.
+     * This method reverses the string by Unicode code points and preserves valid surrogate pairs, such as those used by
+     * supplementary characters. Combining marks and ZWJ sequences remain separate code points; this is not a
+     * grapheme-cluster reversal.
      * <p>
      * {@code "abcd"} → {@code "dcba"}<br>
      * {@code "abc"} → {@code "cba"}<br>

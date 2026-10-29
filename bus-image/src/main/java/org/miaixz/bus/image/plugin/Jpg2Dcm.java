@@ -33,6 +33,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.xml.sax.SAXException;
 
 import org.miaixz.bus.core.xyz.IoKit;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.image.Tag;
 import org.miaixz.bus.image.UID;
 import org.miaixz.bus.image.galaxy.data.Attributes;
@@ -374,7 +375,7 @@ public class Jpg2Dcm {
         static ContentType of(String type) {
             if (type == null)
                 return null;
-            switch (type.toLowerCase()) {
+            switch (StringKit.toLowerCase(type)) {
                 case "image/jpeg":
                 case "image/jp2":
                 case "image/j2c":

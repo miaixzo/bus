@@ -27,6 +27,7 @@ import java.nio.file.spi.FileTypeDetector;
 
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.xyz.StreamKit;
+import org.miaixz.bus.core.xyz.StringKit;
 
 /**
  * A {@link FileTypeDetector} implementation that detects Bzip2 compressed files. It checks for the Bzip2 magic number
@@ -71,7 +72,7 @@ public class Bzip2FileDetector extends FileTypeDetector {
         byte[] b = new byte[3];
         try (InputStream in = Files.newInputStream(path)) {
             return StreamKit.readAvailable(in, b, 0, 3) == 3 && b[0] == 0x42 && b[1] == 0x5A && b[2] == 0x68
-                    ? endsWith(path.getFileName().toString().toLowerCase(), ".vcf.bz2", ".vcfbzip2", ".vcfbz2")
+                    ? endsWith(StringKit.toLowerCase(path.getFileName().toString()), ".vcf.bz2", ".vcfbzip2", ".vcfbz2")
                             ? MediaType.APPLICATION_PRS_VCFBZIP
                             : MediaType.APPLICATION_X_BZIP2
                     : null;

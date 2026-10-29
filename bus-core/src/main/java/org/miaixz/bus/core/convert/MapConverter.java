@@ -112,7 +112,7 @@ public class MapConverter extends ConverterWithRoot implements MatcherConverter,
 
             map = MapKit.createMap(TypeKit.getClass(targetType), LinkedHashMap::new);
             convertMapToMap(keyType, valueType, (Map) value, map);
-        } else if (BeanKit.isWritableBean(value.getClass())) {
+        } else if (BeanKit.isReadableBean(value.getClass())) {
             map = BeanKit.beanToMap(value);
             // Second conversion to convert key-value types
             map = convert(targetType, keyType, valueType, map);

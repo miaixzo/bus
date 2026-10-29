@@ -23,7 +23,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 
 import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.core.xyz.MethodKit;
+import org.miaixz.bus.core.lang.reflect.method.MethodInvoker;
 import org.miaixz.bus.core.xyz.ObjectKit;
 
 /**
@@ -56,7 +56,7 @@ public class CacheableAnnotationAttribute implements AnnotationAttribute {
     /**
      * Whether the default value has been fetched.
      */
-    private boolean defaultValueInvoked;
+    private volatile boolean defaultValueInvoked;
 
     /**
      * The cached default value of the attribute.
@@ -109,8 +109,11 @@ public class CacheableAnnotationAttribute implements AnnotationAttribute {
         if (!valueInvoked) {
             synchronized (this) {
                 if (!valueInvoked) {
+                    // Invoke once: a failed annotation getter must not be invoked again by a reflection fallback.
+                    value = MethodInvoker.invokeExact(annotation, attribute);
+                    // Publish only after successful invocation and assignment, so readers cannot observe a partial
+                    // value.
                     valueInvoked = true;
-                    value = MethodKit.invoke(annotation, attribute);
                 }
             }
         }
@@ -125,8 +128,12 @@ public class CacheableAnnotationAttribute implements AnnotationAttribute {
     @Override
     public boolean isValueEquivalentToDefaultValue() {
         if (!defaultValueInvoked) {
-            defaultValue = attribute.getDefaultValue();
-            defaultValueInvoked = true;
+            synchronized (this) {
+                if (!defaultValueInvoked) {
+                    defaultValue = attribute.getDefaultValue();
+                    defaultValueInvoked = true;
+                }
+            }
         }
         return ObjectKit.equals(getValue(), defaultValue);
     }

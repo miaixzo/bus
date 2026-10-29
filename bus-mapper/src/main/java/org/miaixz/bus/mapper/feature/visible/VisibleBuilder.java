@@ -19,7 +19,6 @@
 */
 package org.miaixz.bus.mapper.feature.visible;
 
-import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -194,7 +193,7 @@ public class VisibleBuilder {
             return Normal.EMPTY;
         }
         String alias = tableAlias.trim();
-        if (StringKit.isEmpty(alias) || ALIAS_STOP_WORDS.contains(alias.toUpperCase(Locale.ROOT))) {
+        if (StringKit.isEmpty(alias) || ALIAS_STOP_WORDS.contains(StringKit.toUpperCase(alias))) {
             return Normal.EMPTY;
         }
         return alias;

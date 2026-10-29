@@ -20,7 +20,6 @@
 package org.miaixz.bus.fabric.protocol.http.chain;
 
 import java.net.SocketTimeoutException;
-import java.util.Locale;
 import java.util.function.Function;
 
 import org.miaixz.bus.core.lang.Assert;
@@ -316,7 +315,7 @@ public class HttpTransport implements HttpStage {
         Assert.isFalse(
                 StringKit.isBlank(value) || StringKit.containsAny(value, Symbol.C_CR, Symbol.C_LF),
                 () -> new ValidateException("HTTP transport name must be non-blank and single-line"));
-        return StringKit.trim(value).toLowerCase(Locale.ROOT);
+        return StringKit.toLowerCase(StringKit.trim(value));
     }
 
     /**

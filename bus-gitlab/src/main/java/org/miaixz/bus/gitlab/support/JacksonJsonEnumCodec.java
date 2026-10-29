@@ -25,6 +25,7 @@ import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonCreator;
 
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.xyz.StringKit;
 
 /**
  * Converts enum constants between Java names and their JSON representations.
@@ -66,9 +67,9 @@ public class JacksonJsonEnumCodec<E extends Enum<E>> {
 
         for (E e : enumType.getEnumConstants()) {
 
-            String name = e.name().toLowerCase();
+            String name = StringKit.toLowerCase(e.name());
             if (firstLetterCapitalized) {
-                name = name.substring(0, 1).toUpperCase() + name.substring(1);
+                name = StringKit.toUpperCase(name.substring(0, 1)) + name.substring(1);
             }
 
             valuesMap.put(name, e);
@@ -104,7 +105,7 @@ public class JacksonJsonEnumCodec<E extends Enum<E>> {
 
         for (E e : enumType.getEnumConstants()) {
 
-            char[] chars = e.name().toLowerCase().toCharArray();
+            char[] chars = StringKit.toLowerCase(e.name()).toCharArray();
             StringBuilder nameBuf = new StringBuilder(chars.length);
             boolean nextCharIsCapitalized = firstLetterCapitalized;
             for (char ch : chars) {

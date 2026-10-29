@@ -74,7 +74,8 @@ public final class ItemCodec {
      */
     private static JsonValue.ObjectValue definition(Document document) {
         Map<String, JsonValue> result = new TreeMap<>();
-        document.properties().forEach((key, property) -> result.put(key, new JsonValue.ObjectValue(property.attributes())));
+        document.properties()
+                .forEach((key, property) -> result.put(key, new JsonValue.ObjectValue(property.attributes())));
         return new JsonValue.ObjectValue(result);
     }
 
@@ -299,14 +300,15 @@ public final class ItemCodec {
     /**
      * Addresses an exact definition attribute without colliding with business-value actions.
      *
-     * @param property exact definition key or its canonical coordinate
+     * @param property  exact definition key or its canonical coordinate
      * @param attribute extensible attribute name
      * @return a definition-fragment coordinate
      */
     public static String attributePath(String property, String attribute) {
         if (!isAttribute(attribute) || attribute.isBlank() || attribute.codePoints().anyMatch(Character::isISOControl))
             throw invalid("attribute");
-        return "#" + JsonSchema.pointer(JsonSchema.pointer("", coordinate(Objects.requireNonNull(property))), attribute);
+        return "#"
+                + JsonSchema.pointer(JsonSchema.pointer("", coordinate(Objects.requireNonNull(property))), attribute);
     }
 
     /**
@@ -475,8 +477,8 @@ public final class ItemCodec {
         for (var e : object.values().entrySet()) {
             if (!paths.add(coordinate(e.getKey())))
                 throw invalid("duplicatePath");
-            if (!(e.getValue() instanceof JsonValue.ObjectValue attrs)
-                    || attrs.values().keySet().stream().anyMatch(name -> name.isBlank() || name.codePoints().anyMatch(Character::isISOControl)))
+            if (!(e.getValue() instanceof JsonValue.ObjectValue attrs) || attrs.values().keySet().stream()
+                    .anyMatch(name -> name.isBlank() || name.codePoints().anyMatch(Character::isISOControl)))
                 throw invalid("member");
             JsonValue desc = attrs.values().get("desc");
             if (desc != null && !(desc instanceof JsonValue.StringValue))
@@ -549,10 +551,10 @@ public final class ItemCodec {
     }
 
     /**
-     * Replaces business values while retaining complete definitions at their canonical coordinates.
-     * Existing metadata-only properties remain absent from the explicit value layer.
+     * Replaces business values while retaining complete definitions at their canonical coordinates. Existing
+     * metadata-only properties remain absent from the explicit value layer.
      *
-     * @param values explicit business object
+     * @param values   explicit business object
      * @param previous previous plaintext definition, or null for a new object
      * @return an unprotected current definition retaining existing property names and metadata
      */
@@ -569,23 +571,34 @@ public final class ItemCodec {
         if (names.containsKey(""))
             importValue(values, "", "", previous, names, properties);
         else
-            values.values().forEach((name, value) -> importValue(value, JsonSchema.pointer("", name), name,
-                    previous, names, properties));
+            values.values().forEach(
+                    (name, value) -> importValue(
+                            value,
+                            JsonSchema.pointer("", name),
+                            name,
+                            previous,
+                            names,
+                            properties));
         return new Document(properties, previous.rules(), previous.schema(), previous.management(), Protection.NONE);
     }
 
     /**
      * Projects one business branch through existing property coordinates without guessing attribute envelopes.
      *
-     * @param value explicit business subtree
-     * @param pointer canonical business pointer
-     * @param literal original top-level name, or null for a nested branch
-     * @param previous authoritative plaintext definition
-     * @param names canonical pointer-to-original-name index
+     * @param value      explicit business subtree
+     * @param pointer    canonical business pointer
+     * @param literal    original top-level name, or null for a nested branch
+     * @param previous   authoritative plaintext definition
+     * @param names      canonical pointer-to-original-name index
      * @param properties resulting complete properties
      */
-    private void importValue(JsonValue value, String pointer, String literal, Document previous,
-            NavigableMap<String, String> names, Map<String, Property> properties) {
+    private void importValue(
+            JsonValue value,
+            String pointer,
+            String literal,
+            Document previous,
+            NavigableMap<String, String> names,
+            Map<String, Property> properties) {
         String name = names.get(pointer), descendant = names.ceilingKey(pointer + "/");
         boolean split = descendant != null && descendant.startsWith(pointer + "/");
         Property property = name == null ? null : previous.properties().get(name);
@@ -594,8 +607,14 @@ public final class ItemCodec {
             return;
         }
         if (split && value instanceof JsonValue.ObjectValue object && !object.values().isEmpty()) {
-            object.values().forEach((key, child) -> importValue(child, JsonSchema.pointer(pointer, key), null,
-                    previous, names, properties));
+            object.values().forEach(
+                    (key, child) -> importValue(
+                            child,
+                            JsonSchema.pointer(pointer, key),
+                            null,
+                            previous,
+                            names,
+                            properties));
             return;
         }
         if (split && value instanceof JsonValue.ArrayValue)
@@ -687,8 +706,8 @@ public final class ItemCodec {
     }
 
     /**
-     * Requires explicit non-null, nonblank values only when requested by the editing workflow.
-     * Defaults do not satisfy this check; zero and false remain valid values.
+     * Requires explicit non-null, nonblank values only when requested by the editing workflow. Defaults do not satisfy
+     * this check; zero and false remain valid values.
      *
      * @param document plaintext definition after protected edit intents have been applied
      */

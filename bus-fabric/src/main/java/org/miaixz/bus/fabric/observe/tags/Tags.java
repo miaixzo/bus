@@ -21,7 +21,6 @@ package org.miaixz.bus.fabric.observe.tags;
 
 import static org.miaixz.bus.fabric.Builder.TAG_REDACTED;
 
-import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -210,7 +209,7 @@ public class Tags {
      * @return {@code true} when the key names credentials or session material
      */
     private static boolean sensitiveKey(final String key) {
-        final String compact = key.toLowerCase(Locale.ROOT).replace(Symbol.MINUS, Normal.EMPTY)
+        final String compact = StringKit.toLowerCase(key).replace(Symbol.MINUS, Normal.EMPTY)
                 .replace(Symbol.UNDERLINE, Normal.EMPTY).replace(Symbol.DOT, Normal.EMPTY);
         return compact.contains("authorization") || compact.contains("cookie") || compact.contains("password")
                 || compact.contains("passwd") || compact.contains("secret") || compact.endsWith("token")

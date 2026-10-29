@@ -31,6 +31,7 @@ import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.core.xyz.StringKit;
 
 /**
  * Represents an HTTP Media Type (also known as MIME type).
@@ -882,13 +883,13 @@ public class MediaType {
         if (currentType.isBlank() || currentType.indexOf(Symbol.C_CR) >= 0 || currentType.indexOf(Symbol.C_LF) >= 0) {
             throw new ValidateException("Media type must be non-blank and single-line");
         }
-        this.type = currentType.toLowerCase(Locale.ROOT);
+        this.type = StringKit.toLowerCase(currentType);
         final String currentSubtype = null == subtype ? MEDIA_TYPE_WILDCARD : subtype;
         if (currentSubtype.isBlank() || currentSubtype.indexOf(Symbol.C_CR) >= 0
                 || currentSubtype.indexOf(Symbol.C_LF) >= 0) {
             throw new ValidateException("Media subtype must be non-blank and single-line");
         }
-        this.subtype = currentSubtype.toLowerCase(Locale.ROOT);
+        this.subtype = StringKit.toLowerCase(currentSubtype);
         final LinkedHashMap<String, String> copy = new LinkedHashMap<>();
         if (params != null) {
             for (final Entry<String, String> entry : params.entrySet()) {
@@ -902,7 +903,7 @@ public class MediaType {
                         || value.indexOf(Symbol.C_LF) >= 0) {
                     throw new ValidateException("Media parameter value must be non-blank and single-line");
                 }
-                copy.put(name.toLowerCase(Locale.ROOT), value);
+                copy.put(StringKit.toLowerCase(name), value);
             }
         }
         if (null != charset && !charset.isEmpty()) {
@@ -950,8 +951,8 @@ public class MediaType {
         if (!typeSubtype.lookingAt()) {
             throw new ProtocolException("No subtype found for: " + Symbol.DOUBLE_QUOTES + text + Symbol.DOUBLE_QUOTES);
         }
-        final String type = typeSubtype.group(1).toLowerCase(Locale.ROOT);
-        final String subtype = typeSubtype.group(2).toLowerCase(Locale.ROOT);
+        final String type = StringKit.toLowerCase(typeSubtype.group(1));
+        final String subtype = StringKit.toLowerCase(typeSubtype.group(2));
         final LinkedHashMap<String, String> parameters = new LinkedHashMap<>();
         String charset = null;
         final Matcher parameter = PARAMETER.matcher(text);
@@ -961,7 +962,7 @@ public class MediaType {
                 throw new ProtocolException(
                         "Parameter is not formatted correctly: " + text.substring(start) + " for:" + text);
             }
-            final String name = parameter.group(1).toLowerCase(Locale.ROOT);
+            final String name = StringKit.toLowerCase(parameter.group(1));
             String validValue = null == parameter.group(2) ? parameter.group(3) : parameter.group(2);
             if (validValue != null && validValue.length() >= 2 && validValue.startsWith(Symbol.DOUBLE_QUOTES)
                     && validValue.endsWith(Symbol.DOUBLE_QUOTES)) {
@@ -1008,7 +1009,7 @@ public class MediaType {
                         || value.indexOf(Symbol.C_LF) >= 0) {
                     throw new ValidateException("Media parameter value must be non-blank and single-line");
                 }
-                map.put(name.toLowerCase(Locale.ROOT), value);
+                map.put(StringKit.toLowerCase(name), value);
             }
         }
         return map;
@@ -1027,7 +1028,7 @@ public class MediaType {
         if (mediaType == null || mediaType.getSubtype() == null) {
             return false;
         }
-        String subtype = mediaType.getSubtype().toLowerCase(Locale.ROOT);
+        String subtype = StringKit.toLowerCase(mediaType.getSubtype());
         return JSON.equals(subtype) || subtype.startsWith(JSON + Symbol.PLUS) || subtype.endsWith(Symbol.PLUS + JSON);
     }
 
@@ -1128,7 +1129,8 @@ public class MediaType {
      * @return a hash code value for this media type
      */
     public int hashCode() {
-        return (this.type.toLowerCase() + this.subtype.toLowerCase()).hashCode() + this.parameters.hashCode();
+        return (StringKit.toLowerCase(this.type) + StringKit.toLowerCase(this.subtype)).hashCode()
+                + this.parameters.hashCode();
     }
 
     /**
@@ -1178,7 +1180,7 @@ public class MediaType {
         if (name == null || name.isBlank() || name.indexOf(Symbol.C_CR) >= 0 || name.indexOf(Symbol.C_LF) >= 0) {
             throw new ValidateException("Media parameter name must be non-blank and single-line");
         }
-        return parameters.get(name.toLowerCase(Locale.ROOT));
+        return parameters.get(StringKit.toLowerCase(name));
     }
 
     /**

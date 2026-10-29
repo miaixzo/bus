@@ -94,7 +94,7 @@ public class Voucher {
      */
     public Object getFieldValueByName(String field, Object object) {
         try {
-            String firstLetter = field.substring(0, 1).toUpperCase();
+            String firstLetter = StringKit.toUpperCase(field.substring(0, 1));
             String getter = new StringBuffer().append("get").append(firstLetter).append(field.substring(1)).toString();
             Method method = object.getClass().getMethod(getter);
             return method.invoke(object);

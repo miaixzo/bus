@@ -34,6 +34,7 @@ import org.apache.ibatis.type.JdbcType;
 
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.mapper.Charter.Behavior;
 import org.miaixz.bus.mapper.Charter.Modify;
 import org.miaixz.bus.mapper.feature.paging.Pageable;
@@ -243,7 +244,7 @@ public abstract class AbstractDialect implements Dialect {
         if (jdbcUrl == null || jdbcUrl.isEmpty()) {
             return null;
         }
-        return jdbcUrl.toLowerCase().startsWith(this.jdbcUrlPrefix.toLowerCase()) ? this : null;
+        return StringKit.toLowerCase(jdbcUrl).startsWith(StringKit.toLowerCase(this.jdbcUrlPrefix)) ? this : null;
     }
 
     /**
@@ -1241,13 +1242,13 @@ public abstract class AbstractDialect implements Dialect {
         addLookupName(names, name);
         if (name != null) {
             if (metaData.storesUpperCaseIdentifiers()) {
-                addLookupName(names, name.toUpperCase(Locale.ROOT));
+                addLookupName(names, StringKit.toUpperCase(name));
             }
             if (metaData.storesLowerCaseIdentifiers()) {
-                addLookupName(names, name.toLowerCase(Locale.ROOT));
+                addLookupName(names, StringKit.toLowerCase(name));
             }
-            addLookupName(names, name.toUpperCase(Locale.ROOT));
-            addLookupName(names, name.toLowerCase(Locale.ROOT));
+            addLookupName(names, StringKit.toUpperCase(name));
+            addLookupName(names, StringKit.toLowerCase(name));
         }
         return names;
     }

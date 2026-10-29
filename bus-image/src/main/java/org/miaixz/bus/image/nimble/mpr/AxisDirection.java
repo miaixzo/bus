@@ -19,8 +19,7 @@
 */
 package org.miaixz.bus.image.nimble.mpr;
 
-import java.util.Locale;
-
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.image.nimble.geometry.Vector3;
 
 /**
@@ -95,7 +94,7 @@ public enum AxisDirection {
         if (plane == null || plane.isBlank()) {
             throw new IllegalArgumentException("plane cannot be blank");
         }
-        return AxisDirection.valueOf(plane.trim().toUpperCase(Locale.ROOT));
+        return AxisDirection.valueOf(StringKit.toUpperCase(plane.trim()));
     }
 
     /**

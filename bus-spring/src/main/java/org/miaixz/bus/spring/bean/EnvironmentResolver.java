@@ -20,10 +20,11 @@
 package org.miaixz.bus.spring.bean;
 
 import java.util.Arrays;
-import java.util.Locale;
 import java.util.Objects;
 
 import org.springframework.core.env.Environment;
+
+import org.miaixz.bus.core.xyz.StringKit;
 
 /**
  * Read-only, deterministic access to one Spring Environment.
@@ -191,10 +192,13 @@ public class EnvironmentResolver {
      *
      * @param expected expected non-empty text
      * @return whether profile is available
+     * @throws NullPointerException if a null profile name is encountered before finding a match
      */
     private boolean hasProfile(String expected) {
-        return Arrays.stream(getActiveProfiles()).map(profile -> profile.toLowerCase(Locale.ROOT))
-                .anyMatch(expected::equals);
+        return Arrays.stream(getActiveProfiles()).anyMatch(profile -> {
+            Objects.requireNonNull(profile, "Active profile name must not be null");
+            return expected.equals(StringKit.toLowerCase(profile));
+        });
     }
 
 }

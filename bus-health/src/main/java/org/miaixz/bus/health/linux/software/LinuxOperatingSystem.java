@@ -35,6 +35,7 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.tuple.Pair;
 import org.miaixz.bus.core.lang.tuple.Triplet;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.health.Builder;
 import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.Memoizer;
@@ -584,8 +585,8 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
             return "Unknown";
         } else {
             Properties filenameProps = Builder.readProperties(Builder._LINUX_FILENAME_PROPERTIES);
-            String family = filenameProps.getProperty(name.toLowerCase(Locale.ROOT));
-            return family != null ? family : name.substring(0, 1).toUpperCase(Locale.ROOT) + name.substring(1);
+            String family = filenameProps.getProperty(StringKit.toLowerCase(name));
+            return family != null ? family : StringKit.toUpperCase(name.substring(0, 1)) + name.substring(1);
         }
     }
 
@@ -931,7 +932,7 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
         if (!systemctlFound) {
             // Get Directories for stopped services
             File dir = new File("/etc/init");
-            File[] confFiles = dir.listFiles((f, name) -> name.toLowerCase(Locale.ROOT).endsWith(".conf"));
+            File[] confFiles = dir.listFiles((f, name) -> StringKit.toLowerCase(name).endsWith(".conf"));
             if (confFiles != null) {
                 for (File f : confFiles) {
                     // remove .conf extension

@@ -22,6 +22,7 @@ package org.miaixz.bus.metrics.bridge;
 import java.util.*;
 import java.util.Objects;
 
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.health.Collector;
 import org.miaixz.bus.health.Platform;
 import org.miaixz.bus.health.builtin.hardware.*;
@@ -106,7 +107,7 @@ final class HealthMetricSource implements HostMetricSource {
      * @return normalized transport
      */
     private static String transport(String type) {
-        String normalized = type == null ? "" : type.toLowerCase(Locale.ROOT);
+        String normalized = type == null ? "" : StringKit.toLowerCase(type);
         if (normalized.startsWith("tcp"))
             return "tcp";
         if (normalized.startsWith("udp"))
@@ -127,7 +128,7 @@ final class HealthMetricSource implements HostMetricSource {
      * @return normalized state
      */
     private static String connectionState(String state) {
-        String normalized = state.toLowerCase(Locale.ROOT).replace("syn_recv", "syn_received");
+        String normalized = StringKit.toLowerCase(state).replace("syn_recv", "syn_received");
         return switch (normalized) {
             case "closed", "close_wait", "closing", "established", "fin_wait_1", "fin_wait_2", "last_ack", "listen", "syn_received", "syn_sent", "time_wait" -> normalized;
             default -> "other";
@@ -276,7 +277,7 @@ final class HealthMetricSource implements HostMetricSource {
             if (snapshots.size() >= options.disk().maxDevices()) {
                 break;
             }
-            if (!options.disk().includeVirtual() && disk.getDiskType().toLowerCase(Locale.ROOT).contains("virtual")) {
+            if (!options.disk().includeVirtual() && StringKit.toLowerCase(disk.getDiskType()).contains("virtual")) {
                 continue;
             }
             if (disk.updateAttributes() && disk.getName() != null && !disk.getName().isBlank()) {
@@ -302,7 +303,7 @@ final class HealthMetricSource implements HostMetricSource {
             if (!store.updateAttributes()) {
                 continue;
             }
-            String optionsText = store.getOptions() == null ? "" : store.getOptions().toLowerCase(Locale.ROOT);
+            String optionsText = store.getOptions() == null ? "" : StringKit.toLowerCase(store.getOptions());
             String mode = containsOption(optionsText, "ro") ? "ro"
                     : containsOption(optionsText, "rw") ? "rw" : "unknown";
             snapshots.add(

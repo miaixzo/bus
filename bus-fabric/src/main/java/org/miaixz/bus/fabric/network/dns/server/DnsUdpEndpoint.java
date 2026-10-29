@@ -28,7 +28,6 @@ import java.nio.ByteBuffer;
 import java.nio.channels.DatagramChannel;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.miaixz.bus.core.Lifecycle;
@@ -38,6 +37,7 @@ import org.miaixz.bus.core.lang.exception.SocketException;
 import org.miaixz.bus.core.lang.exception.StatefulException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.xyz.IoKit;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.core.xyz.ThreadKit;
 import org.miaixz.bus.fabric.network.dns.message.DnsCodec;
 
@@ -169,7 +169,7 @@ public class DnsUdpEndpoint implements AutoCloseable, Lifecycle {
      * @return true on Linux
      */
     private static boolean linux() {
-        return System.getProperty("os.name", Normal.EMPTY).toLowerCase(Locale.ROOT).contains("linux");
+        return StringKit.toLowerCase(System.getProperty("os.name", Normal.EMPTY)).contains("linux");
     }
 
     /**

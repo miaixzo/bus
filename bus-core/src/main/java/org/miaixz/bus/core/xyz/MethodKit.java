@@ -541,7 +541,7 @@ public class MethodKit {
             return false;
         }
         if (ignoreCase) {
-            name = name.toLowerCase();
+            name = StringKit.toLowerCase(name);
         }
         return name.startsWith(Normal.SET);
     }
@@ -568,7 +568,7 @@ public class MethodKit {
             return false;
         }
         if (ignoreCase) {
-            name = name.toLowerCase();
+            name = StringKit.toLowerCase(name);
         }
         if (name.startsWith(Normal.IS)) {
             return BooleanKit.isBoolean(method.getReturnType());

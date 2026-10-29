@@ -33,6 +33,7 @@ import com.jcraft.jsch.ChannelSftp.LsEntrySelector;
 
 import org.miaixz.bus.core.center.function.PredicateX;
 import org.miaixz.bus.core.io.file.FileName;
+import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.CollKit;
@@ -71,6 +72,11 @@ public class JschSftp extends AbstractFtp {
     private ChannelSftp channel;
 
     /**
+     * Whether this wrapper owns the SSH session and must disconnect it on close or initialization failure.
+     */
+    private final boolean closeSessionOnClose;
+
+    /**
      * Constructs a {@code JschSftp} instance with the given FTP configuration and initializes it immediately.
      *
      * @param config The {@link FtpConfig} containing connection details.
@@ -87,26 +93,57 @@ public class JschSftp extends AbstractFtp {
      */
     public JschSftp(final FtpConfig config, final boolean init) {
         super(config);
+        this.closeSessionOnClose = true;
         if (init) {
             init();
         }
     }
 
     /**
-     * Constructs a {@code JschSftp} instance with an existing JSch {@link Session}, character set, and timeout.
+     * Constructs a {@code JschSftp} instance with an existing JSch {@link Session}, character set, and timeout. This
+     * legacy constructor transfers session ownership to the wrapper. Use {@link #borrowed(Session, Charset, long)} when
+     * the session is shared or managed by the caller.
      *
      * @param session The pre-existing JSch {@link Session}.
      * @param charset The character set for file names.
      * @param timeOut The connection timeout duration in milliseconds.
      */
     public JschSftp(final Session session, final Charset charset, final long timeOut) {
+        this(session, charset, timeOut, true);
+    }
+
+    /**
+     * Wraps an existing session with an explicit ownership policy. The wrapper always owns its SFTP channel.
+     *
+     * @param session             the existing session
+     * @param charset             the filename character set
+     * @param timeOut             connection timeout in milliseconds
+     * @param closeSessionOnClose whether close and initialization failure also disconnect the session
+     */
+    public JschSftp(final Session session, final Charset charset, final long timeOut,
+            final boolean closeSessionOnClose) {
         super(FtpConfig.of().setCharset(charset).setConnectionTimeout(timeOut));
-        this.session = session;
+        this.session = Assert.notNull(session, "Session must not be null");
+        this.closeSessionOnClose = closeSessionOnClose;
         init();
     }
 
     /**
-     * Constructs a {@code JschSftp} instance with an existing JSch {@link ChannelSftp}, character set, and timeout.
+     * Creates a client that borrows a caller-managed session. Closing the client only disconnects its channel; the
+     * session remains available for other clients and may be reused when this wrapper is initialized again.
+     *
+     * @param session caller-managed session
+     * @param charset filename character set
+     * @param timeOut connection timeout in milliseconds
+     * @return a client that does not own the session
+     */
+    public static JschSftp borrowed(final Session session, final Charset charset, final long timeOut) {
+        return new JschSftp(session, charset, timeOut, false);
+    }
+
+    /**
+     * Constructs a {@code JschSftp} instance with an existing JSch {@link ChannelSftp}, character set, and timeout. The
+     * wrapper closes the channel but does not own its session.
      *
      * @param channel The pre-existing JSch {@link ChannelSftp}.
      * @param charset The character set for file names.
@@ -114,7 +151,8 @@ public class JschSftp extends AbstractFtp {
      */
     public JschSftp(final ChannelSftp channel, final Charset charset, final long timeOut) {
         super(FtpConfig.of().setCharset(charset).setConnectionTimeout(timeOut));
-        this.channel = channel;
+        this.channel = Assert.notNull(channel, "Channel must not be null");
+        this.closeSessionOnClose = false;
         init();
     }
 
@@ -157,53 +195,28 @@ public class JschSftp extends AbstractFtp {
      * @throws InternalException if a JSch exception occurs during initialization.
      */
     public void init() {
-        if (null == this.channel) {
-            if (null == this.session) {
-                final FtpConfig config = this.ftpConfig;
-                final Connector connector = config.getConnector();
-                this.session = new JschSession(Connector.of(
-                        connector.getHost(),
-                        connector.getPort(),
-                        connector.getUser(),
-                        connector.getPassword(),
-                        connector.getTimeout())).getRaw();
-            }
-
-            if (!session.isConnected()) {
-                try {
-                    session.connect((int) this.ftpConfig.getConnector().getTimeout());
-                } catch (final JSchException e) {
-                    Logger.warn(
-                            false,
-                            "Extra",
-                            e,
-                            "SSH operation failed: provider={}, exception={}",
-                            "JschSftp",
-                            e.getClass().getSimpleName());
-                    throw new InternalException(e);
-                }
-            }
-
-            try {
-                this.channel = (ChannelSftp) this.session.openChannel(ChannelType.SFTP.getValue());
-            } catch (final JSchException e) {
-                Logger.warn(
-                        false,
-                        "Extra",
-                        e,
-                        "SSH operation failed: provider={}, exception={}",
-                        "JschSftp",
-                        e.getClass().getSimpleName());
-                throw new InternalException(e);
-            }
-        }
-
         try {
+            if (null == this.channel) {
+                if (null == this.session) {
+                    this.session = createSession();
+                }
+                if (!session.isConnected()) {
+                    session.connect((int) Math.max(this.ftpConfig.getConnector().getTimeout(), 0));
+                }
+                this.channel = (ChannelSftp) this.session.openChannel(ChannelType.SFTP.getValue());
+            } else if (this.session == null) {
+                this.session = this.channel.getSession();
+            }
             if (!channel.isConnected()) {
                 channel.connect((int) Math.max(this.ftpConfig.getConnector().getTimeout(), 0));
             }
             channel.setFilenameEncoding(this.ftpConfig.getCharset());
-        } catch (final JSchException e) {
+        } catch (final JSchException | RuntimeException e) {
+            try {
+                close();
+            } catch (final RuntimeException cleanupFailure) {
+                e.addSuppressed(cleanupFailure);
+            }
             Logger.warn(
                     false,
                     "Extra",
@@ -211,8 +224,20 @@ public class JschSftp extends AbstractFtp {
                     "SSH operation failed: provider={}, exception={}",
                     "JschSftp",
                     e.getClass().getSimpleName());
+            if (e instanceof RuntimeException) {
+                throw (RuntimeException) e;
+            }
             throw new InternalException(e);
         }
+    }
+
+    /**
+     * Creates a dedicated, initially disconnected session for configuration-based clients.
+     *
+     * @return a new session owned by this wrapper
+     */
+    protected Session createSession() {
+        return JschKit.openSession(this.ftpConfig.getConnector());
     }
 
     /**
@@ -227,7 +252,7 @@ public class JschSftp extends AbstractFtp {
      */
     @Override
     public JschSftp reconnectIfTimeout() {
-        if (StringKit.isBlank(this.ftpConfig.getConnector().getHost())) {
+        if (this.session == null && StringKit.isBlank(this.ftpConfig.getConnector().getHost())) {
             throw new InternalException("Host is blank!");
         }
         try {
@@ -253,7 +278,7 @@ public class JschSftp extends AbstractFtp {
      * @throws InternalException if an error occurs during initialization or connection.
      */
     public ChannelSftp getClient() {
-        if (!this.channel.isConnected()) {
+        if (this.channel == null || !this.channel.isConnected()) {
             init();
         }
         return this.channel;
@@ -937,17 +962,29 @@ public class JschSftp extends AbstractFtp {
     }
 
     /**
-     * Closes the SFTP connection and releases all resources. This method is designed to be overridden by subclasses for
-     * custom cleanup logic. When overriding, ensure the method is idempotent and all resources are properly released.
+     * Closes the SFTP channel and, only when owned, its session. Borrowed sessions remain available to their owner.
+     * This method is designed to be overridden by subclasses for custom cleanup logic. When overriding, ensure the
+     * method is idempotent and all resources are properly released.
      * <p>
      * Subclasses should call {@code super.close()} to ensure proper cleanup of inherited resources.
      */
     @Override
     public void close() {
-        JschKit.close(this.channel);
+        final ChannelSftp currentChannel = this.channel;
         this.channel = null;
-        JschKit.close(this.session);
-        this.session = null;
+        try {
+            if (currentChannel != null) {
+                currentChannel.disconnect();
+            }
+        } finally {
+            if (this.closeSessionOnClose) {
+                final Session currentSession = this.session;
+                this.session = null;
+                if (currentSession != null) {
+                    currentSession.disconnect();
+                }
+            }
+        }
     }
 
     /**

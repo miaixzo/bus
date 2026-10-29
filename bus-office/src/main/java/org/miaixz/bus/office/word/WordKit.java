@@ -30,6 +30,7 @@ import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.miaixz.bus.core.io.file.FileName;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.FileKit;
+import org.miaixz.bus.core.xyz.StringKit;
 
 /**
  * Reads, creates, and modifies Word documents (DOCX).
@@ -68,7 +69,7 @@ public class WordKit {
      * @return The corresponding {@link PictureType} enum. Defaults to {@link PictureType#JPEG} if the type is unknown.
      */
     public static PictureType getType(final String fileName) {
-        String extName = FileName.extName(fileName).toUpperCase();
+        String extName = StringKit.toUpperCase(FileName.extName(fileName));
         if ("JPG".equals(extName)) {
             extName = "JPEG";
         }

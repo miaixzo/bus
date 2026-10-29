@@ -20,7 +20,6 @@
 package org.miaixz.bus.health.builtin.hardware;
 
 import java.util.List;
-import java.util.Locale;
 import java.util.Objects;
 import java.util.Properties;
 import java.util.regex.Matcher;
@@ -878,7 +877,7 @@ public interface CentralProcessor {
              */
             @Override
             public String toString() {
-                return name().charAt(0) + name().substring(1).toLowerCase(Locale.ROOT);
+                return name().charAt(0) + StringKit.toLowerCase(name().substring(1));
             }
 
         }
@@ -1151,7 +1150,7 @@ public interface CentralProcessor {
             // Intel is default, no prefix
             StringBuilder sb = new StringBuilder();
             // AMD and ARM properties have prefix
-            String ucVendor = this.cpuVendor.toUpperCase(Locale.ROOT);
+            String ucVendor = StringKit.toUpperCase(this.cpuVendor);
             if (ucVendor.contains("AMD")) {
                 sb.append("amd.");
             } else if (ucVendor.contains("ARM")) {

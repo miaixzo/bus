@@ -22,7 +22,6 @@ package org.miaixz.bus.fabric;
 import java.net.InetSocketAddress;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Locale;
 
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
@@ -188,7 +187,7 @@ public record Address(String scheme, String host, int port, String path) {
         if (StringKit.isBlank(value) || StringKit.containsAny(value, Symbol.C_CR, Symbol.C_LF)) {
             throw new ValidateException(name + " must be non-blank and single-line");
         }
-        return value.toLowerCase(Locale.ROOT);
+        return StringKit.toLowerCase(value);
     }
 
     /**

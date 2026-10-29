@@ -24,6 +24,7 @@ import java.util.*;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.net.Http;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Loggable;
 import org.miaixz.bus.logger.Operator;
 
@@ -48,9 +49,9 @@ public class Sanitizer implements Operator {
      * Normalized names whose corresponding values must never reach a logging provider.
      */
     private static final Set<String> SENSITIVE_KEYS = Set.of(
-            Http.Header.AUTHORIZATION.toLowerCase(Locale.ROOT),
+            StringKit.toLowerCase(Http.Header.AUTHORIZATION),
             normalize(Http.Header.PROXY_AUTHORIZATION),
-            Http.Header.COOKIE.toLowerCase(Locale.ROOT),
+            StringKit.toLowerCase(Http.Header.COOKIE),
             normalize(Http.Header.SET_COOKIE),
             "password",
             "passwd",
@@ -81,7 +82,7 @@ public class Sanitizer implements Operator {
         if (key == null || key.isBlank()) {
             return Normal.EMPTY;
         }
-        String lowerCase = key.trim().toLowerCase(Locale.ROOT);
+        String lowerCase = StringKit.toLowerCase(key.trim());
         StringBuilder normalized = new StringBuilder(lowerCase.length());
         lowerCase.chars().filter(Character::isLetterOrDigit).forEach(normalized::appendCodePoint);
         return normalized.toString();

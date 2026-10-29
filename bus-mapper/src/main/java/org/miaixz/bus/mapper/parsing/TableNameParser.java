@@ -26,6 +26,7 @@ import java.util.regex.Pattern;
 import lombok.Getter;
 
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.xyz.StringKit;
 
 /**
  * SQL table name parser, used to extract table names from SQL statements.
@@ -294,7 +295,7 @@ public class TableNameParser {
      */
     private static void visitNameToken(SqlToken token, TableNameVisitor visitor) {
         if (token != null) {
-            String value = token.getValue().toLowerCase();
+            String value = StringKit.toLowerCase(token.getValue());
             if (!ignored.contains(value)) {
                 visitor.visit(token);
             }
@@ -330,7 +331,7 @@ public class TableNameParser {
                     processFromToken(tokens, index, visitor);
                 } else if (isOnDuplicateKeyUpdate(current, index)) {
                     index = skipDuplicateKeyUpdateIndex(index);
-                } else if (concerned.contains(current.toLowerCase())) {
+                } else if (concerned.contains(StringKit.toLowerCase(current))) {
                     if (hasMoreTokens(tokens, index)) {
                         SqlToken next = tokens.get(index++);
                         if (TOKEN_UPDATE.equalsIgnoreCase(current) && IGNORE.equalsIgnoreCase(next.getValue())) {
@@ -387,7 +388,7 @@ public class TableNameParser {
     private boolean isCreateIndex(String current, List<SqlToken> tokens, int index) {
         if (TOKEN_CREATE.equalsIgnoreCase(current) && hasMoreTokens(tokens, index + 4)) {
             String next = tokens.get(index + 1).getValue();
-            if (INDEX_TYPES.contains(next.toUpperCase())) {
+            if (INDEX_TYPES.contains(StringKit.toUpperCase(next))) {
                 next = tokens.get(index + 2).getValue();
             }
             return TOKEN_INDEX.equalsIgnoreCase(next);
@@ -452,7 +453,7 @@ public class TableNameParser {
         Map<String, String> tableMap = new HashMap<>();
         accept(token -> {
             String name = token.getValue();
-            tableMap.putIfAbsent(name.toLowerCase(), name);
+            tableMap.putIfAbsent(StringKit.toLowerCase(name), name);
         });
         return new HashSet<>(tableMap.values());
     }

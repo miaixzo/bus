@@ -26,7 +26,6 @@ import java.nio.ByteOrder;
 import java.nio.CharBuffer;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Locale;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.DoubleAdder;
@@ -1446,7 +1445,7 @@ public class ByteKit {
             sb.append(Character.forDigit((b & 0xf0) >>> 4, 16));
             sb.append(Character.forDigit(b & 0x0f, 16));
         }
-        return sb.toString().toUpperCase(Locale.ROOT);
+        return StringKit.toUpperCase(sb.toString());
     }
 
     /**

@@ -20,7 +20,6 @@
 package org.miaixz.bus.health.linux.driver.proc;
 
 import java.util.List;
-import java.util.Locale;
 import java.util.stream.Collectors;
 
 import org.miaixz.bus.core.center.regex.Pattern;
@@ -28,6 +27,7 @@ import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.tuple.Tuple;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.health.Builder;
 import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.linux.ProcPath;
@@ -205,7 +205,7 @@ public class CpuInfo {
      */
     static List<String> queryFeatureFlags(List<String> cpuInfo) {
         return cpuInfo.stream().filter(f -> {
-            String s = f.toLowerCase(Locale.ROOT);
+            String s = StringKit.toLowerCase(f);
             return s.startsWith("flags") || s.startsWith("features");
         }).distinct().collect(Collectors.toList());
     }

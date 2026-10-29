@@ -190,12 +190,14 @@ public class Dcm2Jpg {
     /**
      * Initializes the ImageWriter for the specified output format.
      *
-     * @param formatName      The name of the target format (e.g., "jpeg").
+     * @param formatName      The non-null name of the target format (e.g., "jpeg").
      * @param suffix          The file suffix for the output file.
      * @param clazz           The class name of the specific ImageWriter to use.
      * @param compressionType The compression type for the writer.
      * @param quality         The compression quality (0.0-1.0).
-     * @throws IllegalArgumentException if no writer is found for the given format or class.
+     * @throws IllegalArgumentException if no writer is found for the given format or class, or if {@code formatName} is
+     *                                  null and an explicit suffix is supplied
+     * @throws NullPointerException     if both {@code formatName} and {@code suffix} are null
      */
     public void initImageWriter(
             String formatName,
@@ -203,7 +205,10 @@ public class Dcm2Jpg {
             String clazz,
             String compressionType,
             Number quality) {
-        this.suffix = suffix != null ? suffix : formatName.toLowerCase();
+        if (suffix == null) {
+            Objects.requireNonNull(formatName, "Image format name must not be null when inferring the suffix");
+        }
+        this.suffix = suffix != null ? suffix : StringKit.toLowerCase(formatName);
         Iterator<ImageWriter> imageWriters = ImageIO.getImageWritersByFormatName(formatName);
         if (!imageWriters.hasNext())
             throw new IllegalArgumentException(formatName);

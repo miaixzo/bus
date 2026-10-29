@@ -22,7 +22,6 @@ package org.miaixz.bus.auth.source.vendor.coding;
 import java.net.IDN;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.Credential;
@@ -32,6 +31,7 @@ import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.core.xyz.StringKit;
 
 /**
  * Carries externally managed CODING OAuth client values and one constrained team label.
@@ -106,7 +106,7 @@ public record CodingOptions(Vendor.Id vendor, Vendor.Variant variant, String cli
                         .allMatch(character -> Character.isLetterOrDigit(character) || character == Symbol.C_MINUS)) {
             throw new ValidateException("CODING team must be one canonical DNS label");
         }
-        return ascii.toLowerCase(Locale.ROOT);
+        return StringKit.toLowerCase(ascii);
     }
 
     /**

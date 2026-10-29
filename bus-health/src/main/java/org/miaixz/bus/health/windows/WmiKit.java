@@ -92,7 +92,7 @@ public class WmiKit {
              * Returns no property value because this result represents a query that was not executed.
              *
              * @param property the requested WMI property
-             * @param index the requested result row index
+             * @param index    the requested result row index
              * @return {@code null} for every property and row index
              */
             @Override

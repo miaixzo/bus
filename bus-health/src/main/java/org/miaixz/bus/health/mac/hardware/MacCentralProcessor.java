@@ -162,7 +162,7 @@ final class MacCentralProcessor extends AbstractCentralProcessor {
         if (iter != null) {
             IORegistryEntry cpu = iter.next();
             while (cpu != null) {
-                Matcher m = CPU_N.matcher(cpu.getName().toLowerCase(Locale.ROOT));
+                Matcher m = CPU_N.matcher(StringKit.toLowerCase(cpu.getName()));
                 if (m.matches()) {
                     int procId = Parsing.parseIntOrDefault(m.group(1), 0);
                     // Compatible key is null-delimited C string array in byte array
@@ -353,7 +353,7 @@ final class MacCentralProcessor extends AbstractCentralProcessor {
         if (compatible == null) {
             return null;
         }
-        Matcher matcher = APPLE_CORE.matcher(compatible.toLowerCase(Locale.ROOT));
+        Matcher matcher = APPLE_CORE.matcher(StringKit.toLowerCase(compatible));
         return matcher.find() ? matcher.group(1) : null;
     }
 
@@ -366,7 +366,7 @@ final class MacCentralProcessor extends AbstractCentralProcessor {
     static String deriveMicroarchitecture(List<CentralProcessor.PhysicalProcessor> physicalProcessors) {
         Map<String, Pair<Integer, Integer>> codenames = new LinkedHashMap<>();
         for (CentralProcessor.PhysicalProcessor processor : physicalProcessors) {
-            Matcher matcher = APPLE_CORE.matcher(processor.getIdString().toLowerCase(Locale.ROOT));
+            Matcher matcher = APPLE_CORE.matcher(StringKit.toLowerCase(processor.getIdString()));
             if (matcher.find() && !codenames.containsKey(matcher.group(1))) {
                 codenames.put(
                         matcher.group(1),
@@ -387,7 +387,7 @@ final class MacCentralProcessor extends AbstractCentralProcessor {
             if (i > 0) {
                 builder.append(" + ");
             }
-            builder.append(codename.substring(0, 1).toUpperCase(Locale.ROOT)).append(codename.substring(1));
+            builder.append(StringKit.toUpperCase(codename.substring(0, 1))).append(codename.substring(1));
         }
         return builder.toString();
     }
@@ -589,7 +589,7 @@ final class MacCentralProcessor extends AbstractCentralProcessor {
         for (Integer key : coreKeys) {
             Pair<String, String> props = coreProps.get(key);
             String compat = props == null || props.getLeft() == null ? Normal.EMPTY
-                    : props.getLeft().toLowerCase(Locale.ROOT);
+                    : StringKit.toLowerCase(props.getLeft());
             physProcs.add(
                     new CentralProcessor.PhysicalProcessor(key >> 16, key & 0xffff, efficiencyMap.getOrDefault(key, 0),
                             compat));

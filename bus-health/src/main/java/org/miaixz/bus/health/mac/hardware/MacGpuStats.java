@@ -19,7 +19,6 @@
 */
 package org.miaixz.bus.health.mac.hardware;
 
-import java.util.Locale;
 import java.util.regex.Pattern;
 
 import com.sun.jna.Pointer;
@@ -34,6 +33,7 @@ import com.sun.jna.platform.mac.IOKitUtil;
 
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.health.builtin.hardware.GpuStats;
 import org.miaixz.bus.health.builtin.hardware.GpuTicks;
 import org.miaixz.bus.health.mac.SmcKit;
@@ -133,8 +133,7 @@ final class MacGpuStats implements GpuStats {
      */
     MacGpuStats(boolean isAppleSilicon, String cardName) {
         this.isAppleSilicon = isAppleSilicon;
-        this.normCardName = TRADEMARK_PATTERN.matcher(cardName.toLowerCase(Locale.ROOT)).replaceAll(Normal.EMPTY)
-                .trim();
+        this.normCardName = TRADEMARK_PATTERN.matcher(StringKit.toLowerCase(cardName)).replaceAll(Normal.EMPTY).trim();
         this.cardNamePattern = Pattern.compile("\\b" + Pattern.quote(normCardName) + "\\b");
         this.ioReportClient = isAppleSilicon ? IOReportClient.create() : null;
         if (isAppleSilicon && ioReportClient == null) {
@@ -421,7 +420,7 @@ final class MacGpuStats implements GpuStats {
         if (model == null || model.isEmpty()) {
             return false;
         }
-        String normModel = TRADEMARK_PATTERN.matcher(model.toLowerCase(Locale.ROOT)).replaceAll(Normal.EMPTY).trim();
+        String normModel = TRADEMARK_PATTERN.matcher(StringKit.toLowerCase(model)).replaceAll(Normal.EMPTY).trim();
         if (normModel.equals(normCardName)) {
             return true;
         }

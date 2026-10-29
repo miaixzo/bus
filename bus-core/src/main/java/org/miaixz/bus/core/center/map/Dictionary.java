@@ -37,6 +37,7 @@ import org.miaixz.bus.core.xyz.BeanKit;
 import org.miaixz.bus.core.xyz.LambdaKit;
 import org.miaixz.bus.core.xyz.MapKit;
 import org.miaixz.bus.core.xyz.SetKit;
+import org.miaixz.bus.core.xyz.StringKit;
 
 /**
  * A flexible and powerful dictionary class that extends {@link CustomKeyMap} and implements {@link TypeGetter}. It
@@ -413,7 +414,7 @@ public class Dictionary extends CustomKeyMap<String, Object> implements TypeGett
     @Override
     protected String customKey(Object key) {
         if (this.caseInsensitive && null != key) {
-            key = key.toString().toLowerCase(Locale.ROOT);
+            key = StringKit.toLowerCase(key.toString());
         }
         return (String) key;
     }

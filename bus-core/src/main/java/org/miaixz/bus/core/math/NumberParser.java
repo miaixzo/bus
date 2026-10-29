@@ -24,6 +24,7 @@ import java.math.BigInteger;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
+import java.text.ParsePosition;
 import java.util.Locale;
 
 import org.miaixz.bus.core.convert.Convert;
@@ -40,6 +41,7 @@ import org.miaixz.bus.core.xyz.StringKit;
  * <li>Returning 0 for "NaN" (by default).</li>
  * <li>Converting other cases as base-10 numbers.</li>
  * <li>Parsing formats like ".123" as 0.123.</li>
+ * <li>Consuming the complete normalized input; trailing non-numeric text is rejected.</li>
  * </ul>
  *
  * <p>
@@ -117,7 +119,7 @@ public class NumberParser {
      *
      * @param numberStr The string to parse.
      * @return The parsed int.
-     * @throws NumberFormatException If the string has an invalid number format.
+     * @throws NumberFormatException If the input is invalid or its truncated integer is outside the int range.
      */
     public int parseInt(final String numberStr) throws NumberFormatException {
         if (isBlankOrNaN(numberStr)) {
@@ -138,7 +140,14 @@ public class NumberParser {
         try {
             return Integer.parseInt(numberStr);
         } catch (final NumberFormatException e) {
-            return doParse(numberStr).intValue();
+            try {
+                return new BigDecimal(doParse(numberStr).toString()).toBigInteger().intValueExact();
+            } catch (final ArithmeticException overflow) {
+                final NumberFormatException invalid = new NumberFormatException(
+                        "Value outside int range: " + numberStr);
+                invalid.initCause(overflow);
+                throw invalid;
+            }
         }
     }
 
@@ -223,6 +232,7 @@ public class NumberParser {
      *
      * @param numberStr The string to parse.
      * @return The parsed long.
+     * @throws NumberFormatException If the input is invalid or its truncated integer is outside the long range.
      */
     public long parseLong(final String numberStr) {
         if (isBlankOrNaN(numberStr)) {
@@ -237,7 +247,14 @@ public class NumberParser {
         try {
             return Long.parseLong(numberStr);
         } catch (final NumberFormatException e) {
-            return doParse(numberStr).longValue();
+            try {
+                return new BigDecimal(doParse(numberStr).toString()).toBigInteger().longValueExact();
+            } catch (final ArithmeticException overflow) {
+                final NumberFormatException invalid = new NumberFormatException(
+                        "Value outside long range: " + numberStr);
+                invalid.initCause(overflow);
+                throw invalid;
+            }
         }
     }
 
@@ -334,7 +351,7 @@ public class NumberParser {
     }
 
     /**
-     * Converts the specified string to a {@link Number} object. This method does not support scientific notation.
+     * Converts the complete specified string to a {@link Number}, including scientific notation.
      *
      * <ul>
      * <li>Blank strings and "NaN" are converted to 0.</li>
@@ -377,12 +394,11 @@ public class NumberParser {
         if (null == locale) {
             locale = Locale.getDefault(Locale.Category.FORMAT);
         }
+        // Normalize surrounding whitespace and full-width characters before checking complete consumption.
+        number = StringKit.trim(Convert.toDBC(number));
         if (StringKit.startWith(number, Symbol.C_PLUS)) {
             number = StringKit.subSuf(number, 1);
         }
-
-        // Convert to half-width characters
-        number = Convert.toDBC(number);
 
         // Handle scientific notation (E+ format)
         // NumberFormat has poor support for E+ format, so parse directly using BigDecimal
@@ -390,22 +406,21 @@ public class NumberParser {
             try {
                 return new BigDecimal(number);
             } catch (final NumberFormatException e) {
-                // BigDecimal parsing failed; fall back to trying NumberFormat
+                // Localized scientific notation may still be valid, but NumberFormat must consume it completely.
             }
         }
 
-        try {
-            final NumberFormat format = NumberFormat.getInstance(locale);
-            if (format instanceof DecimalFormat) {
-                // To prevent truncation when the string exceeds double precision, configure to parse as BigDecimal
-                ((DecimalFormat) format).setParseBigDecimal(true);
-            }
-            return format.parse(number);
-        } catch (final ParseException e) {
-            final NumberFormatException nfe = new NumberFormatException(e.getMessage());
-            nfe.initCause(e);
-            throw nfe;
+        final NumberFormat format = NumberFormat.getInstance(locale);
+        if (format instanceof DecimalFormat) {
+            // Avoid precision loss before checking integer ranges.
+            ((DecimalFormat) format).setParseBigDecimal(true);
         }
+        final ParsePosition position = new ParsePosition(0);
+        final Number parsed = format.parse(number, position);
+        if (parsed == null || position.getErrorIndex() >= 0 || position.getIndex() != number.length()) {
+            throw new NumberFormatException("Invalid complete number: " + number);
+        }
+        return parsed;
     }
 
     /**

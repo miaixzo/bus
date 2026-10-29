@@ -258,7 +258,7 @@ public class JdPayBuilder {
      * @return The encrypted data in lowercase.
      */
     public static String md5LowerCase(String data) {
-        return Builder.md5(data).toLowerCase();
+        return StringKit.toLowerCase(Builder.md5(data));
     }
 
     /**

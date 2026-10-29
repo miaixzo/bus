@@ -33,6 +33,7 @@ import org.springframework.util.ClassUtils;
 
 import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.cache.Collector;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.metrics.Metrics;
 import org.miaixz.bus.metrics.Provider;
@@ -446,7 +447,8 @@ public class MetricsConfiguration {
                     new HostMetricsOptions.Process(host.process().currentOnly(), host.process().stateCounts()),
                     new HostMetricsOptions.Disk(host.disk().includeVirtual(), host.disk().maxDevices()),
                     new HostMetricsOptions.FileSystem(host.filesystem().localOnly(),
-                            host.filesystem().mountpointMode().toUpperCase(), host.filesystem().maxFilesystems()),
+                            StringKit.toUpperCase(host.filesystem().mountpointMode()),
+                            host.filesystem().maxFilesystems()),
                     new HostMetricsOptions.Network(host.network().includeLoopback(), host.network().includeVirtual(),
                             host.network().connections(), host.network().maxInterfaces()));
         }

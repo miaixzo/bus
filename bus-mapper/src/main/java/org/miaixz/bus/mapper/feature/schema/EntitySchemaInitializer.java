@@ -29,12 +29,13 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Locale;
+import java.util.Objects;
 
 import javax.sql.DataSource;
 
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.mapper.Charter.Behavior;
 import org.miaixz.bus.mapper.Charter.Risk;
@@ -577,7 +578,7 @@ public class EntitySchemaInitializer {
      */
     private boolean hasDefault(ColumnMeta column) {
         return column.columnDefinition() != null
-                && column.columnDefinition().toUpperCase(Locale.ROOT).contains(" DEFAULT ");
+                && StringKit.toUpperCase(column.columnDefinition()).contains(" DEFAULT ");
     }
 
     /**
@@ -620,9 +621,11 @@ public class EntitySchemaInitializer {
      * @param table  the table metadata
      * @param config the schema configuration
      * @return {@code true} when excluded
+     * @throws NullPointerException if the table metadata or its table name is null
      */
     private boolean excluded(TableMeta table, SchemaConfig config) {
-        String name = table.tableName().toLowerCase(Locale.ROOT);
+        String physicalTableName = Objects.requireNonNull(table.tableName(), "Schema table name must not be null");
+        String name = StringKit.toLowerCase(physicalTableName);
         if (!config.includeTables().isEmpty()
                 && config.includeTables().stream().noneMatch(tableName -> tableName.equalsIgnoreCase(name))) {
             return true;

@@ -24,6 +24,7 @@ import java.util.*;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.xyz.StringKit;
 
 /**
  * Represents one decoded RFC 9110 authentication Header field value.
@@ -63,7 +64,7 @@ public record HeaderValue(String scheme, Optional<String> token68, List<NameValu
             final NameValue value = Assert.notNull(parameter, "Authentication Header parameter must not be null");
             Assert.isTrue(token(value.name()), "Authentication Header parameter name must be an RFC 9110 token");
             Assert.isTrue(
-                    names.add(value.name().toLowerCase(Locale.ROOT)),
+                    names.add(StringKit.toLowerCase(value.name())),
                     "Authentication Header parameter names must be unique ignoring case");
             copy.add(value);
         }

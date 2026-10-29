@@ -26,7 +26,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.security.MessageDigest;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Random;
 import java.util.function.Consumer;
@@ -312,9 +311,9 @@ public class WebSocketUpgrade {
         if (value == null) {
             return false;
         }
-        final String target = expected.toLowerCase(Locale.ROOT);
+        final String target = StringKit.toLowerCase(expected);
         for (final String candidate : value.split(Symbol.COMMA)) {
-            if (target.equals(candidate.trim().toLowerCase(Locale.ROOT))) {
+            if (target.equals(StringKit.toLowerCase(candidate.trim()))) {
                 return true;
             }
         }

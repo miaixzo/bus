@@ -21,6 +21,7 @@ package org.miaixz.bus.mapper.dialect;
 
 import java.util.EnumSet;
 
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.mapper.Charter.Behavior;
 import org.miaixz.bus.mapper.feature.paging.Pageable;
 import org.miaixz.bus.mapper.feature.schema.ColumnSnapshot;
@@ -77,7 +78,7 @@ public class Polardb extends AbstractDialect {
         if (jdbcUrl == null || jdbcUrl.isEmpty()) {
             return null;
         }
-        String lower = jdbcUrl.toLowerCase();
+        String lower = StringKit.toLowerCase(jdbcUrl);
         if (!lower.contains(".polardb.")) {
             return null;
         }
