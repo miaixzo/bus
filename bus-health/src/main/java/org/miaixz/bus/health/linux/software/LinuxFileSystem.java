@@ -41,6 +41,7 @@ import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.health.Builder;
 import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.Parsing;
@@ -172,9 +173,9 @@ public class LinuxFileSystem extends AbstractFileSystem {
                 try {
                     // Store UUID as value with path (e.g., /dev/sda1) and volumes as key
                     String canonicalPath = uuid.getCanonicalPath();
-                    uuidMap.put(canonicalPath, uuid.getName().toLowerCase(Locale.ROOT));
+                    uuidMap.put(canonicalPath, StringKit.toLowerCase(uuid.getName()));
                     if (volumeDeviceMap.containsKey(canonicalPath)) {
-                        uuidMap.put(volumeDeviceMap.get(canonicalPath), uuid.getName().toLowerCase(Locale.ROOT));
+                        uuidMap.put(volumeDeviceMap.get(canonicalPath), StringKit.toLowerCase(uuid.getName()));
                     }
                 } catch (IOException e) {
                     Logger.debug(

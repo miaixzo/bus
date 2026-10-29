@@ -25,13 +25,13 @@ import java.io.OutputStream;
 import java.net.IDN;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Locale;
 
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.core.xyz.StringKit;
 
 /**
  * DNS domain-name normalization and wire codec utilities.
@@ -103,7 +103,7 @@ public class DnsName {
             if (label.isEmpty()) {
                 throw new ValidateException("DNS name contains an empty label");
             }
-            final String ascii = IDN.toASCII(label).toLowerCase(Locale.ROOT);
+            final String ascii = StringKit.toLowerCase(IDN.toASCII(label));
             final int bytes = ascii.getBytes(Charset.US_ASCII).length;
             if (bytes == 0 || bytes > MAX_LABEL_LENGTH) {
                 throw new ValidateException("DNS label length is out of range");

@@ -243,7 +243,7 @@ public class CertificatePolicy implements Policy {
         if (StringKit.isBlank(host) || StringKit.containsAny(host, Symbol.C_CR, Symbol.C_LF)) {
             throw new ValidateException("Certificate pin host must be non-blank and single-line");
         }
-        final String normalized = host.trim().toLowerCase(Locale.ROOT);
+        final String normalized = StringKit.toLowerCase(host.trim());
         if (normalized.startsWith("*.")) {
             final String suffix = NetKit.normalizeHost(normalized.substring(Normal._2));
             if (suffix.isBlank() || suffix.indexOf(Symbol.C_STAR) >= 0 || suffix.indexOf(Symbol.C_DOT) < 0) {
@@ -313,7 +313,7 @@ public class CertificatePolicy implements Policy {
      * @return true when matched
      */
     private static boolean matchDns(final String host, final String pattern) {
-        final String value = pattern.toLowerCase(Locale.ROOT);
+        final String value = StringKit.toLowerCase(pattern);
         if (!value.startsWith("*.")) {
             return host.equals(value);
         }

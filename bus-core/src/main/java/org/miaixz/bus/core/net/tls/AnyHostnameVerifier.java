@@ -30,6 +30,7 @@ import javax.net.ssl.SSLSession;
 
 import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.xyz.StringKit;
 
 /**
  * A {@link HostnameVerifier} that trusts all hostnames.
@@ -168,7 +169,7 @@ public class AnyHostnameVerifier implements HostnameVerifier {
      * @return {@code true} if the hostname is valid for the given certificate, {@code false} otherwise.
      */
     private boolean verifyHostname(String hostname, X509Certificate certificate) {
-        hostname = hostname.toLowerCase(Locale.US);
+        hostname = StringKit.toLowerCase(hostname, Locale.US);
         List<String> altNames = getSubjectAltNames(certificate, ALT_DNS_NAME);
         for (String altName : altNames) {
             if (verifyHostname(hostname, altName)) {
@@ -204,7 +205,7 @@ public class AnyHostnameVerifier implements HostnameVerifier {
             pattern += Symbol.C_DOT;
         }
 
-        pattern = pattern.toLowerCase(Locale.US);
+        pattern = StringKit.toLowerCase(pattern, Locale.US);
         // Hostnames and patterns are now in lowercase -- domain names are case-insensitive.
 
         if (!pattern.contains(Symbol.STAR)) {

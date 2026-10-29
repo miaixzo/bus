@@ -172,7 +172,7 @@ public class GitHubRealmAdapter implements VendorAdapter {
      */
     private static boolean nextRelation(final String parameters) {
         for (String parameter : parameters.split(";")) {
-            final String normalized = StringKit.trim(parameter).toLowerCase(Locale.ROOT);
+            final String normalized = StringKit.toLowerCase(StringKit.trim(parameter));
             if ("rel=next".equals(normalized) || "rel=\"next\"".equals(normalized)) {
                 return true;
             }

@@ -54,6 +54,7 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.tuple.Pair;
 import org.miaixz.bus.core.lang.tuple.Triplet;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
 
 /**
@@ -439,7 +440,7 @@ public class Parsing {
     public static int parseLastInt(String s, int i) {
         try {
             String ls = parseLastString(s);
-            if (ls.toLowerCase(Locale.ROOT).startsWith("0x")) {
+            if (StringKit.toLowerCase(ls).startsWith("0x")) {
                 return Integer.decode(ls);
             } else {
                 return Integer.parseInt(ls);
@@ -460,7 +461,7 @@ public class Parsing {
     public static long parseLastLong(String s, long li) {
         try {
             String ls = parseLastString(s);
-            if (ls.toLowerCase(Locale.ROOT).startsWith("0x")) {
+            if (StringKit.toLowerCase(ls).startsWith("0x")) {
                 return Long.decode(ls);
             } else {
                 return Long.parseLong(ls);
@@ -786,7 +787,7 @@ public class Parsing {
      * @return The parsed UUID, or the default value if parsing fails.
      */
     public static String parseUuidOrDefault(String s, String defaultStr) {
-        Matcher m = UUID_PATTERN.matcher(s.toLowerCase(Locale.ROOT));
+        Matcher m = UUID_PATTERN.matcher(StringKit.toLowerCase(s));
         if (m.matches()) {
             return m.group(1);
         }
@@ -1302,8 +1303,8 @@ public class Parsing {
     public static Triplet<String, String, String> parseDeviceIdToVendorProductSerial(String deviceId) {
         Matcher m = VENDOR_PRODUCT_ID_SERIAL.matcher(deviceId);
         if (m.matches()) {
-            String vendorId = "0x" + m.group(1).toLowerCase(Locale.ROOT);
-            String productId = "0x" + m.group(2).toLowerCase(Locale.ROOT);
+            String vendorId = "0x" + StringKit.toLowerCase(m.group(1));
+            String productId = "0x" + StringKit.toLowerCase(m.group(2));
             String serial = m.group(4);
             return Triplet.of(
                     vendorId,

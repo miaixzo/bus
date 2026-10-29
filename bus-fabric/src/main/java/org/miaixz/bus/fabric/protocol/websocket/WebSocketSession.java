@@ -26,7 +26,6 @@ import java.nio.charset.CodingErrorAction;
 import java.time.Duration;
 import java.util.ArrayDeque;
 import java.util.LinkedHashMap;
-import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -683,11 +682,11 @@ public class WebSocketSession implements Session {
      * @return close code
      */
     private static int failureCloseCode(final Throwable cause) {
-        final String message = cause.getMessage() == null ? Normal.EMPTY : cause.getMessage().toLowerCase(Locale.ROOT);
+        final String message = cause.getMessage() == null ? Normal.EMPTY : StringKit.toLowerCase(cause.getMessage());
         if (message.contains("too large") || message.contains("size")) {
             return Builder.WEBSOCKET_CLOSE_MESSAGE_TOO_LARGE;
         }
-        if (message.contains(Charset.DEFAULT_UTF_8.toLowerCase(Locale.ROOT))) {
+        if (message.contains(StringKit.toLowerCase(Charset.DEFAULT_UTF_8))) {
             return Builder.WEBSOCKET_CLOSE_INVALID_PAYLOAD;
         }
         if (cause instanceof ProtocolException || cause instanceof ValidateException) {

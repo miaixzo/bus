@@ -20,6 +20,9 @@
 package org.miaixz.bus.extra.ftp;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -839,16 +842,21 @@ public class CommonsFtp extends AbstractFtp {
     }
 
     /**
-     * Downloads a file.
+     * Downloads to a temporary file in the destination directory and atomically installs the completed file. A false
+     * result or transfer failure leaves any existing destination unchanged. If the file system cannot atomically
+     * replace the destination, this method fails without attempting a non-atomic replacement.
      *
      * @param path    The file path, including the file name.
      * @param outFile The output file or directory. If a directory, the server's file name is used.
+     * @throws InternalException if the transfer is rejected or cannot be atomically installed
      */
     @Override
     public void download(final String path, final File outFile) {
         final String fileName = FileName.getName(path);
         final String dir = StringKit.removeSuffix(path, fileName);
-        download(dir, fileName, outFile);
+        if (!download(dir, fileName, outFile)) {
+            throw new InternalException("FTP download did not complete successfully");
+        }
     }
 
     /**
@@ -881,7 +889,8 @@ public class CommonsFtp extends AbstractFtp {
     }
 
     /**
-     * Downloads a file.
+     * Downloads a file through a same-directory temporary file. Only a completed transfer is atomically installed at
+     * the destination; false results, exceptions, and unsupported atomic replacement leave the destination unchanged.
      *
      * @param path     The file's path (remote directory), excluding the file name.
      * @param fileName The file name.
@@ -894,15 +903,19 @@ public class CommonsFtp extends AbstractFtp {
             outFile = new File(outFile, fileName);
         }
 
-        boolean createdFile = false;
-        if (!outFile.exists()) {
-            FileKit.touch(outFile);
-            createdFile = true;
-        }
-
-        boolean success = false;
-        try (final OutputStream out = FileKit.getOutputStream(outFile)) {
-            success = download(path, fileName, out);
+        Path temporary = null;
+        try {
+            final Path target = outFile.toPath().toAbsolutePath();
+            Files.createDirectories(target.getParent());
+            temporary = Files.createTempFile(target.getParent(), ".bus-ftp-", ".download");
+            try (final OutputStream out = Files.newOutputStream(temporary)) {
+                if (!download(path, fileName, out)) {
+                    return false;
+                }
+            }
+            // The temporary file and destination share a directory; never truncate the old destination on failure.
+            Files.move(temporary, target, StandardCopyOption.ATOMIC_MOVE, StandardCopyOption.REPLACE_EXISTING);
+            return true;
         } catch (final IOException e) {
             Logger.warn(
                     false,
@@ -913,12 +926,15 @@ public class CommonsFtp extends AbstractFtp {
                     e.getClass().getSimpleName());
             throw new InternalException(e);
         } finally {
-            if (!success && createdFile) {
-                FileKit.remove(outFile);
+            if (temporary != null) {
+                try {
+                    Files.deleteIfExists(temporary);
+                } catch (final IOException cleanupFailure) {
+                    // Do not hide the transfer or installation failure behind a secondary cleanup error.
+                    Logger.warn(false, "Extra", cleanupFailure, "FTP temporary-file cleanup failed");
+                }
             }
         }
-
-        return success;
     }
 
     /**

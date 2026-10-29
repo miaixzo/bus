@@ -34,6 +34,7 @@ import org.miaixz.bus.core.net.tls.TlsClientAuth;
 import org.miaixz.bus.core.net.tls.TlsVersion;
 import org.miaixz.bus.core.net.url.RFC3986;
 import org.miaixz.bus.core.xyz.PatternKit;
+import org.miaixz.bus.core.xyz.StringKit;
 
 /**
  * Owns the immutable official endpoint targets declared by one platform variant.
@@ -341,7 +342,7 @@ public record VendorTargets(Optional<Target> authorization, Optional<Target> tok
         for (String label : ascii.split("\\.", -1)) {
             dnsLabel(label);
         }
-        return ascii.toLowerCase(Locale.ROOT);
+        return StringKit.toLowerCase(ascii);
     }
 
     /**
@@ -362,7 +363,7 @@ public record VendorTargets(Optional<Target> authorization, Optional<Target> tok
                         .allMatch(character -> Character.isLetterOrDigit(character) || character == Symbol.C_MINUS)) {
             throw new ValidateException("Vendor instance must be one canonical DNS label");
         }
-        return ascii.toLowerCase(Locale.ROOT);
+        return StringKit.toLowerCase(ascii);
     }
 
     /**

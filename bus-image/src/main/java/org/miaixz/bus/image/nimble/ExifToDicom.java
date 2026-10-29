@@ -28,6 +28,7 @@ import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.image.Tag;
 import org.miaixz.bus.image.galaxy.data.Attributes;
 import org.miaixz.bus.image.galaxy.data.ElementDictionary;
@@ -354,7 +355,7 @@ public final class ExifToDicom {
                 text = text.substring(0, max).trim();
             }
             if (vr == VR.CS) {
-                text = text.toUpperCase(Locale.ROOT);
+                text = StringKit.toUpperCase(text);
             }
         }
         attrs.setString(tag, vr, text);

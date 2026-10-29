@@ -52,6 +52,7 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.net.Protocol;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.crypto.Builder;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.extra.json.JsonValue;
@@ -191,7 +192,7 @@ public class JdSourceAdapter implements VendorAdapter {
             }
         });
         canonical.append(appSecret);
-        return Builder.md5().digestHex(canonical.toString(), Charset.UTF_8).toUpperCase(Locale.ROOT);
+        return StringKit.toUpperCase(Builder.md5().digestHex(canonical.toString(), Charset.UTF_8));
     }
 
     /**
@@ -285,7 +286,7 @@ public class JdSourceAdapter implements VendorAdapter {
             details.put("vendor_code", number(code));
         }
         if (requestId != null && !requestId.isBlank()) {
-            final String digest = Builder.sha256().digestHex(requestId, Charset.UTF_8).toLowerCase(Locale.ROOT);
+            final String digest = StringKit.toLowerCase(Builder.sha256().digestHex(requestId, Charset.UTF_8));
             details.put("request_id_sha256", new JsonValue.StringValue(digest));
         }
         if (status == Http.Status.TOO_MANY_REQUESTS || status >= Http.Status.INTERNAL_SERVER_ERROR) {

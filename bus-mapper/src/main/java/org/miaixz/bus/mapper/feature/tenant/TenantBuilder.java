@@ -19,7 +19,6 @@
 */
 package org.miaixz.bus.mapper.feature.tenant;
 
-import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -28,6 +27,7 @@ import java.util.regex.Pattern;
 
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.xyz.StringKit;
 
 /**
  * Tenant SQL handler.
@@ -161,13 +161,13 @@ public class TenantBuilder {
         String sql = originalSql.trim();
 
         // Determine SQL type and process
-        if (sql.toUpperCase().startsWith("SELECT")) {
+        if (StringKit.toUpperCase(sql).startsWith("SELECT")) {
             return handleSelect(sql, tenantId);
-        } else if (sql.toUpperCase().startsWith("INSERT")) {
+        } else if (StringKit.toUpperCase(sql).startsWith("INSERT")) {
             return handleInsert(sql, tenantId);
-        } else if (sql.toUpperCase().startsWith("UPDATE")) {
+        } else if (StringKit.toUpperCase(sql).startsWith("UPDATE")) {
             return handleUpdate(sql, tenantId);
-        } else if (sql.toUpperCase().startsWith("DELETE")) {
+        } else if (StringKit.toUpperCase(sql).startsWith("DELETE")) {
             return handleDelete(sql, tenantId);
         }
 
@@ -260,7 +260,7 @@ public class TenantBuilder {
 
         // Check if tenant ID column is already included
         String tenantColumn = config.getColumn();
-        if (columns.toLowerCase().contains(tenantColumn.toLowerCase())) {
+        if (StringKit.toLowerCase(columns).contains(StringKit.toLowerCase(tenantColumn))) {
             return sql;
         }
 
@@ -369,8 +369,8 @@ public class TenantBuilder {
      * @return the SELECT columns part
      */
     private String extractSelectColumns(String sql) {
-        int selectIndex = sql.toUpperCase().indexOf("SELECT");
-        int fromIndex = sql.toUpperCase().indexOf("FROM");
+        int selectIndex = StringKit.toUpperCase(sql).indexOf("SELECT");
+        int fromIndex = StringKit.toUpperCase(sql).indexOf("FROM");
         if (selectIndex >= 0 && fromIndex > selectIndex) {
             return sql.substring(selectIndex + 6, fromIndex).trim();
         }
@@ -457,7 +457,7 @@ public class TenantBuilder {
      * @return {@code true} when the token is not a real alias
      */
     private boolean aliasStopWord(String token) {
-        return token == null || ALIAS_STOP_WORDS.contains(token.toUpperCase(Locale.ROOT));
+        return token == null || ALIAS_STOP_WORDS.contains(StringKit.toUpperCase(token));
     }
 
     /**

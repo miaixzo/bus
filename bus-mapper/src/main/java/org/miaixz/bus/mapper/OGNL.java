@@ -473,7 +473,7 @@ public class OGNL {
             return true;
         }
         // Convert to lower case for comparison
-        value = value.toLowerCase().trim();
+        value = StringKit.toLowerCase(value).trim();
         // Check for SQL syntax keywords
         if (keywords(value, SQL_SYNTAX_KEYWORD.split("\\|"))) {
             return true;

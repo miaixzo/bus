@@ -19,8 +19,6 @@
 */
 package org.miaixz.bus.fabric.guard.tls;
 
-import java.util.Locale;
-
 import org.miaixz.bus.core.instance.Instances;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Symbol;
@@ -66,7 +64,7 @@ public class TlsGuard {
     private static String scheme(final Address address) {
         final String scheme = address.scheme();
         Assert.isTrue(UrlKit.isScheme(scheme), () -> new ProtocolException("Invalid TLS address scheme"));
-        return scheme.toLowerCase(Locale.ROOT);
+        return StringKit.toLowerCase(scheme);
     }
 
     /**
@@ -80,7 +78,7 @@ public class TlsGuard {
         Assert.isTrue(
                 !StringKit.isBlank(cipher) && !StringKit.containsAny(cipher, Symbol.C_CR, Symbol.C_LF),
                 () -> new ProtocolException("Invalid TLS cipher suite"));
-        final String upper = cipher.toUpperCase(Locale.ROOT);
+        final String upper = StringKit.toUpperCase(cipher);
         return upper.contains("_NULL_") || upper.contains("_ANON_") || upper.contains("_EXPORT_")
                 || upper.contains("_RC4_") || upper.contains("_MD5") || upper.contains("_DES_");
     }

@@ -19,10 +19,10 @@
 */
 package org.miaixz.bus.image.galaxy.media;
 
-import java.util.Locale;
 import java.util.Objects;
 
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.xyz.StringKit;
 
 /**
  * Structured message for manifest consumers.
@@ -222,7 +222,7 @@ public record ViewerMessage(String title, String message, Level level) {
             if (xmlValue == null) {
                 return INFO;
             }
-            return switch (xmlValue.toLowerCase(Locale.ROOT)) {
+            return switch (StringKit.toLowerCase(xmlValue)) {
                 case "warning", "warn" -> WARN;
                 case "error", "err" -> ERROR;
                 default -> INFO;

@@ -134,7 +134,7 @@ public class ColorKit {
         if (StringKit.isBlank(colorName)) {
             return null;
         }
-        colorName = colorName.toUpperCase();
+        colorName = StringKit.toUpperCase(colorName);
 
         final Color color = COLOR_MAPPING.get(colorName);
         if (null != color) {

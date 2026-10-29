@@ -166,7 +166,7 @@ public class Morse {
     public String encode(String text) {
         Assert.notNull(text, "Text should not be null.");
 
-        text = text.toUpperCase();
+        text = StringKit.toUpperCase(text);
         final StringBuilder morseBuilder = new StringBuilder();
         final int len = text.codePointCount(0, text.length());
         for (int i = 0; i < len; i++) {

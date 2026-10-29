@@ -27,6 +27,7 @@ import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.tuple.Pair;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.health.builtin.hardware.HardwareAbstractionLayer;
 import org.miaixz.bus.health.builtin.hardware.NetworkIF;
 
@@ -183,7 +184,7 @@ public final class Virtuality {
         if (hex.length() < Normal._6) {
             return Normal.EMPTY;
         }
-        String digits = hex.toString().toUpperCase(Locale.ROOT);
+        String digits = StringKit.toUpperCase(hex.toString());
         return digits.substring(Normal._0, Normal._2) + Symbol.C_COLON + digits.substring(Normal._2, Normal._4)
                 + Symbol.C_COLON + digits.substring(Normal._4, Normal._6);
     }

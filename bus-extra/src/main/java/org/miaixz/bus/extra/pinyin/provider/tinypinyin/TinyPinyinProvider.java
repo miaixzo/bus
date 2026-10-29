@@ -97,7 +97,7 @@ public class TinyPinyinProvider implements PinyinProvider {
             return String.valueOf(c);
         }
         // TinyPinyin does not support tone marks, so the 'tone' parameter is ignored.
-        return Pinyin.toPinyin(c).toLowerCase();
+        return StringKit.toLowerCase(Pinyin.toPinyin(c));
     }
 
     /**
@@ -115,7 +115,7 @@ public class TinyPinyinProvider implements PinyinProvider {
     public String getPinyin(final String str, final String separator, final boolean tone) {
         // TinyPinyin does not support tone marks, so the 'tone' parameter is ignored.
         final String pinyin = Pinyin.toPinyin(str, separator);
-        return StringKit.isEmpty(pinyin) ? pinyin : pinyin.toLowerCase();
+        return StringKit.isEmpty(pinyin) ? pinyin : StringKit.toLowerCase(pinyin);
     }
 
 }

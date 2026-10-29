@@ -21,7 +21,6 @@ package org.miaixz.bus.fabric.protocol.http.auth;
 
 import java.util.Collections;
 import java.util.LinkedHashMap;
-import java.util.Locale;
 import java.util.Map;
 
 import org.miaixz.bus.core.lang.Symbol;
@@ -231,7 +230,7 @@ public record Challenge(String scheme, String realm, Map<String, String> paramet
                 throw new ValidateException(name + " must be a token");
             }
         }
-        return checked.toLowerCase(Locale.ROOT);
+        return StringKit.toLowerCase(checked);
     }
 
     /**

@@ -32,7 +32,6 @@ import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
 import java.time.Duration;
 import java.util.List;
-import java.util.Locale;
 import java.util.Set;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -529,7 +528,7 @@ public class HttpConnect implements HttpStage, AutoCloseable {
         Assert.isFalse(
                 StringKit.isBlank(value) || StringKit.containsAny(value, Symbol.C_CR, Symbol.C_LF),
                 () -> new ValidateException("HTTP connect name must be non-blank and single-line"));
-        return StringKit.trim(value).toLowerCase(Locale.ROOT);
+        return StringKit.toLowerCase(StringKit.trim(value));
     }
 
     /**

@@ -21,12 +21,12 @@ package org.miaixz.bus.health.unix.shared.driver;
 
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.builtin.hardware.Printer.PrinterStatus;
 
@@ -179,7 +179,7 @@ public class Lpstat {
         if (line == null) {
             return PrinterStatus.UNKNOWN;
         }
-        String lower = line.toLowerCase(Locale.ROOT);
+        String lower = StringKit.toLowerCase(line);
         if (lower.contains("disabled") || lower.contains("not accepting")) {
             return PrinterStatus.OFFLINE;
         } else if (lower.contains("printing")) {

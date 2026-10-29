@@ -231,7 +231,8 @@ public class Builder {
      * @return The decrypted data.
      */
     public static String decryptData(String base64Data, String key) {
-        return org.miaixz.bus.crypto.Builder.aes(org.miaixz.bus.crypto.Builder.md5(key).toLowerCase().getBytes())
+        return org.miaixz.bus.crypto.Builder
+                .aes(StringKit.toLowerCase(org.miaixz.bus.crypto.Builder.md5(key)).getBytes())
                 .decryptString(base64Data);
     }
 
@@ -243,7 +244,8 @@ public class Builder {
      * @return The encrypted data.
      */
     public static String encryptData(String data, String key) {
-        return org.miaixz.bus.crypto.Builder.aes(org.miaixz.bus.crypto.Builder.md5(key).toLowerCase().getBytes())
+        return org.miaixz.bus.crypto.Builder
+                .aes(StringKit.toLowerCase(org.miaixz.bus.crypto.Builder.md5(key)).getBytes())
                 .encryptBase64(data.getBytes());
     }
 

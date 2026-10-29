@@ -22,7 +22,7 @@ package org.miaixz.bus.health.linux.hardware;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
+import java.util.Objects;
 import java.util.function.ToLongFunction;
 
 import org.miaixz.bus.core.center.function.FunctionX;
@@ -31,6 +31,7 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.Immutable;
 import org.miaixz.bus.core.lang.tuple.Pair;
 import org.miaixz.bus.core.lang.tuple.Triplet;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.health.Builder;
 import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.Parsing;
@@ -81,14 +82,15 @@ final class LinuxGraphicsCard extends AbstractGraphicsCard {
      * @param versionInfo   The version info
      * @param vram          The VRAM
      * @param drmDevicePath sysfs device path for this card, or empty string if unavailable
-     * @param driverName    driver name (e.g. "amdgpu"), or empty string if unknown
+     * @param driverName    non-null driver name (e.g. "amdgpu"), or empty string if unknown
      * @param pciBusId      PCI bus ID for NVML correlation, or empty string if unknown
+     * @throws NullPointerException if {@code driverName} is null
      */
     LinuxGraphicsCard(String name, String deviceId, String vendor, String versionInfo, long vram, String drmDevicePath,
             String driverName, String pciBusId) {
         super(name, deviceId, vendor, versionInfo, vram);
         this.drmDevicePath = drmDevicePath;
-        this.driverName = driverName;
+        this.driverName = Objects.requireNonNull(driverName, "GPU driver name must not be null");
         this.pciBusId = pciBusId;
     }
 
@@ -147,7 +149,7 @@ final class LinuxGraphicsCard extends AbstractGraphicsCard {
      * @return the best available non-NVML VRAM total
      */
     private static long vramTotal(Attrs attrs) {
-        if (!attrs.getDrmDevicePath().isEmpty() && "amdgpu".equals(attrs.getDriverName().toLowerCase(Locale.ROOT))) {
+        if (!attrs.getDrmDevicePath().isEmpty() && "amdgpu".equals(StringKit.toLowerCase(attrs.getDriverName()))) {
             long total = Builder.getLongFromFile(attrs.getDrmDevicePath() + "/mem_info_vram_total", -1L);
             if (total > Normal._0) {
                 return total;
@@ -490,8 +492,9 @@ final class LinuxGraphicsCard extends AbstractGraphicsCard {
          * @param versionInfo   the version info
          * @param vram          the vram
          * @param drmDevicePath the drm device path
-         * @param driverName    the driver name
+         * @param driverName    the non-null driver name, or an empty string if unknown
          * @param pciBusId      the pci bus id
+         * @throws NullPointerException if {@code driverName} is null
          */
         Attrs(String name, String deviceId, String vendor, String versionInfo, long vram, String drmDevicePath,
                 String driverName, String pciBusId) {
@@ -501,7 +504,7 @@ final class LinuxGraphicsCard extends AbstractGraphicsCard {
             this.versionInfo = versionInfo;
             this.vram = vram;
             this.drmDevicePath = drmDevicePath;
-            this.driverName = driverName;
+            this.driverName = Objects.requireNonNull(driverName, "GPU driver name must not be null");
             this.pciBusId = pciBusId;
         }
 

@@ -55,6 +55,7 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.net.Protocol;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.crypto.Builder;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.extra.json.JsonValue;
@@ -770,7 +771,7 @@ public class ElemeSourceAdapter implements VendorAdapter {
             final byte[] prefix = signaturePrefix(accessToken, appKeyJson, timestampJson);
             signatureInput = append(prefix, secret.material());
             Arrays.fill(prefix, (byte) 0);
-            final String signature = Builder.md5Hex(signatureInput).toUpperCase(Locale.ROOT);
+            final String signature = StringKit.toUpperCase(Builder.md5Hex(signatureInput));
 
             final Map<String, JsonValue> metas = new LinkedHashMap<>();
             metas.put("app_key", new JsonValue.StringValue(options.clientId()));

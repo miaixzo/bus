@@ -22,7 +22,6 @@ package org.miaixz.bus.fabric.protocol.http.codec;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.io.source.Source;
@@ -37,6 +36,7 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.net.Protocol;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.fabric.Builder;
 import org.miaixz.bus.fabric.Headers;
 import org.miaixz.bus.fabric.Payload;
@@ -203,7 +203,7 @@ public class Http2Codec implements HttpCodec {
         for (int index = Normal._0; index < name.length(); index++) {
             final char value = name.charAt(index);
             if (value >= 'A' && value <= 'Z') {
-                return name.toLowerCase(Locale.ROOT);
+                return StringKit.toLowerCase(name);
             }
         }
         return name;

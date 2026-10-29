@@ -33,6 +33,7 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.exception.StatefulException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.core.xyz.ThreadKit;
 import org.miaixz.bus.fabric.observe.EventObserver;
 import org.miaixz.bus.fabric.observe.ObservationMarker;
@@ -220,7 +221,7 @@ final class DefaultDispatcher implements Dispatcher {
                 throw new StatefulException(name + " did not stop in time");
             }
             if (!ThreadKit.sleep(Normal._1)) {
-                throw new StatefulException("Interrupted while closing " + name.toLowerCase());
+                throw new StatefulException("Interrupted while closing " + StringKit.toLowerCase(name));
             }
         }
     }

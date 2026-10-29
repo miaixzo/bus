@@ -20,7 +20,6 @@
 package org.miaixz.bus.auth.worker;
 
 import java.time.Instant;
-import java.util.Locale;
 import java.util.concurrent.CompletionStage;
 import java.util.regex.Pattern;
 
@@ -35,6 +34,7 @@ import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.core.lang.Regex;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.core.xyz.StringKit;
 
 /**
  * Stores character-based credentials generated dynamically during protocol execution.
@@ -121,7 +121,7 @@ public interface CredentialStore {
             Assert.notBlank(purpose, "Dynamic credential purpose must not be blank");
             Assert.notBlank(bindingDigest, "Dynamic credential binding digest must not be blank");
             if (bindingDigest.length() != 64 || !Pattern.matches(Regex.HEX, bindingDigest)
-                    || !bindingDigest.equals(bindingDigest.toLowerCase(Locale.ROOT))) {
+                    || !bindingDigest.equals(StringKit.toLowerCase(bindingDigest))) {
                 throw new ValidateException(
                         "Dynamic credential binding must be a lowercase SHA-256 hexadecimal digest");
             }

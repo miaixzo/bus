@@ -24,6 +24,7 @@ import java.util.Set;
 
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.core.xyz.StringKit;
 
 /**
  * Validates JWT audience values and OAuth resource indicators against explicitly allowed lexical values.
@@ -63,7 +64,7 @@ public class AudienceValidator {
         if (values.isEmpty()) {
             throw new ValidateException(label + " list must not be empty");
         }
-        validateAllowed(allowed, "Allowed " + label.toLowerCase());
+        validateAllowed(allowed, "Allowed " + StringKit.toLowerCase(label));
         for (String value : values) {
             validateValue(value, label);
             if (!allowed.contains(value)) {

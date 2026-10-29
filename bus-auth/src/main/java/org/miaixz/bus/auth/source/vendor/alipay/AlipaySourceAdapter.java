@@ -51,6 +51,7 @@ import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.net.Protocol;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.crypto.center.Sign;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.extra.json.JsonValue;
@@ -465,7 +466,7 @@ public class AlipaySourceAdapter implements VendorAdapter {
         fields.put("app_id", options.clientId());
         fields.put("method", method);
         fields.put("format", "json");
-        fields.put(MediaType.CHARSET_PARAMETER, Charset.DEFAULT_UTF_8.toLowerCase(Locale.ROOT));
+        fields.put(MediaType.CHARSET_PARAMETER, StringKit.toLowerCase(Charset.DEFAULT_UTF_8));
         fields.put("sign_type", "RSA2");
         fields.put("timestamp", TIMESTAMP.format(now));
         fields.put("version", "1.0");

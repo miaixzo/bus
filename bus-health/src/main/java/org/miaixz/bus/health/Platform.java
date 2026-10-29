@@ -24,7 +24,6 @@ import java.lang.management.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Locale;
 import java.util.Properties;
 import java.util.function.Function;
 
@@ -35,6 +34,7 @@ import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.ObjectKit;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.health.builtin.hardware.HardwareAbstractionLayer;
 import org.miaixz.bus.health.builtin.software.OperatingSystem;
 import org.miaixz.bus.health.linux.hardware.LinuxHardwareAbstractionLayer;
@@ -113,7 +113,7 @@ public class Platform {
     private static OS queryCurrentPlatform() {
         String osName = System.getProperty("os.name", Normal.EMPTY);
         if (osName.startsWith("Linux")) {
-            String vmName = System.getProperty("java.vm.name", Normal.EMPTY).toLowerCase(Locale.ROOT);
+            String vmName = StringKit.toLowerCase(System.getProperty("java.vm.name", Normal.EMPTY));
             return "dalvik".equals(vmName) ? OS.ANDROID : OS.LINUX;
         } else if (osName.startsWith("AIX")) {
             return OS.AIX;
@@ -372,7 +372,7 @@ public class Platform {
         if (value == null) {
             return defaultValue;
         }
-        value = value.trim().toLowerCase();
+        value = StringKit.toLowerCase(value.trim());
         if (value.isEmpty()) {
             return true;
         }
@@ -668,7 +668,7 @@ public class Platform {
         /*
          * Normalize architecture name.
          */
-        arch = arch.toLowerCase().trim();
+        arch = StringKit.toLowerCase(arch).trim();
         arch = switch (arch) {
             case "powerpc" -> "ppc";
             case "powerpc64" -> "ppc64";
@@ -715,7 +715,7 @@ public class Platform {
                 return "aix-" + arch;
 
             default:
-                String osPrefix = name.toLowerCase().split(Symbol.SPACE)[0];
+                String osPrefix = StringKit.toLowerCase(name).split(Symbol.SPACE)[0];
                 return osPrefix + Symbol.MINUS + arch;
         }
     }

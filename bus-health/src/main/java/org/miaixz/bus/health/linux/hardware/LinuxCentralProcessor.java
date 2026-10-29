@@ -198,7 +198,7 @@ final class LinuxCentralProcessor extends AbstractCentralProcessor {
      */
     private static CentralProcessor.ProcessorCache.Type parseCacheType(String type) {
         try {
-            return CentralProcessor.ProcessorCache.Type.valueOf(type.toUpperCase(Locale.ROOT));
+            return CentralProcessor.ProcessorCache.Type.valueOf(StringKit.toUpperCase(type));
         } catch (IllegalArgumentException e) {
             return CentralProcessor.ProcessorCache.Type.UNIFIED;
         }
@@ -506,7 +506,7 @@ final class LinuxCentralProcessor extends AbstractCentralProcessor {
         List<String> cpuInfo = Builder.readFile(ProcPath.CPUINFO);
         int proc = 0;
         for (String s : cpuInfo) {
-            if (s.toLowerCase(Locale.ROOT).contains("cpu mhz")) {
+            if (StringKit.toLowerCase(s).contains("cpu mhz")) {
                 freqs[proc] = Math.round(Parsing.parseLastDouble(s, 0d) * 1_000_000d);
                 if (++proc >= freqs.length) {
                     break;
@@ -598,7 +598,7 @@ final class LinuxCentralProcessor extends AbstractCentralProcessor {
                 }
                 continue;
             }
-            switch (splitLine[0].toLowerCase(Locale.ROOT)) {
+            switch (StringKit.toLowerCase(splitLine[0])) {
                 case "vendor_id":
                 case "cpu implementer":
                     cpuVendor = splitLine[1];
@@ -613,7 +613,7 @@ final class LinuxCentralProcessor extends AbstractCentralProcessor {
                     break;
 
                 case "flags":
-                    flags = splitLine[1].toLowerCase(Locale.ROOT).split(Symbol.SPACE);
+                    flags = StringKit.toLowerCase(splitLine[1]).split(Symbol.SPACE);
                     for (String flag : flags) {
                         if ("lm".equals(flag)) {
                             cpu64bit = true;

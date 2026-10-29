@@ -23,10 +23,10 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.EnumSet;
-import java.util.Locale;
 
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.mapper.Charter.Behavior;
 import org.miaixz.bus.mapper.feature.paging.Pageable;
 import org.miaixz.bus.mapper.feature.schema.ColumnSnapshot;
@@ -219,7 +219,7 @@ public class PostgreSql extends AbstractDialect {
      * @return the normalized value
      */
     private String normalize(String value) {
-        return value == null ? Normal.EMPTY : value.toLowerCase(Locale.ROOT);
+        return value == null ? Normal.EMPTY : StringKit.toLowerCase(value);
     }
 
     /**

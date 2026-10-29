@@ -19,12 +19,12 @@
 */
 package org.miaixz.bus.fabric.network;
 
-import java.util.Locale;
 import java.util.Map;
 
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Protocol;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.core.xyz.UrlKit;
 import org.miaixz.bus.fabric.Builder;
 
@@ -134,7 +134,7 @@ public enum Transport {
                 UrlKit.isScheme(normalized),
                 () -> new ValidateException("Network transport scheme must be non-blank and single-line"));
         // Single-line normalization keeps the lookup table deterministic.
-        return normalized.toLowerCase(Locale.ROOT);
+        return StringKit.toLowerCase(normalized);
     }
 
     /**

@@ -30,6 +30,7 @@ import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.health.Builder;
 import org.miaixz.bus.health.Formats;
 import org.miaixz.bus.health.Memoizer;
@@ -358,7 +359,7 @@ public abstract class AbstractNetworkIF implements NetworkIF {
     @Override
     public boolean isKnownVmMacAddr() {
         String oui = getMacaddr().length() > 7 ? getMacaddr().substring(0, 8) : getMacaddr();
-        return this.vmMacAddrProps.get().containsKey(oui.toUpperCase(Locale.ROOT));
+        return this.vmMacAddrProps.get().containsKey(StringKit.toUpperCase(oui));
     }
 
     /**

@@ -26,6 +26,7 @@ import java.util.regex.Pattern;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.Immutable;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.health.Builder;
 import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.hardware.BluetoothDevice;
@@ -105,9 +106,9 @@ public class LinuxBluetoothDevice extends AbstractBluetoothDevice {
                 continue;
             }
 
-            File adapterStateDir = new File(varLibPath + adapterAddress.toUpperCase(Locale.ROOT));
+            File adapterStateDir = new File(varLibPath + StringKit.toUpperCase(adapterAddress));
             if (!adapterStateDir.isDirectory()) {
-                adapterStateDir = new File(varLibPath + adapterAddress.toLowerCase(Locale.ROOT));
+                adapterStateDir = new File(varLibPath + StringKit.toLowerCase(adapterAddress));
             }
             if (!adapterStateDir.isDirectory()) {
                 continue;

@@ -3610,23 +3610,24 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
-     * Converts a string to lowercase using the default locale.
+     * Converts a string to lowercase using {@link Locale#ROOT}, independently of the system locale.
      *
      * @param text The string to convert.
-     * @return The converted string in lowercase.
-     * @see String#toLowerCase()
+     * @return The converted string, an empty string for empty input, or {@code null} for null input.
+     * @see #toLowerCase(CharSequence, Locale)
      */
     public static String toLowerCase(final CharSequence text) {
-        return toLowerCase(text, Locale.getDefault());
+        return toLowerCase(text, Locale.ROOT);
     }
 
     /**
      * Converts a string to lowercase using the specified locale.
      *
      * @param text   The string to convert.
-     * @param locale The locale to use for conversion.
-     * @return The converted string in lowercase.
-     * @see String#toLowerCase()
+     * @param locale The locale to use for non-empty input; ignored for null or empty input.
+     * @return The converted string, or {@code null} if {@code text} is {@code null}.
+     * @throws NullPointerException if the text is non-empty and {@code locale} is {@code null}
+     * @see String#toLowerCase(Locale)
      */
     public static String toLowerCase(final CharSequence text, final Locale locale) {
         if (null == text) {
@@ -3639,23 +3640,24 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
-     * Converts a string to uppercase using the default locale.
+     * Converts a string to uppercase using {@link Locale#ROOT}, independently of the system locale.
      *
      * @param text The string to convert.
-     * @return The converted string in uppercase.
-     * @see String#toUpperCase()
+     * @return The converted string, an empty string for empty input, or {@code null} for null input.
+     * @see #toUpperCase(CharSequence, Locale)
      */
     public static String toUpperCase(final CharSequence text) {
-        return toUpperCase(text, Locale.getDefault());
+        return toUpperCase(text, Locale.ROOT);
     }
 
     /**
      * Converts a string to uppercase using the specified locale.
      *
      * @param text   The string to convert.
-     * @param locale The locale to use for conversion.
-     * @return The converted string in uppercase.
-     * @see String#toUpperCase()
+     * @param locale The locale to use for non-empty input; ignored for null or empty input.
+     * @return The converted string, or {@code null} if {@code text} is {@code null}.
+     * @throws NullPointerException if the text is non-empty and {@code locale} is {@code null}
+     * @see String#toUpperCase(Locale)
      */
     public static String toUpperCase(final CharSequence text, final Locale locale) {
         if (null == text) {
@@ -3664,7 +3666,7 @@ public class CharsBacker extends CharsValidator {
         if (text.isEmpty()) {
             return Normal.EMPTY;
         }
-        return text.toString().toUpperCase();
+        return text.toString().toUpperCase(locale);
     }
 
     /**

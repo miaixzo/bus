@@ -31,6 +31,7 @@ import org.miaixz.bus.core.lang.Keys;
 import org.miaixz.bus.core.xyz.CollKit;
 import org.miaixz.bus.core.xyz.DateKit;
 import org.miaixz.bus.core.xyz.NetKit;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.core.xyz.ThreadKit;
 import org.miaixz.bus.health.builtin.*;
 import org.miaixz.bus.health.builtin.hardware.*;
@@ -251,7 +252,7 @@ public class Collector {
      * @param map  The result map.
      */
     public void append(String type, Map<String, Object> map) {
-        switch (type.toLowerCase()) {
+        switch (StringKit.toLowerCase(type)) {
             case TID.HOST:
                 map.put(type, getHost());
                 break;

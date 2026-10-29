@@ -38,6 +38,7 @@ import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.tuple.Pair;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.health.Builder;
 import org.miaixz.bus.health.Memoizer;
 import org.miaixz.bus.health.Parsing;
@@ -119,7 +120,7 @@ public class MacOSProcess extends AbstractOSProcess {
             IORegistryEntry cpu = iter.next();
             while (cpu != null) {
                 try {
-                    String s = cpu.getName().toLowerCase(Locale.ROOT);
+                    String s = StringKit.toLowerCase(cpu.getName());
                     if (s.startsWith("cpu") && s.length() > 3) {
                         byte[] data = cpu.getByteArrayProperty("timebase-frequency");
                         if (data != null) {

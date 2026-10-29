@@ -92,7 +92,9 @@ public class WebConfiguration {
     @Bean
     @ConditionalOnMissingBean(ContextBindingFilter.class)
     @ConditionalOnProperty(prefix = GeniusBuilder.CONTEXT, name = "web.enabled", havingValue = "true", matchIfMissing = true)
-    ContextBindingFilter contextBindingFilter(List<ContextProvider> contextProviders, RequestContext requestContext,
+    ContextBindingFilter contextBindingFilter(
+            List<ContextProvider> contextProviders,
+            RequestContext requestContext,
             Environment environment) {
         long limit = Binder.get(environment).bind("server.tomcat.max-http-form-post-size", DataSize.class)
                 .orElse(DataSize.ofBytes(new RequestBindingOptions().getMaxRequestBodySize())).toBytes();

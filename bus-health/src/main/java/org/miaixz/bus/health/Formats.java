@@ -29,6 +29,7 @@ import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.xyz.ByteKit;
+import org.miaixz.bus.core.xyz.StringKit;
 
 /**
  * Formats units or converting between numeric types.
@@ -255,17 +256,18 @@ public class Formats {
     public static String formatMacAddress(String raw) {
         String cleaned = raw.replace(Symbol.MINUS, Normal.EMPTY).replace(Symbol.COLON, Normal.EMPTY).trim();
         if (cleaned.length() == 12 && isHex(cleaned)) {
-            return String.format(
-                    Locale.ROOT,
-                    "%s:%s:%s:%s:%s:%s",
-                    cleaned.substring(0, 2),
-                    cleaned.substring(2, 4),
-                    cleaned.substring(4, 6),
-                    cleaned.substring(6, 8),
-                    cleaned.substring(8, 10),
-                    cleaned.substring(10, 12)).toUpperCase(Locale.ROOT);
+            return StringKit.toUpperCase(
+                    String.format(
+                            Locale.ROOT,
+                            "%s:%s:%s:%s:%s:%s",
+                            cleaned.substring(0, 2),
+                            cleaned.substring(2, 4),
+                            cleaned.substring(4, 6),
+                            cleaned.substring(6, 8),
+                            cleaned.substring(8, 10),
+                            cleaned.substring(10, 12)));
         }
-        return raw.toUpperCase(Locale.ROOT);
+        return StringKit.toUpperCase(raw);
     }
 
     /**

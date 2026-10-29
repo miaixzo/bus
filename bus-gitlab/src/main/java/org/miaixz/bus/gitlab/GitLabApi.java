@@ -27,6 +27,7 @@ import jakarta.ws.rs.core.Response;
 
 import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.lang.exception.RelevantException;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.gitlab.models.Constants.TokenType;
 import org.miaixz.bus.gitlab.models.OauthTokenResponse;
 import org.miaixz.bus.gitlab.models.User;
@@ -2305,7 +2306,7 @@ public class GitLabApi implements AutoCloseable {
          */
 
         public String getApiNamespace() {
-            return ("/api/" + name().toLowerCase());
+            return ("/api/" + StringKit.toLowerCase(name()));
         }
 
     }

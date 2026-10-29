@@ -20,9 +20,9 @@
 package org.miaixz.bus.metrics.builtin;
 
 import java.time.Duration;
-import java.util.Locale;
 import java.util.Objects;
 
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.metrics.Builder;
 
 /**
@@ -98,7 +98,7 @@ public record HostMetricsOptions(boolean required, String convention, Duration c
      * @return normalized identifier
      */
     private static String normalized(String value) {
-        return value == null ? "" : value.trim().toUpperCase(Locale.ROOT).replace('-', '_').replace('.', '_');
+        return value == null ? "" : StringKit.toUpperCase(value.trim()).replace('-', '_').replace('.', '_');
     }
 
     /**
@@ -192,7 +192,7 @@ public record HostMetricsOptions(boolean required, String convention, Duration c
          * Validates and canonicalizes filesystem options.
          */
         public FileSystem {
-            mountpointMode = mountpointMode == null ? "" : mountpointMode.trim().toUpperCase(Locale.ROOT);
+            mountpointMode = mountpointMode == null ? "" : StringKit.toUpperCase(mountpointMode.trim());
             if (!"KEEP".equals(mountpointMode) && !"HASH".equals(mountpointMode) && !"DROP".equals(mountpointMode)) {
                 throw new IllegalArgumentException("Filesystem mountpoint mode must be KEEP, HASH or DROP");
             }

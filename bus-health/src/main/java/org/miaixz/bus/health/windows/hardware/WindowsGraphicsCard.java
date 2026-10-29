@@ -418,7 +418,7 @@ public class WindowsGraphicsCard extends AbstractGraphicsCard {
             return -1;
         }
         // Format: "PCI bus N, device N, function N" (case-insensitive)
-        String lower = locationInfo.toLowerCase(Locale.ROOT);
+        String lower = StringKit.toLowerCase(locationInfo);
         int busIdx = lower.indexOf("pci bus ");
         if (busIdx < 0) {
             return -1;
@@ -439,7 +439,7 @@ public class WindowsGraphicsCard extends AbstractGraphicsCard {
         if (locationInfo == null || locationInfo.isEmpty()) {
             return -1;
         }
-        String lower = locationInfo.toLowerCase(Locale.ROOT);
+        String lower = StringKit.toLowerCase(locationInfo);
         int devIdx = lower.indexOf("device ");
         if (devIdx < 0) {
             return -1;
@@ -460,7 +460,7 @@ public class WindowsGraphicsCard extends AbstractGraphicsCard {
         if (locationInfo == null || locationInfo.isEmpty()) {
             return -1;
         }
-        String lower = locationInfo.toLowerCase(Locale.ROOT);
+        String lower = StringKit.toLowerCase(locationInfo);
         int fnIdx = lower.indexOf("function ");
         if (fnIdx < 0) {
             return -1;

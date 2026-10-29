@@ -26,7 +26,6 @@ import java.io.OutputStream;
 import java.security.GeneralSecurityException;
 import java.text.DecimalFormat;
 import java.util.EnumSet;
-import java.util.Locale;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.xml.XMLConstants;
@@ -41,6 +40,7 @@ import javax.xml.transform.stream.StreamSource;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.IoKit;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.image.Device;
 import org.miaixz.bus.image.Status;
 import org.miaixz.bus.image.Tag;
@@ -438,7 +438,7 @@ public class FindSCU implements AutoCloseable {
     public void query(File f) throws Exception {
         Attributes attrs;
         String filePath = f.getPath();
-        String fileExt = filePath.substring(filePath.lastIndexOf(Symbol.C_DOT) + 1).toLowerCase(Locale.ROOT);
+        String fileExt = StringKit.toLowerCase(filePath.substring(filePath.lastIndexOf(Symbol.C_DOT) + 1));
 
         if (fileExt.equals("xml")) {
             attrs = SAXReader.parse(filePath);

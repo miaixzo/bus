@@ -24,12 +24,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.hardware.PowerSource;
@@ -213,7 +213,7 @@ public class FreeBsdPowerSource extends AbstractPowerSource {
         String design = psMap.get("Design capacity");
         String lastFull = psMap.get("Last full capacity");
         if (design != null) {
-            String units = design.toLowerCase(Locale.ROOT);
+            String units = StringKit.toLowerCase(design);
             if (units.endsWith("mah")) {
                 capacityUnits = PowerSource.CapacityUnits.MAH;
             } else if (units.endsWith("mwh")) {

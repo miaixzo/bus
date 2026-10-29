@@ -19,12 +19,12 @@
 */
 package org.miaixz.bus.image.galaxy.media;
 
-import java.util.Locale;
 import java.util.Objects;
 import java.util.regex.Pattern;
 
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.net.Http;
+import org.miaixz.bus.core.xyz.StringKit;
 
 /**
  * Immutable HTTP header used by DICOM web access configuration.
@@ -164,7 +164,7 @@ public class HttpTag {
      * @return true if the condition is met; otherwise false.
      */
     public boolean isSensitive() {
-        String lowerKey = key.toLowerCase(Locale.ROOT);
+        String lowerKey = StringKit.toLowerCase(key);
         return lowerKey.contains("auth") || lowerKey.contains("token") || lowerKey.contains("password")
                 || lowerKey.contains("secret") || lowerKey.contains("key");
     }

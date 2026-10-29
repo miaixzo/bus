@@ -52,6 +52,7 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.net.Protocol;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.extra.json.JsonValue;
 
@@ -603,8 +604,8 @@ public class TwitterSourceAdapter implements VendorAdapter {
                 throw new ValidateException("Twitter token response lacks required fields");
             }
             final boolean refreshable = object.values().containsKey(OAuth2.Parameters.REFRESH_TOKEN);
-            if (!tokenMembers(object, refreshable) || !"bearer"
-                    .equals(requiredString(object, OAuth2.Parameters.TOKEN_TYPE).toLowerCase(Locale.ROOT))) {
+            if (!tokenMembers(object, refreshable)
+                    || !"bearer".equals(StringKit.toLowerCase(requiredString(object, OAuth2.Parameters.TOKEN_TYPE)))) {
                 throw new ValidateException("Twitter token response has an invalid branch");
             }
             final String scope = string(object, OAuth2.Parameters.SCOPE);

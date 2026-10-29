@@ -23,6 +23,7 @@ import java.io.Serial;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.gitlab.models.GitLabForm;
 
 /**
@@ -209,7 +210,7 @@ public class EmailOnPushService extends NotificationService {
             return null;
         }
 
-        return (BranchesToBeNotified.valueOf(branchesToBeNotified.toUpperCase()));
+        return (BranchesToBeNotified.valueOf(StringKit.toUpperCase(branchesToBeNotified)));
     }
 
     /**

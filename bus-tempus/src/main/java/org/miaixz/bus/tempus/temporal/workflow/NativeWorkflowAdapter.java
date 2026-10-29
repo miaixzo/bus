@@ -26,6 +26,7 @@ import org.miaixz.bus.core.center.function.FunctionX;
 import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.xyz.StringKit;
 
 import io.temporal.activity.ActivityInterface;
 import io.temporal.activity.ActivityMethod;
@@ -242,7 +243,7 @@ public class NativeWorkflowAdapter {
             return activityMethod.name();
         }
         String name = method.getName();
-        return activityInterface.namePrefix() + name.substring(0, 1).toUpperCase() + name.substring(1);
+        return activityInterface.namePrefix() + StringKit.toUpperCase(name.substring(0, 1)) + name.substring(1);
     }
 
     /**
