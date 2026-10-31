@@ -137,15 +137,15 @@ public abstract class NeteaseProvider<T extends Notice, K extends Context> exten
         String response = FabricX.post(routerUrl, map, header);
         String code = JsonKit.getValue(response, "Code");
         Message<Void> result = Message.<Void>builder()
-                .errcode(String.valueOf(Http.Status.OK).equals(code) ? ErrorCode._SUCCESS.getKey() : code)
-                .errmsg(JsonKit.getValue(response, "desc")).build();
+                .code(String.valueOf(Http.Status.OK).equals(code) ? ErrorCode._SUCCESS.getKey() : code)
+                .desc(JsonKit.getValue(response, "desc")).build();
         Logger.debug(
                 false,
                 "Notify",
-                "NetEase notify response received: url={}, code={}, errcode={}, responseBytes={}",
+                "NetEase notify response received: url={}, code={}, code={}, responseBytes={}",
                 routerUrl,
                 code,
-                result.getErrcode(),
+                result.getCode(),
                 response == null ? 0 : response.length());
         return result;
     }

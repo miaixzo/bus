@@ -67,12 +67,12 @@ public class Controller {
     /**
      * Creates an error response using an error code string.
      *
-     * @param errcode The error code.
-     * @param <T>     the expected response payload type
+     * @param code The error code.
+     * @param <T>  the expected response payload type
      * @return A typed error response message.
      */
-    public <T> Message<T> write(String errcode) {
-        return write(Errors.require(errcode));
+    public <T> Message<T> write(String code) {
+        return write(Errors.require(code));
     }
 
     /**
@@ -89,13 +89,13 @@ public class Controller {
     /**
      * Creates a response with a specific error code and data.
      *
-     * @param errcode The error code.
-     * @param data    The data to be included in the response.
-     * @param <T>     the response payload type
+     * @param code The error code.
+     * @param data The data to be included in the response.
+     * @param <T>  the response payload type
      * @return A typed response message.
      */
-    public <T> Message<T> write(String errcode, T data) {
-        return write(Errors.require(errcode), data);
+    public <T> Message<T> write(String code, T data) {
+        return write(Errors.require(code), data);
     }
 
     /**
@@ -119,14 +119,14 @@ public class Controller {
     /**
      * Creates a response with a specific error code and message.
      *
-     * @param errcode The error code.
-     * @param errmsg  The error message.
-     * @param <T>     the expected response payload type
+     * @param code The error code.
+     * @param desc The error message.
+     * @param <T>  the expected response payload type
      * @return A typed error response message.
      */
-    public <T> Message<T> write(String errcode, String errmsg) {
-        if (Errors.contains(errcode) && StringKit.isNotEmpty(errmsg)) {
-            return Message.failure(errcode, errmsg);
+    public <T> Message<T> write(String code, String desc) {
+        if (Errors.contains(code) && StringKit.isNotEmpty(desc)) {
+            return Message.failure(code, desc);
         }
         return Message.failure(ErrorCode._FAILURE);
     }
@@ -134,15 +134,15 @@ public class Controller {
     /**
      * Creates a response with a formatted error message.
      *
-     * @param errcode The error code.
-     * @param errmsg  The error message content to be formatted.
-     * @param format  The format string.
-     * @param <T>     the expected response payload type
+     * @param code   The error code.
+     * @param desc   The error message content to be formatted.
+     * @param format The format string.
+     * @param <T>    the expected response payload type
      * @return A typed error response message.
      */
-    public <T> Message<T> write(String errcode, String errmsg, String format) {
-        if (StringKit.isNotEmpty(errcode) && StringKit.isNotEmpty(format)) {
-            return Message.failure(errcode, StringKit.format(format, errmsg));
+    public <T> Message<T> write(String code, String desc, String format) {
+        if (StringKit.isNotEmpty(code) && StringKit.isNotEmpty(format)) {
+            return Message.failure(code, StringKit.format(format, desc));
         }
         return Message.failure(ErrorCode._FAILURE);
     }

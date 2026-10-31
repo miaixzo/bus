@@ -192,8 +192,8 @@ public class Provider {
         if (criterion == null) {
             return;
         }
-        criterion.setErrmsg(
-                Errors.localizedMessage(criterion.getErrcode(), criterion.getErrmsg(), ErrorCode._115000.getValue()));
+        criterion.setDesc(
+                Errors.localizedMessage(criterion.getCode(), criterion.getDesc(), ErrorCode._115000.getValue()));
     }
 
     /**
@@ -208,10 +208,10 @@ public class Provider {
         Logger.debug(
                 true,
                 "Validate",
-                "Validation exception resolution started: field={}, validator={}, errcode={}",
+                "Validation exception resolution started: field={}, validator={}, code={}",
                 criterion == null ? null : criterion.getField(),
                 criterion == null ? null : criterion.getName(),
-                criterion == null ? null : criterion.getErrcode());
+                criterion == null ? null : criterion.getCode());
         resolve(criterion);
         // 1. Determine the exception class: Priority is given to the context's exception class, then the criterion's,
         // and finally ValidateException.
@@ -220,37 +220,37 @@ public class Provider {
 
         // 2. Determine the error code: Priority is given to the criterion's error code; if it's the default, the
         // context's error code is used.
-        String errcode = ObjectKit.defaultIfNull(criterion.getErrcode(), context.getErrcode());
+        String code = ObjectKit.defaultIfNull(criterion.getCode(), context.getCode());
 
         // 3. Get the error message: Fetched from Errors; if the key is null, the original errorCode is used.
-        String errmsg = ObjectKit.defaultIfNull(criterion.getErrmsg(), ErrorCode._115000.getValue());
+        String desc = ObjectKit.defaultIfNull(criterion.getDesc(), ErrorCode._115000.getValue());
 
         // 4. Set the error code and message in the criterion.
-        criterion.setErrcode(errcode);
-        criterion.setErrmsg(errmsg);
+        criterion.setCode(code);
+        criterion.setDesc(desc);
 
         // 5. Create the exception instance.
         if (exceptionClass == null) {
             Logger.debug(
                     false,
                     "Validate",
-                    "Validation exception resolved: exceptionClass={}, errcode={}, field={}, validator={}",
+                    "Validation exception resolved: exceptionClass={}, code={}, field={}, validator={}",
                     ValidateException.class.getName(),
-                    errcode,
+                    code,
                     criterion.getField(),
                     criterion.getName());
-            return new ValidateException(errcode, criterion.getMessage());
+            return new ValidateException(code, criterion.getMessage());
         }
         try {
             Constructor<? extends ValidateException> constructor = exceptionClass
                     .getConstructor(String.class, String.class);
-            ValidateException exception = constructor.newInstance(errcode, criterion.getMessage());
+            ValidateException exception = constructor.newInstance(code, criterion.getMessage());
             Logger.debug(
                     false,
                     "Validate",
-                    "Validation exception resolved: exceptionClass={}, errcode={}, field={}, validator={}",
+                    "Validation exception resolved: exceptionClass={}, code={}, field={}, validator={}",
                     exceptionClass.getName(),
-                    errcode,
+                    code,
                     criterion.getField(),
                     criterion.getName());
             return exception;

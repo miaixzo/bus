@@ -1,5 +1,7 @@
 # 🔍 Bus Validate: Lightweight Java Validation Framework
 
+> Naming migration: built-in and custom validation annotations use `code/desc`; Context, Criterion and exception accessors use the same names. Legacy attributes have no aliases. Verified reflects the new attribute names, so custom annotations must migrate together. Template interpolation and Criterion.getMessage() behavior are unchanged. See the [core migration guide](../bus-core/README.md#message-response-and-exception-naming-migration) for API and Java serialization details.
+
 <p align="center">
 <strong>Powerful, Flexible, and Easy-to-Use Validation Framework</strong>
 </p>
@@ -79,27 +81,27 @@ import org.miaixz.bus.validate.magic.annotation.*;
 @Data
 public class User {
 
-    @NotNull(errmsg = "User ID cannot be null")
+    @NotNull(desc = "User ID cannot be null")
     private Long id;
 
-    @NotBlank(errmsg = "Username cannot be blank")
-    @Size(min = 3, max = 20, errmsg = "Username must be between 3 and 20 characters")
+    @NotBlank(desc = "Username cannot be blank")
+    @Size(min = 3, max = 20, desc = "Username must be between 3 and 20 characters")
     private String username;
 
-    @Email(errmsg = "Invalid email format")
+    @Email(desc = "Invalid email format")
     private String email;
 
-    @Mobile(errmsg = "Invalid mobile phone number")
+    @Mobile(desc = "Invalid mobile phone number")
     private String phone;
 
-    @Chinese(errmsg = "Name must contain Chinese characters only")
+    @Chinese(desc = "Name must contain Chinese characters only")
     private String realName;
 
-    @Date(errmsg = "Invalid date format")
+    @Date(desc = "Invalid date format")
     private String birthday;
 
     @NotNull
-    @Compare(field = "password", errmsg = "Passwords do not match")
+    @Compare(field = "password", desc = "Passwords do not match")
     private String confirmPassword;
 
     private String password;
@@ -123,7 +125,7 @@ public class UserService {
             // Handle validation errors
             result.getResult().forEach(error -> {
                 Criterion criterion = error.getCriterion();
-                System.err.println("Validation failed: " + criterion.getErrmsg());
+                System.err.println("Validation failed: " + criterion.getDesc());
                 System.err.println("Field: " + criterion.getField());
                 System.err.println("Value: " + criterion.getParam("value"));
             });
@@ -144,24 +146,24 @@ public class UserService {
 
 | Annotation  | Description                                                    | Example                                      |
 |:------------|:---------------------------------------------------------------|:---------------------------------------------|
-| `@NotNull`  | Validates that the value is not null                           | `@NotNull(errmsg = "ID cannot be null")`     |
-| `@Null`     | Validates that the value is null                               | `@Null(errmsg = "Must be null")`             |
-| `@NotEmpty` | Validates that the value is not empty (array, collection, map) | `@NotEmpty(errmsg = "List cannot be empty")` |
-| `@NotBlank` | Validates that the string is not blank (trimmed length > 0)    | `@NotBlank(errmsg = "Name cannot be blank")` |
-| `@Blank`    | Validates that the string is blank                             | `@Blank(errmsg = "Must be blank")`           |
+| `@NotNull`  | Validates that the value is not null                           | `@NotNull(desc = "ID cannot be null")`     |
+| `@Null`     | Validates that the value is null                               | `@Null(desc = "Must be null")`             |
+| `@NotEmpty` | Validates that the value is not empty (array, collection, map) | `@NotEmpty(desc = "List cannot be empty")` |
+| `@NotBlank` | Validates that the string is not blank (trimmed length > 0)    | `@NotBlank(desc = "Name cannot be blank")` |
+| `@Blank`    | Validates that the string is blank                             | `@Blank(desc = "Must be blank")`           |
 
 ### String Validators
 
 | Annotation   | Description                   | Example                                |
 |:-------------|:------------------------------|:---------------------------------------|
-| `@Email`     | Validates email format        | `@Email(errmsg = "Invalid email")`     |
-| `@Mobile`    | Validates mobile phone number | `@Mobile(errmsg = "Invalid mobile")`   |
-| `@Phone`     | Validates phone number        | `@Phone(errmsg = "Invalid phone")`     |
-| `@Chinese`   | Validates Chinese characters  | `@Chinese(errmsg = "Must be Chinese")` |
-| `@English`   | Validates English characters  | `@English(errmsg = "Must be English")` |
-| `@URL`       | Validates URL format          | `@URL(errmsg = "Invalid URL")`         |
-| `@IPAddress` | Validates IP address          | `@IPAddress(errmsg = "Invalid IP")`    |
-| `@CitizenId` | Validates Chinese citizen ID  | `@CitizenId(errmsg = "Invalid ID")`    |
+| `@Email`     | Validates email format        | `@Email(desc = "Invalid email")`     |
+| `@Mobile`    | Validates mobile phone number | `@Mobile(desc = "Invalid mobile")`   |
+| `@Phone`     | Validates phone number        | `@Phone(desc = "Invalid phone")`     |
+| `@Chinese`   | Validates Chinese characters  | `@Chinese(desc = "Must be Chinese")` |
+| `@English`   | Validates English characters  | `@English(desc = "Must be English")` |
+| `@URL`       | Validates URL format          | `@URL(desc = "Invalid URL")`         |
+| `@IPAddress` | Validates IP address          | `@IPAddress(desc = "Invalid IP")`    |
+| `@CitizenId` | Validates Chinese citizen ID  | `@CitizenId(desc = "Invalid ID")`    |
 
 ### Size/Length Validators
 
@@ -192,8 +194,8 @@ public class UserService {
 
 | Annotation | Description                   | Example                            |
 |:-----------|:------------------------------|:-----------------------------------|
-| `@True`    | Validates that value is true  | `@True(errmsg = "Must be true")`   |
-| `@False`   | Validates that value is false | `@False(errmsg = "Must be false")` |
+| `@True`    | Validates that value is true  | `@True(desc = "Must be true")`   |
+| `@False`   | Validates that value is false | `@False(desc = "Must be false")` |
 
 ### Special Validators
 
@@ -303,8 +305,8 @@ import java.lang.annotation.*;
 @Complex(value = "AgeValidator", clazz = AgeValidator.class)
 public @interface ValidAge {
 
-    String errcode() default ErrorCode._PARAMETER_VALIDATE;
-    String errmsg() default "Age must be between 18 and 120";
+    String code() default ErrorCode._PARAMETER_VALIDATE;
+    String desc() default "Age must be between 18 and 120";
     String[] group() default {};
     String field() default Builder.DEFAULT_FIELD;
 }
@@ -346,7 +348,7 @@ public class RegistrationForm {
     private String username;
 
     // Only validate if userType is "company"
-    @NotBlank(errmsg = "Company name is required")
+    @NotBlank(desc = "Company name is required")
     @Reflect(condition = "userType == 'company'")
     private String companyName;
 }
@@ -360,12 +362,12 @@ public class RegistrationForm {
 
 ```java
 // ✅ Good: Clear and specific
-@NotBlank(errmsg = "Email address is required")
-@Email(errmsg = "Email address must be in valid format (e.g., user@example.com)")
+@NotBlank(desc = "Email address is required")
+@Email(desc = "Email address must be in valid format (e.g., user@example.com)")
 private String email;
 
 // ❌ Bad: Vague and unhelpful
-@NotBlank(errmsg = "Invalid")
+@NotBlank(desc = "Invalid")
 private String email;
 ```
 
@@ -376,7 +378,7 @@ private String email;
 @NotBlank
 @Size(min = 8, max = 20)
 @Regex(value = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d@$!%*#?&]+$",
-        errmsg = "Password must contain letters and numbers")
+        desc = "Password must contain letters and numbers")
 private String password;
 ```
 
@@ -425,7 +427,7 @@ private List<Phone> phones;
 
 ```java
 // Use placeholders in error messages
-@Size(min = 3, max = 20, errmsg = "Username must be between ${min} and ${max} characters")
+@Size(min = 3, max = 20, desc = "Username must be between ${min} and ${max} characters")
 private String username;
 
 // Available placeholders: ${field}, ${value}, ${min}, ${max}, etc.
@@ -443,7 +445,7 @@ if (!result.isPass()) {
     Map<String, String> errors = new HashMap<>();
     result.getResult().forEach(error -> {
         Criterion c = error.getCriterion();
-        errors.put(c.getField(), c.getErrmsg());
+        errors.put(c.getField(), c.getDesc());
     });
     return ResponseEntity.badRequest().body(errors);
 }
@@ -461,12 +463,12 @@ Collector result = Builder.on(value, new Annotation[]{}, context).access();
 
 ```java
 // Use message codes and resolve with MessageSource
-@Email(errcode = "validation.email.invalid")
+@Email(code = "validation.email.invalid")
 private String email;
 
 // In your service
 String message = messageSource.getMessage(
-    criterion.getErrcode(),
+    criterion.getCode(),
     new Object[]{criterion.getField()},
     LocaleContextHolder.getLocale()
 );
@@ -592,7 +594,7 @@ public class LoginForm {
     @Size(min = 8, max = 32)
     private String password;
 
-    @True(errmsg = "You must accept the terms and conditions")
+    @True(desc = "You must accept the terms and conditions")
     private Boolean acceptTerms;
 }
 ```
@@ -611,7 +613,7 @@ public class CreateOrderRequest {
     private List<OrderItem> items;
 
     @NotNull
-    @Compare(field = "totalAmount", errmsg = "Payment amount must match total")
+    @Compare(field = "totalAmount", desc = "Payment amount must match total")
     private BigDecimal paymentAmount;
 
     private BigDecimal totalAmount;

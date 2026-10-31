@@ -73,19 +73,18 @@ public class QiniuSmsProvider extends AbstractProvider<QiniuNotice, Context> {
         String response = post(this.getUrl(entity), bodys);
         Integer status = JsonKit.getValue(response, "status");
 
-        String errcode = (status != null && status == 200) ? ErrorCode._SUCCESS.getKey() : ErrorCode._FAILURE.getKey();
-        String errmsg = (status != null && status == 200) ? ErrorCode._SUCCESS.getValue()
-                : ErrorCode._FAILURE.getValue();
+        String code = (status != null && status == 200) ? ErrorCode._SUCCESS.getKey() : ErrorCode._FAILURE.getKey();
+        String desc = (status != null && status == 200) ? ErrorCode._SUCCESS.getValue() : ErrorCode._FAILURE.getValue();
 
-        Message<Void> result = Message.<Void>builder().errcode(errcode).errmsg(errmsg).build();
+        Message<Void> result = Message.<Void>builder().code(code).desc(desc).build();
         Logger.info(
                 false,
                 "Notify",
-                "Qiniu SMS send completed: template={}, targetCount={}, status={}, errcode={}, responseBytes={}",
+                "Qiniu SMS send completed: template={}, targetCount={}, status={}, code={}, responseBytes={}",
                 entity == null ? null : entity.getTemplate(),
                 entity == null || entity.getReceive() == null ? 0 : entity.getReceive().split(Symbol.COMMA).length,
                 status,
-                result.getErrcode(),
+                result.getCode(),
                 response == null ? 0 : response.length());
         return result;
     }

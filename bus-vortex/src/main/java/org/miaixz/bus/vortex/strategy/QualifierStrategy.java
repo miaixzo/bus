@@ -336,13 +336,13 @@ public class QualifierStrategy extends AbstractStrategy {
                     Logger.error(
                             false,
                             "Vortex",
-                            "Authentication failed: strategy=qualifier, clientIp={}, policy={}, credential={}, errorCode={}, message={}",
+                            "Authentication failed: strategy=qualifier, clientIp={}, policy={}, credential={}, code={}, desc={}",
                             context.getX_request_ip(),
                             policy,
                             credential.name(),
-                            message.errcode,
-                            message.errmsg);
-                    return Mono.error(new ValidateException(message.errcode, message.errmsg));
+                            message.code,
+                            message.desc);
+                    return Mono.error(new ValidateException(message.code, message.desc));
                 });
     }
 

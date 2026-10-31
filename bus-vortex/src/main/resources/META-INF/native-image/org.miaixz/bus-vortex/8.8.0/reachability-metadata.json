@@ -493,10 +493,10 @@
       "type": "org.miaixz.bus.vortex.handler.ErrorsHandler$Message",
       "fields": [
         {
-          "name": "errcode"
+          "name": "code"
         },
         {
-          "name": "errmsg"
+          "name": "desc"
         }
       ],
       "methods": [
@@ -515,21 +515,21 @@
           "parameterTypes": []
         },
         {
-          "name": "getErrcode",
+          "name": "getCode",
           "parameterTypes": []
         },
         {
-          "name": "getErrmsg",
+          "name": "getDesc",
           "parameterTypes": []
         },
         {
-          "name": "setErrcode",
+          "name": "setCode",
           "parameterTypes": [
             "java.lang.String"
           ]
         },
         {
-          "name": "setErrmsg",
+          "name": "setDesc",
           "parameterTypes": [
             "java.lang.String"
           ]
@@ -540,10 +540,10 @@
       "type": "org.miaixz.bus.vortex.handler.ErrorsHandler$Message$MessageBuilder",
       "fields": [
         {
-          "name": "errcode"
+          "name": "code"
         },
         {
-          "name": "errmsg"
+          "name": "desc"
         }
       ],
       "methods": [
@@ -556,13 +556,13 @@
           "parameterTypes": []
         },
         {
-          "name": "errcode",
+          "name": "code",
           "parameterTypes": [
             "java.lang.String"
           ]
         },
         {
-          "name": "errmsg",
+          "name": "desc",
           "parameterTypes": [
             "java.lang.String"
           ]

@@ -177,7 +177,7 @@ public class ErrorsHandler implements WebExceptionHandler {
             return HttpStatus.BAD_GATEWAY;
         }
         ValidateException validate = findCause(error, ValidateException.class);
-        if (validate != null && ErrorCode._100530.getKey().equals(validate.getErrcode())) {
+        if (validate != null && ErrorCode._100530.getKey().equals(validate.getCode())) {
             return HttpStatus.PAYLOAD_TOO_LARGE;
         }
         if (findCause(error, TimeoutException.class) != null
@@ -214,7 +214,7 @@ public class ErrorsHandler implements WebExceptionHandler {
                     method,
                     path,
                     outOfMemoryError.getClass().getSimpleName());
-            return Message.builder().errcode(ErrorCode._100807.getKey()).errmsg(ErrorCode._100807.getValue()).build();
+            return Message.builder().code(ErrorCode._100807.getKey()).desc(ErrorCode._100807.getValue()).build();
         }
 
         DataBufferLimitException dataBufferLimitException = findCause(ex, DataBufferLimitException.class);
@@ -227,7 +227,7 @@ public class ErrorsHandler implements WebExceptionHandler {
                     method,
                     path,
                     dataBufferLimitException.getClass().getSimpleName());
-            return Message.builder().errcode(ErrorCode._100531.getKey()).errmsg(ErrorCode._100531.getValue()).build();
+            return Message.builder().code(ErrorCode._100531.getKey()).desc(ErrorCode._100531.getValue()).build();
         }
 
         ResponseStatusException rse = findCause(ex, ResponseStatusException.class);
@@ -235,29 +235,28 @@ public class ErrorsHandler implements WebExceptionHandler {
             Logger.error(
                     false,
                     "Vortex",
-                    "HTTP status error returned: clientIp=N/A, method={}, path={}, event=ERROR_STATUS, status={}, message={}",
+                    "HTTP status error returned: clientIp=N/A, method={}, path={}, event=ERROR_STATUS, status={}, desc={}",
                     method,
                     path,
                     rse.getStatusCode().value(),
                     rse.getReason());
-            return Message.builder().errcode(String.valueOf(rse.getStatusCode().value())).errmsg(rse.getReason())
-                    .build();
+            return Message.builder().code(String.valueOf(rse.getStatusCode().value())).desc(rse.getReason()).build();
         }
 
         UncheckedException ue = findCause(ex, UncheckedException.class);
         if (ue != null) {
-            String errcode = ue.getErrcode();
-            String errmsg = ue.getErrmsg();
-            if (StringKit.isNotBlank(errcode)) {
+            String code = ue.getCode();
+            String desc = ue.getDesc();
+            if (StringKit.isNotBlank(code)) {
                 Logger.error(
                         false,
                         "Vortex",
-                        "Unchecked error returned: clientIp=N/A, method={}, path={}, event=ERROR_UNCHECKED, errorCode={}, message={}",
+                        "Unchecked error returned: clientIp=N/A, method={}, path={}, event=ERROR_UNCHECKED, code={}, desc={}",
                         method,
                         path,
-                        errcode,
-                        errmsg);
-                return Message.builder().errcode(errcode).errmsg(errmsg).build();
+                        code,
+                        desc);
+                return Message.builder().code(code).desc(desc).build();
             }
         }
 
@@ -273,7 +272,7 @@ public class ErrorsHandler implements WebExceptionHandler {
                     method,
                     path,
                     timeout.getClass().getSimpleName());
-            return Message.builder().errcode(ErrorCode._100811.getKey()).errmsg(ErrorCode._100811.getValue()).build();
+            return Message.builder().code(ErrorCode._100811.getKey()).desc(ErrorCode._100811.getValue()).build();
         }
 
         WebClientResponseException responseException = findCause(ex, WebClientResponseException.class);
@@ -290,7 +289,7 @@ public class ErrorsHandler implements WebExceptionHandler {
                     responseException.getClass().getSimpleName(),
                     root == null ? null : root.getClass().getName(),
                     root == null ? null : root.getMessage());
-            return Message.builder().errcode(ErrorCode._100710.getKey()).errmsg(ErrorCode._100710.getValue()).build();
+            return Message.builder().code(ErrorCode._100710.getKey()).desc(ErrorCode._100710.getValue()).build();
         }
 
         UnknownHostException unknownHostException = findCause(ex, UnknownHostException.class);
@@ -306,7 +305,7 @@ public class ErrorsHandler implements WebExceptionHandler {
                     unknownHostException.getClass().getSimpleName(),
                     root == null ? null : root.getClass().getName(),
                     root == null ? null : root.getMessage());
-            return Message.builder().errcode(ErrorCode._100811.getKey()).errmsg(ErrorCode._100811.getValue()).build();
+            return Message.builder().code(ErrorCode._100811.getKey()).desc(ErrorCode._100811.getValue()).build();
         }
 
         WebClientRequestException requestException = findCause(ex, WebClientRequestException.class);
@@ -324,7 +323,7 @@ public class ErrorsHandler implements WebExceptionHandler {
                     webClientError.getClass().getSimpleName(),
                     root == null ? null : root.getClass().getName(),
                     root == null ? null : root.getMessage());
-            return Message.builder().errcode(ErrorCode._100710.getKey()).errmsg(ErrorCode._100710.getValue()).build();
+            return Message.builder().code(ErrorCode._100710.getKey()).desc(ErrorCode._100710.getValue()).build();
         }
 
         Logger.error(
@@ -336,7 +335,7 @@ public class ErrorsHandler implements WebExceptionHandler {
                 path,
                 ex.getClass().getName(),
                 ex.getClass().getSimpleName());
-        return Message.builder().errcode(ErrorCode._100807.getKey()).errmsg(ErrorCode._100807.getValue()).build();
+        return Message.builder().code(ErrorCode._100807.getKey()).desc(ErrorCode._100807.getValue()).build();
     }
 
     /**
@@ -372,12 +371,12 @@ public class ErrorsHandler implements WebExceptionHandler {
         /**
          * The response code, indicating the specific error or status.
          */
-        private String errcode;
+        private String code;
 
         /**
          * The descriptive error message or status message.
          */
-        private String errmsg;
+        private String desc;
 
         /**
          * Creates an empty response message.

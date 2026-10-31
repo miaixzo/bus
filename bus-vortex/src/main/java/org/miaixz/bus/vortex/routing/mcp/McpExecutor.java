@@ -752,13 +752,13 @@ public class McpExecutor extends Coordinator<ServerRequest, ServerResponse> {
     /**
      * Builds a JSON error response using the gateway error envelope.
      *
-     * @param status  The HTTP status to apply to the response.
-     * @param errcode The gateway error code.
-     * @param errmsg  The gateway error message.
+     * @param status The HTTP status to apply to the response.
+     * @param code   The gateway error code.
+     * @param desc   The gateway error message.
      * @return A {@link Mono} emitting the error {@link ServerResponse}.
      */
-    private Mono<ServerResponse> buildErrorResponse(HttpStatus status, String errcode, String errmsg) {
-        Map<String, String> body = Map.of(Consts.ERRCODE, errcode, Consts.ERRMSG, errmsg);
+    private Mono<ServerResponse> buildErrorResponse(HttpStatus status, String code, String desc) {
+        Map<String, String> body = Map.of(Consts.CODE, code, Consts.DESC, desc);
         return ServerResponse.status(status).contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(JsonKit.toJsonString(body));
     }

@@ -77,7 +77,7 @@ public interface Provider extends AutoCloseable {
      * @return A {@link Message} containing the result of the operation. By default, returns a failure message.
      */
     default Message<List<Blob>> list() {
-        return Message.<List<Blob>>builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue())
+        return Message.<List<Blob>>builder().code(ErrorCode._FAILURE.getKey()).desc(ErrorCode._FAILURE.getValue())
                 .build();
     }
 
@@ -88,7 +88,7 @@ public interface Provider extends AutoCloseable {
      * @return A {@link Message} containing the result of the operation. By default, returns a failure message.
      */
     default Message<List<Blob>> list(String bucket) {
-        return Message.<List<Blob>>builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue())
+        return Message.<List<Blob>>builder().code(ErrorCode._FAILURE.getKey()).desc(ErrorCode._FAILURE.getValue())
                 .build();
     }
 
@@ -99,7 +99,7 @@ public interface Provider extends AutoCloseable {
      * @return A {@link Message} containing storage metadata when successful.
      */
     default Message<Blob> stat(String fileName) {
-        return Message.<Blob>builder().errcode(ErrorCode._113011.getKey()).errmsg(ErrorCode._113011.getValue()).build();
+        return Message.<Blob>builder().code(ErrorCode._113011.getKey()).desc(ErrorCode._113011.getValue()).build();
     }
 
     /**
@@ -110,7 +110,7 @@ public interface Provider extends AutoCloseable {
      * @return A {@link Message} containing storage metadata when successful.
      */
     default Message<Blob> stat(String bucket, String fileName) {
-        return Message.<Blob>builder().errcode(ErrorCode._113011.getKey()).errmsg(ErrorCode._113011.getValue()).build();
+        return Message.<Blob>builder().code(ErrorCode._113011.getKey()).desc(ErrorCode._113011.getValue()).build();
     }
 
     /**
@@ -121,7 +121,7 @@ public interface Provider extends AutoCloseable {
      * @return A {@link Message} containing storage metadata when successful.
      */
     default Message<Blob> statKey(String bucket, String objectKey) {
-        return Message.<Blob>builder().errcode(ErrorCode._113011.getKey()).errmsg(ErrorCode._113011.getValue()).build();
+        return Message.<Blob>builder().code(ErrorCode._113011.getKey()).desc(ErrorCode._113011.getValue()).build();
     }
 
     /**
@@ -131,7 +131,7 @@ public interface Provider extends AutoCloseable {
      * @return A {@link Message} containing a stream resource when successful.
      */
     default Message<Blob> stream(String fileName) {
-        return Message.<Blob>builder().errcode(ErrorCode._113011.getKey()).errmsg(ErrorCode._113011.getValue()).build();
+        return Message.<Blob>builder().code(ErrorCode._113011.getKey()).desc(ErrorCode._113011.getValue()).build();
     }
 
     /**
@@ -142,7 +142,7 @@ public interface Provider extends AutoCloseable {
      * @return A {@link Message} containing a stream resource when successful.
      */
     default Message<Blob> stream(String bucket, String fileName) {
-        return Message.<Blob>builder().errcode(ErrorCode._113011.getKey()).errmsg(ErrorCode._113011.getValue()).build();
+        return Message.<Blob>builder().code(ErrorCode._113011.getKey()).desc(ErrorCode._113011.getValue()).build();
     }
 
     /**
@@ -153,7 +153,7 @@ public interface Provider extends AutoCloseable {
      * @return A {@link Message} containing a stream resource when successful.
      */
     default Message<Blob> streamKey(String bucket, String objectKey) {
-        return Message.<Blob>builder().errcode(ErrorCode._113011.getKey()).errmsg(ErrorCode._113011.getValue()).build();
+        return Message.<Blob>builder().code(ErrorCode._113011.getKey()).desc(ErrorCode._113011.getValue()).build();
     }
 
     /**

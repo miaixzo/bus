@@ -42,14 +42,14 @@ public @interface Blank {
      *
      * @return the error code.
      */
-    String errcode() default ErrorCode._BLANK;
+    String code() default ErrorCode._BLANK;
 
     /**
      * The error message to be used when validation fails. The message can be a template with placeholders.
      *
      * @return the error message.
      */
-    String errmsg() default ErrorCode._BLANK_VALUE;
+    String desc() default ErrorCode._BLANK_VALUE;
 
     /**
      * The validation groups this constraint belongs to.

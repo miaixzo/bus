@@ -1000,3 +1000,33 @@ String turkish = StringKit.toUpperCase("i", Locale.forLanguageTag("tr")); // İ
 Character-level conversions retain the `Character` API. Direct String case conversion remains only in the two underlying `CharsBacker` implementations to avoid recursion.
 
 For short-circuit searches, validate each item only when it is visited. Do not validate an entire collection up front if that would reject null items after a successful match. Preserve existing conditional exception types and early-return paths when moving validation to an input boundary.
+
+## Message response and exception naming migration
+
+Bus responses use `code` (a string status code), `desc` (the response description), and the existing `data` payload. This applies to controllers, payment messages, notification results and storage results. The gateway's internal error envelope and locally generated MCP errors also use `code/desc`; they retain their existing absence of a `data` field. Status values, success criteria and payload semantics are unchanged.
+
+```java
+Message<String> result = Message.<String>builder()
+        .code("0").desc("Success").data("payload").build();
+String code = result.getCode();
+String desc = result.getDesc();
+```
+
+Replace the former `errcode/errmsg` fields, getters, setters and builder methods with their `code/desc` equivalents. There are no legacy API aliases or duplicate JSON fields. Upgrade frontend clients, reflection-based access and property mappings together.
+
+`UncheckedException`, `RelevantException` and their subclasses expose `getCode/getDesc`. Standard Java `getMessage()` and `getLocalizedMessage()` retain their message-resolution behavior and names. Built-in and application-defined validation annotations, `Context` and `Criterion` use `code/desc`; `Criterion.getMessage()` still returns the interpolated description.
+
+Only `Consts.CODE/DESC` are provided for Bus-owned fields and validation attribute reflection. The former constants are deleted without compatibility aliases. Third-party parsers use protocol-mandated field literals such as `"errcode"/"errmsg"` directly; external fields such as WeChat Pay's `err_code/err_code_des` retain their original wire format.
+
+Legacy Java serialized objects are deliberately rejected instead of silently losing status fields. The serialVersionUID values change from `2535303508001` to `2535303508002` for Message, from `2536912255392` to `2536912255393` for UncheckedException, and from `2536880001829` to `2536880001830` for RelevantException. Before upgrading, read and export persisted objects with the old version and reconstruct them using the new contract. Old objects fail with InvalidClassException; the superclass changes also affect payment messages and derived exceptions.
+
+The independent `tests/message-contract` project covers three JSON engines, controller and gateway paths, inherited payment builders, all 27 validation annotations, exception messages, and genuine legacy serialization fixtures. After building and installing all modules in the project's dependency order, run from the repository root:
+
+```bash
+mvn -B -ntp -Drevision=8.8.30 -Dmaven.compiler.release=21 -Dspotless.skip=true \
+    -f tests/message-contract/pom.xml clean test
+# With GraalVM Native Image installed:
+bash tests/message-contract/test-native.sh
+```
+
+The test project adds no test-framework dependencies to published components. Native metadata covers the renamed fields, accessors, builders and validation attributes; JVM checks do not replace the native executable probe.

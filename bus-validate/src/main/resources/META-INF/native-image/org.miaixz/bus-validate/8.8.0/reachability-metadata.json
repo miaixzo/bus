@@ -138,7 +138,7 @@
           "name": "checker"
         },
         {
-          "name": "errcode"
+          "name": "code"
         },
         {
           "name": "exception"
@@ -175,7 +175,7 @@
           "parameterTypes": []
         },
         {
-          "name": "getErrcode",
+          "name": "getCode",
           "parameterTypes": []
         },
         {
@@ -213,7 +213,7 @@
           ]
         },
         {
-          "name": "setErrcode",
+          "name": "setCode",
           "parameterTypes": [
             "java.lang.String"
           ]
@@ -336,10 +336,10 @@
           "name": "clazz"
         },
         {
-          "name": "errcode"
+          "name": "code"
         },
         {
-          "name": "errmsg"
+          "name": "desc"
         },
         {
           "name": "exception"
@@ -387,11 +387,11 @@
           "parameterTypes": []
         },
         {
-          "name": "getErrcode",
+          "name": "getCode",
           "parameterTypes": []
         },
         {
-          "name": "getErrmsg",
+          "name": "getDesc",
           "parameterTypes": []
         },
         {
@@ -445,13 +445,13 @@
           ]
         },
         {
-          "name": "setErrcode",
+          "name": "setCode",
           "parameterTypes": [
             "java.lang.String"
           ]
         },
         {
-          "name": "setErrmsg",
+          "name": "setDesc",
           "parameterTypes": [
             "java.lang.String"
           ]
@@ -1306,6 +1306,114 @@
           ]
         }
       ]
+    },
+    {
+      "type": "org.miaixz.bus.validate.magic.annotation.Blank",
+      "allDeclaredMethods": true
+    },
+    {
+      "type": "org.miaixz.bus.validate.magic.annotation.Chinese",
+      "allDeclaredMethods": true
+    },
+    {
+      "type": "org.miaixz.bus.validate.magic.annotation.CitizenId",
+      "allDeclaredMethods": true
+    },
+    {
+      "type": "org.miaixz.bus.validate.magic.annotation.Compare",
+      "allDeclaredMethods": true
+    },
+    {
+      "type": "org.miaixz.bus.validate.magic.annotation.Date",
+      "allDeclaredMethods": true
+    },
+    {
+      "type": "org.miaixz.bus.validate.magic.annotation.Each",
+      "allDeclaredMethods": true
+    },
+    {
+      "type": "org.miaixz.bus.validate.magic.annotation.Email",
+      "allDeclaredMethods": true
+    },
+    {
+      "type": "org.miaixz.bus.validate.magic.annotation.English",
+      "allDeclaredMethods": true
+    },
+    {
+      "type": "org.miaixz.bus.validate.magic.annotation.Equals",
+      "allDeclaredMethods": true
+    },
+    {
+      "type": "org.miaixz.bus.validate.magic.annotation.False",
+      "allDeclaredMethods": true
+    },
+    {
+      "type": "org.miaixz.bus.validate.magic.annotation.IPAddress",
+      "allDeclaredMethods": true
+    },
+    {
+      "type": "org.miaixz.bus.validate.magic.annotation.In",
+      "allDeclaredMethods": true
+    },
+    {
+      "type": "org.miaixz.bus.validate.magic.annotation.InEnum",
+      "allDeclaredMethods": true
+    },
+    {
+      "type": "org.miaixz.bus.validate.magic.annotation.IntRange",
+      "allDeclaredMethods": true
+    },
+    {
+      "type": "org.miaixz.bus.validate.magic.annotation.Length",
+      "allDeclaredMethods": true
+    },
+    {
+      "type": "org.miaixz.bus.validate.magic.annotation.Mobile",
+      "allDeclaredMethods": true
+    },
+    {
+      "type": "org.miaixz.bus.validate.magic.annotation.Multiple",
+      "allDeclaredMethods": true
+    },
+    {
+      "type": "org.miaixz.bus.validate.magic.annotation.NotBlank",
+      "allDeclaredMethods": true
+    },
+    {
+      "type": "org.miaixz.bus.validate.magic.annotation.NotEmpty",
+      "allDeclaredMethods": true
+    },
+    {
+      "type": "org.miaixz.bus.validate.magic.annotation.NotIn",
+      "allDeclaredMethods": true
+    },
+    {
+      "type": "org.miaixz.bus.validate.magic.annotation.NotNull",
+      "allDeclaredMethods": true
+    },
+    {
+      "type": "org.miaixz.bus.validate.magic.annotation.Null",
+      "allDeclaredMethods": true
+    },
+    {
+      "type": "org.miaixz.bus.validate.magic.annotation.Phone",
+      "allDeclaredMethods": true
+    },
+    {
+      "type": "org.miaixz.bus.validate.magic.annotation.Reflect",
+      "allDeclaredMethods": true
+    },
+    {
+      "type": "org.miaixz.bus.validate.magic.annotation.Regex",
+      "allDeclaredMethods": true
+    },
+    {
+      "type": "org.miaixz.bus.validate.magic.annotation.Size",
+      "allDeclaredMethods": true
+    },
+    {
+      "type": "org.miaixz.bus.validate.magic.annotation.True",
+      "allDeclaredMethods": true
     }
   ]
 }
