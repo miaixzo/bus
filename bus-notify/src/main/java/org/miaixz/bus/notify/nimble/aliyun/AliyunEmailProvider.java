@@ -194,10 +194,10 @@ public class AliyunEmailProvider extends AliyunProvider<AliyunNotice, Context> {
         Logger.info(
                 false,
                 "Notify",
-                "Aliyun email send completed: targetCount={}, type={}, errcode={}",
+                "Aliyun email send completed: targetCount={}, type={}, code={}",
                 entity.getReceive().split(Symbol.COMMA).length,
                 entity.getType(),
-                result == null ? null : result.getErrcode());
+                result == null ? null : result.getCode());
         return result;
     }
 

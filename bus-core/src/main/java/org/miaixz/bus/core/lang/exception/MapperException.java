@@ -52,10 +52,10 @@ public class MapperException extends UncheckedException {
     /**
      * Constructs a new MapperException with the specified detail message.
      *
-     * @param errmsg The detail message.
+     * @param desc The detail message.
      */
-    public MapperException(final String errmsg) {
-        super(errmsg);
+    public MapperException(final String desc) {
+        super(desc);
     }
 
     /**
@@ -71,10 +71,10 @@ public class MapperException extends UncheckedException {
      * Constructs a new MapperException with the specified error object and detail message.
      *
      * @param errors The error object containing error code.
-     * @param errmsg The detail message.
+     * @param desc   The detail message.
      */
-    public MapperException(final Errors errors, final String errmsg) {
-        super(errors, errmsg);
+    public MapperException(final Errors errors, final String desc) {
+        super(errors, desc);
     }
 
     /**
@@ -90,21 +90,21 @@ public class MapperException extends UncheckedException {
     /**
      * Constructs a new MapperException with the specified error code and detail message.
      *
-     * @param errcode The error code.
-     * @param errmsg  The detail message.
+     * @param code The error code.
+     * @param desc The detail message.
      */
-    public MapperException(final String errcode, final String errmsg) {
-        super(errcode, errmsg);
+    public MapperException(final String code, final String desc) {
+        super(code, desc);
     }
 
     /**
      * Constructs a new MapperException with the specified detail message and cause.
      *
-     * @param errmsg The detail message.
-     * @param cause  The cause (which is saved for later retrieval by the {@link Throwable#getCause()} method).
+     * @param desc  The detail message.
+     * @param cause The cause (which is saved for later retrieval by the {@link Throwable#getCause()} method).
      */
-    public MapperException(final String errmsg, final Throwable cause) {
-        super(errmsg, cause);
+    public MapperException(final String desc, final Throwable cause) {
+        super(desc, cause);
     }
 
     /**
@@ -121,27 +121,27 @@ public class MapperException extends UncheckedException {
     /**
      * Constructs a new MapperException with the specified error code, detail message, and cause.
      *
-     * @param errcode The error code.
-     * @param errmsg  The detail message.
-     * @param cause   The cause (which is saved for later retrieval by the {@link Throwable#getCause()} method).
+     * @param code  The error code.
+     * @param desc  The detail message.
+     * @param cause The cause (which is saved for later retrieval by the {@link Throwable#getCause()} method).
      */
-    public MapperException(final String errcode, final String errmsg, final Throwable cause) {
-        super(errcode, errmsg, cause);
+    public MapperException(final String code, final String desc, final Throwable cause) {
+        super(code, desc, cause);
     }
 
     /**
      * Constructs a new MapperException with the specified detail message, cause, suppression enabled or disabled, and
      * writable stack trace enabled or disabled.
      *
-     * @param errmsg             The detail message.
+     * @param desc               The detail message.
      * @param cause              The cause (which is saved for later retrieval by the {@link Throwable#getCause()}
      *                           method).
      * @param enableSuppression  Whether or not suppression is enabled or disabled.
      * @param writableStackTrace Whether or not the stack trace should be writable.
      */
-    public MapperException(final String errmsg, final Throwable cause, final boolean enableSuppression,
+    public MapperException(final String desc, final Throwable cause, final boolean enableSuppression,
             final boolean writableStackTrace) {
-        super(errmsg, cause, enableSuppression, writableStackTrace);
+        super(desc, cause, enableSuppression, writableStackTrace);
     }
 
 }

@@ -99,18 +99,18 @@ public class JdcloudSmsProvider extends AbstractProvider<JdcloudNotice, Context>
         String response = post(this.getUrl(entity), bodys, headers);
         int status = JsonKit.getValue(response, "statusCode");
 
-        String errcode = status == Http.Status.OK ? ErrorCode._SUCCESS.getKey() : ErrorCode._FAILURE.getKey();
-        String errmsg = status == Http.Status.OK ? ErrorCode._SUCCESS.getValue() : ErrorCode._FAILURE.getValue();
+        String code = status == Http.Status.OK ? ErrorCode._SUCCESS.getKey() : ErrorCode._FAILURE.getKey();
+        String desc = status == Http.Status.OK ? ErrorCode._SUCCESS.getValue() : ErrorCode._FAILURE.getValue();
 
-        Message<Void> result = Message.<Void>builder().errcode(errcode).errmsg(errmsg).build();
+        Message<Void> result = Message.<Void>builder().code(code).desc(desc).build();
         Logger.info(
                 false,
                 "Notify",
-                "JDCloud SMS send completed: template={}, targetCount={}, status={}, errcode={}, responseBytes={}",
+                "JDCloud SMS send completed: template={}, targetCount={}, status={}, code={}, responseBytes={}",
                 entity == null ? null : entity.getTemplate(),
                 entity == null || entity.getReceive() == null ? 0 : entity.getReceive().split(Symbol.COMMA).length,
                 status,
-                result.getErrcode(),
+                result.getCode(),
                 response == null ? 0 : response.length());
         return result;
     }

@@ -31,6 +31,9 @@ import org.miaixz.bus.core.basic.normal.Errors;
 /**
  * Represents an exception related to I/O operations or other relevant system issues.
  *
+ * Serialized objects using the former response fields are rejected by the changed serialization version. Rebuild
+ * callers against the code/desc API and migrate persisted objects before upgrading.
+ *
  * @author Kimi Liu
  */
 @Getter
@@ -38,17 +41,17 @@ import org.miaixz.bus.core.basic.normal.Errors;
 public class RelevantException extends IOException {
 
     @Serial
-    private static final long serialVersionUID = 2536880001829L;
+    private static final long serialVersionUID = 2536880001830L;
 
     /**
      * The error code associated with this exception.
      */
-    protected String errcode;
+    protected String code;
 
     /**
      * The error message associated with this exception.
      */
-    protected String errmsg;
+    protected String desc;
 
     /**
      * Constructs a new RelevantException with no detail message.
@@ -69,11 +72,11 @@ public class RelevantException extends IOException {
     /**
      * Constructs a new RelevantException with the specified detail message.
      *
-     * @param errmsg The detail message.
+     * @param desc The detail message.
      */
-    protected RelevantException(final String errmsg) {
-        super(errmsg);
-        this.errmsg = errmsg;
+    protected RelevantException(final String desc) {
+        super(desc);
+        this.desc = desc;
     }
 
     /**
@@ -83,54 +86,54 @@ public class RelevantException extends IOException {
      */
     protected RelevantException(final Errors errors) {
         super(errors.getValue());
-        this.errcode = errors.getKey();
-        this.errmsg = errors.getValue();
+        this.code = errors.getKey();
+        this.desc = errors.getValue();
     }
 
     /**
      * Constructs a new RelevantException with the specified error object and detail message.
      *
      * @param errors The error object containing error code.
-     * @param errmsg The detail message.
+     * @param desc   The detail message.
      */
-    public RelevantException(final Errors errors, final String errmsg) {
-        this(errors.getKey(), errmsg);
+    public RelevantException(final Errors errors, final String desc) {
+        this(errors.getKey(), desc);
     }
 
     /**
      * Constructs a new RelevantException with the specified detail message and cause.
      *
-     * @param errmsg The detail message.
-     * @param cause  The cause (which is saved for later retrieval by the {@link Throwable#getCause()} method).
+     * @param desc  The detail message.
+     * @param cause The cause (which is saved for later retrieval by the {@link Throwable#getCause()} method).
      */
-    protected RelevantException(final String errmsg, final Throwable cause) {
-        super(errmsg, cause);
-        this.errmsg = errmsg;
+    protected RelevantException(final String desc, final Throwable cause) {
+        super(desc, cause);
+        this.desc = desc;
     }
 
     /**
      * Constructs a new RelevantException with the specified error code and detail message.
      *
-     * @param errcode The error code.
-     * @param errmsg  The detail message.
+     * @param code The error code.
+     * @param desc The detail message.
      */
-    protected RelevantException(final String errcode, final String errmsg) {
-        super(errmsg);
-        this.errcode = errcode;
-        this.errmsg = errmsg;
+    protected RelevantException(final String code, final String desc) {
+        super(desc);
+        this.code = code;
+        this.desc = desc;
     }
 
     /**
      * Constructs a new RelevantException with the specified error code, detail message, and cause.
      *
-     * @param errcode The error code.
-     * @param errmsg  The detail message.
-     * @param cause   The cause (which is saved for later retrieval by the {@link Throwable#getCause()} method).
+     * @param code  The error code.
+     * @param desc  The detail message.
+     * @param cause The cause (which is saved for later retrieval by the {@link Throwable#getCause()} method).
      */
-    protected RelevantException(final String errcode, final String errmsg, final Throwable cause) {
-        super(errmsg, cause);
-        this.errcode = errcode;
-        this.errmsg = errmsg;
+    protected RelevantException(final String code, final String desc, final Throwable cause) {
+        super(desc, cause);
+        this.code = code;
+        this.desc = desc;
     }
 
     /**
@@ -147,11 +150,11 @@ public class RelevantException extends IOException {
      * Constructs a new RelevantException with the specified error object, detail message, and cause.
      *
      * @param errors The error object containing error code.
-     * @param errmsg The detail message.
+     * @param desc   The detail message.
      * @param cause  The cause (which is saved for later retrieval by the {@link Throwable#getCause()} method).
      */
-    public RelevantException(final Errors errors, final String errmsg, final Throwable cause) {
-        this(errors.getKey(), errmsg, cause);
+    public RelevantException(final Errors errors, final String desc, final Throwable cause) {
+        this(errors.getKey(), desc, cause);
     }
 
     /**
@@ -238,7 +241,7 @@ public class RelevantException extends IOException {
      */
     @Override
     public String getMessage() {
-        return Errors.message(this.errcode, this.errmsg, super.getMessage());
+        return Errors.message(this.code, this.desc, super.getMessage());
     }
 
     /**
@@ -248,7 +251,7 @@ public class RelevantException extends IOException {
      */
     @Override
     public String getLocalizedMessage() {
-        return Errors.localizedMessage(this.errcode, this.errmsg, super.getLocalizedMessage());
+        return Errors.localizedMessage(this.code, this.desc, super.getLocalizedMessage());
     }
 
 }

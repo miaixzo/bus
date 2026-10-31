@@ -90,22 +90,22 @@ public class UpyunSmsProvider extends AbstractProvider<UpyunNotice, Context> {
                     "Upyun SMS response empty: template={}, responseBytes={}",
                     entity == null ? null : entity.getTemplate(),
                     response == null ? 0 : response.length());
-            return Message.<Void>builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue())
+            return Message.<Void>builder().code(ErrorCode._FAILURE.getKey()).desc(ErrorCode._FAILURE.getValue())
                     .build();
         }
         boolean succeed = list.stream().filter(Objects::nonNull).anyMatch(UpyunNotice.MessageId::succeed);
-        String errcode = succeed ? ErrorCode._SUCCESS.getKey() : ErrorCode._FAILURE.getKey();
-        String errmsg = succeed ? ErrorCode._SUCCESS.getValue() : ErrorCode._FAILURE.getValue();
+        String code = succeed ? ErrorCode._SUCCESS.getKey() : ErrorCode._FAILURE.getKey();
+        String desc = succeed ? ErrorCode._SUCCESS.getValue() : ErrorCode._FAILURE.getValue();
 
-        Message<Void> result = Message.<Void>builder().errcode(errcode).errmsg(errmsg).build();
+        Message<Void> result = Message.<Void>builder().code(code).desc(desc).build();
         Logger.info(
                 false,
                 "Notify",
-                "Upyun SMS send completed: template={}, targetCount={}, resultCount={}, errcode={}, responseBytes={}",
+                "Upyun SMS send completed: template={}, targetCount={}, resultCount={}, code={}, responseBytes={}",
                 entity == null ? null : entity.getTemplate(),
                 entity == null || entity.getReceive() == null ? 0 : entity.getReceive().split(Symbol.COMMA).length,
                 list.size(),
-                result.getErrcode(),
+                result.getCode(),
                 response == null ? 0 : response.length());
         return result;
     }
@@ -113,13 +113,13 @@ public class UpyunSmsProvider extends AbstractProvider<UpyunNotice, Context> {
     /**
      * Checks if an SMS sending operation was successful based on the error code and message ID.
      *
-     * @param errorCode The error code returned by the service.
-     * @param msgId     The message ID returned by the service.
+     * @param code  The error code returned by the service.
+     * @param msgId The message ID returned by the service.
      * @return {@code true} if the operation was successful (error code is blank and message ID is not blank),
      *         {@code false} otherwise.
      */
-    public boolean succeed(String errorCode, String msgId) {
-        return StringKit.isBlank(errorCode) && StringKit.isNotBlank(msgId);
+    public boolean succeed(String code, String msgId) {
+        return StringKit.isBlank(code) && StringKit.isNotBlank(msgId);
     }
 
 }

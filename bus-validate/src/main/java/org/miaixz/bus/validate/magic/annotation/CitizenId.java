@@ -41,14 +41,14 @@ public @interface CitizenId {
      *
      * @return the error code.
      */
-    String errcode() default ErrorCode._CITIZEN_ID;
+    String code() default ErrorCode._CITIZEN_ID;
 
     /**
      * The error message to be used when validation fails. The message can be a template with placeholders.
      *
      * @return the error message.
      */
-    String errmsg() default ErrorCode._CITIZEN_ID_VALUE;
+    String desc() default ErrorCode._CITIZEN_ID_VALUE;
 
     /**
      * The validation groups this constraint belongs to.

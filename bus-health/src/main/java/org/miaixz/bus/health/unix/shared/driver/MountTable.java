@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
@@ -40,26 +41,38 @@ import org.miaixz.bus.health.Parsing;
 @ThreadSafe
 public final class MountTable {
 
-    /** JSON string pattern that keeps escape sequences for later decoding. */
+    /**
+     * JSON string pattern that keeps escape sequences for later decoding.
+     */
     private static final String JSON_STRING = "\"([^\"\\\\]*+(?:\\\\.[^\"\\\\]*+)*+)\"";
 
-    /** FreeBSD libxo fstab entry pattern. */
-    private static final java.util.regex.Pattern LIBXO_ENTRY = java.util.regex.Pattern.compile(
+    /**
+     * FreeBSD libxo fstab entry pattern.
+     */
+    private static final Pattern LIBXO_ENTRY = Pattern.compile(
             "\\{\\s*\"device\"\\s*:\\s*" + JSON_STRING + "\\s*,\\s*\"mntpoint\"\\s*:\\s*" + JSON_STRING
                     + "\\s*,\\s*\"fstype\"\\s*:\\s*" + JSON_STRING + "\\s*,\\s*\"opts\"\\s*:\\s*" + JSON_STRING);
 
-    /** Consecutive tab separator used by {@code mount -p}. */
-    private static final java.util.regex.Pattern TABS = java.util.regex.Pattern.compile("\\t+");
+    /**
+     * Consecutive tab separator used by {@code mount -p}.
+     */
+    private static final Pattern TABS = Pattern.compile("\\t+");
 
-    /** OpenBSD verbose mount row pattern. */
-    private static final java.util.regex.Pattern OPENBSD_MOUNT = java.util.regex.Pattern
+    /**
+     * OpenBSD verbose mount row pattern.
+     */
+    private static final Pattern OPENBSD_MOUNT = Pattern
             .compile("(.+?)(?: \\(([0-9a-f]{16}\\.[a-p])\\))? on (.+) type (\\S+) (\\(.*\\))");
 
-    /** BSD inode row pattern whose final group preserves the complete mount point. */
-    private static final java.util.regex.Pattern DF_INODES = java.util.regex.Pattern
+    /**
+     * BSD inode row pattern whose final group preserves the complete mount point.
+     */
+    private static final Pattern DF_INODES = Pattern
             .compile("(.+?)\\s+\\d+\\s+\\d+\\s+-?\\d+\\s+(?:\\d+%|-)\\s+(\\d+)\\s+(-?\\d+)\\s+(?:\\d+%|-)\\s+(.+)");
 
-    /** Prevents instantiation. */
+    /**
+     * Prevents instantiation.
+     */
     private MountTable() {
     }
 
@@ -71,15 +84,25 @@ public final class MountTable {
     @Immutable
     public static final class Entry {
 
-        /** Mounted device or source. */
+        /**
+         * Mounted device or source.
+         */
         private final String volume;
-        /** Mount-table identifier. */
+        /**
+         * Mount-table identifier.
+         */
         private final String uuid;
-        /** Mount point. */
+        /**
+         * Mount point.
+         */
         private final String path;
-        /** File-system type. */
+        /**
+         * File-system type.
+         */
         private final String type;
-        /** Mount options. */
+        /**
+         * Mount options.
+         */
         private final String options;
 
         /**
