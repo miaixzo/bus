@@ -41,14 +41,14 @@ public @interface IPAddress {
      *
      * @return the error code.
      */
-    String errcode() default ErrorCode._IP_ADDRESS;
+    String code() default ErrorCode._IP_ADDRESS;
 
     /**
      * The error message to be used when validation fails. The message can be a template with placeholders.
      *
      * @return the error message.
      */
-    String errmsg() default ErrorCode._IP_ADDRESS_VALUE;
+    String desc() default ErrorCode._IP_ADDRESS_VALUE;
 
     /**
      * The validation groups this constraint belongs to.

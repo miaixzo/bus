@@ -122,7 +122,7 @@ public class UpyunOssProvider extends AbstractProvider {
     public Message<Blob> statKey(String bucket, String objectKey) {
         try {
             if (StringKit.isBlank(objectKey)) {
-                return Message.<Blob>builder().errcode(ErrorCode._113006.getKey()).errmsg(ErrorCode._113006.getValue())
+                return Message.<Blob>builder().code(ErrorCode._113006.getKey()).desc(ErrorCode._113006.getValue())
                         .build();
             }
 
@@ -135,8 +135,8 @@ public class UpyunOssProvider extends AbstractProvider {
                     header(Http.Header.AUTHORIZATION, "UPYUN " + context.getAccessKey() + Symbol.COLON + signature),
                     header(Http.Header.DATE, date))) {
                 if (!response.successful()) {
-                    return Message.<Blob>builder().errcode(toError(response.code()).getKey())
-                            .errmsg(toError(response.code()).getValue()).build();
+                    return Message.<Blob>builder().code(toError(response.code()).getKey())
+                            .desc(toError(response.code()).getValue()).build();
                 }
 
                 String name = nameOf(objectKey);
@@ -144,8 +144,7 @@ public class UpyunOssProvider extends AbstractProvider {
                 extend.put("date", header(response, Http.Header.DATE));
                 extend.put("lastModified", header(response, Http.Header.LAST_MODIFIED));
 
-                return Message.<Blob>builder().errcode(ErrorCode._SUCCESS.getKey())
-                        .errmsg(ErrorCode._SUCCESS.getValue())
+                return Message.<Blob>builder().code(ErrorCode._SUCCESS.getKey()).desc(ErrorCode._SUCCESS.getValue())
                         .data(
                                 Blob.builder().bucket(bucket).key(objectKey).name(name).path(objectKey)
                                         .size(header(response, Http.Header.CONTENT_LENGTH, Symbol.ZERO))
@@ -164,8 +163,7 @@ public class UpyunOssProvider extends AbstractProvider {
                     ErrorCode._113010.getKey(),
                     e.getMessage(),
                     e);
-            return Message.<Blob>builder().errcode(ErrorCode._113010.getKey()).errmsg(ErrorCode._113010.getValue())
-                    .build();
+            return Message.<Blob>builder().code(ErrorCode._113010.getKey()).desc(ErrorCode._113010.getValue()).build();
         }
     }
 
@@ -204,7 +202,7 @@ public class UpyunOssProvider extends AbstractProvider {
     public Message<Blob> streamKey(String bucket, String objectKey) {
         try {
             if (StringKit.isBlank(objectKey)) {
-                return Message.<Blob>builder().errcode(ErrorCode._113006.getKey()).errmsg(ErrorCode._113006.getValue())
+                return Message.<Blob>builder().code(ErrorCode._113006.getKey()).desc(ErrorCode._113006.getValue())
                         .build();
             }
 
@@ -219,7 +217,7 @@ public class UpyunOssProvider extends AbstractProvider {
             if (!response.successful()) {
                 Errors error = toError(response.code());
                 response.close();
-                return Message.<Blob>builder().errcode(error.getKey()).errmsg(error.getValue()).build();
+                return Message.<Blob>builder().code(error.getKey()).desc(error.getValue()).build();
             }
 
             String name = nameOf(objectKey);
@@ -227,7 +225,7 @@ public class UpyunOssProvider extends AbstractProvider {
             extend.put("date", header(response, Http.Header.DATE));
             extend.put("lastModified", header(response, Http.Header.LAST_MODIFIED));
 
-            return Message.<Blob>builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
+            return Message.<Blob>builder().code(ErrorCode._SUCCESS.getKey()).desc(ErrorCode._SUCCESS.getValue())
                     .data(
                             Blob.builder().inputStream(stream(response)).bucket(bucket).key(objectKey).name(name)
                                     .path(objectKey).size(header(response, Http.Header.CONTENT_LENGTH, Symbol.ZERO))
@@ -245,8 +243,7 @@ public class UpyunOssProvider extends AbstractProvider {
                     ErrorCode._113010.getKey(),
                     e.getMessage(),
                     e);
-            return Message.<Blob>builder().errcode(ErrorCode._113010.getKey()).errmsg(ErrorCode._113010.getValue())
-                    .build();
+            return Message.<Blob>builder().code(ErrorCode._113010.getKey()).desc(ErrorCode._113010.getValue()).build();
         }
     }
 
@@ -299,8 +296,8 @@ public class UpyunOssProvider extends AbstractProvider {
                 // Read all bytes directly from the response body
                 byte[] content = response.bytes();
 
-                return Message.<byte[]>builder().errcode(ErrorCode._SUCCESS.getKey())
-                        .errmsg(ErrorCode._SUCCESS.getValue()).data(content).build();
+                return Message.<byte[]>builder().code(ErrorCode._SUCCESS.getKey()).desc(ErrorCode._SUCCESS.getValue())
+                        .data(content).build();
             }
         } catch (Exception e) {
             Logger.error(
@@ -312,7 +309,7 @@ public class UpyunOssProvider extends AbstractProvider {
                     fileName,
                     e.getMessage(),
                     e);
-            return Message.<byte[]>builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue())
+            return Message.<byte[]>builder().code(ErrorCode._FAILURE.getKey()).desc(ErrorCode._FAILURE.getValue())
                     .build();
         }
     }
@@ -370,8 +367,8 @@ public class UpyunOssProvider extends AbstractProvider {
                     inputStream.transferTo(outputStream);
                 }
 
-                return Message.<Void>builder().errcode(ErrorCode._SUCCESS.getKey())
-                        .errmsg(ErrorCode._SUCCESS.getValue()).build();
+                return Message.<Void>builder().code(ErrorCode._SUCCESS.getKey()).desc(ErrorCode._SUCCESS.getValue())
+                        .build();
             }
         } catch (Exception e) {
             Logger.error(
@@ -384,7 +381,7 @@ public class UpyunOssProvider extends AbstractProvider {
                     file != null,
                     e.getMessage(),
                     e);
-            return Message.<Void>builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue())
+            return Message.<Void>builder().code(ErrorCode._FAILURE.getKey()).desc(ErrorCode._FAILURE.getValue())
                     .build();
         }
     }
@@ -425,8 +422,8 @@ public class UpyunOssProvider extends AbstractProvider {
                         files.add(Blob.builder().name(parts[0]).size(parts[2]).extend(extend).build());
                     }
                 }
-                return Message.<List<Blob>>builder().errcode(ErrorCode._SUCCESS.getKey())
-                        .errmsg(ErrorCode._SUCCESS.getValue()).data(files).build();
+                return Message.<List<Blob>>builder().code(ErrorCode._SUCCESS.getKey())
+                        .desc(ErrorCode._SUCCESS.getValue()).data(files).build();
             }
         } catch (Exception e) {
             Logger.error(
@@ -437,8 +434,8 @@ public class UpyunOssProvider extends AbstractProvider {
                     this.context.getBucket(),
                     e.getMessage(),
                     e);
-            return Message.<List<Blob>>builder().errcode(ErrorCode._FAILURE.getKey())
-                    .errmsg(ErrorCode._FAILURE.getValue()).build();
+            return Message.<List<Blob>>builder().code(ErrorCode._FAILURE.getKey()).desc(ErrorCode._FAILURE.getValue())
+                    .build();
         }
     }
 
@@ -531,7 +528,7 @@ public class UpyunOssProvider extends AbstractProvider {
                 }
             }
 
-            return Message.<Void>builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
+            return Message.<Void>builder().code(ErrorCode._SUCCESS.getKey()).desc(ErrorCode._SUCCESS.getValue())
                     .build();
         } catch (Exception e) {
             Logger.error(
@@ -545,7 +542,7 @@ public class UpyunOssProvider extends AbstractProvider {
                     newName,
                     e.getMessage(),
                     e);
-            return Message.<Void>builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue())
+            return Message.<Void>builder().code(ErrorCode._FAILURE.getKey()).desc(ErrorCode._FAILURE.getValue())
                     .build();
         }
     }
@@ -604,8 +601,7 @@ public class UpyunOssProvider extends AbstractProvider {
                 if (!response.successful()) {
                     throw new IOException("Unexpected code " + response);
                 }
-                return Message.<Blob>builder().errcode(ErrorCode._SUCCESS.getKey())
-                        .errmsg(ErrorCode._SUCCESS.getValue())
+                return Message.<Blob>builder().code(ErrorCode._SUCCESS.getKey()).desc(ErrorCode._SUCCESS.getValue())
                         .data(Blob.builder().name(fileName).path(objectKey).build()).build();
             }
         } catch (Exception e) {
@@ -619,7 +615,7 @@ public class UpyunOssProvider extends AbstractProvider {
                     fileName,
                     e.getMessage(),
                     e);
-            return Message.<Blob>builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue())
+            return Message.<Blob>builder().code(ErrorCode._FAILURE.getKey()).desc(ErrorCode._FAILURE.getValue())
                     .build();
         }
     }
@@ -675,7 +671,7 @@ public class UpyunOssProvider extends AbstractProvider {
                     fileName,
                     e.getMessage(),
                     e);
-            return Message.<Blob>builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue())
+            return Message.<Blob>builder().code(ErrorCode._FAILURE.getKey()).desc(ErrorCode._FAILURE.getValue())
                     .build();
         }
     }
@@ -727,8 +723,8 @@ public class UpyunOssProvider extends AbstractProvider {
                 if (!response.successful()) {
                     throw new IOException("Unexpected code " + response);
                 }
-                return Message.<Void>builder().errcode(ErrorCode._SUCCESS.getKey())
-                        .errmsg(ErrorCode._SUCCESS.getValue()).build();
+                return Message.<Void>builder().code(ErrorCode._SUCCESS.getKey()).desc(ErrorCode._SUCCESS.getValue())
+                        .build();
             }
         } catch (Exception e) {
             Logger.error(
@@ -741,7 +737,7 @@ public class UpyunOssProvider extends AbstractProvider {
                     fileName,
                     e.getMessage(),
                     e);
-            return Message.<Void>builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue())
+            return Message.<Void>builder().code(ErrorCode._FAILURE.getKey()).desc(ErrorCode._FAILURE.getValue())
                     .build();
         }
     }

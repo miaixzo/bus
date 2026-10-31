@@ -41,14 +41,14 @@ public @interface Mobile {
      *
      * @return the error code.
      */
-    String errcode() default ErrorCode._MOBILE;
+    String code() default ErrorCode._MOBILE;
 
     /**
      * The error message to be used when validation fails. The message can be a template with placeholders.
      *
      * @return the error message.
      */
-    String errmsg() default ErrorCode._MOBILE_VALUE;
+    String desc() default ErrorCode._MOBILE_VALUE;
 
     /**
      * The validation groups this constraint belongs to.

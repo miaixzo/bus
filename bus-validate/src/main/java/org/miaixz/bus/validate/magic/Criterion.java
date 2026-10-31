@@ -52,12 +52,12 @@ public class Criterion {
     /**
      * The error code to be used when validation fails.
      */
-    private String errcode;
+    private String code;
 
     /**
      * The error message template.
      */
-    private String errmsg;
+    private String desc;
 
     /**
      * The name of the field being validated.
@@ -143,7 +143,7 @@ public class Criterion {
      * @return The interpolated error message string.
      */
     public String getMessage() {
-        String message = StringTemplate.ofNamed(this.errmsg).prefix("${").suffix(Symbol.BRACE_RIGHT).build()
+        String message = StringTemplate.ofNamed(this.desc).prefix("${").suffix(Symbol.BRACE_RIGHT).build()
                 .format(this.param);
         return StringTemplate.ofNamed(message).build().format(this.param);
     }

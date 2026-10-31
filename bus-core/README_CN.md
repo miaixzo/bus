@@ -992,3 +992,33 @@ String turkish = StringKit.toUpperCase("i", Locale.forLanguageTag("tr")); // İ
 字符级转换继续使用 `Character`；仅在 `CharsBacker` 的两个底层实现中直接调用 String 大小写方法，以避免递归。
 
 对于短路匹配，只校验实际访问的元素；不要提前校验整批数据，导致已经匹配成功后仍因后续 null 项报错。校验前移时，也应保留原有分支的异常类型和提前返回行为。
+
+## Message 响应与异常命名迁移
+
+Bus 自有响应统一使用 `code`（字符串状态码）、`desc`（响应说明）和原有 `data`（响应数据）。控制器、支付消息、通知和存储返回对象采用相同名称。网关内部错误对象和 MCP 本地错误响应也使用 `code/desc`；它们原本没有 `data`，本次不新增该字段。状态码取值、成功判断和数据内容保持原语义。
+
+```java
+Message<String> result = Message.<String>builder()
+        .code("0").desc("Success").data("payload").build();
+String code = result.getCode();
+String desc = result.getDesc();
+```
+
+将旧字段 `errcode/errmsg`、访问方法 `getErrcode/getErrmsg`、`setErrcode/setErrmsg` 和 Builder 方法替换为对应的 `code/desc` 名称。本次不保留旧 API 或输出双份 JSON 字段。前端、客户端、反射访问及按属性名进行的映射需要同步升级。
+
+`UncheckedException`、`RelevantException` 及其派生异常通过 `getCode/getDesc` 暴露状态信息。Java 标准 `getMessage()`、`getLocalizedMessage()` 继续用于异常消息解析。内置和自定义校验注解、`Context` 和 `Criterion` 同步使用 `code/desc`；`Criterion.getMessage()` 继续返回插值后的说明。
+
+通用常量仅提供 `Consts.CODE/DESC`，用于 Bus 自有字段和校验注解反射读取；旧名称常量直接删除，不保留兼容入口。第三方解析代码直接使用协议规定的字段字面量，例如 `"errcode"/"errmsg"`；微信支付 `err_code/err_code_des` 等外部报文保持原格式。
+
+Java 对象序列化不自动迁移旧字段：`Message` 的 `serialVersionUID` 从 `2535303508001` 改为 `2535303508002`，`UncheckedException` 从 `2536912255392` 改为 `2536912255393`，`RelevantException` 从 `2536880001829` 改为 `2536880001830`。旧对象明确抛出 `InvalidClassException`，避免读取成功却丢失状态字段。升级前应在旧版本中读取并导出旧缓存或持久化对象，再按新结构重建。支付消息和派生异常也受其父类版本变更影响。
+
+跨组件测试位于 `tests/message-contract`，覆盖三种 JSON 实现、控制器和网关响应、支付 Builder 继承、27 个校验注解、异常消息和真实旧版序列化对象。先按项目构建顺序完成所有模块的 `clean install`，再从仓库根目录运行：
+
+```bash
+mvn -B -ntp -Drevision=8.8.30 -Dmaven.compiler.release=21 -Dspotless.skip=true \
+    -f tests/message-contract/pom.xml clean test
+# 安装 GraalVM Native Image 后，验证原生镜像中的反射路径：
+bash tests/message-contract/test-native.sh
+```
+
+测试工程独立于生产组件，不增加发布组件的测试框架依赖。原生镜像配置同时登记新字段、访问方法、Builder 和校验注解属性；JVM 测试不能替代原生镜像验证。

@@ -45,10 +45,10 @@ public class BeanException extends InternalException {
     /**
      * Constructs a new BeanException with the specified detail message.
      *
-     * @param errmsg The detail message.
+     * @param desc The detail message.
      */
-    public BeanException(final String errmsg) {
-        super(errmsg);
+    public BeanException(final String desc) {
+        super(desc);
     }
 
     /**
@@ -64,10 +64,10 @@ public class BeanException extends InternalException {
      * Constructs a new BeanException with the specified error object and detail message.
      *
      * @param errors The error object containing error code.
-     * @param errmsg The detail message.
+     * @param desc   The detail message.
      */
-    public BeanException(final Errors errors, final String errmsg) {
-        super(errors, errmsg);
+    public BeanException(final Errors errors, final String desc) {
+        super(errors, desc);
     }
 
     /**
@@ -83,26 +83,26 @@ public class BeanException extends InternalException {
     /**
      * Constructs a new BeanException with the specified detail message and cause.
      *
-     * @param errmsg The detail message.
-     * @param cause  The cause (which is saved for later retrieval by the {@link Throwable#getCause()} method).
+     * @param desc  The detail message.
+     * @param cause The cause (which is saved for later retrieval by the {@link Throwable#getCause()} method).
      */
-    public BeanException(final String errmsg, final Throwable cause) {
-        super(errmsg, cause);
+    public BeanException(final String desc, final Throwable cause) {
+        super(desc, cause);
     }
 
     /**
      * Constructs a new BeanException with the specified detail message, cause, suppression enabled or disabled, and
      * writable stack trace enabled or disabled.
      *
-     * @param errmsg             The detail message.
+     * @param desc               The detail message.
      * @param cause              The cause (which is saved for later retrieval by the {@link Throwable#getCause()}
      *                           method).
      * @param enableSuppression  Whether or not suppression is enabled or disabled.
      * @param writableStackTrace Whether or not the stack trace should be writable.
      */
-    public BeanException(final String errmsg, final Throwable cause, final boolean enableSuppression,
+    public BeanException(final String desc, final Throwable cause, final boolean enableSuppression,
             final boolean writableStackTrace) {
-        super(errmsg, cause, enableSuppression, writableStackTrace);
+        super(desc, cause, enableSuppression, writableStackTrace);
     }
 
     /**

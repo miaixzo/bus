@@ -54,14 +54,14 @@ public @interface Compare {
      *
      * @return the error code.
      */
-    String errcode() default ErrorCode._COMPARE;
+    String code() default ErrorCode._COMPARE;
 
     /**
      * The error message to be used when validation fails. The message can be a template with placeholders.
      *
      * @return the error message.
      */
-    String errmsg() default ErrorCode._COMPARE_VALUE;
+    String desc() default ErrorCode._COMPARE_VALUE;
 
     /**
      * The validation groups this constraint belongs to.

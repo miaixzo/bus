@@ -58,14 +58,14 @@ public @interface Multiple {
      *
      * @return the error code.
      */
-    String errcode() default ErrorCode._MULTIPLE;
+    String code() default ErrorCode._MULTIPLE;
 
     /**
      * The error message to be used when validation fails. The message can be a template with placeholders.
      *
      * @return the error message.
      */
-    String errmsg() default ErrorCode._MULTIPLE_VALUE;
+    String desc() default ErrorCode._MULTIPLE_VALUE;
 
     /**
      * The validation groups this constraint belongs to.

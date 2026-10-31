@@ -41,14 +41,14 @@ public @interface Phone {
      *
      * @return the error code.
      */
-    String errcode() default ErrorCode._PHONE;
+    String code() default ErrorCode._PHONE;
 
     /**
      * The error message to be used when validation fails. The message can be a template with placeholders.
      *
      * @return the error message.
      */
-    String errmsg() default ErrorCode._PHONE_VALUE;
+    String desc() default ErrorCode._PHONE_VALUE;
 
     /**
      * The validation groups this constraint belongs to.

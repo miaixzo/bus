@@ -41,14 +41,14 @@ public @interface Null {
      *
      * @return the error code.
      */
-    String errcode() default ErrorCode._NULL;
+    String code() default ErrorCode._NULL;
 
     /**
      * The error message to be used when validation fails. The message can be a template with placeholders.
      *
      * @return the error message.
      */
-    String errmsg() default ErrorCode._NULL_VALUE;
+    String desc() default ErrorCode._NULL_VALUE;
 
     /**
      * The validation groups this constraint belongs to.

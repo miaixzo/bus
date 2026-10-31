@@ -97,14 +97,14 @@ public class GenericEmailProvider extends AbstractProvider<GenericNotice, Contex
                     e.getClass().getSimpleName(),
                     message);
         }
-        Message<Void> result = Message.<Void>builder().errcode(ErrorCode._SUCCESS.getKey())
-                .errmsg(ErrorCode._SUCCESS.getValue()).build();
+        Message<Void> result = Message.<Void>builder().code(ErrorCode._SUCCESS.getKey())
+                .desc(ErrorCode._SUCCESS.getValue()).build();
         Logger.info(
                 false,
                 "Notify",
-                "Generic email send completed: targetCount={}, errcode={}",
+                "Generic email send completed: targetCount={}, code={}",
                 entity == null || entity.getReceive() == null ? 0 : entity.getReceive().split(Symbol.COMMA).length,
-                result.getErrcode());
+                result.getCode());
         return result;
     }
 

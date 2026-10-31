@@ -110,19 +110,19 @@ public class WebDavProvider extends AbstractProvider {
     public Message<Blob> statKey(String bucket, String objectKey) {
         try {
             if (StringKit.isBlank(objectKey)) {
-                return Message.<Blob>builder().errcode(ErrorCode._113006.getKey()).errmsg(ErrorCode._113006.getValue())
+                return Message.<Blob>builder().code(ErrorCode._113006.getKey()).desc(ErrorCode._113006.getValue())
                         .build();
             }
 
             String url = getUrl(bucket + Symbol.SLASH + objectKey);
             if (!client.exists(url)) {
-                return Message.<Blob>builder().errcode(ErrorCode._113008.getKey()).errmsg(ErrorCode._113008.getValue())
+                return Message.<Blob>builder().code(ErrorCode._113008.getKey()).desc(ErrorCode._113008.getValue())
                         .build();
             }
 
             List<DavResource> resources = client.list(url, 0);
             if (resources == null || resources.isEmpty() || resources.get(0).isDirectory()) {
-                return Message.<Blob>builder().errcode(ErrorCode._113008.getKey()).errmsg(ErrorCode._113008.getValue())
+                return Message.<Blob>builder().code(ErrorCode._113008.getKey()).desc(ErrorCode._113008.getValue())
                         .build();
             }
             DavResource resource = resources.get(0);
@@ -136,7 +136,7 @@ public class WebDavProvider extends AbstractProvider {
             extend.put("statusCode", resource.getStatusCode());
             extend.put("href", resource.getHref());
 
-            return Message.<Blob>builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
+            return Message.<Blob>builder().code(ErrorCode._SUCCESS.getKey()).desc(ErrorCode._SUCCESS.getValue())
                     .data(
                             Blob.builder().bucket(bucket).key(objectKey).name(name).path(objectKey)
                                     .size(StringKit.toString(resource.getContentLength()))
@@ -160,7 +160,7 @@ public class WebDavProvider extends AbstractProvider {
                     error.getKey(),
                     e.getMessage(),
                     e);
-            return Message.<Blob>builder().errcode(error.getKey()).errmsg(error.getValue()).build();
+            return Message.<Blob>builder().code(error.getKey()).desc(error.getValue()).build();
         }
     }
 
@@ -199,19 +199,19 @@ public class WebDavProvider extends AbstractProvider {
     public Message<Blob> streamKey(String bucket, String objectKey) {
         try {
             if (StringKit.isBlank(objectKey)) {
-                return Message.<Blob>builder().errcode(ErrorCode._113006.getKey()).errmsg(ErrorCode._113006.getValue())
+                return Message.<Blob>builder().code(ErrorCode._113006.getKey()).desc(ErrorCode._113006.getValue())
                         .build();
             }
 
             String url = getUrl(bucket + Symbol.SLASH + objectKey);
             if (!client.exists(url)) {
-                return Message.<Blob>builder().errcode(ErrorCode._113008.getKey()).errmsg(ErrorCode._113008.getValue())
+                return Message.<Blob>builder().code(ErrorCode._113008.getKey()).desc(ErrorCode._113008.getValue())
                         .build();
             }
 
             List<DavResource> resources = client.list(url, 0);
             if (resources == null || resources.isEmpty() || resources.get(0).isDirectory()) {
-                return Message.<Blob>builder().errcode(ErrorCode._113008.getKey()).errmsg(ErrorCode._113008.getValue())
+                return Message.<Blob>builder().code(ErrorCode._113008.getKey()).desc(ErrorCode._113008.getValue())
                         .build();
             }
             DavResource resource = resources.get(0);
@@ -225,7 +225,7 @@ public class WebDavProvider extends AbstractProvider {
             extend.put("statusCode", resource.getStatusCode());
             extend.put("href", resource.getHref());
 
-            return Message.<Blob>builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
+            return Message.<Blob>builder().code(ErrorCode._SUCCESS.getKey()).desc(ErrorCode._SUCCESS.getValue())
                     .data(
                             Blob.builder().inputStream(client.get(url)).bucket(bucket).key(objectKey).name(name)
                                     .path(objectKey).size(StringKit.toString(resource.getContentLength()))
@@ -249,7 +249,7 @@ public class WebDavProvider extends AbstractProvider {
                     error.getKey(),
                     e.getMessage(),
                     e);
-            return Message.<Blob>builder().errcode(error.getKey()).errmsg(error.getValue()).build();
+            return Message.<Blob>builder().code(error.getKey()).desc(error.getValue()).build();
         }
     }
 
@@ -289,8 +289,8 @@ public class WebDavProvider extends AbstractProvider {
             try (InputStream inputStream = client.get(url)) {
                 byte[] content = inputStream.readAllBytes();
 
-                return Message.<byte[]>builder().errcode(ErrorCode._SUCCESS.getKey())
-                        .errmsg(ErrorCode._SUCCESS.getValue()).data(content).build();
+                return Message.<byte[]>builder().code(ErrorCode._SUCCESS.getKey()).desc(ErrorCode._SUCCESS.getValue())
+                        .data(content).build();
             }
         } catch (Exception e) {
             Logger.error(
@@ -302,7 +302,7 @@ public class WebDavProvider extends AbstractProvider {
                     fileName,
                     e.getMessage(),
                     e);
-            return Message.<byte[]>builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue())
+            return Message.<byte[]>builder().code(ErrorCode._FAILURE.getKey()).desc(ErrorCode._FAILURE.getValue())
                     .build();
         }
     }
@@ -349,7 +349,7 @@ public class WebDavProvider extends AbstractProvider {
                 inputStream.transferTo(outputStream);
             }
 
-            return Message.<Void>builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
+            return Message.<Void>builder().code(ErrorCode._SUCCESS.getKey()).desc(ErrorCode._SUCCESS.getValue())
                     .build();
         } catch (Exception e) {
             Logger.error(
@@ -362,7 +362,7 @@ public class WebDavProvider extends AbstractProvider {
                     file != null,
                     e.getMessage(),
                     e);
-            return Message.<Void>builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue())
+            return Message.<Void>builder().code(ErrorCode._FAILURE.getKey()).desc(ErrorCode._FAILURE.getValue())
                     .build();
         }
     }
@@ -380,8 +380,7 @@ public class WebDavProvider extends AbstractProvider {
             String url = getUrl(
                     this.context.getBucket() + Symbol.SLASH
                             + (StringKit.isBlank(prefix) ? Normal.EMPTY : prefix + Symbol.SLASH));
-            return Message.<List<Blob>>builder().errcode(ErrorCode._SUCCESS.getKey())
-                    .errmsg(ErrorCode._SUCCESS.getValue())
+            return Message.<List<Blob>>builder().code(ErrorCode._SUCCESS.getKey()).desc(ErrorCode._SUCCESS.getValue())
                     .data(client.list(url).stream().filter(resource -> !resource.isDirectory()).map(resource -> {
                         Map<String, Object> extend = new HashMap<>();
                         extend.put("tag", resource.getEtag());
@@ -398,8 +397,8 @@ public class WebDavProvider extends AbstractProvider {
                     this.context.getBucket(),
                     e.getMessage(),
                     e);
-            return Message.<List<Blob>>builder().errcode(ErrorCode._FAILURE.getKey())
-                    .errmsg(ErrorCode._FAILURE.getValue()).build();
+            return Message.<List<Blob>>builder().code(ErrorCode._FAILURE.getKey()).desc(ErrorCode._FAILURE.getValue())
+                    .build();
         }
     }
 
@@ -446,7 +445,7 @@ public class WebDavProvider extends AbstractProvider {
             String sourceUrl = getUrl(bucket + Symbol.SLASH + oldObjectKey);
             String destinationUrl = getUrl(bucket + Symbol.SLASH + newObjectKey);
             client.move(sourceUrl, destinationUrl);
-            return Message.<Void>builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
+            return Message.<Void>builder().code(ErrorCode._SUCCESS.getKey()).desc(ErrorCode._SUCCESS.getValue())
                     .build();
         } catch (Exception e) {
             Logger.error(
@@ -460,7 +459,7 @@ public class WebDavProvider extends AbstractProvider {
                     newName,
                     e.getMessage(),
                     e);
-            return Message.<Void>builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue())
+            return Message.<Void>builder().code(ErrorCode._FAILURE.getKey()).desc(ErrorCode._FAILURE.getValue())
                     .build();
         }
     }
@@ -553,7 +552,7 @@ public class WebDavProvider extends AbstractProvider {
 
             client.put(url, content);
 
-            return Message.<Blob>builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
+            return Message.<Blob>builder().code(ErrorCode._SUCCESS.getKey()).desc(ErrorCode._SUCCESS.getValue())
                     .data(Blob.builder().name(fileName).path(objectKey).build()).build();
         } catch (Exception e) {
             Logger.error(
@@ -566,7 +565,7 @@ public class WebDavProvider extends AbstractProvider {
                     fileName,
                     e.getMessage(),
                     e);
-            return Message.<Blob>builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue())
+            return Message.<Blob>builder().code(ErrorCode._FAILURE.getKey()).desc(ErrorCode._FAILURE.getValue())
                     .build();
         }
     }
@@ -609,7 +608,7 @@ public class WebDavProvider extends AbstractProvider {
             String objectKey = Builder.buildObjectKey(prefix, path, fileName);
             String url = getUrl(bucket + Symbol.SLASH + objectKey);
             client.delete(url);
-            return Message.<Void>builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
+            return Message.<Void>builder().code(ErrorCode._SUCCESS.getKey()).desc(ErrorCode._SUCCESS.getValue())
                     .build();
         } catch (Exception e) {
             Logger.error(
@@ -622,7 +621,7 @@ public class WebDavProvider extends AbstractProvider {
                     fileName,
                     e.getMessage(),
                     e);
-            return Message.<Void>builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue())
+            return Message.<Void>builder().code(ErrorCode._FAILURE.getKey()).desc(ErrorCode._FAILURE.getValue())
                     .build();
         }
     }

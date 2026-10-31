@@ -32,6 +32,10 @@ import org.miaixz.bus.core.basic.normal.Errors;
 /**
  * Represents a standard response message.
  *
+ * Uses {@code code}, {@code desc}, and {@code data} for both success and failure responses. Serialized objects using
+ * the former response fields are rejected by the changed serialization version. Rebuild callers against the code/desc
+ * API and migrate persisted objects before upgrading.
+ *
  * @param <T> the response payload type
  * @author Kimi Liu
  */
@@ -41,17 +45,17 @@ import org.miaixz.bus.core.basic.normal.Errors;
 public class Message<T> implements Serializable {
 
     @Serial
-    private static final long serialVersionUID = 2535303508001L;
+    private static final long serialVersionUID = 2535303508002L;
 
     /**
      * The response code, indicating the status of the request.
      */
-    public String errcode;
+    public String code;
 
     /**
      * A descriptive message providing details about the response.
      */
-    public String errmsg;
+    public String desc;
 
     /**
      * The data payload of the response.
@@ -66,7 +70,7 @@ public class Message<T> implements Serializable {
     }
 
     /**
-     * Creates a successful response while preserving the framework's existing response contract.
+     * Creates a successful response using the standard code, description, and data fields.
      *
      * @param data the response payload
      * @param <T>  the payload type
@@ -85,7 +89,7 @@ public class Message<T> implements Serializable {
      * @return a successful response
      */
     public static <T> Message<T> success(Errors errors, T data) {
-        return Message.<T>builder().errcode(errors.getKey()).errmsg(errors.getValue()).data(data).build();
+        return Message.<T>builder().code(errors.getKey()).desc(errors.getValue()).data(data).build();
     }
 
     /**
@@ -96,19 +100,19 @@ public class Message<T> implements Serializable {
      * @return an error response
      */
     public static <T> Message<T> failure(Errors errors) {
-        return Message.<T>builder().errcode(errors.getKey()).errmsg(errors.getValue()).build();
+        return Message.<T>builder().code(errors.getKey()).desc(errors.getValue()).build();
     }
 
     /**
      * Creates an error response with an explicit code and message.
      *
-     * @param errcode the response code
-     * @param errmsg  the response message
-     * @param <T>     the expected response payload type
+     * @param code the response code
+     * @param desc the response message
+     * @param <T>  the expected response payload type
      * @return an error response
      */
-    public static <T> Message<T> failure(String errcode, String errmsg) {
-        return Message.<T>builder().errcode(errcode).errmsg(errmsg).build();
+    public static <T> Message<T> failure(String code, String desc) {
+        return Message.<T>builder().code(code).desc(desc).build();
     }
 
 }

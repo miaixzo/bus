@@ -61,14 +61,14 @@ public @interface IntRange {
      *
      * @return the error code.
      */
-    String errcode() default ErrorCode._INT_RANGE;
+    String code() default ErrorCode._INT_RANGE;
 
     /**
      * The error message to be used when validation fails. The message can be a template with placeholders.
      *
      * @return the error message.
      */
-    String errmsg() default ErrorCode._INT_RANGE_VALUE;
+    String desc() default ErrorCode._INT_RANGE_VALUE;
 
     /**
      * The validation groups this constraint belongs to.

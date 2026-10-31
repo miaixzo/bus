@@ -100,13 +100,13 @@ public class LocalFileProvider extends AbstractProvider {
     public Message<Blob> statKey(String bucket, String objectKey) {
         try {
             if (StringKit.isBlank(objectKey)) {
-                return Message.<Blob>builder().errcode(ErrorCode._113006.getKey()).errmsg(ErrorCode._113006.getValue())
+                return Message.<Blob>builder().code(ErrorCode._113006.getKey()).desc(ErrorCode._113006.getValue())
                         .build();
             }
 
             Path filePath = Paths.get(context.getRegion(), bucket, objectKey);
             if (!Files.isRegularFile(filePath)) {
-                return Message.<Blob>builder().errcode(ErrorCode._113008.getKey()).errmsg(ErrorCode._113008.getValue())
+                return Message.<Blob>builder().code(ErrorCode._113008.getKey()).desc(ErrorCode._113008.getValue())
                         .build();
             }
 
@@ -126,7 +126,7 @@ public class LocalFileProvider extends AbstractProvider {
             extend.put("other", attributes.isOther());
             extend.put("fileKey", attributes.fileKey());
 
-            return Message.<Blob>builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
+            return Message.<Blob>builder().code(ErrorCode._SUCCESS.getKey()).desc(ErrorCode._SUCCESS.getValue())
                     .data(
                             Blob.builder().bucket(bucket).key(objectKey).name(name).path(objectKey)
                                     .size(StringKit.toString(attributes.size())).type(Files.probeContentType(filePath))
@@ -144,7 +144,7 @@ public class LocalFileProvider extends AbstractProvider {
                     error.getKey(),
                     e.getMessage(),
                     e);
-            return Message.<Blob>builder().errcode(error.getKey()).errmsg(error.getValue()).build();
+            return Message.<Blob>builder().code(error.getKey()).desc(error.getValue()).build();
         }
     }
 
@@ -183,13 +183,13 @@ public class LocalFileProvider extends AbstractProvider {
     public Message<Blob> streamKey(String bucket, String objectKey) {
         try {
             if (StringKit.isBlank(objectKey)) {
-                return Message.<Blob>builder().errcode(ErrorCode._113006.getKey()).errmsg(ErrorCode._113006.getValue())
+                return Message.<Blob>builder().code(ErrorCode._113006.getKey()).desc(ErrorCode._113006.getValue())
                         .build();
             }
 
             Path filePath = Paths.get(context.getRegion(), bucket, objectKey);
             if (!Files.isRegularFile(filePath)) {
-                return Message.<Blob>builder().errcode(ErrorCode._113008.getKey()).errmsg(ErrorCode._113008.getValue())
+                return Message.<Blob>builder().code(ErrorCode._113008.getKey()).desc(ErrorCode._113008.getValue())
                         .build();
             }
 
@@ -209,7 +209,7 @@ public class LocalFileProvider extends AbstractProvider {
             extend.put("other", attributes.isOther());
             extend.put("fileKey", attributes.fileKey());
 
-            return Message.<Blob>builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
+            return Message.<Blob>builder().code(ErrorCode._SUCCESS.getKey()).desc(ErrorCode._SUCCESS.getValue())
                     .data(
                             Blob.builder().inputStream(Files.newInputStream(filePath)).bucket(bucket).key(objectKey)
                                     .name(name).path(objectKey).size(StringKit.toString(attributes.size()))
@@ -227,7 +227,7 @@ public class LocalFileProvider extends AbstractProvider {
                     error.getKey(),
                     e.getMessage(),
                     e);
-            return Message.<Blob>builder().errcode(error.getKey()).errmsg(error.getValue()).build();
+            return Message.<Blob>builder().code(error.getKey()).desc(error.getValue()).build();
         }
     }
 
@@ -270,7 +270,7 @@ public class LocalFileProvider extends AbstractProvider {
             // Read all bytes directly from the file
             byte[] content = Files.readAllBytes(filePath);
 
-            return Message.<byte[]>builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
+            return Message.<byte[]>builder().code(ErrorCode._SUCCESS.getKey()).desc(ErrorCode._SUCCESS.getValue())
                     .data(content).build();
         } catch (IOException e) {
             Logger.error(
@@ -282,7 +282,7 @@ public class LocalFileProvider extends AbstractProvider {
                     fileName,
                     e.getMessage(),
                     e);
-            return Message.<byte[]>builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue())
+            return Message.<byte[]>builder().code(ErrorCode._FAILURE.getKey()).desc(ErrorCode._FAILURE.getValue())
                     .build();
         }
     }
@@ -328,7 +328,7 @@ public class LocalFileProvider extends AbstractProvider {
 
             Files.copy(sourcePath, file.toPath(), StandardCopyOption.REPLACE_EXISTING);
 
-            return Message.<Void>builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
+            return Message.<Void>builder().code(ErrorCode._SUCCESS.getKey()).desc(ErrorCode._SUCCESS.getValue())
                     .build();
         } catch (IOException e) {
             Logger.error(
@@ -341,7 +341,7 @@ public class LocalFileProvider extends AbstractProvider {
                     file != null,
                     e.getMessage(),
                     e);
-            return Message.<Void>builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue())
+            return Message.<Void>builder().code(ErrorCode._FAILURE.getKey()).desc(ErrorCode._FAILURE.getValue())
                     .build();
         }
     }
@@ -359,8 +359,7 @@ public class LocalFileProvider extends AbstractProvider {
             if (!Files.exists(bucketPath)) {
                 throw new IOException("Bucket directory does not exist: " + bucketPath);
             }
-            return Message.<List<Blob>>builder().errcode(ErrorCode._SUCCESS.getKey())
-                    .errmsg(ErrorCode._SUCCESS.getValue())
+            return Message.<List<Blob>>builder().code(ErrorCode._SUCCESS.getKey()).desc(ErrorCode._SUCCESS.getValue())
                     .data(Files.walk(bucketPath).filter(Files::isRegularFile).map(path -> {
                         String relativePath = bucketPath.relativize(path).toString();
                         Map<String, Object> extend = new HashMap<>();
@@ -381,8 +380,8 @@ public class LocalFileProvider extends AbstractProvider {
                     this.context.getBucket(),
                     e.getMessage(),
                     e);
-            return Message.<List<Blob>>builder().errcode(ErrorCode._FAILURE.getKey())
-                    .errmsg(ErrorCode._FAILURE.getValue()).build();
+            return Message.<List<Blob>>builder().code(ErrorCode._FAILURE.getKey()).desc(ErrorCode._FAILURE.getValue())
+                    .build();
         }
     }
 
@@ -436,7 +435,7 @@ public class LocalFileProvider extends AbstractProvider {
             Files.createDirectories(newPath.getParent());
             Files.move(oldPath, newPath, StandardCopyOption.REPLACE_EXISTING);
 
-            return Message.<Void>builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
+            return Message.<Void>builder().code(ErrorCode._SUCCESS.getKey()).desc(ErrorCode._SUCCESS.getValue())
                     .build();
         } catch (IOException e) {
             Logger.error(
@@ -450,7 +449,7 @@ public class LocalFileProvider extends AbstractProvider {
                     newName,
                     e.getMessage(),
                     e);
-            return Message.<Void>builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue())
+            return Message.<Void>builder().code(ErrorCode._FAILURE.getKey()).desc(ErrorCode._FAILURE.getValue())
                     .build();
         }
     }
@@ -540,7 +539,7 @@ public class LocalFileProvider extends AbstractProvider {
             // Use Files.copy to write the InputStream directly to the file
             Files.copy(content, destPath, StandardCopyOption.REPLACE_EXISTING);
 
-            return Message.<Blob>builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
+            return Message.<Blob>builder().code(ErrorCode._SUCCESS.getKey()).desc(ErrorCode._SUCCESS.getValue())
                     .data(Blob.builder().name(fileName).path(objectKey).build()).build();
         } catch (IOException e) {
             Logger.error(
@@ -553,7 +552,7 @@ public class LocalFileProvider extends AbstractProvider {
                     fileName,
                     e.getMessage(),
                     e);
-            return Message.<Blob>builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue())
+            return Message.<Blob>builder().code(ErrorCode._FAILURE.getKey()).desc(ErrorCode._FAILURE.getValue())
                     .build();
         }
     }
@@ -598,7 +597,7 @@ public class LocalFileProvider extends AbstractProvider {
 
             Files.deleteIfExists(filePath);
 
-            return Message.<Void>builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
+            return Message.<Void>builder().code(ErrorCode._SUCCESS.getKey()).desc(ErrorCode._SUCCESS.getValue())
                     .build();
         } catch (IOException e) {
             Logger.error(
@@ -611,7 +610,7 @@ public class LocalFileProvider extends AbstractProvider {
                     fileName,
                     e.getMessage(),
                     e);
-            return Message.<Void>builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue())
+            return Message.<Void>builder().code(ErrorCode._FAILURE.getKey()).desc(ErrorCode._FAILURE.getValue())
                     .build();
         }
     }

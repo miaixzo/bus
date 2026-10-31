@@ -52,10 +52,10 @@ public class JWTException extends UncheckedException {
     /**
      * Constructs a new JWTException with the specified detail message.
      *
-     * @param errmsg The detail message.
+     * @param desc The detail message.
      */
-    public JWTException(final String errmsg) {
-        super(errmsg);
+    public JWTException(final String desc) {
+        super(desc);
     }
 
     /**
@@ -71,10 +71,10 @@ public class JWTException extends UncheckedException {
      * Constructs a new JWTException with the specified error object and detail message.
      *
      * @param errors The error object containing error code.
-     * @param errmsg The detail message.
+     * @param desc   The detail message.
      */
-    public JWTException(final Errors errors, final String errmsg) {
-        super(errors, errmsg);
+    public JWTException(final Errors errors, final String desc) {
+        super(errors, desc);
     }
 
     /**

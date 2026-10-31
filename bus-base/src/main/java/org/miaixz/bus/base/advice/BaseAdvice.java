@@ -116,10 +116,10 @@ public class BaseAdvice extends Controller {
     @ExceptionHandler(value = InternalException.class)
     public Message<Void> internalException(InternalException e) {
         this.defaultExceptionHandler(e);
-        if (StringKit.isBlank(e.getErrcode())) {
+        if (StringKit.isBlank(e.getCode())) {
             return write(ErrorCode._100805);
         }
-        return write(e.getErrcode(), e.getErrmsg());
+        return write(e.getCode(), e.getDesc());
     }
 
     /**
@@ -135,10 +135,10 @@ public class BaseAdvice extends Controller {
     @ExceptionHandler(value = BusinessException.class)
     public Message<Void> businessException(BusinessException e) {
         this.defaultExceptionHandler(e);
-        if (StringKit.isBlank(e.getErrcode())) {
+        if (StringKit.isBlank(e.getCode())) {
             return write(ErrorCode._100807);
         }
-        return write(e.getErrcode());
+        return write(e.getCode());
     }
 
     /**
@@ -151,10 +151,10 @@ public class BaseAdvice extends Controller {
     @ExceptionHandler(value = CrontabException.class)
     public Message<Void> crontabException(CrontabException e) {
         this.defaultExceptionHandler(e);
-        if (StringKit.isBlank(e.getErrcode())) {
+        if (StringKit.isBlank(e.getCode())) {
             return write(ErrorCode._100808);
         }
-        return write(e.getErrcode(), e.getErrmsg());
+        return write(e.getCode(), e.getDesc());
     }
 
     /**
@@ -167,10 +167,10 @@ public class BaseAdvice extends Controller {
     @ExceptionHandler(value = ValidateException.class)
     public Message<Void> validateException(ValidateException e) {
         this.defaultExceptionHandler(e);
-        if (StringKit.isBlank(e.getErrcode())) {
+        if (StringKit.isBlank(e.getCode())) {
             return write(ErrorCode._100805);
         }
-        return write(e.getErrcode(), e.getErrmsg());
+        return write(e.getCode(), e.getDesc());
     }
 
     /**
@@ -183,10 +183,10 @@ public class BaseAdvice extends Controller {
     @ExceptionHandler(value = AuthorizedException.class)
     public Message<Void> authorizedException(AuthorizedException e) {
         this.defaultExceptionHandler(e);
-        if (StringKit.isBlank(e.getErrcode())) {
+        if (StringKit.isBlank(e.getCode())) {
             return write(ErrorCode._100806);
         }
-        return write(e.getErrcode(), e.getErrmsg());
+        return write(e.getCode(), e.getDesc());
     }
 
     /**
@@ -199,10 +199,10 @@ public class BaseAdvice extends Controller {
     @ExceptionHandler(value = ForbiddenException.class)
     public Message<Void> forbiddenException(ForbiddenException e) {
         this.defaultExceptionHandler(e);
-        if (StringKit.isBlank(e.getErrcode())) {
+        if (StringKit.isBlank(e.getCode())) {
             return write(ErrorCode._403);
         }
-        return write(e.getErrcode(), e.getErrmsg());
+        return write(e.getCode(), e.getDesc());
     }
 
     /**
@@ -215,10 +215,10 @@ public class BaseAdvice extends Controller {
     @ExceptionHandler(value = SignatureException.class)
     public Message<Void> signatureException(SignatureException e) {
         this.defaultExceptionHandler(e);
-        if (StringKit.isBlank(e.getErrcode())) {
+        if (StringKit.isBlank(e.getCode())) {
             return write(ErrorCode._100109);
         }
-        return write(e.getErrcode(), e.getErrmsg());
+        return write(e.getCode(), e.getDesc());
     }
 
     /**
@@ -231,10 +231,10 @@ public class BaseAdvice extends Controller {
     @ExceptionHandler(value = UncheckedException.class)
     public Message<Void> uncheckedException(UncheckedException e) {
         this.defaultExceptionHandler(e);
-        if (StringKit.isBlank(e.getErrcode())) {
+        if (StringKit.isBlank(e.getCode())) {
             return write(ErrorCode._100805);
         }
-        return write(e.getErrcode(), e.getErrmsg());
+        return write(e.getCode(), e.getDesc());
     }
 
     /**
@@ -247,10 +247,10 @@ public class BaseAdvice extends Controller {
     @ExceptionHandler(value = RelevantException.class)
     public Message<Void> relevantException(RelevantException e) {
         this.defaultExceptionHandler(e);
-        if (StringKit.isBlank(e.getErrcode())) {
+        if (StringKit.isBlank(e.getCode())) {
             return write(ErrorCode._100805);
         }
-        return write(e.getErrcode(), e.getErrmsg());
+        return write(e.getCode(), e.getDesc());
     }
 
     /**

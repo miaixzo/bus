@@ -445,7 +445,7 @@ public record OverlayData(int groupOffset, int rows, int columns, int imageFrame
             int frameIndex,
             int imageWidth) {
 
-        java.util.Objects.requireNonNullElse(overlays, java.util.List.<OverlayData>of()).stream()
+        Objects.requireNonNullElse(overlays, List.<OverlayData>of()).stream()
                 .filter(overlay -> isOverlayApplicableToFrame(overlay, frameIndex))
                 .forEach(overlay -> applyOverlayToPixelData(overlay, pixelData, frameIndex, imageWidth));
     }

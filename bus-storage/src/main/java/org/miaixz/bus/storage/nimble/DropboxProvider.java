@@ -148,16 +148,16 @@ public class DropboxProvider extends AbstractProvider {
     public Message<Blob> statKey(String bucket, String objectKey) {
         try {
             if (StringKit.isBlank(objectKey)) {
-                return Message.<Blob>builder().errcode(ErrorCode._113006.getKey()).errmsg(ErrorCode._113006.getValue())
+                return Message.<Blob>builder().code(ErrorCode._113006.getKey()).desc(ErrorCode._113006.getValue())
                         .build();
             }
             String path = normalizeObjectPath(bucket, objectKey);
             Map<String, Object> metadata = getMetadata(path);
             if (metadata == null || !"file".equals(metadata.get(".tag"))) {
-                return Message.<Blob>builder().errcode(ErrorCode._113008.getKey()).errmsg(ErrorCode._113008.getValue())
+                return Message.<Blob>builder().code(ErrorCode._113008.getKey()).desc(ErrorCode._113008.getValue())
                         .build();
             }
-            return Message.<Blob>builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
+            return Message.<Blob>builder().code(ErrorCode._SUCCESS.getKey()).desc(ErrorCode._SUCCESS.getValue())
                     .data(toBlob(bucket, path, metadata, null)).build();
         } catch (Exception e) {
             Errors error = StringKit.containsIgnoreCase(e.getMessage(), "409") ? ErrorCode._113008 : ErrorCode._113010;
@@ -171,7 +171,7 @@ public class DropboxProvider extends AbstractProvider {
                     error.getKey(),
                     e.getMessage(),
                     e);
-            return Message.<Blob>builder().errcode(error.getKey()).errmsg(error.getValue()).build();
+            return Message.<Blob>builder().code(error.getKey()).desc(error.getValue()).build();
         }
     }
 
@@ -209,13 +209,13 @@ public class DropboxProvider extends AbstractProvider {
     public Message<Blob> streamKey(String bucket, String objectKey) {
         try {
             if (StringKit.isBlank(objectKey)) {
-                return Message.<Blob>builder().errcode(ErrorCode._113006.getKey()).errmsg(ErrorCode._113006.getValue())
+                return Message.<Blob>builder().code(ErrorCode._113006.getKey()).desc(ErrorCode._113006.getValue())
                         .build();
             }
             String path = normalizeObjectPath(bucket, objectKey);
             Map<String, Object> metadata = getMetadata(path);
             if (metadata == null || !"file".equals(metadata.get(".tag"))) {
-                return Message.<Blob>builder().errcode(ErrorCode._113008.getKey()).errmsg(ErrorCode._113008.getValue())
+                return Message.<Blob>builder().code(ErrorCode._113008.getKey()).desc(ErrorCode._113008.getValue())
                         .build();
             }
 
@@ -232,9 +232,9 @@ public class DropboxProvider extends AbstractProvider {
             if (!response.successful()) {
                 Errors error = toError(response.code());
                 response.close();
-                return Message.<Blob>builder().errcode(error.getKey()).errmsg(error.getValue()).build();
+                return Message.<Blob>builder().code(error.getKey()).desc(error.getValue()).build();
             }
-            return Message.<Blob>builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
+            return Message.<Blob>builder().code(ErrorCode._SUCCESS.getKey()).desc(ErrorCode._SUCCESS.getValue())
                     .data(toBlob(bucket, path, metadata, stream(response))).build();
         } catch (Exception e) {
             Errors error = StringKit.containsIgnoreCase(e.getMessage(), "409") ? ErrorCode._113008 : ErrorCode._113010;
@@ -248,7 +248,7 @@ public class DropboxProvider extends AbstractProvider {
                     error.getKey(),
                     e.getMessage(),
                     e);
-            return Message.<Blob>builder().errcode(error.getKey()).errmsg(error.getValue()).build();
+            return Message.<Blob>builder().code(error.getKey()).desc(error.getValue()).build();
         }
     }
 
@@ -280,8 +280,8 @@ public class DropboxProvider extends AbstractProvider {
                 }
 
                 byte[] content = response.bytes();
-                return Message.<byte[]>builder().errcode(ErrorCode._SUCCESS.getKey())
-                        .errmsg(ErrorCode._SUCCESS.getValue()).data(content).build();
+                return Message.<byte[]>builder().code(ErrorCode._SUCCESS.getKey()).desc(ErrorCode._SUCCESS.getValue())
+                        .data(content).build();
             }
         } catch (Exception e) {
             Logger.error(
@@ -293,7 +293,7 @@ public class DropboxProvider extends AbstractProvider {
                     fileName,
                     e.getMessage(),
                     e);
-            return Message.<byte[]>builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue())
+            return Message.<byte[]>builder().code(ErrorCode._FAILURE.getKey()).desc(ErrorCode._FAILURE.getValue())
                     .build();
         }
     }
@@ -342,8 +342,8 @@ public class DropboxProvider extends AbstractProvider {
                     inputStream.transferTo(outputStream);
                 }
 
-                return Message.<Void>builder().errcode(ErrorCode._SUCCESS.getKey())
-                        .errmsg(ErrorCode._SUCCESS.getValue()).build();
+                return Message.<Void>builder().code(ErrorCode._SUCCESS.getKey()).desc(ErrorCode._SUCCESS.getValue())
+                        .build();
             }
         } catch (Exception e) {
             Logger.error(
@@ -356,7 +356,7 @@ public class DropboxProvider extends AbstractProvider {
                     file != null,
                     e.getMessage(),
                     e);
-            return Message.<Void>builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue())
+            return Message.<Void>builder().code(ErrorCode._FAILURE.getKey()).desc(ErrorCode._FAILURE.getValue())
                     .build();
         }
     }
@@ -407,8 +407,8 @@ public class DropboxProvider extends AbstractProvider {
                     }
                 }
 
-                return Message.<List<Blob>>builder().errcode(ErrorCode._SUCCESS.getKey())
-                        .errmsg(ErrorCode._SUCCESS.getValue()).data(blobs).build();
+                return Message.<List<Blob>>builder().code(ErrorCode._SUCCESS.getKey())
+                        .desc(ErrorCode._SUCCESS.getValue()).data(blobs).build();
             }
         } catch (Exception e) {
             Logger.error(
@@ -419,8 +419,8 @@ public class DropboxProvider extends AbstractProvider {
                     this.context.getBucket(),
                     e.getMessage(),
                     e);
-            return Message.<List<Blob>>builder().errcode(ErrorCode._FAILURE.getKey())
-                    .errmsg(ErrorCode._FAILURE.getValue()).build();
+            return Message.<List<Blob>>builder().code(ErrorCode._FAILURE.getKey()).desc(ErrorCode._FAILURE.getValue())
+                    .build();
         }
     }
 
@@ -479,8 +479,8 @@ public class DropboxProvider extends AbstractProvider {
                     throw new IOException("Rename failed: " + response.code());
                 }
 
-                return Message.<Void>builder().errcode(ErrorCode._SUCCESS.getKey())
-                        .errmsg(ErrorCode._SUCCESS.getValue()).build();
+                return Message.<Void>builder().code(ErrorCode._SUCCESS.getKey()).desc(ErrorCode._SUCCESS.getValue())
+                        .build();
             }
         } catch (Exception e) {
             Logger.error(
@@ -493,7 +493,7 @@ public class DropboxProvider extends AbstractProvider {
                     newName,
                     e.getMessage(),
                     e);
-            return Message.<Void>builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue())
+            return Message.<Void>builder().code(ErrorCode._FAILURE.getKey()).desc(ErrorCode._FAILURE.getValue())
                     .build();
         }
     }
@@ -557,9 +557,8 @@ public class DropboxProvider extends AbstractProvider {
                 Map<String, Object> jsonMap = JsonKit.toMap(response.text());
                 String fileId = (String) jsonMap.get("id");
 
-                return Message.<Blob>builder().errcode(ErrorCode._SUCCESS.getKey())
-                        .errmsg(ErrorCode._SUCCESS.getValue()).data(Blob.builder().name(fileName).path(fileId).build())
-                        .build();
+                return Message.<Blob>builder().code(ErrorCode._SUCCESS.getKey()).desc(ErrorCode._SUCCESS.getValue())
+                        .data(Blob.builder().name(fileName).path(fileId).build()).build();
             }
         } catch (Exception e) {
             Logger.error(
@@ -571,7 +570,7 @@ public class DropboxProvider extends AbstractProvider {
                     fileName,
                     e.getMessage(),
                     e);
-            return Message.<Blob>builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue())
+            return Message.<Blob>builder().code(ErrorCode._FAILURE.getKey()).desc(ErrorCode._FAILURE.getValue())
                     .build();
         }
     }
@@ -625,7 +624,7 @@ public class DropboxProvider extends AbstractProvider {
                     fileName,
                     e.getMessage(),
                     e);
-            return Message.<Blob>builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue())
+            return Message.<Blob>builder().code(ErrorCode._FAILURE.getKey()).desc(ErrorCode._FAILURE.getValue())
                     .build();
         }
     }
@@ -679,8 +678,8 @@ public class DropboxProvider extends AbstractProvider {
                     throw new IOException("Delete failed: " + response.code());
                 }
 
-                return Message.<Void>builder().errcode(ErrorCode._SUCCESS.getKey())
-                        .errmsg(ErrorCode._SUCCESS.getValue()).build();
+                return Message.<Void>builder().code(ErrorCode._SUCCESS.getKey()).desc(ErrorCode._SUCCESS.getValue())
+                        .build();
             }
         } catch (Exception e) {
             Logger.error(
@@ -692,7 +691,7 @@ public class DropboxProvider extends AbstractProvider {
                     fileName,
                     e.getMessage(),
                     e);
-            return Message.<Void>builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue())
+            return Message.<Void>builder().code(ErrorCode._FAILURE.getKey()).desc(ErrorCode._FAILURE.getValue())
                     .build();
         }
     }

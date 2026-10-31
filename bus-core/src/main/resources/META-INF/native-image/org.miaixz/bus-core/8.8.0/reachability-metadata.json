@@ -575,10 +575,10 @@
           "name": "data"
         },
         {
-          "name": "errcode"
+          "name": "code"
         },
         {
-          "name": "errmsg"
+          "name": "desc"
         },
         {
           "name": "serialVersionUID"
@@ -617,11 +617,11 @@
           "parameterTypes": []
         },
         {
-          "name": "getErrcode",
+          "name": "getCode",
           "parameterTypes": []
         },
         {
-          "name": "getErrmsg",
+          "name": "getDesc",
           "parameterTypes": []
         },
         {
@@ -631,13 +631,13 @@
           ]
         },
         {
-          "name": "setErrcode",
+          "name": "setCode",
           "parameterTypes": [
             "java.lang.String"
           ]
         },
         {
-          "name": "setErrmsg",
+          "name": "setDesc",
           "parameterTypes": [
             "java.lang.String"
           ]
@@ -663,6 +663,43 @@
         {
           "name": "<init>",
           "parameterTypes": []
+        },
+        {
+          "name": "code",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "desc",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "data",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "build",
+          "parameterTypes": []
+        },
+        {
+          "name": "self",
+          "parameterTypes": []
+        }
+      ],
+      "fields": [
+        {
+          "name": "code"
+        },
+        {
+          "name": "desc"
+        },
+        {
+          "name": "data"
         }
       ]
     },
@@ -671,6 +708,14 @@
       "methods": [
         {
           "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "build",
+          "parameterTypes": []
+        },
+        {
+          "name": "self",
           "parameterTypes": []
         }
       ]
@@ -12764,6 +12809,34 @@
         {
           "name": "<init>",
           "parameterTypes": []
+        },
+        {
+          "name": "getCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "getDesc",
+          "parameterTypes": []
+        },
+        {
+          "name": "setCode",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setDesc",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ],
+      "fields": [
+        {
+          "name": "code"
+        },
+        {
+          "name": "desc"
         }
       ]
     },
@@ -13255,6 +13328,34 @@
             "java.lang.String",
             "java.lang.Throwable"
           ]
+        },
+        {
+          "name": "getCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "getDesc",
+          "parameterTypes": []
+        },
+        {
+          "name": "setCode",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setDesc",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ],
+      "fields": [
+        {
+          "name": "code"
+        },
+        {
+          "name": "desc"
         }
       ]
     },

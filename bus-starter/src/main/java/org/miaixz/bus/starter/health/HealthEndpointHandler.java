@@ -81,13 +81,13 @@ public class HealthEndpointHandler extends Controller {
             if ("UP".equals(body.get("status"))) {
                 return write(body);
             }
-            return Message.<Map<String, Object>>builder().errcode(ErrorCode._503.getKey())
-                    .errmsg(ErrorCode._503.getValue()).data(body).build();
+            return Message.<Map<String, Object>>builder().code(ErrorCode._503.getKey()).desc(ErrorCode._503.getValue())
+                    .data(body).build();
         } catch (UncheckedException e) {
             if (e instanceof InternalException) {
                 Logger.error(false, "Starter", "System health details unavailable", e);
             }
-            return write(e.getErrcode(), e.getErrmsg());
+            return write(e.getCode(), e.getDesc());
         }
     }
 

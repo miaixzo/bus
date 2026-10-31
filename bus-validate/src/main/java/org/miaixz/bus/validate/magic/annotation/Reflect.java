@@ -67,14 +67,14 @@ public @interface Reflect {
      *
      * @return the error code.
      */
-    String errcode() default ErrorCode._REFLECT;
+    String code() default ErrorCode._REFLECT;
 
     /**
      * The error message to be used when validation fails. The message can be a template with placeholders.
      *
      * @return the error message.
      */
-    String errmsg() default ErrorCode._REFLECT_VALUE;
+    String desc() default ErrorCode._REFLECT_VALUE;
 
     /**
      * The validation groups this constraint belongs to.

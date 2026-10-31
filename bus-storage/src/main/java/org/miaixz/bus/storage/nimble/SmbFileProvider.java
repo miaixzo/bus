@@ -176,11 +176,11 @@ public class SmbFileProvider extends AbstractProvider {
     public Message<Blob> statKey(String bucket, String objectKey) {
         try {
             if (StringKit.isBlank(objectKey)) {
-                return Message.<Blob>builder().errcode(ErrorCode._113006.getKey()).errmsg(ErrorCode._113006.getValue())
+                return Message.<Blob>builder().code(ErrorCode._113006.getKey()).desc(ErrorCode._113006.getValue())
                         .build();
             }
             if (!share.fileExists(objectKey)) {
-                return Message.<Blob>builder().errcode(ErrorCode._113008.getKey()).errmsg(ErrorCode._113008.getValue())
+                return Message.<Blob>builder().code(ErrorCode._113008.getKey()).desc(ErrorCode._113008.getValue())
                         .build();
             }
 
@@ -203,7 +203,7 @@ public class SmbFileProvider extends AbstractProvider {
             extend.put("directory", information.getStandardInformation().isDirectory());
             extend.put("indexNumber", information.getInternalInformation().getIndexNumber());
 
-            return Message.<Blob>builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
+            return Message.<Blob>builder().code(ErrorCode._SUCCESS.getKey()).desc(ErrorCode._SUCCESS.getValue())
                     .data(
                             Blob.builder().bucket(this.context.getBucket()).key(objectKey).name(name).path(objectKey)
                                     .size(StringKit.toString(information.getStandardInformation().getEndOfFile()))
@@ -221,7 +221,7 @@ public class SmbFileProvider extends AbstractProvider {
                     error.getKey(),
                     e.getMessage(),
                     e);
-            return Message.<Blob>builder().errcode(error.getKey()).errmsg(error.getValue()).build();
+            return Message.<Blob>builder().code(error.getKey()).desc(error.getValue()).build();
         }
     }
 
@@ -260,11 +260,11 @@ public class SmbFileProvider extends AbstractProvider {
         com.hierynomus.smbj.share.File smbFile = null;
         try {
             if (StringKit.isBlank(objectKey)) {
-                return Message.<Blob>builder().errcode(ErrorCode._113006.getKey()).errmsg(ErrorCode._113006.getValue())
+                return Message.<Blob>builder().code(ErrorCode._113006.getKey()).desc(ErrorCode._113006.getValue())
                         .build();
             }
             if (!share.fileExists(objectKey)) {
-                return Message.<Blob>builder().errcode(ErrorCode._113008.getKey()).errmsg(ErrorCode._113008.getValue())
+                return Message.<Blob>builder().code(ErrorCode._113008.getKey()).desc(ErrorCode._113008.getValue())
                         .build();
             }
 
@@ -297,7 +297,7 @@ public class SmbFileProvider extends AbstractProvider {
 
             InputStream inputStream = new SmbFileInputStream(smbFile.getInputStream(), smbFile);
             smbFile = null;
-            return Message.<Blob>builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
+            return Message.<Blob>builder().code(ErrorCode._SUCCESS.getKey()).desc(ErrorCode._SUCCESS.getValue())
                     .data(
                             Blob.builder().inputStream(inputStream).bucket(this.context.getBucket()).key(objectKey)
                                     .name(name).path(objectKey)
@@ -316,7 +316,7 @@ public class SmbFileProvider extends AbstractProvider {
                     error.getKey(),
                     e.getMessage(),
                     e);
-            return Message.<Blob>builder().errcode(error.getKey()).errmsg(error.getValue()).build();
+            return Message.<Blob>builder().code(error.getKey()).desc(error.getValue()).build();
         } finally {
             if (smbFile != null) {
                 try {
@@ -364,7 +364,7 @@ public class SmbFileProvider extends AbstractProvider {
         try {
             String objectKey = getAbsolutePath(bucket, Normal.EMPTY, fileName);
             if (!share.fileExists(objectKey)) {
-                return Message.<byte[]>builder().errcode(ErrorCode._FAILURE.getKey()).errmsg("File not found").build();
+                return Message.<byte[]>builder().code(ErrorCode._FAILURE.getKey()).desc("File not found").build();
             }
 
             smbFile = share.openFile(
@@ -380,8 +380,8 @@ public class SmbFileProvider extends AbstractProvider {
                 // Read all bytes - supports images, PDFs, DOCX, and all other binary file types
                 byte[] content = inputStream.readAllBytes();
 
-                return Message.<byte[]>builder().errcode(ErrorCode._SUCCESS.getKey())
-                        .errmsg(ErrorCode._SUCCESS.getValue()).data(content).build();
+                return Message.<byte[]>builder().code(ErrorCode._SUCCESS.getKey()).desc(ErrorCode._SUCCESS.getValue())
+                        .data(content).build();
             }
         } catch (Exception e) {
             Logger.error(
@@ -393,7 +393,7 @@ public class SmbFileProvider extends AbstractProvider {
                     fileName,
                     e.getMessage(),
                     e);
-            return Message.<byte[]>builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue())
+            return Message.<byte[]>builder().code(ErrorCode._FAILURE.getKey()).desc(ErrorCode._FAILURE.getValue())
                     .build();
         } finally {
             // Close SMB file resource
@@ -448,7 +448,7 @@ public class SmbFileProvider extends AbstractProvider {
         try {
             String objectKey = getAbsolutePath(bucket, Normal.EMPTY, fileName);
             if (!share.fileExists(objectKey)) {
-                return Message.<Void>builder().errcode(ErrorCode._FAILURE.getKey()).errmsg("File not found").build();
+                return Message.<Void>builder().code(ErrorCode._FAILURE.getKey()).desc("File not found").build();
             }
 
             smbFile = share.openFile(
@@ -465,7 +465,7 @@ public class SmbFileProvider extends AbstractProvider {
                 inputStream.transferTo(outputStream);
             }
 
-            return Message.<Void>builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
+            return Message.<Void>builder().code(ErrorCode._SUCCESS.getKey()).desc(ErrorCode._SUCCESS.getValue())
                     .build();
         } catch (Exception e) {
             Logger.error(
@@ -478,7 +478,7 @@ public class SmbFileProvider extends AbstractProvider {
                     file != null,
                     e.getMessage(),
                     e);
-            return Message.<Void>builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue())
+            return Message.<Void>builder().code(ErrorCode._FAILURE.getKey()).desc(ErrorCode._FAILURE.getValue())
                     .build();
         } finally {
             // Close SMB file resource
@@ -513,8 +513,8 @@ public class SmbFileProvider extends AbstractProvider {
                                     && !fileInfo.getFileName().equals(Symbol.DOUBLE_DOT))
                     .map(fileInfo -> fileInfo.getFileName()).collect(Collectors.toList());
 
-            return Message.<List<Blob>>builder().errcode(ErrorCode._SUCCESS.getKey())
-                    .errmsg(ErrorCode._SUCCESS.getValue()).data(files.stream().map(fileName -> {
+            return Message.<List<Blob>>builder().code(ErrorCode._SUCCESS.getKey()).desc(ErrorCode._SUCCESS.getValue())
+                    .data(files.stream().map(fileName -> {
                         Map<String, Object> extend = new HashMap<>();
                         return Blob.builder().name(fileName).extend(extend).build();
                     }).collect(Collectors.toList())).build();
@@ -528,8 +528,8 @@ public class SmbFileProvider extends AbstractProvider {
                     context.getPrefix(),
                     e.getMessage(),
                     e);
-            return Message.<List<Blob>>builder().errcode(ErrorCode._FAILURE.getKey())
-                    .errmsg(ErrorCode._FAILURE.getValue()).build();
+            return Message.<List<Blob>>builder().code(ErrorCode._FAILURE.getKey()).desc(ErrorCode._FAILURE.getValue())
+                    .build();
         }
     }
 
@@ -574,7 +574,7 @@ public class SmbFileProvider extends AbstractProvider {
             String newObjectKey = getAbsolutePath(bucket, path, newName);
 
             if (!share.fileExists(oldObjectKey)) {
-                return Message.<Void>builder().errcode(ErrorCode._FAILURE.getKey()).errmsg("File not found").build();
+                return Message.<Void>builder().code(ErrorCode._FAILURE.getKey()).desc("File not found").build();
             }
 
             // Use smbj's correct way to rename a file
@@ -598,8 +598,8 @@ public class SmbFileProvider extends AbstractProvider {
                 // 3. Apply rename
                 diskEntry.setFileInformation(renameInfo);
 
-                return Message.<Void>builder().errcode(ErrorCode._SUCCESS.getKey())
-                        .errmsg(ErrorCode._SUCCESS.getValue()).build();
+                return Message.<Void>builder().code(ErrorCode._SUCCESS.getKey()).desc(ErrorCode._SUCCESS.getValue())
+                        .build();
             } finally {
                 diskEntry.close();
             }
@@ -615,7 +615,7 @@ public class SmbFileProvider extends AbstractProvider {
                     newName,
                     e.getMessage(),
                     e);
-            return Message.<Void>builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue())
+            return Message.<Void>builder().code(ErrorCode._FAILURE.getKey()).desc(ErrorCode._FAILURE.getValue())
                     .build();
         }
     }
@@ -715,7 +715,7 @@ public class SmbFileProvider extends AbstractProvider {
                 content.transferTo(outputStream);
             }
 
-            return Message.<Blob>builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
+            return Message.<Blob>builder().code(ErrorCode._SUCCESS.getKey()).desc(ErrorCode._SUCCESS.getValue())
                     .data(Blob.builder().name(fileName).path(objectKey).build()).build();
         } catch (Exception e) {
             Logger.error(
@@ -728,7 +728,7 @@ public class SmbFileProvider extends AbstractProvider {
                     fileName,
                     e.getMessage(),
                     e);
-            return Message.<Blob>builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue())
+            return Message.<Blob>builder().code(ErrorCode._FAILURE.getKey()).desc(ErrorCode._FAILURE.getValue())
                     .build();
         } finally {
             // Close SMB file resource
@@ -785,7 +785,7 @@ public class SmbFileProvider extends AbstractProvider {
             if (share.fileExists(objectKey)) {
                 share.rm(objectKey);
             }
-            return Message.<Void>builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
+            return Message.<Void>builder().code(ErrorCode._SUCCESS.getKey()).desc(ErrorCode._SUCCESS.getValue())
                     .build();
         } catch (Exception e) {
             Logger.error(
@@ -798,7 +798,7 @@ public class SmbFileProvider extends AbstractProvider {
                     fileName,
                     e.getMessage(),
                     e);
-            return Message.<Void>builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue())
+            return Message.<Void>builder().code(ErrorCode._FAILURE.getKey()).desc(ErrorCode._FAILURE.getValue())
                     .build();
         }
     }

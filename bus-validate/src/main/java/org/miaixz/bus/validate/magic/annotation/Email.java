@@ -41,14 +41,14 @@ public @interface Email {
      *
      * @return the error code.
      */
-    String errcode() default ErrorCode._EMAIL;
+    String code() default ErrorCode._EMAIL;
 
     /**
      * The error message to be used when validation fails. The message can be a template with placeholders.
      *
      * @return the error message.
      */
-    String errmsg() default ErrorCode._EMAIL_VALUE;
+    String desc() default ErrorCode._EMAIL_VALUE;
 
     /**
      * The validation groups this constraint belongs to.

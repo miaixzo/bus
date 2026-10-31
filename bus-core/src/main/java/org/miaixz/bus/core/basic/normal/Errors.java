@@ -64,25 +64,25 @@ public interface Errors {
     /**
      * Resolves an exception message from an error code, explicit message, and fallback message.
      *
-     * @param errcode  The error code.
-     * @param errmsg   The explicit error message.
+     * @param code     The error code.
+     * @param desc     The explicit error message.
      * @param fallback The fallback message.
      * @return The resolved message.
      */
-    static String message(final String errcode, final String errmsg, final String fallback) {
-        return null != errcode && null != errmsg ? errmsg : fallback;
+    static String message(final String code, final String desc, final String fallback) {
+        return null != code && null != desc ? desc : fallback;
     }
 
     /**
      * Resolves a localized exception message using auto-detected locale.
      *
-     * @param errcode  The error code.
-     * @param errmsg   The explicit error message.
+     * @param code     The error code.
+     * @param desc     The explicit error message.
      * @param fallback The fallback message.
      * @return The resolved localized message.
      */
-    static String localizedMessage(final String errcode, final String errmsg, final String fallback) {
-        return localizedMessage(I18n.AUTO_DETECT, errcode, errmsg, fallback);
+    static String localizedMessage(final String code, final String desc, final String fallback) {
+        return localizedMessage(I18n.AUTO_DETECT, code, desc, fallback);
     }
 
     /**
@@ -90,27 +90,27 @@ public interface Errors {
      * fallback message.
      *
      * @param i18n     The locale enumeration.
-     * @param errcode  The error code.
-     * @param errmsg   The explicit error message.
+     * @param code     The error code.
+     * @param desc     The explicit error message.
      * @param fallback The fallback message.
      * @return The resolved localized message.
      */
-    static String localizedMessage(final I18n i18n, final String errcode, final String errmsg, final String fallback) {
-        if (null == errcode) {
+    static String localizedMessage(final I18n i18n, final String code, final String desc, final String fallback) {
+        if (null == code) {
             return fallback;
         }
         try {
-            final String message = I18n.message(i18n, Keys.BUNDLE_NAME, errcode);
-            if (!errcode.equals(message)) {
+            final String message = I18n.message(i18n, Keys.BUNDLE_NAME, code);
+            if (!code.equals(message)) {
                 return message;
             }
         } catch (final Exception ignored) {
             // Fall back to registered errors or the supplied exception message.
         }
-        if (StringKit.isNotBlank(errmsg)) {
-            return errmsg;
+        if (StringKit.isNotBlank(desc)) {
+            return desc;
         }
-        final Entry entry = require(errcode);
+        final Entry entry = require(code);
         return null != entry ? entry.getValue() : fallback;
     }
 

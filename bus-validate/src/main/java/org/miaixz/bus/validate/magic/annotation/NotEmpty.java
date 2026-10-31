@@ -41,14 +41,14 @@ public @interface NotEmpty {
      *
      * @return the error code.
      */
-    String errcode() default ErrorCode._NOT_EMPTY;
+    String code() default ErrorCode._NOT_EMPTY;
 
     /**
      * The error message to be used when validation fails. The message can be a template with placeholders.
      *
      * @return the error message.
      */
-    String errmsg() default ErrorCode._NOT_EMPTY_VALUE;
+    String desc() default ErrorCode._NOT_EMPTY_VALUE;
 
     /**
      * The validation groups this constraint belongs to.

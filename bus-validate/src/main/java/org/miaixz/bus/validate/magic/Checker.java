@@ -167,10 +167,10 @@ public class Checker {
                         }));
 
         // Set the error message template.
-        criterion.setErrmsg(ErrorCode._PARAMETER_VALIDATE_VALUE);
+        criterion.setDesc(ErrorCode._PARAMETER_VALIDATE_VALUE);
 
         // Set the default error code.
-        criterion.setErrcode(ErrorCode._PARAMETER_VALIDATE);
+        criterion.setCode(ErrorCode._PARAMETER_VALIDATE);
 
         // Set the name of the field to be validated.
         criterion.setField(field.getName());
@@ -215,7 +215,7 @@ public class Checker {
                     throw Provider.resolve(criterion, verified.getContext());
                 }
                 Provider.resolve(criterion);
-                criterion.setErrmsg(criterion.getMessage());
+                criterion.setDesc(criterion.getMessage());
             }
             return new Collector(verified, criterion, result);
         }

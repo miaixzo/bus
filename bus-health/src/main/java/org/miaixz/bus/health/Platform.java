@@ -26,6 +26,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 import java.util.function.Function;
+import java.util.regex.Pattern;
 
 import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.convert.Convert;
@@ -76,8 +77,10 @@ public class Platform {
      */
     private static final OS CURRENT_PLATFORM = queryCurrentPlatform();
 
-    /** Version suffix accepted by the OpenBSD runtime linker. */
-    private static final java.util.regex.Pattern LIBRARY_VERSION = java.util.regex.Pattern.compile("\\d+(\\.\\d+)?");
+    /**
+     * Version suffix accepted by the OpenBSD runtime linker.
+     */
+    private static final Pattern LIBRARY_VERSION = Pattern.compile("\\d+(\\.\\d+)?");
 
     /**
      * Caches the OperatingSystem instance using Memoizer to avoid repeated creation and improve performance.
@@ -618,7 +621,9 @@ public class Platform {
         return false;
     }
 
-    /** Returns whether a file exists in one of the supplied directories. */
+    /**
+     * Returns whether a file exists in one of the supplied directories.
+     */
     private static boolean isFilePresent(String fileName, List<String> directories) {
         for (String directory : directories) {
             if (new File(directory, fileName).isFile()) {
@@ -628,15 +633,19 @@ public class Platform {
         return false;
     }
 
-    /** Returns whether JNA mapped the request to an AIX archive that cannot be loaded without a member name. */
+    /**
+     * Returns whether JNA mapped the request to an AIX archive that cannot be loaded without a member name.
+     */
     private static boolean isAixArchive(OS platform, String fileName) {
         return platform == OS.AIX && fileName.endsWith(".a");
     }
 
-    /** Adds non-empty entries from a native library path. */
+    /**
+     * Adds non-empty entries from a native library path.
+     */
     private static void addPathEntries(List<String> directories, String path) {
         if (path != null) {
-            for (String directory : path.split(java.util.regex.Pattern.quote(File.pathSeparator), -1)) {
+            for (String directory : path.split(Pattern.quote(File.pathSeparator), -1)) {
                 if (!directory.isEmpty()) {
                     directories.add(directory);
                 }

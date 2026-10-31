@@ -24,7 +24,6 @@ import static org.miaixz.bus.notify.FabricX.post;
 import java.util.Map;
 
 import org.miaixz.bus.core.basic.entity.Message;
-import org.miaixz.bus.core.basic.normal.Consts;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.MapKit;
 import org.miaixz.bus.extra.json.JsonKit;
@@ -76,17 +75,16 @@ public class CloopenSmsProvider extends AbstractProvider<CloopenNotice, Context>
         bodys.put("datas", entity.getContent());
 
         String response = post(this.getUrl(entity), bodys);
-        String errcode = JsonKit.getValue(response, Consts.ERRCODE);
-        Message<Void> result = Message.<Void>builder()
-                .errcode("200".equals(errcode) ? ErrorCode._SUCCESS.getKey() : errcode)
-                .errmsg(JsonKit.getValue(response, Consts.ERRMSG)).build();
+        String code = JsonKit.getValue(response, "errcode");
+        Message<Void> result = Message.<Void>builder().code("200".equals(code) ? ErrorCode._SUCCESS.getKey() : code)
+                .desc(JsonKit.getValue(response, "errmsg")).build();
         Logger.info(
                 false,
                 "Notify",
-                "Cloopen SMS send completed: template={}, targetCount={}, errcode={}, responseBytes={}",
+                "Cloopen SMS send completed: template={}, targetCount={}, code={}, responseBytes={}",
                 entity == null ? null : entity.getTemplate(),
                 entity == null || entity.getReceive() == null ? 0 : entity.getReceive().split(Symbol.COMMA).length,
-                result.getErrcode(),
+                result.getCode(),
                 response == null ? 0 : response.length());
         return result;
     }

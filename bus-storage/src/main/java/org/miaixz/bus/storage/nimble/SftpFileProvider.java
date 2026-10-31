@@ -125,21 +125,19 @@ public class SftpFileProvider extends AbstractProvider {
     public Message<Blob> statKey(String bucket, String objectKey) {
         try {
             if (StringKit.isBlank(objectKey)) {
-                return Message.<Blob>builder().errcode(ErrorCode._113006.getKey()).errmsg(ErrorCode._113006.getValue())
+                return Message.<Blob>builder().code(ErrorCode._113006.getKey()).desc(ErrorCode._113006.getValue())
                         .build();
             }
 
             FtpEntry entry = client.entry(objectKey);
             if (entry == null || entry.isDirectory()) {
-                return Message.<Blob>builder().errcode(ErrorCode._113008.getKey()).errmsg(ErrorCode._113008.getValue())
+                return Message.<Blob>builder().code(ErrorCode._113008.getKey()).desc(ErrorCode._113008.getValue())
                         .build();
             }
 
-            return Message.<Blob>builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
-                    .data(
-                            Blob.builder().bucket(this.context.getBucket()).key(objectKey).name(entry.getName())
-                                    .path(objectKey).size(StringKit.toString(entry.getSize())).extend(toExtend(entry))
-                                    .build())
+            return Message.<Blob>builder().code(ErrorCode._SUCCESS.getKey()).desc(ErrorCode._SUCCESS.getValue()).data(
+                    Blob.builder().bucket(this.context.getBucket()).key(objectKey).name(entry.getName()).path(objectKey)
+                            .size(StringKit.toString(entry.getSize())).extend(toExtend(entry)).build())
                     .build();
         } catch (Exception e) {
             Errors error = ErrorCode._113010;
@@ -159,7 +157,7 @@ public class SftpFileProvider extends AbstractProvider {
                     error.getKey(),
                     e.getMessage(),
                     e);
-            return Message.<Blob>builder().errcode(error.getKey()).errmsg(error.getValue()).build();
+            return Message.<Blob>builder().code(error.getKey()).desc(error.getValue()).build();
         }
     }
 
@@ -197,23 +195,23 @@ public class SftpFileProvider extends AbstractProvider {
     public Message<Blob> streamKey(String bucket, String objectKey) {
         try {
             if (StringKit.isBlank(objectKey)) {
-                return Message.<Blob>builder().errcode(ErrorCode._113006.getKey()).errmsg(ErrorCode._113006.getValue())
+                return Message.<Blob>builder().code(ErrorCode._113006.getKey()).desc(ErrorCode._113006.getValue())
                         .build();
             }
 
             FtpEntry entry = client.entry(objectKey);
             if (entry == null || entry.isDirectory()) {
-                return Message.<Blob>builder().errcode(ErrorCode._113008.getKey()).errmsg(ErrorCode._113008.getValue())
+                return Message.<Blob>builder().code(ErrorCode._113008.getKey()).desc(ErrorCode._113008.getValue())
                         .build();
             }
 
             InputStream inputStream = client.getFileStream(objectKey);
             if (inputStream == null) {
-                return Message.<Blob>builder().errcode(ErrorCode._113008.getKey()).errmsg(ErrorCode._113008.getValue())
+                return Message.<Blob>builder().code(ErrorCode._113008.getKey()).desc(ErrorCode._113008.getValue())
                         .build();
             }
 
-            return Message.<Blob>builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
+            return Message.<Blob>builder().code(ErrorCode._SUCCESS.getKey()).desc(ErrorCode._SUCCESS.getValue())
                     .data(
                             Blob.builder().inputStream(inputStream).bucket(this.context.getBucket()).key(objectKey)
                                     .name(entry.getName()).path(objectKey).size(StringKit.toString(entry.getSize()))
@@ -237,7 +235,7 @@ public class SftpFileProvider extends AbstractProvider {
                     error.getKey(),
                     e.getMessage(),
                     e);
-            return Message.<Blob>builder().errcode(error.getKey()).errmsg(error.getValue()).build();
+            return Message.<Blob>builder().code(error.getKey()).desc(error.getValue()).build();
         }
     }
 
@@ -276,15 +274,15 @@ public class SftpFileProvider extends AbstractProvider {
             String objectKey = getAbsolutePath(bucket, Normal.EMPTY, fileName);
             InputStream inputStream = client.getFileStream(objectKey);
             if (inputStream == null) {
-                return Message.<byte[]>builder().errcode(ErrorCode._FAILURE.getKey()).errmsg("File not found").build();
+                return Message.<byte[]>builder().code(ErrorCode._FAILURE.getKey()).desc("File not found").build();
             }
 
             // Use try-with-resources to automatically close the InputStream and prevent resource leaks
             try (inputStream) {
                 byte[] content = inputStream.readAllBytes();
 
-                return Message.<byte[]>builder().errcode(ErrorCode._SUCCESS.getKey())
-                        .errmsg(ErrorCode._SUCCESS.getValue()).data(content).build();
+                return Message.<byte[]>builder().code(ErrorCode._SUCCESS.getKey()).desc(ErrorCode._SUCCESS.getValue())
+                        .data(content).build();
             }
         } catch (InternalException | IOException e) {
             Logger.error(
@@ -296,7 +294,7 @@ public class SftpFileProvider extends AbstractProvider {
                     fileName,
                     e.getMessage(),
                     e);
-            return Message.<byte[]>builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue())
+            return Message.<byte[]>builder().code(ErrorCode._FAILURE.getKey()).desc(ErrorCode._FAILURE.getValue())
                     .build();
         }
     }
@@ -335,7 +333,7 @@ public class SftpFileProvider extends AbstractProvider {
         try {
             String objectKey = getAbsolutePath(bucket, Normal.EMPTY, fileName);
             client.download(objectKey, file);
-            return Message.<Void>builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
+            return Message.<Void>builder().code(ErrorCode._SUCCESS.getKey()).desc(ErrorCode._SUCCESS.getValue())
                     .build();
         } catch (InternalException e) {
             Logger.error(
@@ -348,7 +346,7 @@ public class SftpFileProvider extends AbstractProvider {
                     file != null,
                     e.getMessage(),
                     e);
-            return Message.<Void>builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue())
+            return Message.<Void>builder().code(ErrorCode._FAILURE.getKey()).desc(ErrorCode._FAILURE.getValue())
                     .build();
         }
     }
@@ -364,8 +362,8 @@ public class SftpFileProvider extends AbstractProvider {
         try {
             String prefix = Builder.buildNormalizedPrefix(context.getPrefix());
             List<String> files = client.lsFiles(prefix);
-            return Message.<List<Blob>>builder().errcode(ErrorCode._SUCCESS.getKey())
-                    .errmsg(ErrorCode._SUCCESS.getValue()).data(files.stream().map(fileName -> {
+            return Message.<List<Blob>>builder().code(ErrorCode._SUCCESS.getKey()).desc(ErrorCode._SUCCESS.getValue())
+                    .data(files.stream().map(fileName -> {
                         Map<String, Object> extend = new HashMap<>();
                         return Blob.builder().name(fileName).extend(extend).build();
                     }).collect(Collectors.toList())).build();
@@ -379,8 +377,8 @@ public class SftpFileProvider extends AbstractProvider {
                     context.getPrefix(),
                     e.getMessage(),
                     e);
-            return Message.<List<Blob>>builder().errcode(ErrorCode._FAILURE.getKey())
-                    .errmsg(ErrorCode._FAILURE.getValue()).build();
+            return Message.<List<Blob>>builder().code(ErrorCode._FAILURE.getKey()).desc(ErrorCode._FAILURE.getValue())
+                    .build();
         }
     }
 
@@ -425,10 +423,10 @@ public class SftpFileProvider extends AbstractProvider {
             String oldObjectKey = Builder.buildObjectKey(prefix, path, oldName);
             String newObjectKey = Builder.buildObjectKey(prefix, path, newName);
             if (!isExist(oldObjectKey)) {
-                return Message.<Void>builder().errcode(ErrorCode._FAILURE.getKey()).errmsg("File not found").build();
+                return Message.<Void>builder().code(ErrorCode._FAILURE.getKey()).desc("File not found").build();
             }
             client.rename(oldObjectKey, newObjectKey);
-            return Message.<Void>builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
+            return Message.<Void>builder().code(ErrorCode._SUCCESS.getKey()).desc(ErrorCode._SUCCESS.getValue())
                     .build();
         } catch (InternalException e) {
             Logger.error(
@@ -442,7 +440,7 @@ public class SftpFileProvider extends AbstractProvider {
                     newName,
                     e.getMessage(),
                     e);
-            return Message.<Void>builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue())
+            return Message.<Void>builder().code(ErrorCode._FAILURE.getKey()).desc(ErrorCode._FAILURE.getValue())
                     .build();
         }
     }
@@ -529,7 +527,7 @@ public class SftpFileProvider extends AbstractProvider {
                 client.mkdir(dirPath);
             }
             client.put(content, objectKey, JschSftp.Mode.OVERWRITE);
-            return Message.<Blob>builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
+            return Message.<Blob>builder().code(ErrorCode._SUCCESS.getKey()).desc(ErrorCode._SUCCESS.getValue())
                     .data(Blob.builder().name(fileName).path(objectKey).build()).build();
         } catch (InternalException e) {
             Logger.error(
@@ -542,7 +540,7 @@ public class SftpFileProvider extends AbstractProvider {
                     fileName,
                     e.getMessage(),
                     e);
-            return Message.<Blob>builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue())
+            return Message.<Blob>builder().code(ErrorCode._FAILURE.getKey()).desc(ErrorCode._FAILURE.getValue())
                     .build();
         }
     }
@@ -585,7 +583,7 @@ public class SftpFileProvider extends AbstractProvider {
             if (isExist(objectKey)) {
                 client.delFile(objectKey);
             }
-            return Message.<Void>builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
+            return Message.<Void>builder().code(ErrorCode._SUCCESS.getKey()).desc(ErrorCode._SUCCESS.getValue())
                     .build();
         } catch (InternalException e) {
             Logger.error(
@@ -598,7 +596,7 @@ public class SftpFileProvider extends AbstractProvider {
                     fileName,
                     e.getMessage(),
                     e);
-            return Message.<Void>builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue())
+            return Message.<Void>builder().code(ErrorCode._FAILURE.getKey()).desc(ErrorCode._FAILURE.getValue())
                     .build();
         }
     }
