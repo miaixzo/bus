@@ -169,7 +169,7 @@ public class ResponseBodyAdvice extends BaseAdvice
             Logger.debug("Response data sensitive enabled ...");
             Builder.on(object, sensitive);
         }
-        // 数据解密
+        // 数据加密
         if (Builder.ALL.equals(sensitive.value()) || Builder.SAFE.equals(sensitive.value())
                 && (Builder.ALL.equals(sensitive.stage()) || Builder.OUT.equals(sensitive.stage()))) {
             Map<String, Privacy> map = getPrivacyMap(object.getClass());
