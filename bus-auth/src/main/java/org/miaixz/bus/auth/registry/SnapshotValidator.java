@@ -185,7 +185,12 @@ public class SnapshotValidator {
                 continue;
             }
             switch (entry.kind()) {
-                case LIBRARY -> libraries.put(id, entry);
+                case LIBRARY -> {
+                    if (StringKit.isBlank(((Library) resource).getTenant_id())) {
+                        fault(faults, entry, "tenant_id", ErrorCode._100100, "Library tenant id must not be blank");
+                    }
+                    libraries.put(id, entry);
+                }
                 case PROVIDER -> providers.put(id, entry);
                 case SOURCE -> sources.put(id, entry);
             }

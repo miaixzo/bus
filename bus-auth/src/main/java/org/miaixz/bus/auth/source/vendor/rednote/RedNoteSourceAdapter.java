@@ -86,7 +86,7 @@ public class RedNoteSourceAdapter implements VendorAdapter {
     /**
      * Creates one authorization-only RedNote adapter.
      *
-     * @param spaceId  Source space retained by the uniform adapter construction contract
+     * @param tenantId Source tenant retained by the uniform adapter construction contract
      * @param sourceId Source identifier retained for Roster routing only
      * @param manifest selected RedNote manifest
      * @param variant  exact marketing manifest
@@ -95,9 +95,9 @@ public class RedNoteSourceAdapter implements VendorAdapter {
      * @throws IllegalArgumentException if an identifier is blank or a collaborator is {@code null}
      * @throws ValidateException        if routing, protocol, manifest, or options differ from marketing
      */
-    public RedNoteSourceAdapter(final String spaceId, final String sourceId, final RedNoteManifest manifest,
+    public RedNoteSourceAdapter(final String tenantId, final String sourceId, final RedNoteManifest manifest,
             final VendorManifest.Variant variant, final RedNoteOptions options, final SourceServices services) {
-        Assert.notBlank(spaceId, "RedNote space id must not be blank");
+        Assert.notBlank(tenantId, "RedNote tenant id must not be blank");
         Assert.notBlank(sourceId, "RedNote Source id must not be blank");
         final RedNoteManifest selected = Assert.notNull(manifest, "RedNote manifest must not be null");
         this.variant = Assert.notNull(variant, "RedNote manifest must not be null");

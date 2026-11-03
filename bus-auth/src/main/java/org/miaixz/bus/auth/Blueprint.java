@@ -68,7 +68,7 @@ public class Blueprint {
     private static Library copy(final Library source) {
         final Library target = new Library();
         copyAudit(source, target);
-        target.setSpace_id(source.getSpace_id());
+        target.setTenant_id(source.getTenant_id());
         target.setCode(source.getCode());
         target.setName(source.getName());
         target.setIcon(source.getIcon());

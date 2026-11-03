@@ -154,7 +154,7 @@ public class WeChatEeRealmAdapter implements VendorAdapter {
     /**
      * Creates one Source-isolated WeChat realm adapter.
      *
-     * @param spaceId  Source space used to isolate credential resolution
+     * @param tenantId Source tenant used to isolate credential resolution
      * @param sourceId Source identifier used to validate Source ownership
      * @param manifest exact WeChat manifest
      * @param variant  exact selected Realm Variant
@@ -163,9 +163,9 @@ public class WeChatEeRealmAdapter implements VendorAdapter {
      * @throws IllegalArgumentException if an identifier is blank or a collaborator is {@code null}
      * @throws ValidateException        if the manifest, Variant, protocol, targets, or options are inconsistent
      */
-    public WeChatEeRealmAdapter(final String spaceId, final String sourceId, final WeChatManifest manifest,
+    public WeChatEeRealmAdapter(final String tenantId, final String sourceId, final WeChatManifest manifest,
             final VendorManifest.Variant variant, final WeChatOptions options, final SourceServices services) {
-        Assert.notBlank(spaceId, "WeChat Realm space id must not be blank");
+        Assert.notBlank(tenantId, "WeChat Realm tenant id must not be blank");
         Assert.notBlank(sourceId, "WeChat Realm Source id must not be blank");
         final WeChatManifest selectedManifest = Assert.notNull(manifest, "WeChat Realm manifest must not be null");
         this.variant = Assert.notNull(variant, "WeChat Realm Variant must not be null");

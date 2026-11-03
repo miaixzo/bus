@@ -119,7 +119,7 @@ public class ToutiaoSourceAdapter implements VendorAdapter {
     /**
      * Creates one Source-bound Toutiao adapter from the frozen default manifest.
      *
-     * @param spaceId  Source space isolating browser state and credentials
+     * @param tenantId Source tenant isolating browser state and credentials
      * @param sourceId Source identifier
      * @param manifest selected Toutiao manifest
      * @param variant  exact selected default manifest
@@ -128,7 +128,7 @@ public class ToutiaoSourceAdapter implements VendorAdapter {
      * @throws IllegalArgumentException if an identifier is blank or a collaborator is {@code null}
      * @throws ValidateException        if profile, manifest, options, or routing differ from the frozen variant
      */
-    public ToutiaoSourceAdapter(final String spaceId, final String sourceId, final ToutiaoManifest manifest,
+    public ToutiaoSourceAdapter(final String tenantId, final String sourceId, final ToutiaoManifest manifest,
             final VendorManifest.Variant variant, final ToutiaoOptions options, final SourceServices services) {
         final ToutiaoManifest selected = Assert.notNull(manifest, "Toutiao manifest must not be null");
         this.sourceId = Assert.notBlank(sourceId, "Toutiao Source id must not be blank");
@@ -140,7 +140,7 @@ public class ToutiaoSourceAdapter implements VendorAdapter {
                 || !ToutiaoManifest.ID.equals(options.vendor()) || !ToutiaoManifest.DEFAULT.equals(options.variant())) {
             throw new ValidateException("Toutiao adapter requires the toutiao/default OAuth 2.0 manifest");
         }
-        this.redirectManager = RedirectManager.create(spaceId, sourceId, variant, options, services);
+        this.redirectManager = RedirectManager.create(tenantId, sourceId, variant, options, services);
         this.callbackDecoder = new AuthorizationResponseDecoder();
         this.standardAdapter = new StandardAdapter(variant, options, Optional.of(redirectManager),
                 List.of(

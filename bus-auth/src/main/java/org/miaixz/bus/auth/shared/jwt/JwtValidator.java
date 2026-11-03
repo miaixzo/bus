@@ -184,7 +184,7 @@ public class JwtValidator {
         final ReplayGuard guard = replayGuard
                 .orElseThrow(() -> new ValidateException("JWT replay validation requires a replay guard"));
         return guard.register(
-                replay.space(),
+                replay.tenantId(),
                 replay.protocol(),
                 replay.authority(),
                 "jwt-jti",
@@ -331,18 +331,18 @@ public class JwtValidator {
     /**
      * Supplies formal protocol isolation fields required by ReplayGuard for a JWT jti.
      *
-     * @param space     external Source space
+     * @param tenantId  owning tenant identifier
      * @param protocol  formal protocol that owns the JWT
      * @param authority stable Provider or Source authority
      * @author Kimi Liu
      */
-    public record Replay(String space, Protocol protocol, String authority) {
+    public record Replay(String tenantId, Protocol protocol, String authority) {
 
         /**
          * Validates replay isolation fields.
          */
         public Replay {
-            Assert.notBlank(space, "JWT replay space must not be blank");
+            Assert.notBlank(tenantId, "JWT replay tenant id must not be blank");
             Assert.notNull(protocol, "JWT replay protocol must not be null");
             Assert.notBlank(authority, "JWT replay authority must not be blank");
         }

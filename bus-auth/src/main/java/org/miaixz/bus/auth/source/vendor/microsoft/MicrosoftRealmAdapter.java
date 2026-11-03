@@ -148,7 +148,7 @@ public class MicrosoftRealmAdapter implements VendorAdapter {
     /**
      * Creates one Source-isolated Microsoft realm adapter.
      *
-     * @param spaceId  Source space used for credential isolation
+     * @param tenantId Source tenant used for credential isolation
      * @param sourceId Source identifier used for ownership validation
      * @param manifest exact Microsoft manifest
      * @param variant  exact selected Microsoft Realm Variant
@@ -157,9 +157,9 @@ public class MicrosoftRealmAdapter implements VendorAdapter {
      * @throws IllegalArgumentException if an identifier is blank or a collaborator is {@code null}
      * @throws ValidateException        if manifest, Variant, protocol, targets, or options are inconsistent
      */
-    public MicrosoftRealmAdapter(final String spaceId, final String sourceId, final MicrosoftManifest manifest,
+    public MicrosoftRealmAdapter(final String tenantId, final String sourceId, final MicrosoftManifest manifest,
             final VendorManifest.Variant variant, final MicrosoftOptions options, final SourceServices services) {
-        Assert.notBlank(spaceId, "Microsoft Realm space id must not be blank");
+        Assert.notBlank(tenantId, "Microsoft Realm tenant id must not be blank");
         Assert.notBlank(sourceId, "Microsoft Realm Source id must not be blank");
         final MicrosoftManifest selectedManifest = Assert
                 .notNull(manifest, "Microsoft Realm manifest must not be null");

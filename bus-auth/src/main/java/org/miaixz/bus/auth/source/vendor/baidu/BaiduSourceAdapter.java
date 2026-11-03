@@ -104,7 +104,7 @@ public class BaiduSourceAdapter implements VendorAdapter {
     /**
      * Creates one Source-bound Baidu adapter from the frozen default manifest.
      *
-     * @param spaceId  Source space used to isolate browser state and credentials
+     * @param tenantId Source tenant used to isolate browser state and credentials
      * @param sourceId Source identifier
      * @param manifest selected Baidu manifest
      * @param variant  selected default variant manifest
@@ -114,7 +114,7 @@ public class BaiduSourceAdapter implements VendorAdapter {
      * @throws ValidateException        if routing, protocol, manifest, or callback options differ from the frozen
      *                                  profile
      */
-    public BaiduSourceAdapter(final String spaceId, final String sourceId, final BaiduManifest manifest,
+    public BaiduSourceAdapter(final String tenantId, final String sourceId, final BaiduManifest manifest,
             final VendorManifest.Variant variant, final BaiduOptions options, final SourceServices services) {
         Assert.notNull(manifest, "Baidu manifest must not be null");
         this.sourceId = Assert.notBlank(sourceId, "Baidu Source id must not be blank");
@@ -127,7 +127,7 @@ public class BaiduSourceAdapter implements VendorAdapter {
                 || options.redirectUri().isEmpty()) {
             throw new ValidateException("Baidu adapter requires the baidu/default OAuth 2.0 manifest");
         }
-        this.redirectManager = RedirectManager.create(spaceId, sourceId, variant, options, services);
+        this.redirectManager = RedirectManager.create(tenantId, sourceId, variant, options, services);
         final var targets = variant.targets().resolve(options);
         final OAuth2ClientOptions oauthSettings = new OAuth2ClientOptions(targets.authorization(), Optional.empty(),
                 Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(),

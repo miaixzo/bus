@@ -108,7 +108,7 @@ public class ProginnSourceAdapter implements VendorAdapter {
     /**
      * Creates one Source-bound Proginn adapter from the frozen default manifest.
      *
-     * @param spaceId  Source space isolating state and credentials
+     * @param tenantId Source tenant isolating state and credentials
      * @param sourceId Source identifier
      * @param manifest selected Proginn manifest
      * @param variant  selected default variant manifest
@@ -117,7 +117,7 @@ public class ProginnSourceAdapter implements VendorAdapter {
      * @throws IllegalArgumentException if an identifier is blank or a collaborator is {@code null}
      * @throws ValidateException        if profile, manifest, options, or routing differ from the frozen variant
      */
-    public ProginnSourceAdapter(final String spaceId, final String sourceId, final ProginnManifest manifest,
+    public ProginnSourceAdapter(final String tenantId, final String sourceId, final ProginnManifest manifest,
             final VendorManifest.Variant variant, final ProginnOptions options, final SourceServices services) {
         final ProginnManifest selected = Assert.notNull(manifest, "Proginn manifest must not be null");
         this.sourceId = Assert.notBlank(sourceId, "Proginn Source id must not be blank");
@@ -129,7 +129,7 @@ public class ProginnSourceAdapter implements VendorAdapter {
                 || !ProginnManifest.ID.equals(options.vendor()) || !ProginnManifest.DEFAULT.equals(options.variant())) {
             throw new ValidateException("Proginn adapter requires the proginn/default OAuth 2.0 manifest");
         }
-        this.redirectManager = RedirectManager.create(spaceId, sourceId, variant, options, services);
+        this.redirectManager = RedirectManager.create(tenantId, sourceId, variant, options, services);
         this.standardAdapter = standardAdapter(variant, options, services, redirectManager);
         this.callbackDecoder = new AuthorizationResponseDecoder();
     }

@@ -122,7 +122,7 @@ public class GitLabRealmAdapter implements VendorAdapter {
     /**
      * Creates one Source-isolated GitLab Enterprise realm adapter.
      *
-     * @param spaceId  Source space used for isolation
+     * @param tenantId Source tenant used for isolation
      * @param sourceId Source identifier
      * @param manifest exact GitLab manifest
      * @param variant  selected Enterprise Variant
@@ -131,9 +131,9 @@ public class GitLabRealmAdapter implements VendorAdapter {
      * @throws IllegalArgumentException if an identifier is blank or collaborator is {@code null}
      * @throws ValidateException        if the manifest, Variant, options, protocol, or targets are inconsistent
      */
-    public GitLabRealmAdapter(final String spaceId, final String sourceId, final GitLabManifest manifest,
+    public GitLabRealmAdapter(final String tenantId, final String sourceId, final GitLabManifest manifest,
             final VendorManifest.Variant variant, final GitLabOptions options, final SourceServices services) {
-        Assert.notBlank(spaceId, "GitLab Enterprise space id must not be blank");
+        Assert.notBlank(tenantId, "GitLab Enterprise tenant id must not be blank");
         Assert.notBlank(sourceId, "GitLab Enterprise Source id must not be blank");
         final GitLabManifest selectedManifest = Assert.notNull(manifest, "GitLab manifest must not be null");
         this.variant = Assert.notNull(variant, "GitLab Enterprise Variant must not be null");

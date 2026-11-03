@@ -46,7 +46,7 @@ public interface VendorAdapter extends SourceWorker {
         /**
          * Creates one Source-isolated platform adapter from validated immutable inputs.
          *
-         * @param spaceId  space identifier copied from the Source configuration
+         * @param tenantId owning Library tenant identifier
          * @param sourceId Source identifier copied from the Source configuration
          * @param manifest exact platform manifest
          * @param variant  exact variant selected from that manifest
@@ -55,7 +55,7 @@ public interface VendorAdapter extends SourceWorker {
          * @return non-null adapter whose capability manifest equals the selected variant's capability manifest
          */
         VendorAdapter create(
-                String spaceId,
+                String tenantId,
                 String sourceId,
                 VendorManifest<O> manifest,
                 VendorManifest.Variant variant,

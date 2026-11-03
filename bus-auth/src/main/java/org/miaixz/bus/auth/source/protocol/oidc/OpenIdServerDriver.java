@@ -278,13 +278,13 @@ public class OpenIdServerDriver implements ProtocolDriver<OpenIdServerOptions> {
         if (options.oauth2Options().tokenEndpoint().isPresent()) {
             final TokenMaterial tokenMaterial = new TokenMaterial(source.getId(), services);
             final IdTokenIssuer idTokenIssuer = new IdTokenIssuer(options, services, idTokenCodec);
-            final AccessTokenIssuer issuer = new AccessTokenIssuer(source.getId(), options.oauth2Options(), services,
-                    scopeValidator, pkceValidator, idTokenIssuer, tokenMaterial);
+            final AccessTokenIssuer issuer = new AccessTokenIssuer(source.getId(), library.getTenant_id(),
+                    options.oauth2Options(), services, scopeValidator, pkceValidator, idTokenIssuer, tokenMaterial);
             final RefreshTokenRotator rotator = new RefreshTokenRotator(source.getId(), options.oauth2Options(),
                     services, scopeValidator, issuer, tokenMaterial);
             final TokenEndpoint endpoint = new TokenEndpoint(new TokenRequestDecoder(),
-                    new OAuth2ClientAuthenticator(options.oauth2Options(), services), new TokenService(issuer, rotator),
-                    new TokenResponseEncoder(), oauthErrorMapper);
+                    new OAuth2ClientAuthenticator(library.getTenant_id(), options.oauth2Options(), services),
+                    new TokenService(issuer, rotator), new TokenResponseEncoder(), oauthErrorMapper);
             endpoints.put(OAuth2ServerScheme.TOKEN, endpoint::handle);
         }
         if (options.oauth2Options().introspectionEndpoint().isPresent()) {

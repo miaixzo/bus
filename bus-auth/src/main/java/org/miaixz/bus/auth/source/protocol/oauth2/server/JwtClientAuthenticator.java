@@ -78,7 +78,12 @@ public class JwtClientAuthenticator {
     private final SourceServices services;
 
     /**
-     * Exact Source identifier used to isolate replay records.
+     * Tenant identifier resolved from the owning Library during compilation.
+     */
+    private final String tenantId;
+
+    /**
+     * Exact Source identifier included in the replay authority.
      */
     private final String sourceId;
 
@@ -110,10 +115,13 @@ public class JwtClientAuthenticator {
     /**
      * Creates one Source-scoped JWT client assertion verifier.
      *
+     * @param tenantId tenant identifier resolved from the owning Library
      * @param options  frozen OAuth authorization server options
      * @param services capability-limited Source services
      */
-    public JwtClientAuthenticator(final OAuth2ServerOptions options, final SourceServices services) {
+    public JwtClientAuthenticator(final String tenantId, final OAuth2ServerOptions options,
+            final SourceServices services) {
+        this.tenantId = Assert.notBlank(tenantId, "OAuth 2.x owning Library tenant id must not be blank");
         this.options = Assert.notNull(options, "OAuth 2.x JWT client options must not be null");
         this.services = Assert.notNull(services, "OAuth 2.x JWT client services must not be null");
         this.sourceId = services.entry().resource().getId();
@@ -350,7 +358,7 @@ public class JwtClientAuthenticator {
         final Instant replayExpiry = assertion.expiresAt().isAfter(minimum) ? assertion.expiresAt() : minimum;
         final String authority = sourceId + Symbol.C_NUL + consumer.id() + Symbol.C_NUL + assertion.issuer();
         return replayGuard.register(
-                sourceId,
+                tenantId,
                 Protocol.OAUTH2,
                 authority,
                 ASSERTION_PURPOSE,

@@ -143,7 +143,7 @@ public class DingTalkRealmAdapter implements VendorAdapter {
     /**
      * Creates one Source-isolated DingTalk realm adapter.
      *
-     * @param spaceId  Source space used to isolate credential resolution
+     * @param tenantId Source tenant used to isolate credential resolution
      * @param sourceId Source identifier used to validate Source ownership
      * @param manifest exact DingTalk manifest
      * @param variant  exact selected Realm Variant
@@ -152,9 +152,9 @@ public class DingTalkRealmAdapter implements VendorAdapter {
      * @throws IllegalArgumentException if an identifier is blank or a collaborator is {@code null}
      * @throws ValidateException        if the manifest, Variant, protocol, targets, or options are inconsistent
      */
-    public DingTalkRealmAdapter(final String spaceId, final String sourceId, final DingTalkManifest manifest,
+    public DingTalkRealmAdapter(final String tenantId, final String sourceId, final DingTalkManifest manifest,
             final VendorManifest.Variant variant, final DingTalkOptions options, final SourceServices services) {
-        Assert.notBlank(spaceId, "DingTalk Realm space id must not be blank");
+        Assert.notBlank(tenantId, "DingTalk Realm tenant id must not be blank");
         Assert.notBlank(sourceId, "DingTalk Realm Source id must not be blank");
         final DingTalkManifest selectedManifest = Assert.notNull(manifest, "DingTalk Realm manifest must not be null");
         this.variant = Assert.notNull(variant, "DingTalk Realm Variant must not be null");
