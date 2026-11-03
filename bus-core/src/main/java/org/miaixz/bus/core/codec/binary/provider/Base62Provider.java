@@ -53,16 +53,21 @@ public class Base62Provider implements Encoder<byte[], byte[]>, Decoder<byte[], 
     }
 
     /**
-     * Translates a byte array of indices into a byte array of characters from a dictionary.
+     * Validates and translates indices using the supplied dictionary. Negative dictionary entries indicate invalid
+     * input bytes.
      *
      * @param indices    The byte array of indices.
      * @param dictionary The dictionary to use for translation.
      * @return The translated byte array.
+     * @throws IllegalArgumentException If an index is outside the dictionary or maps to an invalid entry.
      */
     public static byte[] translate(final byte[] indices, final byte[] dictionary) {
         final byte[] translation = new byte[indices.length];
 
         for (int i = 0; i < indices.length; i++) {
+            if (indices[i] < 0 || indices[i] >= dictionary.length || dictionary[indices[i]] < 0) {
+                throw new IllegalArgumentException("Invalid char '" + (char) (indices[i] & 0xff) + "' at [" + i + "]");
+            }
             translation[i] = dictionary[indices[i]];
         }
 
