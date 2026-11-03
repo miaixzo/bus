@@ -3493,14 +3493,16 @@ public class CharsBacker extends CharsValidator {
      * "..." is appended to the end.
      *
      * @param text   The string to limit.
-     * @param length The maximum length.
-     * @return The truncated string with "..." appended if necessary.
-     * @throws IllegalArgumentException if {@code length} is not positive.
+     * @param length The maximum length before appending "..."; non-positive values produce an empty string.
+     * @return {@code null} for null input, an empty string for a non-positive length, or the string truncated with
+     *         "..." appended if necessary.
      */
     public static String limitLength(final CharSequence text, final int length) {
-        Assert.isTrue(length > 0);
         if (null == text) {
             return null;
+        }
+        if (length <= 0) {
+            return Normal.EMPTY;
         }
         if (text.length() <= length) {
             return text.toString();
