@@ -1512,13 +1512,22 @@ public class Parsing {
             }
         }
         // Parse all 16 bytes
-        byte[] ipv6 = ByteBuffer.allocate(16).putInt(utAddrV6[0]).putInt(utAddrV6[1]).putInt(utAddrV6[2])
-                .putInt(utAddrV6[3]).array();
+        return formatIpAddress(
+                ByteBuffer.allocate(16).putInt(utAddrV6[0]).putInt(utAddrV6[1]).putInt(utAddrV6[2]).putInt(utAddrV6[3])
+                        .array());
+    }
+
+    /**
+     * Formats an IPv4 or IPv6 address as text.
+     *
+     * @param address The address in network byte order, with a length of 4 or 16 bytes.
+     * @return The formatted address, or {@link Normal#UNKNOWN} if the byte array has an invalid length.
+     */
+    public static String formatIpAddress(byte[] address) {
         try {
-            return InetAddress.getByAddress(ipv6).getHostAddress()
+            return InetAddress.getByAddress(address).getHostAddress()
                     .replaceAll("((?:(?:^|:)0+\\b){2,8}):?(?!\\S*\\b\\1:0+\\b)(\\S*)", "::$2");
         } catch (UnknownHostException e) {
-            // Should not happen for length 4 or 16
             return Normal.UNKNOWN;
         }
     }
@@ -1824,6 +1833,32 @@ public class Parsing {
         for (int i = Normal._0; i < len; i += Normal._2) {
             data[i / Normal._2] = (byte) (Character.digit(digits.charAt(i), Normal._16) << Normal._4
                     | Character.digit(digits.charAt(i + Normal._1), Normal._16));
+        }
+        return data;
+    }
+
+    /**
+     * Parses hexadecimal 32-bit words into the bytes held by those words in memory.
+     *
+     * @param digits The hexadecimal digits, whose length must be a multiple of eight.
+     * @param order  The byte order in which each word was printed.
+     * @return The bytes in memory order, or an empty array if the input is invalid.
+     */
+    public static byte[] hexWordsToByteArray(String digits, ByteOrder order) {
+        if (digits.length() % Normal._8 != Normal._0) {
+            Logger.warn(false, "Health", "Invalid hexadecimal words: {}", digits);
+            return Normal.EMPTY_BYTE_ARRAY;
+        }
+        byte[] data = hexStringToByteArray(digits);
+        if (order == ByteOrder.LITTLE_ENDIAN) {
+            for (int i = Normal._0; i + Normal._3 < data.length; i += Normal._4) {
+                byte tmp = data[i];
+                data[i] = data[i + Normal._3];
+                data[i + Normal._3] = tmp;
+                tmp = data[i + Normal._1];
+                data[i + Normal._1] = data[i + Normal._2];
+                data[i + Normal._2] = tmp;
+            }
         }
         return data;
     }

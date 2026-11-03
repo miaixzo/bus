@@ -19,6 +19,10 @@
 */
 package org.miaixz.bus.health.windows.hardware;
 
+import static org.miaixz.bus.health.windows.driver.wmi.MSFTStorage.PD_OBJECT_ID;
+import static org.miaixz.bus.health.windows.driver.wmi.MSFTStorage.SP_OBJECT_ID;
+import static org.miaixz.bus.health.windows.driver.wmi.MSFTStorage.VD_OBJECT_ID;
+
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.regex.Matcher;
@@ -47,24 +51,6 @@ import org.miaixz.bus.logger.Logger;
  * @author Kimi Liu
  */
 final class WindowsLogicalVolumeGroup extends AbstractLogicalVolumeGroup {
-
-    /**
-     * The SP_OBJECT_ID constant.
-     */
-    private static final java.util.regex.Pattern SP_OBJECT_ID = java.util.regex.Pattern
-            .compile(".*ObjectId=.*SP:(\\{.*\\}).*");
-
-    /**
-     * The PD_OBJECT_ID constant.
-     */
-    private static final java.util.regex.Pattern PD_OBJECT_ID = java.util.regex.Pattern
-            .compile(".*ObjectId=.*PD:(\\{.*\\}).*");
-
-    /**
-     * The VD_OBJECT_ID constant.
-     */
-    private static final java.util.regex.Pattern VD_OBJECT_ID = java.util.regex.Pattern
-            .compile(".*ObjectId=.*VD:(\\{.*\\})(\\{.*\\}).*");
 
     /**
      * The IS_WINDOWS8_OR_GREATER constant.
@@ -111,7 +97,7 @@ final class WindowsLogicalVolumeGroup extends AbstractLogicalVolumeGroup {
             for (int i = 0; i < count; i++) {
                 String vdObjectId = WmiKit.getString(vds, VirtualDiskProperty.OBJECTID, i);
                 Matcher m = VD_OBJECT_ID.matcher(vdObjectId);
-                if (m.matches()) {
+                if (m.find()) {
                     vdObjectId = m.group(2) + Symbol.SPACE + m.group(1);
                 }
                 // Store key with SP|VD
@@ -125,7 +111,7 @@ final class WindowsLogicalVolumeGroup extends AbstractLogicalVolumeGroup {
             for (int i = 0; i < count; i++) {
                 String pdObjectId = WmiKit.getString(pds, PhysicalDiskProperty.OBJECTID, i);
                 Matcher m = PD_OBJECT_ID.matcher(pdObjectId);
-                if (m.matches()) {
+                if (m.find()) {
                     pdObjectId = m.group(1);
                 }
                 // Store key with PD
@@ -144,12 +130,12 @@ final class WindowsLogicalVolumeGroup extends AbstractLogicalVolumeGroup {
                 // Ref string contains object id, will do partial match later
                 String spObjectId = WmiKit.getRefString(sppd, StoragePoolToPhysicalDiskProperty.STORAGEPOOL, i);
                 Matcher m = SP_OBJECT_ID.matcher(spObjectId);
-                if (m.matches()) {
+                if (m.find()) {
                     spObjectId = m.group(1);
                 }
                 String pdObjectId = WmiKit.getRefString(sppd, StoragePoolToPhysicalDiskProperty.PHYSICALDISK, i);
                 m = PD_OBJECT_ID.matcher(pdObjectId);
-                if (m.matches()) {
+                if (m.find()) {
                     pdObjectId = m.group(1);
                 }
                 sppdMap.put(spObjectId + Symbol.SPACE + pdObjectId, pdObjectId);
@@ -164,7 +150,7 @@ final class WindowsLogicalVolumeGroup extends AbstractLogicalVolumeGroup {
                 // Parse object ID to match
                 String spObjectId = WmiKit.getString(sp, StoragePoolProperty.OBJECTID, i);
                 Matcher m = SP_OBJECT_ID.matcher(spObjectId);
-                if (m.matches()) {
+                if (m.find()) {
                     spObjectId = m.group(1);
                 }
                 // find matching physical and logical volumes

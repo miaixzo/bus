@@ -29,18 +29,21 @@ import com.sun.jna.platform.linux.Udev.UdevDevice;
 import com.sun.jna.platform.linux.Udev.UdevEnumerate;
 import com.sun.jna.platform.linux.Udev.UdevListEntry;
 
+import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.health.Builder;
+import org.miaixz.bus.health.Memoizer;
 import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.hardware.HWDiskStore;
 import org.miaixz.bus.health.builtin.hardware.HWPartition;
 import org.miaixz.bus.health.builtin.hardware.common.AbstractHWDiskStore;
 import org.miaixz.bus.health.linux.DevPath;
 import org.miaixz.bus.health.linux.ProcPath;
+import org.miaixz.bus.health.linux.SysPath;
 import org.miaixz.bus.health.linux.software.LinuxOperatingSystem;
 import org.miaixz.bus.logger.Logger;
 
@@ -221,6 +224,12 @@ public class LinuxHWDiskStore extends AbstractHWDiskStore {
     private List<HWPartition> partitionList = new ArrayList<>();
 
     /**
+     * The memoized backing stores.
+     */
+    private final SupplierX<Optional<List<String>>> backingStores = Memoizer
+            .memoize(() -> readBackingStores(SysPath.BLOCK, getName()));
+
+    /**
      * Creates a new LinuxHWDiskStore instance.
      *
      * @param name   the name
@@ -395,6 +404,53 @@ public class LinuxHWDiskStore extends AbstractHWDiskStore {
             mountsMap.put(split[0], split[1]);
         }
         return mountsMap;
+    }
+
+    /**
+     * Reads the stores a disk is built on from its sysfs {@code slaves} directory.
+     *
+     * @param sysBlock The sysfs block directory.
+     * @param name     The disk device path.
+     * @return The sorted backing stores, or an empty optional if the directory could not be read.
+     */
+    static Optional<List<String>> readBackingStores(String sysBlock, String name) {
+        String udevRoot = Symbol.SLASH + "dev" + Symbol.SLASH;
+        String devRoot = name.startsWith(DevPath.DEV) ? DevPath.DEV : udevRoot;
+        if (!name.startsWith(devRoot)) {
+            return Optional.empty();
+        }
+        File[] slaves = new File(sysBlock + toSysfsName(name.substring(devRoot.length())) + "/slaves").listFiles();
+        if (slaves == null) {
+            return Optional.empty();
+        }
+        List<String> stores = new ArrayList<>();
+        for (File slave : slaves) {
+            String slaveName = slave.getName();
+            StoreKind kind = new File(sysBlock + slaveName).exists() ? StoreKind.DISK : StoreKind.PARTITION;
+            stores.add(kind.entry(devRoot + toDevName(slaveName)));
+        }
+        stores.sort(null);
+        return Optional.of(Collections.unmodifiableList(stores));
+    }
+
+    /**
+     * Converts a sysfs block device name to its path below the device root.
+     *
+     * @param sysfsName The sysfs device name.
+     * @return The relative device path.
+     */
+    private static String toDevName(String sysfsName) {
+        return sysfsName.replace('!', Symbol.C_SLASH);
+    }
+
+    /**
+     * Converts a relative device path to its sysfs block device name.
+     *
+     * @param devName The relative device path.
+     * @return The sysfs device name.
+     */
+    private static String toSysfsName(String devName) {
+        return devName.replace(Symbol.C_SLASH, '!');
     }
 
     /**
@@ -686,6 +742,16 @@ public class LinuxHWDiskStore extends AbstractHWDiskStore {
     @Override
     public List<HWPartition> getPartitions() {
         return this.partitionList;
+    }
+
+    /**
+     * Returns the backing stores.
+     *
+     * @return The backing stores, or an empty optional if unavailable.
+     */
+    @Override
+    public Optional<List<String>> getBackingStores() {
+        return backingStores.get();
     }
 
     /**

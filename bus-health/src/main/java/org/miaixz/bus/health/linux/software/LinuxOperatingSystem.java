@@ -200,18 +200,8 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
 
     static {
         Map<Integer, Long> auxv = Auxv.queryAuxv();
-        long hz = auxv.getOrDefault(Auxv.AT_CLKTCK, 0L);
-        if (hz > 0) {
-            USER_HZ = hz;
-        } else {
-            USER_HZ = Parsing.parseLongOrDefault(Executor.getFirstAnswer("getconf CLK_TCK"), 100L);
-        }
-        long pagesz = Auxv.queryAuxv().getOrDefault(Auxv.AT_PAGESZ, 0L);
-        if (pagesz > 0) {
-            PAGE_SIZE = pagesz;
-        } else {
-            PAGE_SIZE = Parsing.parseLongOrDefault(Executor.getFirstAnswer("getconf PAGE_SIZE"), 4096L);
-        }
+        USER_HZ = Auxv.userHz(auxv);
+        PAGE_SIZE = Auxv.pageSize(auxv);
     }
 
     /**

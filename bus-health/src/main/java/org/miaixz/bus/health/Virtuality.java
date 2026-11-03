@@ -50,6 +50,16 @@ public final class Virtuality {
     private static final String MODEL_PREFIX = "model" + Symbol.DOT;
 
     /**
+     * Amazon EC2 system manufacturer signature.
+     */
+    private static final String EC2_MANUFACTURER = "Amazon EC2";
+
+    /**
+     * Marker contained in EC2 bare-metal instance types.
+     */
+    private static final String EC2_BARE_METAL = ".metal";
+
+    /**
      * Whether the current platform reports connector presence.
      */
     private static final boolean CONNECTOR_REPORTED = Platform.isLinux() || Platform.isWindows();
@@ -137,8 +147,12 @@ public final class Virtuality {
      * @return The platform name, or an empty optional.
      */
     static Optional<String> matchSystem(String manufacturer, String model, List<Pair<String, String>> table) {
+        boolean ec2BareMetal = manufacturer.startsWith(EC2_MANUFACTURER) && model.contains(EC2_BARE_METAL);
         String haystack = manufacturer + Symbol.C_SPACE + model;
         for (Pair<String, String> signature : table) {
+            if (ec2BareMetal && EC2_MANUFACTURER.equals(signature.getLeft())) {
+                continue;
+            }
             if (haystack.contains(signature.getLeft())) {
                 return Optional.of(signature.getRight());
             }

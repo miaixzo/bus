@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.health.linux.software;
 
+import java.nio.ByteOrder;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.HashMap;
@@ -31,7 +32,6 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.tuple.Pair;
 import org.miaixz.bus.core.net.Protocol;
-import org.miaixz.bus.core.xyz.ByteKit;
 import org.miaixz.bus.health.Builder;
 import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.software.InternetProtocolStats;
@@ -78,21 +78,40 @@ public class LinuxInternetProtocolStats extends AbstractInternetProtocolStats {
      * @return the query connections result
      */
     private static List<IPConnection> queryConnections(String protocol, int ipver, Map<Long, Integer> pidMap) {
+        return parseConnections(
+                protocol + ipver,
+                Builder.readFile(ProcPath.NET + Symbol.SLASH + protocol + (ipver == 6 ? Symbol.SIX : Normal.EMPTY)),
+                pidMap,
+                ByteOrder.nativeOrder());
+    }
+
+    /**
+     * Parses Linux socket table lines.
+     *
+     * @param type   The connection type, such as {@code tcp4}.
+     * @param lines  The socket table lines.
+     * @param pidMap A map from socket inode to process ID.
+     * @param order  The byte order of the host that wrote the lines.
+     * @return The parsed connections.
+     */
+    static List<IPConnection> parseConnections(
+            String type,
+            List<String> lines,
+            Map<Long, Integer> pidMap,
+            ByteOrder order) {
         List<IPConnection> conns = new ArrayList<>();
-        for (String s : Builder
-                .readFile(ProcPath.NET + Symbol.SLASH + protocol + (ipver == 6 ? Symbol.SIX : Normal.EMPTY))) {
+        for (String s : lines) {
             if (s.indexOf(Symbol.C_COLON) >= 0) {
                 String[] split = Pattern.SPACES_PATTERN.split(s.trim());
                 if (split.length > 9) {
-                    Pair<byte[], Integer> lAddr = parseIpAddr(split[1]);
-                    Pair<byte[], Integer> fAddr = parseIpAddr(split[2]);
+                    Pair<byte[], Integer> lAddr = parseIpAddr(split[1], order);
+                    Pair<byte[], Integer> fAddr = parseIpAddr(split[2], order);
                     TcpState state = TcpState.fromLinuxState(Parsing.hexStringToInt(split[3], 0));
                     Pair<Integer, Integer> txQrxQ = parseHexColonHex(split[4]);
                     long inode = Parsing.parseLongOrDefault(split[9], 0);
                     conns.add(
-                            new IPConnection(protocol + ipver, lAddr.getLeft(), lAddr.getRight(), fAddr.getLeft(),
-                                    fAddr.getRight(), state, txQrxQ.getLeft(), txQrxQ.getRight(),
-                                    pidMap.getOrDefault(inode, -1)));
+                            new IPConnection(type, lAddr.getLeft(), lAddr.getRight(), fAddr.getLeft(), fAddr.getRight(),
+                                    state, txQrxQ.getLeft(), txQrxQ.getRight(), pidMap.getOrDefault(inode, -1)));
                 }
             }
         }
@@ -102,22 +121,14 @@ public class LinuxInternetProtocolStats extends AbstractInternetProtocolStats {
     /**
      * Parses the ip addr.
      *
-     * @param s the s
+     * @param s     the encoded address and port
+     * @param order the byte order of the host that wrote the address
      * @return the parse ip addr result
      */
-    private static Pair<byte[], Integer> parseIpAddr(String s) {
+    private static Pair<byte[], Integer> parseIpAddr(String s, ByteOrder order) {
         int colon = s.indexOf(Symbol.C_COLON);
         if (colon > 0 && colon < s.length()) {
-            byte[] first = ByteKit.hexStringToByteArray(s.substring(0, colon));
-            // Bytes are in __be32 endianness. we must invert each set of 4 bytes
-            for (int i = 0; i + 3 < first.length; i += 4) {
-                byte tmp = first[i];
-                first[i] = first[i + 3];
-                first[i + 3] = tmp;
-                tmp = first[i + 1];
-                first[i + 1] = first[i + 2];
-                first[i + 2] = tmp;
-            }
+            byte[] first = Parsing.hexWordsToByteArray(s.substring(0, colon), order);
             int second = Parsing.hexStringToInt(s.substring(colon + 1), 0);
             return new Pair<>(first, second);
         }

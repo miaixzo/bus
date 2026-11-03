@@ -2730,6 +2730,65 @@
       ]
     },
     {
+      "type": "org.miaixz.bus.health.builtin.hardware.HWDiskStore$StoreKind",
+      "fields": [
+        {
+          "name": "DISK"
+        },
+        {
+          "name": "FILE"
+        },
+        {
+          "name": "PARTITION"
+        },
+        {
+          "name": "prefix"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "int",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "entry",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getPrefix",
+          "parameterTypes": []
+        },
+        {
+          "name": "matches",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "nameOf",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "valueOf",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "values",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
       "type": "org.miaixz.bus.health.builtin.hardware.HWPartition",
       "fields": [
         {
@@ -6180,8 +6239,20 @@
           "parameterTypes": []
         },
         {
+          "name": "pageSize",
+          "parameterTypes": [
+            "java.util.Map"
+          ]
+        },
+        {
           "name": "queryAuxv",
           "parameterTypes": []
+        },
+        {
+          "name": "userHz",
+          "parameterTypes": [
+            "java.util.Map"
+          ]
         }
       ]
     },
@@ -6822,6 +6893,13 @@
           "parameterTypes": []
         },
         {
+          "name": "addMissingCaches",
+          "parameterTypes": [
+            "java.util.List",
+            "java.util.Set"
+          ]
+        },
+        {
           "name": "createMIDR",
           "parameterTypes": [
             "java.lang.String",
@@ -6861,6 +6939,12 @@
           "parameterTypes": []
         },
         {
+          "name": "isCpuInfoCacheKey",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
           "name": "mapCachesFromLscpu",
           "parameterTypes": []
         },
@@ -6876,6 +6960,12 @@
         },
         {
           "name": "mapNumaNodesFromLscpu",
+          "parameterTypes": [
+            "java.util.List"
+          ]
+        },
+        {
+          "name": "parseCachesFromCpuinfo",
           "parameterTypes": [
             "java.util.List"
           ]
@@ -6929,6 +7019,12 @@
         {
           "name": "queryMaxFreqFromSysfs",
           "parameterTypes": []
+        },
+        {
+          "name": "s390Name",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
         },
         {
           "name": "queryProcessorCpuLoadTicks",
@@ -11853,6 +11949,12 @@
           ]
         },
         {
+          "name": "formatIpAddress",
+          "parameterTypes": [
+            "byte[]"
+          ]
+        },
+        {
           "name": "getDoubleQuoteStringValue",
           "parameterTypes": [
             "java.lang.String"
@@ -11933,6 +12035,12 @@
           ]
         },
         {
+          "name": "hexStringToByteArray",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
           "name": "hexStringToInt",
           "parameterTypes": [
             "java.lang.String",
@@ -11950,6 +12058,13 @@
           "name": "hexStringToString",
           "parameterTypes": [
             "java.lang.String"
+          ]
+        },
+        {
+          "name": "hexWordsToByteArray",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.nio.ByteOrder"
           ]
         },
         {
@@ -21122,6 +21237,105 @@
       ]
     },
     {
+      "type": "org.miaixz.bus.health.windows.driver.wmi.MSFTStorage$DiskProperty",
+      "fields": [
+        {
+          "name": "BUSTYPE"
+        },
+        {
+          "name": "LOCATION"
+        },
+        {
+          "name": "NUMBER"
+        },
+        {
+          "name": "UNIQUEID"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "int"
+          ]
+        },
+        {
+          "name": "valueOf",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "values",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.health.windows.driver.wmi.MSFTStorage$PhysicalDiskIdProperty",
+      "fields": [
+        {
+          "name": "DEVICEID"
+        },
+        {
+          "name": "OBJECTID"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "int"
+          ]
+        },
+        {
+          "name": "valueOf",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "values",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.health.windows.driver.wmi.MSFTStorage$PhysicalDiskMediaTypeProperty",
+      "fields": [
+        {
+          "name": "DEVICEID"
+        },
+        {
+          "name": "MEDIATYPE"
+        },
+        {
+          "name": "SPINDLESPEED"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "int"
+          ]
+        },
+        {
+          "name": "valueOf",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "values",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
       "type": "org.miaixz.bus.health.windows.driver.wmi.MSFTStorage$PhysicalDiskProperty",
       "fields": [
         {
@@ -21215,6 +21429,36 @@
       ]
     },
     {
+      "type": "org.miaixz.bus.health.windows.driver.wmi.MSFTStorage$VirtualDiskIdProperty",
+      "fields": [
+        {
+          "name": "OBJECTID"
+        },
+        {
+          "name": "UNIQUEID"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "int"
+          ]
+        },
+        {
+          "name": "valueOf",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "values",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
       "type": "org.miaixz.bus.health.windows.driver.wmi.MSFTStorage$VirtualDiskProperty",
       "fields": [
         {
@@ -21222,6 +21466,36 @@
         },
         {
           "name": "OBJECTID"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "int"
+          ]
+        },
+        {
+          "name": "valueOf",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "values",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.health.windows.driver.wmi.MSFTStorage$VirtualDiskToPhysicalDiskProperty",
+      "fields": [
+        {
+          "name": "PHYSICALDISK"
+        },
+        {
+          "name": "VIRTUALDISK"
         }
       ],
       "methods": [
@@ -22549,6 +22823,9 @@
       "type": "org.miaixz.bus.health.windows.hardware.WindowsHWDiskStore",
       "fields": [
         {
+          "name": "backingStores"
+        },
+        {
           "name": "currentQueueLength"
         },
         {
@@ -22583,6 +22860,10 @@
             "long",
             "java.lang.String"
           ]
+        },
+        {
+          "name": "getBackingStores",
+          "parameterTypes": []
         },
         {
           "name": "getCurrentQueueLength",

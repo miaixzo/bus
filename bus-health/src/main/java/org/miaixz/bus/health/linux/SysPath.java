@@ -43,6 +43,11 @@ public class SysPath {
     public static final String SYS = querySysConfig() + Symbol.SLASH;
 
     /**
+     * The block device directory.
+     */
+    public static final String BLOCK = SYS + "block/";
+
+    /**
      * The CPU constant.
      */
     public static final String CPU = SYS + "devices/system/cpu/";
