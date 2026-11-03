@@ -773,7 +773,7 @@ public class StreamSCU {
                     open();
                 }
             } else {
-                service.start();
+                service.start(true);
                 addData(cuid, dstTsuid);
                 if (!dstTsuid.equals(UID.ExplicitVRLittleEndian.uid)) {
                     addData(cuid, UID.ExplicitVRLittleEndian.uid);

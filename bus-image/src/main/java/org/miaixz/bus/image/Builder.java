@@ -1226,6 +1226,11 @@ public class Builder {
     /**
      * Builds a {@link Shape} from DICOM Display Shutter attributes.
      *
+     * <p>
+     * DICOM shutter coordinates are one-based pixel rows and columns with inclusive boundaries. The returned shape uses
+     * zero-based pixel centers; rectangular edges are converted to double before subtracting the origin offset to avoid
+     * integer overflow in malformed input.
+     *
      * @param dcm the DICOM dataset.
      * @return the shutter shape as an {@link Area}, or {@code null} if no valid shutter is defined.
      */
@@ -1236,10 +1241,10 @@ public class Builder {
             if (shutterShape.contains("RECTANGULAR") || shutterShape.contains("RECTANGLE")) {
                 Rectangle2D rect = new Rectangle2D.Double();
                 rect.setFrameFromDiagonal(
-                        dcm.getInt(Tag.ShutterLeftVerticalEdge, 0) - 1,
-                        dcm.getInt(Tag.ShutterUpperHorizontalEdge, 0) - 1,
-                        dcm.getInt(Tag.ShutterRightVerticalEdge, 0) - 1,
-                        dcm.getInt(Tag.ShutterLowerHorizontalEdge, 0) - 1);
+                        dcm.getInt(Tag.ShutterLeftVerticalEdge, 0) - 1.0,
+                        dcm.getInt(Tag.ShutterUpperHorizontalEdge, 0) - 1.0,
+                        dcm.getInt(Tag.ShutterRightVerticalEdge, 0) - 1.0,
+                        dcm.getInt(Tag.ShutterLowerHorizontalEdge, 0) - 1.0);
                 if (rect.isEmpty()) {
                     Logger.error(false, "Image", "Shutter rectangle has an empty area!");
                 } else {
