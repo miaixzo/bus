@@ -113,7 +113,7 @@ public class CMove {
             }
             moveSCU.setDestination(destinationAet);
 
-            service.start();
+            service.start(true);
             try {
                 long t1 = System.currentTimeMillis();
                 moveSCU.open();
