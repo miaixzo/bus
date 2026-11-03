@@ -74,10 +74,18 @@ public abstract class BasicProvider {
             + "            </when>\n" + "            <when test=\"criterion.betweenValue\">\n"
             + "              AND ${criterion.condition} ${criterion.variables('criterion.value')} AND\n"
             + "              ${criterion.variables('criterion.secondValue')}\n" + "            </when>\n"
-            + "            <when test=\"criterion.listValue\">\n" + "              AND ${criterion.condition}\n"
+            + "            <when test=\"criterion.listValue\">\n"
+            + "              <choose><when test=\"criterion.groupedList\">\n"
+            + "                <foreach collection=\"criterion.valueGroups\" item=\"valueGroup\" index=\"groupIndex\" open=\" AND (\" close=\")\">\n"
+            + "                  <if test=\"groupIndex != 0\">${criterion.groupSeparator}</if>\n"
+            + "                  ${criterion.condition}\n"
+            + "                  <foreach collection=\"valueGroup\" item=\"listItem\" open=\"(\" close=\")\" separator=\",\">\n"
+            + "                    ${criterion.variables('listItem')}\n" + "                  </foreach>\n"
+            + "                </foreach>\n" + "              </when><otherwise>\n"
+            + "              AND ${criterion.condition}\n"
             + "              <foreach close=\")\" collection=\"criterion.value\" item=\"listItem\"\n"
             + "                open=\"(\" separator=\",\">\n" + "                ${criterion.variables('listItem')}\n"
-            + "              </foreach>\n" + "            </when>\n";
+            + "              </foreach>\n" + "              </otherwise></choose>\n" + "            </when>\n";
 
     /**
      * MyBatis dynamic {@code <where>} template for a Condition passed as {@code @Param("condition")}.

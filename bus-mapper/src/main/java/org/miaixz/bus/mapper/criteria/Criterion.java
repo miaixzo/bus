@@ -20,12 +20,14 @@
 package org.miaixz.bus.mapper.criteria;
 
 import java.util.Collection;
+import java.util.List;
 
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.xyz.CollKit;
 import org.miaixz.bus.mapper.parsing.ColumnMeta;
 
 /**
@@ -38,6 +40,10 @@ import org.miaixz.bus.mapper.parsing.ColumnMeta;
 @SuperBuilder
 public class Criterion {
 
+    /**
+     * Standard bounded IN group size supported by Oracle as well as MySQL and PostgreSQL.
+     */
+    private static final int IN_GROUP_SIZE = 1000;
     /**
      * The condition expression, e.g., "column = ".
      */
@@ -192,6 +198,34 @@ public class Criterion {
             variables.append(",typeHandler=").append(typeHandler);
         }
         return variables.append(Symbol.BRACE_RIGHT).toString();
+    }
+
+    /**
+     * Checks whether an IN predicate exceeds the portable expression count.
+     *
+     * @return whether bounded groups are required
+     */
+    public boolean isGroupedList() {
+        return listValue && condition != null && condition.endsWith(" IN") && value instanceof Collection<?> values
+                && values.size() > IN_GROUP_SIZE;
+    }
+
+    /**
+     * Provides bound groups without dropping NULLs or duplicate values.
+     *
+     * @return groups with at most the portable expression count
+     */
+    public List<? extends List<?>> getValueGroups() {
+        return CollKit.partition((Collection<?>) value, IN_GROUP_SIZE);
+    }
+
+    /**
+     * Combines IN groups as a union and NOT IN groups as an intersection.
+     *
+     * @return the SQL boolean separator
+     */
+    public String getGroupSeparator() {
+        return condition.endsWith(" NOT IN") ? " AND " : " OR ";
     }
 
     /**

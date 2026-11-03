@@ -32,6 +32,7 @@ import org.apache.ibatis.type.TypeHandler;
 
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.xyz.ListKit;
 import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.mapper.binding.function.Fn;
 import org.miaixz.bus.mapper.parsing.ColumnMeta;
@@ -386,8 +387,10 @@ public class Criteria<T> {
      * @return This {@code Criteria} object.
      */
     public Criteria<T> andIn(Fn<T, Object> fn, Iterable values) {
-        if (useCriterion(values)) {
-            addCriterion(column(fn) + " IN", values, fn.toEntityColumn());
+        List<?> input = values == null ? null : ListKit.of(values);
+        if (useCriterion(input)) {
+            Assert.notEmpty(input, "Values for IN cannot be null or empty");
+            addCriterion(column(fn) + " IN", input, fn.toEntityColumn());
         }
         return this;
     }
@@ -412,8 +415,10 @@ public class Criteria<T> {
      * @return This {@code Criteria} object.
      */
     public Criteria<T> andNotIn(Fn<T, Object> fn, Iterable values) {
-        if (useCriterion(values)) {
-            addCriterion(column(fn) + " NOT IN", values, fn.toEntityColumn());
+        List<?> input = values == null ? null : ListKit.of(values);
+        if (useCriterion(input)) {
+            Assert.notEmpty(input, "Values for NOT IN cannot be null or empty");
+            addCriterion(column(fn) + " NOT IN", input, fn.toEntityColumn());
         }
         return this;
     }
