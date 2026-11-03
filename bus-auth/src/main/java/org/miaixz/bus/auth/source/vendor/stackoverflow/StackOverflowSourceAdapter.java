@@ -116,7 +116,7 @@ public class StackOverflowSourceAdapter implements VendorAdapter {
     /**
      * Creates one Source-bound Stack Overflow adapter from the frozen default manifest.
      *
-     * @param spaceId  Source space isolating browser state and credentials
+     * @param tenantId Source tenant isolating browser state and credentials
      * @param sourceId Source identifier
      * @param manifest selected Stack Overflow manifest
      * @param variant  exact selected default manifest
@@ -125,8 +125,9 @@ public class StackOverflowSourceAdapter implements VendorAdapter {
      * @throws IllegalArgumentException if an identifier is blank or a collaborator is {@code null}
      * @throws ValidateException        if profile, manifest, options, or routing differ from the frozen variant
      */
-    public StackOverflowSourceAdapter(final String spaceId, final String sourceId, final StackOverflowManifest manifest,
-            final VendorManifest.Variant variant, final StackOverflowOptions options, final SourceServices services) {
+    public StackOverflowSourceAdapter(final String tenantId, final String sourceId,
+            final StackOverflowManifest manifest, final VendorManifest.Variant variant,
+            final StackOverflowOptions options, final SourceServices services) {
         final StackOverflowManifest selected = Assert.notNull(manifest, "Stack Overflow manifest must not be null");
         this.sourceId = Assert.notBlank(sourceId, "Stack Overflow Source id must not be blank");
         this.variant = Assert.notNull(variant, "Stack Overflow manifest must not be null");
@@ -139,7 +140,7 @@ public class StackOverflowSourceAdapter implements VendorAdapter {
                 || !StackOverflowManifest.DEFAULT.equals(options.variant())) {
             throw new ValidateException("Stack Overflow adapter requires the stackoverflow/default OAuth 2.0 manifest");
         }
-        this.redirectManager = RedirectManager.create(spaceId, sourceId, variant, options, services);
+        this.redirectManager = RedirectManager.create(tenantId, sourceId, variant, options, services);
         this.callbackDecoder = new AuthorizationResponseDecoder();
         this.formCodec = new FormCodec();
         this.standardAdapter = new StandardAdapter(variant, options, Optional.of(redirectManager),

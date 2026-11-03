@@ -187,7 +187,7 @@ public class LineSourceAdapter implements VendorAdapter {
     /**
      * Creates one Source-bound LINE adapter from the frozen default manifest.
      *
-     * @param spaceId  Source space used to isolate browser state and credentials
+     * @param tenantId Source tenant used to isolate browser state and credentials
      * @param sourceId Source identifier
      * @param manifest selected LINE manifest
      * @param variant  exact selected default manifest
@@ -197,7 +197,7 @@ public class LineSourceAdapter implements VendorAdapter {
      * @throws ValidateException        if routing, protocol, options, or the security rules differ from the frozen LINE
      *                                  web profile
      */
-    public LineSourceAdapter(final String spaceId, final String sourceId, final LineManifest manifest,
+    public LineSourceAdapter(final String tenantId, final String sourceId, final LineManifest manifest,
             final VendorManifest.Variant variant, final LineOptions options, final SourceServices services) {
         final LineManifest selectedProfile = Assert.notNull(manifest, "LINE manifest must not be null");
         this.sourceId = Assert.notBlank(sourceId, "LINE Source id must not be blank");
@@ -215,7 +215,7 @@ public class LineSourceAdapter implements VendorAdapter {
         if (!algorithms.contains(JwaAlgorithm.HS256.name()) || !algorithms.contains(JwaAlgorithm.ES256.name())) {
             throw new ValidateException("LINE HS256 and ES256 must be permitted by the OIDC security rules");
         }
-        this.redirectManager = RedirectManager.create(spaceId, sourceId, variant, options, services);
+        this.redirectManager = RedirectManager.create(tenantId, sourceId, variant, options, services);
         final var targets = variant.targets().resolve(options);
         final OAuth2ClientOptions oauthSettings = new OAuth2ClientOptions(targets.authorization(), targets.token(),
                 Optional.empty(), Optional.empty(), targets.revocation(), Optional.empty(), Optional.of(ISSUER),

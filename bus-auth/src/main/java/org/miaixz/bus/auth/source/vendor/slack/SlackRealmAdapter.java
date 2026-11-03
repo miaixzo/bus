@@ -111,7 +111,7 @@ public class SlackRealmAdapter implements VendorAdapter {
     /**
      * Creates one Source-isolated Slack administrator SCIM realm adapter.
      *
-     * @param spaceId  Source space used for isolation
+     * @param tenantId Source tenant used for isolation
      * @param sourceId Source identifier
      * @param manifest exact Slack manifest
      * @param variant  selected SCIM Variant
@@ -120,9 +120,9 @@ public class SlackRealmAdapter implements VendorAdapter {
      * @throws IllegalArgumentException if an identifier is blank or collaborator is {@code null}
      * @throws ValidateException        if the manifest, Variant, options, protocol, or targets are inconsistent
      */
-    public SlackRealmAdapter(final String spaceId, final String sourceId, final SlackManifest manifest,
+    public SlackRealmAdapter(final String tenantId, final String sourceId, final SlackManifest manifest,
             final VendorManifest.Variant variant, final SlackOptions options, final SourceServices services) {
-        Assert.notBlank(spaceId, "Slack SCIM space id must not be blank");
+        Assert.notBlank(tenantId, "Slack SCIM tenant id must not be blank");
         Assert.notBlank(sourceId, "Slack SCIM Source id must not be blank");
         final SlackManifest selectedManifest = Assert.notNull(manifest, "Slack manifest must not be null");
         this.variant = Assert.notNull(variant, "Slack SCIM Variant must not be null");

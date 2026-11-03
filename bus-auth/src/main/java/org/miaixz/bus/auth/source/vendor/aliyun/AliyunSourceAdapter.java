@@ -138,7 +138,7 @@ public class AliyunSourceAdapter implements VendorAdapter {
     /**
      * Creates one Source-bound Alibaba Cloud adapter from an immutable Vendor manifest.
      *
-     * @param spaceId  Source space used to isolate browser state and credentials
+     * @param tenantId Source tenant used to isolate browser state and credentials
      * @param sourceId Source identifier
      * @param manifest selected Alibaba Cloud manifest
      * @param variant  selected default variant manifest
@@ -148,7 +148,7 @@ public class AliyunSourceAdapter implements VendorAdapter {
      * @throws ValidateException        if the supplied profile, manifest, options, or security rules do not represent
      *                                  the frozen Alibaba Cloud OIDC variant
      */
-    public AliyunSourceAdapter(final String spaceId, final String sourceId, final AliyunManifest manifest,
+    public AliyunSourceAdapter(final String tenantId, final String sourceId, final AliyunManifest manifest,
             final VendorManifest.Variant variant, final AliyunOptions options, final SourceServices services) {
         Assert.notNull(manifest, "Alibaba Cloud manifest must not be null");
         this.sourceId = Assert.notBlank(sourceId, "Alibaba Cloud Source id must not be blank");
@@ -164,7 +164,7 @@ public class AliyunSourceAdapter implements VendorAdapter {
         if (!requiredAlgorithms.contains(JwaAlgorithm.RS256.name())) {
             throw new ValidateException("Alibaba Cloud RS256 is not permitted by the OIDC security rules");
         }
-        this.redirectManager = RedirectManager.create(spaceId, sourceId, variant, options, services);
+        this.redirectManager = RedirectManager.create(tenantId, sourceId, variant, options, services);
         this.standardAdapter = standardAdapter(variant, options, services, redirectManager);
         this.authorizationResponseDecoder = new AuthorizationResponseDecoder();
         this.jwkSetCodec = new JwkSetCodec();

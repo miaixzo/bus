@@ -111,7 +111,7 @@ public class AmazonSourceAdapter implements VendorAdapter {
     /**
      * Creates one Source-bound Login with Amazon adapter from the frozen default manifest.
      *
-     * @param spaceId  Source space used to isolate state and PKCE material
+     * @param tenantId Source tenant used to isolate state and PKCE material
      * @param sourceId Source identifier
      * @param manifest selected Login with Amazon manifest
      * @param variant  selected default variant manifest
@@ -121,7 +121,7 @@ public class AmazonSourceAdapter implements VendorAdapter {
      * @throws ValidateException        if routing, protocol, manifest, or callback options differ from the frozen Login
      *                                  with Amazon profile
      */
-    public AmazonSourceAdapter(final String spaceId, final String sourceId, final AmazonManifest manifest,
+    public AmazonSourceAdapter(final String tenantId, final String sourceId, final AmazonManifest manifest,
             final VendorManifest.Variant variant, final AmazonOptions options, final SourceServices services) {
         Assert.notNull(manifest, "Login with Amazon manifest must not be null");
         this.sourceId = Assert.notBlank(sourceId, "Login with Amazon Source id must not be blank");
@@ -134,7 +134,7 @@ public class AmazonSourceAdapter implements VendorAdapter {
                 || options.redirectUri().isEmpty()) {
             throw new ValidateException("Login with Amazon adapter requires the amazon/default OAuth 2.0 manifest");
         }
-        this.redirectManager = RedirectManager.create(spaceId, sourceId, variant, options, services);
+        this.redirectManager = RedirectManager.create(tenantId, sourceId, variant, options, services);
         this.standardAdapter = standardAdapter(variant, options, services, redirectManager);
         this.authorizationResponseDecoder = new AuthorizationResponseDecoder();
     }

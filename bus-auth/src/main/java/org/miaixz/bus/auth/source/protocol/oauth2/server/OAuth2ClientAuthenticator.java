@@ -101,12 +101,14 @@ public class OAuth2ClientAuthenticator implements ClientAuthenticator<Request> {
     /**
      * Creates the token-endpoint authenticator with standard and federated JWT assertion support.
      *
+     * @param tenantId tenant identifier resolved from the owning Library
      * @param options  frozen OAuth authorization server options
      * @param services capability-limited Source services
      */
-    public OAuth2ClientAuthenticator(final OAuth2ServerOptions options, final SourceServices services) {
+    public OAuth2ClientAuthenticator(final String tenantId, final OAuth2ServerOptions options,
+            final SourceServices services) {
         this(Assert.notNull(options, "OAuth 2.x client options must not be null").tokenEndpoint().getOrNull(), services,
-                jwt(options, services));
+                jwt(tenantId, options, services));
     }
 
     /**
@@ -127,14 +129,19 @@ public class OAuth2ClientAuthenticator implements ClientAuthenticator<Request> {
     /**
      * Creates a JWT verifier only when one configured authentication profile requires it.
      *
+     * @param tenantId tenant identifier resolved from the owning Library
      * @param options  frozen OAuth authorization server options
      * @param services capability-limited Source services
      * @return configured verifier or {@code null} when JWT authentication is disabled
      */
-    private static JwtClientAuthenticator jwt(final OAuth2ServerOptions options, final SourceServices services) {
+    private static JwtClientAuthenticator jwt(
+            final String tenantId,
+            final OAuth2ServerOptions options,
+            final SourceServices services) {
+        final String tenant = Assert.notBlank(tenantId, "OAuth 2.x owning Library tenant id must not be blank");
         return options.federatedJwtEnabled()
                 || options.tokenEndpointAuthMethodsSupported().contains(ClientAuthenticationMethod.PRIVATE_KEY_JWT)
-                        ? new JwtClientAuthenticator(options, services)
+                        ? new JwtClientAuthenticator(tenant, options, services)
                         : null;
     }
 

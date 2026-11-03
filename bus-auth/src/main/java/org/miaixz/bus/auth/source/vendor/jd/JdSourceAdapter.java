@@ -132,7 +132,7 @@ public class JdSourceAdapter implements VendorAdapter {
     /**
      * Creates one Source-bound JD adapter.
      *
-     * @param spaceId  Source space used for state isolation
+     * @param tenantId Source tenant used for state isolation
      * @param sourceId Source identifier
      * @param manifest selected JD manifest
      * @param variant  selected default manifest
@@ -141,7 +141,7 @@ public class JdSourceAdapter implements VendorAdapter {
      * @throws IllegalArgumentException if an identifier is blank or a collaborator is {@code null}
      * @throws ValidateException        if routing or protocol differs from jd/default
      */
-    public JdSourceAdapter(final String spaceId, final String sourceId, final JdManifest manifest,
+    public JdSourceAdapter(final String tenantId, final String sourceId, final JdManifest manifest,
             final VendorManifest.Variant variant, final JdOptions options, final SourceServices services) {
         Assert.notNull(manifest, "JD manifest must not be null");
         this.sourceId = Assert.notBlank(sourceId, "JD Source id must not be blank");
@@ -153,7 +153,7 @@ public class JdSourceAdapter implements VendorAdapter {
                 || !JdManifest.ID.equals(options.vendor()) || !JdManifest.DEFAULT.equals(options.variant())) {
             throw new ValidateException("JD adapter requires the jd/default OAuth 2.0 manifest");
         }
-        this.redirectManager = RedirectManager.create(spaceId, sourceId, variant, options, services);
+        this.redirectManager = RedirectManager.create(tenantId, sourceId, variant, options, services);
         this.formCodec = new FormCodec();
         this.standardAdapter = new StandardAdapter(variant, options, Optional.of(redirectManager),
                 List.of(

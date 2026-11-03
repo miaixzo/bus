@@ -58,9 +58,9 @@ import org.miaixz.bus.core.lang.Optional;
  * Dispatcher is shared infrastructure; public addresses are not shared protocol semantics. The project must configure a
  * separate route or listener scope for every server protocol and map each scope only to capabilities declared by the
  * matching Scheme. Public paths must not expose the bus-auth Source identifier. The project route assembly binds each
- * fixed protocol route set to one exact {@link Roster.Reference} inside the Space already selected by the upper project
- * boundary. Space selection is complete before the request enters bus-auth; Dispatcher never routes across Spaces. The
- * path fragments below are recommendations rather than Controller implementations.
+ * fixed protocol route set to one exact {@link Roster.Reference} inside the tenant already selected by the upper
+ * project boundary. Tenant selection is complete before the request enters bus-auth; Dispatcher never routes across
+ * tenants. The path fragments below are recommendations rather than Controller implementations.
  * </p>
  *
  * <h3>OAuth 2.x authorization server</h3>
@@ -257,7 +257,7 @@ import org.miaixz.bus.core.lang.Optional;
  * <p>
  * Fixed routes are valid because route assembly already binds each route set to exactly one compatible Source.
  * Dispatcher deliberately does not inspect an unverified {@code client_id}, SAML issuer, LDAP bind name, or packet
- * attribute to guess across Sources, Spaces, or protocols.
+ * attribute to guess across Sources, tenants, or protocols.
  * </p>
  *
  * <h3>Protocol-neutral Realm resource access</h3>

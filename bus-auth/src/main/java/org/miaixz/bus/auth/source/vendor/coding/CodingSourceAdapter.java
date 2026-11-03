@@ -107,7 +107,7 @@ public class CodingSourceAdapter implements VendorAdapter {
     /**
      * Creates one Source-bound CODING adapter from the frozen default manifest.
      *
-     * @param spaceId  Source space used to isolate browser state and credentials
+     * @param tenantId Source tenant used to isolate browser state and credentials
      * @param sourceId Source identifier
      * @param manifest selected CODING manifest
      * @param variant  selected default variant manifest
@@ -116,7 +116,7 @@ public class CodingSourceAdapter implements VendorAdapter {
      * @throws IllegalArgumentException if an identifier is blank or a collaborator is {@code null}
      * @throws ValidateException        if routing, protocol, manifest, or options differ from the frozen manifest
      */
-    public CodingSourceAdapter(final String spaceId, final String sourceId, final CodingManifest manifest,
+    public CodingSourceAdapter(final String tenantId, final String sourceId, final CodingManifest manifest,
             final VendorManifest.Variant variant, final CodingOptions options, final SourceServices services) {
         Assert.notNull(manifest, "CODING manifest must not be null");
         this.sourceId = Assert.notBlank(sourceId, "CODING Source id must not be blank");
@@ -129,7 +129,7 @@ public class CodingSourceAdapter implements VendorAdapter {
                 || options.redirectUri().isEmpty()) {
             throw new ValidateException("CODING adapter requires the coding/default OAuth 2.0 manifest");
         }
-        this.redirectManager = RedirectManager.create(spaceId, sourceId, variant, options, services);
+        this.redirectManager = RedirectManager.create(tenantId, sourceId, variant, options, services);
     }
 
     /**

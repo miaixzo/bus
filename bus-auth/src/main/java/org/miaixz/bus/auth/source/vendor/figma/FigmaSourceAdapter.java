@@ -111,7 +111,7 @@ public class FigmaSourceAdapter implements VendorAdapter {
     /**
      * Creates one Source-bound Figma.com adapter.
      *
-     * @param spaceId  Source space used to isolate state and credential resolution
+     * @param tenantId Source tenant used to isolate state and credential resolution
      * @param sourceId Source identifier
      * @param manifest selected Figma manifest
      * @param variant  exact selected default manifest
@@ -120,7 +120,7 @@ public class FigmaSourceAdapter implements VendorAdapter {
      * @throws IllegalArgumentException if an identifier is blank or a collaborator is {@code null}
      * @throws ValidateException        if routing, protocol, manifest, callback, or authorization is inconsistent
      */
-    public FigmaSourceAdapter(final String spaceId, final String sourceId, final FigmaManifest manifest,
+    public FigmaSourceAdapter(final String tenantId, final String sourceId, final FigmaManifest manifest,
             final VendorManifest.Variant variant, final FigmaOptions options, final SourceServices services) {
         final FigmaManifest selectedProfile = Assert.notNull(manifest, "Figma manifest must not be null");
         this.sourceId = Assert.notBlank(sourceId, "Figma Source id must not be blank");
@@ -134,7 +134,7 @@ public class FigmaSourceAdapter implements VendorAdapter {
                 || options.redirectUri().isEmpty()) {
             throw new ValidateException("Figma adapter requires the figma/default OAuth 2.0 manifest");
         }
-        this.redirectManager = RedirectManager.create(spaceId, sourceId, variant, options, services);
+        this.redirectManager = RedirectManager.create(tenantId, sourceId, variant, options, services);
         final var targets = variant.targets().resolve(options);
         final OAuth2ClientOptions oauthSettings = new OAuth2ClientOptions(targets.authorization(), Optional.empty(),
                 Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(),

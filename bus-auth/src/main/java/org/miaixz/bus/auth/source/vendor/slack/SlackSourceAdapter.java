@@ -105,7 +105,7 @@ public class SlackSourceAdapter implements VendorAdapter {
     /**
      * Creates one Source-bound Slack adapter from the frozen default manifest.
      *
-     * @param spaceId  Source space isolating state and credentials
+     * @param tenantId Source tenant isolating state and credentials
      * @param sourceId Source identifier
      * @param manifest selected Slack manifest
      * @param variant  exact selected default manifest
@@ -114,7 +114,7 @@ public class SlackSourceAdapter implements VendorAdapter {
      * @throws IllegalArgumentException if an identifier is blank or a collaborator is {@code null}
      * @throws ValidateException        if profile, manifest, options, or routing differ from the frozen variant
      */
-    public SlackSourceAdapter(final String spaceId, final String sourceId, final SlackManifest manifest,
+    public SlackSourceAdapter(final String tenantId, final String sourceId, final SlackManifest manifest,
             final VendorManifest.Variant variant, final SlackOptions options, final SourceServices services) {
         final SlackManifest selected = Assert.notNull(manifest, "Slack manifest must not be null");
         this.sourceId = Assert.notBlank(sourceId, "Slack Source id must not be blank");
@@ -126,7 +126,7 @@ public class SlackSourceAdapter implements VendorAdapter {
                 || !SlackManifest.ID.equals(options.vendor()) || !SlackManifest.DEFAULT.equals(options.variant())) {
             throw new ValidateException("Slack adapter requires the slack/default OAuth 2.0 manifest");
         }
-        this.redirectManager = RedirectManager.create(spaceId, sourceId, variant, options, services);
+        this.redirectManager = RedirectManager.create(tenantId, sourceId, variant, options, services);
         this.callbackDecoder = new AuthorizationResponseDecoder();
         this.standardAdapter = new StandardAdapter(variant, options, Optional.of(redirectManager),
                 List.of(

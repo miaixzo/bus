@@ -102,7 +102,7 @@ public class FeishuSourceAdapter implements VendorAdapter {
     /**
      * Creates one Source-bound Feishu v3 adapter.
      *
-     * @param spaceId  Source space used to isolate state and credential resolution
+     * @param tenantId Source tenant used to isolate state and credential resolution
      * @param sourceId Source identifier
      * @param manifest selected Feishu manifest
      * @param variant  exact selected default manifest
@@ -111,7 +111,7 @@ public class FeishuSourceAdapter implements VendorAdapter {
      * @throws IllegalArgumentException if an identifier is blank or a collaborator is {@code null}
      * @throws ValidateException        if routing, protocol, manifest, callback, or authorization is inconsistent
      */
-    public FeishuSourceAdapter(final String spaceId, final String sourceId, final FeishuManifest manifest,
+    public FeishuSourceAdapter(final String tenantId, final String sourceId, final FeishuManifest manifest,
             final VendorManifest.Variant variant, final FeishuOptions options, final SourceServices services) {
         final FeishuManifest selectedProfile = Assert.notNull(manifest, "Feishu manifest must not be null");
         this.sourceId = Assert.notBlank(sourceId, "Feishu Source id must not be blank");
@@ -125,7 +125,7 @@ public class FeishuSourceAdapter implements VendorAdapter {
                 || options.redirectUri().isEmpty()) {
             throw new ValidateException("Feishu adapter requires the feishu/default OAuth 2.0 manifest");
         }
-        this.redirectManager = RedirectManager.create(spaceId, sourceId, variant, options, services);
+        this.redirectManager = RedirectManager.create(tenantId, sourceId, variant, options, services);
         final var targets = variant.targets().resolve(options);
         final OAuth2ClientOptions oauthSettings = new OAuth2ClientOptions(targets.authorization(), Optional.empty(),
                 Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(),

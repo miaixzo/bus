@@ -140,7 +140,7 @@ public class ElemeSourceAdapter implements VendorAdapter {
     /**
      * Creates one Source-bound Eleme adapter for the frozen default variant.
      *
-     * @param spaceId  Source space used to isolate state and credential resolution
+     * @param tenantId Source tenant used to isolate state and credential resolution
      * @param sourceId Source identifier
      * @param manifest selected Eleme manifest
      * @param variant  exact selected default manifest
@@ -149,7 +149,7 @@ public class ElemeSourceAdapter implements VendorAdapter {
      * @throws IllegalArgumentException if an identifier is blank or a collaborator is {@code null}
      * @throws ValidateException        if profile, variant, protocol, manifest, or options routing is inconsistent
      */
-    public ElemeSourceAdapter(final String spaceId, final String sourceId, final ElemeManifest manifest,
+    public ElemeSourceAdapter(final String tenantId, final String sourceId, final ElemeManifest manifest,
             final VendorManifest.Variant variant, final ElemeOptions options, final SourceServices services) {
         final ElemeManifest selectedProfile = Assert.notNull(manifest, "Eleme manifest must not be null");
         this.sourceId = Assert.notBlank(sourceId, "Eleme Source id must not be blank");
@@ -163,7 +163,7 @@ public class ElemeSourceAdapter implements VendorAdapter {
                 || options.redirectUri().isEmpty()) {
             throw new ValidateException("Eleme adapter requires the eleme/default OAuth 2.0 manifest");
         }
-        this.redirectManager = RedirectManager.create(spaceId, sourceId, variant, options, services);
+        this.redirectManager = RedirectManager.create(tenantId, sourceId, variant, options, services);
         this.standardAdapter = standardAdapter(variant, options, services, redirectManager);
         this.authorizationResponseDecoder = new AuthorizationResponseDecoder();
         this.tokenRequestEncoder = new TokenRequestEncoder();

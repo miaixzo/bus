@@ -158,7 +158,7 @@ public class GoogleRealmAdapter implements VendorAdapter {
     /**
      * Creates one Source-isolated Google Workspace realm adapter.
      *
-     * @param spaceId  Source space used for key isolation
+     * @param tenantId Source tenant used for key isolation
      * @param sourceId Source identifier used for ownership validation
      * @param manifest exact Google manifest
      * @param variant  exact selected Workspace Variant
@@ -167,9 +167,9 @@ public class GoogleRealmAdapter implements VendorAdapter {
      * @throws IllegalArgumentException if an identifier is blank or a collaborator is {@code null}
      * @throws ValidateException        if manifest, Variant, protocol, targets, or options are inconsistent
      */
-    public GoogleRealmAdapter(final String spaceId, final String sourceId, final GoogleManifest manifest,
+    public GoogleRealmAdapter(final String tenantId, final String sourceId, final GoogleManifest manifest,
             final VendorManifest.Variant variant, final GoogleOptions options, final SourceServices services) {
-        Assert.notBlank(spaceId, "Google Workspace space id must not be blank");
+        Assert.notBlank(tenantId, "Google Workspace tenant id must not be blank");
         Assert.notBlank(sourceId, "Google Workspace Source id must not be blank");
         final GoogleManifest selectedManifest = Assert.notNull(manifest, "Google manifest must not be null");
         this.variant = Assert.notNull(variant, "Google Workspace Variant must not be null");

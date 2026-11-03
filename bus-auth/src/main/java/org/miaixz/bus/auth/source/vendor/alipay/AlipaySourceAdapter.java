@@ -112,21 +112,21 @@ public class AlipaySourceAdapter implements VendorAdapter {
     /**
      * Creates one Source-bound Alipay adapter.
      *
-     * @param spaceId  Source space
+     * @param tenantId Source tenant
      * @param sourceId Source identifier
      * @param manifest selected Alipay manifest
      * @param variant  selected manifest
      * @param options  decoded options
      * @param services capability-limited Source services
      */
-    public AlipaySourceAdapter(final String spaceId, final String sourceId, final AlipayManifest manifest,
+    public AlipaySourceAdapter(final String tenantId, final String sourceId, final AlipayManifest manifest,
             final VendorManifest.Variant variant, final AlipayOptions options, final SourceServices services) {
         Assert.notNull(manifest, "Alipay manifest must not be null");
         this.sourceId = Assert.notBlank(sourceId, "Alipay Source id must not be blank");
         this.variant = Assert.notNull(variant, "Alipay manifest must not be null");
         this.options = Assert.notNull(options, "Alipay options must not be null");
         this.services = Assert.notNull(services, "Alipay execution services must not be null");
-        this.redirectManager = RedirectManager.create(spaceId, sourceId, variant, options, services);
+        this.redirectManager = RedirectManager.create(tenantId, sourceId, variant, options, services);
     }
 
     /**

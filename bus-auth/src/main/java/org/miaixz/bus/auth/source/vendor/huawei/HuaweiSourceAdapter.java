@@ -147,7 +147,7 @@ public class HuaweiSourceAdapter implements VendorAdapter {
     /**
      * Creates one Source-bound Huawei adapter from the frozen default manifest.
      *
-     * @param spaceId  Source space used for browser correlation isolation
+     * @param tenantId Source tenant used for browser correlation isolation
      * @param sourceId Source identifier
      * @param manifest selected Huawei manifest
      * @param variant  selected default variant manifest
@@ -156,7 +156,7 @@ public class HuaweiSourceAdapter implements VendorAdapter {
      * @throws IllegalArgumentException if an identifier is blank or a collaborator is {@code null}
      * @throws ValidateException        if routing, protocol, entropy, or algorithm rules differ from the frozen profile
      */
-    public HuaweiSourceAdapter(final String spaceId, final String sourceId, final HuaweiManifest manifest,
+    public HuaweiSourceAdapter(final String tenantId, final String sourceId, final HuaweiManifest manifest,
             final VendorManifest.Variant variant, final HuaweiOptions options, final SourceServices services) {
         Assert.notNull(manifest, "Huawei manifest must not be null");
         this.sourceId = Assert.notBlank(sourceId, "Huawei Source id must not be blank");
@@ -173,7 +173,7 @@ public class HuaweiSourceAdapter implements VendorAdapter {
             throw new ValidateException(
                     "Huawei requires RS256 and state entropy not exceeding its 100-character limit");
         }
-        this.redirectManager = RedirectManager.create(spaceId, sourceId, variant, options, services);
+        this.redirectManager = RedirectManager.create(tenantId, sourceId, variant, options, services);
         this.formCodec = new FormCodec();
         this.issuerValidator = new IssuerValidator();
         this.jwkSelector = new JwkSelector();

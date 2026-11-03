@@ -60,9 +60,9 @@ final class RedirectState {
     private static final String PKCE_PURPOSE = "vendor-pkce";
 
     /**
-     * Source space isolating all derived keys.
+     * Source tenant isolating all derived keys.
      */
-    private final String spaceId;
+    private final String tenantId;
 
     /**
      * Exact configured Source identifier.
@@ -82,14 +82,14 @@ final class RedirectState {
     /**
      * Creates one Source-isolated redirect correlation store.
      *
-     * @param spaceId     Source space identifier
+     * @param tenantId    Source tenant identifier
      * @param sourceId    Source identifier
      * @param services    capability-limited Source services
      * @param pkceEnabled whether verifier persistence is required
      */
-    RedirectState(final String spaceId, final String sourceId, final SourceServices services,
+    RedirectState(final String tenantId, final String sourceId, final SourceServices services,
             final boolean pkceEnabled) {
-        this.spaceId = Assert.notBlank(spaceId, "Vendor redirect space id must not be blank");
+        this.tenantId = Assert.notBlank(tenantId, "Vendor redirect tenant id must not be blank");
         this.sourceId = Assert.notBlank(sourceId, "Vendor redirect Source id must not be blank");
         this.services = Assert.notNull(services, "Vendor redirect execution services must not be null");
         this.pkceEnabled = pkceEnabled;
@@ -409,14 +409,14 @@ final class RedirectState {
     }
 
     /**
-     * Derives a space- and Source-isolated irreversible storage key.
+     * Derives a tenant- and Source-isolated irreversible storage key.
      *
      * @param purpose exact storage purpose
      * @param binding opaque correlation binding
      * @return hexadecimal SHA-256 digest
      */
     private String digest(final String purpose, final String binding) {
-        return Builder.sha256Hex(spaceId + Symbol.C_NUL + sourceId + Symbol.C_NUL + purpose + Symbol.C_NUL + binding);
+        return Builder.sha256Hex(tenantId + Symbol.C_NUL + sourceId + Symbol.C_NUL + purpose + Symbol.C_NUL + binding);
     }
 
     /**
@@ -426,7 +426,7 @@ final class RedirectState {
      * @return Source-isolated shared-secret key
      */
     private CredentialStore.Key credentialKey(final String correlationValue) {
-        return new CredentialStore.Key(spaceId, sourceId, PKCE_PURPOSE, digest(PKCE_PURPOSE, correlationValue),
+        return new CredentialStore.Key(tenantId, sourceId, PKCE_PURPOSE, digest(PKCE_PURPOSE, correlationValue),
                 Credential.Type.SHARED_SECRET);
     }
 

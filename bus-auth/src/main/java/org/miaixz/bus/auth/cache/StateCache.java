@@ -28,7 +28,7 @@ import org.miaixz.bus.cache.CacheX;
 /**
  * Stores one-time callback correlation for OAuth, OpenID Connect, SAML, and Vendor browser interactions.
  * <p>
- * Keys are irreversible digests isolated by space, Source, and state purpose. Consumers must use
+ * Keys are irreversible digests isolated by tenant, Source, and state purpose. Consumers must use
  * {@link #consume(String)} so a callback state succeeds at most once. This wrapper adds a fixed state prefix before it
  * delegates the atomic operation to bus-cache.
  * </p>

@@ -25,13 +25,13 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
-import org.miaixz.bus.core.basic.entity.Space;
+import org.miaixz.bus.core.basic.entity.Tenant;
 import org.miaixz.bus.core.lang.Enumers;
 
 /**
  * Represents the single authentication application displayed by administrative and end-user application hubs.
  * <p>
- * The inherited {@link Space} contract provides the single persistent space scope together with identity and audit
+ * The inherited {@link Tenant} contract provides the single persistent tenant scope together with identity and audit
  * metadata. This entity adds only authentication application presentation and launch metadata. A {@code Library} does
  * not own collections of providers or sources; those resources reference it through their direct identifiers.
  * </p>
@@ -45,13 +45,13 @@ import org.miaixz.bus.core.lang.Enumers;
 @Getter
 @Setter
 @SuperBuilder
-public class Library extends Space {
+public class Library extends Tenant {
 
     @Serial
     private static final long serialVersionUID = 2558585000001L;
 
     /**
-     * Project-managed space-local application code. Format and uniqueness policies belong to the external management
+     * Project-managed tenant-local application code. Format and uniqueness policies belong to the external management
      * implementation and do not affect authentication compilation.
      */
     private String code;

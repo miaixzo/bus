@@ -104,21 +104,21 @@ public class AfdianSourceAdapter implements VendorAdapter {
     /**
      * Creates one Source-bound Afdian adapter.
      *
-     * @param spaceId  Source space
+     * @param tenantId Source tenant
      * @param sourceId Source identifier
      * @param manifest selected Afdian manifest
      * @param variant  selected default manifest
      * @param options  decoded Afdian options
      * @param services capability-limited Source services
      */
-    public AfdianSourceAdapter(final String spaceId, final String sourceId, final AfdianManifest manifest,
+    public AfdianSourceAdapter(final String tenantId, final String sourceId, final AfdianManifest manifest,
             final VendorManifest.Variant variant, final AfdianOptions options, final SourceServices services) {
         Assert.notNull(manifest, "Afdian manifest must not be null");
         this.sourceId = Assert.notBlank(sourceId, "Afdian Source id must not be blank");
         this.variant = Assert.notNull(variant, "Afdian manifest must not be null");
         this.options = Assert.notNull(options, "Afdian options must not be null");
         this.services = Assert.notNull(services, "Afdian execution services must not be null");
-        this.redirectManager = RedirectManager.create(spaceId, sourceId, variant, options, services);
+        this.redirectManager = RedirectManager.create(tenantId, sourceId, variant, options, services);
     }
 
     /**

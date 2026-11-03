@@ -108,7 +108,7 @@ public class FigmaRealmAdapter implements VendorAdapter {
     /**
      * Creates one Source-isolated Figma administrator SCIM realm adapter.
      *
-     * @param spaceId  Source space used for isolation
+     * @param tenantId Source tenant used for isolation
      * @param sourceId Source identifier
      * @param manifest exact Figma manifest
      * @param variant  selected SCIM Variant
@@ -117,9 +117,9 @@ public class FigmaRealmAdapter implements VendorAdapter {
      * @throws IllegalArgumentException if an identifier is blank or collaborator is {@code null}
      * @throws ValidateException        if the manifest, Variant, options, protocol, or targets are inconsistent
      */
-    public FigmaRealmAdapter(final String spaceId, final String sourceId, final FigmaManifest manifest,
+    public FigmaRealmAdapter(final String tenantId, final String sourceId, final FigmaManifest manifest,
             final VendorManifest.Variant variant, final FigmaOptions options, final SourceServices services) {
-        Assert.notBlank(spaceId, "Figma SCIM space id must not be blank");
+        Assert.notBlank(tenantId, "Figma SCIM tenant id must not be blank");
         Assert.notBlank(sourceId, "Figma SCIM Source id must not be blank");
         final FigmaManifest selectedManifest = Assert.notNull(manifest, "Figma manifest must not be null");
         this.variant = Assert.notNull(variant, "Figma SCIM Variant must not be null");

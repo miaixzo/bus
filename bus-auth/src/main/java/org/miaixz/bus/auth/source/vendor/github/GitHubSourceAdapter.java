@@ -125,7 +125,7 @@ public class GitHubSourceAdapter implements VendorAdapter {
     /**
      * Creates one Source-bound GitHub.com OAuth App adapter.
      *
-     * @param spaceId  Source space used to isolate state and credential resolution
+     * @param tenantId Source tenant used to isolate state and credential resolution
      * @param sourceId Source identifier
      * @param manifest selected GitHub manifest
      * @param variant  exact selected default manifest
@@ -134,7 +134,7 @@ public class GitHubSourceAdapter implements VendorAdapter {
      * @throws IllegalArgumentException if an identifier is blank or a collaborator is {@code null}
      * @throws ValidateException        if routing, protocol, manifest, callback, or authorization is inconsistent
      */
-    public GitHubSourceAdapter(final String spaceId, final String sourceId, final GitHubManifest manifest,
+    public GitHubSourceAdapter(final String tenantId, final String sourceId, final GitHubManifest manifest,
             final VendorManifest.Variant variant, final GitHubOptions options, final SourceServices services) {
         final GitHubManifest selected = Assert.notNull(manifest, "GitHub manifest must not be null");
         this.sourceId = Assert.notBlank(sourceId, "GitHub Source id must not be blank");
@@ -147,7 +147,7 @@ public class GitHubSourceAdapter implements VendorAdapter {
                 || options.redirectUri().isEmpty()) {
             throw new ValidateException("GitHub adapter requires the github/default OAuth 2.0 manifest");
         }
-        this.redirectManager = RedirectManager.create(spaceId, sourceId, variant, options, services);
+        this.redirectManager = RedirectManager.create(tenantId, sourceId, variant, options, services);
         final var targets = variant.targets().resolve(options);
         final OAuth2ClientOptions oauthSettings = new OAuth2ClientOptions(targets.authorization(), Optional.empty(),
                 Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(),

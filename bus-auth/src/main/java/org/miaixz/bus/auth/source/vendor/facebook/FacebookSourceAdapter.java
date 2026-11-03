@@ -110,7 +110,7 @@ public class FacebookSourceAdapter implements VendorAdapter {
     /**
      * Creates one Source-bound Facebook Login adapter from the frozen v26.0 manifest.
      *
-     * @param spaceId  Source space used to isolate state and credential resolution
+     * @param tenantId Source tenant used to isolate state and credential resolution
      * @param sourceId Source identifier
      * @param manifest selected Facebook manifest
      * @param variant  exact selected default manifest
@@ -120,7 +120,7 @@ public class FacebookSourceAdapter implements VendorAdapter {
      * @throws ValidateException        if routing, protocol, manifest, callback, or standard authorization is
      *                                  inconsistent
      */
-    public FacebookSourceAdapter(final String spaceId, final String sourceId, final FacebookManifest manifest,
+    public FacebookSourceAdapter(final String tenantId, final String sourceId, final FacebookManifest manifest,
             final VendorManifest.Variant variant, final FacebookOptions options, final SourceServices services) {
         final FacebookManifest selectedProfile = Assert.notNull(manifest, "Facebook manifest must not be null");
         this.sourceId = Assert.notBlank(sourceId, "Facebook Source id must not be blank");
@@ -134,7 +134,7 @@ public class FacebookSourceAdapter implements VendorAdapter {
                 || options.redirectUri().isEmpty()) {
             throw new ValidateException("Facebook adapter requires the facebook/default OAuth 2.0 manifest");
         }
-        this.redirectManager = RedirectManager.create(spaceId, sourceId, variant, options, services);
+        this.redirectManager = RedirectManager.create(tenantId, sourceId, variant, options, services);
         final var targets = variant.targets().resolve(options);
         final OAuth2ClientOptions oauthSettings = new OAuth2ClientOptions(targets.authorization(), Optional.empty(),
                 Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(),

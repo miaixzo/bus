@@ -310,9 +310,9 @@ public class SamlClientDriver implements ProtocolDriver<SamlClientOptions> {
         final Provider provider = prepared.provider();
         final Library library = prepared.library();
         final Source source = entry.resource();
-        final String space = library.getSpace_id();
-        if (!scheme().id().equals(source.getType()) || !supports(source.getProtocol()) || space == null
-                || space.isBlank() || !provider.getId().equals(source.getProvider_id())
+        final String tenantId = library.getTenant_id();
+        if (!scheme().id().equals(source.getType()) || !supports(source.getProtocol()) || tenantId == null
+                || tenantId.isBlank() || !provider.getId().equals(source.getProvider_id())
                 || !library.getId().equals(provider.getLibrary_id())) {
             throw new ValidateException("SAML Source driver requires a matching Source configuration");
         }
@@ -330,7 +330,7 @@ public class SamlClientDriver implements ProtocolDriver<SamlClientOptions> {
         final MetadataClient metadataClient = new MetadataClient(options, services, metadataCodec, signatureValidator);
         final SamlAssertionValidator assertionValidator = new SamlAssertionValidator(services.policies());
         final SamlReplayValidator replayValidator = new SamlReplayValidator(new ReplayGuard(services.replayCache()),
-                space);
+                tenantId);
         final SamlDecryptionService decryptionService = new SamlDecryptionService(services, messageCodec,
                 signatureValidator, services.policies());
         final AssertionConsumerService consumer = new AssertionConsumerService(options, assertionValidator,
@@ -340,7 +340,7 @@ public class SamlClientDriver implements ProtocolDriver<SamlClientOptions> {
                 signingOperation(options, services));
         final SamlServiceProvider serviceProvider = new SamlServiceProvider(metadataClient, consumer, redirect,
                 options);
-        final SourceAdapter adapter = new SourceAdapter(source.getId(), space, options, serviceProvider, post,
+        final SourceAdapter adapter = new SourceAdapter(source.getId(), tenantId, options, serviceProvider, post,
                 signatureValidator, services.stateCache());
         return new CompiledClient(manifest(options), serviceProvider, adapter);
     }
@@ -518,9 +518,9 @@ public class SamlClientDriver implements ProtocolDriver<SamlClientOptions> {
         private final String sourceId;
 
         /**
-         * Space used to isolate one-time state keys.
+         * Tenant from the owning Library used to isolate one-time state keys.
          */
-        private final String space;
+        private final String tenantId;
 
         /**
          * Validated service-provider options.
@@ -551,7 +551,7 @@ public class SamlClientDriver implements ProtocolDriver<SamlClientOptions> {
          * Creates one Source-bound SAML browser adapter.
          *
          * @param sourceId           Source identifier
-         * @param space              space resolved from the owning Library
+         * @param tenantId           tenant resolved from the owning Library
          * @param options            validated service-provider options
          * @param serviceProvider    standard SAML service-provider facade
          * @param postBindingCodec   strict HTTP-POST Binding codec
@@ -559,11 +559,11 @@ public class SamlClientDriver implements ProtocolDriver<SamlClientOptions> {
          * @param stateCache         atomic one-time callback state cache
          * @throws IllegalArgumentException if text is blank or a collaborator is {@code null}
          */
-        private SourceAdapter(final String sourceId, final String space, final SamlClientOptions options,
+        private SourceAdapter(final String sourceId, final String tenantId, final SamlClientOptions options,
                 final SamlServiceProvider serviceProvider, final PostBindingCodec postBindingCodec,
                 final SamlSignatureValidator signatureValidator, final StateCache stateCache) {
             this.sourceId = Assert.notBlank(sourceId, "SAML Source id must not be blank");
-            this.space = Assert.notBlank(space, "SAML owning Library space must not be blank");
+            this.tenantId = Assert.notBlank(tenantId, "SAML owning Library tenant must not be blank");
             this.options = Assert.notNull(options, "SAML Source adapter options must not be null");
             this.serviceProvider = Assert
                     .notNull(serviceProvider, "SAML Source adapter service provider must not be null");
@@ -890,7 +890,7 @@ public class SamlClientDriver implements ProtocolDriver<SamlClientOptions> {
          */
         private String stateKey(final String state) {
             return Builder.sha256Hex(
-                    space + Symbol.C_NUL + sourceId + Symbol.C_NUL + BROWSER_STATE_PURPOSE + Symbol.C_NUL + state);
+                    tenantId + Symbol.C_NUL + sourceId + Symbol.C_NUL + BROWSER_STATE_PURPOSE + Symbol.C_NUL + state);
         }
 
     }

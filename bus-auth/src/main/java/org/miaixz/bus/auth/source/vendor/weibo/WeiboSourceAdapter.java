@@ -109,7 +109,7 @@ public class WeiboSourceAdapter implements VendorAdapter {
     /**
      * Creates one Source-bound Weibo adapter from the frozen default manifest.
      *
-     * @param spaceId  Source space isolating browser state and credentials
+     * @param tenantId Source tenant isolating browser state and credentials
      * @param sourceId Source identifier
      * @param manifest selected Weibo manifest
      * @param variant  exact selected default manifest
@@ -118,7 +118,7 @@ public class WeiboSourceAdapter implements VendorAdapter {
      * @throws IllegalArgumentException if an identifier is blank or a collaborator is {@code null}
      * @throws ValidateException        if profile, manifest, options, or routing differ from the frozen variant
      */
-    public WeiboSourceAdapter(final String spaceId, final String sourceId, final WeiboManifest manifest,
+    public WeiboSourceAdapter(final String tenantId, final String sourceId, final WeiboManifest manifest,
             final VendorManifest.Variant variant, final WeiboOptions options, final SourceServices services) {
         final WeiboManifest selected = Assert.notNull(manifest, "Weibo manifest must not be null");
         this.sourceId = Assert.notBlank(sourceId, "Weibo Source id must not be blank");
@@ -130,7 +130,7 @@ public class WeiboSourceAdapter implements VendorAdapter {
                 || !WeiboManifest.ID.equals(options.vendor()) || !WeiboManifest.DEFAULT.equals(options.variant())) {
             throw new ValidateException("Weibo adapter requires the weibo/default OAuth 2.0 manifest");
         }
-        this.redirectManager = RedirectManager.create(spaceId, sourceId, variant, options, services);
+        this.redirectManager = RedirectManager.create(tenantId, sourceId, variant, options, services);
         this.callbackDecoder = new AuthorizationResponseDecoder();
         this.standardAdapter = new StandardAdapter(variant, options, Optional.of(redirectManager),
                 List.of(

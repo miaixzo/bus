@@ -23,9 +23,10 @@
  * {@link org.miaixz.bus.auth.source.protocol.oidc.client.OpenIdClient} composes the OAuth 2.x client operations with
  * Discovery, Authentication Request URL encoding, typed OpenIdTokenResponse handling, UserInfo, and RP-Initiated
  * Logout. DiscoveryClient obtains composed OpenID Provider Metadata, AuthorizationResponseValidator binds the OAuth
- * browser response, IdTokenVerifier validates the signed identity assertion, and UserInfoClient binds returned claims
- * to the verified subject. OpenIdClientOptions and OpenIdClientScheme expose only the endpoints, algorithms, claims,
- * and capabilities supported by a generic OIDC Source.
+ * browser response, IdTokenVerifier validates the signed identity assertion, and UserInfoClient retrieves typed claims.
+ * The callback owner must compare the UserInfo subject with the verified ID Token subject before using those claims.
+ * OpenIdClientOptions and OpenIdClientScheme expose only the endpoints, algorithms, claims, and capabilities supported
+ * by a generic OIDC Source.
  * </p>
  * <p>
  * This package consumes OIDC and OAuth models and codecs, shared JOSE/JWT/PKCE stores, resolvers, Policies, and Fabric

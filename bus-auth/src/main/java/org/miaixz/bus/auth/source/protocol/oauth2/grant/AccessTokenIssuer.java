@@ -73,6 +73,11 @@ public class AccessTokenIssuer {
     private final String sourceId;
 
     /**
+     * Tenant identifier resolved from the owning Library during compilation.
+     */
+    private final String tenantId;
+
+    /**
      * Frozen authorization-server options governing enabled grants and token lifetimes.
      */
     private final GrantPolicy options;
@@ -106,6 +111,7 @@ public class AccessTokenIssuer {
      * Creates an initial token issuer for one compiled OAuth authorization server.
      *
      * @param sourceId       compiled server-role Source identifier
+     * @param tenantId       tenant identifier resolved from the owning Library
      * @param options        validated authorization-server options
      * @param services       capability-limited Source services
      * @param scopeValidator standard scope validator
@@ -114,10 +120,11 @@ public class AccessTokenIssuer {
      * @param tokenMaterial  Source-isolated token generator and digest service
      * @throws IllegalArgumentException if text is blank or a collaborator is {@code null}
      */
-    public AccessTokenIssuer(final String sourceId, final GrantPolicy options, final SourceServices services,
-            final ScopeValidator scopeValidator, final PkceValidator pkceValidator, final Augmenter augmenter,
-            final TokenMaterial tokenMaterial) {
+    public AccessTokenIssuer(final String sourceId, final String tenantId, final GrantPolicy options,
+            final SourceServices services, final ScopeValidator scopeValidator, final PkceValidator pkceValidator,
+            final Augmenter augmenter, final TokenMaterial tokenMaterial) {
         this.sourceId = Assert.notBlank(sourceId, "OAuth 2.x Source id must not be blank");
+        this.tenantId = Assert.notBlank(tenantId, "OAuth 2.x owning Library tenant id must not be blank");
         this.options = Assert.notNull(options, "OAuth 2.x authorization server options must not be null");
         this.services = Assert.notNull(services, "OAuth 2.x execution services must not be null");
         this.scopeValidator = Assert.notNull(scopeValidator, "OAuth 2.x scope validator must not be null");
@@ -551,7 +558,7 @@ public class AccessTokenIssuer {
         }
         final CompletionStage<Outcome<ProtectedResource>> resolution;
         try {
-            final ResourceLoader.Request request = new ResourceLoader.Request(services.entry(), sourceId,
+            final ResourceLoader.Request request = new ResourceLoader.Request(services.entry(), tenantId,
                     grant.audience(), grant.resource());
             resolution = Outcome.mapStage(
                     () -> services.resourceLoader().load(request, context, timeout),

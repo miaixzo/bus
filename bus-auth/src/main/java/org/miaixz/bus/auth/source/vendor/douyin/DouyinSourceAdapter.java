@@ -83,9 +83,9 @@ public class DouyinSourceAdapter implements VendorAdapter {
     private static final String MINI_CODE_PURPOSE = "douyin-mini-code";
 
     /**
-     * Source space used only for replay digest isolation.
+     * Source tenant used only for replay digest isolation.
      */
-    private final String spaceId;
+    private final String tenantId;
 
     /**
      * Source identifier copied into verified identities.
@@ -125,7 +125,7 @@ public class DouyinSourceAdapter implements VendorAdapter {
     /**
      * Creates one Source-bound Douyin adapter for the selected frozen variant.
      *
-     * @param spaceId  Source space used to isolate state, credentials, and replay digests
+     * @param tenantId Source tenant used to isolate state, credentials, and replay digests
      * @param sourceId Source identifier
      * @param manifest selected Douyin manifest
      * @param variant  exact selected variant manifest
@@ -134,10 +134,10 @@ public class DouyinSourceAdapter implements VendorAdapter {
      * @throws IllegalArgumentException if an identifier is blank or a collaborator is {@code null}
      * @throws ValidateException        if profile, variant, protocol, or options routing is inconsistent
      */
-    public DouyinSourceAdapter(final String spaceId, final String sourceId, final DouyinManifest manifest,
+    public DouyinSourceAdapter(final String tenantId, final String sourceId, final DouyinManifest manifest,
             final VendorManifest.Variant variant, final DouyinOptions options, final SourceServices services) {
         final DouyinManifest selectedProfile = Assert.notNull(manifest, "Douyin manifest must not be null");
-        this.spaceId = Assert.notBlank(spaceId, "Douyin space id must not be blank");
+        this.tenantId = Assert.notBlank(tenantId, "Douyin tenant id must not be blank");
         this.sourceId = Assert.notBlank(sourceId, "Douyin Source id must not be blank");
         this.variant = Assert.notNull(variant, "Douyin manifest must not be null");
         this.options = Assert.notNull(options, "Douyin options must not be null");
@@ -150,7 +150,7 @@ public class DouyinSourceAdapter implements VendorAdapter {
             throw new ValidateException("Douyin adapter profile, variant, and options must match");
         }
         this.redirectManager = DouyinManifest.OPEN.equals(options.variant())
-                ? RedirectManager.create(spaceId, sourceId, variant, options, services)
+                ? RedirectManager.create(tenantId, sourceId, variant, options, services)
                 : null;
     }
 
@@ -717,7 +717,7 @@ public class DouyinSourceAdapter implements VendorAdapter {
             final Timeout timeout) {
         final var rule = services.policies().require(Protocol.HTTPS);
         return new ReplayGuard(services.replayCache()).register(
-                spaceId,
+                tenantId,
                 Protocol.HTTPS,
                 MINI_AUTHORITY,
                 MINI_CODE_PURPOSE,
