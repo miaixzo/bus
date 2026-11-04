@@ -39,13 +39,13 @@ public class RepositoryFile implements Serializable {
     private static final long serialVersionUID = 2551185313931L;
 
     /**
-     * The file name value.
+     * File name only, Ex. class.rb.
      */
-    private String fileName; // file name only, Ex. class.rb
+    private String fileName;
     /**
-     * The file path value.
+     * Full path to file. Ex. lib/class.rb.
      */
-    private String filePath; // full path to file. Ex. lib/class.rb
+    private String filePath;
     /**
      * The size value.
      */

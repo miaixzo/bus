@@ -1057,8 +1057,6 @@ public class UserApi extends AbstractApi {
         delete(Response.Status.NO_CONTENT, null, "personal_access_tokens", tokenId);
     }
 
-    // as per https://docs.gitlab.com/ee/api/README.html#impersonation-tokens, impersonation tokens are a type of
-    // personal access token
     /**
      * Creates a personal access token or an impersonation token using their shared request format.
      *

@@ -51,9 +51,8 @@ public class SystemHookManager implements HookManager {
      */
     private final JacksonJson jacksonJson = new JacksonJson();
 
-    // Collection of objects listening for System Hook events.
     /**
-     * The system hook listeners value.
+     * Collection of objects listening for System Hook events.
      */
     private final List<SystemHookListener> systemHookListeners = new CopyOnWriteArrayList<SystemHookListener>();
 

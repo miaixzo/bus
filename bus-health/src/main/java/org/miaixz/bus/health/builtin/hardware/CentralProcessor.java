@@ -906,7 +906,6 @@ public interface CentralProcessor {
     @Immutable
     class ProcessorIdentifier {
 
-        // Provided in constructor
         /**
          * The cpuVendor value.
          */

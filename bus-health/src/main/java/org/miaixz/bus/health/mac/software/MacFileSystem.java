@@ -86,13 +86,11 @@ public class MacFileSystem extends AbstractFileSystem {
     protected static final List<PathMatcher> FS_VOLUME_INCLUDES = Builder
             .loadAndParseFileSystemConfig(Builder._MAC_FS_VOLUME_INCLUDES);
 
-    // Regexp matcher for /dev/disk0s2 etc.
     /**
-     * The LOCAL_DISK constant.
+     * Regexp matcher for /dev/disk0s2 etc.
      */
     protected static final Pattern LOCAL_DISK = Pattern.compile("/dev/disk\\d+(s\\d+)?");
 
-    // User specifiable flags.
     /**
      * The MNT_RDONLY constant.
      */

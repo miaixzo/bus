@@ -299,8 +299,6 @@ public class ImageAnalyzer {
         }
     }
 
-    // Private methods
-
     /**
      * Creates the shape mask.
      *

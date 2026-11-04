@@ -122,14 +122,13 @@ public class TiledAlgorithm {
     }
 
     /**
-     * Processes the tile impl.
+     * Placeholder for per-tile processing. The current implementation leaves both matrices unchanged.
      *
      * @param tileInput  the tile input.
      * @param tileOutput the tile output.
      */
     private void processTileImpl(Mat tileInput, Mat tileOutput) {
-        // TODO Auto-generated method stub
-
+        // No tile processing is currently implemented.
     }
 
     /**

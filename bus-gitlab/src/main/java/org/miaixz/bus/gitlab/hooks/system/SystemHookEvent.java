@@ -114,9 +114,6 @@ public interface SystemHookEvent extends Serializable {
 
 }
 
-// All of the following class definitions are needed to make the above work.
-// Jackson has a tough time mapping the same class to multiple IDs
-
 /**
  * The create project system hook event class.
  *

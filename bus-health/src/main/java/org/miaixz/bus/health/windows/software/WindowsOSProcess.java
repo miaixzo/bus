@@ -83,9 +83,8 @@ public class WindowsOSProcess extends AbstractOSProcess {
      */
     private static final boolean IS_WINDOWS7_OR_GREATER = VersionHelpers.IsWindows7OrGreater();
 
-    // track the OperatingSystem object that created this
     /**
-     * The os value.
+     * Track the OperatingSystem object that created this.
      */
     private final WindowsOperatingSystem os;
 

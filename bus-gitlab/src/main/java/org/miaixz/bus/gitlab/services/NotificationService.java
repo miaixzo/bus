@@ -369,10 +369,6 @@ public abstract class NotificationService implements Serializable {
         this.active = active;
     }
 
-    // *******************************************************************************
-    // The following methods can be used to configure the notification service
-    // *******************************************************************************
-
     /**
      * Returns the commit events.
      *

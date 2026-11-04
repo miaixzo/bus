@@ -54,22 +54,19 @@ final class LinuxGraphicsCard extends AbstractGraphicsCard {
      */
     private static final String DRM_PATH = "/sys/class/drm/";
 
-    // sysfs path for this card's device directory, e.g. /sys/class/drm/card0/device
-    // Empty string if this card has no associated DRM sysfs entry.
     /**
-     * The drmDevicePath value.
+     * Sysfs path for this card's device directory, e.g. /sys/class/drm/card0/device Empty string if this card has no
+     * associated DRM sysfs entry.
      */
     private final String drmDevicePath;
 
-    // Driver name detected from the sysfs driver symlink, e.g. "amdgpu", "i915", "xe", "nvidia"
     /**
-     * The driverName value.
+     * Driver name detected from the sysfs driver symlink, e.g. "amdgpu", "i915", "xe", "nvidia".
      */
     private final String driverName;
 
-    // PCI bus ID string for NVML correlation, e.g. "0000:01:00.0". Empty if unknown.
     /**
-     * The pciBusId value.
+     * PCI bus ID string for NVML correlation, e.g. "0000:01:00.0". Empty if unknown.
      */
     private final String pciBusId;
 
@@ -353,10 +350,10 @@ final class LinuxGraphicsCard extends AbstractGraphicsCard {
         return findDrmInfo(pciSlot, DRM_PATH);
     }
 
-    // Slower, use as backup
-
     /**
      * Finds the sysfs DRM device path, driver name, and PCI bus ID for a GPU.
+     * <p>
+     * Slower, use as backup.
      *
      * @param pciSlot the PCI slot address, or {@code null} to use first-match
      * @param drmPath the base DRM sysfs directory path

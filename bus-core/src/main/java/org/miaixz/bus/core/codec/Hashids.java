@@ -97,7 +97,6 @@ public class Hashids implements Encoder<long[], String>, Decoder<String, long[]>
     private static final char[] DEFAULT_SEPARATORS = { 'c', 'f', 'h', 'i', 's', 't', Symbol.C_U, 'C', 'F', 'H', 'I',
             'S', 'T', 'U' };
 
-    // algorithm properties
     /**
      * The effective alphabet used for encoding and decoding after initialization and filtering.
      */

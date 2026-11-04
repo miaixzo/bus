@@ -53,20 +53,14 @@ import org.miaixz.bus.logger.Logger;
 @ThreadSafe
 public class NvmlKit {
 
-    // -------------------------------------------------------------------------
-    // Library loading (holder pattern — loads the .dll/.so once)
-    // -------------------------------------------------------------------------
-
     /**
-     * The DEVICE_BUS_IDS constant.
+     * Caches stable PCI bus identifiers discovered during device enumeration. Native pointer handles are not cached
+     * because they are valid only within one NVML initialization scope.
      */
     private static final AtomicReference<Set<String>> DEVICE_BUS_IDS = new AtomicReference<>(Collections.emptySet());
 
-    // Lazy device enumeration state — written once on first successful enumeration, read-only thereafter.
-    // Stores PCI bus ID strings (stable identifiers) rather than Pointer handles, which are only valid
-    // within a single nvmlInit/nvmlShutdown scope.
     /**
-     * The devicesEnumerated value.
+     * Whether a successful device enumeration has completed.
      */
     private static volatile boolean devicesEnumerated = false;
 
@@ -95,10 +89,6 @@ public class NvmlKit {
         Logger.debug(false, "Health", "nvmlInit_v2 failed with code {}", ret);
         return false;
     }
-
-    // -------------------------------------------------------------------------
-    // NVML lifecycle management
-    // -------------------------------------------------------------------------
 
     /**
      * Calls {@code nvmlShutdown}, decrementing the same internal reference count that {@link #nvmlInit()} incremented.
@@ -275,10 +265,6 @@ public class NvmlKit {
     public static boolean isAvailable() {
         return Holder.LIBRARY_LOADED;
     }
-
-    // -------------------------------------------------------------------------
-    // Public API
-    // -------------------------------------------------------------------------
 
     /**
      * Finds the stable PCI bus ID string for the NVML device whose bus ID contains the given fragment. The match is

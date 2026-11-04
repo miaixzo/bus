@@ -257,8 +257,6 @@ public class Page<T> extends ArrayList<T> {
         return hasNextPage() ? getPageNo() + 1 : 0;
     }
 
-    // ==================== Navigation Pages ====================
-
     /**
      * Gets navigation page numbers for UI rendering with default size (8).
      *
@@ -336,10 +334,10 @@ public class Page<T> extends ArrayList<T> {
         return pages.length > 0 ? pages[pages.length - 1] : 1;
     }
 
-    // ==================== Object Methods ====================
-
     /**
      * Compares this page result with another object.
+     * <p>
+     * ==================== Object Methods ====================.
      *
      * @param obj the object to compare with this instance
      * @return {@code true} when both objects are equal
@@ -387,10 +385,10 @@ public class Page<T> extends ArrayList<T> {
         return String.format("Page %d of %d containing %s instances", getPageNo(), getPages(), contentType);
     }
 
-    // ==================== Builder ====================
-
     /**
      * Builder for creating Page instances.
+     * <p>
+     * ==================== Builder ====================.
      *
      * @param <T> the type of content
      * @author Kimi Liu

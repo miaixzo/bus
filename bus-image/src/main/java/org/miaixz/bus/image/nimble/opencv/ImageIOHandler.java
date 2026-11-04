@@ -261,8 +261,6 @@ public class ImageIOHandler {
         return createThumbnailFromSize(sourceMat, targetSize);
     }
 
-    // Private methods with minimal or no documentation
-
     /**
      * Executes the handle image conversion operation.
      *
@@ -433,10 +431,10 @@ public class ImageIOHandler {
                 : new Dimension(originalWidth, originalHeight);
     }
 
-    // ======= Validation methods =======
-
     /**
      * Validates the readable path.
+     * <p>
+     * ======= Validation methods =======.
      *
      * @param path the path.
      */

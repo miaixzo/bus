@@ -40,9 +40,8 @@ import org.miaixz.bus.health.unix.solaris.KstatKit.KstatChain;
 @ThreadSafe
 public class SolarisPowerSource extends AbstractPowerSource {
 
-    // One-time lookup to see which kstat module to use
     /**
-     * The KSTAT_BATT_MOD constant.
+     * One-time lookup to see which kstat module to use.
      */
     private static final String[] KSTAT_BATT_MOD = { null, "battery", "acpi_drv" };
 

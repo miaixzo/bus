@@ -66,21 +66,18 @@ final class LinuxGpuStats implements GpuStats {
      */
     private final String cardName;
 
-    // Cached at construction; empty string if not found
     /**
-     * The hwmonPath value.
+     * Cached at construction; empty string if not found.
      */
     private final String hwmonPath;
 
-    // Cached Intel gt0 path
     /**
-     * The gt0Path value.
+     * Cached Intel gt0 path.
      */
     private final String gt0Path;
 
-    // Cached NVML device id; null means not yet resolved, empty string means unavailable
     /**
-     * The nvmlDeviceId value.
+     * Cached NVML device id; null means not yet resolved, empty string means unavailable.
      */
     private String nvmlDeviceId;
 

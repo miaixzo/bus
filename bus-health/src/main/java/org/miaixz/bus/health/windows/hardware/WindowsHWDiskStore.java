@@ -88,16 +88,13 @@ public class WindowsHWDiskStore extends AbstractHWDiskStore {
      */
     private static final Pattern DEVICE_ID = Pattern.compile(".*\\.DeviceID=\"(.*)\"");
 
-    // A reasonable size for the buffer to accommodate the largest possible volume
-    // GUID path is 50 characters.
     /**
-     * The GUID_BUFSIZE constant.
+     * A reasonable size for the buffer to accommodate the largest possible volume GUID path is 50 characters.
      */
     private static final int GUID_BUFSIZE = 100;
 
-    // Windows allows up to 32 characters for NTFS volume labels; +1 for null terminator
     /**
-     * The LABEL_BUFSIZE constant.
+     * Windows allows up to 32 characters for NTFS volume labels; +1 for null terminator.
      */
     private static final int LABEL_BUFSIZE = 33;
 

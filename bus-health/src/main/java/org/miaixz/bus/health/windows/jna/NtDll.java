@@ -124,9 +124,9 @@ public interface NtDll extends com.sun.jna.platform.win32.NtDll {
         public Pointer[] pad2 = new Pointer[3];
 
         /**
-         * The ProcessParameters value.
+         * Pointer to the native {@code RTL_USER_PROCESS_PARAMETERS} structure.
          */
-        public Pointer ProcessParameters; // RTL_USER_PROCESS_PARAMETERS
+        public Pointer ProcessParameters;
 
         /**
          * Creates a new PEB instance.

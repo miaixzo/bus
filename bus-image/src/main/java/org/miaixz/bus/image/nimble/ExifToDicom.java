@@ -53,7 +53,6 @@ import org.miaixz.bus.image.galaxy.data.VR;
  */
 public final class ExifToDicom {
 
-    // IFD0
     /**
      * EXIF tag identifier for image description.
      */
@@ -70,7 +69,6 @@ public final class ExifToDicom {
      * EXIF tag identifier for software.
      */
     static final int SOFTWARE = 0x0131;
-    // Exif sub-IFD
     /**
      * EXIF tag identifier for exif version.
      */
@@ -119,7 +117,6 @@ public final class ExifToDicom {
      * EXIF tag identifier for lens serial number.
      */
     static final int LENS_SERIAL_NUMBER = 0xA435;
-    // GPS sub-IFD
     /**
      * EXIF tag identifier for gps time stamp.
      */

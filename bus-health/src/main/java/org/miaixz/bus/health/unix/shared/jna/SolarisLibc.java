@@ -112,49 +112,49 @@ public interface SolarisLibc extends CLibrary {
     class SolarisUtmpx extends Structure {
 
         /**
-         * The ut_user value.
+         * User login name.
          */
-        public byte[] ut_user = new byte[UTX_USERSIZE]; // user login name
+        public byte[] ut_user = new byte[UTX_USERSIZE];
         /**
-         * The ut_id value.
+         * Etc/inittab id (usually line #).
          */
-        public byte[] ut_id = new byte[UTX_IDSIZE]; // etc/inittab id (usually line #)
+        public byte[] ut_id = new byte[UTX_IDSIZE];
         /**
-         * The ut_line value.
+         * Device name.
          */
-        public byte[] ut_line = new byte[UTX_LINESIZE]; // device name
+        public byte[] ut_line = new byte[UTX_LINESIZE];
         /**
-         * The ut_pid value.
+         * Process id.
          */
-        public int ut_pid; // process id
+        public int ut_pid;
         /**
-         * The ut_type value.
+         * Type of entry.
          */
-        public short ut_type; // type of entry
+        public short ut_type;
         /**
-         * The ut_exit value.
+         * Process termination/exit status.
          */
-        public Exit_status ut_exit; // process termination/exit status
+        public Exit_status ut_exit;
         /**
-         * The ut_tv value.
+         * Time entry was made.
          */
-        public Timeval ut_tv; // time entry was made
+        public Timeval ut_tv;
         /**
-         * The ut_session value.
+         * Session ID, used for windowing.
          */
-        public int ut_session; // session ID, used for windowing
+        public int ut_session;
         /**
-         * The pad value.
+         * Reserved for future use.
          */
-        public int[] pad = new int[5]; // reserved for future use
+        public int[] pad = new int[5];
         /**
-         * The ut_syslen value.
+         * Significant length of ut_host including terminating null.
          */
-        public short ut_syslen; // significant length of ut_host including terminating null
+        public short ut_syslen;
         /**
-         * The ut_host value.
+         * Host name.
          */
-        public byte[] ut_host = new byte[UTX_HOSTSIZE]; // host name
+        public byte[] ut_host = new byte[UTX_HOSTSIZE];
 
         /**
          * Creates a new SolarisUtmpx instance.
@@ -177,13 +177,13 @@ public interface SolarisLibc extends CLibrary {
     class Exit_status extends Structure {
 
         /**
-         * The e_termination value.
+         * Process termination status.
          */
-        public short e_termination; // Process termination status
+        public short e_termination;
         /**
-         * The e_exit value.
+         * Process exit status.
          */
-        public short e_exit; // Process exit status
+        public short e_exit;
 
         /**
          * Creates a new Exit_status instance.
@@ -207,13 +207,13 @@ public interface SolarisLibc extends CLibrary {
     class Timeval extends Structure {
 
         /**
-         * The tv_sec value.
+         * Seconds.
          */
-        public NativeLong tv_sec; // seconds
+        public NativeLong tv_sec;
         /**
-         * The tv_usec value.
+         * Microseconds.
          */
-        public NativeLong tv_usec; // microseconds
+        public NativeLong tv_usec;
 
         /**
          * Creates a new Timeval instance.
@@ -232,153 +232,153 @@ public interface SolarisLibc extends CLibrary {
     class SolarisPsInfo {
 
         /**
-         * The pr_flag value.
+         * Process flags (DEPRECATED; do not use).
          */
-        public int pr_flag; // process flags (DEPRECATED; do not use)
+        public int pr_flag;
         /**
-         * The pr_nlwp value.
+         * Number of active lwps in the process.
          */
-        public int pr_nlwp; // number of active lwps in the process
+        public int pr_nlwp;
         /**
-         * The pr_pid value.
+         * Unique process id.
          */
-        public int pr_pid; // unique process id
+        public int pr_pid;
         /**
-         * The pr_ppid value.
+         * Process id of parent.
          */
-        public int pr_ppid; // process id of parent
+        public int pr_ppid;
         /**
-         * The pr_pgid value.
+         * Pid of process group leader.
          */
-        public int pr_pgid; // pid of process group leader
+        public int pr_pgid;
         /**
-         * The pr_sid value.
+         * Session id.
          */
-        public int pr_sid; // session id
+        public int pr_sid;
         /**
-         * The pr_uid value.
+         * Real user id.
          */
-        public int pr_uid; // real user id
+        public int pr_uid;
         /**
-         * The pr_euid value.
+         * Effective user id.
          */
-        public int pr_euid; // effective user id
+        public int pr_euid;
         /**
-         * The pr_gid value.
+         * Real group id.
          */
-        public int pr_gid; // real group id
+        public int pr_gid;
         /**
-         * The pr_egid value.
+         * Effective group id.
          */
-        public int pr_egid; // effective group id
+        public int pr_egid;
         /**
-         * The pr_addr value.
+         * Address of process.
          */
-        public Pointer pr_addr; // address of process
+        public Pointer pr_addr;
         /**
-         * The pr_size value.
+         * Size of process image in Kbytes.
          */
-        public size_t pr_size; // size of process image in Kbytes
+        public size_t pr_size;
         /**
-         * The pr_rssize value.
+         * Resident set size in Kbytes.
          */
-        public size_t pr_rssize; // resident set size in Kbytes
+        public size_t pr_rssize;
         /**
-         * The pr_rssizepriv value.
+         * Resident set size of private mappings.
          */
-        public size_t pr_rssizepriv; // resident set size of private mappings
+        public size_t pr_rssizepriv;
         /**
-         * The pr_ttydev value.
+         * Controlling tty device (or PRNODEV).
          */
-        public NativeLong pr_ttydev; // controlling tty device (or PRNODEV)
-        // The following percent numbers are 16-bit binary
-        // fractions [0 .. 1] with the binary point to the
-        // right of the high-order bit (1.0 == 0x8000)
+        public NativeLong pr_ttydev;
         /**
-         * The pr_pctcpu value.
+         * The following percent numbers are 16-bit binary fractions [0 .. 1] with the binary point to the right of the
+         * high-order bit (1.0 == 0x8000).
+         * <p>
+         * % of recent cpu time used by all lwps.
          */
-        public short pr_pctcpu; // % of recent cpu time used by all lwps
+        public short pr_pctcpu;
         /**
-         * The pr_pctmem value.
+         * % of system memory used by process.
          */
-        public short pr_pctmem; // % of system memory used by process
+        public short pr_pctmem;
         /**
-         * The pr_start value.
+         * Process start time, from the epoch.
          */
-        public Timestruc pr_start; // process start time, from the epoch
+        public Timestruc pr_start;
         /**
-         * The pr_time value.
+         * Usr+sys cpu time for this process.
          */
-        public Timestruc pr_time; // usr+sys cpu time for this process
+        public Timestruc pr_time;
         /**
-         * The pr_ctime value.
+         * Usr+sys cpu time for reaped children.
          */
-        public Timestruc pr_ctime; // usr+sys cpu time for reaped children
+        public Timestruc pr_ctime;
         /**
-         * The pr_fname value.
+         * Name of exec'ed file.
          */
-        public byte[] pr_fname = new byte[PRFNSZ]; // name of exec'ed file
+        public byte[] pr_fname = new byte[PRFNSZ];
         /**
-         * The pr_psargs value.
+         * Initial characters of arg list.
          */
-        public byte[] pr_psargs = new byte[PRARGSZ]; // initial characters of arg list
+        public byte[] pr_psargs = new byte[PRARGSZ];
         /**
-         * The pr_wstat value.
+         * If zombie, the wait() status.
          */
-        public int pr_wstat; // if zombie, the wait() status
+        public int pr_wstat;
         /**
-         * The pr_argc value.
+         * Initial argument count.
          */
-        public int pr_argc; // initial argument count
+        public int pr_argc;
         /**
-         * The pr_argv value.
+         * Address of initial argument vector.
          */
-        public Pointer pr_argv; // address of initial argument vector
+        public Pointer pr_argv;
         /**
-         * The pr_envp value.
+         * Address of initial environment vector.
          */
-        public Pointer pr_envp; // address of initial environment vector
+        public Pointer pr_envp;
         /**
-         * The pr_dmodel value.
+         * Data model of the process.
          */
-        public byte pr_dmodel; // data model of the process
+        public byte pr_dmodel;
         /**
          * The pr_pad2 value.
          */
         public byte[] pr_pad2 = new byte[3];
 
         /**
-         * The pr_taskid value.
+         * Task id.
          */
-        public int pr_taskid; // task id
+        public int pr_taskid;
         /**
-         * The pr_projid value.
+         * Project id.
          */
-        public int pr_projid; // project id
+        public int pr_projid;
         /**
-         * The pr_nzomb value.
+         * Number of zombie lwps in the process.
          */
-        public int pr_nzomb; // number of zombie lwps in the process
+        public int pr_nzomb;
         /**
-         * The pr_poolid value.
+         * Pool id.
          */
-        public int pr_poolid; // pool id
+        public int pr_poolid;
         /**
-         * The pr_zoneid value.
+         * Zone id.
          */
-        public int pr_zoneid; // zone id
+        public int pr_zoneid;
         /**
-         * The pr_contract value.
+         * Process contract id.
          */
-        public int pr_contract; // process contract id
+        public int pr_contract;
         /**
-         * The pr_filler value.
+         * 4 bytes reserved for future use.
          */
-        public int pr_filler; // 4 bytes reserved for future use
+        public int pr_filler;
         /**
-         * The pr_lwp value.
+         * Information for representative lwp.
          */
-        public SolarisLwpsInfo pr_lwp; // information for representative lwp
+        public SolarisLwpsInfo pr_lwp;
 
         /**
          * Creates a new SolarisPsInfo instance.
@@ -438,105 +438,105 @@ public interface SolarisLibc extends CLibrary {
     class SolarisLwpsInfo {
 
         /**
-         * The pr_flag value.
+         * Lwp flags (DEPRECATED; do not use).
          */
-        public int pr_flag; // lwp flags (DEPRECATED; do not use)
+        public int pr_flag;
         /**
-         * The pr_lwpid value.
+         * Lwp id.
          */
-        public int pr_lwpid; // lwp id
+        public int pr_lwpid;
         /**
-         * The pr_addr value.
+         * DEPRECATED was internal address of lwp.
          */
-        public Pointer pr_addr; // DEPRECATED was internal address of lwp
+        public Pointer pr_addr;
         /**
-         * The pr_wchan value.
+         * DEPRECATED was wait addr for sleeping lwp.
          */
-        public Pointer pr_wchan; // DEPRECATED was wait addr for sleeping lwp
+        public Pointer pr_wchan;
         /**
-         * The pr_stype value.
+         * Synchronization event type.
          */
-        public byte pr_stype; // synchronization event type
+        public byte pr_stype;
         /**
-         * The pr_state value.
+         * Numeric lwp state.
          */
-        public byte pr_state; // numeric lwp state
+        public byte pr_state;
         /**
-         * The pr_sname value.
+         * Printable character for pr_state.
          */
-        public byte pr_sname; // printable character for pr_state
+        public byte pr_sname;
         /**
-         * The pr_nice value.
+         * Nice for cpu usage.
          */
-        public byte pr_nice; // nice for cpu usage
+        public byte pr_nice;
         /**
-         * The pr_syscall value.
+         * System call number (if in syscall).
          */
-        public short pr_syscall; // system call number (if in syscall)
+        public short pr_syscall;
         /**
-         * The pr_oldpri value.
+         * Pre-SVR4, low value is high priority.
          */
-        public byte pr_oldpri; // pre-SVR4, low value is high priority
+        public byte pr_oldpri;
         /**
-         * The pr_cpu value.
+         * Pre-SVR4, cpu usage for scheduling.
          */
-        public byte pr_cpu; // pre-SVR4, cpu usage for scheduling
+        public byte pr_cpu;
         /**
-         * The pr_pri value.
+         * Priority, high value = high priority.
          */
-        public int pr_pri; // priority, high value = high priority
-        // The following percent numbers are 16-bit binary
-        // fractions [0 .. 1] with the binary point to the
-        // right of the high-order bit (1.0 == 0x8000)
+        public int pr_pri;
         /**
-         * The pr_pctcpu value.
+         * The following percent numbers are 16-bit binary fractions [0 .. 1] with the binary point to the right of the
+         * high-order bit (1.0 == 0x8000).
+         * <p>
+         * % of recent cpu time used by this lwp.
          */
-        public short pr_pctcpu; // % of recent cpu time used by this lwp
+        public short pr_pctcpu;
         /**
          * The pr_pad value.
          */
         public short pr_pad;
 
         /**
-         * The pr_start value.
+         * Lwp start time, from the epoch.
          */
-        public Timestruc pr_start; // lwp start time, from the epoch
+        public Timestruc pr_start;
         /**
-         * The pr_time value.
+         * Cpu time for this lwp.
          */
-        public Timestruc pr_time; // cpu time for this lwp
+        public Timestruc pr_time;
         /**
-         * The pr_clname value.
+         * Scheduling class name.
          */
-        public byte[] pr_clname = new byte[PRCLSZ]; // scheduling class name
+        public byte[] pr_clname = new byte[PRCLSZ];
         /**
-         * The pr_oldname value.
+         * Binary compatibility -- unused.
          */
-        public byte[] pr_oldname = new byte[PRFNSZ]; // binary compatibility -- unused
+        public byte[] pr_oldname = new byte[PRFNSZ];
         /**
-         * The pr_onpro value.
+         * Processor which last ran this lwp.
          */
-        public int pr_onpro; // processor which last ran this lwp
+        public int pr_onpro;
         /**
-         * The pr_bindpro value.
+         * Processor to which lwp is bound.
          */
-        public int pr_bindpro; // processor to which lwp is bound
+        public int pr_bindpro;
         /**
-         * The pr_bindpset value.
+         * Processor set to which lwp is bound.
          */
-        public int pr_bindpset; // processor set to which lwp is bound
+        public int pr_bindpset;
         /**
-         * The pr_lgrp value.
+         * Home lgroup.
          */
-        public int pr_lgrp; // home lgroup
+        public int pr_lgrp;
         /**
-         * The pr_last_onproc value.
+         * Timestamp of when thread last ran on a processor.
          */
-        public long pr_last_onproc; // Timestamp of when thread last ran on a processor
+        public long pr_last_onproc;
         /**
-         * The pr_name value.
+         * Name of system lwp.
          */
-        public byte[] pr_name = new byte[PRLNSZ]; // name of system lwp
+        public byte[] pr_name = new byte[PRLNSZ];
 
         /**
          * Creates a new SolarisLwpsInfo instance.
@@ -580,125 +580,125 @@ public interface SolarisLibc extends CLibrary {
     class SolarisPrUsage {
 
         /**
-         * The pr_lwpid value.
+         * Lwp id. 0: process or defunct.
          */
-        public int pr_lwpid; // lwp id. 0: process or defunct
+        public int pr_lwpid;
         /**
-         * The pr_count value.
+         * Number of contributing lwps.
          */
-        public int pr_count; // number of contributing lwps
+        public int pr_count;
         /**
-         * The pr_tstamp value.
+         * Current time stamp.
          */
-        public Timestruc pr_tstamp; // current time stamp
+        public Timestruc pr_tstamp;
         /**
-         * The pr_create value.
+         * Process/lwp creation time stamp.
          */
-        public Timestruc pr_create; // process/lwp creation time stamp
+        public Timestruc pr_create;
         /**
-         * The pr_term value.
+         * Process/lwp termination time stamp.
          */
-        public Timestruc pr_term; // process/lwp termination time stamp
+        public Timestruc pr_term;
         /**
-         * The pr_rtime value.
+         * Total lwp real (elapsed) time.
          */
-        public Timestruc pr_rtime; // total lwp real (elapsed) time
+        public Timestruc pr_rtime;
         /**
-         * The pr_utime value.
+         * User level cpu time.
          */
-        public Timestruc pr_utime; // user level cpu time
+        public Timestruc pr_utime;
         /**
-         * The pr_stime value.
+         * System call cpu time.
          */
-        public Timestruc pr_stime; // system call cpu time
+        public Timestruc pr_stime;
         /**
-         * The pr_ttime value.
+         * Other system trap cpu time.
          */
-        public Timestruc pr_ttime; // other system trap cpu time
+        public Timestruc pr_ttime;
         /**
-         * The pr_tftime value.
+         * Text page fault sleep time.
          */
-        public Timestruc pr_tftime; // text page fault sleep time
+        public Timestruc pr_tftime;
         /**
-         * The pr_dftime value.
+         * Data page fault sleep time.
          */
-        public Timestruc pr_dftime; // data page fault sleep time
+        public Timestruc pr_dftime;
         /**
-         * The pr_kftime value.
+         * Kernel page fault sleep time.
          */
-        public Timestruc pr_kftime; // kernel page fault sleep time
+        public Timestruc pr_kftime;
         /**
-         * The pr_ltime value.
+         * User lock wait sleep time.
          */
-        public Timestruc pr_ltime; // user lock wait sleep time
+        public Timestruc pr_ltime;
         /**
-         * The pr_slptime value.
+         * All other sleep time.
          */
-        public Timestruc pr_slptime; // all other sleep time
+        public Timestruc pr_slptime;
         /**
-         * The pr_wtime value.
+         * Wait-cpu (latency) time.
          */
-        public Timestruc pr_wtime; // wait-cpu (latency) time
+        public Timestruc pr_wtime;
         /**
-         * The pr_stoptime value.
+         * Stopped time.
          */
-        public Timestruc pr_stoptime; // stopped time
+        public Timestruc pr_stoptime;
         /**
-         * The filltime value.
+         * Filler for future expansion.
          */
-        public Timestruc[] filltime = new Timestruc[6]; // filler for future expansion
+        public Timestruc[] filltime = new Timestruc[6];
         /**
-         * The pr_minf value.
+         * Minor page faults.
          */
-        public NativeLong pr_minf; // minor page faults
+        public NativeLong pr_minf;
         /**
-         * The pr_majf value.
+         * Major page faults.
          */
-        public NativeLong pr_majf; // major page faults
+        public NativeLong pr_majf;
         /**
-         * The pr_nswap value.
+         * Swaps.
          */
-        public NativeLong pr_nswap; // swaps
+        public NativeLong pr_nswap;
         /**
-         * The pr_inblk value.
+         * Input blocks.
          */
-        public NativeLong pr_inblk; // input blocks
+        public NativeLong pr_inblk;
         /**
-         * The pr_oublk value.
+         * Output blocks.
          */
-        public NativeLong pr_oublk; // output blocks
+        public NativeLong pr_oublk;
         /**
-         * The pr_msnd value.
+         * Messages sent.
          */
-        public NativeLong pr_msnd; // messages sent
+        public NativeLong pr_msnd;
         /**
-         * The pr_mrcv value.
+         * Messages received.
          */
-        public NativeLong pr_mrcv; // messages received
+        public NativeLong pr_mrcv;
         /**
-         * The pr_sigs value.
+         * Signals received.
          */
-        public NativeLong pr_sigs; // signals received
+        public NativeLong pr_sigs;
         /**
-         * The pr_vctx value.
+         * Voluntary context switches.
          */
-        public NativeLong pr_vctx; // voluntary context switches
+        public NativeLong pr_vctx;
         /**
-         * The pr_ictx value.
+         * Involuntary context switches.
          */
-        public NativeLong pr_ictx; // involuntary context switches
+        public NativeLong pr_ictx;
         /**
-         * The pr_sysc value.
+         * System calls.
          */
-        public NativeLong pr_sysc; // system calls
+        public NativeLong pr_sysc;
         /**
-         * The pr_ioch value.
+         * Chars read and written.
          */
-        public NativeLong pr_ioch; // chars read and written
+        public NativeLong pr_ioch;
         /**
-         * The filler value.
+         * Filler for future expansion.
          */
-        public NativeLong[] filler = new NativeLong[10]; // filler for future expansion
+        public NativeLong[] filler = new NativeLong[10];
 
         /**
          * Creates a new SolarisPrUsage instance.
@@ -752,13 +752,13 @@ public interface SolarisLibc extends CLibrary {
     class Timestruc {
 
         /**
-         * The tv_sec value.
+         * Seconds.
          */
-        public NativeLong tv_sec; // seconds
+        public NativeLong tv_sec;
         /**
-         * The tv_nsec value.
+         * Nanoseconds.
          */
-        public NativeLong tv_nsec; // nanoseconds
+        public NativeLong tv_nsec;
 
         /**
          * Creates a new Timestruc instance.

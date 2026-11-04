@@ -798,12 +798,12 @@ public class MacHWDiskStore extends AbstractHWDiskStore {
         /**
          * Key for IOPropertyMatch.
          */
-        IO_PROPERTY_MATCH("IOPropertyMatch"), //
+        IO_PROPERTY_MATCH("IOPropertyMatch"),
 
         /**
          * Key for Statistics.
          */
-        STATISTICS("Statistics"), //
+        STATISTICS("Statistics"),
         /**
          * Key for Read Operations.
          */
@@ -815,7 +815,7 @@ public class MacHWDiskStore extends AbstractHWDiskStore {
         /**
          * Key for Total Time (Read).
          */
-        READ_TIME("Total Time (Read)"), //
+        READ_TIME("Total Time (Read)"),
         /**
          * Key for Write Operations.
          */
@@ -827,7 +827,7 @@ public class MacHWDiskStore extends AbstractHWDiskStore {
         /**
          * Key for Total Time (Write).
          */
-        WRITE_TIME("Total Time (Write)"), //
+        WRITE_TIME("Total Time (Write)"),
 
         /**
          * Key for BSD Unit.
@@ -840,7 +840,7 @@ public class MacHWDiskStore extends AbstractHWDiskStore {
         /**
          * Key for Whole.
          */
-        WHOLE(MacHWDiskStore.WHOLE), //
+        WHOLE(MacHWDiskStore.WHOLE),
 
         /**
          * Key for DAMediaName.
@@ -853,7 +853,7 @@ public class MacHWDiskStore extends AbstractHWDiskStore {
         /**
          * Key for DAMediaSize.
          */
-        DA_MEDIA_SIZE("DAMediaSize"), //
+        DA_MEDIA_SIZE("DAMediaSize"),
         /**
          * Key for DADeviceModel.
          */

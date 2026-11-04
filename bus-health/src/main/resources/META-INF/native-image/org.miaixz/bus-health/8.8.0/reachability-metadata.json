@@ -900,6 +900,10 @@
           ]
         },
         {
+          "name": "describeAssociativity",
+          "parameterTypes": []
+        },
+        {
           "name": "equals",
           "parameterTypes": [
             "java.lang.Object"
@@ -7021,12 +7025,6 @@
           "parameterTypes": []
         },
         {
-          "name": "s390Name",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
           "name": "queryProcessorCpuLoadTicks",
           "parameterTypes": []
         },
@@ -7055,6 +7053,12 @@
         {
           "name": "readTopologyFromUdev",
           "parameterTypes": []
+        },
+        {
+          "name": "s390Name",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
         }
       ]
     },
@@ -8694,6 +8698,15 @@
           "parameterTypes": []
         },
         {
+          "name": "parseConnections",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.util.List",
+            "java.util.Map",
+            "java.nio.ByteOrder"
+          ]
+        },
+        {
           "name": "parseHexColonHex",
           "parameterTypes": [
             "java.lang.String"
@@ -8702,6 +8715,14 @@
         {
           "name": "parseIpAddr",
           "parameterTypes": [
+            "java.lang.String",
+            "java.nio.ByteOrder"
+          ]
+        },
+        {
+          "name": "parseSnmpSection",
+          "parameterTypes": [
+            "java.util.List",
             "java.lang.String"
           ]
         },
@@ -8762,57 +8783,6 @@
         },
         {
           "name": "RtoMin"
-        }
-      ],
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "int"
-          ]
-        },
-        {
-          "name": "valueOf",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "values",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.health.linux.software.LinuxInternetProtocolStats$UdpStat",
-      "fields": [
-        {
-          "name": "IgnoredMulti"
-        },
-        {
-          "name": "InCsumErrors"
-        },
-        {
-          "name": "InDatagrams"
-        },
-        {
-          "name": "InErrors"
-        },
-        {
-          "name": "MemErrors"
-        },
-        {
-          "name": "NoPorts"
-        },
-        {
-          "name": "OutDatagrams"
-        },
-        {
-          "name": "RcvbufErrors"
-        },
-        {
-          "name": "SndbufErrors"
         }
       ],
       "methods": [
@@ -14273,10 +14243,6 @@
         {
           "name": "querySystemSerialNumber",
           "parameterTypes": []
-        },
-        {
-          "name": "readDmiDecode",
-          "parameterTypes": []
         }
       ]
     },
@@ -14297,10 +14263,6 @@
         },
         {
           "name": "getVersion",
-          "parameterTypes": []
-        },
-        {
-          "name": "readDmiDecode",
           "parameterTypes": []
         }
       ]
@@ -14526,12 +14488,6 @@
           ]
         },
         {
-          "name": "getPowerSource",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
           "name": "getPowerSources",
           "parameterTypes": []
         },
@@ -14572,10 +14528,6 @@
             "java.lang.String",
             "java.util.List"
           ]
-        },
-        {
-          "name": "getUsbDevices",
-          "parameterTypes": []
         },
         {
           "name": "getUsbDevices",
@@ -14737,14 +14689,6 @@
         },
         {
           "name": "getUDPv6Stats",
-          "parameterTypes": []
-        },
-        {
-          "name": "queryTcpstat",
-          "parameterTypes": []
-        },
-        {
-          "name": "queryUdpstat",
           "parameterTypes": []
         }
       ]
@@ -22862,6 +22806,68 @@
           ]
         },
         {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "long",
+            "java.lang.String",
+            "org.miaixz.bus.core.center.function.SupplierX"
+          ]
+        },
+        {
+          "name": "anyDiskTypeUnknown",
+          "parameterTypes": [
+            "java.lang.String[]"
+          ]
+        },
+        {
+          "name": "buildBackingStores",
+          "parameterTypes": [
+            "com.sun.jna.platform.win32.COM.WbemcliUtil$WmiResult",
+            "com.sun.jna.platform.win32.COM.WbemcliUtil$WmiResult",
+            "com.sun.jna.platform.win32.COM.WbemcliUtil$WmiResult",
+            "com.sun.jna.platform.win32.COM.WbemcliUtil$WmiResult",
+            "java.util.function.UnaryOperator"
+          ]
+        },
+        {
+          "name": "buildMsftDiskTypeMap",
+          "parameterTypes": [
+            "com.sun.jna.platform.win32.COM.WbemcliUtil$WmiResult"
+          ]
+        },
+        {
+          "name": "classifyDiskType",
+          "parameterTypes": [
+            "org.miaixz.bus.health.windows.hardware.WindowsHWDiskStore$StorageProperties",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "classifyDiskTypes",
+          "parameterTypes": [
+            "com.sun.jna.platform.win32.COM.WbemcliUtil$WmiResult",
+            "org.miaixz.bus.health.windows.hardware.WindowsHWDiskStore$StoragePropertiesResolver"
+          ]
+        },
+        {
+          "name": "diskTypeFromMsftMediaType",
+          "parameterTypes": [
+            "int",
+            "long"
+          ]
+        },
+        {
+          "name": "fillUnknownDiskTypes",
+          "parameterTypes": [
+            "java.lang.String[]",
+            "com.sun.jna.platform.win32.COM.WbemcliUtil$WmiResult",
+            "com.sun.jna.platform.win32.COM.WbemcliUtil$WmiResult"
+          ]
+        },
+        {
           "name": "getBackingStores",
           "parameterTypes": []
         },
@@ -22908,9 +22914,27 @@
           "parameterTypes": []
         },
         {
+          "name": "objectGuid",
+          "parameterTypes": [
+            "java.util.regex.Pattern",
+            "java.lang.String"
+          ]
+        },
+        {
           "name": "parseWindowsMediaType",
           "parameterTypes": [
             "java.lang.String"
+          ]
+        },
+        {
+          "name": "queryBackingStores",
+          "parameterTypes": []
+        },
+        {
+          "name": "queryBackingStores",
+          "parameterTypes": [
+            "org.miaixz.bus.health.windows.WmiQueryHandler",
+            "java.util.function.UnaryOperator"
           ]
         },
         {
@@ -22921,6 +22945,18 @@
         },
         {
           "name": "queryReadWriteStats",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "queryStorageProperties",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "queryVolumePathName",
           "parameterTypes": [
             "java.lang.String"
           ]
@@ -22946,6 +22982,19 @@
         {
           "name": "<init>",
           "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.health.windows.hardware.WindowsHWDiskStore$StorageProperties",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "int",
+            "boolean",
+            "java.lang.Boolean"
+          ]
         }
       ]
     },
