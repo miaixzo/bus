@@ -55,18 +55,13 @@ import org.miaixz.bus.logger.Logger;
 @ThreadSafe
 public class AdlKit {
 
-    // -------------------------------------------------------------------------
-    // Library loading (holder pattern — loads the .dll once)
-    // -------------------------------------------------------------------------
-
     /**
      * The ENUM_LOCK constant.
      */
     private static final Object ENUM_LOCK = new Object();
 
-    // Lazy adapter enumeration state — written once, read-only thereafter
     /**
-     * The BUS_TO_INDEX constant.
+     * Lazy adapter enumeration state — written once, read-only thereafter.
      */
     private static final AtomicReference<Map<Integer, Integer>> BUS_TO_INDEX = new AtomicReference<>(
             Collections.emptyMap());
@@ -103,10 +98,6 @@ public class AdlKit {
         Logger.debug(false, "Health", "ADL2_Main_Control_Create failed with code {}", ret);
         return null;
     }
-
-    // -------------------------------------------------------------------------
-    // ADL lifecycle management
-    // -------------------------------------------------------------------------
 
     /**
      * Calls {@code ADL2_Main_Control_Destroy}, decrementing the same internal reference count that {@link #adlInit()}
@@ -265,10 +256,6 @@ public class AdlKit {
     public static boolean isAvailable() {
         return Holder.LIBRARY_LOADED;
     }
-
-    // -------------------------------------------------------------------------
-    // Public API
-    // -------------------------------------------------------------------------
 
     /**
      * Finds the ADL adapter index for the given PCI bus number.
@@ -432,11 +419,10 @@ public class AdlKit {
          */
         static final boolean LIBRARY_LOADED;
 
-        // Strong reference prevents GC of the callback while ADL holds a native function pointer to it.
-        // Uses raw Pointer (not Memory) because ADL frees the native allocation directly via C free().
-        // Memory's destructor would double-free the same address.
         /**
-         * The MALLOC_CB constant.
+         * Strong reference prevents GC of the callback while ADL holds a native function pointer to it. Uses raw
+         * Pointer (not Memory) because ADL frees the native allocation directly via C free(). Memory's destructor would
+         * double-free the same address.
          */
         static final Adl.AdlMallocCallback MALLOC_CB;
 

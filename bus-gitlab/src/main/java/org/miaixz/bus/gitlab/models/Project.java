@@ -4397,8 +4397,6 @@ public class Project implements Serializable {
         return this;
     }
 
-    // Enum for the merge_method of the Project instance.
-
     /**
      * Returns the link by name.
      *

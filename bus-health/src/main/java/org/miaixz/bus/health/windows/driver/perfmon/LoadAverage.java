@@ -42,9 +42,8 @@ public class LoadAverage {
             // 1-, 5-, and 15-minute exponential smoothing weight
             Math.exp(-5d / 60d), Math.exp(-5d / 300d), Math.exp(-5d / 900d) };
 
-    // Daemon thread for Load Average
     /**
-     * The loadAvgThread value.
+     * Daemon thread for Load Average.
      */
     private static Thread loadAvgThread = null;
 

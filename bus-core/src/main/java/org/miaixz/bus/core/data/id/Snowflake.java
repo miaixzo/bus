@@ -98,9 +98,9 @@ public class Snowflake implements Serializable {
     private static final long TIMESTAMP_LEFT_SHIFT = SEQUENCE_BITS + WORKER_ID_BITS + DATA_CENTER_ID_BITS;
 
     /**
-     * Sequence mask, used to limit the maximum sequence value to not exceed 4095.
+     * Mask for the 12-bit per-millisecond sequence ({@code 4095}).
      */
-    private static final long SEQUENCE_MASK = ~(-1L << SEQUENCE_BITS);// 4095
+    private static final long SEQUENCE_MASK = ~(-1L << SEQUENCE_BITS);
 
     /**
      * The start timestamp.

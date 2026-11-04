@@ -112,7 +112,7 @@ public class Jpg2Dcm {
     /**
      * The maximum length for each fragment of the encapsulated pixel data.
      */
-    private long fragmentLength = 4294967294L; // 2^32-2;
+    private long fragmentLength = 4294967294L;
 
     /**
      * Constructs a new Jpg2Dcm instance.

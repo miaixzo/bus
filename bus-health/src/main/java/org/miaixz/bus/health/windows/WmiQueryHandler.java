@@ -52,9 +52,8 @@ public class WmiQueryHandler {
      */
     private static final int globalTimeout = Builder.get(Builder._WMI_TIMEOUT, -1);
 
-    // Factory to create this or a subclass
     /**
-     * The customClass value.
+     * Factory to create this or a subclass.
      */
     private static Class<? extends WmiQueryHandler> customClass = null;
 
@@ -64,27 +63,23 @@ public class WmiQueryHandler {
         }
     }
 
-    // Cache failed wmi classes
     /**
-     * The failedWmiClassNames value.
+     * Cache failed wmi classes.
      */
     private final Set<String> failedWmiClassNames = Collections.newSetFromMap(new ConcurrentHashMap<>());
 
-    // Timeout for WMI queries
     /**
-     * The wmiTimeout value.
+     * Timeout for WMI queries.
      */
     private volatile int wmiTimeout = globalTimeout;
 
-    // Preferred threading model
     /**
-     * The comThreading value.
+     * Preferred threading model.
      */
     private int comThreading = Ole32.COINIT_MULTITHREADED;
 
-    // Track initialization of Security
     /**
-     * The securityInitialized value.
+     * Track initialization of Security.
      */
     private volatile boolean securityInitialized = false;
 

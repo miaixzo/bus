@@ -100,21 +100,18 @@ final class WindowsGpuStats implements GpuStats {
      */
     private boolean closed;
 
-    // Cached device lookups; null = not yet resolved, empty = unavailable
     /**
-     * The cachedNvmlDevice value.
+     * Cached device lookups; null = not yet resolved, empty = unavailable.
      */
     private String cachedNvmlDevice;
 
-    // Integer.MIN_VALUE = not yet resolved, -1 = unavailable
     /**
-     * The cachedAdlIndex value.
+     * Integer.MIN_VALUE = not yet resolved, -1 = unavailable.
      */
     private int cachedAdlIndex = Integer.MIN_VALUE;
 
-    // Previous tick snapshot for the PDH-based usage fallback; null = not yet sampled
     /**
-     * The previousUsageTicks value.
+     * Previous tick snapshot for the PDH-based usage fallback; null = not yet sampled.
      */
     private GpuTicks previousUsageTicks;
 

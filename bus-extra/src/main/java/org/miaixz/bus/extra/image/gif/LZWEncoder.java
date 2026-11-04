@@ -65,19 +65,23 @@ class LZWEncoder {
     /**
      * The current number of bits per code.
      */
-    int n_bits; // number of bits/code
+    int n_bits;
     /**
-     * The user-settable maximum number of bits per code.
+     * Maximum number of bits per LZW code.
      */
-    int maxbits = BITS; // user settable max # bits/code
+    int maxbits = BITS;
     /**
      * The maximum code for the current number of bits.
+     * <p>
+     * Maximum code, given n_bits.
      */
-    int maxcode; // maximum code, given n_bits
+    int maxcode;
     /**
      * The maximum possible code, which should never be generated.
+     * <p>
+     * Should NEVER generate this code.
      */
-    int maxmaxcode = 1 << BITS; // should NEVER generate this code
+    int maxmaxcode = 1 << BITS;
     /**
      * The hash table for LZW encoding.
      */
@@ -89,13 +93,13 @@ class LZWEncoder {
     int[] codetab = new int[HSIZE];
 
     /**
-     * The hash table size, for dynamic sizing.
+     * Hash table size used by the LZW encoder.
      */
-    int hsize = HSIZE; // for dynamic table sizing
+    int hsize = HSIZE;
     /**
      * The first unused entry in the code table.
      */
-    int free_ent = 0; // first unused entry
+    int free_ent = 0;
     /**
      * Flag to indicate if the table should be cleared.
      */

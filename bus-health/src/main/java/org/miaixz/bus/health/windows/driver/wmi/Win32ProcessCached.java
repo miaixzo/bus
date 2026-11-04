@@ -46,9 +46,8 @@ public class Win32ProcessCached {
      */
     private static final SupplierX<Win32ProcessCached> INSTANCE = Memoizer.memoize(Win32ProcessCached::createInstance);
 
-    // Use a map to cache command line queries
     /**
-     * The commandLineCache value.
+     * Use a map to cache command line queries.
      */
     @GuardedBy("commandLineCacheLock")
     private final Map<Integer, Pair<Long, String>> commandLineCache = new HashMap<>();

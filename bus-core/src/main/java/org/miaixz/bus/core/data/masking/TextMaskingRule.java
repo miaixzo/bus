@@ -126,8 +126,6 @@ public class TextMaskingRule {
         this.maskChar = maskChar;
     }
 
-    // Getter and Setter methods
-
     /**
      * Gets the name of the rule.
      *

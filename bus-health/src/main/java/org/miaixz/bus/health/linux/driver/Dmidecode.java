@@ -44,43 +44,6 @@ public class Dmidecode {
         // No initialization required.
     }
 
-    // $ sudo dmidecode -t bios
-    // # dmidecode 2.11
-    // SMBIOS 2.4 present.
-    //
-    // Handle 0x0000, DMI type 0, 24 bytes
-    // BIOS Information
-    // Vendor: Phoenix Technologies LTD
-    // Version: 6.00
-    // Release Date: 07/02/2015
-    // Address: 0xEA5E0
-    // Runtime Size: 88608 bytes
-    // ROM Size: 64 kB
-    // Characteristics:
-    // ISA is supported
-    // PCI is supported
-    // PC Card (PCMCIA) is supported
-    // PNP is supported
-    // APM is supported
-    // BIOS is upgradeable
-    // BIOS shadowing is allowed
-    // ESCD support is available
-    // Boot from CD is supported
-    // Selectable boot is supported
-    // EDD is supported
-    // Print screen service is supported (int 5h)
-    // 8042 keyboard services are supported (int 9h)
-    // Serial services are supported (int 14h)
-    // Printer services are supported (int 17h)
-    // CGA/mono video services are supported (int 10h)
-    // ACPI is supported
-    // Smart battery is supported
-    // BIOS boot specification is supported
-    // Function key-initiated network boot is supported
-    // Targeted content distribution is supported
-    // BIOS Revision: 4.6
-    // Firmware Revision: 0.0
-
     /**
      * Query the serial number from dmidecode
      *

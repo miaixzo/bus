@@ -40,38 +40,40 @@ import org.miaixz.bus.health.Parsing;
 @ThreadSafe
 public class Iostat {
 
-    // Note uppercase E
     /**
-     * The IOSTAT_ER_DETAIL constant.
+     * Note uppercase E.
      */
     private static final String IOSTAT_ER_DETAIL = "iostat -Er";
 
-    // Note lowercase e
     /**
-     * The IOSTAT_ER constant.
+     * Note lowercase e.
      */
     private static final String IOSTAT_ER = "iostat -er";
 
-    // Sample output:
-    // errors
-    // device,s/w,h/w,trn,tot
-    // cmdk0,0,0,0,0
-    // sd0,0,0,0
-
-    // Note lowercase e
     /**
-     * The IOSTAT_ERN constant.
+     * Example input:
+     *
+     * <pre>
+     * Sample output:
+     * errors
+     * device,s/w,h/w,trn,tot
+     * cmdk0,0,0,0,0
+     * sd0,0,0,0
+     * Note lowercase e
+     * </pre>
      */
     private static final String IOSTAT_ERN = "iostat -ern";
 
-    // Sample output:
-    // errors
-    // s/w,h/w,trn,tot,device
-    // 0,0,0,0,c1d0
-    // 0,0,0,0,c1t1d0
-
     /**
-     * The DEVICE_HEADER constant.
+     * Example input:
+     *
+     * <pre>
+     * Sample output:
+     * errors
+     * s/w,h/w,trn,tot,device
+     * 0,0,0,0,c1d0
+     * 0,0,0,0,c1t1d0
+     * </pre>
      */
     private static final String DEVICE_HEADER = "device";
 

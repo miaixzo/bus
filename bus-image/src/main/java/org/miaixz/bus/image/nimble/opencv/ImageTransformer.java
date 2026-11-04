@@ -505,8 +505,6 @@ public class ImageTransformer {
         return overlay(source, imgOverlay, color);
     }
 
-    // Private methods
-
     /**
      * Validates the opacity.
      *

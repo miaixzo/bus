@@ -82,13 +82,13 @@ public class Expression implements Serializable, Cloneable {
     protected static final int YEAR = 6;
 
     /**
-     * Special value representing '*' in cron expressions.
+     * Sentinel representing the wildcard ({@code *}) in a cron field.
      */
-    protected static final int ALL_SPEC_INT = 99; // '*'
+    protected static final int ALL_SPEC_INT = 99;
     /**
-     * Special value representing '?' in cron expressions.
+     * Sentinel representing an unspecified value ({@code ?}) in a cron field.
      */
-    protected static final int NO_SPEC_INT = 98; // '?'
+    protected static final int NO_SPEC_INT = 98;
     /**
      * Integer wrapper for ALL_SPEC_INT.
      */

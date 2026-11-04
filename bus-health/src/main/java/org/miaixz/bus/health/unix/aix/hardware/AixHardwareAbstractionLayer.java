@@ -41,16 +41,14 @@ import org.miaixz.bus.health.unix.shared.hardware.UnixDisplay;
 @ThreadSafe
 public class AixHardwareAbstractionLayer extends AbstractHardwareAbstractionLayer {
 
-    // Memoized hardware listing
     /**
-     * The lscfg value.
+     * Memoized hardware listing.
      */
     private final SupplierX<List<String>> lscfg = Memoizer
             .memoize(Lscfg::queryAllDevices, Memoizer.defaultExpiration());
 
-    // Memoized disk stats to pass to disk object(s)
     /**
-     * The diskStats value.
+     * Memoized disk stats to pass to disk object(s).
      */
     private final SupplierX<perfstat_disk_t[]> diskStats = Memoizer
             .memoize(PerfstatDisk::queryDiskStats, Memoizer.defaultExpiration());

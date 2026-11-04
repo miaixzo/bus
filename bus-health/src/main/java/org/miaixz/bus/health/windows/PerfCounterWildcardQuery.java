@@ -51,9 +51,8 @@ public class PerfCounterWildcardQuery {
     private static final boolean PERF_DISABLE_ALL_ON_FAILURE = Builder
             .get(Builder._WINDOWS_PERF_DISABLE_ALL_ON_FAILURE, false);
 
-    // Use a thread safe set to cache failed pdh queries
     /**
-     * The FAILED_QUERY_CACHE constant.
+     * Use a thread safe set to cache failed pdh queries.
      */
     private static final Set<String> FAILED_QUERY_CACHE = ConcurrentHashMap.newKeySet();
 

@@ -76,9 +76,8 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
      */
     public static final boolean HAS_SYSCALL_GETTID;
 
-    // Package private for access from LinuxOSProcess
     /**
-     * The BOOTTIME constant.
+     * Package private for access from LinuxOSProcess.
      */
     static final long BOOTTIME;
 
@@ -132,9 +131,8 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
      */
     private static final String OS_NAME = Executor.getFirstAnswer("uname -o");
 
-    // PPID is 4th numeric value in proc pid stat; subtract 1 for 0-index
     /**
-     * The PPID_INDEX constant.
+     * Zero-based field index used to parse the parent process ID from proc stat records.
      */
     private static final int[] PPID_INDEX = { 3 };
 

@@ -114,8 +114,6 @@ public class SpelCalculator {
         return navigatePath(defaultValue, spel.trim());
     }
 
-    // ---- internal evaluation ------------------------------------------------
-
     /**
      * Evaluates an expression using the supplied variable bindings.
      *

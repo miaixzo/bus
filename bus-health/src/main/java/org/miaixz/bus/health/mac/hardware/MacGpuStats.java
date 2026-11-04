@@ -114,9 +114,8 @@ final class MacGpuStats implements GpuStats {
      */
     private final Pattern cardNamePattern;
 
-    // Non-null only on Apple Silicon
     /**
-     * The ioReportClient value.
+     * Non-null only on Apple Silicon.
      */
     private final IOReportClient ioReportClient;
 

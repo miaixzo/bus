@@ -44,9 +44,6 @@ public class Note implements Serializable {
      */
     private String attachment;
 
-    // This is not used because the GitLab example JSON is using a funny string for the MERGE_REQUEST notable_type
-    // ("Merge request").
-    // Once they fix the bug, the notableType field can be changed from String to NotableType.
     /**
      * The author value.
      */
@@ -88,7 +85,7 @@ public class Note implements Serializable {
     private Long noteableId;
 
     /**
-     * The noteable type value.
+     * Stores the noteable type as text, including values such as {@code Merge request}.
      */
     private String noteableType;
 
@@ -102,7 +99,6 @@ public class Note implements Serializable {
      */
     private Boolean system;
 
-    // Use String for noteableType until the constant is fixed in the GitLab API
     /**
      * The title value.
      */

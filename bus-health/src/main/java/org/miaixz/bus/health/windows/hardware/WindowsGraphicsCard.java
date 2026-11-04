@@ -98,28 +98,24 @@ public class WindowsGraphicsCard extends AbstractGraphicsCard {
      */
     private static final boolean IS_VISTA_OR_GREATER = VersionHelpers.IsWindowsVistaOrGreater();
 
-    // PDH instance prefix for this adapter's LUID, e.g. "luid_0x00000000_0x0001234_phys_0"
-    // Used to filter GPU Engine and GPU Adapter Memory counter instances.
     /**
-     * The luidPrefix value.
+     * PDH instance prefix for this adapter's LUID, e.g. "luid_0x00000000_0x0001234_phys_0" Used to filter GPU Engine
+     * and GPU Adapter Memory counter instances.
      */
     private final String luidPrefix;
 
-    // LHM hardware identifier for this GPU, e.g. "/gpu-nvidia/0". Empty if LHM is not available.
     /**
-     * The lhmParent value.
+     * LHM hardware identifier for this GPU, e.g. "/gpu-nvidia/0". Empty if LHM is not available.
      */
     private final String lhmParent;
 
-    // PCI bus number from DXGI, used to correlate with ADL. -1 if unknown.
     /**
-     * The pciBusNumber value.
+     * PCI bus number from DXGI, used to correlate with ADL. -1 if unknown.
      */
     private final int pciBusNumber;
 
-    // PCI bus ID string for NVML correlation, e.g. "0000:01:00.0". Empty if unknown.
     /**
-     * The pciBusId value.
+     * PCI bus ID string for NVML correlation, e.g. "0000:01:00.0". Empty if unknown.
      */
     private final String pciBusId;
 

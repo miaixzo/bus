@@ -155,16 +155,14 @@ public class LinuxHWDiskStore extends AbstractHWDiskStore {
      */
     private static final int SECTORSIZE = 512;
 
-    // Get a list of orders to pass to Parsing
     /**
-     * The UDEV_STAT_ORDERS constant.
+     * Get a list of orders to pass to Parsing.
      */
     private static final int[] UDEV_STAT_ORDERS = new int[UdevStat.values().length];
 
-    // There are at least 11 elements in udev stat output or sometimes 15. We want
-    // the rightmost 11 or 15 if there is leading text.
     /**
-     * The UDEV_STAT_LENGTH constant.
+     * There are at least 11 elements in udev stat output or sometimes 15. We want the rightmost 11 or 15 if there is
+     * leading text.
      */
     private static final int UDEV_STAT_LENGTH;
 
@@ -773,10 +771,11 @@ public class LinuxHWDiskStore extends AbstractHWDiskStore {
      */
     enum UdevStat {
 
-        // The parsing implementation in Parsing requires these to be declared
-        // in increasing order. Use 0-ordered index here
         /**
          * Completed read operations.
+         * <p>
+         * The parsing implementation in Parsing requires these to be declared in increasing order. Use 0-ordered index
+         * here.
          */
         READS(0),
         /**

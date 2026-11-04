@@ -56,9 +56,8 @@ public class GitLabApi implements AutoCloseable {
     private static final java.util.logging.Logger LOGGER = java.util.logging.Logger
             .getLogger(GitLabApi.class.getName());
 
-    // Used to keep track of RelevantExceptions on calls that return Optional<?>
     /**
-     * The optional exception map value.
+     * Used to keep track of RelevantExceptions on calls that return Optional&lt;?&gt;.
      */
     private static final Map<Integer, RelevantException> optionalExceptionMap = Collections
             .synchronizedMap(new WeakHashMap<>());

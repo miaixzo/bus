@@ -48,10 +48,9 @@ public class PsInfo {
      */
     private static final AixLibc LIBC = AixLibc.INSTANCE;
 
-    // AIX has multiple page size units, but for purposes of "pages" in perfstat,
-    // the docs specify 4KB pages so we hardcode this
     /**
-     * The PAGE_SIZE constant.
+     * AIX has multiple page size units, but for purposes of "pages" in perfstat, the docs specify 4KB pages so we
+     * hardcode this.
      */
     private static final long PAGE_SIZE = 4096L;
 

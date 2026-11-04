@@ -213,7 +213,6 @@ public class LinkedDeque<E extends Linked<E>> extends AbstractCollection<E> impl
         return (o instanceof Linked<?>) && contains((Linked<?>) o);
     }
 
-    // A fast-path containment check
     /**
      * Tests membership using the element's links and the deque head.
      *
@@ -482,7 +481,6 @@ public class LinkedDeque<E extends Linked<E>> extends AbstractCollection<E> impl
         return (o instanceof Linked<?>) && remove((E) o);
     }
 
-    // A fast-path removal
     /**
      * Removes a linked element when it belongs to this deque.
      *

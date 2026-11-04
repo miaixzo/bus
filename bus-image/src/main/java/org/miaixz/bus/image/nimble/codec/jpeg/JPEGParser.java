@@ -40,14 +40,14 @@ import org.miaixz.bus.image.nimble.codec.mp4.MP4FileType;
 public class JPEGParser implements XPEGParser {
 
     /**
-     * The jpeg2000 signature box value.
+     * Four-character code {@code jP  } identifying a JPEG 2000 signature box.
      */
-    private static final long JPEG2000_SIGNATURE_BOX = 0x6a5020200d0a870aL; // jP\040\040<CR><LF><0x87><LF>;
+    private static final long JPEG2000_SIGNATURE_BOX = 0x6a5020200d0a870aL;
 
     /**
-     * The contiguous codestream box value.
+     * Jp2c;
      */
-    private static final int CONTIGUOUS_CODESTREAM_BOX = 0x6a703263; // jp2c;
+    private static final int CONTIGUOUS_CODESTREAM_BOX = 0x6a703263;
 
     /**
      * The buf value.

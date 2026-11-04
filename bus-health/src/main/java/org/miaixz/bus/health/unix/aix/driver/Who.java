@@ -41,10 +41,13 @@ import org.miaixz.bus.health.Parsing;
 @ThreadSafe
 public class Who {
 
-    // sample format:
-    // system boot 2020-06-16 09:12
     /**
-     * The BOOT_FORMAT_AIX constant.
+     * Example input:
+     *
+     * <pre>
+     * sample format:
+     * system boot 2020-06-16 09:12
+     * </pre>
      */
     private static final Pattern BOOT_FORMAT_AIX = Pattern.compile("\\D+(\\d{4}-\\d{2}-\\d{2})\\s+(\\d{2}:\\d{2}).*");
 

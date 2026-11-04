@@ -130,9 +130,8 @@ public class PerfmonConsts {
      */
     public static final String WIN32_PERF_RAW_DATA_PERF_PROC_THREAD_WHERE_NOT_NAME_LIKE_TOTAL = "Win32_PerfRawData_PerfProc_Thread WHERE NOT Name LIKE \"%_Total\"";
 
-    // For Vista- ... Older systems just have processor #
     /**
-     * The PROCESSOR constant.
+     * For Vista- ... Older systems just have processor #.
      */
     public static final String PROCESSOR = "Processor";
 
@@ -146,9 +145,8 @@ public class PerfmonConsts {
      */
     public static final String WIN32_PERF_RAW_DATA_PERF_OS_PROCESSOR_WHERE_NAME_TOTAL = "Win32_PerfRawData_PerfOS_Processor WHERE Name=\"_Total\"";
 
-    // For Win7+ ... NAME field includes NUMA nodes
     /**
-     * The PROCESSOR_INFORMATION constant.
+     * For Win7+ ... NAME field includes NUMA nodes.
      */
     public static final String PROCESSOR_INFORMATION = "Processor Information";
 
