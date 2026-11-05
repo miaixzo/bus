@@ -141,6 +141,44 @@ public class Application {
 
 -----
 
+## GraalVM Reachability Metadata
+
+MyBatis common metadata comes from the [official metadata repository](https://github.com/oracle/graalvm-reachability-metadata/tree/master/metadata/org.mybatis/mybatis).
+`bus-mapper` no longer ships a separate `org.mybatis/mybatis/3.5.19` metadata directory. Its own metadata contains only
+the additional interceptor proxies, explicitly accessed members and XML parser resources needed by bus. The published
+repository 1.1.18 does not yet contain all entries available on the repository's `master` branch, so those remaining
+registrations cannot all be removed.
+
+`bus-parent` manages Native Build Tools with `metadataRepository.enabled=true` and the Maven Central repository ZIP `1.1.18`;
+the plugin's default repository `1.1.2` does not contain MyBatis metadata. Applications inheriting `bus-parent` must
+still activate `native-maven-plugin` in their native-build profile. Applications using another parent must configure
+the repository themselves:
+
+```xml
+<metadataRepository>
+    <enabled>true</enabled>
+    <url>https://repo.maven.apache.org/maven2/org/graalvm/buildtools/graalvm-reachability-metadata/1.1.18/graalvm-reachability-metadata-1.1.18-repository.zip</url>
+</metadataRepository>
+```
+
+The official index lists MyBatis `3.5.19` as tested. This does not certify `3.6.0`; applications using another version
+must validate it with their actual native runtime. bus does not force the application's MyBatis version or embed a
+copy of the upstream metadata.
+
+Application Mapper XML, entity reflection and application Mapper proxies remain the application's responsibility
+(or its AOT integration's). For example, an application storing XML under `mapper/` can add this resource entry to
+its own `META-INF/native-image/<group>/<application>/reachability-metadata.json`:
+
+```json
+{
+  "resources": [
+    { "glob": "mapper/**/*.xml" }
+  ]
+}
+```
+
+Use the application's actual resource path; `bus-mapper` does not globally include application XML files.
+
 ## 📝 Usage Examples
 
 ### 1\. Define Entity Class
