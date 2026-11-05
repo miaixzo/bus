@@ -125,9 +125,15 @@ dependencies.
 
 ## Packaging Notes
 
-During package creation, `bus-all` shades the Bus runtime modules into one aggregate artifact and consolidates
-native-image metadata for GraalVM usage. The published POM is normalized so consumers use `bus-all` as a single entry
+During package creation, `bus-all` shades the Bus runtime modules into one aggregate artifact and preserves each
+native-image metadata file at its original coordinate path, without merging it into a Bus-wide file.
+The published POM is normalized so consumers use `bus-all` as a single entry
 artifact instead of receiving every internal module as a regular transitive dependency.
+
+Metadata continues to ship inside JARs. Bus registrations remain under `org.miaixz/<module>`; third-party registrations
+are maintained in `bus-native` under each library's group, artifact and version. The relevant integration modules
+bring in this metadata-only JAR directly; `bus-all` includes its resources in the aggregate JAR. No additional
+third-party libraries are pulled in by `bus-native`. Existing upstream metadata deduplication remains in effect.
 
 This makes `bus-all` convenient, but it also means the resulting classpath is intentionally broad. Choose direct module
 dependencies when startup time, dependency surface, native-image size or deployment footprint is important.

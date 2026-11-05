@@ -1,0 +1,19 @@
+{
+  "reflection": [
+    {
+      "type": "jakarta.servlet.Filter",
+      "methods": [
+        {
+          "name": "destroy",
+          "parameterTypes": []
+        },
+        {
+          "name": "init",
+          "parameterTypes": [
+            "jakarta.servlet.FilterConfig"
+          ]
+        }
+      ]
+    }
+  ]
+}

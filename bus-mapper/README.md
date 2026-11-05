@@ -144,8 +144,9 @@ public class Application {
 ## GraalVM Reachability Metadata
 
 MyBatis common metadata comes from the [official metadata repository](https://github.com/oracle/graalvm-reachability-metadata/tree/master/metadata/org.mybatis/mybatis).
-`bus-mapper` no longer ships a separate `org.mybatis/mybatis/3.5.19` metadata directory. Its own metadata contains only
-the additional interceptor proxies, explicitly accessed members and XML parser resources needed by bus. The published
+`bus-mapper` does not duplicate the complete upstream metadata. Additional interceptor proxies, explicitly accessed
+members and XML parser resources needed by bus ship in `bus-native` under `org.mybatis/mybatis/3.6.0`, matching the current
+dependency baseline. Bus-owned registrations remain under `org.miaixz/bus-mapper`. The published
 repository 1.1.18 does not yet contain all entries available on the repository's `master` branch, so those remaining
 registrations cannot all be removed.
 

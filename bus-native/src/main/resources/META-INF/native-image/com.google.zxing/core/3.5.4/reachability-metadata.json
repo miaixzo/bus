@@ -1,0 +1,29 @@
+{
+  "reflection": [
+    {
+      "type": "com.google.zxing.LuminanceSource",
+      "methods": [
+        {
+          "name": "getHeight",
+          "parameterTypes": []
+        },
+        {
+          "name": "getWidth",
+          "parameterTypes": []
+        },
+        {
+          "name": "invert",
+          "parameterTypes": []
+        },
+        {
+          "name": "rotateCounterClockwise45",
+          "parameterTypes": []
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        }
+      ]
+    }
+  ]
+}

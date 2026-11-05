@@ -284,6 +284,15 @@ All of these packages are exported by the JPMS module. Backend modules are optio
 Reachability metadata covers service-loaded factories and exact dynamically accessed members. Entries are sorted A–Z.
 Broad reflection grants such as `allDeclaredConstructors`, `allDeclaredMethods`, and `allDeclaredFields` are prohibited.
 
+Log4j Core 2.26.0 and the resolved Log4j API 2.25.5 include upstream Native Image metadata in their JARs.
+Bus therefore does not duplicate Log4j constructors, standard configuration resources, or plugin-cache registrations.
+Log4j service providers use GraalVM's default ServiceLoader support; keep that support enabled.
+Bus factory registrations, other logging backends, and existing initialization arguments remain unchanged.
+For Log4j, no external reachability-metadata repository is required. Applications using nonstandard configuration
+locations or third-party plugins must supply any additional metadata described in the
+[Log4j Native Image guide](https://logging.apache.org/log4j/2.x/graalvm.html).
+These registrations were checked against the resolved JARs; this does not replace application-level Native Image testing.
+
 ## Verification boundary
 
 Bus contains and runs no tests. Provider, pipeline, lifecycle, metadata, AOT, and Native Image tests are maintained in

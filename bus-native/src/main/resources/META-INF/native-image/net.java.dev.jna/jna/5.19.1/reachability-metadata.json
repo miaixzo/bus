@@ -1,0 +1,422 @@
+{
+  "reflection": [
+    {
+      "type": "com.sun.jna.Callback",
+      "fields": [
+        {
+          "name": "FORBIDDEN_NAMES"
+        },
+        {
+          "name": "METHOD_NAME"
+        }
+      ]
+    },
+    {
+      "type": "com.sun.jna.Library",
+      "fields": [
+        {
+          "name": "OPTION_ALLOW_OBJECTS"
+        },
+        {
+          "name": "OPTION_CALLING_CONVENTION"
+        },
+        {
+          "name": "OPTION_CLASSLOADER"
+        },
+        {
+          "name": "OPTION_FUNCTION_MAPPER"
+        },
+        {
+          "name": "OPTION_INVOCATION_MAPPER"
+        },
+        {
+          "name": "OPTION_OPEN_FLAGS"
+        },
+        {
+          "name": "OPTION_STRING_ENCODING"
+        },
+        {
+          "name": "OPTION_STRUCTURE_ALIGNMENT"
+        },
+        {
+          "name": "OPTION_SYMBOL_PROVIDER"
+        },
+        {
+          "name": "OPTION_TYPE_MAPPER"
+        }
+      ]
+    },
+    {
+      "type": "com.sun.jna.PointerType",
+      "methods": [
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "fromNative",
+          "parameterTypes": [
+            "java.lang.Object",
+            "com.sun.jna.FromNativeContext"
+          ]
+        },
+        {
+          "name": "getPointer",
+          "parameterTypes": []
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "nativeType",
+          "parameterTypes": []
+        },
+        {
+          "name": "setPointer",
+          "parameterTypes": [
+            "com.sun.jna.Pointer"
+          ]
+        },
+        {
+          "name": "toNative",
+          "parameterTypes": []
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "com.sun.jna.Structure",
+      "fields": [
+        {
+          "name": "ALIGN_DEFAULT"
+        },
+        {
+          "name": "ALIGN_GNUC"
+        },
+        {
+          "name": "ALIGN_MSVC"
+        },
+        {
+          "name": "ALIGN_NONE"
+        }
+      ],
+      "methods": [
+        {
+          "name": "autoRead",
+          "parameterTypes": [
+            "com.sun.jna.Structure[]"
+          ]
+        },
+        {
+          "name": "autoRead",
+          "parameterTypes": []
+        },
+        {
+          "name": "autoWrite",
+          "parameterTypes": [
+            "com.sun.jna.Structure[]"
+          ]
+        },
+        {
+          "name": "autoWrite",
+          "parameterTypes": []
+        },
+        {
+          "name": "clear",
+          "parameterTypes": []
+        },
+        {
+          "name": "createFieldsOrder",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "createFieldsOrder",
+          "parameterTypes": [
+            "java.lang.String[]"
+          ]
+        },
+        {
+          "name": "createFieldsOrder",
+          "parameterTypes": [
+            "java.util.List",
+            "java.lang.String[]"
+          ]
+        },
+        {
+          "name": "createFieldsOrder",
+          "parameterTypes": [
+            "java.util.List",
+            "java.util.List"
+          ]
+        },
+        {
+          "name": "dataEquals",
+          "parameterTypes": [
+            "com.sun.jna.Structure",
+            "boolean"
+          ]
+        },
+        {
+          "name": "dataEquals",
+          "parameterTypes": [
+            "com.sun.jna.Structure"
+          ]
+        },
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "getAutoRead",
+          "parameterTypes": []
+        },
+        {
+          "name": "getAutoWrite",
+          "parameterTypes": []
+        },
+        {
+          "name": "getPointer",
+          "parameterTypes": []
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "newInstance",
+          "parameterTypes": [
+            "java.lang.Class",
+            "com.sun.jna.Pointer"
+          ]
+        },
+        {
+          "name": "newInstance",
+          "parameterTypes": [
+            "java.lang.Class"
+          ]
+        },
+        {
+          "name": "read",
+          "parameterTypes": []
+        },
+        {
+          "name": "readField",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setAutoRead",
+          "parameterTypes": [
+            "boolean"
+          ]
+        },
+        {
+          "name": "setAutoSynch",
+          "parameterTypes": [
+            "boolean"
+          ]
+        },
+        {
+          "name": "setAutoWrite",
+          "parameterTypes": [
+            "boolean"
+          ]
+        },
+        {
+          "name": "size",
+          "parameterTypes": []
+        },
+        {
+          "name": "toArray",
+          "parameterTypes": [
+            "com.sun.jna.Structure[]"
+          ]
+        },
+        {
+          "name": "toArray",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "toString",
+          "parameterTypes": [
+            "boolean"
+          ]
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "write",
+          "parameterTypes": []
+        },
+        {
+          "name": "writeField",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "writeField",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "com.sun.jna.Union",
+      "methods": [
+        {
+          "name": "getTypedValue",
+          "parameterTypes": [
+            "java.lang.Class"
+          ]
+        },
+        {
+          "name": "readField",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setType",
+          "parameterTypes": [
+            "java.lang.Class"
+          ]
+        },
+        {
+          "name": "setType",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setTypedValue",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "writeField",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "writeField",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "com.sun.jna.ptr.ByReference",
+      "methods": [
+        {
+          "name": "toString",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "com.sun.jna.ptr.IntByReference",
+      "methods": [
+        {
+          "name": "getValue",
+          "parameterTypes": []
+        },
+        {
+          "name": "setValue",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "com.sun.jna.ptr.LongByReference",
+      "methods": [
+        {
+          "name": "getValue",
+          "parameterTypes": []
+        },
+        {
+          "name": "setValue",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "com.sun.jna.ptr.NativeLongByReference",
+      "methods": [
+        {
+          "name": "getValue",
+          "parameterTypes": []
+        },
+        {
+          "name": "setValue",
+          "parameterTypes": [
+            "com.sun.jna.NativeLong"
+          ]
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "com.sun.jna.ptr.PointerByReference",
+      "methods": [
+        {
+          "name": "getValue",
+          "parameterTypes": []
+        },
+        {
+          "name": "setValue",
+          "parameterTypes": [
+            "com.sun.jna.Pointer"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "com.sun.jna.win32.StdCallLibrary",
+      "fields": [
+        {
+          "name": "FUNCTION_MAPPER"
+        },
+        {
+          "name": "STDCALL_CONVENTION"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "reflection": [
+    {
+      "type": "jakarta.ws.rs.core.Form",
+      "methods": [
+        {
+          "name": "asMap",
+          "parameterTypes": []
+        },
+        {
+          "name": "param",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        }
+      ]
+    }
+  ]
+}

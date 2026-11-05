@@ -86,6 +86,10 @@
         </dependency>
         <dependency>
             <groupId>org.miaixz</groupId>
+            <artifactId>bus-native</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.miaixz</groupId>
             <artifactId>bus-proxy</artifactId>
         </dependency>
         <dependency>

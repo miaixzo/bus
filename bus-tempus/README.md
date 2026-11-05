@@ -661,4 +661,18 @@ static List<Date> matchedDates(...)                      // Find all matches in 
 
 -----
 
+## Native Image
+
+For Temporal's gRPC transport, applications must enable the GraalVM reachability-metadata repository through their
+Native Build Tools plugin. With plugin/repository 1.1.18, gRPC Netty Shaded 1.83.1 resolves to the official metadata
+directory 1.68.0, whose index explicitly includes 1.83.1 among its tested versions.
+Bus does not duplicate the shaded JCTools queue-field registrations. The proxy-detector method and dynamic-proxy
+registrations needed by `DefaultWorkflowTransport` ship in `bus-native` under `io.grpc/grpc-api/1.83.1`, with their existing transport
+reachability condition. Protobuf and Temporal registrations likewise use their own coordinate directories; Bus-owned
+registrations remain under `org.miaixz/bus-tempus`.
+Application-specific workflow implementations and custom integrations still require their own metadata.
+Metadata selection and JVM transport behavior were verified; no Native Image build was performed.
+
+-----
+
 For more information and updates, visit: [https://github.com/818000/bus](https://github.com/818000/bus)

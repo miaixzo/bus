@@ -1,0 +1,28 @@
+{
+  "reflection": [
+    {
+      "type": "io.grpc.ManagedChannelBuilder",
+      "methods": [
+        {
+          "name": "proxyDetector",
+          "parameterTypes": [
+            "io.grpc.ProxyDetector"
+          ]
+        }
+      ],
+      "condition": {
+        "typeReached": "org.miaixz.bus.tempus.temporal.worker.DefaultWorkflowTransport"
+      }
+    },
+    {
+      "type": {
+        "proxy": [
+          "io.grpc.ProxyDetector"
+        ]
+      },
+      "condition": {
+        "typeReached": "org.miaixz.bus.tempus.temporal.worker.DefaultWorkflowTransport"
+      }
+    }
+  ]
+}
