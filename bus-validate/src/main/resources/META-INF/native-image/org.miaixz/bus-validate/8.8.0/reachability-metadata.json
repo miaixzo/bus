@@ -1309,111 +1309,678 @@
     },
     {
       "type": "org.miaixz.bus.validate.magic.annotation.Blank",
-      "allDeclaredMethods": true
+      "methods": [
+        {
+          "name": "code",
+          "parameterTypes": []
+        },
+        {
+          "name": "desc",
+          "parameterTypes": []
+        },
+        {
+          "name": "group",
+          "parameterTypes": []
+        },
+        {
+          "name": "field",
+          "parameterTypes": []
+        }
+      ]
     },
     {
       "type": "org.miaixz.bus.validate.magic.annotation.Chinese",
-      "allDeclaredMethods": true
+      "methods": [
+        {
+          "name": "code",
+          "parameterTypes": []
+        },
+        {
+          "name": "desc",
+          "parameterTypes": []
+        },
+        {
+          "name": "group",
+          "parameterTypes": []
+        },
+        {
+          "name": "field",
+          "parameterTypes": []
+        }
+      ]
     },
     {
       "type": "org.miaixz.bus.validate.magic.annotation.CitizenId",
-      "allDeclaredMethods": true
+      "methods": [
+        {
+          "name": "code",
+          "parameterTypes": []
+        },
+        {
+          "name": "desc",
+          "parameterTypes": []
+        },
+        {
+          "name": "group",
+          "parameterTypes": []
+        },
+        {
+          "name": "field",
+          "parameterTypes": []
+        }
+      ]
     },
     {
       "type": "org.miaixz.bus.validate.magic.annotation.Compare",
-      "allDeclaredMethods": true
+      "methods": [
+        {
+          "name": "cond",
+          "parameterTypes": []
+        },
+        {
+          "name": "with",
+          "parameterTypes": []
+        },
+        {
+          "name": "code",
+          "parameterTypes": []
+        },
+        {
+          "name": "desc",
+          "parameterTypes": []
+        },
+        {
+          "name": "group",
+          "parameterTypes": []
+        },
+        {
+          "name": "field",
+          "parameterTypes": []
+        }
+      ]
     },
     {
       "type": "org.miaixz.bus.validate.magic.annotation.Date",
-      "allDeclaredMethods": true
+      "methods": [
+        {
+          "name": "format",
+          "parameterTypes": []
+        },
+        {
+          "name": "code",
+          "parameterTypes": []
+        },
+        {
+          "name": "desc",
+          "parameterTypes": []
+        },
+        {
+          "name": "group",
+          "parameterTypes": []
+        },
+        {
+          "name": "field",
+          "parameterTypes": []
+        }
+      ]
     },
     {
       "type": "org.miaixz.bus.validate.magic.annotation.Each",
-      "allDeclaredMethods": true
+      "methods": [
+        {
+          "name": "value",
+          "parameterTypes": []
+        },
+        {
+          "name": "classes",
+          "parameterTypes": []
+        },
+        {
+          "name": "code",
+          "parameterTypes": []
+        },
+        {
+          "name": "desc",
+          "parameterTypes": []
+        },
+        {
+          "name": "group",
+          "parameterTypes": []
+        },
+        {
+          "name": "field",
+          "parameterTypes": []
+        }
+      ]
     },
     {
       "type": "org.miaixz.bus.validate.magic.annotation.Email",
-      "allDeclaredMethods": true
+      "methods": [
+        {
+          "name": "code",
+          "parameterTypes": []
+        },
+        {
+          "name": "desc",
+          "parameterTypes": []
+        },
+        {
+          "name": "group",
+          "parameterTypes": []
+        },
+        {
+          "name": "field",
+          "parameterTypes": []
+        }
+      ]
     },
     {
       "type": "org.miaixz.bus.validate.magic.annotation.English",
-      "allDeclaredMethods": true
+      "methods": [
+        {
+          "name": "code",
+          "parameterTypes": []
+        },
+        {
+          "name": "desc",
+          "parameterTypes": []
+        },
+        {
+          "name": "group",
+          "parameterTypes": []
+        },
+        {
+          "name": "field",
+          "parameterTypes": []
+        }
+      ]
     },
     {
       "type": "org.miaixz.bus.validate.magic.annotation.Equals",
-      "allDeclaredMethods": true
+      "methods": [
+        {
+          "name": "value",
+          "parameterTypes": []
+        },
+        {
+          "name": "code",
+          "parameterTypes": []
+        },
+        {
+          "name": "desc",
+          "parameterTypes": []
+        },
+        {
+          "name": "group",
+          "parameterTypes": []
+        },
+        {
+          "name": "field",
+          "parameterTypes": []
+        }
+      ]
     },
     {
       "type": "org.miaixz.bus.validate.magic.annotation.False",
-      "allDeclaredMethods": true
+      "methods": [
+        {
+          "name": "nullable",
+          "parameterTypes": []
+        },
+        {
+          "name": "code",
+          "parameterTypes": []
+        },
+        {
+          "name": "desc",
+          "parameterTypes": []
+        },
+        {
+          "name": "group",
+          "parameterTypes": []
+        },
+        {
+          "name": "field",
+          "parameterTypes": []
+        }
+      ]
     },
     {
       "type": "org.miaixz.bus.validate.magic.annotation.IPAddress",
-      "allDeclaredMethods": true
+      "methods": [
+        {
+          "name": "code",
+          "parameterTypes": []
+        },
+        {
+          "name": "desc",
+          "parameterTypes": []
+        },
+        {
+          "name": "group",
+          "parameterTypes": []
+        },
+        {
+          "name": "field",
+          "parameterTypes": []
+        }
+      ]
     },
     {
       "type": "org.miaixz.bus.validate.magic.annotation.In",
-      "allDeclaredMethods": true
+      "methods": [
+        {
+          "name": "value",
+          "parameterTypes": []
+        },
+        {
+          "name": "code",
+          "parameterTypes": []
+        },
+        {
+          "name": "desc",
+          "parameterTypes": []
+        },
+        {
+          "name": "group",
+          "parameterTypes": []
+        },
+        {
+          "name": "field",
+          "parameterTypes": []
+        }
+      ]
     },
     {
       "type": "org.miaixz.bus.validate.magic.annotation.InEnum",
-      "allDeclaredMethods": true
+      "methods": [
+        {
+          "name": "enumClass",
+          "parameterTypes": []
+        },
+        {
+          "name": "method",
+          "parameterTypes": []
+        },
+        {
+          "name": "code",
+          "parameterTypes": []
+        },
+        {
+          "name": "desc",
+          "parameterTypes": []
+        },
+        {
+          "name": "group",
+          "parameterTypes": []
+        },
+        {
+          "name": "field",
+          "parameterTypes": []
+        }
+      ]
     },
     {
       "type": "org.miaixz.bus.validate.magic.annotation.IntRange",
-      "allDeclaredMethods": true
+      "methods": [
+        {
+          "name": "min",
+          "parameterTypes": []
+        },
+        {
+          "name": "max",
+          "parameterTypes": []
+        },
+        {
+          "name": "code",
+          "parameterTypes": []
+        },
+        {
+          "name": "desc",
+          "parameterTypes": []
+        },
+        {
+          "name": "group",
+          "parameterTypes": []
+        },
+        {
+          "name": "field",
+          "parameterTypes": []
+        }
+      ]
     },
     {
       "type": "org.miaixz.bus.validate.magic.annotation.Length",
-      "allDeclaredMethods": true
+      "methods": [
+        {
+          "name": "min",
+          "parameterTypes": []
+        },
+        {
+          "name": "max",
+          "parameterTypes": []
+        },
+        {
+          "name": "zeroAble",
+          "parameterTypes": []
+        },
+        {
+          "name": "code",
+          "parameterTypes": []
+        },
+        {
+          "name": "desc",
+          "parameterTypes": []
+        },
+        {
+          "name": "group",
+          "parameterTypes": []
+        },
+        {
+          "name": "field",
+          "parameterTypes": []
+        }
+      ]
     },
     {
       "type": "org.miaixz.bus.validate.magic.annotation.Mobile",
-      "allDeclaredMethods": true
+      "methods": [
+        {
+          "name": "code",
+          "parameterTypes": []
+        },
+        {
+          "name": "desc",
+          "parameterTypes": []
+        },
+        {
+          "name": "group",
+          "parameterTypes": []
+        },
+        {
+          "name": "field",
+          "parameterTypes": []
+        }
+      ]
     },
     {
       "type": "org.miaixz.bus.validate.magic.annotation.Multiple",
-      "allDeclaredMethods": true
+      "methods": [
+        {
+          "name": "value",
+          "parameterTypes": []
+        },
+        {
+          "name": "classes",
+          "parameterTypes": []
+        },
+        {
+          "name": "code",
+          "parameterTypes": []
+        },
+        {
+          "name": "desc",
+          "parameterTypes": []
+        },
+        {
+          "name": "group",
+          "parameterTypes": []
+        },
+        {
+          "name": "field",
+          "parameterTypes": []
+        }
+      ]
     },
     {
       "type": "org.miaixz.bus.validate.magic.annotation.NotBlank",
-      "allDeclaredMethods": true
+      "methods": [
+        {
+          "name": "code",
+          "parameterTypes": []
+        },
+        {
+          "name": "desc",
+          "parameterTypes": []
+        },
+        {
+          "name": "group",
+          "parameterTypes": []
+        },
+        {
+          "name": "field",
+          "parameterTypes": []
+        }
+      ]
     },
     {
       "type": "org.miaixz.bus.validate.magic.annotation.NotEmpty",
-      "allDeclaredMethods": true
+      "methods": [
+        {
+          "name": "code",
+          "parameterTypes": []
+        },
+        {
+          "name": "desc",
+          "parameterTypes": []
+        },
+        {
+          "name": "group",
+          "parameterTypes": []
+        },
+        {
+          "name": "field",
+          "parameterTypes": []
+        }
+      ]
     },
     {
       "type": "org.miaixz.bus.validate.magic.annotation.NotIn",
-      "allDeclaredMethods": true
+      "methods": [
+        {
+          "name": "value",
+          "parameterTypes": []
+        },
+        {
+          "name": "code",
+          "parameterTypes": []
+        },
+        {
+          "name": "desc",
+          "parameterTypes": []
+        },
+        {
+          "name": "group",
+          "parameterTypes": []
+        },
+        {
+          "name": "field",
+          "parameterTypes": []
+        }
+      ]
     },
     {
       "type": "org.miaixz.bus.validate.magic.annotation.NotNull",
-      "allDeclaredMethods": true
+      "methods": [
+        {
+          "name": "code",
+          "parameterTypes": []
+        },
+        {
+          "name": "desc",
+          "parameterTypes": []
+        },
+        {
+          "name": "group",
+          "parameterTypes": []
+        },
+        {
+          "name": "field",
+          "parameterTypes": []
+        }
+      ]
     },
     {
       "type": "org.miaixz.bus.validate.magic.annotation.Null",
-      "allDeclaredMethods": true
+      "methods": [
+        {
+          "name": "code",
+          "parameterTypes": []
+        },
+        {
+          "name": "desc",
+          "parameterTypes": []
+        },
+        {
+          "name": "group",
+          "parameterTypes": []
+        },
+        {
+          "name": "field",
+          "parameterTypes": []
+        }
+      ]
     },
     {
       "type": "org.miaixz.bus.validate.magic.annotation.Phone",
-      "allDeclaredMethods": true
+      "methods": [
+        {
+          "name": "code",
+          "parameterTypes": []
+        },
+        {
+          "name": "desc",
+          "parameterTypes": []
+        },
+        {
+          "name": "group",
+          "parameterTypes": []
+        },
+        {
+          "name": "field",
+          "parameterTypes": []
+        }
+      ]
     },
     {
       "type": "org.miaixz.bus.validate.magic.annotation.Reflect",
-      "allDeclaredMethods": true
+      "methods": [
+        {
+          "name": "target",
+          "parameterTypes": []
+        },
+        {
+          "name": "method",
+          "parameterTypes": []
+        },
+        {
+          "name": "validator",
+          "parameterTypes": []
+        },
+        {
+          "name": "code",
+          "parameterTypes": []
+        },
+        {
+          "name": "desc",
+          "parameterTypes": []
+        },
+        {
+          "name": "group",
+          "parameterTypes": []
+        },
+        {
+          "name": "field",
+          "parameterTypes": []
+        }
+      ]
     },
     {
       "type": "org.miaixz.bus.validate.magic.annotation.Regex",
-      "allDeclaredMethods": true
+      "methods": [
+        {
+          "name": "pattern",
+          "parameterTypes": []
+        },
+        {
+          "name": "zeroAble",
+          "parameterTypes": []
+        },
+        {
+          "name": "code",
+          "parameterTypes": []
+        },
+        {
+          "name": "desc",
+          "parameterTypes": []
+        },
+        {
+          "name": "group",
+          "parameterTypes": []
+        },
+        {
+          "name": "field",
+          "parameterTypes": []
+        }
+      ]
     },
     {
       "type": "org.miaixz.bus.validate.magic.annotation.Size",
-      "allDeclaredMethods": true
+      "methods": [
+        {
+          "name": "min",
+          "parameterTypes": []
+        },
+        {
+          "name": "max",
+          "parameterTypes": []
+        },
+        {
+          "name": "zeroAble",
+          "parameterTypes": []
+        },
+        {
+          "name": "code",
+          "parameterTypes": []
+        },
+        {
+          "name": "desc",
+          "parameterTypes": []
+        },
+        {
+          "name": "group",
+          "parameterTypes": []
+        },
+        {
+          "name": "field",
+          "parameterTypes": []
+        }
+      ]
     },
     {
       "type": "org.miaixz.bus.validate.magic.annotation.True",
-      "allDeclaredMethods": true
+      "methods": [
+        {
+          "name": "nullable",
+          "parameterTypes": []
+        },
+        {
+          "name": "code",
+          "parameterTypes": []
+        },
+        {
+          "name": "desc",
+          "parameterTypes": []
+        },
+        {
+          "name": "group",
+          "parameterTypes": []
+        },
+        {
+          "name": "field",
+          "parameterTypes": []
+        }
+      ]
     }
   ]
 }

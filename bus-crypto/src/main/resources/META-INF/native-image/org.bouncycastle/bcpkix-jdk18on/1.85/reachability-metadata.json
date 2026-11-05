@@ -62,10 +62,9 @@
         {
           "name": "<init>",
           "parameterTypes": [
-            "java.io.InputStream",
-            "int",
+            "byte[]",
             "boolean",
-            "byte[][]"
+            "int"
           ]
         },
         {
@@ -73,10 +72,9 @@
           "parameterTypes": [
             "java.io.InputStream",
             "int",
-            "boolean",
-            "byte[][]",
             "int",
-            "int"
+            "boolean",
+            "byte[]"
           ]
         }
       ]
@@ -958,7 +956,8 @@
             "int",
             "int",
             "int",
-            "org.bouncycastle.crypto.CharToByteConverter"
+            "org.bouncycastle.crypto.CharToByteConverter",
+            "org.bouncycastle.crypto.generators.Argon2BytesGenerator$BlockPool"
           ]
         },
         {
@@ -973,6 +972,7 @@
             "int",
             "int",
             "org.bouncycastle.crypto.CharToByteConverter",
+            "org.bouncycastle.crypto.generators.Argon2BytesGenerator$BlockPool",
             "org.bouncycastle.crypto.params.Argon2Parameters$1"
           ]
         }

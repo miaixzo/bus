@@ -4756,9 +4756,6 @@
           "name": "ENHANCED_QUERY_TYPE_STACK_TRACE"
         },
         {
-          "name": "log"
-        },
-        {
           "name": "QUERY_TYPE_STACK_TRACE"
         },
         {
@@ -5077,7 +5074,7 @@
           "parameterTypes": []
         },
         {
-          "name": "lambda$shutdown$0",
+          "name": "lambda$shutdown$1",
           "parameterTypes": [
             "io.temporal.internal.worker.ShutdownManager",
             "boolean",
@@ -5085,7 +5082,7 @@
           ]
         },
         {
-          "name": "lambda$shutdown$1",
+          "name": "lambda$shutdown$2",
           "parameterTypes": [
             "java.lang.Throwable"
           ]
@@ -6425,7 +6422,7 @@
           "parameterTypes": []
         },
         {
-          "name": "lambda$buildHeartbeatCallback$0",
+          "name": "lambda$buildHeartbeatCallback$1",
           "parameterTypes": [
             "java.lang.Object",
             "java.util.concurrent.atomic.AtomicReference",
@@ -6433,14 +6430,14 @@
           ]
         },
         {
-          "name": "lambda$replayWorkflowExecution$1",
+          "name": "lambda$replayWorkflowExecution$2",
           "parameterTypes": [
             "io.temporal.worker.Worker",
             "io.temporal.common.WorkflowExecutionHistory"
           ]
         },
         {
-          "name": "lambda$replayWorkflowExecution$2",
+          "name": "lambda$replayWorkflowExecution$3",
           "parameterTypes": [
             "io.temporal.worker.WorkerPlugin",
             "io.temporal.worker.WorkerPlugin$ReplayCallback",
@@ -6552,7 +6549,9 @@
             "io.temporal.worker.WorkerOptions",
             "io.temporal.client.WorkflowClientOptions",
             "java.util.List",
-            "com.uber.m3.tally.Scope"
+            "com.uber.m3.tally.Scope",
+            "java.lang.String",
+            "java.lang.String"
           ]
         },
         {
@@ -6562,7 +6561,9 @@
             "io.temporal.worker.WorkerOptions",
             "io.temporal.client.WorkflowClientOptions",
             "java.util.List",
-            "com.uber.m3.tally.Scope"
+            "com.uber.m3.tally.Scope",
+            "java.lang.String",
+            "java.lang.String"
           ]
         },
         {
@@ -6572,7 +6573,9 @@
             "io.temporal.worker.WorkerOptions",
             "io.temporal.client.WorkflowClientOptions",
             "java.util.List",
-            "com.uber.m3.tally.Scope"
+            "com.uber.m3.tally.Scope",
+            "java.lang.String",
+            "java.lang.String"
           ]
         },
         {
@@ -6587,7 +6590,9 @@
             "io.temporal.worker.WorkerFactoryOptions",
             "io.temporal.worker.WorkerOptions",
             "io.temporal.client.WorkflowClientOptions",
-            "java.util.List"
+            "java.util.List",
+            "java.lang.String",
+            "java.lang.String"
           ]
         },
         {
@@ -6602,7 +6607,9 @@
             "io.temporal.client.WorkflowClientOptions",
             "java.lang.String",
             "java.util.List",
-            "com.uber.m3.tally.Scope"
+            "com.uber.m3.tally.Scope",
+            "java.lang.String",
+            "java.lang.String"
           ]
         },
         {
@@ -7028,73 +7035,6 @@
       ],
       "methods": [
         {
-          "name": "<init>",
-          "parameterTypes": [
-            "double",
-            "int",
-            "int",
-            "int",
-            "int",
-            "io.temporal.worker.tuning.WorkerTuner",
-            "double",
-            "int",
-            "int",
-            "int",
-            "boolean",
-            "long",
-            "java.time.Duration",
-            "java.time.Duration",
-            "java.time.Duration",
-            "boolean",
-            "boolean",
-            "java.lang.String",
-            "java.time.Duration",
-            "java.lang.String",
-            "boolean",
-            "boolean",
-            "boolean",
-            "boolean",
-            "io.temporal.worker.WorkerDeploymentOptions",
-            "io.temporal.worker.tuning.PollerBehavior",
-            "io.temporal.worker.tuning.PollerBehavior",
-            "io.temporal.worker.tuning.PollerBehavior"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "double",
-            "int",
-            "int",
-            "int",
-            "int",
-            "io.temporal.worker.tuning.WorkerTuner",
-            "double",
-            "int",
-            "int",
-            "int",
-            "boolean",
-            "long",
-            "java.time.Duration",
-            "java.time.Duration",
-            "java.time.Duration",
-            "boolean",
-            "boolean",
-            "java.lang.String",
-            "java.time.Duration",
-            "java.lang.String",
-            "boolean",
-            "boolean",
-            "boolean",
-            "boolean",
-            "io.temporal.worker.WorkerDeploymentOptions",
-            "io.temporal.worker.tuning.PollerBehavior",
-            "io.temporal.worker.tuning.PollerBehavior",
-            "io.temporal.worker.tuning.PollerBehavior",
-            "io.temporal.worker.WorkerOptions$1"
-          ]
-        },
-        {
           "name": "access$1000",
           "parameterTypes": [
             "io.temporal.worker.WorkerOptions"
@@ -7437,6 +7377,77 @@
           "parameterTypes": [
             "long",
             "int"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "double",
+            "int",
+            "int",
+            "int",
+            "int",
+            "io.temporal.worker.tuning.WorkerTuner",
+            "double",
+            "int",
+            "int",
+            "int",
+            "boolean",
+            "long",
+            "java.time.Duration",
+            "java.time.Duration",
+            "java.time.Duration",
+            "boolean",
+            "boolean",
+            "java.lang.String",
+            "java.time.Duration",
+            "java.lang.String",
+            "boolean",
+            "boolean",
+            "boolean",
+            "boolean",
+            "io.temporal.worker.WorkerDeploymentOptions",
+            "io.temporal.worker.tuning.PollerBehavior",
+            "io.temporal.worker.tuning.PollerBehavior",
+            "io.temporal.worker.tuning.PollerBehavior",
+            "boolean",
+            "io.temporal.worker.PreferredVersionProvider"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "double",
+            "int",
+            "int",
+            "int",
+            "int",
+            "io.temporal.worker.tuning.WorkerTuner",
+            "double",
+            "int",
+            "int",
+            "int",
+            "boolean",
+            "long",
+            "java.time.Duration",
+            "java.time.Duration",
+            "java.time.Duration",
+            "boolean",
+            "boolean",
+            "java.lang.String",
+            "java.time.Duration",
+            "java.lang.String",
+            "boolean",
+            "boolean",
+            "boolean",
+            "boolean",
+            "io.temporal.worker.WorkerDeploymentOptions",
+            "io.temporal.worker.tuning.PollerBehavior",
+            "io.temporal.worker.tuning.PollerBehavior",
+            "io.temporal.worker.tuning.PollerBehavior",
+            "boolean",
+            "io.temporal.worker.PreferredVersionProvider",
+            "io.temporal.worker.WorkerOptions$1"
           ]
         }
       ]
