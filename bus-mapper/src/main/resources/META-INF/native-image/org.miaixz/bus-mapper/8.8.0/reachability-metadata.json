@@ -806,9 +806,15 @@
           ]
         },
         {
-          "name": "resolveFieldClass",
+          "name": "resolveMapperTypes",
           "parameterTypes": [
-            "java.lang.reflect.Field",
+            "java.lang.Class"
+          ]
+        },
+        {
+          "name": "resolveMapperTypes",
+          "parameterTypes": [
+            "java.lang.reflect.Method",
             "java.lang.reflect.Type"
           ]
         },
@@ -820,43 +826,34 @@
           ]
         },
         {
-          "name": "resolveGenericArrayType",
+          "name": "resolveFieldClass",
           "parameterTypes": [
-            "java.lang.reflect.GenericArrayType",
-            "java.lang.reflect.Type",
-            "java.lang.Class"
-          ]
-        },
-        {
-          "name": "resolveMapperTypes",
-          "parameterTypes": [
-            "java.lang.Class"
-          ]
-        },
-        {
-          "name": "resolveMapperTypes",
-          "parameterTypes": [
-            "java.lang.reflect.Method",
+            "java.lang.reflect.Field",
             "java.lang.reflect.Type"
           ]
         },
         {
-          "name": "resolveParameterizedType",
+          "name": "resolveTypeToClass",
           "parameterTypes": [
-            "java.lang.reflect.ParameterizedType",
-            "java.lang.reflect.Type",
-            "java.lang.Class"
+            "java.lang.reflect.Type"
           ]
         },
         {
-          "name": "resolveParamTypes",
+          "name": "resolveTypeToClass",
           "parameterTypes": [
-            "java.lang.reflect.Method",
-            "java.lang.reflect.Type"
+            "java.lang.reflect.Type",
+            "java.util.Set"
           ]
         },
         {
           "name": "resolveReturnType",
+          "parameterTypes": [
+            "java.lang.reflect.Method",
+            "java.lang.reflect.Type"
+          ]
+        },
+        {
+          "name": "resolveParamTypes",
           "parameterTypes": [
             "java.lang.reflect.Method",
             "java.lang.reflect.Type"
@@ -871,51 +868,90 @@
           ]
         },
         {
-          "name": "resolveTypeToClass",
+          "name": "collectBindings",
           "parameterTypes": [
-            "java.lang.reflect.Type"
-          ]
-        },
-        {
-          "name": "resolveTypeVar",
-          "parameterTypes": [
-            "java.lang.reflect.TypeVariable",
             "java.lang.reflect.Type",
-            "java.lang.Class"
+            "java.util.Map",
+            "java.util.Set"
           ]
         },
         {
-          "name": "resolveWildcardType",
+          "name": "substitute",
           "parameterTypes": [
-            "java.lang.reflect.WildcardType",
             "java.lang.reflect.Type",
-            "java.lang.Class"
+            "java.util.Map",
+            "java.util.Set",
+            "boolean"
           ]
         },
         {
-          "name": "resolveWildcardTypeBounds",
+          "name": "substitute",
           "parameterTypes": [
             "java.lang.reflect.Type[]",
-            "java.lang.reflect.Type",
-            "java.lang.Class"
+            "java.util.Map",
+            "java.util.Set",
+            "boolean"
           ]
         },
         {
-          "name": "scanSuperTypes",
+          "name": "lambda$resolveParamTypes$1",
           "parameterTypes": [
-            "java.lang.reflect.TypeVariable",
+            "java.lang.reflect.Method",
             "java.lang.reflect.Type",
-            "java.lang.Class",
-            "java.lang.Class",
             "java.lang.reflect.Type"
           ]
         },
         {
-          "name": "translateParentTypeVars",
+          "name": "lambda$resolveParamTypes$0",
           "parameterTypes": [
-            "java.lang.reflect.ParameterizedType",
-            "java.lang.Class",
-            "java.lang.reflect.ParameterizedType"
+            "java.lang.reflect.Method"
+          ]
+        },
+        {
+          "name": "lambda$resolveReturnType$1",
+          "parameterTypes": [
+            "java.lang.reflect.Method",
+            "java.lang.reflect.Type",
+            "java.lang.reflect.Type"
+          ]
+        },
+        {
+          "name": "lambda$resolveReturnType$0",
+          "parameterTypes": [
+            "java.lang.reflect.Method"
+          ]
+        },
+        {
+          "name": "lambda$resolveFieldType$1",
+          "parameterTypes": [
+            "java.lang.reflect.Field",
+            "java.lang.reflect.Type"
+          ]
+        },
+        {
+          "name": "lambda$resolveFieldType$0",
+          "parameterTypes": [
+            "java.lang.reflect.Field"
+          ]
+        },
+        {
+          "name": "lambda$resolveMapperTypes$2",
+          "parameterTypes": [
+            "java.lang.reflect.Method",
+            "java.lang.reflect.Type",
+            "java.lang.reflect.Type"
+          ]
+        },
+        {
+          "name": "lambda$resolveMapperTypes$1",
+          "parameterTypes": [
+            "java.lang.reflect.Method"
+          ]
+        },
+        {
+          "name": "lambda$resolveMapperTypes$0",
+          "parameterTypes": [
+            "java.lang.Class"
           ]
         }
       ]

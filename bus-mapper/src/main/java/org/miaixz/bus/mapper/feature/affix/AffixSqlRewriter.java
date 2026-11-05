@@ -152,6 +152,9 @@ public class AffixSqlRewriter {
     /**
      * Finds ordinary CTE declarations and their lexical visibility intervals. A declaration is visible only after its
      * own body, so a later declaration cannot hide a physical table in an earlier body.
+     *
+     * @param tokens the SQL tokens with original source offsets
+     * @return the non-recursive CTE names and their token visibility intervals
      */
     private static List<Cte> ctes(List<Token> tokens) {
         int[] closing = new int[tokens.size()];
@@ -212,7 +215,14 @@ public class AffixSqlRewriter {
         return result;
     }
 
-    /** Resolves unqualified CTE references without leaking aliases into an enclosing or subsequent statement. */
+    /**
+     * Resolves unqualified CTE references without leaking aliases into an enclosing or subsequent statement.
+     *
+     * @param table the table-name token to check
+     * @param index the table token index in the SQL token list
+     * @param ctes  the non-recursive CTE names and their visibility intervals
+     * @return {@code true} when the token refers to a visible, unqualified CTE name
+     */
     private static boolean visible(Token table, int index, List<Cte> ctes) {
         for (Cte cte : ctes) {
             if (index >= cte.visible() && index < cte.end()
@@ -228,6 +238,9 @@ public class AffixSqlRewriter {
     /**
      * Tokenizes only the SQL structure needed by affix rewriting. Original whitespace, parameters, comments and literal
      * bytes remain in the source and are copied unchanged; comments and literals cannot introduce table references.
+     *
+     * @param sql the SQL text to scan
+     * @return identifier and structural tokens with offsets into the original SQL
      */
     private static List<Token> tokenize(String sql) {
         List<Token> result = new ArrayList<>();
@@ -330,23 +343,53 @@ public class AffixSqlRewriter {
         return result;
     }
 
-    /** The unquoted identifier alphabet already accepted by the affix rewriter. */
+    /**
+     * The unquoted identifier alphabet already accepted by the affix rewriter.
+     *
+     * @param value the character to test
+     * @return {@code true} for an ASCII letter or underscore
+     */
     private static boolean letter(char value) {
         return value >= 'a' && value <= 'z' || value >= 'A' && value <= 'Z' || value == '_';
     }
 
-    /** Unquoted identifier continuation, including the dollar sign accepted by supported SQL engines. */
+    /**
+     * Unquoted identifier continuation, including the dollar sign accepted by supported SQL engines.
+     *
+     * @param value the character to test
+     * @return {@code true} for an identifier letter, digit or dollar sign
+     */
     private static boolean part(char value) {
         return letter(value) || value >= '0' && value <= '9' || value == '$';
     }
 
-    /** A source token; a zero quote denotes an unquoted identifier or structural symbol. */
+    /**
+     * A source token; a zero quote denotes an unquoted identifier or structural symbol.
+     *
+     * @param value      the token text, excluding surrounding quotes for quoted identifiers
+     * @param start      the inclusive character offset in the original SQL
+     * @param end        the exclusive character offset in the original SQL
+     * @param identifier whether this token represents an identifier
+     * @param quote      the opening quote character, or zero for an unquoted token
+     */
     private record Token(String value, int start, int end, boolean identifier, char quote) {
 
+        /**
+         * Matches a keyword or symbol without treating quoted identifiers as keywords.
+         *
+         * @param expected the unquoted keyword or structural symbol to match
+         * @return {@code true} for an unquoted, case-insensitive match
+         */
         private boolean is(String expected) {
             return quote == 0 && value.equalsIgnoreCase(expected);
         }
 
+        /**
+         * Renders a replacement identifier while retaining the original quoting style.
+         *
+         * @param replacement the replacement identifier text without surrounding quotes
+         * @return the replacement with the original quote style and escaped closing quotes, if quoted
+         */
         private String render(String replacement) {
             if (quote == 0) {
                 return replacement;
@@ -356,7 +399,13 @@ public class AffixSqlRewriter {
         }
     }
 
-    /** One non-recursive CTE name and the token interval in which it can be referenced. */
+    /**
+     * One non-recursive CTE name and the token interval in which it can be referenced.
+     *
+     * @param name    the CTE name token
+     * @param visible the inclusive token index from which the CTE can be referenced
+     * @param end     the exclusive token index ending the visibility interval
+     */
     private record Cte(Token name, int visible, int end) {
     }
 

@@ -19,20 +19,19 @@
 */
 package org.miaixz.bus.mapper.builder;
 
+import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.lang.reflect.WildcardType;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import org.apache.ibatis.reflection.TypeParameterResolver;
 
 /**
  * Resolves actual mapper method return and parameter classes, including generic signatures.
  * <p>
- * This resolver centralizes MyBatis generic type resolution for starter AOT hint registration. It does not depend on
+ * This resolver centralizes mapper generic type resolution for starter AOT hint registration. It does not depend on
  * Spring and can therefore be reused by any mapper runtime integration that already has a mapper interface and method.
  *
  * @author Kimi Liu
@@ -56,7 +55,7 @@ public class MapperMethodTypeResolver {
      * @return resolved return class
      */
     public static Class<?> resolveReturnClass(Class<?> mapperInterface, Method method) {
-        Type resolvedReturnType = TypeParameterResolver.resolveReturnType(method, mapperInterface);
+        Type resolvedReturnType = GenericTypeResolver.resolveReturnType(method, mapperInterface);
         return typeToClass(resolvedReturnType, method.getReturnType());
     }
 
@@ -71,8 +70,13 @@ public class MapperMethodTypeResolver {
      * @return resolved parameter classes
      */
     public static Set<Class<?>> resolveParameterClasses(Class<?> mapperInterface, Method method) {
-        return Stream.of(TypeParameterResolver.resolveParamTypes(method, mapperInterface))
-                .map(x -> typeToClass(x, x instanceof Class ? (Class<?>) x : Object.class)).collect(Collectors.toSet());
+        Type[] resolved = GenericTypeResolver.resolveParamTypes(method, mapperInterface);
+        Class<?>[] parameters = method.getParameterTypes();
+        Set<Class<?>> result = new HashSet<>();
+        for (int i = 0; i < resolved.length; i++) {
+            result.add(typeToClass(resolved[i], parameters[i]));
+        }
+        return result;
     }
 
     /**
@@ -96,11 +100,21 @@ public class MapperMethodTypeResolver {
             }
         } else if (src instanceof ParameterizedType) {
             ParameterizedType parameterizedType = (ParameterizedType) src;
+            if (parameterizedType.getActualTypeArguments().length == 0) {
+                return GenericTypeResolver.resolveTypeToClass(parameterizedType);
+            }
             int index = parameterizedType.getRawType() instanceof Class
                     && Map.class.isAssignableFrom((Class<?>) parameterizedType.getRawType())
                     && parameterizedType.getActualTypeArguments().length > 1 ? 1 : 0;
             Type actualType = parameterizedType.getActualTypeArguments()[index];
             result = typeToClass(actualType, fallback);
+        } else if (src instanceof GenericArrayType) {
+            result = typeToClass(((GenericArrayType) src).getGenericComponentType(), fallback);
+        } else if (src instanceof WildcardType) {
+            WildcardType wildcard = (WildcardType) src;
+            Type[] bounds = wildcard.getLowerBounds().length > 0 ? wildcard.getLowerBounds()
+                    : wildcard.getUpperBounds();
+            result = typeToClass(bounds[0], fallback);
         }
         if (result == null) {
             result = fallback;

@@ -266,6 +266,30 @@
         {
           "name": "<init>",
           "parameterTypes": []
+        },
+        {
+          "name": "createParameterHandler",
+          "parameterTypes": [
+            "org.apache.ibatis.mapping.MappedStatement",
+            "java.lang.Object",
+            "org.apache.ibatis.mapping.BoundSql"
+          ]
+        },
+        {
+          "name": "createSqlSource",
+          "parameterTypes": [
+            "org.apache.ibatis.session.Configuration",
+            "org.apache.ibatis.parsing.XNode",
+            "java.lang.Class"
+          ]
+        },
+        {
+          "name": "createSqlSource",
+          "parameterTypes": [
+            "org.apache.ibatis.session.Configuration",
+            "java.lang.String",
+            "java.lang.Class"
+          ]
         }
       ]
     }

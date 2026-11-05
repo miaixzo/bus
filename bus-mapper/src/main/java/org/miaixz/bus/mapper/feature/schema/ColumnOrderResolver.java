@@ -160,6 +160,12 @@ public class ColumnOrderResolver {
 
     /**
      * Validates list syntax and duplicate names at the same declaration level, even when later replaced.
+     *
+     * @param table     the effective entity table metadata
+     * @param source    the class declaring the column-order rule
+     * @param names     the declared property names
+     * @param mentioned names already declared at the same hierarchy level
+     * @throws IllegalArgumentException if a name is blank or duplicated at the same declaration level
      */
     private void validateDeclaration(TableMeta table, Class<?> source, String[] names, Set<String> mentioned) {
         for (String name : names) {
@@ -174,6 +180,12 @@ public class ColumnOrderResolver {
 
     /**
      * Validates a surviving rule against the final mapped properties.
+     *
+     * @param table   the effective entity table metadata
+     * @param source  the class declaring the column-order rule
+     * @param name    the property name to validate
+     * @param columns the final mapped properties and their columns
+     * @throws IllegalArgumentException if the property is not mapped
      */
     private void validateMapped(TableMeta table, Class<?> source, String name, Map<String, ColumnMeta> columns) {
         if (!columns.containsKey(name)) {
@@ -183,6 +195,11 @@ public class ColumnOrderResolver {
 
     /**
      * Builds a configuration error identifying both the effective entity and the rule source.
+     *
+     * @param table  the effective entity table metadata
+     * @param source the class declaring the column-order rule
+     * @param reason the configuration error description
+     * @return an exception identifying the entity, declaration source and reason
      */
     private IllegalArgumentException invalid(TableMeta table, Class<?> source, String reason) {
         return new IllegalArgumentException("Invalid @ColumnOrder for " + table.entityClass().getName()
