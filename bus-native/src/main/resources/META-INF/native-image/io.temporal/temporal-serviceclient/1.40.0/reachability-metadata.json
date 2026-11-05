@@ -1,0 +1,39 @@
+{
+  "reflection": [
+    {
+      "type": "io.temporal.api.common.v1.Payload",
+      "methods": [
+        {
+          "name": "getData",
+          "parameterTypes": []
+        },
+        {
+          "name": "newBuilder",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "io.temporal.api.common.v1.Payload$Builder",
+      "methods": [
+        {
+          "name": "build",
+          "parameterTypes": []
+        },
+        {
+          "name": "putMetadata",
+          "parameterTypes": [
+            "java.lang.String",
+            "com.google.protobuf.ByteString"
+          ]
+        },
+        {
+          "name": "setData",
+          "parameterTypes": [
+            "com.google.protobuf.ByteString"
+          ]
+        }
+      ]
+    }
+  ]
+}

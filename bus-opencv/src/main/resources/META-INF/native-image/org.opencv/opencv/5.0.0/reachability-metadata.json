@@ -23454,6 +23454,668 @@
           ]
         }
       ]
+    },
+    {
+      "type": "org.opencv.core.CleanableMat",
+      "fields": [
+        {
+          "name": "cleaner"
+        },
+        {
+          "name": "nativeObj"
+        }
+      ]
+    },
+    {
+      "type": "org.opencv.core.Mat",
+      "methods": [
+        {
+          "name": "adjustROI",
+          "parameterTypes": [
+            "int",
+            "int",
+            "int",
+            "int"
+          ]
+        },
+        {
+          "name": "assignTo",
+          "parameterTypes": [
+            "org.opencv.core.Mat",
+            "int"
+          ]
+        },
+        {
+          "name": "assignTo",
+          "parameterTypes": [
+            "org.opencv.core.Mat"
+          ]
+        },
+        {
+          "name": "at",
+          "parameterTypes": [
+            "java.lang.Class",
+            "int",
+            "int"
+          ]
+        },
+        {
+          "name": "at",
+          "parameterTypes": [
+            "java.lang.Class",
+            "int[]"
+          ]
+        },
+        {
+          "name": "channels",
+          "parameterTypes": []
+        },
+        {
+          "name": "checkVector",
+          "parameterTypes": [
+            "int",
+            "int",
+            "boolean"
+          ]
+        },
+        {
+          "name": "checkVector",
+          "parameterTypes": [
+            "int",
+            "int"
+          ]
+        },
+        {
+          "name": "checkVector",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "clone",
+          "parameterTypes": []
+        },
+        {
+          "name": "col",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "colRange",
+          "parameterTypes": [
+            "int",
+            "int"
+          ]
+        },
+        {
+          "name": "colRange",
+          "parameterTypes": [
+            "org.opencv.core.Range"
+          ]
+        },
+        {
+          "name": "cols",
+          "parameterTypes": []
+        },
+        {
+          "name": "convertTo",
+          "parameterTypes": [
+            "org.opencv.core.Mat",
+            "int",
+            "double",
+            "double"
+          ]
+        },
+        {
+          "name": "convertTo",
+          "parameterTypes": [
+            "org.opencv.core.Mat",
+            "int",
+            "double"
+          ]
+        },
+        {
+          "name": "convertTo",
+          "parameterTypes": [
+            "org.opencv.core.Mat",
+            "int"
+          ]
+        },
+        {
+          "name": "copySize",
+          "parameterTypes": [
+            "org.opencv.core.Mat"
+          ]
+        },
+        {
+          "name": "copyTo",
+          "parameterTypes": [
+            "org.opencv.core.Mat",
+            "org.opencv.core.Mat"
+          ]
+        },
+        {
+          "name": "copyTo",
+          "parameterTypes": [
+            "org.opencv.core.Mat"
+          ]
+        },
+        {
+          "name": "create",
+          "parameterTypes": [
+            "int",
+            "int",
+            "int"
+          ]
+        },
+        {
+          "name": "create",
+          "parameterTypes": [
+            "int[]",
+            "int"
+          ]
+        },
+        {
+          "name": "create",
+          "parameterTypes": [
+            "org.opencv.core.Size",
+            "int"
+          ]
+        },
+        {
+          "name": "cross",
+          "parameterTypes": [
+            "org.opencv.core.Mat"
+          ]
+        },
+        {
+          "name": "dataAddr",
+          "parameterTypes": []
+        },
+        {
+          "name": "depth",
+          "parameterTypes": []
+        },
+        {
+          "name": "diag",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "diag",
+          "parameterTypes": [
+            "org.opencv.core.Mat"
+          ]
+        },
+        {
+          "name": "diag",
+          "parameterTypes": []
+        },
+        {
+          "name": "dims",
+          "parameterTypes": []
+        },
+        {
+          "name": "dot",
+          "parameterTypes": [
+            "org.opencv.core.Mat"
+          ]
+        },
+        {
+          "name": "dump",
+          "parameterTypes": []
+        },
+        {
+          "name": "elemSize",
+          "parameterTypes": []
+        },
+        {
+          "name": "elemSize1",
+          "parameterTypes": []
+        },
+        {
+          "name": "empty",
+          "parameterTypes": []
+        },
+        {
+          "name": "eye",
+          "parameterTypes": [
+            "int",
+            "int",
+            "int"
+          ]
+        },
+        {
+          "name": "eye",
+          "parameterTypes": [
+            "org.opencv.core.Size",
+            "int"
+          ]
+        },
+        {
+          "name": "get",
+          "parameterTypes": [
+            "int",
+            "int",
+            "byte[]"
+          ]
+        },
+        {
+          "name": "get",
+          "parameterTypes": [
+            "int",
+            "int",
+            "double[]"
+          ]
+        },
+        {
+          "name": "get",
+          "parameterTypes": [
+            "int",
+            "int",
+            "float[]"
+          ]
+        },
+        {
+          "name": "get",
+          "parameterTypes": [
+            "int",
+            "int",
+            "int[]"
+          ]
+        },
+        {
+          "name": "get",
+          "parameterTypes": [
+            "int",
+            "int",
+            "short[]"
+          ]
+        },
+        {
+          "name": "get",
+          "parameterTypes": [
+            "int",
+            "int"
+          ]
+        },
+        {
+          "name": "get",
+          "parameterTypes": [
+            "int[]",
+            "byte[]"
+          ]
+        },
+        {
+          "name": "get",
+          "parameterTypes": [
+            "int[]",
+            "double[]"
+          ]
+        },
+        {
+          "name": "get",
+          "parameterTypes": [
+            "int[]",
+            "float[]"
+          ]
+        },
+        {
+          "name": "get",
+          "parameterTypes": [
+            "int[]",
+            "int[]"
+          ]
+        },
+        {
+          "name": "get",
+          "parameterTypes": [
+            "int[]",
+            "short[]"
+          ]
+        },
+        {
+          "name": "get",
+          "parameterTypes": [
+            "int[]"
+          ]
+        },
+        {
+          "name": "getNativeObjAddr",
+          "parameterTypes": []
+        },
+        {
+          "name": "height",
+          "parameterTypes": []
+        },
+        {
+          "name": "inv",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "inv",
+          "parameterTypes": []
+        },
+        {
+          "name": "isContinuous",
+          "parameterTypes": []
+        },
+        {
+          "name": "isSubmatrix",
+          "parameterTypes": []
+        },
+        {
+          "name": "locateROI",
+          "parameterTypes": [
+            "org.opencv.core.Size",
+            "org.opencv.core.Point"
+          ]
+        },
+        {
+          "name": "matMul",
+          "parameterTypes": [
+            "org.opencv.core.Mat"
+          ]
+        },
+        {
+          "name": "mul",
+          "parameterTypes": [
+            "org.opencv.core.Mat",
+            "double"
+          ]
+        },
+        {
+          "name": "mul",
+          "parameterTypes": [
+            "org.opencv.core.Mat"
+          ]
+        },
+        {
+          "name": "ones",
+          "parameterTypes": [
+            "int",
+            "int",
+            "int"
+          ]
+        },
+        {
+          "name": "ones",
+          "parameterTypes": [
+            "int[]",
+            "int"
+          ]
+        },
+        {
+          "name": "ones",
+          "parameterTypes": [
+            "org.opencv.core.Size",
+            "int"
+          ]
+        },
+        {
+          "name": "push_back",
+          "parameterTypes": [
+            "org.opencv.core.Mat"
+          ]
+        },
+        {
+          "name": "put",
+          "parameterTypes": [
+            "int",
+            "int",
+            "byte[]",
+            "int",
+            "int"
+          ]
+        },
+        {
+          "name": "put",
+          "parameterTypes": [
+            "int",
+            "int",
+            "byte[]"
+          ]
+        },
+        {
+          "name": "put",
+          "parameterTypes": [
+            "int",
+            "int",
+            "double[]"
+          ]
+        },
+        {
+          "name": "put",
+          "parameterTypes": [
+            "int",
+            "int",
+            "float[]"
+          ]
+        },
+        {
+          "name": "put",
+          "parameterTypes": [
+            "int",
+            "int",
+            "int[]"
+          ]
+        },
+        {
+          "name": "put",
+          "parameterTypes": [
+            "int",
+            "int",
+            "short[]"
+          ]
+        },
+        {
+          "name": "put",
+          "parameterTypes": [
+            "int[]",
+            "byte[]",
+            "int",
+            "int"
+          ]
+        },
+        {
+          "name": "put",
+          "parameterTypes": [
+            "int[]",
+            "byte[]"
+          ]
+        },
+        {
+          "name": "put",
+          "parameterTypes": [
+            "int[]",
+            "double[]"
+          ]
+        },
+        {
+          "name": "put",
+          "parameterTypes": [
+            "int[]",
+            "float[]"
+          ]
+        },
+        {
+          "name": "put",
+          "parameterTypes": [
+            "int[]",
+            "int[]"
+          ]
+        },
+        {
+          "name": "put",
+          "parameterTypes": [
+            "int[]",
+            "short[]"
+          ]
+        },
+        {
+          "name": "reshape",
+          "parameterTypes": [
+            "int",
+            "int"
+          ]
+        },
+        {
+          "name": "reshape",
+          "parameterTypes": [
+            "int",
+            "int[]"
+          ]
+        },
+        {
+          "name": "reshape",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "row",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "rowRange",
+          "parameterTypes": [
+            "int",
+            "int"
+          ]
+        },
+        {
+          "name": "rowRange",
+          "parameterTypes": [
+            "org.opencv.core.Range"
+          ]
+        },
+        {
+          "name": "rows",
+          "parameterTypes": []
+        },
+        {
+          "name": "setTo",
+          "parameterTypes": [
+            "org.opencv.core.Mat",
+            "org.opencv.core.Mat"
+          ]
+        },
+        {
+          "name": "setTo",
+          "parameterTypes": [
+            "org.opencv.core.Mat"
+          ]
+        },
+        {
+          "name": "setTo",
+          "parameterTypes": [
+            "org.opencv.core.Scalar",
+            "org.opencv.core.Mat"
+          ]
+        },
+        {
+          "name": "setTo",
+          "parameterTypes": [
+            "org.opencv.core.Scalar"
+          ]
+        },
+        {
+          "name": "size",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "size",
+          "parameterTypes": []
+        },
+        {
+          "name": "step1",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "step1",
+          "parameterTypes": []
+        },
+        {
+          "name": "submat",
+          "parameterTypes": [
+            "int",
+            "int",
+            "int",
+            "int"
+          ]
+        },
+        {
+          "name": "submat",
+          "parameterTypes": [
+            "org.opencv.core.Range",
+            "org.opencv.core.Range"
+          ]
+        },
+        {
+          "name": "submat",
+          "parameterTypes": [
+            "org.opencv.core.Range[]"
+          ]
+        },
+        {
+          "name": "submat",
+          "parameterTypes": [
+            "org.opencv.core.Rect"
+          ]
+        },
+        {
+          "name": "t",
+          "parameterTypes": []
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "total",
+          "parameterTypes": []
+        },
+        {
+          "name": "type",
+          "parameterTypes": []
+        },
+        {
+          "name": "width",
+          "parameterTypes": []
+        },
+        {
+          "name": "zeros",
+          "parameterTypes": [
+            "int",
+            "int",
+            "int"
+          ]
+        },
+        {
+          "name": "zeros",
+          "parameterTypes": [
+            "int[]",
+            "int"
+          ]
+        },
+        {
+          "name": "zeros",
+          "parameterTypes": [
+            "org.opencv.core.Size",
+            "int"
+          ]
+        }
+      ]
     }
   ],
   "resources": [

@@ -1,0 +1,7 @@
+[
+  {
+    "latest": true,
+    "metadata-version": "1.28.0",
+    "description": "Conditional Bus integration metadata only; supplements upstream metadata without replacing it."
+  }
+]

@@ -157,6 +157,11 @@
         </dependency>
         <dependency>
             <groupId>org.miaixz</groupId>
+            <artifactId>bus-native</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.miaixz</groupId>
             <artifactId>bus-notify</artifactId>
             <optional>true</optional>
         </dependency>

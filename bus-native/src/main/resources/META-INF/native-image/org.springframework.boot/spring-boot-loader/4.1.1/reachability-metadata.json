@@ -1,0 +1,63 @@
+{
+  "reflection": [
+    {
+      "type": "org.springframework.boot.loader.launch.PropertiesLauncher",
+      "fields": [
+        {
+          "name": "ARGS"
+        },
+        {
+          "name": "CONFIG_LOCATION"
+        },
+        {
+          "name": "CONFIG_NAME"
+        },
+        {
+          "name": "HOME"
+        },
+        {
+          "name": "MAIN"
+        },
+        {
+          "name": "PATH"
+        },
+        {
+          "name": "SET_SYSTEM_PROPERTIES"
+        }
+      ],
+      "methods": [
+        {
+          "name": "toCamelCase",
+          "parameterTypes": [
+            "java.lang.CharSequence"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.springframework.boot.loader.net.protocol.jar.Handler",
+      "methods": [
+        {
+          "name": "clearCache",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.springframework.boot.loader.net.protocol.jar.JarUrlClassLoader",
+      "condition": {
+        "typeReached": "org.springframework.boot.loader.launch.LaunchedClassLoader"
+      },
+      "methods": [
+        {
+          "name": "clearCache",
+          "parameterTypes": []
+        },
+        {
+          "name": "close",
+          "parameterTypes": []
+        }
+      ]
+    }
+  ]
+}

@@ -4052,42 +4052,6 @@
           "parameterTypes": []
         }
       ]
-    },
-    {
-      "type": "org.springframework.context.SmartLifecycle",
-      "fields": [
-        {
-          "name": "DEFAULT_PHASE"
-        }
-      ],
-      "methods": [
-        {
-          "name": "getPhase",
-          "parameterTypes": []
-        },
-        {
-          "name": "isAutoStartup",
-          "parameterTypes": []
-        },
-        {
-          "name": "stop",
-          "parameterTypes": [
-            "java.lang.Runnable"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.springframework.web.server.WebFilter",
-      "methods": [
-        {
-          "name": "filter",
-          "parameterTypes": [
-            "org.springframework.web.server.ServerWebExchange",
-            "org.springframework.web.server.WebFilterChain"
-          ]
-        }
-      ]
     }
   ]
 }

@@ -1399,10 +1399,6 @@
       "glob": "logging.properties"
     },
     {
-      "module": "org.apache.logging.log4j",
-      "glob": "log4j2.StatusLogger.properties"
-    },
-    {
       "glob": "logback-spring.groovy"
     },
     {

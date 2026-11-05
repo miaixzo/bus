@@ -273,6 +273,13 @@ META-INF/services/org.miaixz.bus.logger.Factory
 可访问性元数据涵盖服务加载工厂和精确的动态访问成员。条目按 A-Z 排序。 禁止诸如 `allDeclaredConstructors`、
 `allDeclaredMethods` 和 `allDeclaredFields` 之类的广泛反射补助金。
 
+Log4j Core 2.26.0 及实际解析的 Log4j API 2.25.5 已在各自 JAR 中附带官方原生镜像元数据。
+Bus 不再重复登记 Log4j 构造方法、标准配置资源和插件缓存。Log4j 服务提供者由 GraalVM 默认的
+ServiceLoader 支持处理，请保持该功能启用。Bus 工厂注册、其他日志后端及现有初始化参数保持不变。
+Log4j 本身无需依赖外部可达性元数据仓库；应用使用非标准配置路径或第三方插件时，应按照
+[Log4j 原生镜像指南](https://logging.apache.org/log4j/2.x/graalvm.html) 补充应用所需元数据。
+本次已核对实际依赖 JAR 的覆盖情况，不替代应用级原生镜像测试。
+
 ## 验证边界
 
 Bus包含且不运行任何测试。提供程序、管道、生命周期、元数据、AOT 和本机映像测试均维护在 兄弟 Abarth 存储库。Bus构建必须明确跳过测试。
