@@ -1329,9 +1329,6 @@
     },
     {
       "type": "org.miaixz.bus.vortex.magic.Performance",
-      "allDeclaredConstructors": true,
-      "allDeclaredFields": true,
-      "allDeclaredMethods": true,
       "fields": [
         {
           "name": "directMemoryHighWatermark"
@@ -1407,6 +1404,48 @@
         },
         {
           "name": "timestampToleranceMinutes"
+        },
+        {
+          "name": "multipartMemoryThresholdBytes"
+        },
+        {
+          "name": "requestBufferBudgetBytes"
+        },
+        {
+          "name": "responseBufferBudgetBytes"
+        },
+        {
+          "name": "transformBufferBudgetBytes"
+        },
+        {
+          "name": "maxTransformResponseSize"
+        },
+        {
+          "name": "bufferAcquireTimeoutSeconds"
+        },
+        {
+          "name": "maxTotalStreamingRequests"
+        },
+        {
+          "name": "maxDownloadRequests"
+        },
+        {
+          "name": "maxRealtimeStreamingRequests"
+        },
+        {
+          "name": "memorySampleIntervalMillis"
+        },
+        {
+          "name": "writeBufferLowWatermarkBytes"
+        },
+        {
+          "name": "writeBufferHighWatermarkBytes"
+        },
+        {
+          "name": "downloadNoProgressTimeoutSeconds"
+        },
+        {
+          "name": "downloadMinimumBytesPerSecond"
         }
       ],
       "methods": [
@@ -1773,13 +1812,207 @@
           "parameterTypes": [
             "int"
           ]
+        },
+        {
+          "name": "$default$multipartMemoryThresholdBytes",
+          "parameterTypes": []
+        },
+        {
+          "name": "$default$requestBufferBudgetBytes",
+          "parameterTypes": []
+        },
+        {
+          "name": "$default$responseBufferBudgetBytes",
+          "parameterTypes": []
+        },
+        {
+          "name": "$default$transformBufferBudgetBytes",
+          "parameterTypes": []
+        },
+        {
+          "name": "$default$maxTransformResponseSize",
+          "parameterTypes": []
+        },
+        {
+          "name": "$default$bufferAcquireTimeoutSeconds",
+          "parameterTypes": []
+        },
+        {
+          "name": "$default$maxTotalStreamingRequests",
+          "parameterTypes": []
+        },
+        {
+          "name": "$default$maxDownloadRequests",
+          "parameterTypes": []
+        },
+        {
+          "name": "$default$maxRealtimeStreamingRequests",
+          "parameterTypes": []
+        },
+        {
+          "name": "$default$memorySampleIntervalMillis",
+          "parameterTypes": []
+        },
+        {
+          "name": "$default$writeBufferLowWatermarkBytes",
+          "parameterTypes": []
+        },
+        {
+          "name": "$default$writeBufferHighWatermarkBytes",
+          "parameterTypes": []
+        },
+        {
+          "name": "$default$downloadNoProgressTimeoutSeconds",
+          "parameterTypes": []
+        },
+        {
+          "name": "$default$downloadMinimumBytesPerSecond",
+          "parameterTypes": []
+        },
+        {
+          "name": "getMultipartMemoryThresholdBytes",
+          "parameterTypes": []
+        },
+        {
+          "name": "getRequestBufferBudgetBytes",
+          "parameterTypes": []
+        },
+        {
+          "name": "getResponseBufferBudgetBytes",
+          "parameterTypes": []
+        },
+        {
+          "name": "getTransformBufferBudgetBytes",
+          "parameterTypes": []
+        },
+        {
+          "name": "getMaxTransformResponseSize",
+          "parameterTypes": []
+        },
+        {
+          "name": "getBufferAcquireTimeoutSeconds",
+          "parameterTypes": []
+        },
+        {
+          "name": "getMaxTotalStreamingRequests",
+          "parameterTypes": []
+        },
+        {
+          "name": "getMaxDownloadRequests",
+          "parameterTypes": []
+        },
+        {
+          "name": "getMaxRealtimeStreamingRequests",
+          "parameterTypes": []
+        },
+        {
+          "name": "getMemorySampleIntervalMillis",
+          "parameterTypes": []
+        },
+        {
+          "name": "getWriteBufferLowWatermarkBytes",
+          "parameterTypes": []
+        },
+        {
+          "name": "getWriteBufferHighWatermarkBytes",
+          "parameterTypes": []
+        },
+        {
+          "name": "getDownloadNoProgressTimeoutSeconds",
+          "parameterTypes": []
+        },
+        {
+          "name": "getDownloadMinimumBytesPerSecond",
+          "parameterTypes": []
+        },
+        {
+          "name": "setMultipartMemoryThresholdBytes",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "setRequestBufferBudgetBytes",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "setResponseBufferBudgetBytes",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "setTransformBufferBudgetBytes",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "setMaxTransformResponseSize",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "setBufferAcquireTimeoutSeconds",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "setMaxTotalStreamingRequests",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "setMaxDownloadRequests",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "setMaxRealtimeStreamingRequests",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "setMemorySampleIntervalMillis",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "setWriteBufferLowWatermarkBytes",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "setWriteBufferHighWatermarkBytes",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "setDownloadNoProgressTimeoutSeconds",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "setDownloadMinimumBytesPerSecond",
+          "parameterTypes": [
+            "long"
+          ]
         }
       ]
     },
     {
       "type": "org.miaixz.bus.vortex.magic.Performance$PerformanceBuilder",
-      "allDeclaredConstructors": true,
-      "allDeclaredMethods": true,
       "methods": [
         {
           "name": "<init>",
@@ -1901,6 +2134,134 @@
         },
         {
           "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "multipartMemoryThresholdBytes",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "maxBufferedRequestSize",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "maxBufferedResponseSize",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "requestBufferBudgetBytes",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "responseBufferBudgetBytes",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "transformBufferBudgetBytes",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "maxTransformResponseSize",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "bufferAcquireTimeoutSeconds",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "maxInFlightRequests",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "maxTotalStreamingRequests",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "maxDownloadRequests",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "maxRealtimeStreamingRequests",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "directMemoryHighWatermark",
+          "parameterTypes": [
+            "double"
+          ]
+        },
+        {
+          "name": "directMemoryLowWatermark",
+          "parameterTypes": [
+            "double"
+          ]
+        },
+        {
+          "name": "memorySampleIntervalMillis",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "writeBufferLowWatermarkBytes",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "writeBufferHighWatermarkBytes",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "downloadNoProgressTimeoutSeconds",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "downloadMinimumBytesPerSecond",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "maxRetries",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "self",
+          "parameterTypes": []
+        },
+        {
+          "name": "build",
           "parameterTypes": []
         }
       ]

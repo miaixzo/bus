@@ -10507,9 +10507,46 @@
     },
     {
       "type": "org.miaixz.bus.core.lang.EnumValue$Format",
-      "allDeclaredFields": true,
-      "allDeclaredMethods": true,
-      "allDeclaredConstructors": true
+      "fields": [
+        {
+          "name": "TEXT"
+        },
+        {
+          "name": "JSON"
+        },
+        {
+          "name": "YAML"
+        },
+        {
+          "name": "PROPERTIES"
+        },
+        {
+          "name": "$VALUES"
+        }
+      ],
+      "methods": [
+        {
+          "name": "values",
+          "parameterTypes": []
+        },
+        {
+          "name": "valueOf",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "$values",
+          "parameterTypes": []
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "int"
+          ]
+        }
+      ]
     },
     {
       "type": "org.miaixz.bus.core.lang.EnumValue$Gradient",
@@ -10601,9 +10638,66 @@
     },
     {
       "type": "org.miaixz.bus.core.lang.EnumValue$Phase",
-      "allDeclaredFields": true,
-      "allDeclaredMethods": true,
-      "allDeclaredConstructors": true
+      "fields": [
+        {
+          "name": "DRAFT"
+        },
+        {
+          "name": "ACTIVE"
+        },
+        {
+          "name": "DEPRECATED"
+        },
+        {
+          "name": "DISABLED"
+        },
+        {
+          "name": "key"
+        },
+        {
+          "name": "$VALUES"
+        }
+      ],
+      "methods": [
+        {
+          "name": "values",
+          "parameterTypes": []
+        },
+        {
+          "name": "valueOf",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "key",
+          "parameterTypes": []
+        },
+        {
+          "name": "matches",
+          "parameterTypes": [
+            "java.lang.Integer"
+          ]
+        },
+        {
+          "name": "fromKey",
+          "parameterTypes": [
+            "java.lang.Integer"
+          ]
+        },
+        {
+          "name": "$values",
+          "parameterTypes": []
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "int",
+            "int"
+          ]
+        }
+      ]
     },
     {
       "type": "org.miaixz.bus.core.lang.EnumValue$Sort",
@@ -10645,9 +10739,57 @@
     },
     {
       "type": "org.miaixz.bus.core.lang.EnumValue$Track",
-      "allDeclaredFields": true,
-      "allDeclaredMethods": true,
-      "allDeclaredConstructors": true
+      "fields": [
+        {
+          "name": "STABLE"
+        },
+        {
+          "name": "BETA"
+        },
+        {
+          "name": "CANARY"
+        },
+        {
+          "name": "key"
+        },
+        {
+          "name": "$VALUES"
+        }
+      ],
+      "methods": [
+        {
+          "name": "values",
+          "parameterTypes": []
+        },
+        {
+          "name": "valueOf",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "normalize",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "key",
+          "parameterTypes": []
+        },
+        {
+          "name": "$values",
+          "parameterTypes": []
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "int",
+            "java.lang.String"
+          ]
+        }
+      ]
     },
     {
       "type": "org.miaixz.bus.core.lang.EnumValue$Type",
