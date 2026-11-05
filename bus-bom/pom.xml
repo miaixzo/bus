@@ -145,24 +145,24 @@
         <mybatis.spring.version>4.1.0</mybatis.spring.version>
         <ofdrw.version>2.3.9</ofdrw.version>
         <postgresql.version>42.7.11</postgresql.version>
-        <lombok.version>1.18.46</lombok.version>
+        <lombok.version>1.18.48</lombok.version>
         <reflections.version>0.10.2</reflections.version>
         <spring.boot.version>4.1.1</spring.boot.version>
         <thymeleaf.version>3.1.5.RELEASE</thymeleaf.version>
         <tinylog.version>2.7.0</tinylog.version>
         <yaml.version>2.6</yaml.version>
         <jedis.version>8.0.0</jedis.version>
-        <amazon.s3.version>2.46.15</amazon.s3.version>
+        <amazon.s3.version>2.57.8</amazon.s3.version>
         <maven.groom.version>${groom.version}</maven.groom.version>
-        <maven.spotless.version>3.7.0</maven.spotless.version>
+        <maven.spotless.version>3.10.4</maven.spotless.version>
         <maven.antrun.version>3.2.0</maven.antrun.version>
         <maven.compiler.version>3.15.0</maven.compiler.version>
         <maven.gpg.version>3.2.8</maven.gpg.version>
         <maven.javadoc.version>3.12.0</maven.javadoc.version>
-        <maven.plugin.version>3.15.2</maven.plugin.version>
-        <maven.versions.version>2.21.0</maven.versions.version>
-        <maven.native.version>1.1.2</maven.native.version>
-        <maven.central.version>0.11.0</maven.central.version>
+        <maven.plugin.version>3.16.0</maven.plugin.version>
+        <maven.versions.version>2.23.0</maven.versions.version>
+        <maven.native.version>1.1.18</maven.native.version>
+        <maven.central.version>0.12.0</maven.central.version>
     </properties>
 
     <dependencyManagement>
