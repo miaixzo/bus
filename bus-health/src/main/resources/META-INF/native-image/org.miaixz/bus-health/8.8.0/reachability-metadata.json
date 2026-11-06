@@ -1,6 +1,13 @@
 {
   "reflection": [
     {
+      "type": {
+        "proxy": [
+          "org.miaixz.bus.health.linux.jna.LinuxLibc"
+        ]
+      }
+    },
+    {
       "type": "org.miaixz.bus.health.Builder",
       "methods": [
         {
