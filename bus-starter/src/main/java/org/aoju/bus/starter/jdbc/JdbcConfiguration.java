@@ -151,6 +151,9 @@ public class JdbcConfiguration {
             BeanMap beanMap = BeanMap.create(bean);
             for (Object key : beanMap.keySet()) {
                 Object value = beanMap.get(key);
+                if (null == value) {
+                    continue;
+                }
                 if (StringKit.isNotEmpty(this.properties.getPrivateKey())) {
                     Logger.info("The database connection is securely enabled");
                     if ("url".equals(key)) {

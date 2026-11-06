@@ -68,27 +68,27 @@ public class JdbcProperties {
     /**
      * 获取连接等待超时时间，单位毫秒，默认30000
      */
-    private long connectionTimeout;
+    private Long connectionTimeout;
     /**
      * 连接有效性校验超时时间，单位毫秒，默认5000
      */
-    private long validationTimeout;
+    private Long validationTimeout;
     /**
      * 连接允许空闲的最长时间，单位毫秒，默认600000，0表示永不超时
      */
-    private long idleTimeout;
+    private Long idleTimeout;
     /**
      * 连接在池中的最大存活时间，单位毫秒，默认1800000，应小于数据库的连接超时
      */
-    private long maxLifetime;
+    private Long maxLifetime;
     /**
      * 保活时间，单位毫秒，用于空闲连接的ping探测，默认0表示禁用
      */
-    private long keepaliveTime;
+    private Long keepaliveTime;
     /**
      * 连接泄漏检测阈值，单位毫秒，超过该时间未归还则记录警告，默认0表示禁用
      */
-    private long leakDetectionThreshold;
+    private Long leakDetectionThreshold;
     /**
      * 测试连接是否可用的SQL语句
      */
@@ -96,11 +96,11 @@ public class JdbcProperties {
     /**
      * 连接池中的最小空闲连接数
      */
-    private int minimumIdle;
+    private Integer minimumIdle;
     /**
      * 最大连接池数量
      */
-    private int maximumPoolSize;
+    private Integer maximumPoolSize;
     /**
      * 连接是否自动提交
      */
