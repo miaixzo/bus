@@ -28,11 +28,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import org.opencv.core.CvException;
-import org.opencv.core.CvType;
-import org.opencv.core.Mat;
-import org.opencv.core.MatOfInt;
-import org.opencv.imgcodecs.Imgcodecs;
+import org.miaixz.bus.opencv.core.CvException;
+import org.miaixz.bus.opencv.core.CvType;
+import org.miaixz.bus.opencv.core.Mat;
+import org.miaixz.bus.opencv.core.MatOfInt;
+import org.miaixz.bus.opencv.imgcodecs.Imgcodecs;
 
 import org.miaixz.bus.core.io.file.FileName;
 import org.miaixz.bus.core.xyz.FileKit;

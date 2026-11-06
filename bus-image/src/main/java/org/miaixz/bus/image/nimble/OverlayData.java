@@ -29,10 +29,10 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.IntStream;
 
-import org.opencv.core.Core;
-import org.opencv.core.CvType;
-import org.opencv.core.Mat;
-import org.opencv.core.Scalar;
+import org.miaixz.bus.opencv.core.Core;
+import org.miaixz.bus.opencv.core.CvType;
+import org.miaixz.bus.opencv.core.Mat;
+import org.miaixz.bus.opencv.core.Scalar;
 
 import org.miaixz.bus.image.Builder;
 import org.miaixz.bus.image.Tag;

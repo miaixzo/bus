@@ -34,9 +34,9 @@ import javax.imageio.ImageTypeSpecifier;
 import javax.imageio.metadata.IIOMetadata;
 import javax.imageio.spi.ImageReaderSpi;
 
-import org.opencv.core.*;
-import org.opencv.imgcodecs.Imgcodecs;
-import org.opencv.imgproc.Imgproc;
+import org.miaixz.bus.opencv.core.*;
+import org.miaixz.bus.opencv.imgcodecs.Imgcodecs;
+import org.miaixz.bus.opencv.imgproc.Imgproc;
 
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.tuple.Pair;

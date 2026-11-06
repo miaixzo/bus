@@ -27,10 +27,10 @@ import java.util.Arrays;
 import java.util.Hashtable;
 import java.util.List;
 
-import org.opencv.core.Core;
-import org.opencv.core.CvType;
-import org.opencv.core.Mat;
-import org.opencv.core.MatOfInt;
+import org.miaixz.bus.opencv.core.Core;
+import org.miaixz.bus.opencv.core.CvType;
+import org.miaixz.bus.opencv.core.Mat;
+import org.miaixz.bus.opencv.core.MatOfInt;
 
 /**
  * Conversions between OpenCV Mat and Java2D images (gray and RGB, all OpenCV depths).

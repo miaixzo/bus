@@ -26,8 +26,8 @@ import java.awt.image.DataBufferUShort;
 import java.util.Arrays;
 import java.util.Objects;
 
-import org.opencv.core.CvType;
-import org.opencv.core.Mat;
+import org.miaixz.bus.opencv.core.CvType;
+import org.miaixz.bus.opencv.core.Mat;
 
 /**
  * Defines a lookup table for fast pixel value transformations in image processing.

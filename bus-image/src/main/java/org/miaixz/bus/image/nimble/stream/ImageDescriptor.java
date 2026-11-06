@@ -22,8 +22,8 @@ package org.miaixz.bus.image.nimble.stream;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.opencv.core.Core;
-import org.opencv.core.Core.MinMaxLocResult;
+import org.miaixz.bus.opencv.core.Core;
+import org.miaixz.bus.opencv.core.Core.MinMaxLocResult;
 
 import org.miaixz.bus.image.Builder;
 import org.miaixz.bus.image.Tag;

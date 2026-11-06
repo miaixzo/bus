@@ -21,7 +21,7 @@ package org.miaixz.bus.image.nimble.opencv;
 
 import java.io.IOException;
 
-import org.opencv.core.Core;
+import org.miaixz.bus.opencv.core.Core;
 
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
@@ -34,7 +34,7 @@ import org.miaixz.bus.logger.Logger;
  *
  * @author Kimi Liu
  */
-public class OpenCVNativeLoader extends org.opencv.osgi.OpenCVNativeLoader {
+public class OpenCVNativeLoader extends org.miaixz.bus.opencv.osgi.OpenCVNativeLoader {
 
     /**
      * Whether the native library has completed initialization in this class loader.
@@ -74,7 +74,7 @@ public class OpenCVNativeLoader extends org.opencv.osgi.OpenCVNativeLoader {
                             Symbol.SLASH + Normal.LIB_PROTOCOL_JAR + Symbol.SLASH
                                     + Platform.getNativeLibraryResourcePrefix() + Symbol.SLASH
                                     + System.mapLibraryName(Core.NATIVE_LIBRARY_NAME),
-                            org.opencv.osgi.OpenCVNativeLoader.class);
+                            org.miaixz.bus.opencv.osgi.OpenCVNativeLoader.class);
                 } catch (IOException failure) {
                     e.addSuppressed(failure);
                     throw e;

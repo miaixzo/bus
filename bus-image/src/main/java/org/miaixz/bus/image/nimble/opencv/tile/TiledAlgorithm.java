@@ -19,8 +19,8 @@
 */
 package org.miaixz.bus.image.nimble.opencv.tile;
 
-import org.opencv.core.Mat;
-import org.opencv.core.Rect;
+import org.miaixz.bus.opencv.core.Mat;
+import org.miaixz.bus.opencv.core.Rect;
 
 import org.miaixz.bus.core.lang.Normal;
 

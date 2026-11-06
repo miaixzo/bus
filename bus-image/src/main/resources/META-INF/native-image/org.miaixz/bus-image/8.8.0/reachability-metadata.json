@@ -74273,7 +74273,7 @@
         {
           "name": "closeMat",
           "parameterTypes": [
-            "org.opencv.core.Mat"
+            "org.miaixz.bus.opencv.core.Mat"
           ]
         },
         {
@@ -74438,7 +74438,7 @@
           "parameterTypes": [
             "double",
             "double",
-            "org.opencv.core.Core$MinMaxLocResult"
+            "org.miaixz.bus.opencv.core.Core$MinMaxLocResult"
           ]
         },
         {
@@ -76511,44 +76511,44 @@
             "int",
             "int",
             "int",
-            "org.opencv.core.Scalar"
+            "org.miaixz.bus.opencv.core.Scalar"
           ]
         },
         {
           "name": "<init>",
           "parameterTypes": [
-            "org.opencv.core.Mat",
-            "org.opencv.core.Range"
+            "org.miaixz.bus.opencv.core.Mat",
+            "org.miaixz.bus.opencv.core.Range"
           ]
         },
         {
           "name": "<init>",
           "parameterTypes": [
-            "org.opencv.core.Mat",
-            "org.opencv.core.Range",
-            "org.opencv.core.Range"
+            "org.miaixz.bus.opencv.core.Mat",
+            "org.miaixz.bus.opencv.core.Range",
+            "org.miaixz.bus.opencv.core.Range"
           ]
         },
         {
           "name": "<init>",
           "parameterTypes": [
-            "org.opencv.core.Mat",
-            "org.opencv.core.Rect"
+            "org.miaixz.bus.opencv.core.Mat",
+            "org.miaixz.bus.opencv.core.Rect"
           ]
         },
         {
           "name": "<init>",
           "parameterTypes": [
-            "org.opencv.core.Size",
+            "org.miaixz.bus.opencv.core.Size",
             "int"
           ]
         },
         {
           "name": "<init>",
           "parameterTypes": [
-            "org.opencv.core.Size",
+            "org.miaixz.bus.opencv.core.Size",
             "int",
-            "org.opencv.core.Scalar"
+            "org.miaixz.bus.opencv.core.Scalar"
           ]
         },
         {
@@ -76556,7 +76556,7 @@
           "parameterTypes": [
             "org.miaixz.bus.image.nimble.opencv.PlanarImage",
             "org.miaixz.bus.image.nimble.opencv.PlanarImage",
-            "org.opencv.core.Mat"
+            "org.miaixz.bus.opencv.core.Mat"
           ]
         },
         {
@@ -76566,14 +76566,14 @@
         {
           "name": "filter",
           "parameterTypes": [
-            "org.opencv.core.Mat",
+            "org.miaixz.bus.opencv.core.Mat",
             "org.miaixz.bus.image.nimble.KernelData"
           ]
         },
         {
           "name": "fromMat",
           "parameterTypes": [
-            "org.opencv.core.Mat"
+            "org.miaixz.bus.opencv.core.Mat"
           ]
         },
         {
@@ -76600,15 +76600,15 @@
         {
           "name": "lambda$maxStack$c5817d62$1",
           "parameterTypes": [
-            "org.opencv.core.Mat",
-            "org.opencv.core.Mat"
+            "org.miaixz.bus.opencv.core.Mat",
+            "org.miaixz.bus.opencv.core.Mat"
           ]
         },
         {
           "name": "lambda$minStack$c5817d62$1",
           "parameterTypes": [
-            "org.opencv.core.Mat",
-            "org.opencv.core.Mat"
+            "org.miaixz.bus.opencv.core.Mat",
+            "org.miaixz.bus.opencv.core.Mat"
           ]
         },
         {
@@ -77196,13 +77196,13 @@
         {
           "name": "lookup",
           "parameterTypes": [
-            "org.opencv.core.Mat"
+            "org.miaixz.bus.opencv.core.Mat"
           ]
         },
         {
           "name": "extractSourceData",
           "parameterTypes": [
-            "org.opencv.core.Mat",
+            "org.miaixz.bus.opencv.core.Mat",
             "int"
           ]
         },
@@ -78508,13 +78508,13 @@
           "name": "parseExifParseMetadata",
           "parameterTypes": [
             "java.util.List",
-            "org.opencv.core.MatOfInt"
+            "org.miaixz.bus.opencv.core.MatOfInt"
           ]
         },
         {
           "name": "parseTagRow",
           "parameterTypes": [
-            "org.opencv.core.Mat"
+            "org.miaixz.bus.opencv.core.Mat"
           ]
         }
       ]
@@ -78670,7 +78670,7 @@
         {
           "name": "closeMat",
           "parameterTypes": [
-            "org.opencv.core.Mat"
+            "org.miaixz.bus.opencv.core.Mat"
           ]
         },
         {
@@ -79394,7 +79394,7 @@
           "name": "buildSegmentList",
           "parameterTypes": [
             "org.miaixz.bus.image.nimble.opencv.PlanarImage",
-            "org.opencv.core.Point"
+            "org.miaixz.bus.opencv.core.Point"
           ]
         },
         {
@@ -79402,29 +79402,29 @@
           "parameterTypes": [
             "org.miaixz.bus.image.nimble.opencv.PlanarImage",
             "java.util.List",
-            "org.opencv.core.Mat",
-            "org.opencv.core.Point"
+            "org.miaixz.bus.opencv.core.Mat",
+            "org.miaixz.bus.opencv.core.Point"
           ]
         },
         {
           "name": "buildSegmentListFromFloat",
           "parameterTypes": [
             "java.util.List",
-            "org.opencv.core.Mat"
+            "org.miaixz.bus.opencv.core.Mat"
           ]
         },
         {
           "name": "buildSegmentList",
           "parameterTypes": [
             "java.util.List",
-            "org.opencv.core.Mat"
+            "org.miaixz.bus.opencv.core.Mat"
           ]
         },
         {
           "name": "buildSegmentListFromContours",
           "parameterTypes": [
             "java.util.List",
-            "org.opencv.core.Mat"
+            "org.miaixz.bus.opencv.core.Mat"
           ]
         },
         {
@@ -82431,7 +82431,7 @@
           "name": "setMinMaxPixelValue",
           "parameterTypes": [
             "int",
-            "org.opencv.core.Core$MinMaxLocResult"
+            "org.miaixz.bus.opencv.core.Core$MinMaxLocResult"
           ]
         },
         {
@@ -109433,8 +109433,8 @@
         {
           "name": "compare",
           "parameterTypes": [
-            "org.opencv.core.Mat",
-            "org.opencv.core.Mat"
+            "org.miaixz.bus.opencv.core.Mat",
+            "org.miaixz.bus.opencv.core.Mat"
           ]
         }
       ]
@@ -110279,7 +110279,7 @@
         {
           "name": "getMaskImage",
           "parameterTypes": [
-            "org.opencv.core.Mat",
+            "org.miaixz.bus.opencv.core.Mat",
             "java.awt.Shape",
             "java.lang.Integer",
             "java.lang.Integer"
@@ -110302,13 +110302,13 @@
         {
           "name": "findMinMaxValues",
           "parameterTypes": [
-            "org.opencv.core.Mat"
+            "org.miaixz.bus.opencv.core.Mat"
           ]
         },
         {
           "name": "findMinMaxValues",
           "parameterTypes": [
-            "org.opencv.core.Mat",
+            "org.miaixz.bus.opencv.core.Mat",
             "java.lang.Integer",
             "java.lang.Integer"
           ]
@@ -110323,27 +110323,27 @@
         {
           "name": "minMaxLoc",
           "parameterTypes": [
-            "org.opencv.core.Mat",
-            "org.opencv.core.Mat"
+            "org.miaixz.bus.opencv.core.Mat",
+            "org.miaixz.bus.opencv.core.Mat"
           ]
         },
         {
           "name": "meanStdDev",
           "parameterTypes": [
-            "org.opencv.core.Mat"
+            "org.miaixz.bus.opencv.core.Mat"
           ]
         },
         {
           "name": "meanStdDev",
           "parameterTypes": [
-            "org.opencv.core.Mat",
+            "org.miaixz.bus.opencv.core.Mat",
             "java.awt.Shape"
           ]
         },
         {
           "name": "meanStdDev",
           "parameterTypes": [
-            "org.opencv.core.Mat",
+            "org.miaixz.bus.opencv.core.Mat",
             "java.awt.Shape",
             "java.lang.Integer",
             "java.lang.Integer"
@@ -110352,8 +110352,8 @@
         {
           "name": "meanStdDev",
           "parameterTypes": [
-            "org.opencv.core.Mat",
-            "org.opencv.core.Mat",
+            "org.miaixz.bus.opencv.core.Mat",
+            "org.miaixz.bus.opencv.core.Mat",
             "java.lang.Integer",
             "java.lang.Integer"
           ]
@@ -110361,14 +110361,14 @@
         {
           "name": "createShapeMask",
           "parameterTypes": [
-            "org.opencv.core.Mat",
+            "org.miaixz.bus.opencv.core.Mat",
             "java.awt.Shape"
           ]
         },
         {
           "name": "finalizePreviousSegment",
           "parameterTypes": [
-            "org.opencv.core.MatOfPoint",
+            "org.miaixz.bus.opencv.core.MatOfPoint",
             "java.util.List",
             "java.util.List"
           ]
@@ -110392,34 +110392,34 @@
         {
           "name": "adjustForEqualMinMax",
           "parameterTypes": [
-            "org.opencv.core.Core$MinMaxLocResult"
+            "org.miaixz.bus.opencv.core.Core$MinMaxLocResult"
           ]
         },
         {
           "name": "splitIntoChannels",
           "parameterTypes": [
-            "org.opencv.core.Mat"
+            "org.miaixz.bus.opencv.core.Mat"
           ]
         },
         {
           "name": "releaseChannels",
           "parameterTypes": [
-            "org.opencv.core.Mat",
+            "org.miaixz.bus.opencv.core.Mat",
             "java.util.List"
           ]
         },
         {
           "name": "updateMinMaxResult",
           "parameterTypes": [
-            "org.opencv.core.Core$MinMaxLocResult",
-            "org.opencv.core.Core$MinMaxLocResult"
+            "org.miaixz.bus.opencv.core.Core$MinMaxLocResult",
+            "org.miaixz.bus.opencv.core.Core$MinMaxLocResult"
           ]
         },
         {
           "name": "buildMeanStdDev",
           "parameterTypes": [
-            "org.opencv.core.Mat",
-            "org.opencv.core.Mat"
+            "org.miaixz.bus.opencv.core.Mat",
+            "org.miaixz.bus.opencv.core.Mat"
           ]
         },
         {
@@ -110427,21 +110427,21 @@
           "parameterTypes": [
             "double[][]",
             "java.util.List",
-            "org.opencv.core.Mat"
+            "org.miaixz.bus.opencv.core.Mat"
           ]
         },
         {
           "name": "computePixelCount",
           "parameterTypes": [
-            "org.opencv.core.Mat",
-            "org.opencv.core.Mat"
+            "org.miaixz.bus.opencv.core.Mat",
+            "org.miaixz.bus.opencv.core.Mat"
           ]
         },
         {
           "name": "getPixelPaddingMask",
           "parameterTypes": [
-            "org.opencv.core.Mat",
-            "org.opencv.core.Mat",
+            "org.miaixz.bus.opencv.core.Mat",
+            "org.miaixz.bus.opencv.core.Mat",
             "java.lang.Integer",
             "java.lang.Integer"
           ]
@@ -110456,7 +110456,7 @@
         {
           "name": "createPaddingMask",
           "parameterTypes": [
-            "org.opencv.core.Mat",
+            "org.miaixz.bus.opencv.core.Mat",
             "int",
             "int"
           ]
@@ -110464,8 +110464,8 @@
         {
           "name": "combineMasks",
           "parameterTypes": [
-            "org.opencv.core.Mat",
-            "org.opencv.core.Mat"
+            "org.miaixz.bus.opencv.core.Mat",
+            "org.miaixz.bus.opencv.core.Mat"
           ]
         }
       ]
@@ -110480,7 +110480,7 @@
         {
           "name": "toBufferedImage",
           "parameterTypes": [
-            "org.opencv.core.Mat"
+            "org.miaixz.bus.opencv.core.Mat"
           ]
         },
         {
@@ -110492,7 +110492,7 @@
         {
           "name": "releaseMat",
           "parameterTypes": [
-            "org.opencv.core.Mat"
+            "org.miaixz.bus.opencv.core.Mat"
           ]
         },
         {
@@ -110590,7 +110590,7 @@
         {
           "name": "populateRasterFromMat",
           "parameterTypes": [
-            "org.opencv.core.Mat",
+            "org.miaixz.bus.opencv.core.Mat",
             "java.awt.image.WritableRaster"
           ]
         },
@@ -110738,7 +110738,7 @@
         {
           "name": "writeImage",
           "parameterTypes": [
-            "org.opencv.core.Mat",
+            "org.miaixz.bus.opencv.core.Mat",
             "java.nio.file.Path"
           ]
         },
@@ -110752,22 +110752,22 @@
         {
           "name": "writeImage",
           "parameterTypes": [
-            "org.opencv.core.Mat",
+            "org.miaixz.bus.opencv.core.Mat",
             "java.nio.file.Path",
-            "org.opencv.core.MatOfInt"
+            "org.miaixz.bus.opencv.core.MatOfInt"
           ]
         },
         {
           "name": "writePNG",
           "parameterTypes": [
-            "org.opencv.core.Mat",
+            "org.miaixz.bus.opencv.core.Mat",
             "java.nio.file.Path"
           ]
         },
         {
           "name": "writeThumbnail",
           "parameterTypes": [
-            "org.opencv.core.Mat",
+            "org.miaixz.bus.opencv.core.Mat",
             "java.nio.file.Path",
             "int"
           ]
@@ -110784,15 +110784,15 @@
           "name": "handleImageConversion",
           "parameterTypes": [
             "java.nio.file.Path",
-            "org.opencv.core.Mat"
+            "org.miaixz.bus.opencv.core.Mat"
           ]
         },
         {
           "name": "writeImageInternal",
           "parameterTypes": [
-            "org.opencv.core.Mat",
+            "org.miaixz.bus.opencv.core.Mat",
             "java.nio.file.Path",
-            "org.opencv.core.MatOfInt"
+            "org.miaixz.bus.opencv.core.MatOfInt"
           ]
         },
         {
@@ -110810,20 +110810,20 @@
         {
           "name": "convertForPngIfNeeded",
           "parameterTypes": [
-            "org.opencv.core.Mat"
+            "org.miaixz.bus.opencv.core.Mat"
           ]
         },
         {
           "name": "createThumbnail",
           "parameterTypes": [
-            "org.opencv.core.Mat",
+            "org.miaixz.bus.opencv.core.Mat",
             "int"
           ]
         },
         {
           "name": "calculateTargetSize",
           "parameterTypes": [
-            "org.opencv.core.Mat",
+            "org.miaixz.bus.opencv.core.Mat",
             "java.awt.Dimension",
             "boolean"
           ]
@@ -110831,14 +110831,14 @@
         {
           "name": "createThumbnailFromSize",
           "parameterTypes": [
-            "org.opencv.core.Mat",
+            "org.miaixz.bus.opencv.core.Mat",
             "java.awt.Dimension"
           ]
         },
         {
           "name": "shouldScale",
           "parameterTypes": [
-            "org.opencv.core.Mat",
+            "org.miaixz.bus.opencv.core.Mat",
             "java.awt.Dimension"
           ]
         },
@@ -110859,20 +110859,20 @@
         {
           "name": "validateSource",
           "parameterTypes": [
-            "org.opencv.core.Mat"
+            "org.miaixz.bus.opencv.core.Mat"
           ]
         },
         {
           "name": "validateWriteParameters",
           "parameterTypes": [
-            "org.opencv.core.Mat",
+            "org.miaixz.bus.opencv.core.Mat",
             "java.nio.file.Path"
           ]
         },
         {
           "name": "shareData",
           "parameterTypes": [
-            "org.opencv.core.Mat"
+            "org.miaixz.bus.opencv.core.Mat"
           ]
         }
       ]
@@ -110896,21 +110896,21 @@
         {
           "name": "crop",
           "parameterTypes": [
-            "org.opencv.core.Mat",
+            "org.miaixz.bus.opencv.core.Mat",
             "java.awt.Rectangle"
           ]
         },
         {
           "name": "scale",
           "parameterTypes": [
-            "org.opencv.core.Mat",
+            "org.miaixz.bus.opencv.core.Mat",
             "java.awt.Dimension"
           ]
         },
         {
           "name": "scale",
           "parameterTypes": [
-            "org.opencv.core.Mat",
+            "org.miaixz.bus.opencv.core.Mat",
             "java.awt.Dimension",
             "java.lang.Integer"
           ]
@@ -110918,14 +110918,14 @@
         {
           "name": "applyLUT",
           "parameterTypes": [
-            "org.opencv.core.Mat",
+            "org.miaixz.bus.opencv.core.Mat",
             "byte[][]"
           ]
         },
         {
           "name": "rescaleToByte",
           "parameterTypes": [
-            "org.opencv.core.Mat",
+            "org.miaixz.bus.opencv.core.Mat",
             "double",
             "double"
           ]
@@ -110939,38 +110939,38 @@
         {
           "name": "bitwiseAnd",
           "parameterTypes": [
-            "org.opencv.core.Mat",
+            "org.miaixz.bus.opencv.core.Mat",
             "int"
           ]
         },
         {
           "name": "getRotatedImage",
           "parameterTypes": [
-            "org.opencv.core.Mat",
+            "org.miaixz.bus.opencv.core.Mat",
             "int"
           ]
         },
         {
           "name": "flip",
           "parameterTypes": [
-            "org.opencv.core.Mat",
+            "org.miaixz.bus.opencv.core.Mat",
             "int"
           ]
         },
         {
           "name": "warpAffine",
           "parameterTypes": [
-            "org.opencv.core.Mat",
-            "org.opencv.core.Mat",
-            "org.opencv.core.Size",
+            "org.miaixz.bus.opencv.core.Mat",
+            "org.miaixz.bus.opencv.core.Mat",
+            "org.miaixz.bus.opencv.core.Size",
             "java.lang.Integer"
           ]
         },
         {
           "name": "mergeImages",
           "parameterTypes": [
-            "org.opencv.core.Mat",
-            "org.opencv.core.Mat",
+            "org.miaixz.bus.opencv.core.Mat",
+            "org.miaixz.bus.opencv.core.Mat",
             "double",
             "double"
           ]
@@ -110978,15 +110978,15 @@
         {
           "name": "overlay",
           "parameterTypes": [
-            "org.opencv.core.Mat",
-            "org.opencv.core.Mat",
+            "org.miaixz.bus.opencv.core.Mat",
+            "org.miaixz.bus.opencv.core.Mat",
             "java.awt.Color"
           ]
         },
         {
           "name": "overlay",
           "parameterTypes": [
-            "org.opencv.core.Mat",
+            "org.miaixz.bus.opencv.core.Mat",
             "java.awt.image.RenderedImage",
             "java.awt.Color"
           ]
@@ -111002,7 +111002,7 @@
         {
           "name": "applyCropMask",
           "parameterTypes": [
-            "org.opencv.core.Mat",
+            "org.miaixz.bus.opencv.core.Mat",
             "java.awt.Rectangle",
             "double"
           ]
@@ -111010,7 +111010,7 @@
         {
           "name": "applyShutter",
           "parameterTypes": [
-            "org.opencv.core.Mat",
+            "org.miaixz.bus.opencv.core.Mat",
             "java.awt.Shape",
             "java.awt.Color"
           ]
@@ -111018,7 +111018,7 @@
         {
           "name": "applyShutter",
           "parameterTypes": [
-            "org.opencv.core.Mat",
+            "org.miaixz.bus.opencv.core.Mat",
             "java.awt.image.RenderedImage",
             "java.awt.Color"
           ]
@@ -111038,22 +111038,22 @@
         {
           "name": "toBgr",
           "parameterTypes": [
-            "org.opencv.core.Mat"
+            "org.miaixz.bus.opencv.core.Mat"
           ]
         },
         {
           "name": "applyGrayscaleOverlay",
           "parameterTypes": [
-            "org.opencv.core.Mat",
-            "org.opencv.core.Mat",
+            "org.miaixz.bus.opencv.core.Mat",
+            "org.miaixz.bus.opencv.core.Mat",
             "java.lang.Integer"
           ]
         },
         {
           "name": "applyColorOverlay",
           "parameterTypes": [
-            "org.opencv.core.Mat",
-            "org.opencv.core.Mat",
+            "org.miaixz.bus.opencv.core.Mat",
+            "org.miaixz.bus.opencv.core.Mat",
             "java.awt.Color"
           ]
         },
@@ -111067,14 +111067,14 @@
         {
           "name": "getMaxColor",
           "parameterTypes": [
-            "org.opencv.core.Mat",
+            "org.miaixz.bus.opencv.core.Mat",
             "java.awt.Color"
           ]
         },
         {
           "name": "getMaxColorForOverlay",
           "parameterTypes": [
-            "org.opencv.core.Mat",
+            "org.miaixz.bus.opencv.core.Mat",
             "java.awt.Color"
           ]
         },
@@ -111175,7 +111175,7 @@
         {
           "name": "assignTo",
           "parameterTypes": [
-            "org.opencv.core.Mat"
+            "org.miaixz.bus.opencv.core.Mat"
           ]
         },
         {
@@ -111308,7 +111308,7 @@
         {
           "name": "drawShape",
           "parameterTypes": [
-            "org.opencv.core.Mat",
+            "org.miaixz.bus.opencv.core.Mat",
             "org.miaixz.bus.image.nimble.opencv.op.MaskArea"
           ]
         },
@@ -111336,21 +111336,21 @@
         {
           "name": "<init>",
           "parameterTypes": [
-            "org.opencv.core.MatOfPoint",
+            "org.miaixz.bus.opencv.core.MatOfPoint",
             "int"
           ]
         },
         {
           "name": "<init>",
           "parameterTypes": [
-            "org.opencv.core.MatOfPoint2f",
+            "org.miaixz.bus.opencv.core.MatOfPoint2f",
             "int"
           ]
         },
         {
           "name": "<init>",
           "parameterTypes": [
-            "org.opencv.core.Point[]",
+            "org.miaixz.bus.opencv.core.Point[]",
             "int"
           ]
         },
@@ -111372,25 +111372,25 @@
         {
           "name": "toSegment",
           "parameterTypes": [
-            "org.opencv.core.Mat"
+            "org.miaixz.bus.opencv.core.Mat"
           ]
         },
         {
           "name": "toSegment",
           "parameterTypes": [
-            "org.opencv.core.MatOfPoint"
+            "org.miaixz.bus.opencv.core.MatOfPoint"
           ]
         },
         {
           "name": "toSegment",
           "parameterTypes": [
-            "org.opencv.core.MatOfPoint2f"
+            "org.miaixz.bus.opencv.core.MatOfPoint2f"
           ]
         },
         {
           "name": "toSegment",
           "parameterTypes": [
-            "org.opencv.core.Point[]"
+            "org.miaixz.bus.opencv.core.Point[]"
           ]
         },
         {
@@ -111595,8 +111595,8 @@
         {
           "name": "<init>",
           "parameterTypes": [
-            "org.opencv.core.Mat",
-            "org.opencv.core.Mat"
+            "org.miaixz.bus.opencv.core.Mat",
+            "org.miaixz.bus.opencv.core.Mat"
           ]
         },
         {

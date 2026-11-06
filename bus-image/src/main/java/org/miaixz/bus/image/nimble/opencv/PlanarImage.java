@@ -19,8 +19,8 @@
 */
 package org.miaixz.bus.image.nimble.opencv;
 
-import org.opencv.core.Mat;
-import org.opencv.core.Size;
+import org.miaixz.bus.opencv.core.Mat;
+import org.miaixz.bus.opencv.core.Size;
 
 /**
  * Represents a planar image with OpenCV Mat functionality. Provides resource management through AutoCloseable and

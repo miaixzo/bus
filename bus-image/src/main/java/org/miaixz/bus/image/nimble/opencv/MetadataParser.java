@@ -22,8 +22,8 @@ package org.miaixz.bus.image.nimble.opencv;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.opencv.core.Mat;
-import org.opencv.core.MatOfInt;
+import org.miaixz.bus.opencv.core.Mat;
+import org.miaixz.bus.opencv.core.MatOfInt;
 
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;

@@ -24,8 +24,8 @@ import java.awt.image.DataBufferUShort;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.opencv.core.Core.MinMaxLocResult;
-import org.opencv.core.CvType;
+import org.miaixz.bus.opencv.core.Core.MinMaxLocResult;
+import org.miaixz.bus.opencv.core.CvType;
 
 import org.miaixz.bus.core.center.function.FunctionX;
 import org.miaixz.bus.core.xyz.MathKit;

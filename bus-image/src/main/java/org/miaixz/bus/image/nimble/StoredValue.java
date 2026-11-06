@@ -22,7 +22,7 @@ package org.miaixz.bus.image.nimble;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.opencv.core.CvType;
+import org.miaixz.bus.opencv.core.CvType;
 
 import org.miaixz.bus.image.Tag;
 import org.miaixz.bus.image.galaxy.data.Attributes;
