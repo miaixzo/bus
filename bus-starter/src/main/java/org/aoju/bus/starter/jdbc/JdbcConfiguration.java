@@ -154,6 +154,16 @@ public class JdbcConfiguration {
                 if (null == value) {
                     continue;
                 }
+                if (value instanceof JdbcProperties.Hikari) {
+                    BeanMap hikariMap = BeanMap.create(value);
+                    for (Object hikariKey : hikariMap.keySet()) {
+                        Object hikariValue = hikariMap.get(hikariKey);
+                        if (null != hikariValue) {
+                            map.put(StringKit.toString(hikariKey), hikariValue);
+                        }
+                    }
+                    continue;
+                }
                 if (StringKit.isNotEmpty(this.properties.getPrivateKey())) {
                     Logger.info("The database connection is securely enabled");
                     if ("url".equals(key)) {

@@ -62,49 +62,9 @@ public class JdbcProperties {
      */
     private String driverClassName;
     /**
-     * 连接池名称
+     * Hikari 连接池参数，对应配置项 spring.datasource.hikari
      */
-    private String poolName;
-    /**
-     * 获取连接等待超时时间，单位毫秒，默认30000
-     */
-    private Long connectionTimeout;
-    /**
-     * 连接有效性校验超时时间，单位毫秒，默认5000
-     */
-    private Long validationTimeout;
-    /**
-     * 连接允许空闲的最长时间，单位毫秒，默认600000，0表示永不超时
-     */
-    private Long idleTimeout;
-    /**
-     * 连接在池中的最大存活时间，单位毫秒，默认1800000，应小于数据库的连接超时
-     */
-    private Long maxLifetime;
-    /**
-     * 保活时间，单位毫秒，用于空闲连接的ping探测，默认0表示禁用
-     */
-    private Long keepaliveTime;
-    /**
-     * 连接泄漏检测阈值，单位毫秒，超过该时间未归还则记录警告，默认0表示禁用
-     */
-    private Long leakDetectionThreshold;
-    /**
-     * 测试连接是否可用的SQL语句
-     */
-    private String connectionTestQuery;
-    /**
-     * 连接池中的最小空闲连接数
-     */
-    private Integer minimumIdle;
-    /**
-     * 最大连接池数量
-     */
-    private Integer maximumPoolSize;
-    /**
-     * 连接是否自动提交
-     */
-    private Boolean autoCommit;
+    private Hikari hikari;
     /**
      * 数据源加解密信息
      */
@@ -117,5 +77,58 @@ public class JdbcProperties {
      * 多数据源支持
      */
     private List<JdbcProperties> multi;
+
+    /**
+     * HikariCP 连接池参数
+     */
+    @Data
+    public static class Hikari {
+
+        /**
+         * 连接池名称
+         */
+        private String poolName;
+        /**
+         * 获取连接等待超时时间，单位毫秒，默认30000
+         */
+        private Long connectionTimeout;
+        /**
+         * 连接有效性校验超时时间，单位毫秒，默认5000
+         */
+        private Long validationTimeout;
+        /**
+         * 连接允许空闲的最长时间，单位毫秒，默认600000，0表示永不超时
+         */
+        private Long idleTimeout;
+        /**
+         * 连接在池中的最大存活时间，单位毫秒，默认1800000，应小于数据库的连接超时
+         */
+        private Long maxLifetime;
+        /**
+         * 保活时间，单位毫秒，用于空闲连接的ping探测，默认0表示禁用
+         */
+        private Long keepaliveTime;
+        /**
+         * 连接泄漏检测阈值，单位毫秒，超过该时间未归还则记录警告，默认0表示禁用
+         */
+        private Long leakDetectionThreshold;
+        /**
+         * 测试连接是否可用的SQL语句
+         */
+        private String connectionTestQuery;
+        /**
+         * 连接池中的最小空闲连接数
+         */
+        private Integer minimumIdle;
+        /**
+         * 最大连接池数量
+         */
+        private Integer maximumPoolSize;
+        /**
+         * 连接是否自动提交
+         */
+        private Boolean autoCommit;
+
+    }
 
 }
