@@ -28,9 +28,9 @@ import javax.imageio.metadata.IIOMetadata;
 import javax.imageio.spi.ImageWriterSpi;
 import javax.imageio.stream.ImageOutputStream;
 
-import org.opencv.core.Mat;
-import org.opencv.core.MatOfInt;
-import org.opencv.imgcodecs.Imgcodecs;
+import org.miaixz.bus.opencv.core.Mat;
+import org.miaixz.bus.opencv.core.MatOfInt;
+import org.miaixz.bus.opencv.imgcodecs.Imgcodecs;
 
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.image.nimble.Photometric;

@@ -23,11 +23,11 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-import org.opencv.core.Core;
-import org.opencv.core.CvType;
-import org.opencv.core.Mat;
-import org.opencv.core.Scalar;
-import org.opencv.imgproc.Imgproc;
+import org.miaixz.bus.opencv.core.Core;
+import org.miaixz.bus.opencv.core.CvType;
+import org.miaixz.bus.opencv.core.Mat;
+import org.miaixz.bus.opencv.core.Scalar;
+import org.miaixz.bus.opencv.imgproc.Imgproc;
 
 import org.miaixz.bus.core.xyz.MathKit;
 import org.miaixz.bus.image.nimble.opencv.ImageCV;

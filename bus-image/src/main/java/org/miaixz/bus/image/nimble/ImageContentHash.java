@@ -21,8 +21,8 @@ package org.miaixz.bus.image.nimble;
 
 import java.util.Objects;
 
-import org.opencv.core.Mat;
-import org.opencv.img_hash.*;
+import org.miaixz.bus.opencv.core.Mat;
+import org.miaixz.bus.opencv.img_hash.*;
 
 /**
  * Algorithms to compare image content of two images.

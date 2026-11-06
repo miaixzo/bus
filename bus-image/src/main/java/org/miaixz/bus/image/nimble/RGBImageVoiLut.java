@@ -25,8 +25,8 @@ import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.Optional;
 
-import org.opencv.core.CvType;
-import org.opencv.imgproc.Imgproc;
+import org.miaixz.bus.opencv.core.CvType;
+import org.miaixz.bus.opencv.imgproc.Imgproc;
 
 import org.miaixz.bus.core.lang.tuple.Pair;
 import org.miaixz.bus.core.xyz.ByteKit;

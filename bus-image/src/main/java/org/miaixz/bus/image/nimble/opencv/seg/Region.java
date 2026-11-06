@@ -25,8 +25,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-import org.opencv.core.*;
-import org.opencv.imgproc.Imgproc;
+import org.miaixz.bus.opencv.core.*;
+import org.miaixz.bus.opencv.imgproc.Imgproc;
 
 import org.miaixz.bus.core.data.id.UUID;
 import org.miaixz.bus.core.xyz.StringKit;
