@@ -1,6 +1,13 @@
 {
   "reflection": [
     {
+      "type": {
+        "proxy": [
+          "com.sun.jna.platform.linux.Udev"
+        ]
+      }
+    },
+    {
       "type": "com.sun.jna.platform.linux.LibC",
       "fields": [
         {
