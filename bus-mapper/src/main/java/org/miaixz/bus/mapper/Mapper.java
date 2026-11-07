@@ -49,14 +49,13 @@ public interface Mapper<T, I extends Serializable> extends BasicMapper<T, I>, Ma
      * </p>
      *
      * @param entity The entity object to save.
-     * @param <S>    A subtype of the entity class.
      * @return The number of affected rows, typically 1 for success or 0 for failure.
      */
     @Override
     @Lang(Caching.class)
     @Options(useGeneratedKeys = true, keyProperty = "id")
     @InsertProvider(type = EntityProvider.class, method = "insert")
-    <S extends T> int insert(S entity);
+    int insert(T entity);
 
     /**
      * Saves non-null fields of an entity, assuming the primary key is auto-incrementing and named "id".
@@ -65,13 +64,12 @@ public interface Mapper<T, I extends Serializable> extends BasicMapper<T, I>, Ma
      * </p>
      *
      * @param entity The entity object to save.
-     * @param <S>    A subtype of the entity class.
      * @return The number of affected rows, typically 1 for success or 0 for failure.
      */
     @Override
     @Lang(Caching.class)
     @Options(useGeneratedKeys = true, keyProperty = "id")
     @InsertProvider(type = EntityProvider.class, method = "insertSelective")
-    <S extends T> int insertSelective(S entity);
+    int insertSelective(T entity);
 
 }

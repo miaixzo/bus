@@ -50,15 +50,12 @@ public interface LogicalMapper<T, I extends Serializable> extends BasicMapper<T,
      *
      * @param entity The entity object containing the updated values.
      * @param fields A collection of fields to be forcibly updated, created via {@link Fn#of(Fn...)}.
-     * @param <S>    The type of the entity.
      * @return The number of affected rows (1 for success, 0 for failure).
      */
     @Override
     @Lang(Caching.class)
     @UpdateProvider(type = LogicalProvider.class, method = "updateByPrimaryKeySelectiveWithForceFields")
-    <S extends T> int updateByPrimaryKeySelectiveWithForceFields(
-            @Param("entity") S entity,
-            @Param("fns") Fn.FnArray<T> fields);
+    int updateByPrimaryKeySelectiveWithForceFields(@Param("entity") T entity, @Param("fns") Fn.FnArray<T> fields);
 
     /**
      * Selects a single, unique entity based on its fields, returning only the specified columns. This query will
@@ -112,25 +109,23 @@ public interface LogicalMapper<T, I extends Serializable> extends BasicMapper<T,
      * Updates an entity by its primary key. This operation respects logical deletion rules.
      *
      * @param entity The entity object with updated values.
-     * @param <S>    A subtype of the entity class.
      * @return The number of affected rows (1 for success, 0 for failure).
      */
     @Override
     @Lang(Caching.class)
     @UpdateProvider(type = LogicalProvider.class, method = "updateByPrimaryKey")
-    <S extends T> int updateByPrimaryKey(S entity);
+    int updateByPrimaryKey(T entity);
 
     /**
      * Updates non-null fields of an entity by its primary key. This operation respects logical deletion rules.
      *
      * @param entity The entity object with updated values.
-     * @param <S>    A subtype of the entity class.
      * @return The number of affected rows (1 for success, 0 for failure).
      */
     @Override
     @Lang(Caching.class)
     @UpdateProvider(type = LogicalProvider.class, method = "updateByPrimaryKeySelective")
-    <S extends T> int updateByPrimaryKeySelective(S entity);
+    int updateByPrimaryKeySelective(T entity);
 
     /**
      * Selects an entity by its primary key, excluding logically deleted records.
@@ -224,13 +219,12 @@ public interface LogicalMapper<T, I extends Serializable> extends BasicMapper<T,
      *
      * @param entity    The entity object with updated values.
      * @param condition The condition object.
-     * @param <S>       A subtype of the entity class.
      * @return The number of affected rows (>=1 for success, 0 for failure).
      */
     @Override
     @Lang(Caching.class)
     @UpdateProvider(type = LogicalProvider.class, method = "updateByCondition")
-    <S extends T> int updateByCondition(@Param("entity") S entity, @Param("condition") Condition<T> condition);
+    int updateByCondition(@Param("entity") T entity, @Param("condition") Condition<T> condition);
 
     /**
      * Updates fields based on a {@link Condition} and the values set in it. This operation respects logical deletion
@@ -250,13 +244,12 @@ public interface LogicalMapper<T, I extends Serializable> extends BasicMapper<T,
      *
      * @param entity    The entity object with updated values.
      * @param condition The condition object.
-     * @param <S>       A subtype of the entity class.
      * @return The number of affected rows (>=1 for success, 0 for failure).
      */
     @Override
     @Lang(Caching.class)
     @UpdateProvider(type = LogicalProvider.class, method = "updateByConditionSelective")
-    <S extends T> int updateByConditionSelective(@Param("entity") S entity, @Param("condition") Condition<T> condition);
+    int updateByConditionSelective(@Param("entity") T entity, @Param("condition") Condition<T> condition);
 
     /**
      * Selects a list of entities based on a {@link Condition}, excluding logically deleted records.
