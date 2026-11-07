@@ -39,15 +39,6 @@
   ],
   "resources": [
     {
-      "glob": "META-INF/services/org.apache.poi.extractor.ExtractorProvider"
-    },
-    {
-      "glob": "META-INF/services/org.apache.poi.sl.draw.ImageRenderer"
-    },
-    {
-      "glob": "META-INF/services/org.apache.poi.sl.usermodel.SlideShowProvider"
-    },
-    {
       "glob": "org/apache/poi/hdgf/chunks_parse_cmds.tbl"
     },
     {

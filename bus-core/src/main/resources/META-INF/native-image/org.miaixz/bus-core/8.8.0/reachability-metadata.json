@@ -14391,6 +14391,36 @@
         {
           "name": "<init>",
           "parameterTypes": []
+        },
+        {
+          "parameterTypes": [
+            "java.net.URL"
+          ],
+          "name": "isFileURL"
+        },
+        {
+          "parameterTypes": [
+            "java.net.URL"
+          ],
+          "name": "isVfsURL"
+        },
+        {
+          "parameterTypes": [
+            "java.net.URL"
+          ],
+          "name": "isFileOrVfsURL"
+        },
+        {
+          "parameterTypes": [
+            "java.net.URL"
+          ],
+          "name": "isJarURL"
+        },
+        {
+          "parameterTypes": [
+            "java.net.URL"
+          ],
+          "name": "isJarFileURL"
         }
       ]
     },
@@ -18025,6 +18055,107 @@
         {
           "name": "wait",
           "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "java.lang.reflect.WildcardType",
+      "methods": [
+        {
+          "name": "getLowerBounds",
+          "parameterTypes": []
+        },
+        {
+          "name": "getUpperBounds",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "java.lang.Enum",
+      "methods": [
+        {
+          "name": "compareTo",
+          "parameterTypes": [
+            "java.lang.Enum"
+          ]
+        },
+        {
+          "name": "compareTo",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "describeConstable",
+          "parameterTypes": []
+        },
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "getDeclaringClass",
+          "parameterTypes": []
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "name",
+          "parameterTypes": []
+        },
+        {
+          "name": "ordinal",
+          "parameterTypes": []
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "valueOf",
+          "parameterTypes": [
+            "java.lang.Class",
+            "java.lang.String"
+          ]
+        }
+      ],
+      "serializable": true
+    },
+    {
+      "type": "org.miaixz.bus.core.center.function.UnaryOperatorX",
+      "methods": [
+        {
+          "name": "apply",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.center.function.FunctionX",
+      "methods": [
+        {
+          "name": "apply",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.center.function.PredicateX",
+      "methods": [
+        {
+          "name": "test",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
         }
       ]
     }

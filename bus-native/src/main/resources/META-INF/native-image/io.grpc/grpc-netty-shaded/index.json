@@ -1,0 +1,16 @@
+[
+  {
+    "latest": true,
+    "metadata-version": "1.83.0",
+    "source-code-url": "https://repo.maven.apache.org/maven2/io/grpc/grpc-netty-shaded/$version$/grpc-netty-shaded-$version$-sources.jar",
+    "repository-url": "https://github.com/grpc/grpc-java",
+    "description": "Shaded gRPC Netty transport reflection and initialization supplements.",
+    "tested-versions": [
+      "1.83.0",
+      "1.83.1"
+    ],
+    "allowed-packages": [
+      "io.grpc.netty.shaded"
+    ]
+  }
+]

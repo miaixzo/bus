@@ -2,6 +2,9 @@
   {
     "latest": true,
     "metadata-version": "6.1.0",
-    "description": "Conditional Bus integration metadata only; supplements upstream metadata without replacing it."
+    "description": "Conditional Bus integration metadata only; supplements upstream metadata without replacing it.",
+    "tested-versions": [
+      "6.1.0"
+    ]
   }
 ]

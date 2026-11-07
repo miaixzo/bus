@@ -1399,27 +1399,6 @@
       "glob": "logging.properties"
     },
     {
-      "glob": "logback-spring.groovy"
-    },
-    {
-      "glob": "logback-spring.xml"
-    },
-    {
-      "glob": "logback-test.scmo"
-    },
-    {
-      "glob": "logback-test.xml"
-    },
-    {
-      "glob": "logback.groovy"
-    },
-    {
-      "glob": "logback.scmo"
-    },
-    {
-      "glob": "logback.xml"
-    },
-    {
       "glob": "META-INF/services/org.miaixz.bus.logger.Factory"
     }
   ]

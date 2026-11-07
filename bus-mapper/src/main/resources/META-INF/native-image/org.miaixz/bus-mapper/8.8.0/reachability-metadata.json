@@ -1,6 +1,15 @@
 {
   "reflection": [
     {
+      "type": "org.miaixz.bus.mapper.feature.keygen.KeySqlRegistry",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
       "type": "org.miaixz.bus.mapper.Args",
       "methods": [
         {
@@ -2355,6 +2364,10 @@
           "parameterTypes": [
             "java.lang.String"
           ]
+        },
+        {
+          "name": "isGroupedList",
+          "parameterTypes": []
         }
       ]
     },
@@ -10323,76 +10336,6 @@
           "name": "setVisibleProvider",
           "parameterTypes": [
             "org.miaixz.bus.mapper.feature.visible.VisibleProvider"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "java.lang.Object",
-      "methods": [
-        {
-          "name": "equals",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "getClass",
-          "parameterTypes": []
-        },
-        {
-          "name": "hashCode",
-          "parameterTypes": []
-        },
-        {
-          "name": "notify",
-          "parameterTypes": []
-        },
-        {
-          "name": "notifyAll",
-          "parameterTypes": []
-        },
-        {
-          "name": "toString",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long",
-            "int"
-          ]
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "wait",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.center.function.FunctionX",
-      "methods": [
-        {
-          "name": "apply",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.center.function.PredicateX",
-      "methods": [
-        {
-          "name": "test",
-          "parameterTypes": [
-            "java.lang.Object"
           ]
         }
       ]

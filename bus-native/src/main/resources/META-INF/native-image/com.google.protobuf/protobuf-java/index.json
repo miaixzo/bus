@@ -1,7 +1,11 @@
 [
   {
     "latest": true,
-    "metadata-version": "4.35.1",
-    "description": "Conditional Bus integration metadata only; supplements upstream metadata without replacing it."
+    "metadata-version": "4.35.0",
+    "description": "Conditional Bus integration metadata only; supplements upstream metadata without replacing it.",
+    "tested-versions": [
+      "4.35.0",
+      "4.35.1"
+    ]
   }
 ]

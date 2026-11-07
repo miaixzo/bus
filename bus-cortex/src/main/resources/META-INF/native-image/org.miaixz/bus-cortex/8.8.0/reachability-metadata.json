@@ -14707,60 +14707,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.core.lang.EnumValue$Track",
-      "fields": [
-        {
-          "name": "STABLE"
-        },
-        {
-          "name": "BETA"
-        },
-        {
-          "name": "CANARY"
-        },
-        {
-          "name": "key"
-        },
-        {
-          "name": "$VALUES"
-        }
-      ],
-      "methods": [
-        {
-          "name": "values",
-          "parameterTypes": []
-        },
-        {
-          "name": "valueOf",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "normalize",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "key",
-          "parameterTypes": []
-        },
-        {
-          "name": "$values",
-          "parameterTypes": []
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "int",
-            "java.lang.String"
-          ]
-        }
-      ]
-    },
-    {
       "type": "org.miaixz.bus.cortex.release.ReleaseAssets",
       "fields": [
         {
@@ -15222,69 +15168,6 @@
           "parameterTypes": [
             "org.miaixz.bus.cortex.release.ReleaseStore",
             "org.miaixz.bus.cortex.magic.watch.WatchManager"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.lang.EnumValue$Phase",
-      "fields": [
-        {
-          "name": "DRAFT"
-        },
-        {
-          "name": "ACTIVE"
-        },
-        {
-          "name": "DEPRECATED"
-        },
-        {
-          "name": "DISABLED"
-        },
-        {
-          "name": "key"
-        },
-        {
-          "name": "$VALUES"
-        }
-      ],
-      "methods": [
-        {
-          "name": "values",
-          "parameterTypes": []
-        },
-        {
-          "name": "valueOf",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "key",
-          "parameterTypes": []
-        },
-        {
-          "name": "matches",
-          "parameterTypes": [
-            "java.lang.Integer"
-          ]
-        },
-        {
-          "name": "fromKey",
-          "parameterTypes": [
-            "java.lang.Integer"
-          ]
-        },
-        {
-          "name": "$values",
-          "parameterTypes": []
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "int",
-            "int"
           ]
         }
       ]
