@@ -24,11 +24,6 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.*;
 
-import org.miaixz.bus.opencv.core.CvType;
-import org.miaixz.bus.opencv.core.Mat;
-import org.miaixz.bus.opencv.core.MatOfInt;
-import org.miaixz.bus.opencv.imgcodecs.Imgcodecs;
-
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.image.Builder;
@@ -42,6 +37,10 @@ import org.miaixz.bus.image.nimble.codec.TransferSyntaxType;
 import org.miaixz.bus.image.nimble.opencv.PlanarImage;
 import org.miaixz.bus.image.nimble.stream.ImageDescriptor;
 import org.miaixz.bus.logger.Logger;
+import org.miaixz.bus.opencv.core.CvType;
+import org.miaixz.bus.opencv.core.Mat;
+import org.miaixz.bus.opencv.core.MatOfInt;
+import org.miaixz.bus.opencv.imgcodecs.Imgcodecs;
 
 /**
  * Represents the ImageOutputData type.

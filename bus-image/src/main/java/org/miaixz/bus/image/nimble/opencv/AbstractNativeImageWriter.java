@@ -28,14 +28,13 @@ import javax.imageio.metadata.IIOMetadata;
 import javax.imageio.spi.ImageWriterSpi;
 import javax.imageio.stream.ImageOutputStream;
 
-import org.miaixz.bus.opencv.core.Mat;
-import org.miaixz.bus.opencv.core.MatOfInt;
-import org.miaixz.bus.opencv.imgcodecs.Imgcodecs;
-
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.image.nimble.Photometric;
 import org.miaixz.bus.image.nimble.codec.BytesWithImageImageDescriptor;
 import org.miaixz.bus.image.nimble.codec.ImageDescriptor;
+import org.miaixz.bus.opencv.core.Mat;
+import org.miaixz.bus.opencv.core.MatOfInt;
+import org.miaixz.bus.opencv.imgcodecs.Imgcodecs;
 
 /**
  * Base class for native OpenCV DICOM image writers.

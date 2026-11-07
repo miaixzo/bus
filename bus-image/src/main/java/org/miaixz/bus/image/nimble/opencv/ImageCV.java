@@ -23,11 +23,10 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
-import org.miaixz.bus.opencv.core.*;
-import org.miaixz.bus.opencv.imgproc.Imgproc;
-
 import org.miaixz.bus.core.center.function.BinaryOperatorX;
 import org.miaixz.bus.image.nimble.KernelData;
+import org.miaixz.bus.opencv.core.*;
+import org.miaixz.bus.opencv.imgproc.Imgproc;
 
 /**
  * Enhanced Mat implementation with additional memory management features. Implements PlanarImage for consistent image
