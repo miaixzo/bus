@@ -19,10 +19,9 @@
 */
 package org.miaixz.bus.image.nimble.opencv.tile;
 
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.opencv.core.*;
 import org.miaixz.bus.opencv.imgproc.Imgproc;
-
-import org.miaixz.bus.core.lang.Normal;
 
 /**
  * Not an API. This class is under development and can be changed or removed at any moment.

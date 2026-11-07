@@ -21,13 +21,12 @@ package org.miaixz.bus.image.nimble.opencv;
 
 import java.io.IOException;
 
-import org.miaixz.bus.opencv.core.Core;
-
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.loader.Loaders;
 import org.miaixz.bus.health.Platform;
 import org.miaixz.bus.logger.Logger;
+import org.miaixz.bus.opencv.core.Core;
 
 /**
  * Provides DICOM processing details.

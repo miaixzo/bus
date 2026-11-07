@@ -27,10 +27,6 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.miaixz.bus.opencv.core.CvType;
-import org.miaixz.bus.opencv.core.MatOfInt;
-import org.miaixz.bus.opencv.imgcodecs.Imgcodecs;
-
 import org.miaixz.bus.core.io.file.FileName;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.FileKit;
@@ -47,6 +43,9 @@ import org.miaixz.bus.image.nimble.opencv.op.MaskArea;
 import org.miaixz.bus.image.nimble.stream.ImageDescriptor;
 import org.miaixz.bus.image.nimble.stream.ImageFileInputStream;
 import org.miaixz.bus.logger.Logger;
+import org.miaixz.bus.opencv.core.CvType;
+import org.miaixz.bus.opencv.core.MatOfInt;
+import org.miaixz.bus.opencv.imgcodecs.Imgcodecs;
 
 /**
  * Represents the Transcoder type.

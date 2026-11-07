@@ -34,10 +34,6 @@ import javax.imageio.ImageTypeSpecifier;
 import javax.imageio.metadata.IIOMetadata;
 import javax.imageio.spi.ImageReaderSpi;
 
-import org.miaixz.bus.opencv.core.*;
-import org.miaixz.bus.opencv.imgcodecs.Imgcodecs;
-import org.miaixz.bus.opencv.imgproc.Imgproc;
-
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.tuple.Pair;
 import org.miaixz.bus.core.xyz.IoKit;
@@ -62,6 +58,9 @@ import org.miaixz.bus.image.nimble.opencv.PlanarImage;
 import org.miaixz.bus.image.nimble.opencv.lut.ModalityLutModule;
 import org.miaixz.bus.image.nimble.stream.*;
 import org.miaixz.bus.logger.Logger;
+import org.miaixz.bus.opencv.core.*;
+import org.miaixz.bus.opencv.imgcodecs.Imgcodecs;
+import org.miaixz.bus.opencv.imgproc.Imgproc;
 
 /**
  * DICOM image reader for reading image data from DICOM objects.
