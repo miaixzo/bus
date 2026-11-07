@@ -70,7 +70,7 @@ public abstract class MonthParts extends YearParts {
      */
     @Override
     protected long getCompareIndex() {
-        return super.getCompareIndex() + (month > 0 ? month * 2L : -month * 2L + 1) * 100;
+        return super.getCompareIndex() + (month > 0 ? month * 2L : 1 - month * 2L) * 100;
     }
 
 }

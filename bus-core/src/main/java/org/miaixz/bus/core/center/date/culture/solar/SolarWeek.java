@@ -19,7 +19,6 @@
 */
 package org.miaixz.bus.core.center.date.culture.solar;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.miaixz.bus.core.center.date.culture.parts.AbstractMonth;
@@ -153,13 +152,8 @@ public class SolarWeek extends AbstractWeek {
      * @return a list of 7 SolarDay objects in this week
      */
     public List<SolarDay> getDays() {
-        List<SolarDay> l = new ArrayList<>(7);
-        SolarDay d = getFirstDay();
-        l.add(d);
-        for (int i = 1; i < 7; i++) {
-            l.add(d.next(i));
-        }
-        return l;
+        SolarDay day = getFirstDay();
+        return buildList(7, i -> i == 0 ? day : day.next(i));
     }
 
     /**

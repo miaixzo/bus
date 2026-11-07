@@ -19,7 +19,6 @@
 */
 package org.miaixz.bus.core.center.date.culture.lunar;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.miaixz.bus.core.center.date.culture.*;
@@ -137,7 +136,7 @@ public class LunarDay extends AbstractDay {
      * @return true if this day is before the target, false otherwise
      */
     public boolean isBefore(LunarDay target) {
-        return getCompareIndex() < target.getCompareIndex();
+        return super.isBefore(target);
     }
 
     /**
@@ -147,7 +146,7 @@ public class LunarDay extends AbstractDay {
      * @return true if this day is after the target, false otherwise
      */
     public boolean isAfter(LunarDay target) {
-        return getCompareIndex() > target.getCompareIndex();
+        return super.isAfter(target);
     }
 
     /**
@@ -244,15 +243,7 @@ public class LunarDay extends AbstractDay {
      * @return the moon phase day
      */
     public Phase.PhaseDay getPhaseDay() {
-        SolarDay today = getSolarDay();
-        LunarMonth m = getLunarMonth().next(1);
-        Phase p = Phase.fromIndex(m.getYear(), m.getMonthValue(), 0);
-        SolarDay d = p.getSolarDay();
-        while (d.isAfter(today)) {
-            p = p.next(-1);
-            d = p.getSolarDay();
-        }
-        return new Phase.PhaseDay(p, today.subtract(d));
+        return getSolarDay().getPhaseDay();
     }
 
     /**
@@ -313,15 +304,10 @@ public class LunarDay extends AbstractDay {
     /**
      * Gets the list of lunar hours for this day.
      *
-     * @return the list of 12 two-hour periods (shichen) in this day
+     * @return the 13 hour starts, including midnight and late-night Zi hours
      */
     public List<LunarHour> getHours() {
-        List<LunarHour> l = new ArrayList<>();
-        l.add(LunarHour.fromYmdHms(year, month, day, 0, 0, 0));
-        for (int i = 0; i < 24; i += 2) {
-            l.add(LunarHour.fromYmdHms(year, month, day, i + 1, 0, 0));
-        }
-        return l;
+        return buildList(13, i -> LunarHour.fromYmdHms(year, month, day, i == 0 ? 0 : i * 2 - 1, 0, 0));
     }
 
     /**

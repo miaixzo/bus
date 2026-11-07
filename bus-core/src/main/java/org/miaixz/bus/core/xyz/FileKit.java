@@ -1434,7 +1434,7 @@ public class FileKit extends PathResolve {
      * @return `true` if the path ends with the suffix.
      */
     public static boolean pathEndsWith(final File file, final String suffix) {
-        return StringKit.toLowerCase(file.getPath()).endsWith(suffix);
+        return StringKit.endWithIgnoreCase(file.getPath(), suffix);
     }
 
     /**

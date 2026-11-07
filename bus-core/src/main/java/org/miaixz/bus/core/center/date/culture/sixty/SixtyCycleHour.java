@@ -28,7 +28,6 @@ import org.miaixz.bus.core.center.date.culture.lunar.LunarDay;
 import org.miaixz.bus.core.center.date.culture.lunar.LunarHour;
 import org.miaixz.bus.core.center.date.culture.lunar.LunarMonth;
 import org.miaixz.bus.core.center.date.culture.lunar.LunarYear;
-import org.miaixz.bus.core.center.date.culture.solar.SolarDay;
 import org.miaixz.bus.core.center.date.culture.solar.SolarTerms;
 import org.miaixz.bus.core.center.date.culture.solar.SolarTime;
 import org.miaixz.bus.core.center.date.culture.star.nine.NineStar;
@@ -193,17 +192,7 @@ public class SixtyCycleHour extends Loops {
      * @return The {@link NineStar} instance.
      */
     public NineStar getNineStar() {
-        SolarDay solar = solarTime.getSolarDay();
-        SolarTerms dongZhi = SolarTerms.fromIndex(solar.getYear(), 0);
-        int earthBranchIndex = getIndexInDay() % 12;
-        int index = 8 - 3 * (getDay().getEarthBranch().getIndex() % 3);
-        if (!solar.isBefore(dongZhi.getJulianDay().getSolarDay())
-                && solar.isBefore(dongZhi.next(12).getJulianDay().getSolarDay())) {
-            index = 8 + earthBranchIndex - index;
-        } else {
-            index -= earthBranchIndex;
-        }
-        return NineStar.fromIndex(index);
+        return NineStar.fromHour(solarTime.getSolarDay(), getDay(), getIndexInDay());
     }
 
     /**

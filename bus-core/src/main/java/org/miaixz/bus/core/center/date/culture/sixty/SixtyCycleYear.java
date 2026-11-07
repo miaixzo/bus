@@ -19,7 +19,6 @@
 */
 package org.miaixz.bus.core.center.date.culture.sixty;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.miaixz.bus.core.center.date.culture.parts.AbstractTraditionalYear;
@@ -97,13 +96,8 @@ public class SixtyCycleYear extends AbstractTraditionalYear {
      * @return A list of {@link SixtyCycleMonth} objects.
      */
     public List<SixtyCycleMonth> getMonths() {
-        List<SixtyCycleMonth> l = new ArrayList<>();
-        SixtyCycleMonth m = getFirstMonth();
-        l.add(m);
-        for (int i = 1; i < 12; i++) {
-            l.add(m.next(i));
-        }
-        return l;
+        SixtyCycleMonth month = getFirstMonth();
+        return buildList(12, i -> i == 0 ? month : month.next(i));
     }
 
 }

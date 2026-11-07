@@ -163,7 +163,7 @@ public class SolarDay extends AbstractDay {
      * @return true if this day is before the target
      */
     public boolean isBefore(SolarDay target) {
-        return getCompareIndex() < target.getCompareIndex();
+        return super.isBefore(target);
     }
 
     /**
@@ -173,7 +173,7 @@ public class SolarDay extends AbstractDay {
      * @return true if this day is after the target
      */
     public boolean isAfter(SolarDay target) {
-        return getCompareIndex() > target.getCompareIndex();
+        return super.isAfter(target);
     }
 
     /**

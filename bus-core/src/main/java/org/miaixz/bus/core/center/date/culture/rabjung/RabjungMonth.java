@@ -135,24 +135,6 @@ public class RabjungMonth extends AbstractLeapMonth {
     }
 
     /**
-     * Gets the index of this month within the year (0-12).
-     *
-     * @return The index (0-12).
-     */
-    public int getIndexInYear() {
-        int index = month - 1;
-        if (leap) {
-            index += 1;
-        } else {
-            int leapMonth = getRabByungYear().getLeapMonth();
-            if (leapMonth > 0 && month > leapMonth) {
-                index += 1;
-            }
-        }
-        return index;
-    }
-
-    /**
      * Gets the name of this Tibetan month.
      *
      * @return The name of this Tibetan month.
@@ -228,15 +210,14 @@ public class RabjungMonth extends AbstractLeapMonth {
      * @return A list of integers representing special days.
      */
     public List<Integer> getSpecialDays() {
-        List<Integer> l = new ArrayList<>();
-        int[] days = DAYS.get(getYear() * 13 + getIndexInYear());
-        if (null == days) {
-            return l;
+        List<Integer> days = new ArrayList<>();
+        int[] specialDays = DAYS.get(getYear() * 13 + getIndexInYear());
+        if (specialDays != null) {
+            for (int day : specialDays) {
+                days.add(day);
+            }
         }
-        for (int d : days) {
-            l.add(d);
-        }
-        return l;
+        return days;
     }
 
     /**
@@ -246,8 +227,7 @@ public class RabjungMonth extends AbstractLeapMonth {
      */
     public List<Integer> getLeapDays() {
         List<Integer> l = new ArrayList<>();
-        List<Integer> days = getSpecialDays();
-        for (int d : days) {
+        for (int d : getSpecialDays()) {
             if (d > 0) {
                 l.add(d);
             }
@@ -262,8 +242,7 @@ public class RabjungMonth extends AbstractLeapMonth {
      */
     public List<Integer> getMissDays() {
         List<Integer> l = new ArrayList<>();
-        List<Integer> days = getSpecialDays();
-        for (int d : days) {
+        for (int d : getSpecialDays()) {
             if (d < 0) {
                 l.add(-d);
             }

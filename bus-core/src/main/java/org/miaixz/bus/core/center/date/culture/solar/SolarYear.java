@@ -19,7 +19,6 @@
 */
 package org.miaixz.bus.core.center.date.culture.solar;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.miaixz.bus.core.center.date.culture.parts.AbstractYear;
@@ -129,11 +128,7 @@ public class SolarYear extends AbstractYear {
      * @return a list of 12 SolarMonth objects
      */
     public List<SolarMonth> getMonths() {
-        List<SolarMonth> l = new ArrayList<>(12);
-        for (int i = 1; i < 13; i++) {
-            l.add(SolarMonth.fromYm(year, i));
-        }
-        return l;
+        return buildMonths(i -> SolarMonth.fromYm(year, i));
     }
 
     /**
@@ -142,11 +137,7 @@ public class SolarYear extends AbstractYear {
      * @return a list of 4 SolarQuarter objects
      */
     public List<SolarQuarter> getQuarters() {
-        List<SolarQuarter> l = new ArrayList<>(4);
-        for (int i = 0; i < 4; i++) {
-            l.add(SolarQuarter.fromIndex(year, i));
-        }
-        return l;
+        return buildList(4, i -> SolarQuarter.fromIndex(year, i));
     }
 
     /**
@@ -155,11 +146,7 @@ public class SolarYear extends AbstractYear {
      * @return a list of 2 SolarHalfYear objects
      */
     public List<SolarHalfYear> getHalfYears() {
-        List<SolarHalfYear> l = new ArrayList<>(2);
-        for (int i = 0; i < 2; i++) {
-            l.add(SolarHalfYear.fromIndex(year, i));
-        }
-        return l;
+        return buildList(2, i -> SolarHalfYear.fromIndex(year, i));
     }
 
     /**

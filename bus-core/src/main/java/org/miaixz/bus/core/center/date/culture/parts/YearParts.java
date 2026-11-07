@@ -73,4 +73,24 @@ public abstract class YearParts extends Loops {
         return year * 10000L;
     }
 
+    /**
+     * Checks whether these date parts precede the target.
+     *
+     * @param target the date parts to compare
+     * @return whether these date parts precede the target
+     */
+    protected boolean isBefore(YearParts target) {
+        return getCompareIndex() < target.getCompareIndex();
+    }
+
+    /**
+     * Checks whether these date parts follow the target.
+     *
+     * @param target the date parts to compare
+     * @return whether these date parts follow the target
+     */
+    protected boolean isAfter(YearParts target) {
+        return getCompareIndex() > target.getCompareIndex();
+    }
+
 }

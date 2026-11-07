@@ -121,7 +121,7 @@ public class SolarTime extends SecondParts {
      * @return true if this time is before the target
      */
     public boolean isBefore(SolarTime target) {
-        return getCompareIndex() < target.getCompareIndex();
+        return super.isBefore(target);
     }
 
     /**
@@ -131,7 +131,7 @@ public class SolarTime extends SecondParts {
      * @return true if this time is after the target
      */
     public boolean isAfter(SolarTime target) {
-        return getCompareIndex() > target.getCompareIndex();
+        return super.isAfter(target);
     }
 
     /**

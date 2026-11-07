@@ -25,7 +25,6 @@ import org.miaixz.bus.core.center.date.culture.festival.FestivalRegistry;
 import org.miaixz.bus.core.center.date.culture.parts.MonthParts;
 import org.miaixz.bus.core.center.date.culture.solar.SolarTermDay;
 import org.miaixz.bus.core.center.date.culture.solar.SolarTerms;
-import org.miaixz.bus.core.lang.Symbol;
 
 /**
  * Represents traditional lunar festivals (based on the national standard "Compilation and Promulgation of the Lunar
@@ -98,8 +97,10 @@ public class LunarFestival extends AbstractFestival {
     public static LunarFestival fromYmd(int year, int month, int day) {
         LunarDay d = LunarDay.fromYmd(year, month, day);
         for (int i = 0, j = NAMES.length; i < j; i++) {
-            int start = i * 8;
-            Festival e = new Festival(NAMES[i], Symbol.C_AT + DATA.substring(start, start + 8));
+            Festival e = buildEvent(NAMES, DATA, i);
+            if (e == null) {
+                continue;
+            }
             switch (e.getType()) {
                 case LUNAR_DAY:
                     int offset = e.getValue(5);

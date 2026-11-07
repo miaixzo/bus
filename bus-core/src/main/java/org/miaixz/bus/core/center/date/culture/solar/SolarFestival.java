@@ -22,7 +22,6 @@ package org.miaixz.bus.core.center.date.culture.solar;
 import org.miaixz.bus.core.center.date.culture.festival.AbstractFestival;
 import org.miaixz.bus.core.center.date.culture.festival.Festival;
 import org.miaixz.bus.core.center.date.culture.festival.FestivalRegistry;
-import org.miaixz.bus.core.lang.Symbol;
 
 /**
  * Represents modern Gregorian festivals.
@@ -80,9 +79,9 @@ public class SolarFestival extends AbstractFestival {
     public static SolarFestival fromYmd(int year, int month, int day) {
         SolarDay d = SolarDay.fromYmd(year, month, day);
         for (int i = 0, j = NAMES.length; i < j; i++) {
-            int start = i * 8;
-            Festival e = new Festival(NAMES[i], Symbol.AT + DATA.substring(start, start + 8));
-            if (d.getYear() >= e.getStartYear() && d.getMonth() == e.getValue(2) && d.getDay() == e.getValue(3)) {
+            Festival e = buildEvent(NAMES, DATA, i);
+            if (e != null && d.getYear() >= e.getStartYear() && d.getMonth() == e.getValue(2)
+                    && d.getDay() == e.getValue(3)) {
                 return new SolarFestival(i, e, d);
             }
         }

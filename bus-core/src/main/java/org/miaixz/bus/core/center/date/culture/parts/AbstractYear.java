@@ -19,6 +19,10 @@
 */
 package org.miaixz.bus.core.center.date.culture.parts;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.IntFunction;
+
 /**
  * Abstract base class for years.
  *
@@ -51,6 +55,25 @@ public abstract class AbstractYear extends YearParts {
      */
     public int getLeapMonth() {
         return 0;
+    }
+
+    /**
+     * Builds the months of this year, placing a leap month after its regular month.
+     *
+     * @param factory the month factory, accepting a negative number for a leap month
+     * @param <T>     the month type
+     * @return the generated months
+     */
+    protected <T> List<T> buildMonths(IntFunction<T> factory) {
+        int leapMonth = getLeapMonth();
+        List<T> months = new ArrayList<>(leapMonth > 0 ? 13 : 12);
+        for (int month = 1; month <= 12; month++) {
+            months.add(factory.apply(month));
+            if (month == leapMonth) {
+                months.add(factory.apply(-month));
+            }
+        }
+        return months;
     }
 
     @Override
