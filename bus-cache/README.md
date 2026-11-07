@@ -1073,7 +1073,7 @@ Native Build Tools and repository 1.1.18 select the official HikariCP 7.0.2 meta
 Bus does not duplicate the complete upstream HikariCP metadata.
 
 The official metadata covers five HikariConfig setters. Bus retains the remaining 34 configuration setters and six
-HikariDataSource reflection entries in `bus-native` under `com.zaxxer/HikariCP/7.1.0`, separately from Bus-owned registrations and
+HikariDataSource reflection entries in `bus-preset` under `com.zaxxer/HikariCP/7.1.0`, separately from Bus-owned registrations and
 conditioned on `com.zaxxer.hikari.util.PropertyElf` being reached.
 This preserves the existing property-binding coverage without broad reflection grants. JDBC drivers and application-defined
 data sources, credentials providers, exception handlers, or metric integrations need their own applicable metadata.

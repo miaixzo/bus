@@ -131,9 +131,9 @@ The published POM is normalized so consumers use `bus-all` as a single entry
 artifact instead of receiving every internal module as a regular transitive dependency.
 
 Metadata continues to ship inside JARs. Bus registrations remain under `org.miaixz/<module>`; third-party registrations
-are maintained in `bus-native` under each library's group, artifact and version. The relevant integration modules
+are maintained in `bus-preset` under each library's group, artifact and version. The relevant integration modules
 bring in this metadata-only JAR directly; `bus-all` includes its resources in the aggregate JAR. No additional
-third-party libraries are pulled in by `bus-native`. Existing upstream metadata deduplication remains in effect.
+third-party libraries are pulled in by `bus-preset`. Existing upstream metadata deduplication remains in effect.
 
 This makes `bus-all` convenient, but it also means the resulting classpath is intentionally broad. Choose direct module
 dependencies when startup time, dependency surface, native-image size or deployment footprint is important.
