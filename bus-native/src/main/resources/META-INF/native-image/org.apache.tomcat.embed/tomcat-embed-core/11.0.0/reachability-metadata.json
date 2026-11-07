@@ -1,0 +1,22 @@
+{
+  "reflection": [
+    {
+      "type": "org.apache.catalina.loader.JdbcLeakPrevention",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "clearJdbcDriverRegistrations",
+          "parameterTypes": []
+        }
+      ]
+    }
+  ],
+  "resources": [
+    {
+      "glob": "org/apache/catalina/util/CharsetMapperDefault.properties"
+    }
+  ]
+}

@@ -271,18 +271,153 @@
           ]
         }
       ]
+    },
+    {
+      "type": "org.apache.ibatis.annotations.DeleteProvider",
+      "methods": [
+        {
+          "name": "method",
+          "parameterTypes": []
+        },
+        {
+          "name": "type",
+          "parameterTypes": []
+        },
+        {
+          "name": "value",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.apache.ibatis.annotations.InsertProvider",
+      "methods": [
+        {
+          "name": "method",
+          "parameterTypes": []
+        },
+        {
+          "name": "type",
+          "parameterTypes": []
+        },
+        {
+          "name": "value",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.apache.ibatis.annotations.SelectProvider",
+      "methods": [
+        {
+          "name": "method",
+          "parameterTypes": []
+        },
+        {
+          "name": "type",
+          "parameterTypes": []
+        },
+        {
+          "name": "value",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.apache.ibatis.annotations.UpdateProvider",
+      "methods": [
+        {
+          "name": "method",
+          "parameterTypes": []
+        },
+        {
+          "name": "type",
+          "parameterTypes": []
+        },
+        {
+          "name": "value",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.apache.ibatis.executor.Executor",
+      "methods": [
+        {
+          "name": "close",
+          "parameterTypes": [
+            "boolean"
+          ]
+        },
+        {
+          "name": "commit",
+          "parameterTypes": [
+            "boolean"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.apache.ibatis.executor.statement.StatementHandler",
+      "methods": [
+        {
+          "name": "parameterize",
+          "parameterTypes": [
+            "java.sql.Statement"
+          ]
+        },
+        {
+          "name": "query",
+          "parameterTypes": [
+            "java.sql.Statement",
+            "org.apache.ibatis.session.ResultHandler"
+          ]
+        },
+        {
+          "name": "update",
+          "parameterTypes": [
+            "java.sql.Statement"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.apache.ibatis.session.SqlSession",
+      "methods": [
+        {
+          "name": "selectList",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "selectOne",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "update",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.Object"
+          ]
+        }
+      ]
     }
   ],
   "resources": [
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.mapper.Caching"
+        "typeReached": "org.apache.ibatis.builder.xml.XMLMapperEntityResolver"
       },
       "glob": "org/apache/ibatis/builder/xml/mybatis-3-config.dtd"
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.mapper.Caching"
+        "typeReached": "org.apache.ibatis.builder.xml.XMLMapperEntityResolver"
       },
       "glob": "org/apache/ibatis/builder/xml/mybatis-3-mapper.dtd"
     },

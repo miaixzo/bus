@@ -1,0 +1,17 @@
+[
+  {
+    "latest": true,
+    "metadata-version": "4.1.0",
+    "source-code-url": "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot/$version$/spring-boot-$version$-sources.jar",
+    "repository-url": "https://github.com/spring-projects/spring-boot",
+    "documentation-url": "https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot/$version$/spring-boot-$version$-javadoc.jar",
+    "description": "Spring Boot Logback configuration resources used by Bus logging integration.",
+    "tested-versions": [
+      "4.1.0",
+      "4.1.1"
+    ],
+    "allowed-packages": [
+      "org.springframework.boot"
+    ]
+  }
+]

@@ -1,0 +1,10 @@
+{
+  "resources": [
+    {
+      "glob": "logback-spring.groovy"
+    },
+    {
+      "glob": "logback-spring.xml"
+    }
+  ]
+}

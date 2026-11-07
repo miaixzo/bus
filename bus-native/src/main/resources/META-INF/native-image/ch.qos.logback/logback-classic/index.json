@@ -1,0 +1,11 @@
+[
+  {
+    "latest": true,
+    "metadata-version": "1.6.0",
+    "description": "Logback initialization settings and logging configuration resources used by Bus integrations.",
+    "tested-versions": [
+      "1.6.0",
+      "1.6.3"
+    ]
+  }
+]
