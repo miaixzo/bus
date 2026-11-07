@@ -145,7 +145,7 @@ public class Application {
 
 MyBatis common metadata comes from the [official metadata repository](https://github.com/oracle/graalvm-reachability-metadata/tree/master/metadata/org.mybatis/mybatis).
 `bus-mapper` does not duplicate the complete upstream metadata. Additional interceptor proxies, explicitly accessed
-members and XML parser resources needed by bus ship in `bus-native` under `org.mybatis/mybatis/3.6.0`, matching the current
+members and XML parser resources needed by bus ship in `bus-preset` under `org.mybatis/mybatis/3.6.0`, matching the current
 dependency baseline. Bus-owned registrations remain under `org.miaixz/bus-mapper`. The published
 repository 1.1.18 does not yet contain all entries available on the repository's `master` branch, so those remaining
 registrations cannot all be removed.

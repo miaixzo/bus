@@ -90,7 +90,7 @@
         </dependency>
         <dependency>
             <groupId>org.miaixz</groupId>
-            <artifactId>bus-native</artifactId>
+            <artifactId>bus-preset</artifactId>
         </dependency>
 
         <dependency>

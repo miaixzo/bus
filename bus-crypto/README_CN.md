@@ -802,7 +802,7 @@ Bus Crypto 使用 [官方可达性元数据仓库](https://github.com/oracle/gra
 
 原生构建必须能取得包含 `1.85` 测试记录的官方仓库版本，本次核对使用 Native Build Tools 和元数据仓库 `1.1.18`。仅引入 Bus Crypto 依赖不会自动启用官方仓库；离线构建需通过插件的本地仓库配置提供同一份元数据。
 
-Bus Crypto 仅保留官方配置尚未覆盖的 25 项有条件构造方法注册，在 `bus-native` JAR 中单独存放于 `org.bouncycastle/bcpkix-jdk18on/1.85`：10 个动态加载的算法映射、14 个 JCA 服务及 Provider 构造方法。不再重复注册直接构造的辅助类，也不保留包级资源通配配置。Bus 自身反射配置、精确 SPI 资源和 Bus 初始化留在原模块；Bouncy Castle 初始化配置也迁入 `bus-native`。升级 Bouncy Castle 或官方元数据时，需重新核对这些差异项。
+Bus Crypto 仅保留官方配置尚未覆盖的 25 项有条件构造方法注册，在 `bus-preset` JAR 中单独存放于 `org.bouncycastle/bcpkix-jdk18on/1.85`：10 个动态加载的算法映射、14 个 JCA 服务及 Provider 构造方法。不再重复注册直接构造的辅助类，也不保留包级资源通配配置。Bus 自身反射配置、精确 SPI 资源和 Bus 初始化留在原模块；Bouncy Castle 初始化配置也迁入 `bus-preset`。升级 Bouncy Castle 或官方元数据时，需重新核对这些差异项。
 
 JSON 格式校验、成员核对和 JVM 功能测试不能替代原生验证。发布原生应用前，应对实际使用的算法启用 `--exact-reachability-metadata` 构建，并使用 `-XX:MissingRegistrationReportingMode=Exit` 运行验证。
 

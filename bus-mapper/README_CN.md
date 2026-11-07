@@ -142,7 +142,7 @@ public class Application {
 ## GraalVM 可达性元数据
 
 MyBatis 通用配置由[官方元数据仓库](https://github.com/oracle/graalvm-reachability-metadata/tree/master/metadata/org.mybatis/mybatis)提供。
-`bus-mapper` 不重复附带完整的官方元数据。bus 所需的拦截器代理、明确访问的成员及 XML 解析资源在 `bus-native` JAR 中
+`bus-mapper` 不重复附带完整的官方元数据。bus 所需的拦截器代理、明确访问的成员及 XML 解析资源在 `bus-preset` JAR 中
 单独存放于 `org.mybatis/mybatis/3.6.0`，对应当前依赖基线；Bus 自身注册保留在 `org.miaixz/bus-mapper`。
 已发布的仓库 `1.1.18` 尚未包含仓库 `master` 分支的全部条目，剩余补充项不能一并删除。
 
