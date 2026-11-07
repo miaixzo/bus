@@ -22,6 +22,7 @@ package org.miaixz.bus.core.lang;
 import java.math.BigDecimal;
 import java.net.MalformedURLException;
 import java.net.URI;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.regex.Matcher;
 
@@ -749,7 +750,7 @@ public class Validator {
     }
 
     /**
-     * Validates if the given year, month, and day form a valid birthday.
+     * Validates that the given year, month, and day form a valid date from 1900 through today.
      *
      * @param year  the year, starting from 1900
      * @param month the month, starting from 1
@@ -758,7 +759,8 @@ public class Validator {
      */
     public static boolean isBirthday(final int year, final int month, final int day) {
         // Validate year
-        final int thisYear = DateKit.thisYear();
+        final LocalDate today = LocalDate.now();
+        final int thisYear = today.getYear();
         if (year < 1900 || year > thisYear) {
             return false;
         }
@@ -770,6 +772,10 @@ public class Validator {
 
         // Validate day
         if (day < 1 || day > 31) {
+            return false;
+        }
+        if (year == thisYear
+                && (month > today.getMonthValue() || (month == today.getMonthValue() && day > today.getDayOfMonth()))) {
             return false;
         }
         // Check special months with maximum 30 days

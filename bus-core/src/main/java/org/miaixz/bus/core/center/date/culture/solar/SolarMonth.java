@@ -19,7 +19,6 @@
 */
 package org.miaixz.bus.core.center.date.culture.solar;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.miaixz.bus.core.center.date.culture.parts.AbstractMonth;
@@ -170,12 +169,7 @@ public class SolarMonth extends AbstractMonth {
      * @return a list of SolarWeek objects in this month
      */
     public List<SolarWeek> getWeeks(int start) {
-        int size = getWeekCount(start);
-        List<SolarWeek> l = new ArrayList<>(size);
-        for (int i = 0; i < size; i++) {
-            l.add(SolarWeek.fromYm(year, month, i, start));
-        }
-        return l;
+        return buildList(getWeekCount(start), i -> SolarWeek.fromYm(year, month, i, start));
     }
 
     /**
@@ -184,12 +178,7 @@ public class SolarMonth extends AbstractMonth {
      * @return a list of SolarDay objects in this month
      */
     public List<SolarDay> getDays() {
-        int size = getDayCount();
-        List<SolarDay> l = new ArrayList<>(size);
-        for (int i = 1; i <= size; i++) {
-            l.add(SolarDay.fromYmd(year, month, i));
-        }
-        return l;
+        return buildDays(i -> SolarDay.fromYmd(year, month, i));
     }
 
     /**

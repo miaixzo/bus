@@ -19,7 +19,6 @@
 */
 package org.miaixz.bus.core.center.date.culture.lunar;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -171,15 +170,7 @@ public class LunarYear extends AbstractTraditionalYear {
      * @return the list of lunar months (typically 12 months, or 13 if there's a leap month)
      */
     public List<LunarMonth> getMonths() {
-        List<LunarMonth> l = new ArrayList<>(13);
-        int leapMonth = getLeapMonth();
-        for (int i = 1; i < 13; i++) {
-            l.add(LunarMonth.fromYm(year, i));
-            if (i == leapMonth) {
-                l.add(LunarMonth.fromYm(year, -i));
-            }
-        }
-        return l;
+        return buildMonths(i -> LunarMonth.fromYm(year, i));
     }
 
     /**

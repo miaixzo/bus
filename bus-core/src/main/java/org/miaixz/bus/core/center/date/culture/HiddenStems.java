@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.core.center.date.culture;
 
+import java.util.Arrays;
+
 /**
  * Represents the types of Hidden Stems (藏干类型) within Earth Branches in Chinese metaphysics.
  *
@@ -69,15 +71,8 @@ public enum HiddenStems {
      * @return The {@code HiddenStems} enum entry, or {@code null} if not found.
      */
     public static HiddenStems fromCode(Integer code) {
-        if (null == code) {
-            return null;
-        }
-        for (HiddenStems item : values()) {
-            if (item.getCode() == code) {
-                return item;
-            }
-        }
-        return null;
+        return code == null ? null
+                : Arrays.stream(values()).filter(item -> item.getCode() == code).findFirst().orElse(null);
     }
 
     /**
@@ -87,15 +82,8 @@ public enum HiddenStems {
      * @return The {@code HiddenStems} enum entry, or {@code null} if not found.
      */
     public static HiddenStems fromName(String name) {
-        if (null == name) {
-            return null;
-        }
-        for (HiddenStems item : values()) {
-            if (item.getName().equals(name)) {
-                return item;
-            }
-        }
-        return null;
+        return name == null ? null
+                : Arrays.stream(values()).filter(item -> item.getName().equals(name)).findFirst().orElse(null);
     }
 
     /**

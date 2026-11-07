@@ -22,6 +22,10 @@ package org.miaixz.bus.core.center.date.culture.star.nine;
 import org.miaixz.bus.core.center.date.culture.Direction;
 import org.miaixz.bus.core.center.date.culture.Element;
 import org.miaixz.bus.core.center.date.culture.Samsara;
+import org.miaixz.bus.core.center.date.culture.parts.AbstractTraditionalYear;
+import org.miaixz.bus.core.center.date.culture.sixty.SixtyCycle;
+import org.miaixz.bus.core.center.date.culture.solar.SolarDay;
+import org.miaixz.bus.core.center.date.culture.solar.SolarTerms;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 
@@ -75,6 +79,42 @@ public class NineStar extends Samsara {
      */
     public static NineStar fromName(String name) {
         return new NineStar(name);
+    }
+
+    /**
+     * Calculates the nine star for a traditional year and month.
+     *
+     * @param year  the traditional year
+     * @param month the month's sixty cycle
+     * @return the month's nine star
+     */
+    public static NineStar fromYm(AbstractTraditionalYear year, SixtyCycle month) {
+        int index = month.getEarthBranch().getIndex();
+        if (index < 2) {
+            index += 3;
+        }
+        return fromIndex(27 - year.getSixtyCycle().getEarthBranch().getIndex() % 3 * 3 - index);
+    }
+
+    /**
+     * Calculates the nine star for an hour.
+     *
+     * @param solarDay       the solar day containing the hour
+     * @param daySixtyCycle  the day's sixty cycle
+     * @param hourIndexInDay the hour index within the day
+     * @return the hour's nine star
+     */
+    public static NineStar fromHour(SolarDay solarDay, SixtyCycle daySixtyCycle, int hourIndexInDay) {
+        SolarTerms winterSolstice = SolarTerms.fromIndex(solarDay.getYear(), 0);
+        int earthBranchIndex = hourIndexInDay % 12;
+        int index = 8 - 3 * (daySixtyCycle.getEarthBranch().getIndex() % 3);
+        if (!solarDay.isBefore(winterSolstice.getJulianDay().getSolarDay())
+                && solarDay.isBefore(winterSolstice.next(12).getJulianDay().getSolarDay())) {
+            index = 8 + earthBranchIndex - index;
+        } else {
+            index -= earthBranchIndex;
+        }
+        return fromIndex(index);
     }
 
     /**
