@@ -19,10 +19,9 @@
 */
 package org.miaixz.bus.image.nimble.opencv.tile;
 
-import org.opencv.core.Mat;
-import org.opencv.core.Rect;
-
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.opencv.core.Mat;
+import org.miaixz.bus.opencv.core.Rect;
 
 /**
  * Not an API. This class is under development and can be changed or removed at any moment.
@@ -122,14 +121,13 @@ public class TiledAlgorithm {
     }
 
     /**
-     * Processes the tile impl.
+     * Placeholder for per-tile processing. The current implementation leaves both matrices unchanged.
      *
      * @param tileInput  the tile input.
      * @param tileOutput the tile output.
      */
     private void processTileImpl(Mat tileInput, Mat tileOutput) {
-        // TODO Auto-generated method stub
-
+        // No tile processing is currently implemented.
     }
 
     /**

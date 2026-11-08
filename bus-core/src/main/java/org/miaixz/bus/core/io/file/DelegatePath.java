@@ -491,8 +491,6 @@ public class DelegatePath extends SimpleWrapper<Path> implements Path, Resource 
         return raw.toString();
     }
 
-    // Convenience methods for Files class functionalities
-
     /**
      * Tests whether the file denoted by this path exists.
      *

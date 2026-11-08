@@ -28,16 +28,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import org.opencv.core.CvException;
-import org.opencv.core.CvType;
-import org.opencv.core.Mat;
-import org.opencv.core.MatOfInt;
-import org.opencv.imgcodecs.Imgcodecs;
-
 import org.miaixz.bus.core.io.file.FileName;
 import org.miaixz.bus.core.xyz.FileKit;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.image.Builder;
 import org.miaixz.bus.logger.Logger;
+import org.miaixz.bus.opencv.core.CvException;
+import org.miaixz.bus.opencv.core.CvType;
+import org.miaixz.bus.opencv.core.Mat;
+import org.miaixz.bus.opencv.core.MatOfInt;
+import org.miaixz.bus.opencv.imgcodecs.Imgcodecs;
 
 /**
  * Provides image I/O operations for medical imaging applications.
@@ -260,8 +260,6 @@ public class ImageIOHandler {
         return createThumbnailFromSize(sourceMat, targetSize);
     }
 
-    // Private methods with minimal or no documentation
-
     /**
      * Executes the handle image conversion operation.
      *
@@ -332,7 +330,7 @@ public class ImageIOHandler {
      */
     private static Path ensurePngExtension(Path path) {
         var fileName = path.getFileName().toString();
-        if (!fileName.toLowerCase().endsWith(".png")) {
+        if (!StringKit.toLowerCase(fileName).endsWith(".png")) {
             return path.resolveSibling(FileName.mainName(fileName) + ".png");
         }
         return path;
@@ -432,10 +430,10 @@ public class ImageIOHandler {
                 : new Dimension(originalWidth, originalHeight);
     }
 
-    // ======= Validation methods =======
-
     /**
      * Validates the readable path.
+     * <p>
+     * ======= Validation methods =======.
      *
      * @param path the path.
      */

@@ -41,6 +41,10 @@ import org.miaixz.bus.extra.json.JsonValue;
 
 /**
  * Retrieves a standard JSON UserInfo response with an OAuth bearer access token.
+ * <p>
+ * The callback owner must compare the returned subject with the verified ID Token subject before using the claims. This
+ * client does not receive the verified ID Token and therefore cannot establish that identity binding.
+ * </p>
  *
  * @author Kimi Liu
  */

@@ -164,7 +164,7 @@ public class GoogleSourceAdapter implements VendorAdapter {
     /**
      * Creates one Source-bound Google adapter from an immutable Vendor manifest.
      *
-     * @param spaceId  Source space used to isolate browser state and credentials
+     * @param tenantId Source tenant used to isolate browser state and credentials
      * @param sourceId Source identifier
      * @param manifest selected Google manifest
      * @param variant  selected default variant manifest
@@ -174,7 +174,7 @@ public class GoogleSourceAdapter implements VendorAdapter {
      * @throws ValidateException        if the supplied profile, manifest, options, or security rules do not represent
      *                                  the frozen Google OIDC variant
      */
-    public GoogleSourceAdapter(final String spaceId, final String sourceId, final GoogleManifest manifest,
+    public GoogleSourceAdapter(final String tenantId, final String sourceId, final GoogleManifest manifest,
             final VendorManifest.Variant variant, final GoogleOptions options, final SourceServices services) {
         Assert.notNull(manifest, "Google manifest must not be null");
         this.sourceId = Assert.notBlank(sourceId, "Google Source id must not be blank");
@@ -190,7 +190,7 @@ public class GoogleSourceAdapter implements VendorAdapter {
         if (!requiredAlgorithms.contains(JwaAlgorithm.RS256.name())) {
             throw new ValidateException("Google RS256 is not permitted by the OIDC security rules");
         }
-        this.redirectManager = RedirectManager.create(spaceId, sourceId, variant, options, services);
+        this.redirectManager = RedirectManager.create(tenantId, sourceId, variant, options, services);
         this.formCodec = new FormCodec();
         this.jwkSetCodec = new JwkSetCodec();
         this.jwkSelector = new JwkSelector();

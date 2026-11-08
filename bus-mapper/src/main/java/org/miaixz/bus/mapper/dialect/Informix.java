@@ -22,6 +22,7 @@ package org.miaixz.bus.mapper.dialect;
 import java.util.EnumSet;
 
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.mapper.Charter.Behavior;
 import org.miaixz.bus.mapper.Charter.Modify;
 import org.miaixz.bus.mapper.feature.paging.Pageable;
@@ -59,7 +60,7 @@ public class Informix extends AbstractDialect {
         if (jdbcUrl == null) {
             return null;
         }
-        String lower = jdbcUrl.toLowerCase();
+        String lower = StringKit.toLowerCase(jdbcUrl);
         return lower.startsWith("jdbc:informix-sqli:") || lower.startsWith("jdbc:ids:") ? this : null;
     }
 
@@ -158,7 +159,7 @@ public class Informix extends AbstractDialect {
             return originalSql;
         }
         StringBuilder sql = new StringBuilder(originalSql.length() + 100);
-        int selectIndex = originalSql.toUpperCase().indexOf("SELECT");
+        int selectIndex = StringKit.toUpperCase(originalSql).indexOf("SELECT");
         if (selectIndex >= 0) {
             sql.append(originalSql, 0, selectIndex + 6);
             if (pageable.getOffset() > 0) {

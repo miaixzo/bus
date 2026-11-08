@@ -21,6 +21,7 @@ package org.miaixz.bus.image.builtin;
 
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.xyz.StringKit;
 
 /**
  * Implements the Kölner Phonetik (Cologne Phonetics) algorithm for fuzzy string matching. This algorithm converts a
@@ -51,7 +52,7 @@ public class KPhonetik implements FuzzyString {
         if (null == s || s.length() == 0)
             return Normal.EMPTY;
 
-        char[] in = s.toUpperCase().toCharArray();
+        char[] in = StringKit.toUpperCase(s).toCharArray();
         int countX = 0;
         for (char c : in)
             if (c == Symbol.C_X)

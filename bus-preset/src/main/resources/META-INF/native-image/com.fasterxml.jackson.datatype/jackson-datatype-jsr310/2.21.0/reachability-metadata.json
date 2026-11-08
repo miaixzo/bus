@@ -1,0 +1,13 @@
+{
+  "reflection": [
+    {
+      "type": "com.fasterxml.jackson.datatype.jsr310.JavaTimeModule",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    }
+  ]
+}

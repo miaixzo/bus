@@ -89,7 +89,7 @@ public class Connection implements Serializable {
     public static final int DEF_BUFFERSIZE = 0;
 
     /**
-     * The def max pdu length value.
+     * Default maximum PDU length, in bytes.
      */
     public static final int DEF_MAX_PDU_LENGTH = 16378;
 
@@ -108,7 +108,6 @@ public class Connection implements Serializable {
      */
     public static final String TLS_RSA_WITH_AES_128_CBC_SHA = "TLS_RSA_WITH_AES_128_CBC_SHA";
 
-    // to fit into SunJSSE TLS Application Data Length 16408
     /**
      * The default tls protocols value.
      */

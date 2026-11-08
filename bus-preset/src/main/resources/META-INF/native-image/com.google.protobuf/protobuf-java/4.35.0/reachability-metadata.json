@@ -1,0 +1,25 @@
+{
+  "reflection": [
+    {
+      "type": "com.google.protobuf.ByteString",
+      "methods": [
+        {
+          "name": "copyFrom",
+          "parameterTypes": [
+            "byte[]"
+          ]
+        },
+        {
+          "name": "copyFromUtf8",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "toByteArray",
+          "parameterTypes": []
+        }
+      ]
+    }
+  ]
+}

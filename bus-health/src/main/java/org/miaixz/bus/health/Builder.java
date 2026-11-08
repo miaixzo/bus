@@ -37,6 +37,7 @@ import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.setting.nimble.props.Props;
 
@@ -916,7 +917,7 @@ public class Builder {
      * @return The corresponding configuration property key.
      */
     static String envKeyToProperty(String envKey) {
-        return envKey.toLowerCase(Locale.ROOT).replace(Symbol.C_UNDERLINE, Symbol.C_DOT);
+        return StringKit.toLowerCase(envKey).replace(Symbol.C_UNDERLINE, Symbol.C_DOT);
     }
 
     /**

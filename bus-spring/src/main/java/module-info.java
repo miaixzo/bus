@@ -21,12 +21,11 @@
  * Module: {@code bus.spring}
  *
  * <p>
- * Provides shared integration utilities for Spring Framework and Spring Boot applications.
+ * Provides shared integration APIs for Spring Framework and Spring Boot applications.
  *
  * <p>
- * Includes annotations, AOP and bean utilities, runtime context propagation, startup and banner hooks, conditional
- * configuration, JDBC helpers, web advice, converters, interceptors, argument resolvers, request wrappers, and routing
- * support.
+ * Includes annotations, AOP, bean lookup, runtime context propagation, startup hooks, conditional configuration,
+ * JDBC data source routing, web advice, converters, interceptors, argument resolvers, and request wrappers.
  *
  * @author Kimi Liu
  */

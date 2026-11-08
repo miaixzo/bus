@@ -22,8 +22,10 @@ package org.miaixz.bus.image.plugin;
 import java.io.Closeable;
 import java.util.EnumSet;
 import java.util.Hashtable;
+import java.util.Objects;
 
 import org.miaixz.bus.core.lang.exception.InternalException;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.image.Device;
 import org.miaixz.bus.image.builtin.ldap.LdapDicomConfiguration;
 import org.miaixz.bus.image.metric.Connection;
@@ -165,10 +167,12 @@ public class DcmLdap implements Closeable {
      * Creates a new network Application Entity and its containing device in the LDAP directory. If the device already
      * exists, this operation might fail depending on the LDAP server configuration.
      *
-     * @throws InternalException if an error occurs during the LDAP operation.
+     * @throws InternalException    if an error occurs during the LDAP operation.
+     * @throws NullPointerException if the AE title has not been configured
      */
     public void createNetworkAE() throws InternalException {
-        Device device = new Device(deviceName != null ? deviceName : aeTitle.toLowerCase());
+        Objects.requireNonNull(aeTitle, "AE title must not be null");
+        Device device = new Device(deviceName != null ? deviceName : StringKit.toLowerCase(aeTitle));
         device.setDescription(deviceDesc);
         if (deviceType != null) {
             device.setPrimaryDeviceTypes(deviceType);

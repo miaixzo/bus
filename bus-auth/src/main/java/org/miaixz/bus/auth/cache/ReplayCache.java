@@ -28,7 +28,7 @@ import org.miaixz.bus.cache.CacheX;
  * Records isolated authentication artifact digests for atomic replay detection.
  * <p>
  * Separate key scopes cover OAuth refresh-family reuse, JWT {@code jti}, DPoP {@code jti}, SAML assertion identifiers,
- * and RADIUS authenticators. The key is an irreversible digest over space, purpose, issuer, and artifact value; the
+ * and RADIUS authenticators. The key is an irreversible digest over tenant, purpose, issuer, and artifact value; the
  * stored string is only a non-sensitive purpose label. Callers use create-if-absent and treat {@code false} as replay.
  * Raw nonce, family identifier, assertion, token, and authenticator values must never be stored.
  * </p>

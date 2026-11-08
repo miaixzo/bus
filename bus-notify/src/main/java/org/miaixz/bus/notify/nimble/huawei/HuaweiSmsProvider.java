@@ -129,18 +129,18 @@ public class HuaweiSmsProvider extends AbstractProvider<HuaweiNotice, Context> {
         headers.put("X-WSSE", buildWsseHeader());
 
         String response = post(this.getUrl(entity), bodys, headers);
-        String errcode = JsonKit.getValue(response, "code");
+        String code = JsonKit.getValue(response, "code");
         Message<Void> result = Message.<Void>builder()
-                .errcode(SUCCESS_CODE.equals(errcode) ? ErrorCode._SUCCESS.getKey() : errcode)
-                .errmsg(JsonKit.getValue(response, "description")).build();
+                .code(SUCCESS_CODE.equals(code) ? ErrorCode._SUCCESS.getKey() : code)
+                .desc(JsonKit.getValue(response, "description")).build();
         Logger.info(
                 false,
                 "Notify",
-                "Huawei SMS send completed: template={}, targetCount={}, code={}, errcode={}, responseBytes={}",
+                "Huawei SMS send completed: template={}, targetCount={}, code={}, code={}, responseBytes={}",
                 entity == null ? null : entity.getTemplate(),
                 entity == null || entity.getReceive() == null ? 0 : entity.getReceive().split(Symbol.COMMA).length,
-                errcode,
-                result.getErrcode(),
+                code,
+                result.getCode(),
                 response == null ? 0 : response.length());
         return result;
     }

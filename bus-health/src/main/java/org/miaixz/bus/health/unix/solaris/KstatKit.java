@@ -60,10 +60,9 @@ public class KstatKit {
      */
     private static final Lock CHAIN = new ReentrantLock();
 
-    // Only one thread may access the chain at any time, so we wrap this object in
-    // the KstatChain class locked until the lock is released on auto-close.
     /**
-     * The kstatCtl value.
+     * Only one thread may access the chain at any time, so we wrap this object in the KstatChain class locked until the
+     * lock is released on auto-close.
      */
     @GuardedBy("CHAIN")
     private static Pointer kstatCtl = null;

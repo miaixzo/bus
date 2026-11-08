@@ -19,7 +19,6 @@
 */
 package org.miaixz.bus.core.center.date.culture.hijri;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.miaixz.bus.core.center.date.culture.parts.AbstractYear;
@@ -100,11 +99,7 @@ public class HijriYear extends AbstractYear {
      * @return 12 Hijri months
      */
     public List<HijriMonth> getMonths() {
-        List<HijriMonth> l = new ArrayList<>(12);
-        for (int i = 1; i < 13; i++) {
-            l.add(HijriMonth.fromYm(year, i));
-        }
-        return l;
+        return buildMonths(i -> HijriMonth.fromYm(year, i));
     }
 
     /**

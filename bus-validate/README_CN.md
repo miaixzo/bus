@@ -1,5 +1,7 @@
 # 🔍 Bus Validate：轻量级 Java 验证框架
 
+> 命名迁移：内置和自定义校验注解的状态属性统一为 `code/desc`，`Context`、`Criterion` 和异常访问方法同步使用新名称，旧属性不保留别名。`Verified` 按新名称反射读取，自定义注解必须一起升级。模板插值和 `Criterion.getMessage()` 的行为保持不变。完整迁移及序列化说明见 [bus-core 文档](../bus-core/README_CN.md#message-响应与异常命名迁移)。
+
 <p align="center">
 <strong>强大、灵活且易于使用的验证框架</strong>
 </p>
@@ -77,27 +79,27 @@ import org.miaixz.bus.validate.magic.annotation.*;
 @Data
 public class User {
 
-    @NotNull(errmsg = "用户 ID 不能为空")
+    @NotNull(desc = "用户 ID 不能为空")
     private Long id;
 
-    @NotBlank(errmsg = "用户名不能为空")
-    @Size(min = 3, max = 20, errmsg = "用户名长度必须在 3 到 20 个字符之间")
+    @NotBlank(desc = "用户名不能为空")
+    @Size(min = 3, max = 20, desc = "用户名长度必须在 3 到 20 个字符之间")
     private String username;
 
-    @Email(errmsg = "邮箱格式无效")
+    @Email(desc = "邮箱格式无效")
     private String email;
 
-    @Mobile(errmsg = "手机号码无效")
+    @Mobile(desc = "手机号码无效")
     private String phone;
 
-    @Chinese(errmsg = "姓名必须仅包含中文字符")
+    @Chinese(desc = "姓名必须仅包含中文字符")
     private String realName;
 
-    @Date(errmsg = "日期格式无效")
+    @Date(desc = "日期格式无效")
     private String birthday;
 
     @NotNull
-    @Compare(field = "password", errmsg = "密码不匹配")
+    @Compare(field = "password", desc = "密码不匹配")
     private String confirmPassword;
 
     private String password;
@@ -121,7 +123,7 @@ public class UserService {
             // 处理验证错误
             result.getResult().forEach(error -> {
                 Criterion criterion = error.getCriterion();
-                System.err.println("验证失败：" + criterion.getErrmsg());
+                System.err.println("验证失败：" + criterion.getDesc());
                 System.err.println("字段：" + criterion.getField());
                 System.err.println("值：" + criterion.getParam("value"));
             });
@@ -142,24 +144,24 @@ public class UserService {
 
 | 注解        | 描述                                   | 示例                                 |
 |:------------|:---------------------------------------|:-------------------------------------|
-| `@NotNull`  | 验证值不为 null                        | `@NotNull(errmsg = "ID 不能为空")`   |
-| `@Null`     | 验证值为 null                          | `@Null(errmsg = "必须为 null")`      |
-| `@NotEmpty` | 验证值不为空（数组、集合、映射）       | `@NotEmpty(errmsg = "列表不能为空")` |
-| `@NotBlank` | 验证字符串不为空（去除空格后长度 > 0） | `@NotBlank(errmsg = "名称不能为空")` |
-| `@Blank`    | 验证字符串为空                         | `@Blank(errmsg = "必须为空")`        |
+| `@NotNull`  | 验证值不为 null                        | `@NotNull(desc = "ID 不能为空")`   |
+| `@Null`     | 验证值为 null                          | `@Null(desc = "必须为 null")`      |
+| `@NotEmpty` | 验证值不为空（数组、集合、映射）       | `@NotEmpty(desc = "列表不能为空")` |
+| `@NotBlank` | 验证字符串不为空（去除空格后长度 > 0） | `@NotBlank(desc = "名称不能为空")` |
+| `@Blank`    | 验证字符串为空                         | `@Blank(desc = "必须为空")`        |
 
 ### 字符串验证器
 
 | 注解         | 描述               | 示例                                |
 |:-------------|:-------------------|:------------------------------------|
-| `@Email`     | 验证邮箱格式       | `@Email(errmsg = "邮箱无效")`       |
-| `@Mobile`    | 验证手机号码       | `@Mobile(errmsg = "手机无效")`      |
-| `@Phone`     | 验证电话号码       | `@Phone(errmsg = "电话无效")`       |
-| `@Chinese`   | 验证中文字符       | `@Chinese(errmsg = "必须为中文")`   |
-| `@English`   | 验证英文字符       | `@English(errmsg = "必须为英文")`   |
-| `@URL`       | 验证 URL 格式      | `@URL(errmsg = "URL 无效")`         |
-| `@IPAddress` | 验证 IP 地址       | `@IPAddress(errmsg = "IP 无效")`    |
-| `@CitizenId` | 验证中国公民身份证 | `@CitizenId(errmsg = "身份证无效")` |
+| `@Email`     | 验证邮箱格式       | `@Email(desc = "邮箱无效")`       |
+| `@Mobile`    | 验证手机号码       | `@Mobile(desc = "手机无效")`      |
+| `@Phone`     | 验证电话号码       | `@Phone(desc = "电话无效")`       |
+| `@Chinese`   | 验证中文字符       | `@Chinese(desc = "必须为中文")`   |
+| `@English`   | 验证英文字符       | `@English(desc = "必须为英文")`   |
+| `@URL`       | 验证 URL 格式      | `@URL(desc = "URL 无效")`         |
+| `@IPAddress` | 验证 IP 地址       | `@IPAddress(desc = "IP 无效")`    |
+| `@CitizenId` | 验证中国公民身份证 | `@CitizenId(desc = "身份证无效")` |
 
 ### 大小/长度验证器
 
@@ -190,8 +192,8 @@ public class UserService {
 
 | 注解     | 描述           | 示例                              |
 |:---------|:---------------|:----------------------------------|
-| `@True`  | 验证值为 true  | `@True(errmsg = "必须为 true")`   |
-| `@False` | 验证值为 false | `@False(errmsg = "必须为 false")` |
+| `@True`  | 验证值为 true  | `@True(desc = "必须为 true")`   |
+| `@False` | 验证值为 false | `@False(desc = "必须为 false")` |
 
 ### 特殊验证器
 
@@ -301,8 +303,8 @@ import java.lang.annotation.*;
 @Complex(value = "AgeValidator", clazz = AgeValidator.class)
 public @interface ValidAge {
 
-    String errcode() default ErrorCode._PARAMETER_VALIDATE;
-    String errmsg() default "年龄必须在 18 到 120 岁之间";
+    String code() default ErrorCode._PARAMETER_VALIDATE;
+    String desc() default "年龄必须在 18 到 120 岁之间";
     String[] group() default {};
     String field() default Builder.DEFAULT_FIELD;
 }
@@ -344,7 +346,7 @@ public class RegistrationForm {
     private String username;
 
     // 仅在 userType 为 "company" 时验证
-    @NotBlank(errmsg = "公司名称必填")
+    @NotBlank(desc = "公司名称必填")
     @Reflect(condition = "userType == 'company'")
     private String companyName;
 }
@@ -358,12 +360,12 @@ public class RegistrationForm {
 
 ```java
 // ✅ 推荐：清晰且具体
-@NotBlank(errmsg = "邮箱地址必填")
-@Email(errmsg = "邮箱地址必须为有效格式（例如：user@example.com）")
+@NotBlank(desc = "邮箱地址必填")
+@Email(desc = "邮箱地址必须为有效格式（例如：user@example.com）")
 private String email;
 
 // ❌ 不推荐：模糊且无帮助
-@NotBlank(errmsg = "无效")
+@NotBlank(desc = "无效")
 private String email;
 ```
 
@@ -374,7 +376,7 @@ private String email;
 @NotBlank
 @Size(min = 8, max = 20)
 @Regex(value = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d@$!%*#?&]+$",
-        errmsg = "密码必须包含字母和数字")
+        desc = "密码必须包含字母和数字")
 private String password;
 ```
 
@@ -423,7 +425,7 @@ private List<Phone> phones;
 
 ```java
 // 在错误消息中使用占位符
-@Size(min = 3, max = 20, errmsg = "用户名长度必须在 ${min} 到 ${max} 个字符之间")
+@Size(min = 3, max = 20, desc = "用户名长度必须在 ${min} 到 ${max} 个字符之间")
 private String username;
 
 // 可用占位符：${field}、${value}、${min}、${max} 等
@@ -441,7 +443,7 @@ if (!result.isPass()) {
     Map<String, String> errors = new HashMap<>();
     result.getResult().forEach(error -> {
         Criterion c = error.getCriterion();
-        errors.put(c.getField(), c.getErrmsg());
+        errors.put(c.getField(), c.getDesc());
     });
     return ResponseEntity.badRequest().body(errors);
 }
@@ -459,12 +461,12 @@ Collector result = Builder.on(value, new Annotation[]{}, context).access();
 
 ```java
 // 使用消息代码并通过 MessageSource 解析
-@Email(errcode = "validation.email.invalid")
+@Email(code = "validation.email.invalid")
 private String email;
 
 // 在服务中
 String message = messageSource.getMessage(
-    criterion.getErrcode(),
+    criterion.getCode(),
     new Object[]{criterion.getField()},
     LocaleContextHolder.getLocale()
 );
@@ -590,7 +592,7 @@ public class LoginForm {
     @Size(min = 8, max = 32)
     private String password;
 
-    @True(errmsg = "您必须接受条款和条件")
+    @True(desc = "您必须接受条款和条件")
     private Boolean acceptTerms;
 }
 ```
@@ -609,7 +611,7 @@ public class CreateOrderRequest {
     private List<OrderItem> items;
 
     @NotNull
-    @Compare(field = "totalAmount", errmsg = "支付金额必须与总计匹配")
+    @Compare(field = "totalAmount", desc = "支付金额必须与总计匹配")
     private BigDecimal paymentAmount;
 
     private BigDecimal totalAmount;

@@ -565,7 +565,8 @@ public class Keys {
     }
 
     /**
-     * Creates a new {@link InitialDirContext} instance.
+     * Creates a new {@link InitialDirContext} instance. The environment must come from trusted application
+     * configuration; it can select executable provider factories.
      *
      * @param environment A map of environment properties for the context. If {@code null} or empty, no environment
      *                    properties are used.

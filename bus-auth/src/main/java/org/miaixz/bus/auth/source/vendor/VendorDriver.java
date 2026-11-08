@@ -85,8 +85,9 @@ public class VendorDriver implements SourceDriver<VendorOptions<?>> {
      */
     private static void requireSourceGraph(final Source source, final Provider provider, final Library library) {
         final Source checked = Assert.notNull(source, "Vendor Source must not be null");
-        if (!VendorScheme.ID.equals(checked.getType()) || checked.getProtocol() == null || library.getSpace_id() == null
-                || library.getSpace_id().isBlank() || !provider.getId().equals(checked.getProvider_id())
+        if (!VendorScheme.ID.equals(checked.getType()) || checked.getProtocol() == null
+                || library.getTenant_id() == null || library.getTenant_id().isBlank()
+                || !provider.getId().equals(checked.getProvider_id())
                 || !library.getId().equals(provider.getLibrary_id())) {
             throw new ValidateException("Vendor driver requires a matching Source configuration");
         }
@@ -321,7 +322,7 @@ public class VendorDriver implements SourceDriver<VendorOptions<?>> {
         requireManifest(manifest, variant);
         variant.targets().resolve(options);
         final SourceWorker worker = bindings
-                .create(library.getSpace_id(), source.getId(), manifest, variant, options, runtime);
+                .create(library.getTenant_id(), source.getId(), manifest, variant, options, runtime);
         Logger.debug(
                 false,
                 "Auth",

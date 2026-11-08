@@ -71,10 +71,10 @@ public class MQueueException extends UncheckedException {
      * Constructs a new MQueueException with the specified error object and detail message.
      *
      * @param errors The error object containing error code.
-     * @param errmsg The detail message.
+     * @param desc   The detail message.
      */
-    public MQueueException(final Errors errors, final String errmsg) {
-        super(errors, errmsg);
+    public MQueueException(final Errors errors, final String desc) {
+        super(errors, desc);
     }
 
     /**
@@ -90,11 +90,11 @@ public class MQueueException extends UncheckedException {
     /**
      * Constructs a new MQueueException with the specified error code and detail message.
      *
-     * @param errcode The error code.
-     * @param errmsg  The detail message.
+     * @param code The error code.
+     * @param desc The detail message.
      */
-    public MQueueException(final String errcode, final String errmsg) {
-        super(errcode, errmsg);
+    public MQueueException(final String code, final String desc) {
+        super(code, desc);
     }
 
     /**
@@ -121,12 +121,12 @@ public class MQueueException extends UncheckedException {
     /**
      * Constructs a new MQueueException with the specified error code, detail message, and cause.
      *
-     * @param errcode The error code.
-     * @param errmsg  The detail message.
-     * @param cause   The cause (which is saved for later retrieval by the {@link Throwable#getCause()} method).
+     * @param code  The error code.
+     * @param desc  The detail message.
+     * @param cause The cause (which is saved for later retrieval by the {@link Throwable#getCause()} method).
      */
-    public MQueueException(final String errcode, final String errmsg, final Throwable cause) {
-        super(errcode, errmsg, cause);
+    public MQueueException(final String code, final String desc, final Throwable cause) {
+        super(code, desc, cause);
     }
 
     /**

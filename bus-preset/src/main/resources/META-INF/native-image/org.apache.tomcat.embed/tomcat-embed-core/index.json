@@ -1,0 +1,11 @@
+[
+  {
+    "latest": true,
+    "metadata-version": "11.0.0",
+    "description": "Supplemental Bus integration metadata; complements the upstream metadata repository.",
+    "tested-versions": [
+      "11.0.0",
+      "11.0.24"
+    ]
+  }
+]

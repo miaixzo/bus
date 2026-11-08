@@ -320,7 +320,8 @@ public class Factory {
      * @return normalized backend type
      */
     private String normalizeType(String type) {
-        return StringKit.isBlank(type) ? null : type.trim().toLowerCase().replace(Symbol.C_UNDERLINE, Symbol.C_MINUS);
+        return StringKit.isBlank(type) ? null
+                : StringKit.toLowerCase(type.trim()).replace(Symbol.C_UNDERLINE, Symbol.C_MINUS);
     }
 
     /**

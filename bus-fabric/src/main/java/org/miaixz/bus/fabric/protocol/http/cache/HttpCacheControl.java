@@ -21,7 +21,6 @@ package org.miaixz.bus.fabric.protocol.http.cache;
 
 import java.util.Collections;
 import java.util.LinkedHashMap;
-import java.util.Locale;
 import java.util.Map;
 
 import org.miaixz.bus.core.lang.Assert;
@@ -141,7 +140,7 @@ public class HttpCacheControl {
         if (StringKit.isBlank(name) || StringKit.containsAny(name, Symbol.C_CR, Symbol.C_LF)) {
             throw new ValidateException("Cache-Control directive must be non-blank and single-line");
         }
-        return name.trim().toLowerCase(Locale.ROOT);
+        return StringKit.toLowerCase(name.trim());
     }
 
     /**

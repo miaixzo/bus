@@ -19,13 +19,12 @@
 */
 package org.miaixz.bus.auth.source.protocol.scim;
 
-import java.util.Locale;
-
 import org.miaixz.bus.auth.shared.SecretLease;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.extra.json.JsonValue;
 
 /**
@@ -82,7 +81,7 @@ public record PatchOperation(Op op, Optional<Path> path, Optional<Value> value) 
      * @return whether the path addresses password
      */
     private static boolean passwordPath(final Path value) {
-        final String normalized = value.value().toLowerCase(Locale.ROOT);
+        final String normalized = StringKit.toLowerCase(value.value());
         return "password".equals(normalized) || normalized.endsWith(":password");
     }
 

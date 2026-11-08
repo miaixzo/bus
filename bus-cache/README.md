@@ -319,7 +319,7 @@ public class ProductService {
     @Cached(name = "redis", prefix = "product:")
     public Product getProduct(
         @CacheKey String productId,
-        @CacheKey("#region.toUpperCase()") String region
+        @CacheKey String region
     ) {
         // Cache key: product:{productId}{region}
         // Example: product:12345US
@@ -336,6 +336,15 @@ public class ProductService {
         return userRepository.findByIdAndType(userId, type);
     }
 }
+```
+
+Normalize region codes before invoking the proxied service so cache key generation and data access use the same value:
+
+```java
+import org.miaixz.bus.core.xyz.StringKit;
+
+String normalizedRegion = StringKit.toUpperCase(region);
+productService.getProduct(productId, normalizedRegion);
 ```
 
 #### Multi-Key Batch Operations
@@ -1054,6 +1063,24 @@ Based on benchmark tests (10,000 operations):
 | `port`       | `int`            | `6379`               | Redis server port       |
 | `timeout`    | `int`            | `2000`               | Connection timeout (ms) |
 | `serializer` | `BaseSerializer` | `Hessian2Serializer` | Value serializer        |
+
+-----
+
+## Native Image metadata
+
+The resolved HikariCP dependency is 7.1.0. Native builds must enable the GraalVM reachability-metadata repository.
+Native Build Tools and repository 1.1.18 select the official HikariCP 7.0.2 metadata, whose tested versions include 7.1.0.
+Bus does not duplicate the complete upstream HikariCP metadata.
+
+The official metadata covers five HikariConfig setters. Bus retains the remaining 34 configuration setters and six
+HikariDataSource reflection entries in `bus-preset` under `com.zaxxer/HikariCP/7.1.0`, separately from Bus-owned registrations and
+conditioned on `com.zaxxer.hikari.util.PropertyElf` being reached.
+This preserves the existing property-binding coverage without broad reflection grants. JDBC drivers and application-defined
+data sources, credentials providers, exception handlers, or metric integrations need their own applicable metadata.
+Other cache backends and Bus registrations remain unchanged. Metadata coverage, packaging, and JVM behavior are checked;
+application-level Native Image verification remains necessary.
+
+- [Official HikariCP metadata](https://github.com/oracle/graalvm-reachability-metadata/tree/master/metadata/com.zaxxer/HikariCP)
 
 -----
 

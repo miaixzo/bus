@@ -29,11 +29,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.IntStream;
 
-import org.opencv.core.Core;
-import org.opencv.core.CvType;
-import org.opencv.core.Mat;
-import org.opencv.core.Scalar;
-
 import org.miaixz.bus.image.Builder;
 import org.miaixz.bus.image.Tag;
 import org.miaixz.bus.image.galaxy.data.Attributes;
@@ -41,6 +36,10 @@ import org.miaixz.bus.image.nimble.opencv.ImageCV;
 import org.miaixz.bus.image.nimble.opencv.ImageTransformer;
 import org.miaixz.bus.image.nimble.opencv.PlanarImage;
 import org.miaixz.bus.image.nimble.stream.ImageDescriptor;
+import org.miaixz.bus.opencv.core.Core;
+import org.miaixz.bus.opencv.core.CvType;
+import org.miaixz.bus.opencv.core.Mat;
+import org.miaixz.bus.opencv.core.Scalar;
 
 /**
  * Represents DICOM overlay data for an image.
@@ -445,7 +444,7 @@ public record OverlayData(int groupOffset, int rows, int columns, int imageFrame
             int frameIndex,
             int imageWidth) {
 
-        java.util.Objects.requireNonNullElse(overlays, java.util.List.<OverlayData>of()).stream()
+        Objects.requireNonNullElse(overlays, List.<OverlayData>of()).stream()
                 .filter(overlay -> isOverlayApplicableToFrame(overlay, frameIndex))
                 .forEach(overlay -> applyOverlayToPixelData(overlay, pixelData, frameIndex, imageWidth));
     }

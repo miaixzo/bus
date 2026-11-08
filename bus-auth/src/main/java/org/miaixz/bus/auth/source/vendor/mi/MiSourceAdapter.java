@@ -123,7 +123,7 @@ public class MiSourceAdapter implements VendorAdapter {
     /**
      * Creates one Source-bound Xiaomi adapter.
      *
-     * @param spaceId  Source space used to isolate state and secret resolution
+     * @param tenantId Source tenant used to isolate state and secret resolution
      * @param sourceId Source identifier
      * @param manifest selected Xiaomi manifest
      * @param variant  exact default manifest
@@ -132,7 +132,7 @@ public class MiSourceAdapter implements VendorAdapter {
      * @throws IllegalArgumentException if an identifier is blank or a collaborator is {@code null}
      * @throws ValidateException        if routing, protocol, manifest, or callback options are inconsistent
      */
-    public MiSourceAdapter(final String spaceId, final String sourceId, final MiManifest manifest,
+    public MiSourceAdapter(final String tenantId, final String sourceId, final MiManifest manifest,
             final VendorManifest.Variant variant, final MiOptions options, final SourceServices services) {
         final MiManifest selected = Assert.notNull(manifest, "Xiaomi manifest must not be null");
         this.sourceId = Assert.notBlank(sourceId, "Xiaomi Source id must not be blank");
@@ -145,7 +145,7 @@ public class MiSourceAdapter implements VendorAdapter {
                 || options.redirectUri().isEmpty()) {
             throw new ValidateException("Xiaomi adapter requires the mi/default OAuth 2.0 manifest");
         }
-        this.redirectManager = RedirectManager.create(spaceId, sourceId, variant, options, services);
+        this.redirectManager = RedirectManager.create(tenantId, sourceId, variant, options, services);
         this.authorizationResponseDecoder = new AuthorizationResponseDecoder();
         this.standardAdapter = new StandardAdapter(variant, options, Optional.of(redirectManager),
                 List.of(

@@ -69,7 +69,7 @@ public class Delegate {
      *         {@code false} otherwise.
      */
     public boolean isOk() {
-        return message != null && Consts.ZERO.toString().equals(message.getErrcode());
+        return message != null && Consts.ZERO.toString().equals(message.getCode());
     }
 
 }

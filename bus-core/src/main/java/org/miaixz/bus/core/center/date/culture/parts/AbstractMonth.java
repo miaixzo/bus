@@ -19,6 +19,9 @@
 */
 package org.miaixz.bus.core.center.date.culture.parts;
 
+import java.util.List;
+import java.util.function.IntFunction;
+
 /**
  * Abstract base class for months.
  *
@@ -44,6 +47,17 @@ public abstract class AbstractMonth extends MonthParts {
      */
     public int getWeekCount(final int start) {
         return (int) Math.ceil((indexOf(getFirstDay().getWeek().getIndex() - start, 7) + getDayCount()) / 7D);
+    }
+
+    /**
+     * Builds the days of this month from one-based day numbers.
+     *
+     * @param factory the day factory
+     * @param <T>     the day type
+     * @return the generated days
+     */
+    protected <T> List<T> buildDays(IntFunction<T> factory) {
+        return buildList(getDayCount(), i -> factory.apply(i + 1));
     }
 
     @Override

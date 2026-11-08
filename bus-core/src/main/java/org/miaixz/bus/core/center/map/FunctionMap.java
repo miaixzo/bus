@@ -24,16 +24,18 @@ import java.util.Map;
 
 import org.miaixz.bus.core.center.function.FunctionX;
 import org.miaixz.bus.core.center.function.SupplierX;
+import org.miaixz.bus.core.xyz.StringKit;
 
 /**
  * A concrete implementation of {@link TransMap} that uses provided {@link FunctionX}s to transform keys and values.
  * This class is useful for creating maps with specific, consistent transformation rules, such as case-insensitive keys
  * or trimmed string values.
  * <p>
- * Example: Creating a case-insensitive map for keys.
+ * Example: Creating a case-insensitive map for keys using {@link StringKit#toLowerCase(CharSequence)}.
  *
  * <pre>{@code
- * Map<String, String> map = new FunctionMap<>(new HashMap<>(), (key) -> key.toString().toLowerCase(), // Key function
+ * Map<String, String> map = new FunctionMap<>(new HashMap<>(), (key) -> StringKit.toLowerCase(key.toString()), // Key
+ *                                                                                                              // function
  *         null // No value transformation
  * );
  * map.put("Key1", "value1");

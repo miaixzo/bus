@@ -119,7 +119,7 @@ public class PinterestSourceAdapter implements VendorAdapter {
     /**
      * Creates one Source-bound Pinterest adapter from the frozen default manifest.
      *
-     * @param spaceId  Source space isolating browser and credential state
+     * @param tenantId Source tenant isolating browser and credential state
      * @param sourceId Source identifier
      * @param manifest selected Pinterest manifest
      * @param variant  selected default variant manifest
@@ -128,7 +128,7 @@ public class PinterestSourceAdapter implements VendorAdapter {
      * @throws IllegalArgumentException if an identifier is blank or a collaborator is {@code null}
      * @throws ValidateException        if profile, manifest, options, or routing differ from the frozen variant
      */
-    public PinterestSourceAdapter(final String spaceId, final String sourceId, final PinterestManifest manifest,
+    public PinterestSourceAdapter(final String tenantId, final String sourceId, final PinterestManifest manifest,
             final VendorManifest.Variant variant, final PinterestOptions options, final SourceServices services) {
         final PinterestManifest selected = Assert.notNull(manifest, "Pinterest manifest must not be null");
         this.sourceId = Assert.notBlank(sourceId, "Pinterest Source id must not be blank");
@@ -142,7 +142,7 @@ public class PinterestSourceAdapter implements VendorAdapter {
                 || !PinterestManifest.DEFAULT.equals(options.variant())) {
             throw new ValidateException("Pinterest adapter requires the pinterest/default OAuth 2.0 manifest");
         }
-        this.redirectManager = RedirectManager.create(spaceId, sourceId, variant, options, services);
+        this.redirectManager = RedirectManager.create(tenantId, sourceId, variant, options, services);
         this.callbackDecoder = new AuthorizationResponseDecoder();
         this.standardAdapter = new StandardAdapter(variant, options, Optional.of(redirectManager),
                 List.of(

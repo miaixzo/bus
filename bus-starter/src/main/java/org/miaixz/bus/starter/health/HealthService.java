@@ -33,6 +33,7 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.xyz.DateKit;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.health.Collector;
 import org.miaixz.bus.health.builtin.TID;
 
@@ -202,7 +203,7 @@ public class HealthService {
         }
         Set<String> requested = new LinkedHashSet<>();
         for (String value : tid.split(Symbol.COMMA)) {
-            String detail = value.trim().toLowerCase(Locale.ROOT);
+            String detail = StringKit.toLowerCase(value.trim());
             if (detail.isEmpty()) {
                 continue;
             }

@@ -35,9 +35,9 @@ public class RepositoryFileResponse implements Serializable {
     private static final long serialVersionUID = 2551188501265L;
 
     /**
-     * The file path value.
+     * Full path to file. Ex. lib/class.rb.
      */
-    private String filePath; // full path to file. Ex. lib/class.rb
+    private String filePath;
     /**
      * The branch value.
      */

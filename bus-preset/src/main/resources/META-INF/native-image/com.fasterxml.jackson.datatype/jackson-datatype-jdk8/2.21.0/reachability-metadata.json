@@ -1,0 +1,13 @@
+{
+  "reflection": [
+    {
+      "type": "com.fasterxml.jackson.datatype.jdk8.Jdk8Module",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    }
+  ]
+}

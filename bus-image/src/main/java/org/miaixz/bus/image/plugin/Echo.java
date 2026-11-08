@@ -100,7 +100,7 @@ public class Echo {
 
             storeSCU.setPriority(options.getPriority());
 
-            service.start();
+            service.start(true);
             try {
                 long t1 = System.currentTimeMillis();
                 storeSCU.open();

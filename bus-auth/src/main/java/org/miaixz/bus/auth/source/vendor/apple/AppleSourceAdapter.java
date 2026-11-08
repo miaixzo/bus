@@ -183,7 +183,7 @@ public class AppleSourceAdapter implements VendorAdapter {
     /**
      * Creates one Source-bound Sign in with Apple adapter.
      *
-     * @param spaceId  Source space used to isolate browser correlation and key resolution
+     * @param tenantId Source tenant used to isolate browser correlation and key resolution
      * @param sourceId Source identifier
      * @param manifest selected Sign in with Apple manifest
      * @param variant  selected default variant manifest
@@ -193,7 +193,7 @@ public class AppleSourceAdapter implements VendorAdapter {
      * @throws ValidateException        if routing, protocol, callback, or algorithm policy differs from the frozen
      *                                  profile
      */
-    public AppleSourceAdapter(final String spaceId, final String sourceId, final AppleManifest manifest,
+    public AppleSourceAdapter(final String tenantId, final String sourceId, final AppleManifest manifest,
             final VendorManifest.Variant variant, final AppleOptions options, final SourceServices services) {
         Assert.notNull(manifest, "Sign in with Apple manifest must not be null");
         this.sourceId = Assert.notBlank(sourceId, "Sign in with Apple Source id must not be blank");
@@ -211,7 +211,7 @@ public class AppleSourceAdapter implements VendorAdapter {
         if (!algorithms.contains(JwaAlgorithm.ES256.name()) || !algorithms.contains(JwaAlgorithm.RS256.name())) {
             throw new ValidateException("Sign in with Apple requires ES256 client signing and RS256 ID Tokens");
         }
-        this.redirectManager = RedirectManager.create(spaceId, sourceId, variant, options, services);
+        this.redirectManager = RedirectManager.create(tenantId, sourceId, variant, options, services);
         this.authorizationRequestEncoder = new AuthorizationRequestEncoder(
                 variant.targets().resolve(options).authorization().getOrNull());
         this.clientSecretJws = new JwsService(new AlgorithmGuard(), Set.of(JwaAlgorithm.ES256.name()));

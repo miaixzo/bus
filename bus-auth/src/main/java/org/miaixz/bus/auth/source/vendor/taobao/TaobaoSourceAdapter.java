@@ -111,7 +111,7 @@ public class TaobaoSourceAdapter implements VendorAdapter {
     /**
      * Creates one Source-bound Taobao adapter from the frozen default manifest.
      *
-     * @param spaceId  Source space isolating browser state and credentials
+     * @param tenantId Source tenant isolating browser state and credentials
      * @param sourceId Source identifier
      * @param manifest selected Taobao manifest
      * @param variant  exact selected default manifest
@@ -120,7 +120,7 @@ public class TaobaoSourceAdapter implements VendorAdapter {
      * @throws IllegalArgumentException if an identifier is blank or a collaborator is {@code null}
      * @throws ValidateException        if profile, manifest, options, or routing differ from the frozen variant
      */
-    public TaobaoSourceAdapter(final String spaceId, final String sourceId, final TaobaoManifest manifest,
+    public TaobaoSourceAdapter(final String tenantId, final String sourceId, final TaobaoManifest manifest,
             final VendorManifest.Variant variant, final TaobaoOptions options, final SourceServices services) {
         final TaobaoManifest selected = Assert.notNull(manifest, "Taobao manifest must not be null");
         this.sourceId = Assert.notBlank(sourceId, "Taobao Source id must not be blank");
@@ -132,7 +132,7 @@ public class TaobaoSourceAdapter implements VendorAdapter {
                 || !TaobaoManifest.ID.equals(options.vendor()) || !TaobaoManifest.DEFAULT.equals(options.variant())) {
             throw new ValidateException("Taobao adapter requires the taobao/default OAuth 2.0 manifest");
         }
-        this.redirectManager = RedirectManager.create(spaceId, sourceId, variant, options, services);
+        this.redirectManager = RedirectManager.create(tenantId, sourceId, variant, options, services);
         this.callbackDecoder = new AuthorizationResponseDecoder();
         this.standardAdapter = new StandardAdapter(variant, options, Optional.of(redirectManager),
                 List.of(

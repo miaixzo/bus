@@ -38,6 +38,7 @@ import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.tuple.Pair;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.health.Builder;
 import org.miaixz.bus.health.Memoizer;
 import org.miaixz.bus.health.Parsing;
@@ -77,39 +78,35 @@ public class MacOSProcess extends AbstractOSProcess {
      */
     private static final int MAC_RLIMIT_NOFILE = 8;
 
-    // 64-bit flag
     /**
-     * The P_LP64 constant.
+     * 64-bit flag.
      */
     private static final int P_LP64 = 0x4;
 
-    /*
-     * macOS States:
-     */
     /**
-     * The SSLEEP constant.
+     * Sleeping on high priority.
      */
-    private static final int SSLEEP = 1; // sleeping on high priority
+    private static final int SSLEEP = 1;
     /**
-     * The SWAIT constant.
+     * Sleeping on low priority.
      */
-    private static final int SWAIT = 2; // sleeping on low priority
+    private static final int SWAIT = 2;
     /**
-     * The SRUN constant.
+     * Running.
      */
-    private static final int SRUN = 3; // running
+    private static final int SRUN = 3;
     /**
-     * The SIDL constant.
+     * Intermediate state in process creation.
      */
-    private static final int SIDL = 4; // intermediate state in process creation
+    private static final int SIDL = 4;
     /**
-     * The SZOMB constant.
+     * Intermediate state in process termination.
      */
-    private static final int SZOMB = 5; // intermediate state in process termination
+    private static final int SZOMB = 5;
     /**
-     * The SSTOP constant.
+     * Process being traced.
      */
-    private static final int SSTOP = 6; // process being traced
+    private static final int SSTOP = 6;
 
     static {
         // default to 1 tick per nanosecond
@@ -119,7 +116,7 @@ public class MacOSProcess extends AbstractOSProcess {
             IORegistryEntry cpu = iter.next();
             while (cpu != null) {
                 try {
-                    String s = cpu.getName().toLowerCase(Locale.ROOT);
+                    String s = StringKit.toLowerCase(cpu.getName());
                     if (s.startsWith("cpu") && s.length() > 3) {
                         byte[] data = cpu.getByteArrayProperty("timebase-frequency");
                         if (data != null) {

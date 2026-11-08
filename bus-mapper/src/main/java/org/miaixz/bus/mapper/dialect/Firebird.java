@@ -21,6 +21,7 @@ package org.miaixz.bus.mapper.dialect;
 
 import java.util.EnumSet;
 
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.mapper.Charter.Behavior;
 import org.miaixz.bus.mapper.feature.paging.Pageable;
 import org.miaixz.bus.mapper.feature.schema.ColumnSnapshot;
@@ -150,7 +151,7 @@ public class Firebird extends AbstractDialect {
         }
 
         StringBuilder sql = new StringBuilder(originalSql.length() + 100);
-        int selectIndex = originalSql.toUpperCase().indexOf("SELECT");
+        int selectIndex = StringKit.toUpperCase(originalSql).indexOf("SELECT");
         if (selectIndex >= 0) {
             sql.append(originalSql, 0, selectIndex + 6);
             sql.append(" FIRST ").append(pageable.getPageSize());

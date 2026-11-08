@@ -24,7 +24,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.Credential;
@@ -37,6 +36,7 @@ import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Protocol;
+import org.miaixz.bus.core.xyz.StringKit;
 
 /**
  * Carries externally managed Okta login-client or service-app management selectors.
@@ -174,7 +174,7 @@ public record OktaOptions(Vendor.Id vendor, Vendor.Variant variant, String clien
                         .allMatch(character -> Character.isLetterOrDigit(character) || character == Symbol.C_MINUS)) {
             throw new ValidateException("Okta instance must be one canonical DNS label");
         }
-        return ascii.toLowerCase(Locale.ROOT);
+        return StringKit.toLowerCase(ascii);
     }
 
     /**

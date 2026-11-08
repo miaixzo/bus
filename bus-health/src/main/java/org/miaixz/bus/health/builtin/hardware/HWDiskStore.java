@@ -20,8 +20,12 @@
 package org.miaixz.bus.health.builtin.hardware;
 
 import java.util.List;
+import java.util.Optional;
 
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
+import org.miaixz.bus.health.builtin.software.OSFileStore;
 
 /**
  * A storage mechanism where data are recorded by various electronic, magnetic, optical, or mechanical changes to a
@@ -44,7 +48,7 @@ public interface HWDiskStore {
     String getName();
 
     /**
-     * The type of the disk, such as SSD, HDD, Removable, Virtual, or Unknown.
+     * The type of the disk media. Layered storage is reported separately by {@link #getBackingStores()}.
      *
      * @return the disk type string
      */
@@ -124,6 +128,18 @@ public interface HWDiskStore {
     List<HWPartition> getPartitions();
 
     /**
+     * Returns the stores this disk is built on when it is a layer over other storage.
+     * <p>
+     * An empty optional means the platform does not report backing stores or they could not be read. A present but
+     * empty list means the disk is not built on another visible store.
+     *
+     * @return The sorted backing stores, an empty list for a non-layered disk, or an empty optional when unavailable.
+     */
+    default Optional<List<String>> getBackingStores() {
+        return Optional.empty();
+    }
+
+    /**
      * The time this disk's statistics were updated.
      *
      * @return the timeStamp, in milliseconds since the epoch.
@@ -139,5 +155,81 @@ public interface HWDiskStore {
      * @return True if the update was (probably) successful, false if the disk was not found
      */
     boolean updateAttributes();
+
+    /**
+     * Identifies the kind of store named by an entry from {@link #getBackingStores()}.
+     *
+     * @author Kimi Liu
+     */
+    enum StoreKind {
+
+        /**
+         * A disk store named by {@link HWDiskStore#getName()}.
+         */
+        DISK("disk" + Symbol.COLON),
+
+        /**
+         * A partition named by {@link HWPartition#getIdentification()}.
+         */
+        PARTITION("partition" + Symbol.COLON),
+
+        /**
+         * A file store named by {@link OSFileStore#getMount()}.
+         */
+        FILE("file" + Symbol.COLON);
+
+        /**
+         * The identifying prefix.
+         */
+        private final String prefix;
+
+        /**
+         * Creates a store kind.
+         *
+         * @param prefix The identifying prefix.
+         */
+        StoreKind(String prefix) {
+            this.prefix = prefix;
+        }
+
+        /**
+         * Returns the identifying prefix, including its trailing colon.
+         *
+         * @return The prefix.
+         */
+        public String getPrefix() {
+            return prefix;
+        }
+
+        /**
+         * Creates an entry of this kind.
+         *
+         * @param name The store name.
+         * @return The prefixed entry.
+         */
+        public String entry(String name) {
+            return prefix + name;
+        }
+
+        /**
+         * Tests whether an entry is of this kind.
+         *
+         * @param entry The backing store entry.
+         * @return {@code true} if the entry has this kind's prefix.
+         */
+        public boolean matches(String entry) {
+            return entry.startsWith(prefix);
+        }
+
+        /**
+         * Returns the store name from an entry of this kind.
+         *
+         * @param entry The backing store entry.
+         * @return The store name, or an empty string when the kind does not match.
+         */
+        public String nameOf(String entry) {
+            return matches(entry) ? entry.substring(prefix.length()) : Normal.EMPTY;
+        }
+    }
 
 }

@@ -39,10 +39,9 @@ import org.miaixz.bus.health.windows.driver.wmi.Win32Printer;
 @Immutable
 final class WindowsPrinter extends AbstractPrinter {
 
-    // DetectedErrorState: 0=Unknown, 1=Other, 2=No Error, 3=Low Paper, 4=No Paper,
-    // 5=Low Toner, 6=No Toner, 7=Door Open, 8=Jammed, 9=Offline, 10=Service Requested, 11=Output Bin Full
     /**
-     * The ERROR_STATE_NAMES constant.
+     * DetectedErrorState: 0=Unknown, 1=Other, 2=No Error, 3=Low Paper, 4=No Paper, 5=Low Toner, 6=No Toner, 7=Door
+     * Open, 8=Jammed, 9=Offline, 10=Service Requested, 11=Output Bin Full.
      */
     private static final String[] ERROR_STATE_NAMES = { "Unknown", "Other", Normal.EMPTY, "Low Paper", "No Paper",
             "Low Toner", "No Toner", "Door Open", "Jammed", "Offline", "Service Requested", "Output Bin Full" };

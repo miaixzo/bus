@@ -239,7 +239,7 @@ public class CFind {
             findSCU.setCancelAfter(cancelAfter);
             findSCU.setPriority(options.getPriority());
 
-            service.start();
+            service.start(true);
             try {
                 long t1 = System.currentTimeMillis();
                 findSCU.open();

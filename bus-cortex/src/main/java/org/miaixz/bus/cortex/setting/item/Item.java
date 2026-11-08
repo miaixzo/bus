@@ -64,8 +64,8 @@ public class Item extends Tenant {
     private Integer type;
 
     /**
-     * Current definition with extensible property attributes, including {@code value}, {@code default} and {@code desc};
-     * sensitive members must be protected.
+     * Current definition with extensible property attributes, including {@code value}, {@code default} and
+     * {@code desc}; sensitive members must be protected.
      */
     @Lob
     private String content;
@@ -115,8 +115,8 @@ public class Item extends Tenant {
     }
 
     /**
-     * Immutable attributes of one configuration property, independent of storage and publication state.
-     * Java null denotes an absent attribute; JSON null remains an explicit value.
+     * Immutable attributes of one configuration property, independent of storage and publication state. Java null
+     * denotes an absent attribute; JSON null remains an explicit value.
      *
      * @param attributes complete attribute collection
      * @author Kimi Liu
@@ -160,7 +160,7 @@ public class Item extends Tenant {
         /**
          * Returns a changed property; Java null removes the member while JSON null remains present.
          *
-         * @param name exact attribute name
+         * @param name  exact attribute name
          * @param value replacement node, or Java null for removal
          * @return a new immutable property
          */

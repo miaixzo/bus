@@ -20,7 +20,6 @@
 package org.miaixz.bus.fabric.network.proxy;
 
 import java.math.BigInteger;
-import java.util.Locale;
 
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
@@ -95,7 +94,7 @@ public record ProxyHeader(String source, String target, int sourcePort, int targ
         if (!Builder.PROXY_HEADER_COMMAND_PROXY.equals(tokens[Normal._0])) {
             throw new ProtocolException("Invalid PROXY header command");
         }
-        final String protocol = tokens[Normal._1].toUpperCase(Locale.ROOT);
+        final String protocol = StringKit.toUpperCase(tokens[Normal._1]);
         if (Builder.PROXY_HEADER_PROTOCOL_UNKNOWN.equals(protocol)) {
             // UNKNOWN intentionally carries no synthesized Address.
             return new ProxyHeader(Normal.EMPTY, Normal.EMPTY, Normal._0, Normal._0, null);

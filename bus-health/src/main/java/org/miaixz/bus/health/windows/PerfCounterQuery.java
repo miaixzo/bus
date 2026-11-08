@@ -72,15 +72,13 @@ public class PerfCounterQuery {
      */
     private static final boolean IS_VISTA_OR_GREATER = VersionHelpers.IsWindowsVistaOrGreater();
 
-    // Use a thread safe set to cache failed pdh queries
     /**
-     * The FAILED_QUERY_CACHE constant.
+     * Use a thread safe set to cache failed pdh queries.
      */
     private static final Set<String> FAILED_QUERY_CACHE = ConcurrentHashMap.newKeySet();
 
-    // A map to cache localization strings
     /**
-     * The LOCALIZE_CACHE constant.
+     * A map to cache localization strings.
      */
     private static final ConcurrentHashMap<String, String> LOCALIZE_CACHE = new ConcurrentHashMap<>();
 

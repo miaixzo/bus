@@ -21,7 +21,6 @@ package org.miaixz.bus.mapper.provider;
 
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Locale;
 import java.util.Set;
 
 import lombok.Getter;
@@ -156,7 +155,7 @@ public class NamingProvider implements Provider<String> {
     public static Set<String> getAvailableStyles() {
         Set<String> styles = HashSet.newHashSet(EnumValue.Naming.values().length);
         for (EnumValue.Naming naming : EnumValue.Naming.values()) {
-            styles.add(naming.name().toLowerCase());
+            styles.add(StringKit.toLowerCase(naming.name()));
         }
         return Collections.unmodifiableSet(styles);
     }
@@ -168,7 +167,7 @@ public class NamingProvider implements Provider<String> {
      */
     @Override
     public String type() {
-        return naming.name().toLowerCase(Locale.ROOT);
+        return StringKit.toLowerCase(naming.name());
     }
 
     /**
@@ -183,11 +182,11 @@ public class NamingProvider implements Provider<String> {
         }
 
         return switch (naming) {
-            case LOWER_CASE -> input.toLowerCase();
-            case UPPER_CASE -> input.toUpperCase();
+            case LOWER_CASE -> StringKit.toLowerCase(input);
+            case UPPER_CASE -> StringKit.toUpperCase(input);
             case CAMEL_CASE -> StringKit.toCamelCase(input);
             case LOWER_SNAKE_CASE -> StringKit.toUnderlineCase(input);
-            case UPPER_SNAKE_CASE -> StringKit.toUnderlineCase(input).toUpperCase();
+            case UPPER_SNAKE_CASE -> StringKit.toUpperCase(StringKit.toUnderlineCase(input));
             default -> input; // NORMAL, BOLD, FAINT, ITALIC - no transformation
         };
     }

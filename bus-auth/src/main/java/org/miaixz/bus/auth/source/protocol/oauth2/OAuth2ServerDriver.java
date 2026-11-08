@@ -223,13 +223,14 @@ public class OAuth2ServerDriver implements ProtocolDriver<OAuth2ServerOptions> {
         }
         if (options.tokenEndpoint().isPresent()) {
             final TokenMaterial tokenMaterial = new TokenMaterial(source.getId(), services);
-            final AccessTokenIssuer issuer = new AccessTokenIssuer(source.getId(), options, services, scopeValidator,
-                    PkceValidator.strict(new SecretGuard()), AccessTokenIssuer.Augmenter.passThrough(), tokenMaterial);
+            final AccessTokenIssuer issuer = new AccessTokenIssuer(source.getId(), library.getTenant_id(), options,
+                    services, scopeValidator, PkceValidator.strict(new SecretGuard()),
+                    AccessTokenIssuer.Augmenter.passThrough(), tokenMaterial);
             final RefreshTokenRotator rotator = new RefreshTokenRotator(source.getId(), options, services,
                     scopeValidator, issuer, tokenMaterial);
             final TokenEndpoint endpoint = new TokenEndpoint(new TokenRequestDecoder(),
-                    new OAuth2ClientAuthenticator(options, services), new TokenService(issuer, rotator),
-                    new TokenResponseEncoder(), errorMapper);
+                    new OAuth2ClientAuthenticator(library.getTenant_id(), options, services),
+                    new TokenService(issuer, rotator), new TokenResponseEncoder(), errorMapper);
             endpoints.put(OAuth2ServerScheme.TOKEN, endpoint::handle);
         }
         if (options.introspectionEndpoint().isPresent()) {

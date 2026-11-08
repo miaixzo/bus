@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.health.linux.driver.proc;
 
+import java.nio.ByteOrder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -54,7 +55,7 @@ public final class RouteTable {
      * @return The parsed IPv4 routes.
      */
     public static List<IPRoute> queryIpv4Routes(Map<String, Integer> ifIndexByName) {
-        return parseIpv4Routes(Builder.readFile(ProcPath.ROUTE), ifIndexByName);
+        return parseIpv4Routes(Builder.readFile(ProcPath.ROUTE), ifIndexByName, ByteOrder.nativeOrder());
     }
 
     /**
@@ -62,22 +63,21 @@ public final class RouteTable {
      *
      * @param lines         The file lines.
      * @param ifIndexByName Interface name to index map.
+     * @param order         The byte order of the host that wrote the file.
      * @return The parsed IPv4 routes.
      */
-    static List<IPRoute> parseIpv4Routes(List<String> lines, Map<String, Integer> ifIndexByName) {
+    static List<IPRoute> parseIpv4Routes(List<String> lines, Map<String, Integer> ifIndexByName, ByteOrder order) {
         List<IPRoute> routes = new ArrayList<>();
         for (String line : lines) {
             String[] fields = Pattern.SPACES_PATTERN.split(line.trim(), Normal.__1);
             if (fields.length < Normal._11 || !isHexWord(fields[Normal._1], Normal._8)) {
                 continue;
             }
-            byte[] destination = Parsing.parseIntToIP((int) Parsing.hexStringToLong(fields[Normal._1], Normal._0));
+            byte[] destination = Parsing.hexWordsToByteArray(fields[Normal._1], order);
             int flags = Parsing.hexStringToInt(fields[Normal._3], Normal._0);
             boolean isGateway = (flags & Normal._2) != Normal._0;
-            int prefixLength = Parsing.netmaskToPrefixLength(
-                    Parsing.parseIntToIP((int) Parsing.hexStringToLong(fields[Normal._7], Normal._0)));
-            byte[] gateway = isGateway
-                    ? Parsing.parseIntToIP((int) Parsing.hexStringToLong(fields[Normal._2], Normal._0))
+            int prefixLength = Parsing.netmaskToPrefixLength(Parsing.hexWordsToByteArray(fields[Normal._7], order));
+            byte[] gateway = isGateway ? Parsing.hexWordsToByteArray(fields[Normal._2], order)
                     : Normal.EMPTY_BYTE_ARRAY;
             String interfaceName = fields[Normal._0];
             routes.add(

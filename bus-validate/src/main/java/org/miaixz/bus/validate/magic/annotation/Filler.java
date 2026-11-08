@@ -30,7 +30,7 @@ import java.lang.annotation.*;
  * <li>{@code ${value}}: The string representation of the object being validated.</li>
  * </ul>
  * By marking a method within a custom validation annotation with {@code @Filler}, the method's return value can be used
- * as a custom placeholder in the {@code errmsg} of that annotation. The name of the placeholder is specified by the
+ * as a custom placeholder in the {@code desc} of that annotation. The name of the placeholder is specified by the
  * {@link #value()} attribute of this annotation.
  *
  * @author Kimi Liu

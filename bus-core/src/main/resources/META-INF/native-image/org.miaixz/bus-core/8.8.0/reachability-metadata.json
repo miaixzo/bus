@@ -575,10 +575,10 @@
           "name": "data"
         },
         {
-          "name": "errcode"
+          "name": "code"
         },
         {
-          "name": "errmsg"
+          "name": "desc"
         },
         {
           "name": "serialVersionUID"
@@ -617,11 +617,11 @@
           "parameterTypes": []
         },
         {
-          "name": "getErrcode",
+          "name": "getCode",
           "parameterTypes": []
         },
         {
-          "name": "getErrmsg",
+          "name": "getDesc",
           "parameterTypes": []
         },
         {
@@ -631,13 +631,13 @@
           ]
         },
         {
-          "name": "setErrcode",
+          "name": "setCode",
           "parameterTypes": [
             "java.lang.String"
           ]
         },
         {
-          "name": "setErrmsg",
+          "name": "setDesc",
           "parameterTypes": [
             "java.lang.String"
           ]
@@ -663,6 +663,43 @@
         {
           "name": "<init>",
           "parameterTypes": []
+        },
+        {
+          "name": "code",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "desc",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "data",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "build",
+          "parameterTypes": []
+        },
+        {
+          "name": "self",
+          "parameterTypes": []
+        }
+      ],
+      "fields": [
+        {
+          "name": "code"
+        },
+        {
+          "name": "desc"
+        },
+        {
+          "name": "data"
         }
       ]
     },
@@ -671,6 +708,14 @@
       "methods": [
         {
           "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "build",
+          "parameterTypes": []
+        },
+        {
+          "name": "self",
           "parameterTypes": []
         }
       ]
@@ -10462,9 +10507,46 @@
     },
     {
       "type": "org.miaixz.bus.core.lang.EnumValue$Format",
-      "allDeclaredFields": true,
-      "allDeclaredMethods": true,
-      "allDeclaredConstructors": true
+      "fields": [
+        {
+          "name": "TEXT"
+        },
+        {
+          "name": "JSON"
+        },
+        {
+          "name": "YAML"
+        },
+        {
+          "name": "PROPERTIES"
+        },
+        {
+          "name": "$VALUES"
+        }
+      ],
+      "methods": [
+        {
+          "name": "values",
+          "parameterTypes": []
+        },
+        {
+          "name": "valueOf",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "$values",
+          "parameterTypes": []
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "int"
+          ]
+        }
+      ]
     },
     {
       "type": "org.miaixz.bus.core.lang.EnumValue$Gradient",
@@ -10556,9 +10638,66 @@
     },
     {
       "type": "org.miaixz.bus.core.lang.EnumValue$Phase",
-      "allDeclaredFields": true,
-      "allDeclaredMethods": true,
-      "allDeclaredConstructors": true
+      "fields": [
+        {
+          "name": "DRAFT"
+        },
+        {
+          "name": "ACTIVE"
+        },
+        {
+          "name": "DEPRECATED"
+        },
+        {
+          "name": "DISABLED"
+        },
+        {
+          "name": "key"
+        },
+        {
+          "name": "$VALUES"
+        }
+      ],
+      "methods": [
+        {
+          "name": "values",
+          "parameterTypes": []
+        },
+        {
+          "name": "valueOf",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "key",
+          "parameterTypes": []
+        },
+        {
+          "name": "matches",
+          "parameterTypes": [
+            "java.lang.Integer"
+          ]
+        },
+        {
+          "name": "fromKey",
+          "parameterTypes": [
+            "java.lang.Integer"
+          ]
+        },
+        {
+          "name": "$values",
+          "parameterTypes": []
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "int",
+            "int"
+          ]
+        }
+      ]
     },
     {
       "type": "org.miaixz.bus.core.lang.EnumValue$Sort",
@@ -10600,9 +10739,57 @@
     },
     {
       "type": "org.miaixz.bus.core.lang.EnumValue$Track",
-      "allDeclaredFields": true,
-      "allDeclaredMethods": true,
-      "allDeclaredConstructors": true
+      "fields": [
+        {
+          "name": "STABLE"
+        },
+        {
+          "name": "BETA"
+        },
+        {
+          "name": "CANARY"
+        },
+        {
+          "name": "key"
+        },
+        {
+          "name": "$VALUES"
+        }
+      ],
+      "methods": [
+        {
+          "name": "values",
+          "parameterTypes": []
+        },
+        {
+          "name": "valueOf",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "normalize",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "key",
+          "parameterTypes": []
+        },
+        {
+          "name": "$values",
+          "parameterTypes": []
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "int",
+            "java.lang.String"
+          ]
+        }
+      ]
     },
     {
       "type": "org.miaixz.bus.core.lang.EnumValue$Type",
@@ -12764,6 +12951,34 @@
         {
           "name": "<init>",
           "parameterTypes": []
+        },
+        {
+          "name": "getCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "getDesc",
+          "parameterTypes": []
+        },
+        {
+          "name": "setCode",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setDesc",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ],
+      "fields": [
+        {
+          "name": "code"
+        },
+        {
+          "name": "desc"
         }
       ]
     },
@@ -13255,6 +13470,34 @@
             "java.lang.String",
             "java.lang.Throwable"
           ]
+        },
+        {
+          "name": "getCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "getDesc",
+          "parameterTypes": []
+        },
+        {
+          "name": "setCode",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setDesc",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ],
+      "fields": [
+        {
+          "name": "code"
+        },
+        {
+          "name": "desc"
         }
       ]
     },
@@ -14148,6 +14391,36 @@
         {
           "name": "<init>",
           "parameterTypes": []
+        },
+        {
+          "parameterTypes": [
+            "java.net.URL"
+          ],
+          "name": "isFileURL"
+        },
+        {
+          "parameterTypes": [
+            "java.net.URL"
+          ],
+          "name": "isVfsURL"
+        },
+        {
+          "parameterTypes": [
+            "java.net.URL"
+          ],
+          "name": "isFileOrVfsURL"
+        },
+        {
+          "parameterTypes": [
+            "java.net.URL"
+          ],
+          "name": "isJarURL"
+        },
+        {
+          "parameterTypes": [
+            "java.net.URL"
+          ],
+          "name": "isJarFileURL"
         }
       ]
     },
@@ -17782,6 +18055,107 @@
         {
           "name": "wait",
           "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "java.lang.reflect.WildcardType",
+      "methods": [
+        {
+          "name": "getLowerBounds",
+          "parameterTypes": []
+        },
+        {
+          "name": "getUpperBounds",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "java.lang.Enum",
+      "methods": [
+        {
+          "name": "compareTo",
+          "parameterTypes": [
+            "java.lang.Enum"
+          ]
+        },
+        {
+          "name": "compareTo",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "describeConstable",
+          "parameterTypes": []
+        },
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "getDeclaringClass",
+          "parameterTypes": []
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "name",
+          "parameterTypes": []
+        },
+        {
+          "name": "ordinal",
+          "parameterTypes": []
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "valueOf",
+          "parameterTypes": [
+            "java.lang.Class",
+            "java.lang.String"
+          ]
+        }
+      ],
+      "serializable": true
+    },
+    {
+      "type": "org.miaixz.bus.core.center.function.UnaryOperatorX",
+      "methods": [
+        {
+          "name": "apply",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.center.function.FunctionX",
+      "methods": [
+        {
+          "name": "apply",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.center.function.PredicateX",
+      "methods": [
+        {
+          "name": "test",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
         }
       ]
     }

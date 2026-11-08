@@ -1,0 +1,10 @@
+[
+  {
+    "latest": true,
+    "metadata-version": "1.85",
+    "description": "Bouncy Castle provider reflection and initialization supplements used by Bus Crypto.",
+    "tested-versions": [
+      "1.85"
+    ]
+  }
+]

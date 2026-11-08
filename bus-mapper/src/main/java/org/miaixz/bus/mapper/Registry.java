@@ -42,6 +42,9 @@ public interface Registry {
      */
     Registry SPI = new Registry() {
 
+        /**
+         * Registry extensions loaded through SPI and invoked in loader order.
+         */
         private final List<Registry> registries = ListKit.of(NormalSpiLoader.loadList(Registry.class));
 
         @Override

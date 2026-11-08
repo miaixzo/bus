@@ -47,10 +47,13 @@ import org.miaixz.bus.health.builtin.software.OSSession;
 @ThreadSafe
 public class Who {
 
-    // sample format:
-    // oshi pts/0 2020-05-14 21:23 (192.168.1.23)
     /**
-     * The WHO_FORMAT_LINUX constant.
+     * Example input:
+     *
+     * <pre>
+     * sample format:
+     * oshi pts/0 2020-05-14 21:23 (192.168.1.23)
+     * </pre>
      */
     private static final Pattern WHO_FORMAT_LINUX = Pattern
             .compile("(\\S+)\\s+(\\S+)\\s+(\\d{4}-\\d{2}-\\d{2})\\s+(\\d{2}:\\d{2})\\s*(?:\\((.+)\\))?");
@@ -61,10 +64,8 @@ public class Who {
     private static final DateTimeFormatter WHO_DATE_FORMAT_LINUX = DateTimeFormatter
             .ofPattern(Fields.NORM_DATETIME_MINUTE, Locale.ROOT);
 
-    // oshi ttys000 May 4 23:50 (192.168.1.23)
-    // middle 12 characters from Thu Nov 24 18:22:48 1986
     /**
-     * The WHO_FORMAT_UNIX constant.
+     * Oshi ttys000 May 4 23:50 (192.168.1.23) middle 12 characters from Thu Nov 24 18:22:48 1986.
      */
     private static final Pattern WHO_FORMAT_UNIX = Pattern
             .compile("(\\S+)\\s+(\\S+)\\s+(\\S+)\\s+(\\d+)\\s+(\\d{2}:\\d{2})\\s*(?:\\((.+)\\))?");

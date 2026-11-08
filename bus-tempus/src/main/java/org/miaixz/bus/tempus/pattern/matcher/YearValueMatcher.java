@@ -74,21 +74,23 @@ public class YearValueMatcher implements PartMatcher {
     }
 
     /**
-     * Gets the next matching year that is greater than or equal to the given value.
+     * Gets the smallest matching year greater than or equal to the given value, regardless of input order.
      *
      * @param value The current year value to start the search from.
      * @return The next matching year that is greater than or equal to the given value, or -1 if no such year is found.
      */
     @Override
     public int nextAfter(final int value) {
+        Integer nextYear = null;
         for (final Integer year : valueList) {
-            if (year >= value) {
+            if (year == value) {
                 return year;
             }
+            if (year > value && (nextYear == null || year < nextYear)) {
+                nextYear = year;
+            }
         }
-        // If no year greater than or equal to the current value is found, the year is considered invalid,
-        // making the entire expression invalid for future matches.
-        return -1;
+        return nextYear == null ? -1 : nextYear;
     }
 
     /**

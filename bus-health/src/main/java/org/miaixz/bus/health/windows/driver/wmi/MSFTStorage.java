@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.health.windows.driver.wmi;
 
+import java.util.regex.Pattern;
+
 import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiQuery;
 import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiResult;
 
@@ -37,6 +39,15 @@ public class MSFTStorage {
      * The WMI namespace for storage.
      */
     public static final String STORAGE_NAMESPACE = "ROOT\\Microsoft\\Windows\\Storage";
+
+    /** Matches a storage pool object ID and captures its GUID. */
+    public static final Pattern SP_OBJECT_ID = Pattern.compile("SP:(\\{[^}]*\\})");
+
+    /** Matches a physical disk object ID and captures its GUID. */
+    public static final Pattern PD_OBJECT_ID = Pattern.compile("PD:(\\{[^}]*\\})");
+
+    /** Matches a virtual disk object ID and captures its pool and disk GUIDs. */
+    public static final Pattern VD_OBJECT_ID = Pattern.compile("VD:(\\{[^}]*\\})(\\{[^}]*\\})");
 
     /**
      * The WMI class name for non-primordial storage pools.
@@ -57,6 +68,16 @@ public class MSFTStorage {
      * The WMI class name for virtual disks.
      */
     public static final String MSFT_VIRTUAL_DISK = "MSFT_VirtualDisk";
+
+    /**
+     * The WMI class linking virtual disks to physical disks.
+     */
+    public static final String MSFT_VIRTUAL_DISK_TO_PHYSICAL_DISK = "MSFT_VirtualDiskToPhysicalDisk";
+
+    /**
+     * The WMI class describing disks exposed by Windows.
+     */
+    public static final String MSFT_DISK = "MSFT_Disk";
 
     /**
      * Constructs a new {@code MSFTStorage} instance.
@@ -103,6 +124,18 @@ public class MSFTStorage {
     }
 
     /**
+     * Queries physical disk media types.
+     *
+     * @param h An initialized WMI query handler.
+     * @return The physical disk media type data.
+     */
+    public static WmiResult<PhysicalDiskMediaTypeProperty> queryPhysicalDiskMediaTypes(WmiQueryHandler h) {
+        WmiQuery<PhysicalDiskMediaTypeProperty> query = new WmiQuery<>(STORAGE_NAMESPACE, MSFT_PHYSICAL_DISK,
+                PhysicalDiskMediaTypeProperty.class);
+        return h.queryWMI(query, false);
+    }
+
+    /**
      * Query the virtual disks.
      *
      * @param h An instantiated {@link WmiQueryHandler}. User should have already initialized COM.
@@ -112,6 +145,49 @@ public class MSFTStorage {
         WmiQuery<VirtualDiskProperty> virtualDiskQuery = new WmiQuery<>(STORAGE_NAMESPACE, MSFT_VIRTUAL_DISK,
                 VirtualDiskProperty.class);
         return h.queryWMI(virtualDiskQuery, false);
+    }
+
+    /**
+     * Queries disks in the Storage namespace.
+     *
+     * @param h An initialized WMI query handler.
+     * @return The disk data.
+     */
+    public static WmiResult<DiskProperty> queryDisks(WmiQueryHandler h) {
+        return h.queryWMI(new WmiQuery<>(STORAGE_NAMESPACE, MSFT_DISK, DiskProperty.class), false);
+    }
+
+    /**
+     * Queries virtual disk identities.
+     *
+     * @param h An initialized WMI query handler.
+     * @return The virtual disk identities.
+     */
+    public static WmiResult<VirtualDiskIdProperty> queryVirtualDiskIds(WmiQueryHandler h) {
+        return h.queryWMI(new WmiQuery<>(STORAGE_NAMESPACE, MSFT_VIRTUAL_DISK, VirtualDiskIdProperty.class), false);
+    }
+
+    /**
+     * Queries virtual disk to physical disk associations.
+     *
+     * @param h An initialized WMI query handler.
+     * @return The disk associations.
+     */
+    public static WmiResult<VirtualDiskToPhysicalDiskProperty> queryVirtualDiskToPhysicalDisks(WmiQueryHandler h) {
+        return h.queryWMI(
+                new WmiQuery<>(STORAGE_NAMESPACE, MSFT_VIRTUAL_DISK_TO_PHYSICAL_DISK,
+                        VirtualDiskToPhysicalDiskProperty.class),
+                false);
+    }
+
+    /**
+     * Queries physical disk identities.
+     *
+     * @param h An initialized WMI query handler.
+     * @return The physical disk identities.
+     */
+    public static WmiResult<PhysicalDiskIdProperty> queryPhysicalDiskIds(WmiQueryHandler h) {
+        return h.queryWMI(new WmiQuery<>(STORAGE_NAMESPACE, MSFT_PHYSICAL_DISK, PhysicalDiskIdProperty.class), false);
     }
 
     /**
@@ -164,6 +240,72 @@ public class MSFTStorage {
         /**
          * The objectid physical disk property.
          */
+        OBJECTID;
+    }
+
+    /**
+     * Properties describing a physical disk's media technology.
+     *
+     * @author Kimi Liu
+     */
+    public enum PhysicalDiskMediaTypeProperty {
+        /** The physical drive number. */
+        DEVICEID,
+        /** The media type. */
+        MEDIATYPE,
+        /** The spindle speed. */
+        SPINDLESPEED;
+    }
+
+    /**
+     * Properties identifying a physical disk.
+     *
+     * @author Kimi Liu
+     */
+    public enum PhysicalDiskIdProperty {
+        /** The physical drive number. */
+        DEVICEID,
+        /** The physical disk object ID. */
+        OBJECTID;
+    }
+
+    /**
+     * Properties linking a virtual disk to a physical disk.
+     *
+     * @author Kimi Liu
+     */
+    public enum VirtualDiskToPhysicalDiskProperty {
+        /** The virtual disk reference. */
+        VIRTUALDISK,
+        /** The physical disk reference. */
+        PHYSICALDISK;
+    }
+
+    /**
+     * Properties describing a disk and its backing storage.
+     *
+     * @author Kimi Liu
+     */
+    public enum DiskProperty {
+        /** The disk number. */
+        NUMBER,
+        /** The storage bus type. */
+        BUSTYPE,
+        /** The location of a backing file. */
+        LOCATION,
+        /** The disk's unique ID. */
+        UNIQUEID;
+    }
+
+    /**
+     * Properties identifying a virtual disk.
+     *
+     * @author Kimi Liu
+     */
+    public enum VirtualDiskIdProperty {
+        /** The virtual disk unique ID. */
+        UNIQUEID,
+        /** The virtual disk object ID. */
         OBJECTID;
     }
 

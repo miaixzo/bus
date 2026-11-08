@@ -46,7 +46,7 @@ public class Context {
      * The global error code. If a validation annotation uses -1 as its error code, it will be replaced by this global
      * error code by default.
      */
-    private String errcode = ErrorCode._PARAMETER_VALIDATE;
+    private String code = ErrorCode._PARAMETER_VALIDATE;
 
     /**
      * The currently active validation groups.

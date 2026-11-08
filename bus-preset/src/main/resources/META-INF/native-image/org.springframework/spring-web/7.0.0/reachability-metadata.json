@@ -1,0 +1,16 @@
+{
+  "reflection": [
+    {
+      "type": "org.springframework.web.server.WebFilter",
+      "methods": [
+        {
+          "name": "filter",
+          "parameterTypes": [
+            "org.springframework.web.server.ServerWebExchange",
+            "org.springframework.web.server.WebFilterChain"
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1481,21 +1481,14 @@ public class Consts extends Normal {
     public static final Integer ONE_HUNDRED = _100;
 
     /**
-     * Key name for error code in response results.
-     * <p>
-     * In API responses or service call results, this key identifies the operation status code, typically used alongside
-     * HTTP status codes to provide more detailed error classification.
-     *
+     * Response code key used by Bus response envelopes and validation annotation attributes.
      */
-    public static final String ERRCODE = "errcode";
+    public static final String CODE = "code";
 
     /**
-     * Key name for error message in response results.
-     * <p>
-     * In API responses or service call results, this key provides human-readable error descriptions, so developers can
-     * and end-users understand the issue.
+     * Response description key used by Bus response envelopes and validation annotation attributes.
      */
-    public static final String ERRMSG = "errmsg";
+    public static final String DESC = "desc";
 
     /**
      * Key name for data payload in response results.

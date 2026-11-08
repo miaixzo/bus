@@ -23,6 +23,8 @@ import java.util.Arrays;
 
 import lombok.Getter;
 
+import org.miaixz.bus.core.xyz.StringKit;
+
 /**
  * Enumeration for gender-related information.
  *
@@ -86,11 +88,11 @@ public enum Gender {
             return UNKNOWN;
         }
         String[] males = { "M", "男", Symbol.ONE, "MALE" };
-        if (Arrays.asList(males).contains(code.toUpperCase())) {
+        if (Arrays.asList(males).contains(StringKit.toUpperCase(code))) {
             return MALE;
         }
         String[] females = { "F", "女", Symbol.ZERO, "FEMALE" };
-        if (Arrays.asList(females).contains(code.toUpperCase())) {
+        if (Arrays.asList(females).contains(StringKit.toUpperCase(code))) {
             return FEMALE;
         }
         return UNKNOWN;

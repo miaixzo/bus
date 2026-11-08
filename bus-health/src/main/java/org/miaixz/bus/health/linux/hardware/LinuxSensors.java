@@ -88,9 +88,8 @@ final class LinuxSensors extends AbstractSensors {
      */
     private static final String NAME = "/name";
 
-    // Possible sensor types. See sysfs documentation for others, e.g. current
     /**
-     * The TEMP constant.
+     * Possible sensor types. See sysfs documentation for others, e.g. current.
      */
     private static final String TEMP = "temp";
 
@@ -104,9 +103,8 @@ final class LinuxSensors extends AbstractSensors {
      */
     private static final String VOLTAGE = "in";
 
-    // Compile pattern for "temp<digits>_input"
     /**
-     * The INPUT_SUFFIX constant.
+     * Compile pattern for "temp&lt;digits&gt;_input".
      */
     private static final String INPUT_SUFFIX = "_input";
 
@@ -116,7 +114,6 @@ final class LinuxSensors extends AbstractSensors {
     private static final Pattern TEMP_INPUT_PATTERN = Pattern
             .compile(Symbol.CARET + TEMP + "\\d+" + INPUT_SUFFIX + Symbol.DOLLAR);
 
-    // Base path constants
     /**
      * The HWMON constant.
      */
@@ -142,9 +139,8 @@ final class LinuxSensors extends AbstractSensors {
      */
     private final boolean isPi;
 
-    // Map from sensor to path. Built by constructor, so thread safe
     /**
-     * The sensorsMap value.
+     * Map from sensor to path. Built by constructor, so thread safe.
      */
     private final Map<String, String> sensorsMap = new HashMap<>();
 

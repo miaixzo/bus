@@ -192,7 +192,7 @@ public class LinkedInSourceAdapter implements VendorAdapter {
     /**
      * Creates one Source-bound LinkedIn adapter from the frozen current-product manifest.
      *
-     * @param spaceId  Source space used to isolate browser state and credentials
+     * @param tenantId Source tenant used to isolate browser state and credentials
      * @param sourceId Source identifier
      * @param manifest selected LinkedIn manifest
      * @param variant  selected default variant manifest
@@ -202,7 +202,7 @@ public class LinkedInSourceAdapter implements VendorAdapter {
      * @throws ValidateException        if the Vendor manifest, variant manifest, options, or security rules differ from
      *                                  the frozen LinkedIn OIDC variant
      */
-    public LinkedInSourceAdapter(final String spaceId, final String sourceId, final LinkedInManifest manifest,
+    public LinkedInSourceAdapter(final String tenantId, final String sourceId, final LinkedInManifest manifest,
             final VendorManifest.Variant variant, final LinkedInOptions options, final SourceServices services) {
         Assert.notNull(manifest, "LinkedIn manifest must not be null");
         this.sourceId = Assert.notBlank(sourceId, "LinkedIn Source id must not be blank");
@@ -219,7 +219,7 @@ public class LinkedInSourceAdapter implements VendorAdapter {
         if (!services.policies().require(Protocol.OIDC).algorithms().contains(JwaAlgorithm.RS256.name())) {
             throw new ValidateException("LinkedIn RS256 is not permitted by the OIDC security rules");
         }
-        this.redirectManager = RedirectManager.create(spaceId, sourceId, variant, options, services);
+        this.redirectManager = RedirectManager.create(tenantId, sourceId, variant, options, services);
         final var targets = variant.targets().resolve(options);
         final OAuth2ClientOptions oauthSettings = new OAuth2ClientOptions(targets.authorization(), targets.token(),
                 Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Optional.of(ISSUER),

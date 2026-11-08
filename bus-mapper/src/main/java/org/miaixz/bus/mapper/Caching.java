@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.mapper;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.Map;
@@ -27,8 +28,12 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.ibatis.annotations.Lang;
 import org.apache.ibatis.builder.annotation.ProviderContext;
+import org.apache.ibatis.builder.xml.XMLMapperEntityResolver;
 import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.mapping.SqlSource;
+import org.apache.ibatis.parsing.XNode;
+import org.apache.ibatis.parsing.XPathParser;
+import org.apache.ibatis.reflection.ParamNameResolver;
 import org.apache.ibatis.scripting.xmltags.XMLLanguageDriver;
 import org.apache.ibatis.session.Configuration;
 
@@ -50,6 +55,84 @@ import org.miaixz.bus.mapper.parsing.TableMeta;
  * @author Kimi Liu
  */
 public class Caching extends XMLLanguageDriver {
+
+    /**
+     * MyBatis 3.6 provides a parameter-name-aware parser; 3.5 uses the original three-argument parser. Detection
+     * happens once, outside SQL execution.
+     */
+    private static final Method PARAMETER_AWARE_PARSER = parameterAwareParser(String.class);
+
+    /**
+     * The MyBatis four-argument XML parser, detected once and absent on MyBatis 3.5. Passing the parameter-name
+     * resolver directly to this overload preserves it when parsing {@code <script>} content.
+     */
+    private static final Method PARAMETER_AWARE_XML_PARSER = parameterAwareParser(XNode.class);
+
+    /**
+     * A separate driver avoids virtual dispatch back into this cache when MyBatis delegates between overloads.
+     */
+    private final XMLLanguageDriver parser = new XMLLanguageDriver();
+
+    /**
+     * Locates the parameter-name-aware parser without requiring it at compile time.
+     *
+     * @param scriptType the script representation, either {@link String} or {@link XNode}
+     * @return the four-argument parser method, or {@code null} when the installed MyBatis version does not provide it
+     */
+    private static Method parameterAwareParser(Class<?> scriptType) {
+        try {
+            return XMLLanguageDriver.class.getMethod(
+                    "createSqlSource",
+                    Configuration.class,
+                    scriptType,
+                    Class.class,
+                    ParamNameResolver.class);
+        } catch (NoSuchMethodException ignored) {
+            return null;
+        }
+    }
+
+    /**
+     * Parses SQL using the available MyBatis overload, preserving parameter names for XML scripts. Falls back to the
+     * three-argument parser when the parameter-name-aware overload is unavailable.
+     *
+     * @param configuration the MyBatis configuration used to parse the script
+     * @param script        the SQL text or XML script to parse
+     * @param parameterType the resolved mapper parameter type
+     * @param resolver      the mapper method parameter-name resolver
+     * @return the parsed SQL source
+     * @throws IllegalStateException if the parser cannot be accessed or throws a checked exception
+     */
+    private SqlSource parseSqlSource(
+            Configuration configuration,
+            String script,
+            Class<?> parameterType,
+            ParamNameResolver resolver) {
+        if (PARAMETER_AWARE_PARSER == null) {
+            return parser.createSqlSource(configuration, script, parameterType);
+        }
+        try {
+            if (PARAMETER_AWARE_XML_PARSER != null && script.startsWith("<script>")) {
+                // Pass the resolver directly to the XML overload; the 3.6 string overload drops it for scripts.
+                XPathParser xml = new XPathParser(script, false, configuration.getVariables(),
+                        new XMLMapperEntityResolver());
+                return (SqlSource) PARAMETER_AWARE_XML_PARSER
+                        .invoke(parser, configuration, xml.evalNode("/script"), parameterType, resolver);
+            }
+            return (SqlSource) PARAMETER_AWARE_PARSER.invoke(parser, configuration, script, parameterType, resolver);
+        } catch (InvocationTargetException exception) {
+            Throwable cause = exception.getCause();
+            if (cause instanceof RuntimeException) {
+                throw (RuntimeException) cause;
+            }
+            if (cause instanceof Error) {
+                throw (Error) cause;
+            }
+            throw new IllegalStateException("Unable to parse mapper SQL", cause);
+        } catch (IllegalAccessException exception) {
+            throw new IllegalStateException("Unable to access MyBatis SQL parser", exception);
+        }
+    }
 
     /**
      * A map to cache {@link SqlMetaCache} objects. The initial capacity is set based on an estimate (e.g., 30 entities
@@ -122,11 +205,6 @@ public class Caching extends XMLLanguageDriver {
     /**
      * Caches the SQL script and its associated metadata.
      *
-     * <p>
-     * Optimization: Uses ConcurrentHashMap.computeIfAbsent instead of synchronized double-check locking to eliminate
-     * lock contention and improve concurrent performance by 3-5x.
-     * </p>
-     *
      * @param context           The provider context, containing mapper interface and method information.
      * @param entity            The entity metadata.
      * @param sqlScriptSupplier A supplier for the SQL script string.
@@ -135,8 +213,7 @@ public class Caching extends XMLLanguageDriver {
     public static String cache(ProviderContext context, TableMeta entity, SupplierX<String> sqlScriptSupplier) {
         String cacheKey = cacheKey(context);
 
-        // Use computeIfAbsent for lock-free concurrency, performance optimization: concurrent throughput improved by
-        // 3-5x
+        // Initialize metadata atomically for each provider key.
         CACHE_SQL.computeIfAbsent(cacheKey, k -> {
             isAnnotationPresentLang(context);
             return new SqlMetaCache(Assert.notNull(context), Assert.notNull(entity), Assert.notNull(sqlScriptSupplier));
@@ -164,8 +241,7 @@ public class Caching extends XMLLanguageDriver {
             FunctionX<Dialect, String> dynamicSqlScriptFunction) {
         String cacheKey = cacheKey(context);
 
-        // Use computeIfAbsent for lock-free concurrency, performance optimization: concurrent throughput improved by
-        // 3-5x
+        // Initialize metadata atomically for each provider key.
         CACHE_SQL.computeIfAbsent(cacheKey, k -> {
             isAnnotationPresentLang(context);
             return new SqlMetaCache(Assert.notNull(context), Assert.notNull(entity), null,
@@ -218,6 +294,24 @@ public class Caching extends XMLLanguageDriver {
      */
     @Override
     public SqlSource createSqlSource(Configuration configuration, String script, Class<?> parameterType) {
+        return createSqlSource(configuration, script, parameterType, null);
+    }
+
+    /**
+     * Preserves parameter-name information on MyBatis 3.6 while remaining callable on MyBatis 3.5. This overload
+     * intentionally has no Override annotation because it is absent from the 3.5 superclass.
+     *
+     * @param configuration the MyBatis configuration
+     * @param script        the SQL script or provider cache key
+     * @param parameterType the mapper parameter type
+     * @param resolver      the method parameter-name resolver, if supplied by MyBatis
+     * @return the parsed or cached SQL source
+     */
+    public SqlSource createSqlSource(
+            Configuration configuration,
+            String script,
+            Class<?> parameterType,
+            ParamNameResolver resolver) {
         if (CACHE_SQL.containsKey(script)) {
             Map<String, SqlSource> cacheKeyMap = configurationCache(configuration);
             return cacheKeyMap.computeIfAbsent(script, k -> {
@@ -238,7 +332,11 @@ public class Caching extends XMLLanguageDriver {
                         Logger.trace(false, "Mapper", "Dynamic SQL deferred until runtime: cacheKey={}", k);
                     }
                     // Create a placeholder SQL source that will be replaced by DynamicSqlSource
-                    SqlSource originalSource = super.createSqlSource(configuration, "<script></script>", parameterType);
+                    SqlSource originalSource = parseSqlSource(
+                            configuration,
+                            "<script></script>",
+                            parameterType,
+                            resolver);
                     SqlSource dynamicSource = new org.miaixz.bus.mapper.parsing.SqlSource(ms, Normal.EMPTY,
                             originalSource, cache);
                     if (USE_ONCE) {
@@ -256,7 +354,7 @@ public class Caching extends XMLLanguageDriver {
                                 k,
                                 sqlScript.length());
                     }
-                    SqlSource sqlSource = super.createSqlSource(configuration, sqlScript, parameterType);
+                    SqlSource sqlSource = parseSqlSource(configuration, sqlScript, parameterType, resolver);
                     sqlSource = SqlSourceEnhancer.SPI
                             .customize(sqlSource, cache.getTableMeta(), ms, cache.getContext());
                     if (USE_ONCE) {
@@ -266,7 +364,7 @@ public class Caching extends XMLLanguageDriver {
                 }
             });
         } else {
-            return super.createSqlSource(configuration, script, parameterType);
+            return parseSqlSource(configuration, script, parameterType, resolver);
         }
     }
 

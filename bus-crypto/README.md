@@ -787,6 +787,28 @@ random.nextBytes(key);  // Predictable!
 
 -----
 
+## GraalVM Native Image metadata
+
+Bus Crypto uses the [official reachability metadata repository](https://github.com/oracle/graalvm-reachability-metadata/tree/master/metadata/org.bouncycastle/bcpkix-jdk18on) for Bouncy Castle. The official `1.77` metadata set explicitly lists the currently managed Bouncy Castle `1.85` as tested; the metadata directory does not need to match the dependency version.
+
+The application building the native executable must enable the metadata repository and declare the optional `org.bouncycastle:bcpkix-jdk18on` dependency when using Bouncy Castle. Applications inheriting `bus-parent` receive the repository configuration when they activate its managed `native-maven-plugin`. For other applications, configure their existing plugin with:
+
+```xml
+<configuration>
+    <metadataRepository>
+        <enabled>true</enabled>
+    </metadataRepository>
+</configuration>
+```
+
+The native build must resolve an official repository release containing the tested `1.85` entry (verified with Native Build Tools and metadata repository `1.1.18`). Merely adding the Bus Crypto dependency does not activate that repository. Offline builds must supply the same repository through the plugin's local repository configuration.
+
+Bus Crypto retains only 25 conditional Bouncy Castle constructor registrations missing from that official set, shipped in `bus-preset` under `org.bouncycastle/bcpkix-jdk18on/1.85`: 10 dynamically loaded algorithm mappings, 14 JCA services and the provider constructor. Directly constructed helper classes and package-wide resource globs are not duplicated. Bus reflection metadata, the exact Bus SPI resource and Bus initialization remain in place. Bouncy Castle initialization settings are also maintained in `bus-preset`. Recheck this delta when upgrading Bouncy Castle or the official metadata.
+
+JSON schema checks, member checks and JVM smoke tests do not replace native validation. Before releasing a native application, test the algorithms it uses with `--exact-reachability-metadata` and `-XX:MissingRegistrationReportingMode=Exit`.
+
+-----
+
 ## 📚 Additional Resources
 
 - [Java Cryptography Architecture (JCA)](https://docs.oracle.com/javase/8/docs/technotes/guides/security/crypto/CryptoSpec.html)

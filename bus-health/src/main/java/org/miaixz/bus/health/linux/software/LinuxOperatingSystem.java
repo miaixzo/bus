@@ -35,6 +35,7 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.tuple.Pair;
 import org.miaixz.bus.core.lang.tuple.Triplet;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.health.Builder;
 import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.Memoizer;
@@ -75,9 +76,8 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
      */
     public static final boolean HAS_SYSCALL_GETTID;
 
-    // Package private for access from LinuxOSProcess
     /**
-     * The BOOTTIME constant.
+     * Package private for access from LinuxOSProcess.
      */
     static final long BOOTTIME;
 
@@ -131,9 +131,8 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
      */
     private static final String OS_NAME = Executor.getFirstAnswer("uname -o");
 
-    // PPID is 4th numeric value in proc pid stat; subtract 1 for 0-index
     /**
-     * The PPID_INDEX constant.
+     * Zero-based field index used to parse the parent process ID from proc stat records.
      */
     private static final int[] PPID_INDEX = { 3 };
 
@@ -199,18 +198,8 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
 
     static {
         Map<Integer, Long> auxv = Auxv.queryAuxv();
-        long hz = auxv.getOrDefault(Auxv.AT_CLKTCK, 0L);
-        if (hz > 0) {
-            USER_HZ = hz;
-        } else {
-            USER_HZ = Parsing.parseLongOrDefault(Executor.getFirstAnswer("getconf CLK_TCK"), 100L);
-        }
-        long pagesz = Auxv.queryAuxv().getOrDefault(Auxv.AT_PAGESZ, 0L);
-        if (pagesz > 0) {
-            PAGE_SIZE = pagesz;
-        } else {
-            PAGE_SIZE = Parsing.parseLongOrDefault(Executor.getFirstAnswer("getconf PAGE_SIZE"), 4096L);
-        }
+        USER_HZ = Auxv.userHz(auxv);
+        PAGE_SIZE = Auxv.pageSize(auxv);
     }
 
     /**
@@ -584,8 +573,8 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
             return "Unknown";
         } else {
             Properties filenameProps = Builder.readProperties(Builder._LINUX_FILENAME_PROPERTIES);
-            String family = filenameProps.getProperty(name.toLowerCase(Locale.ROOT));
-            return family != null ? family : name.substring(0, 1).toUpperCase(Locale.ROOT) + name.substring(1);
+            String family = filenameProps.getProperty(StringKit.toLowerCase(name));
+            return family != null ? family : StringKit.toUpperCase(name.substring(0, 1)) + name.substring(1);
         }
     }
 
@@ -931,7 +920,7 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
         if (!systemctlFound) {
             // Get Directories for stopped services
             File dir = new File("/etc/init");
-            File[] confFiles = dir.listFiles((f, name) -> name.toLowerCase(Locale.ROOT).endsWith(".conf"));
+            File[] confFiles = dir.listFiles((f, name) -> StringKit.toLowerCase(name).endsWith(".conf"));
             if (confFiles != null) {
                 for (File f : confFiles) {
                     // remove .conf extension

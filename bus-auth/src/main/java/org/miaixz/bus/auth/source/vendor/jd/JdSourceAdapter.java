@@ -52,6 +52,7 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.net.Protocol;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.crypto.Builder;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.extra.json.JsonValue;
@@ -131,7 +132,7 @@ public class JdSourceAdapter implements VendorAdapter {
     /**
      * Creates one Source-bound JD adapter.
      *
-     * @param spaceId  Source space used for state isolation
+     * @param tenantId Source tenant used for state isolation
      * @param sourceId Source identifier
      * @param manifest selected JD manifest
      * @param variant  selected default manifest
@@ -140,7 +141,7 @@ public class JdSourceAdapter implements VendorAdapter {
      * @throws IllegalArgumentException if an identifier is blank or a collaborator is {@code null}
      * @throws ValidateException        if routing or protocol differs from jd/default
      */
-    public JdSourceAdapter(final String spaceId, final String sourceId, final JdManifest manifest,
+    public JdSourceAdapter(final String tenantId, final String sourceId, final JdManifest manifest,
             final VendorManifest.Variant variant, final JdOptions options, final SourceServices services) {
         Assert.notNull(manifest, "JD manifest must not be null");
         this.sourceId = Assert.notBlank(sourceId, "JD Source id must not be blank");
@@ -152,7 +153,7 @@ public class JdSourceAdapter implements VendorAdapter {
                 || !JdManifest.ID.equals(options.vendor()) || !JdManifest.DEFAULT.equals(options.variant())) {
             throw new ValidateException("JD adapter requires the jd/default OAuth 2.0 manifest");
         }
-        this.redirectManager = RedirectManager.create(spaceId, sourceId, variant, options, services);
+        this.redirectManager = RedirectManager.create(tenantId, sourceId, variant, options, services);
         this.formCodec = new FormCodec();
         this.standardAdapter = new StandardAdapter(variant, options, Optional.of(redirectManager),
                 List.of(
@@ -191,7 +192,7 @@ public class JdSourceAdapter implements VendorAdapter {
             }
         });
         canonical.append(appSecret);
-        return Builder.md5().digestHex(canonical.toString(), Charset.UTF_8).toUpperCase(Locale.ROOT);
+        return StringKit.toUpperCase(Builder.md5().digestHex(canonical.toString(), Charset.UTF_8));
     }
 
     /**
@@ -285,7 +286,7 @@ public class JdSourceAdapter implements VendorAdapter {
             details.put("vendor_code", number(code));
         }
         if (requestId != null && !requestId.isBlank()) {
-            final String digest = Builder.sha256().digestHex(requestId, Charset.UTF_8).toLowerCase(Locale.ROOT);
+            final String digest = StringKit.toLowerCase(Builder.sha256().digestHex(requestId, Charset.UTF_8));
             details.put("request_id_sha256", new JsonValue.StringValue(digest));
         }
         if (status == Http.Status.TOO_MANY_REQUESTS || status >= Http.Status.INTERNAL_SERVER_ERROR) {

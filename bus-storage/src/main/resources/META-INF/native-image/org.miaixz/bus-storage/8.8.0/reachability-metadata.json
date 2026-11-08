@@ -1,6 +1,15 @@
 {
   "reflection": [
     {
+      "type": "org.miaixz.bus.storage.magic.ErrorCode",
+      "methods": [
+        {
+          "parameterTypes": [],
+          "name": "<init>"
+        }
+      ]
+    },
+    {
       "type": "org.miaixz.bus.storage.Builder",
       "methods": [
         {

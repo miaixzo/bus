@@ -1226,6 +1226,11 @@ public class Builder {
     /**
      * Builds a {@link Shape} from DICOM Display Shutter attributes.
      *
+     * <p>
+     * DICOM shutter coordinates are one-based pixel rows and columns with inclusive boundaries. The returned shape uses
+     * zero-based pixel centers; rectangular edges are converted to double before subtracting the origin offset to avoid
+     * integer overflow in malformed input.
+     *
      * @param dcm the DICOM dataset.
      * @return the shutter shape as an {@link Area}, or {@code null} if no valid shutter is defined.
      */
@@ -1236,10 +1241,10 @@ public class Builder {
             if (shutterShape.contains("RECTANGULAR") || shutterShape.contains("RECTANGLE")) {
                 Rectangle2D rect = new Rectangle2D.Double();
                 rect.setFrameFromDiagonal(
-                        dcm.getInt(Tag.ShutterLeftVerticalEdge, 0) - 1,
-                        dcm.getInt(Tag.ShutterUpperHorizontalEdge, 0) - 1,
-                        dcm.getInt(Tag.ShutterRightVerticalEdge, 0) - 1,
-                        dcm.getInt(Tag.ShutterLowerHorizontalEdge, 0) - 1);
+                        dcm.getInt(Tag.ShutterLeftVerticalEdge, 0) - 1.0,
+                        dcm.getInt(Tag.ShutterUpperHorizontalEdge, 0) - 1.0,
+                        dcm.getInt(Tag.ShutterRightVerticalEdge, 0) - 1.0,
+                        dcm.getInt(Tag.ShutterLowerHorizontalEdge, 0) - 1.0);
                 if (rect.isEmpty()) {
                     Logger.error(false, "Image", "Shutter rectangle has an empty area!");
                 } else {
@@ -1965,14 +1970,18 @@ public class Builder {
      *
      * @param bulkdataMediaType the media type.
      * @return the corresponding Transfer Syntax UID.
+     * @throws NullPointerException if the media type is null, or if no explicit transfer syntax is supplied and the
+     *                              type or subtype is null
      */
     public static String transferSyntaxOf(MediaType bulkdataMediaType) {
         String tsuid = bulkdataMediaType.getParameters().get("transfer-syntax");
         if (tsuid != null)
             return tsuid;
 
-        String type = bulkdataMediaType.getType().toLowerCase();
-        String subtype = bulkdataMediaType.getSubtype().toLowerCase();
+        String type = Objects.requireNonNull(bulkdataMediaType.getType(), "Media type must not be null");
+        String subtype = Objects.requireNonNull(bulkdataMediaType.getSubtype(), "Media subtype must not be null");
+        type = StringKit.toLowerCase(type);
+        subtype = StringKit.toLowerCase(subtype);
         switch (type) {
             case "image":
                 switch (subtype) {
@@ -2013,7 +2022,7 @@ public class Builder {
      * @return the corresponding SOP Class UID, or {@code null}.
      */
     public static String sopClassOf(MediaType bulkdataMediaType) {
-        String type = bulkdataMediaType.getType().toLowerCase();
+        String type = StringKit.toLowerCase(bulkdataMediaType.getType());
         return type.equals("image") ? UID.SecondaryCaptureImageStorage.uid
                 : type.equals("video") ? UID.VideoPhotographicImageStorage.uid
                         : MediaType.equalsIgnoreParameters(bulkdataMediaType, MediaType.APPLICATION_PDF_TYPE)

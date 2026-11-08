@@ -23,12 +23,12 @@ import java.net.InetSocketAddress;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.Duration;
-import java.util.Locale;
 
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Protocol;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.fabric.network.dns.secure.DnsDohServer;
 import org.miaixz.bus.fabric.network.tls.TlsPolicy;
 
@@ -313,7 +313,7 @@ public class DnsUpstream {
         if (endpoint == null || endpoint.getScheme() == null || endpoint.getHost() == null) {
             throw new ValidateException("DNS-over-HTTPS upstream URI must be absolute");
         }
-        final String scheme = endpoint.getScheme().toLowerCase(Locale.ROOT);
+        final String scheme = StringKit.toLowerCase(endpoint.getScheme());
         if (!Protocol.HTTPS.name.equals(scheme) && !Protocol.HTTP.name.equals(scheme)) {
             throw new ValidateException("DNS-over-HTTPS upstream URI scheme must be http or https");
         }

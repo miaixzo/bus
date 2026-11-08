@@ -21,7 +21,6 @@ package org.miaixz.bus.mapper.feature.schema;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -29,6 +28,7 @@ import lombok.experimental.Accessors;
 
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.mapper.parsing.ForeignKeyMeta;
 import org.miaixz.bus.mapper.parsing.IndexMeta;
 import org.miaixz.bus.mapper.parsing.PrimaryKeyMeta;
@@ -172,8 +172,8 @@ public class TableSnapshot {
      */
     public static String normalizeIdentifier(String value) {
         return value == null ? Normal.EMPTY
-                : value.replace(Symbol.BACKTICK, Normal.EMPTY).replace(Symbol.DOUBLE_QUOTES, Normal.EMPTY)
-                        .toLowerCase(Locale.ROOT);
+                : StringKit.toLowerCase(
+                        value.replace(Symbol.BACKTICK, Normal.EMPTY).replace(Symbol.DOUBLE_QUOTES, Normal.EMPTY));
     }
 
     /**

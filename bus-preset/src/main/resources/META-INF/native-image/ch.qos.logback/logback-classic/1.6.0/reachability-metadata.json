@@ -1,0 +1,19 @@
+{
+  "resources": [
+    {
+      "glob": "logback-test.scmo"
+    },
+    {
+      "glob": "logback-test.xml"
+    },
+    {
+      "glob": "logback.groovy"
+    },
+    {
+      "glob": "logback.scmo"
+    },
+    {
+      "glob": "logback.xml"
+    }
+  ]
+}

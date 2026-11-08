@@ -43,14 +43,11 @@ public interface FunctionMapper<T> {
      *
      * @param entity The entity object containing the updated values.
      * @param fields A collection of fields to be forcibly updated, created via {@link Fn#of(Fn...)}.
-     * @param <S>    The type of the entity.
      * @return The number of affected rows (1 for success, 0 for failure).
      */
     @Lang(Caching.class)
     @UpdateProvider(type = FunctionProvider.class, method = "updateByPrimaryKeySelectiveWithForceFields")
-    <S extends T> int updateByPrimaryKeySelectiveWithForceFields(
-            @Param("entity") S entity,
-            @Param("fns") Fn.FnArray<T> fields);
+    int updateByPrimaryKeySelectiveWithForceFields(@Param("entity") T entity, @Param("fns") Fn.FnArray<T> fields);
 
     /**
      * Selects a single, unique entity based on the fields of the provided entity, returning only the specified columns.

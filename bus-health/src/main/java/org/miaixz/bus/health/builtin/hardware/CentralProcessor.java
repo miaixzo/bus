@@ -20,7 +20,6 @@
 package org.miaixz.bus.health.builtin.hardware;
 
 import java.util.List;
-import java.util.Locale;
 import java.util.Objects;
 import java.util.Properties;
 import java.util.regex.Matcher;
@@ -759,7 +758,8 @@ public interface CentralProcessor {
         }
 
         /**
-         * The cache associativity. If this member is {@code 0xFF}, the cache is fully associative.
+         * The cache associativity as an unsigned byte. Read it with {@link Byte#toUnsignedInt(byte)} because a cache
+         * may have more than 127 ways. A value of {@code 0xFF} means fully associative and {@code 0} means unknown.
          *
          * @return the associativity
          */
@@ -811,8 +811,20 @@ public interface CentralProcessor {
         @Override
         public String toString() {
             return "ProcessorCache [L" + level + " " + type + ", cacheSize=" + cacheSize + ", "
-                    + (associativity > 0 ? associativity + "-way" : "unknown") + " associativity, lineSize=" + lineSize
-                    + "]";
+                    + describeAssociativity() + " associativity, lineSize=" + lineSize + "]";
+        }
+
+        /**
+         * Describes the cache associativity.
+         *
+         * @return The human-readable associativity.
+         */
+        private String describeAssociativity() {
+            int ways = Byte.toUnsignedInt(associativity);
+            if (ways == Normal._0) {
+                return "unknown";
+            }
+            return ways == 0xff ? "full" : ways + "-way";
         }
 
         /**
@@ -878,7 +890,7 @@ public interface CentralProcessor {
              */
             @Override
             public String toString() {
-                return name().charAt(0) + name().substring(1).toLowerCase(Locale.ROOT);
+                return name().charAt(0) + StringKit.toLowerCase(name().substring(1));
             }
 
         }
@@ -894,7 +906,6 @@ public interface CentralProcessor {
     @Immutable
     class ProcessorIdentifier {
 
-        // Provided in constructor
         /**
          * The cpuVendor value.
          */
@@ -1151,11 +1162,13 @@ public interface CentralProcessor {
             // Intel is default, no prefix
             StringBuilder sb = new StringBuilder();
             // AMD and ARM properties have prefix
-            String ucVendor = this.cpuVendor.toUpperCase(Locale.ROOT);
+            String ucVendor = StringKit.toUpperCase(this.cpuVendor);
             if (ucVendor.contains("AMD")) {
                 sb.append("amd.");
             } else if (ucVendor.contains("ARM")) {
                 sb.append("arm.");
+            } else if (ucVendor.contains("S390")) {
+                sb.append("s390.");
             } else if (ucVendor.contains("IBM")) {
                 // Directly parse the name to POWER#
                 int powerIdx = this.cpuName.indexOf("_POWER");
@@ -1165,9 +1178,10 @@ public interface CentralProcessor {
             } else if (ucVendor.contains("APPLE")) {
                 sb.append("apple.");
             }
-            // ARM keys use the part number alone, for example arm.0xd0c.
-            boolean isArm = sb.toString().equals("arm.");
-            if (StringKit.isBlank(arch) && !isArm) {
+            // ARM keys use the part number alone and s390 keys use the machine type alone.
+            String prefix = sb.toString();
+            boolean modelOnly = "arm.".equals(prefix) || "s390.".equals(prefix);
+            if (StringKit.isBlank(arch) && !modelOnly) {
                 // Append family
                 sb.append(this.cpuFamily);
                 arch = archProps.getProperty(sb.toString());
@@ -1175,7 +1189,7 @@ public interface CentralProcessor {
 
             if (StringKit.isBlank(arch)) {
                 // Append model
-                if (!isArm) {
+                if (!modelOnly) {
                     sb.append(Symbol.C_DOT);
                 }
                 sb.append(this.cpuModel);

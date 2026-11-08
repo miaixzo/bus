@@ -698,6 +698,7 @@ public class Galaxy {
      */
     public static double gxcSunLon(double t) {
         double t2 = t * t;
+        // Mean anomaly.
         double v = -0.043126 + 628.301955 * t - 0.000002732 * t2;
         double e = 0.016708634 - 0.000042037 * t - 0.0000001267 * t2;
         return -20.49552 * (1 + e * Math.cos(v)) / SECOND_PER_RAD;
@@ -975,13 +976,13 @@ public class Galaxy {
      */
     private static double calc(boolean qi, double jd, double[] kb, int pc, String fkb) {
         int size = kb.length;
-        double d = 0;
+        double d;
         double j = jd + 2451545;
         double f1 = kb[0] - pc;
         double f2 = kb[size - 1] - pc;
         if (j < f1 || j >= 2436935) {
             d = qiShuo(qi, true, j, pc);
-        } else if (j >= f1 && j < f2) {
+        } else if (j < f2) {
             int i;
             for (i = 0; i < size; i += 2) {
                 if (j + pc < kb[i + 2]) {
@@ -993,7 +994,7 @@ public class Galaxy {
                 d += 1;
             }
             d -= 2451545;
-        } else if (j >= f2) {
+        } else {
             d = qiShuo(qi, false, j, pc);
             char n = fkb.charAt((int) (qi ? (j - f2) / 365.2422 * 24 : (j - f2) / 29.5306));
             if (Symbol.C_ONE == n) {
@@ -1062,9 +1063,9 @@ public class Galaxy {
         }
         double v = calc(true, jd, QI_KB, 7, QB);
         synchronized (QI_CACHE) {
-            Double previous = QI_CACHE.putIfAbsent(jd, v);
-            return previous != null ? previous : v;
+            QI_CACHE.put(jd, v);
         }
+        return v;
     }
 
     /**

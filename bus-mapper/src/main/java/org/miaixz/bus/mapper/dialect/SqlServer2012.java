@@ -21,6 +21,7 @@ package org.miaixz.bus.mapper.dialect;
 
 import java.util.EnumSet;
 
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.mapper.Charter.Behavior;
 import org.miaixz.bus.mapper.Charter.Modify;
 import org.miaixz.bus.mapper.feature.paging.Pageable;
@@ -137,7 +138,7 @@ public class SqlServer2012 extends AbstractDialect {
         }
         StringBuilder sql = new StringBuilder(originalSql.length() + 100);
         sql.append(originalSql);
-        if (!originalSql.toUpperCase().contains("ORDER BY")) {
+        if (!StringKit.toUpperCase(originalSql).contains("ORDER BY")) {
             sql.append(" ORDER BY (SELECT NULL)");
         }
         sql.append(" OFFSET ").append(pageable.getOffset()).append(" ROWS");

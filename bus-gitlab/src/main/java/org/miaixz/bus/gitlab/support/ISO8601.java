@@ -233,14 +233,13 @@ public class ISO8601 {
         return (instant != null ? Date.from(instant) : null);
     }
 
-    // Set up ThreadLocal storage to save a thread local SimpleDateFormat keyed with the format string
-
     /**
-     * Parses an ISO8601 formatted string a returns a Calendar instance.
+     * Parses an ISO8601 string and returns a calendar set to the parsed instant.
      *
-     * @param dateTimeString the ISO8601 formatted string
-     * @return a Calendar instance for the ISO8601 formatted string
-     * @throws ParseException if the provided string is not in the proper format
+     * @param dateTimeString the ISO8601 string, or {@code null}
+     * @return the parsed calendar, or {@code null} if the input is null
+     * @throws ParseException   declared for compatibility with the parser API
+     * @throws RuntimeException if a non-null string cannot be parsed; reported as {@code DateTimeParseException}
      */
     public static Calendar toCalendar(String dateTimeString) throws ParseException {
 
@@ -262,7 +261,7 @@ public class ISO8601 {
     private static final class SafeDateFormatter {
 
         /**
-         * The safe formats value.
+         * Per-thread cache of date formatters, indexed by format pattern.
          */
         private static final ThreadLocal<Map<String, SimpleDateFormat>> safeFormats = ThreadLocal
                 .withInitial(() -> (new ConcurrentHashMap<>()));

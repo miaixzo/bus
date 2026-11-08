@@ -97,13 +97,13 @@ public class RedirectManager {
     /**
      * Creates one validated Source-bound redirect flow coordinator.
      *
-     * @param spaceId       Source space identifier
+     * @param tenantId      Source tenant identifier
      * @param sourceId      Source identifier
      * @param variant       selected Vendor variant
      * @param vendorOptions validated deployment options
      * @param services      capability-limited Source services
      */
-    public RedirectManager(final String spaceId, final String sourceId, final VendorManifest.Variant variant,
+    public RedirectManager(final String tenantId, final String sourceId, final VendorManifest.Variant variant,
             final VendorOptions<?> vendorOptions, final SourceServices services) {
         this.sourceId = Assert.notBlank(sourceId, "Vendor redirect Source id must not be blank");
         final VendorManifest.Variant checkedVariant = Assert
@@ -116,13 +116,13 @@ public class RedirectManager {
         this.pkceEnabled = checkedVariant.pkce().resolve(vendorOptions);
         this.pkceGenerator = pkceEnabled ? new PkceGenerator(rule) : null;
         this.randomBytes = (Math.max(256, rule.minimumEntropyBits()) + Byte.SIZE - 1) / Byte.SIZE;
-        this.state = new RedirectState(spaceId, sourceId, checkedServices, pkceEnabled);
+        this.state = new RedirectState(tenantId, sourceId, checkedServices, pkceEnabled);
     }
 
     /**
      * Creates Source-isolated redirect orchestration backed by external worker and cache ports.
      *
-     * @param spaceId       Source space identifier
+     * @param tenantId      Source tenant identifier
      * @param sourceId      Source identifier
      * @param variant       exact selected platform variant
      * @param vendorOptions decoded exact deployment options
@@ -130,12 +130,12 @@ public class RedirectManager {
      * @return Source-bound redirect manager
      */
     public static RedirectManager create(
-            final String spaceId,
+            final String tenantId,
             final String sourceId,
             final VendorManifest.Variant variant,
             final VendorOptions<?> vendorOptions,
             final SourceServices services) {
-        return new RedirectManager(spaceId, sourceId, variant, vendorOptions, services);
+        return new RedirectManager(tenantId, sourceId, variant, vendorOptions, services);
     }
 
     /**

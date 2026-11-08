@@ -39,7 +39,6 @@ public interface Cups extends Library {
      */
     Cups INSTANCE = Native.load("cups", Cups.class);
 
-    // Printer state constants from cups/cups.h
     /**
      * The IPP_PRINTER_IDLE value.
      */
@@ -55,7 +54,9 @@ public interface Cups extends Library {
      */
     int IPP_PRINTER_STOPPED = 5;
 
-    // Printer type bit flags from cups/cups.h
+    /*
+     * Printer type bit flags from cups/cups.h
+     */
     /**
      * The CUPS_PRINTER_REMOTE value.
      */
@@ -123,9 +124,9 @@ public interface Cups extends Library {
         public int num_options;
 
         /**
-         * The options value.
+         * Cups_option_t*.
          */
-        public Pointer options; // cups_option_t*
+        public Pointer options;
 
         /**
          * Creates a new CupsDest instance.

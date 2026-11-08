@@ -46,9 +46,8 @@ import org.miaixz.bus.health.unix.shared.jna.FreeBsdLibc;
 @ThreadSafe
 final class FreeBsdCentralProcessor extends AbstractCentralProcessor {
 
-    // Capture the CSV of hex values as group(1), clients should split on ','
     /**
-     * The CPUMASK constant.
+     * Capture the CSV of hex values as group(1), clients should split on ','.
      */
     private static final java.util.regex.Pattern CPUMASK = java.util.regex.Pattern
             .compile(".*<cpu\\s.*mask=\"(\\p{XDigit}+(,\\p{XDigit}+)*)\".*>.*</cpu>.*");

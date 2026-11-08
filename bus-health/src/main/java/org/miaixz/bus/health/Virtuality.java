@@ -27,6 +27,7 @@ import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.tuple.Pair;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.health.builtin.hardware.HardwareAbstractionLayer;
 import org.miaixz.bus.health.builtin.hardware.NetworkIF;
 
@@ -47,6 +48,16 @@ public final class Virtuality {
      * System model signature prefix.
      */
     private static final String MODEL_PREFIX = "model" + Symbol.DOT;
+
+    /**
+     * Amazon EC2 system manufacturer signature.
+     */
+    private static final String EC2_MANUFACTURER = "Amazon EC2";
+
+    /**
+     * Marker contained in EC2 bare-metal instance types.
+     */
+    private static final String EC2_BARE_METAL = ".metal";
 
     /**
      * Whether the current platform reports connector presence.
@@ -136,8 +147,12 @@ public final class Virtuality {
      * @return The platform name, or an empty optional.
      */
     static Optional<String> matchSystem(String manufacturer, String model, List<Pair<String, String>> table) {
+        boolean ec2BareMetal = manufacturer.startsWith(EC2_MANUFACTURER) && model.contains(EC2_BARE_METAL);
         String haystack = manufacturer + Symbol.C_SPACE + model;
         for (Pair<String, String> signature : table) {
+            if (ec2BareMetal && EC2_MANUFACTURER.equals(signature.getLeft())) {
+                continue;
+            }
             if (haystack.contains(signature.getLeft())) {
                 return Optional.of(signature.getRight());
             }
@@ -183,7 +198,7 @@ public final class Virtuality {
         if (hex.length() < Normal._6) {
             return Normal.EMPTY;
         }
-        String digits = hex.toString().toUpperCase(Locale.ROOT);
+        String digits = StringKit.toUpperCase(hex.toString());
         return digits.substring(Normal._0, Normal._2) + Symbol.C_COLON + digits.substring(Normal._2, Normal._4)
                 + Symbol.C_COLON + digits.substring(Normal._4, Normal._6);
     }

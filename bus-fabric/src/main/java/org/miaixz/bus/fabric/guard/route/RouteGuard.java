@@ -19,7 +19,6 @@
 */
 package org.miaixz.bus.fabric.guard.route;
 
-import java.util.Locale;
 import java.util.Optional;
 import java.util.Set;
 
@@ -28,6 +27,7 @@ import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.xyz.SetKit;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.core.xyz.UrlKit;
 import org.miaixz.bus.fabric.Address;
 import org.miaixz.bus.fabric.Builder;
@@ -118,7 +118,7 @@ public class RouteGuard {
             }
             throw new ProtocolException("Invalid route scheme");
         }
-        return value.toLowerCase(Locale.ROOT);
+        return StringKit.toLowerCase(value);
     }
 
     /**

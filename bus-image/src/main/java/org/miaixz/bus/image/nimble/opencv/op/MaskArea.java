@@ -23,12 +23,11 @@ import java.awt.*;
 import java.util.List;
 import java.util.Objects;
 
-import org.opencv.core.*;
-import org.opencv.imgproc.Imgproc;
-
 import org.miaixz.bus.image.nimble.opencv.ImageAnalyzer;
 import org.miaixz.bus.image.nimble.opencv.ImageCV;
 import org.miaixz.bus.logger.Logger;
+import org.miaixz.bus.opencv.core.*;
+import org.miaixz.bus.opencv.imgproc.Imgproc;
 
 /**
  * Represents the MaskArea type.

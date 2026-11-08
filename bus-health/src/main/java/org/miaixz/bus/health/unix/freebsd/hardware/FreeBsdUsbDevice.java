@@ -21,6 +21,7 @@ package org.miaixz.bus.health.unix.freebsd.hardware;
 
 import java.util.*;
 import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
@@ -39,13 +40,15 @@ import org.miaixz.bus.health.builtin.hardware.common.AbstractUsbDevice;
 @Immutable
 public class FreeBsdUsbDevice extends AbstractUsbDevice {
 
-    /** Pattern matching one indented {@code devinfo -v} device line. */
-    private static final java.util.regex.Pattern DEVINFO_LINE = java.util.regex.Pattern
-            .compile("( *)(\\S+)(?: <(.*?)>)?(.*)");
+    /**
+     * Pattern matching one indented {@code devinfo -v} device line.
+     */
+    private static final Pattern DEVINFO_LINE = Pattern.compile("( *)(\\S+)(?: <(.*?)>)?(.*)");
 
-    /** Pattern matching a quoted or unquoted plug-and-play field. */
-    private static final java.util.regex.Pattern PNP_FIELD = java.util.regex.Pattern
-            .compile("(?<!\\w)(\\w++)=(\"[^\"]*+\"|\\S++)");
+    /**
+     * Pattern matching a quoted or unquoted plug-and-play field.
+     */
+    private static final Pattern PNP_FIELD = Pattern.compile("(?<!\\w)(\\w++)=(\"[^\"]*+\"|\\S++)");
 
     /**
      * Creates a USB device.
@@ -172,7 +175,9 @@ public class FreeBsdUsbDevice extends AbstractUsbDevice {
         return Collections.unmodifiableList(controllers);
     }
 
-    /** Parses plug-and-play fields from one device line. */
+    /**
+     * Parses plug-and-play fields from one device line.
+     */
     private static Map<String, String> parseFields(String fields) {
         Map<String, String> values = new HashMap<>();
         Matcher matcher = PNP_FIELD.matcher(fields);
@@ -187,7 +192,9 @@ public class FreeBsdUsbDevice extends AbstractUsbDevice {
         return values;
     }
 
-    /** Adds a hexadecimal USB identifier when present. */
+    /**
+     * Adds a hexadecimal USB identifier when present.
+     */
     private static void putHexId(Map<String, String> values, String key, String hex) {
         if (hex != null && hex.startsWith("0x")) {
             values.put(

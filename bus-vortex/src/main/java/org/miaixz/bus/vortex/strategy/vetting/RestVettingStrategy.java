@@ -81,7 +81,7 @@ public class RestVettingStrategy extends VettingStrategy {
             requireParameter(context, Args.VERSION, ErrorCode._100106);
             requireParameter(context, Args.FORMAT, ErrorCode._100104);
             try {
-                Formats.valueOf(value(context, Args.FORMAT).toUpperCase());
+                Formats.valueOf(StringKit.toUpperCase(value(context, Args.FORMAT)));
             } catch (IllegalArgumentException e) {
                 throw new ValidateException(ErrorCode._100105);
             }

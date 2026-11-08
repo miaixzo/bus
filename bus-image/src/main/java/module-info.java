@@ -421,6 +421,7 @@ module bus.image {
     exports org.miaixz.bus.image.nimble.mpr;
     exports org.miaixz.bus.image.nimble.opencv;
     exports org.miaixz.bus.image.nimble.opencv.lut;
+    exports org.miaixz.bus.image.nimble.opencv.lut.colormap;
     exports org.miaixz.bus.image.nimble.opencv.op;
     exports org.miaixz.bus.image.nimble.opencv.seg;
     exports org.miaixz.bus.image.nimble.opencv.tile;

@@ -144,7 +144,7 @@ public class CStore {
             if (n == 0) {
                 return new Status(Status.UnableToProcess, "No DICOM file has been found!", null);
             } else {
-                service.start();
+                service.start(true);
                 try {
                     long t1 = System.currentTimeMillis();
                     storeSCU.open();

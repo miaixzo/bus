@@ -20,7 +20,6 @@
 package org.miaixz.bus.tempus.temporal.worker;
 
 import java.net.URI;
-import java.util.Locale;
 
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.net.Port;
@@ -105,7 +104,7 @@ public class WorkflowEndpointParser {
         if (StringKit.isBlank(scheme)) {
             throw invalidEndpoint(rawEndpoint, "missing URI scheme");
         }
-        scheme = scheme.toLowerCase(Locale.ROOT);
+        scheme = StringKit.toLowerCase(scheme);
         if (!HTTP_SCHEME.equals(scheme) && !HTTPS_SCHEME.equals(scheme)) {
             throw invalidEndpoint(rawEndpoint, "unsupported URI scheme: " + scheme);
         }

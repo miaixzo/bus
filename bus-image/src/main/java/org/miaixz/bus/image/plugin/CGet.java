@@ -150,7 +150,7 @@ public class CGet {
                 }
             }
 
-            service.start();
+            service.start(true);
             try {
                 long t1 = System.currentTimeMillis();
                 getSCU.open();

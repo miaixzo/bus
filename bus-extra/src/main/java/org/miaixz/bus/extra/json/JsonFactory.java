@@ -25,6 +25,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.loader.spi.NormalSpiLoader;
 import org.miaixz.bus.core.lang.loader.spi.ServiceLoader;
+import org.miaixz.bus.core.xyz.StringKit;
 
 /**
  * Factory for creating JSON provider instances. Explicit selection is deterministic; automatic selection is accepted
@@ -189,7 +190,7 @@ public class JsonFactory {
      * @return canonical lower-case provider name
      */
     private static String normalize(String name) {
-        String normalized = name == null ? "auto" : name.trim().toLowerCase(Locale.ROOT);
+        String normalized = name == null ? "auto" : StringKit.toLowerCase(name.trim());
         if (normalized.isEmpty()) {
             return "auto";
         }

@@ -4932,136 +4932,6 @@
       ]
     },
     {
-      "type": "java.lang.Object",
-      "methods": [
-        {
-          "name": "equals",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "getClass",
-          "parameterTypes": []
-        },
-        {
-          "name": "hashCode",
-          "parameterTypes": []
-        },
-        {
-          "name": "notify",
-          "parameterTypes": []
-        },
-        {
-          "name": "notifyAll",
-          "parameterTypes": []
-        },
-        {
-          "name": "toString",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long",
-            "int"
-          ]
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "wait",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
-      "type": "org.apache.poi.ss.usermodel.Cell",
-      "methods": [
-        {
-          "name": "setCellValue",
-          "parameterTypes": [
-            "java.time.LocalDate"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.apache.poi.ss.usermodel.CellBase",
-      "methods": [
-        {
-          "name": "getAddress",
-          "parameterTypes": []
-        },
-        {
-          "name": "removeFormula",
-          "parameterTypes": []
-        },
-        {
-          "name": "setBlank",
-          "parameterTypes": []
-        },
-        {
-          "name": "setCellFormula",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setCellType",
-          "parameterTypes": [
-            "org.apache.poi.ss.usermodel.CellType"
-          ]
-        },
-        {
-          "name": "setCellValue",
-          "parameterTypes": [
-            "double"
-          ]
-        },
-        {
-          "name": "setCellValue",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setCellValue",
-          "parameterTypes": [
-            "java.time.LocalDateTime"
-          ]
-        },
-        {
-          "name": "setCellValue",
-          "parameterTypes": [
-            "java.util.Calendar"
-          ]
-        },
-        {
-          "name": "setCellValue",
-          "parameterTypes": [
-            "java.util.Date"
-          ]
-        },
-        {
-          "name": "setCellValue",
-          "parameterTypes": [
-            "org.apache.poi.ss.usermodel.RichTextString"
-          ]
-        },
-        {
-          "name": "tryToDeleteArrayFormula",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        }
-      ]
-    },
-    {
       "type": "org.miaixz.bus.office.excel.sax.ExcelSaxReader",
       "fields": [
         {
@@ -5119,6 +4989,1438 @@
           ]
         }
       ]
+    },
+    {
+      "type": "sun.awt.image.ByteComponentRaster",
+      "jniAccessible": true,
+      "fields": [
+        {
+          "name": "data"
+        },
+        {
+          "name": "dataOffsets"
+        },
+        {
+          "name": "pixelStride"
+        },
+        {
+          "name": "scanlineStride"
+        },
+        {
+          "name": "type"
+        }
+      ],
+      "condition": {
+        "typeReached": "java.awt.image.BufferedImage"
+      }
+    },
+    {
+      "type": "java.awt.GraphicsEnvironment",
+      "condition": {
+        "typeReached": "java.awt.image.ColorModel"
+      },
+      "jniAccessible": true,
+      "methods": [
+        {
+          "name": "getLocalGraphicsEnvironment",
+          "parameterTypes": []
+        },
+        {
+          "name": "isHeadless",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "sun.java2d.SunGraphicsEnvironment",
+      "condition": {
+        "typeReached": "java.awt.Font"
+      },
+      "jniAccessible": true,
+      "methods": [
+        {
+          "name": "isDisplayLocal",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "java.awt.AlphaComposite",
+      "jniAccessible": true,
+      "fields": [
+        {
+          "name": "extraAlpha"
+        },
+        {
+          "name": "rule"
+        }
+      ],
+      "condition": {
+        "typeReached": "java.awt.image.BufferedImage"
+      }
+    },
+    {
+      "type": "java.awt.Color",
+      "jniAccessible": true,
+      "methods": [
+        {
+          "name": "getRGB",
+          "parameterTypes": []
+        }
+      ],
+      "condition": {
+        "typeReached": "java.awt.image.BufferedImage"
+      }
+    },
+    {
+      "type": "java.awt.geom.AffineTransform",
+      "jniAccessible": true,
+      "fields": [
+        {
+          "name": "m00"
+        },
+        {
+          "name": "m01"
+        },
+        {
+          "name": "m02"
+        },
+        {
+          "name": "m10"
+        },
+        {
+          "name": "m11"
+        },
+        {
+          "name": "m12"
+        }
+      ],
+      "condition": {
+        "typeReached": "java.awt.image.BufferedImage"
+      }
+    },
+    {
+      "type": "java.awt.geom.GeneralPath",
+      "jniAccessible": true,
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "int",
+            "byte[]",
+            "int",
+            "float[]",
+            "int"
+          ]
+        }
+      ],
+      "condition": {
+        "typeReached": "java.awt.image.BufferedImage"
+      }
+    },
+    {
+      "type": "java.awt.geom.Path2D",
+      "jniAccessible": true,
+      "fields": [
+        {
+          "name": "numTypes"
+        },
+        {
+          "name": "pointTypes"
+        },
+        {
+          "name": "windingRule"
+        }
+      ],
+      "condition": {
+        "typeReached": "java.awt.image.BufferedImage"
+      }
+    },
+    {
+      "type": "java.awt.geom.Path2D$Float",
+      "jniAccessible": true,
+      "fields": [
+        {
+          "name": "floatCoords"
+        }
+      ],
+      "condition": {
+        "typeReached": "java.awt.image.BufferedImage"
+      }
+    },
+    {
+      "type": "java.awt.geom.Point2D$Float",
+      "jniAccessible": true,
+      "fields": [
+        {
+          "name": "x"
+        },
+        {
+          "name": "y"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "float",
+            "float"
+          ]
+        }
+      ],
+      "condition": {
+        "typeReached": "java.awt.image.BufferedImage"
+      }
+    },
+    {
+      "type": "java.awt.geom.Rectangle2D$Float",
+      "jniAccessible": true,
+      "fields": [
+        {
+          "name": "height"
+        },
+        {
+          "name": "width"
+        },
+        {
+          "name": "x"
+        },
+        {
+          "name": "y"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "float",
+            "float",
+            "float",
+            "float"
+          ]
+        }
+      ],
+      "condition": {
+        "typeReached": "java.awt.image.BufferedImage"
+      }
+    },
+    {
+      "type": "java.awt.image.BufferedImage",
+      "jniAccessible": true,
+      "fields": [
+        {
+          "name": "colorModel"
+        },
+        {
+          "name": "imageType"
+        },
+        {
+          "name": "raster"
+        }
+      ],
+      "methods": [
+        {
+          "name": "getRGB",
+          "parameterTypes": [
+            "int",
+            "int",
+            "int",
+            "int",
+            "int[]",
+            "int",
+            "int"
+          ]
+        },
+        {
+          "name": "setRGB",
+          "parameterTypes": [
+            "int",
+            "int",
+            "int",
+            "int",
+            "int[]",
+            "int",
+            "int"
+          ]
+        }
+      ],
+      "condition": {
+        "typeReached": "java.awt.image.BufferedImage"
+      }
+    },
+    {
+      "type": "java.awt.image.ColorModel",
+      "jniAccessible": true,
+      "fields": [
+        {
+          "name": "colorSpace"
+        },
+        {
+          "name": "colorSpaceType"
+        },
+        {
+          "name": "isAlphaPremultiplied"
+        },
+        {
+          "name": "is_sRGB"
+        },
+        {
+          "name": "nBits"
+        },
+        {
+          "name": "numComponents"
+        },
+        {
+          "name": "supportsAlpha"
+        },
+        {
+          "name": "transparency"
+        }
+      ],
+      "methods": [
+        {
+          "name": "getRGBdefault",
+          "parameterTypes": []
+        }
+      ],
+      "condition": {
+        "typeReached": "java.awt.image.BufferedImage"
+      }
+    },
+    {
+      "type": "java.awt.image.IndexColorModel",
+      "jniAccessible": true,
+      "fields": [
+        {
+          "name": "allgrayopaque"
+        },
+        {
+          "name": "colorData"
+        },
+        {
+          "name": "map_size"
+        },
+        {
+          "name": "rgb"
+        },
+        {
+          "name": "transparent_index"
+        }
+      ],
+      "condition": {
+        "typeReached": "java.awt.image.BufferedImage"
+      }
+    },
+    {
+      "type": "java.awt.image.Raster",
+      "jniAccessible": true,
+      "fields": [
+        {
+          "name": "dataBuffer"
+        },
+        {
+          "name": "height"
+        },
+        {
+          "name": "minX"
+        },
+        {
+          "name": "minY"
+        },
+        {
+          "name": "numBands"
+        },
+        {
+          "name": "numDataElements"
+        },
+        {
+          "name": "sampleModel"
+        },
+        {
+          "name": "sampleModelTranslateX"
+        },
+        {
+          "name": "sampleModelTranslateY"
+        },
+        {
+          "name": "width"
+        }
+      ],
+      "condition": {
+        "typeReached": "java.awt.image.BufferedImage"
+      }
+    },
+    {
+      "type": "java.awt.image.SampleModel",
+      "jniAccessible": true,
+      "fields": [
+        {
+          "name": "height"
+        },
+        {
+          "name": "width"
+        }
+      ],
+      "methods": [
+        {
+          "name": "getPixels",
+          "parameterTypes": [
+            "int",
+            "int",
+            "int",
+            "int",
+            "int[]",
+            "java.awt.image.DataBuffer"
+          ]
+        },
+        {
+          "name": "setPixels",
+          "parameterTypes": [
+            "int",
+            "int",
+            "int",
+            "int",
+            "int[]",
+            "java.awt.image.DataBuffer"
+          ]
+        }
+      ],
+      "condition": {
+        "typeReached": "java.awt.image.BufferedImage"
+      }
+    },
+    {
+      "type": "java.awt.image.SinglePixelPackedSampleModel",
+      "jniAccessible": true,
+      "fields": [
+        {
+          "name": "bitMasks"
+        },
+        {
+          "name": "bitOffsets"
+        },
+        {
+          "name": "bitSizes"
+        },
+        {
+          "name": "maxBitSize"
+        }
+      ],
+      "condition": {
+        "typeReached": "java.awt.image.BufferedImage"
+      }
+    },
+    {
+      "type": "javax.imageio.spi.ImageReaderSpi",
+      "condition": {
+        "typeReached": "java.awt.image.BufferedImage"
+      }
+    },
+    {
+      "type": "javax.imageio.spi.ImageWriterSpi",
+      "condition": {
+        "typeReached": "java.awt.image.BufferedImage"
+      }
+    },
+    {
+      "type": "sun.awt.SunHints",
+      "jniAccessible": true,
+      "fields": [
+        {
+          "name": "INTVAL_STROKE_PURE"
+        }
+      ],
+      "condition": {
+        "typeReached": "java.awt.image.BufferedImage"
+      }
+    },
+    {
+      "type": "sun.awt.image.BufImgSurfaceData$ICMColorData",
+      "jniAccessible": true,
+      "fields": [
+        {
+          "name": "pData"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "long"
+          ]
+        }
+      ],
+      "condition": {
+        "typeReached": "java.awt.image.BufferedImage"
+      }
+    },
+    {
+      "type": "sun.awt.image.IntegerComponentRaster",
+      "jniAccessible": true,
+      "fields": [
+        {
+          "name": "data"
+        },
+        {
+          "name": "dataOffsets"
+        },
+        {
+          "name": "pixelStride"
+        },
+        {
+          "name": "scanlineStride"
+        },
+        {
+          "name": "type"
+        }
+      ],
+      "condition": {
+        "typeReached": "java.awt.image.BufferedImage"
+      }
+    },
+    {
+      "type": "sun.font.CharToGlyphMapper",
+      "jniAccessible": true,
+      "methods": [
+        {
+          "name": "charToGlyph",
+          "parameterTypes": [
+            "int"
+          ]
+        }
+      ],
+      "condition": {
+        "typeReached": "java.awt.Font"
+      }
+    },
+    {
+      "type": "sun.font.Font2D",
+      "jniAccessible": true,
+      "methods": [
+        {
+          "name": "canDisplay",
+          "parameterTypes": [
+            "char"
+          ]
+        },
+        {
+          "name": "charToGlyphRaw",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "charToVariationGlyphRaw",
+          "parameterTypes": [
+            "int",
+            "int"
+          ]
+        },
+        {
+          "name": "getMapper",
+          "parameterTypes": []
+        },
+        {
+          "name": "getTableBytes",
+          "parameterTypes": [
+            "int"
+          ]
+        }
+      ],
+      "condition": {
+        "typeReached": "java.awt.Font"
+      }
+    },
+    {
+      "type": "sun.font.FontStrike",
+      "jniAccessible": true,
+      "methods": [
+        {
+          "name": "getGlyphMetrics",
+          "parameterTypes": [
+            "int"
+          ]
+        }
+      ],
+      "condition": {
+        "typeReached": "java.awt.Font"
+      }
+    },
+    {
+      "type": "sun.font.GlyphList",
+      "jniAccessible": true,
+      "fields": [
+        {
+          "name": "gposx"
+        },
+        {
+          "name": "gposy"
+        },
+        {
+          "name": "images"
+        },
+        {
+          "name": "lcdRGBOrder"
+        },
+        {
+          "name": "lcdSubPixPos"
+        },
+        {
+          "name": "len"
+        },
+        {
+          "name": "positions"
+        },
+        {
+          "name": "usePositions"
+        }
+      ],
+      "condition": {
+        "typeReached": "java.awt.Font"
+      }
+    },
+    {
+      "type": "sun.font.HBShaper",
+      "methods": [
+        {
+          "name": "getFontTableData",
+          "parameterTypes": [
+            "sun.font.Font2D",
+            "int",
+            "java.lang.foreign.MemorySegment"
+          ]
+        },
+        {
+          "name": "get_glyph_contour_point",
+          "parameterTypes": [
+            "java.lang.foreign.MemorySegment",
+            "java.lang.foreign.MemorySegment",
+            "int",
+            "int",
+            "java.lang.foreign.MemorySegment",
+            "java.lang.foreign.MemorySegment",
+            "java.lang.foreign.MemorySegment"
+          ]
+        },
+        {
+          "name": "get_glyph_h_advance",
+          "parameterTypes": [
+            "java.lang.foreign.MemorySegment",
+            "java.lang.foreign.MemorySegment",
+            "int",
+            "java.lang.foreign.MemorySegment"
+          ]
+        },
+        {
+          "name": "get_glyph_v_advance",
+          "parameterTypes": [
+            "java.lang.foreign.MemorySegment",
+            "java.lang.foreign.MemorySegment",
+            "int",
+            "java.lang.foreign.MemorySegment"
+          ]
+        },
+        {
+          "name": "get_nominal_glyph",
+          "parameterTypes": [
+            "java.lang.foreign.MemorySegment",
+            "java.lang.foreign.MemorySegment",
+            "int",
+            "java.lang.foreign.MemorySegment",
+            "java.lang.foreign.MemorySegment"
+          ]
+        },
+        {
+          "name": "get_variation_glyph",
+          "parameterTypes": [
+            "java.lang.foreign.MemorySegment",
+            "java.lang.foreign.MemorySegment",
+            "int",
+            "int",
+            "java.lang.foreign.MemorySegment",
+            "java.lang.foreign.MemorySegment"
+          ]
+        },
+        {
+          "name": "store_layout_results",
+          "parameterTypes": [
+            "int",
+            "int",
+            "int",
+            "float",
+            "float",
+            "float",
+            "int",
+            "int",
+            "java.lang.foreign.MemorySegment",
+            "java.lang.foreign.MemorySegment"
+          ]
+        }
+      ],
+      "condition": {
+        "typeReached": "java.awt.Font"
+      }
+    },
+    {
+      "type": "sun.font.PhysicalStrike",
+      "jniAccessible": true,
+      "fields": [
+        {
+          "name": "pScalerContext"
+        }
+      ],
+      "methods": [
+        {
+          "name": "adjustPoint",
+          "parameterTypes": [
+            "java.awt.geom.Point2D$Float"
+          ]
+        },
+        {
+          "name": "getGlyphPoint",
+          "parameterTypes": [
+            "int",
+            "int"
+          ]
+        }
+      ],
+      "condition": {
+        "typeReached": "java.awt.Font"
+      }
+    },
+    {
+      "type": "sun.font.StrikeMetrics",
+      "jniAccessible": true,
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "float",
+            "float",
+            "float",
+            "float",
+            "float",
+            "float",
+            "float",
+            "float",
+            "float",
+            "float"
+          ]
+        }
+      ],
+      "condition": {
+        "typeReached": "java.awt.Font"
+      }
+    },
+    {
+      "type": "sun.font.TrueTypeFont",
+      "jniAccessible": true,
+      "methods": [
+        {
+          "name": "readBlock",
+          "parameterTypes": [
+            "java.nio.ByteBuffer",
+            "int",
+            "int"
+          ]
+        },
+        {
+          "name": "readBytes",
+          "parameterTypes": [
+            "int",
+            "int"
+          ]
+        }
+      ],
+      "condition": {
+        "typeReached": "java.awt.Font"
+      }
+    },
+    {
+      "type": "sun.font.Type1Font",
+      "jniAccessible": true,
+      "methods": [
+        {
+          "name": "readFile",
+          "parameterTypes": [
+            "java.nio.ByteBuffer"
+          ]
+        }
+      ],
+      "condition": {
+        "typeReached": "java.awt.Font"
+      }
+    },
+    {
+      "type": "sun.java2d.Disposer",
+      "jniAccessible": true,
+      "methods": [
+        {
+          "name": "addRecord",
+          "parameterTypes": [
+            "java.lang.Object",
+            "long",
+            "long"
+          ]
+        }
+      ],
+      "condition": {
+        "typeReached": "java.awt.image.BufferedImage"
+      }
+    },
+    {
+      "type": "sun.java2d.InvalidPipeException",
+      "jniAccessible": true,
+      "condition": {
+        "typeReached": "java.awt.image.BufferedImage"
+      }
+    },
+    {
+      "type": "sun.java2d.NullSurfaceData",
+      "jniAccessible": true,
+      "condition": {
+        "typeReached": "java.awt.image.BufferedImage"
+      }
+    },
+    {
+      "type": "sun.java2d.SunGraphics2D",
+      "jniAccessible": true,
+      "fields": [
+        {
+          "name": "clipRegion"
+        },
+        {
+          "name": "composite"
+        },
+        {
+          "name": "eargb"
+        },
+        {
+          "name": "lcdTextContrast"
+        },
+        {
+          "name": "pixel"
+        },
+        {
+          "name": "strokeHint"
+        }
+      ],
+      "condition": {
+        "typeReached": "java.awt.image.BufferedImage"
+      }
+    },
+    {
+      "type": "sun.java2d.SurfaceData",
+      "jniAccessible": true,
+      "fields": [
+        {
+          "name": "pData"
+        },
+        {
+          "name": "valid"
+        }
+      ],
+      "condition": {
+        "typeReached": "java.awt.image.BufferedImage"
+      }
+    },
+    {
+      "type": "sun.java2d.loops.Blit",
+      "jniAccessible": true,
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "long",
+            "sun.java2d.loops.SurfaceType",
+            "sun.java2d.loops.CompositeType",
+            "sun.java2d.loops.SurfaceType"
+          ]
+        }
+      ],
+      "condition": {
+        "typeReached": "java.awt.image.BufferedImage"
+      }
+    },
+    {
+      "type": "sun.java2d.loops.BlitBg",
+      "jniAccessible": true,
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "long",
+            "sun.java2d.loops.SurfaceType",
+            "sun.java2d.loops.CompositeType",
+            "sun.java2d.loops.SurfaceType"
+          ]
+        }
+      ],
+      "condition": {
+        "typeReached": "java.awt.image.BufferedImage"
+      }
+    },
+    {
+      "type": "sun.java2d.loops.CompositeType",
+      "jniAccessible": true,
+      "fields": [
+        {
+          "name": "AnyAlpha"
+        },
+        {
+          "name": "Src"
+        },
+        {
+          "name": "SrcNoEa"
+        },
+        {
+          "name": "SrcOver"
+        },
+        {
+          "name": "SrcOverNoEa"
+        },
+        {
+          "name": "Xor"
+        }
+      ],
+      "condition": {
+        "typeReached": "java.awt.image.BufferedImage"
+      }
+    },
+    {
+      "type": "sun.java2d.loops.DrawGlyphList",
+      "jniAccessible": true,
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "long",
+            "sun.java2d.loops.SurfaceType",
+            "sun.java2d.loops.CompositeType",
+            "sun.java2d.loops.SurfaceType"
+          ]
+        }
+      ],
+      "condition": {
+        "typeReached": "java.awt.image.BufferedImage"
+      }
+    },
+    {
+      "type": "sun.java2d.loops.DrawGlyphListAA",
+      "jniAccessible": true,
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "long",
+            "sun.java2d.loops.SurfaceType",
+            "sun.java2d.loops.CompositeType",
+            "sun.java2d.loops.SurfaceType"
+          ]
+        }
+      ],
+      "condition": {
+        "typeReached": "java.awt.image.BufferedImage"
+      }
+    },
+    {
+      "type": "sun.java2d.loops.DrawGlyphListLCD",
+      "jniAccessible": true,
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "long",
+            "sun.java2d.loops.SurfaceType",
+            "sun.java2d.loops.CompositeType",
+            "sun.java2d.loops.SurfaceType"
+          ]
+        }
+      ],
+      "condition": {
+        "typeReached": "java.awt.image.BufferedImage"
+      }
+    },
+    {
+      "type": "sun.java2d.loops.DrawLine",
+      "jniAccessible": true,
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "long",
+            "sun.java2d.loops.SurfaceType",
+            "sun.java2d.loops.CompositeType",
+            "sun.java2d.loops.SurfaceType"
+          ]
+        }
+      ],
+      "condition": {
+        "typeReached": "java.awt.image.BufferedImage"
+      }
+    },
+    {
+      "type": "sun.java2d.loops.DrawParallelogram",
+      "jniAccessible": true,
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "long",
+            "sun.java2d.loops.SurfaceType",
+            "sun.java2d.loops.CompositeType",
+            "sun.java2d.loops.SurfaceType"
+          ]
+        }
+      ],
+      "condition": {
+        "typeReached": "java.awt.image.BufferedImage"
+      }
+    },
+    {
+      "type": "sun.java2d.loops.DrawPath",
+      "jniAccessible": true,
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "long",
+            "sun.java2d.loops.SurfaceType",
+            "sun.java2d.loops.CompositeType",
+            "sun.java2d.loops.SurfaceType"
+          ]
+        }
+      ],
+      "condition": {
+        "typeReached": "java.awt.image.BufferedImage"
+      }
+    },
+    {
+      "type": "sun.java2d.loops.DrawPolygons",
+      "jniAccessible": true,
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "long",
+            "sun.java2d.loops.SurfaceType",
+            "sun.java2d.loops.CompositeType",
+            "sun.java2d.loops.SurfaceType"
+          ]
+        }
+      ],
+      "condition": {
+        "typeReached": "java.awt.image.BufferedImage"
+      }
+    },
+    {
+      "type": "sun.java2d.loops.DrawRect",
+      "jniAccessible": true,
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "long",
+            "sun.java2d.loops.SurfaceType",
+            "sun.java2d.loops.CompositeType",
+            "sun.java2d.loops.SurfaceType"
+          ]
+        }
+      ],
+      "condition": {
+        "typeReached": "java.awt.image.BufferedImage"
+      }
+    },
+    {
+      "type": "sun.java2d.loops.FillParallelogram",
+      "jniAccessible": true,
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "long",
+            "sun.java2d.loops.SurfaceType",
+            "sun.java2d.loops.CompositeType",
+            "sun.java2d.loops.SurfaceType"
+          ]
+        }
+      ],
+      "condition": {
+        "typeReached": "java.awt.image.BufferedImage"
+      }
+    },
+    {
+      "type": "sun.java2d.loops.FillPath",
+      "jniAccessible": true,
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "long",
+            "sun.java2d.loops.SurfaceType",
+            "sun.java2d.loops.CompositeType",
+            "sun.java2d.loops.SurfaceType"
+          ]
+        }
+      ],
+      "condition": {
+        "typeReached": "java.awt.image.BufferedImage"
+      }
+    },
+    {
+      "type": "sun.java2d.loops.FillRect",
+      "jniAccessible": true,
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "long",
+            "sun.java2d.loops.SurfaceType",
+            "sun.java2d.loops.CompositeType",
+            "sun.java2d.loops.SurfaceType"
+          ]
+        }
+      ],
+      "condition": {
+        "typeReached": "java.awt.image.BufferedImage"
+      }
+    },
+    {
+      "type": "sun.java2d.loops.FillSpans",
+      "jniAccessible": true,
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "long",
+            "sun.java2d.loops.SurfaceType",
+            "sun.java2d.loops.CompositeType",
+            "sun.java2d.loops.SurfaceType"
+          ]
+        }
+      ],
+      "condition": {
+        "typeReached": "java.awt.image.BufferedImage"
+      }
+    },
+    {
+      "type": "sun.java2d.loops.GraphicsPrimitive",
+      "jniAccessible": true,
+      "fields": [
+        {
+          "name": "pNativePrim"
+        }
+      ],
+      "condition": {
+        "typeReached": "java.awt.image.BufferedImage"
+      }
+    },
+    {
+      "type": "sun.java2d.loops.GraphicsPrimitiveMgr",
+      "jniAccessible": true,
+      "methods": [
+        {
+          "name": "register",
+          "parameterTypes": [
+            "sun.java2d.loops.GraphicsPrimitive[]"
+          ]
+        }
+      ],
+      "condition": {
+        "typeReached": "java.awt.image.BufferedImage"
+      }
+    },
+    {
+      "type": "sun.java2d.loops.GraphicsPrimitive[]",
+      "condition": {
+        "typeReached": "java.awt.image.BufferedImage"
+      }
+    },
+    {
+      "type": "sun.java2d.loops.MaskBlit",
+      "jniAccessible": true,
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "long",
+            "sun.java2d.loops.SurfaceType",
+            "sun.java2d.loops.CompositeType",
+            "sun.java2d.loops.SurfaceType"
+          ]
+        }
+      ],
+      "condition": {
+        "typeReached": "java.awt.image.BufferedImage"
+      }
+    },
+    {
+      "type": "sun.java2d.loops.MaskFill",
+      "jniAccessible": true,
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "long",
+            "sun.java2d.loops.SurfaceType",
+            "sun.java2d.loops.CompositeType",
+            "sun.java2d.loops.SurfaceType"
+          ]
+        }
+      ],
+      "condition": {
+        "typeReached": "java.awt.image.BufferedImage"
+      }
+    },
+    {
+      "type": "sun.java2d.loops.ScaledBlit",
+      "jniAccessible": true,
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "long",
+            "sun.java2d.loops.SurfaceType",
+            "sun.java2d.loops.CompositeType",
+            "sun.java2d.loops.SurfaceType"
+          ]
+        }
+      ],
+      "condition": {
+        "typeReached": "java.awt.image.BufferedImage"
+      }
+    },
+    {
+      "type": "sun.java2d.loops.SurfaceType",
+      "jniAccessible": true,
+      "fields": [
+        {
+          "name": "Any3Byte"
+        },
+        {
+          "name": "Any4Byte"
+        },
+        {
+          "name": "AnyByte"
+        },
+        {
+          "name": "AnyColor"
+        },
+        {
+          "name": "AnyInt"
+        },
+        {
+          "name": "AnyShort"
+        },
+        {
+          "name": "ByteBinary1Bit"
+        },
+        {
+          "name": "ByteBinary2Bit"
+        },
+        {
+          "name": "ByteBinary4Bit"
+        },
+        {
+          "name": "ByteGray"
+        },
+        {
+          "name": "ByteIndexed"
+        },
+        {
+          "name": "ByteIndexedBm"
+        },
+        {
+          "name": "FourByteAbgr"
+        },
+        {
+          "name": "FourByteAbgrPre"
+        },
+        {
+          "name": "Index12Gray"
+        },
+        {
+          "name": "Index8Gray"
+        },
+        {
+          "name": "IntArgb"
+        },
+        {
+          "name": "IntArgbBm"
+        },
+        {
+          "name": "IntArgbPre"
+        },
+        {
+          "name": "IntBgr"
+        },
+        {
+          "name": "IntRgb"
+        },
+        {
+          "name": "IntRgbx"
+        },
+        {
+          "name": "OpaqueColor"
+        },
+        {
+          "name": "ThreeByteBgr"
+        },
+        {
+          "name": "Ushort4444Argb"
+        },
+        {
+          "name": "Ushort555Rgb"
+        },
+        {
+          "name": "Ushort555Rgbx"
+        },
+        {
+          "name": "Ushort565Rgb"
+        },
+        {
+          "name": "UshortGray"
+        },
+        {
+          "name": "UshortIndexed"
+        }
+      ],
+      "condition": {
+        "typeReached": "java.awt.image.BufferedImage"
+      }
+    },
+    {
+      "type": "sun.java2d.loops.TransformHelper",
+      "jniAccessible": true,
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "long",
+            "sun.java2d.loops.SurfaceType",
+            "sun.java2d.loops.CompositeType",
+            "sun.java2d.loops.SurfaceType"
+          ]
+        }
+      ],
+      "condition": {
+        "typeReached": "java.awt.image.BufferedImage"
+      }
+    },
+    {
+      "type": "sun.java2d.loops.XORComposite",
+      "jniAccessible": true,
+      "fields": [
+        {
+          "name": "alphaMask"
+        },
+        {
+          "name": "xorColor"
+        },
+        {
+          "name": "xorPixel"
+        }
+      ],
+      "condition": {
+        "typeReached": "java.awt.image.BufferedImage"
+      }
+    },
+    {
+      "type": "sun.java2d.marlin.DMarlinRenderingEngine",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ],
+      "condition": {
+        "typeReached": "java.awt.image.BufferedImage"
+      }
+    },
+    {
+      "type": "sun.java2d.pipe.Region",
+      "jniAccessible": true,
+      "fields": [
+        {
+          "name": "bands"
+        },
+        {
+          "name": "endIndex"
+        },
+        {
+          "name": "hix"
+        },
+        {
+          "name": "hiy"
+        },
+        {
+          "name": "lox"
+        },
+        {
+          "name": "loy"
+        }
+      ],
+      "condition": {
+        "typeReached": "java.awt.image.BufferedImage"
+      }
+    },
+    {
+      "type": "sun.java2d.pipe.RegionIterator",
+      "jniAccessible": true,
+      "fields": [
+        {
+          "name": "curIndex"
+        },
+        {
+          "name": "numXbands"
+        },
+        {
+          "name": "region"
+        }
+      ],
+      "condition": {
+        "typeReached": "java.awt.image.BufferedImage"
+      }
+    }
+  ],
+  "resources": [
+    {
+      "glob": "META-INF/services/javax.imageio.spi.ImageInputStreamSpi"
+    },
+    {
+      "glob": "META-INF/services/javax.imageio.spi.ImageOutputStreamSpi"
+    },
+    {
+      "glob": "META-INF/services/javax.imageio.spi.ImageReaderSpi"
+    },
+    {
+      "glob": "META-INF/services/javax.imageio.spi.ImageTranscoderSpi"
+    },
+    {
+      "glob": "META-INF/services/javax.imageio.spi.ImageWriterSpi"
+    },
+    {
+      "module": "java.base",
+      "glob": "jdk/internal/icu/impl/data/icudt76b/ubidi.icu"
+    },
+    {
+      "module": "java.desktop",
+      "glob": "sun/awt/resources/awt_en.properties"
+    },
+    {
+      "module": "java.desktop",
+      "glob": "sun/awt/resources/awt_en_CN.properties"
+    },
+    {
+      "bundle": "sun.awt.resources.awt"
     }
   ]
 }

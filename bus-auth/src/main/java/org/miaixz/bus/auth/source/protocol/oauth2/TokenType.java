@@ -19,11 +19,10 @@
 */
 package org.miaixz.bus.auth.source.protocol.oauth2;
 
-import java.util.Locale;
-
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.core.xyz.StringKit;
 
 /**
  * Preserves an OAuth access-token type name with the case-insensitive comparison required by RFC 6749.
@@ -90,7 +89,7 @@ public record TokenType(String value) {
      */
     @Override
     public int hashCode() {
-        return value.toLowerCase(Locale.ROOT).hashCode();
+        return StringKit.toLowerCase(value).hashCode();
     }
 
     /**

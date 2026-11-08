@@ -43,9 +43,8 @@ import org.miaixz.bus.health.linux.driver.Sysfs;
 @Immutable
 final class LinuxFirmware extends AbstractFirmware {
 
-    // Jan 13 2013 16:24:29
     /**
-     * The VCGEN_FORMATTER constant.
+     * Jan 13 2013 16:24:29.
      */
     private static final DateTimeFormatter VCGEN_FORMATTER = DateTimeFormatter
             .ofPattern("MMM d uuuu HH:mm:ss", Locale.ENGLISH);

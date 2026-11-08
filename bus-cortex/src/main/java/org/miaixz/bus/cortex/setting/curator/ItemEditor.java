@@ -161,7 +161,8 @@ public final class ItemEditor {
         commands.forEach((coordinate, action) -> {
             if (coordinate.startsWith("#")) {
                 List<String> tokens = ItemCodec.attributePath(coordinate);
-                attributeActions.computeIfAbsent(tokens.getFirst(), ignored -> new TreeMap<>()).put(tokens.get(1), action);
+                attributeActions.computeIfAbsent(tokens.getFirst(), ignored -> new TreeMap<>())
+                        .put(tokens.get(1), action);
             }
         });
         boolean attributeProtection = whole || expected != null && Integer.valueOf(1).equals(expected.getEncrypted())
@@ -196,9 +197,16 @@ public final class ItemEditor {
                     commands,
                     used);
             Property seed = fresh != null ? fresh : old != null ? old : new Property(Map.of());
-            Property changed = editAttributes(name, old, fresh, seed.with("value", value).with("default", fallback),
-                    attributeProtection, attributeActions.getOrDefault(path, Map.of()), used);
-            if (fresh != null || value != null || fallback != null || changed.attributes().keySet().stream().anyMatch(ItemCodec::isAttribute))
+            Property changed = editAttributes(
+                    name,
+                    old,
+                    fresh,
+                    seed.with("value", value).with("default", fallback),
+                    attributeProtection,
+                    attributeActions.getOrDefault(path, Map.of()),
+                    used);
+            if (fresh != null || value != null || fallback != null
+                    || changed.attributes().keySet().stream().anyMatch(ItemCodec::isAttribute))
                 properties.put(name, changed);
         }
         if (!used.containsAll(commands.keySet()))
@@ -206,9 +214,14 @@ public final class ItemEditor {
         Map<String, ItemCodec.Rule> rules = new TreeMap<>(incoming.rules());
         if (before != null)
             before.rules().forEach((path, rule) -> {
-                if (rule.sensitive() && !rules.containsKey(path) && !removed(path, before,
-                        new ItemCodec.Document(properties, rules, incoming.schema(), incoming.management(),
-                                ItemCodec.Protection.NONE), commands, used))
+                if (rule.sensitive() && !rules.containsKey(path)
+                        && !removed(
+                                path,
+                                before,
+                                new ItemCodec.Document(properties, rules, incoming.schema(), incoming.management(),
+                                        ItemCodec.Protection.NONE),
+                                commands,
+                                used))
                     throw new IllegalArgumentException("Sensitive rule cannot be implicitly removed");
             });
         if (whole)
@@ -235,18 +248,18 @@ public final class ItemEditor {
                 partial ? ItemCodec.Protection.VALUES : ItemCodec.Protection.NONE);
         next.setContent(
                 codec.content(
-                                partial ? crypt(
-                                        marked,
-                                        true,
-                                        before,
-                                        expected != null && keyMode(expected) && before.rules().equals(marked.rules())
-                                                ? codec.decode(
-                                                        expected.getContent(),
-                                                        expected.getFormat(),
-                                                        null,
-                                                        expected.getExtension())
-                                                : null)
-                                        : plain));
+                        partial ? crypt(
+                                marked,
+                                true,
+                                before,
+                                expected != null && keyMode(expected) && before.rules().equals(marked.rules())
+                                        ? codec.decode(
+                                                expected.getContent(),
+                                                expected.getFormat(),
+                                                null,
+                                                expected.getExtension())
+                                        : null)
+                                : plain));
         next.setSchema(ItemCodec.encode(plain.schema()));
         next.setExtension(codec.extension(marked));
         next.setChecksum(codec.checksum(next));
@@ -254,18 +267,22 @@ public final class ItemEditor {
     }
 
     /**
-     * Verifies that every affected old member was explicitly deleted before retiring its sensitive rule.
-     * Present replacement data, including JSON null, still requires the protection rule.
+     * Verifies that every affected old member was explicitly deleted before retiring its sensitive rule. Present
+     * replacement data, including JSON null, still requires the protection rule.
      *
-     * @param path previous sensitive rule coordinate
-     * @param before previous plaintext definition
-     * @param after processed current definition
+     * @param path     previous sensitive rule coordinate
+     * @param before   previous plaintext definition
+     * @param after    processed current definition
      * @param commands explicit member intents
-     * @param used verified consumed intent coordinates
+     * @param used     verified consumed intent coordinates
      * @return whether the rule protects no remaining data after explicit deletion
      */
-    private boolean removed(String path, ItemCodec.Document before, ItemCodec.Document after,
-            Map<String, SecretAction> commands, Set<String> used) {
+    private boolean removed(
+            String path,
+            ItemCodec.Document before,
+            ItemCodec.Document after,
+            Map<String, SecretAction> commands,
+            Set<String> used) {
         if (ItemCodec.at(after.values(), path) != null || ItemCodec.at(after.defaults(), path) != null)
             return false;
         Set<String> selected = new TreeSet<>();
@@ -276,8 +293,8 @@ public final class ItemEditor {
             else if (ancestor(pointer, path))
                 selected.add(path);
         });
-        return !selected.isEmpty() && selected.stream().allMatch(pointer ->
-                commands.get(pointer + "/value") == SecretAction.DELETE
+        return !selected.isEmpty() && selected.stream().allMatch(
+                pointer -> commands.get(pointer + "/value") == SecretAction.DELETE
                         && commands.get(pointer + "/default") == SecretAction.DELETE
                         && used.contains(pointer + "/value") && used.contains(pointer + "/default"));
     }
@@ -285,13 +302,13 @@ public final class ItemEditor {
     /**
      * Applies atomic dynamic-attribute edits without interpreting metadata as business paths.
      *
-     * @param name exact definition key
-     * @param before previous plaintext property
-     * @param incoming submitted property
-     * @param changed already processed business members
+     * @param name                exact definition key
+     * @param before              previous plaintext property
+     * @param incoming            submitted property
+     * @param changed             already processed business members
      * @param protectedAttributes whether metadata requires protection
-     * @param commands exact edit intents
-     * @param used consumed command coordinates
+     * @param commands            exact edit intents
+     * @param used                consumed command coordinates
      * @return complete property with untouched attributes retained
      */
     private Property editAttributes(
@@ -423,7 +440,8 @@ public final class ItemEditor {
                 keys ? stored.getContent() : secrets.decrypt(stored.getContent()),
                 stored.getFormat(),
                 stored.getSchema() == null ? null
-                        : protection(stored) == ItemCodec.Protection.VALUES ? stored.getSchema() : secrets.decrypt(stored.getSchema()),
+                        : protection(stored) == ItemCodec.Protection.VALUES ? stored.getSchema()
+                                : secrets.decrypt(stored.getSchema()),
                 keys ? stored.getExtension() : secrets.decrypt(stored.getExtension()));
         return keys ? crypt(parsed, false, null, null) : parsed;
     }
@@ -438,8 +456,12 @@ public final class ItemEditor {
         if (Integer.valueOf(1).equals(stored.getEncrypted()) && keyMode(stored)) {
             if (stored.getChecksum() == null || !stored.getChecksum().equals(codec.checksum(stored)))
                 throw new IllegalStateException("Definition checksum mismatch");
-            return masker.mask(codec.decode(stored.getContent(), stored.getFormat(),
-                    protection(stored) == ItemCodec.Protection.VALUES ? stored.getSchema() : null, stored.getExtension()));
+            return masker.mask(
+                    codec.decode(
+                            stored.getContent(),
+                            stored.getFormat(),
+                            protection(stored) == ItemCodec.Protection.VALUES ? stored.getSchema() : null,
+                            stored.getExtension()));
         }
         return masker.mask(open(stored));
     }
@@ -447,7 +469,7 @@ public final class ItemEditor {
     /**
      * Reveals only the requested value cell, leaving every unrelated protected member unopened.
      *
-     * @param stored protected definition
+     * @param stored  protected definition
      * @param pointer exact business-value pointer
      * @return selected plaintext value
      */
@@ -458,15 +480,21 @@ public final class ItemEditor {
             throw new IllegalStateException("Legacy whole protection requires conversion before per-value revelation");
         if (Integer.valueOf(1).equals(stored.getEncrypted()) && secrets instanceof NoOpSecretCodec)
             throw new IllegalStateException("Protecting codec required");
-        var document = codec.decode(stored.getContent(), stored.getFormat(),
-                Integer.valueOf(1).equals(stored.getEncrypted()) && protection(stored) != ItemCodec.Protection.VALUES ? null : stored.getSchema(),
-                stored.getExtension());
-        if (pointer == null || pointer.isEmpty() && (document.properties().size() != 1 || !document.properties().containsKey(""))
+        var document = codec
+                .decode(
+                        stored.getContent(),
+                        stored.getFormat(),
+                        Integer.valueOf(1).equals(stored.getEncrypted())
+                                && protection(stored) != ItemCodec.Protection.VALUES ? null : stored.getSchema(),
+                        stored.getExtension());
+        if (pointer == null
+                || pointer.isEmpty() && (document.properties().size() != 1 || !document.properties().containsKey(""))
                 || !pointer.isEmpty() && (!pointer.startsWith("/") || JsonSchema.tokens(pointer).isEmpty()))
             throw new IllegalArgumentException("Exact value cell required");
         var values = document.values();
-        var ancestors = document.rules().entrySet().stream().filter(e -> e.getValue().sensitive() && ancestor(e.getKey(), pointer))
-                .map(Map.Entry::getKey).sorted(Comparator.comparingInt(String::length)).toList();
+        var ancestors = document.rules().entrySet().stream()
+                .filter(e -> e.getValue().sensitive() && ancestor(e.getKey(), pointer)).map(Map.Entry::getKey)
+                .sorted(Comparator.comparingInt(String::length)).toList();
         if (Integer.valueOf(1).equals(stored.getEncrypted()) && !ancestors.isEmpty()) {
             String path = ancestors.getFirst();
             var value = ItemCodec.at(values, path);
@@ -478,9 +506,11 @@ public final class ItemEditor {
         if (selected == null)
             throw new IllegalArgumentException("Unknown stored property");
         Set<String> opened = new HashSet<>();
-        for (String path : document.rules().entrySet().stream().filter(e -> e.getValue().sensitive() && ancestor(pointer, e.getKey()))
-                .map(Map.Entry::getKey).sorted(Comparator.comparingInt(String::length)).toList()) {
-            if (!Integer.valueOf(1).equals(stored.getEncrypted()) || opened.stream().anyMatch(parent -> ancestor(parent, path)))
+        for (String path : document.rules().entrySet().stream()
+                .filter(e -> e.getValue().sensitive() && ancestor(pointer, e.getKey())).map(Map.Entry::getKey)
+                .sorted(Comparator.comparingInt(String::length)).toList()) {
+            if (!Integer.valueOf(1).equals(stored.getEncrypted())
+                    || opened.stream().anyMatch(parent -> ancestor(parent, path)))
                 continue;
             String relative = path.substring(pointer.length());
             var value = ItemCodec.at(selected, relative);
@@ -513,16 +543,34 @@ public final class ItemEditor {
             String path = name.isEmpty() || name.startsWith("/") ? name : JsonSchema.pointer("", name);
             Property old = previous == null ? null : previous.properties().get(name),
                     protectedOld = stored == null ? null : stored.properties().get(name);
-            Property changed = property.with("value", cryptMember(property.value(), path, document, encrypt,
-                    old == null ? null : old.value(), protectedOld == null ? null : protectedOld.value()))
-                    .with("default", cryptMember(property.defaultValue(), path, document, encrypt,
-                            old == null ? null : old.defaultValue(), protectedOld == null ? null : protectedOld.defaultValue()));
+            Property changed = property.with(
+                    "value",
+                    cryptMember(
+                            property.value(),
+                            path,
+                            document,
+                            encrypt,
+                            old == null ? null : old.value(),
+                            protectedOld == null ? null : protectedOld.value()))
+                    .with(
+                            "default",
+                            cryptMember(
+                                    property.defaultValue(),
+                                    path,
+                                    document,
+                                    encrypt,
+                                    old == null ? null : old.defaultValue(),
+                                    protectedOld == null ? null : protectedOld.defaultValue()));
             if (document.protection() != ItemCodec.Protection.NONE)
                 for (var attribute : property.attributes().entrySet())
                     if (ItemCodec.isAttribute(attribute.getKey()))
-                        changed = changed.with(attribute.getKey(), protectedValue(attribute.getValue(), encrypt,
-                                old == null ? null : old.get(attribute.getKey()),
-                                protectedOld == null ? null : protectedOld.get(attribute.getKey())));
+                        changed = changed.with(
+                                attribute.getKey(),
+                                protectedValue(
+                                        attribute.getValue(),
+                                        encrypt,
+                                        old == null ? null : old.get(attribute.getKey()),
+                                        protectedOld == null ? null : protectedOld.get(attribute.getKey())));
             properties.put(name, changed);
         });
         return new ItemCodec.Document(properties, document.rules(), document.schema(), document.management(),
@@ -702,8 +750,9 @@ public final class ItemEditor {
                 attributes.addAll(currentDocument.properties().get(name).attributes().keySet());
             for (String attribute : attributes)
                 if (ItemCodec.isAttribute(attribute))
-                    actions.put(ItemCodec.attributePath(name, attribute), target != null && target.contains(attribute)
-                            ? SecretAction.REPLACE : SecretAction.DELETE);
+                    actions.put(
+                            ItemCodec.attributePath(name, attribute),
+                            target != null && target.contains(attribute) ? SecretAction.REPLACE : SecretAction.DELETE);
             for (String protectedPath : selected)
                 for (String member : List.of("value", "default")) {
                     JsonValue node = target == null ? null

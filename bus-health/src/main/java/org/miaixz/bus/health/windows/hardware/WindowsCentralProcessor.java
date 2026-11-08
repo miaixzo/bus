@@ -64,23 +64,20 @@ import org.miaixz.bus.logger.Logger;
 @ThreadSafe
 final class WindowsCentralProcessor extends AbstractCentralProcessor {
 
-    // Whether to use Processor counters rather than sum up Processor Information counters
     /**
-     * The USE_LEGACY_SYSTEM_COUNTERS constant.
+     * Whether to use Processor counters rather than sum up Processor Information counters.
      */
     private static final boolean USE_LEGACY_SYSTEM_COUNTERS = Builder
             .get(Builder._WINDOWS_LEGACY_SYSTEM_COUNTERS, false);
 
-    // Whether to match Task Manager by using the processor usage counters
     /**
-     * The USE_CPU_USAGE_COUNTERS constant.
+     * Whether to match Task Manager by using the processor usage counters.
      */
     private static final boolean USE_CPU_USAGE_COUNTERS = VersionHelpers.IsWindows8OrGreater()
             && Builder.get(Builder._WINDOWS_CPU_USAGE_COUNTERS, false);
 
-    // Whether to start a daemon thread to calculate load average
     /**
-     * The USE_LOAD_AVERAGE constant.
+     * Whether to start a daemon thread to calculate load average.
      */
     private static final boolean USE_LOAD_AVERAGE = Builder.get(Builder._WINDOWS_LOADAVERAGE, false);
 
@@ -90,30 +87,25 @@ final class WindowsCentralProcessor extends AbstractCentralProcessor {
         }
     }
 
-    // This tick query is memoized to enforce a minimum elapsed time for determining
-    // the capacity base multiplier
     /**
-     * The processorUsageCounters value.
+     * This tick query is memoized to enforce a minimum elapsed time for determining the capacity base multiplier.
      */
     private final SupplierX<Pair<List<String>, Map<ProcessorUsageTickCountProperty, List<Long>>>> processorUsageCounters = USE_CPU_USAGE_COUNTERS
             ? Memoizer
                     .memoize(WindowsCentralProcessor::queryProcessorUsageCounters, TimeUnit.MILLISECONDS.toNanos(300L))
             : null;
 
-    // Populated by initProcessorCounts called by the parent constructor.
     /**
-     * The initialUsageCounters value.
+     * Populated by initProcessorCounts called by the parent constructor.
      */
     private final AtomicReference<Map<ProcessorUsageTickCountProperty, List<Long>>> initialUsageCounters = new AtomicReference<>(
             USE_CPU_USAGE_COUNTERS ? processorUsageCounters.get().getRight() : null);
 
-    // Store the initial query and start the memoizer expiration
     /**
-     * The numaNodeProcToLogicalProcMap value.
+     * Maps NUMA node and processor identifiers to logical processor indexes.
      */
     private volatile Map<String, Integer> numaNodeProcToLogicalProcMap;
 
-    // Lazily initialized
     /**
      * Multiplier that converts the processor usage counter base to elapsed clock ticks.
      */

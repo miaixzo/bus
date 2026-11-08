@@ -1,0 +1,1278 @@
+{
+  "reflection": [
+    {
+      "type": "io.temporal.api.common.v1.Payload",
+      "methods": [
+        {
+          "name": "getData",
+          "parameterTypes": []
+        },
+        {
+          "name": "newBuilder",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "io.temporal.api.common.v1.Payload$Builder",
+      "methods": [
+        {
+          "name": "build",
+          "parameterTypes": []
+        },
+        {
+          "name": "putMetadata",
+          "parameterTypes": [
+            "java.lang.String",
+            "com.google.protobuf.ByteString"
+          ]
+        },
+        {
+          "name": "setData",
+          "parameterTypes": [
+            "com.google.protobuf.ByteString"
+          ]
+        }
+      ]
+    },
+    {
+      "type": {
+        "proxy": [
+          "io.temporal.serviceclient.CloudServiceStubs"
+        ]
+      }
+    },
+    {
+      "type": {
+        "proxy": [
+          "io.temporal.serviceclient.OperatorServiceStubs"
+        ]
+      }
+    },
+    {
+      "type": {
+        "proxy": [
+          "io.temporal.serviceclient.WorkflowServiceStubs"
+        ]
+      }
+    },
+    {
+      "type": "io.temporal.internal.retryer.GrpcRetryer",
+      "fields": [
+        {
+          "name": "serverCapabilities"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.util.function.Supplier"
+          ]
+        },
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "getClass",
+          "parameterTypes": []
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "lambda$retry$0",
+          "parameterTypes": [
+            "io.temporal.internal.retryer.GrpcRetryer$RetryableProc"
+          ]
+        },
+        {
+          "name": "notify",
+          "parameterTypes": []
+        },
+        {
+          "name": "notifyAll",
+          "parameterTypes": []
+        },
+        {
+          "name": "retry",
+          "parameterTypes": [
+            "io.temporal.internal.retryer.GrpcRetryer$RetryableProc",
+            "io.temporal.internal.retryer.GrpcRetryer$GrpcRetryerOptions"
+          ]
+        },
+        {
+          "name": "retryWithResult",
+          "parameterTypes": [
+            "io.temporal.internal.retryer.GrpcRetryer$RetryableFunc",
+            "io.temporal.internal.retryer.GrpcRetryer$GrpcRetryerOptions"
+          ]
+        },
+        {
+          "name": "retryWithResultAsync",
+          "parameterTypes": [
+            "java.util.concurrent.ScheduledExecutorService",
+            "java.util.function.Supplier",
+            "io.temporal.internal.retryer.GrpcRetryer$GrpcRetryerOptions"
+          ]
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "wait",
+          "parameterTypes": []
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long",
+            "int"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "io.temporal.internal.WorkflowThreadMarker",
+      "fields": [
+        {
+          "name": "enableEnforcements"
+        },
+        {
+          "name": "isWorkflowThreadThreadLocal"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "enforceNonWorkflowThread",
+          "parameterTypes": []
+        },
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "getClass",
+          "parameterTypes": []
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "isWorkflowThread",
+          "parameterTypes": []
+        },
+        {
+          "name": "lambda$protectFromWorkflowThread$1",
+          "parameterTypes": [
+            "java.lang.Object",
+            "java.lang.Object",
+            "java.lang.reflect.Method",
+            "java.lang.Object[]"
+          ]
+        },
+        {
+          "name": "lambda$static$0",
+          "parameterTypes": []
+        },
+        {
+          "name": "notify",
+          "parameterTypes": []
+        },
+        {
+          "name": "notifyAll",
+          "parameterTypes": []
+        },
+        {
+          "name": "protectFromWorkflowThread",
+          "parameterTypes": [
+            "java.lang.Object",
+            "java.lang.Class"
+          ]
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "wait",
+          "parameterTypes": []
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long",
+            "int"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "io.temporal.serviceclient.ChannelManager",
+      "fields": [
+        {
+          "name": "channelNeedsShutdown"
+        },
+        {
+          "name": "CLIENT_NAME_HEADER_KEY"
+        },
+        {
+          "name": "CLOUD_VERSION_HEADER_KEY"
+        },
+        {
+          "name": "grpcConnectionManager"
+        },
+        {
+          "name": "healthBlockingStub"
+        },
+        {
+          "name": "interceptedChannel"
+        },
+        {
+          "name": "LIBRARY_VERSION_HEADER_KEY"
+        },
+        {
+          "name": "log"
+        },
+        {
+          "name": "MAX_INBOUND_MESSAGE_SIZE"
+        },
+        {
+          "name": "MAX_INBOUND_METADATA_SIZE"
+        },
+        {
+          "name": "options"
+        },
+        {
+          "name": "rawChannel"
+        },
+        {
+          "name": "serverCapabilitiesFuture"
+        },
+        {
+          "name": "shutdownRequested"
+        },
+        {
+          "name": "SUPPORTED_SERVER_VERSIONS_HEADER_KEY"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "io.temporal.serviceclient.ServiceStubsOptions",
+            "java.util.List"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "io.temporal.serviceclient.ServiceStubsOptions",
+            "java.util.List",
+            "io.temporal.api.workflowservice.v1.GetSystemInfoResponse$Capabilities"
+          ]
+        },
+        {
+          "name": "applyCustomInterceptors",
+          "parameterTypes": [
+            "io.grpc.Channel"
+          ]
+        },
+        {
+          "name": "applyHeadStandardInterceptors",
+          "parameterTypes": [
+            "io.grpc.Channel"
+          ]
+        },
+        {
+          "name": "applyTailStandardInterceptors",
+          "parameterTypes": [
+            "io.grpc.Channel"
+          ]
+        },
+        {
+          "name": "awaitTermination",
+          "parameterTypes": [
+            "long",
+            "java.util.concurrent.TimeUnit"
+          ]
+        },
+        {
+          "name": "connect",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.time.Duration"
+          ]
+        },
+        {
+          "name": "deadlineFrom",
+          "parameterTypes": [
+            "java.time.Duration"
+          ]
+        },
+        {
+          "name": "enterGrpcIdleChannelStateTask",
+          "parameterTypes": []
+        },
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "getClass",
+          "parameterTypes": []
+        },
+        {
+          "name": "getInterceptedChannel",
+          "parameterTypes": []
+        },
+        {
+          "name": "getRawChannel",
+          "parameterTypes": []
+        },
+        {
+          "name": "getServerCapabilities",
+          "parameterTypes": []
+        },
+        {
+          "name": "grpcConnectionManager",
+          "parameterTypes": []
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "healthCheck",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.time.Duration"
+          ]
+        },
+        {
+          "name": "initConnectionManagement",
+          "parameterTypes": []
+        },
+        {
+          "name": "isShutdown",
+          "parameterTypes": []
+        },
+        {
+          "name": "isTerminated",
+          "parameterTypes": []
+        },
+        {
+          "name": "lambda$connect$2",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "lambda$enterGrpcIdleChannelStateTask$0",
+          "parameterTypes": []
+        },
+        {
+          "name": "lambda$getServerCapabilities$3",
+          "parameterTypes": []
+        },
+        {
+          "name": "lambda$resetGrpcConnectionBackoffTask$1",
+          "parameterTypes": []
+        },
+        {
+          "name": "notify",
+          "parameterTypes": []
+        },
+        {
+          "name": "notifyAll",
+          "parameterTypes": []
+        },
+        {
+          "name": "prepareChannel",
+          "parameterTypes": []
+        },
+        {
+          "name": "resetGrpcConnectionBackoffTask",
+          "parameterTypes": []
+        },
+        {
+          "name": "shutdown",
+          "parameterTypes": []
+        },
+        {
+          "name": "shutdownNow",
+          "parameterTypes": []
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "wait",
+          "parameterTypes": []
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long",
+            "int"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "io.temporal.serviceclient.CloudServiceStubs",
+      "fields": [
+        {
+          "name": "HEALTH_CHECK_SERVICE_NAME"
+        }
+      ],
+      "methods": [
+        {
+          "name": "newCloudServiceStubs",
+          "parameterTypes": []
+        },
+        {
+          "name": "newServiceStubs",
+          "parameterTypes": [
+            "io.temporal.serviceclient.CloudServiceStubsOptions"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "io.temporal.serviceclient.CloudServiceStubsImpl",
+      "fields": [
+        {
+          "name": "blockingStub"
+        },
+        {
+          "name": "channelManager"
+        },
+        {
+          "name": "futureStub"
+        },
+        {
+          "name": "HEALTH_CHECK_SERVICE_NAME"
+        },
+        {
+          "name": "log"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "io.temporal.serviceclient.CloudServiceStubsOptions"
+          ]
+        },
+        {
+          "name": "awaitTermination",
+          "parameterTypes": [
+            "long",
+            "java.util.concurrent.TimeUnit"
+          ]
+        },
+        {
+          "name": "blockingStub",
+          "parameterTypes": []
+        },
+        {
+          "name": "connect",
+          "parameterTypes": [
+            "java.time.Duration"
+          ]
+        },
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "futureStub",
+          "parameterTypes": []
+        },
+        {
+          "name": "getClass",
+          "parameterTypes": []
+        },
+        {
+          "name": "getRawChannel",
+          "parameterTypes": []
+        },
+        {
+          "name": "getServerCapabilities",
+          "parameterTypes": []
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "healthCheck",
+          "parameterTypes": []
+        },
+        {
+          "name": "isShutdown",
+          "parameterTypes": []
+        },
+        {
+          "name": "isTerminated",
+          "parameterTypes": []
+        },
+        {
+          "name": "notify",
+          "parameterTypes": []
+        },
+        {
+          "name": "notifyAll",
+          "parameterTypes": []
+        },
+        {
+          "name": "shutdown",
+          "parameterTypes": []
+        },
+        {
+          "name": "shutdownNow",
+          "parameterTypes": []
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "wait",
+          "parameterTypes": []
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long",
+            "int"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "io.temporal.serviceclient.OperatorServiceStubs",
+      "fields": [
+        {
+          "name": "HEALTH_CHECK_SERVICE_NAME"
+        }
+      ],
+      "methods": [
+        {
+          "name": "newInstance",
+          "parameterTypes": []
+        },
+        {
+          "name": "newInstance",
+          "parameterTypes": [
+            "io.temporal.serviceclient.OperatorServiceStubsOptions"
+          ]
+        },
+        {
+          "name": "newLocalServiceStubs",
+          "parameterTypes": []
+        },
+        {
+          "name": "newServiceStubs",
+          "parameterTypes": [
+            "io.temporal.serviceclient.OperatorServiceStubsOptions"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "io.temporal.serviceclient.OperatorServiceStubsImpl",
+      "fields": [
+        {
+          "name": "blockingStub"
+        },
+        {
+          "name": "channelManager"
+        },
+        {
+          "name": "futureStub"
+        },
+        {
+          "name": "HEALTH_CHECK_SERVICE_NAME"
+        },
+        {
+          "name": "log"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "io.temporal.serviceclient.OperatorServiceStubsOptions"
+          ]
+        },
+        {
+          "name": "awaitTermination",
+          "parameterTypes": [
+            "long",
+            "java.util.concurrent.TimeUnit"
+          ]
+        },
+        {
+          "name": "blockingStub",
+          "parameterTypes": []
+        },
+        {
+          "name": "connect",
+          "parameterTypes": [
+            "java.time.Duration"
+          ]
+        },
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "futureStub",
+          "parameterTypes": []
+        },
+        {
+          "name": "getClass",
+          "parameterTypes": []
+        },
+        {
+          "name": "getRawChannel",
+          "parameterTypes": []
+        },
+        {
+          "name": "getServerCapabilities",
+          "parameterTypes": []
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "healthCheck",
+          "parameterTypes": []
+        },
+        {
+          "name": "isShutdown",
+          "parameterTypes": []
+        },
+        {
+          "name": "isTerminated",
+          "parameterTypes": []
+        },
+        {
+          "name": "notify",
+          "parameterTypes": []
+        },
+        {
+          "name": "notifyAll",
+          "parameterTypes": []
+        },
+        {
+          "name": "shutdown",
+          "parameterTypes": []
+        },
+        {
+          "name": "shutdownNow",
+          "parameterTypes": []
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "wait",
+          "parameterTypes": []
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long",
+            "int"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "io.temporal.serviceclient.ServiceStubsOptions$Builder",
+      "methods": [
+        {
+          "name": "setChannelInitializer",
+          "parameterTypes": [
+            "java.util.function.Consumer"
+          ]
+        },
+        {
+          "name": "setEnableHttps",
+          "parameterTypes": [
+            "boolean"
+          ]
+        },
+        {
+          "name": "setTarget",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "io.temporal.serviceclient.WorkflowServiceStubs",
+      "fields": [
+        {
+          "name": "HEALTH_CHECK_SERVICE_NAME"
+        }
+      ],
+      "methods": [
+        {
+          "name": "getOptions",
+          "parameterTypes": []
+        },
+        {
+          "name": "lambda$newServiceStubs$0",
+          "parameterTypes": [
+            "io.temporal.serviceclient.WorkflowServiceStubsOptions"
+          ]
+        },
+        {
+          "name": "lambda$newServiceStubs$1",
+          "parameterTypes": [
+            "io.temporal.serviceclient.WorkflowServiceStubsPlugin",
+            "io.temporal.serviceclient.WorkflowServiceStubsOptions",
+            "java.util.function.Supplier"
+          ]
+        },
+        {
+          "name": "newConnectedServiceStubs",
+          "parameterTypes": [
+            "io.temporal.serviceclient.WorkflowServiceStubsOptions",
+            "java.time.Duration"
+          ]
+        },
+        {
+          "name": "newInstance",
+          "parameterTypes": []
+        },
+        {
+          "name": "newInstance",
+          "parameterTypes": [
+            "io.temporal.api.workflowservice.v1.WorkflowServiceGrpc$WorkflowServiceImplBase",
+            "io.temporal.serviceclient.WorkflowServiceStubsOptions"
+          ]
+        },
+        {
+          "name": "newInstance",
+          "parameterTypes": [
+            "io.temporal.serviceclient.WorkflowServiceStubsOptions"
+          ]
+        },
+        {
+          "name": "newLocalServiceStubs",
+          "parameterTypes": []
+        },
+        {
+          "name": "newServiceStubs",
+          "parameterTypes": [
+            "io.temporal.serviceclient.WorkflowServiceStubsOptions"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "io.temporal.serviceclient.WorkflowServiceStubsImpl",
+      "fields": [
+        {
+          "name": "blockingStub"
+        },
+        {
+          "name": "channelManager"
+        },
+        {
+          "name": "futureStub"
+        },
+        {
+          "name": "HEALTH_CHECK_SERVICE_NAME"
+        },
+        {
+          "name": "inProcessServer"
+        },
+        {
+          "name": "log"
+        },
+        {
+          "name": "options"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "io.grpc.BindableService",
+            "io.temporal.serviceclient.WorkflowServiceStubsOptions"
+          ]
+        },
+        {
+          "name": "awaitTermination",
+          "parameterTypes": [
+            "long",
+            "java.util.concurrent.TimeUnit"
+          ]
+        },
+        {
+          "name": "blockingStub",
+          "parameterTypes": []
+        },
+        {
+          "name": "connect",
+          "parameterTypes": [
+            "java.time.Duration"
+          ]
+        },
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "futureStub",
+          "parameterTypes": []
+        },
+        {
+          "name": "getClass",
+          "parameterTypes": []
+        },
+        {
+          "name": "getOptions",
+          "parameterTypes": []
+        },
+        {
+          "name": "getRawChannel",
+          "parameterTypes": []
+        },
+        {
+          "name": "getServerCapabilities",
+          "parameterTypes": []
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "healthCheck",
+          "parameterTypes": []
+        },
+        {
+          "name": "isShutdown",
+          "parameterTypes": []
+        },
+        {
+          "name": "isTerminated",
+          "parameterTypes": []
+        },
+        {
+          "name": "notify",
+          "parameterTypes": []
+        },
+        {
+          "name": "notifyAll",
+          "parameterTypes": []
+        },
+        {
+          "name": "shutdown",
+          "parameterTypes": []
+        },
+        {
+          "name": "shutdownNow",
+          "parameterTypes": []
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "wait",
+          "parameterTypes": []
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long",
+            "int"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "io.temporal.serviceclient.WorkflowServiceStubsOptions",
+      "fields": [
+        {
+          "name": "DEFAULT_CONNECTION_BACKOFF_RESET_FREQUENCY"
+        },
+        {
+          "name": "DEFAULT_GRPC_RECONNECT_FREQUENCY"
+        },
+        {
+          "name": "DEFAULT_INSTANCE"
+        },
+        {
+          "name": "DEFAULT_LOCAL_DOCKER_TARGET"
+        },
+        {
+          "name": "DEFAULT_POLL_RPC_TIMEOUT"
+        },
+        {
+          "name": "DEFAULT_QUERY_RPC_TIMEOUT"
+        },
+        {
+          "name": "DEFAULT_RPC_TIMEOUT"
+        },
+        {
+          "name": "DEFAULT_SERVER_LONG_POLL_RPC_TIMEOUT"
+        },
+        {
+          "name": "disableHealthCheck"
+        },
+        {
+          "name": "EMPTY_PLUGINS"
+        },
+        {
+          "name": "plugins"
+        },
+        {
+          "name": "rpcLongPollTimeout"
+        },
+        {
+          "name": "rpcQueryTimeout"
+        },
+        {
+          "name": "rpcRetryOptions"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "io.temporal.serviceclient.ServiceStubsOptions",
+            "boolean",
+            "java.time.Duration",
+            "java.time.Duration",
+            "io.temporal.serviceclient.RpcRetryOptions",
+            "io.temporal.serviceclient.WorkflowServiceStubsPlugin[]"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "io.temporal.serviceclient.ServiceStubsOptions",
+            "boolean",
+            "java.time.Duration",
+            "java.time.Duration",
+            "io.temporal.serviceclient.RpcRetryOptions",
+            "io.temporal.serviceclient.WorkflowServiceStubsPlugin[]",
+            "io.temporal.serviceclient.WorkflowServiceStubsOptions$1"
+          ]
+        },
+        {
+          "name": "access$200",
+          "parameterTypes": [
+            "io.temporal.serviceclient.WorkflowServiceStubsOptions"
+          ]
+        },
+        {
+          "name": "access$300",
+          "parameterTypes": [
+            "io.temporal.serviceclient.WorkflowServiceStubsOptions"
+          ]
+        },
+        {
+          "name": "access$400",
+          "parameterTypes": [
+            "io.temporal.serviceclient.WorkflowServiceStubsOptions"
+          ]
+        },
+        {
+          "name": "access$500",
+          "parameterTypes": [
+            "io.temporal.serviceclient.WorkflowServiceStubsOptions"
+          ]
+        },
+        {
+          "name": "access$700",
+          "parameterTypes": []
+        },
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "getChannel",
+          "parameterTypes": []
+        },
+        {
+          "name": "getChannelInitializer",
+          "parameterTypes": []
+        },
+        {
+          "name": "getClass",
+          "parameterTypes": []
+        },
+        {
+          "name": "getConnectionBackoffResetFrequency",
+          "parameterTypes": []
+        },
+        {
+          "name": "getDefaultInstance",
+          "parameterTypes": []
+        },
+        {
+          "name": "getDisableHealthCheck",
+          "parameterTypes": []
+        },
+        {
+          "name": "getEnableHttps",
+          "parameterTypes": []
+        },
+        {
+          "name": "getEnableKeepAlive",
+          "parameterTypes": []
+        },
+        {
+          "name": "getGrpcClientInterceptors",
+          "parameterTypes": []
+        },
+        {
+          "name": "getGrpcMetadataProviders",
+          "parameterTypes": []
+        },
+        {
+          "name": "getGrpcReconnectFrequency",
+          "parameterTypes": []
+        },
+        {
+          "name": "getHeaders",
+          "parameterTypes": []
+        },
+        {
+          "name": "getHealthCheckAttemptTimeout",
+          "parameterTypes": []
+        },
+        {
+          "name": "getHealthCheckTimeout",
+          "parameterTypes": []
+        },
+        {
+          "name": "getKeepAlivePermitWithoutStream",
+          "parameterTypes": []
+        },
+        {
+          "name": "getKeepAliveTime",
+          "parameterTypes": []
+        },
+        {
+          "name": "getKeepAliveTimeout",
+          "parameterTypes": []
+        },
+        {
+          "name": "getMetricsScope",
+          "parameterTypes": []
+        },
+        {
+          "name": "getPlugins",
+          "parameterTypes": []
+        },
+        {
+          "name": "getRpcLongPollTimeout",
+          "parameterTypes": []
+        },
+        {
+          "name": "getRpcQueryTimeout",
+          "parameterTypes": []
+        },
+        {
+          "name": "getRpcRetryOptions",
+          "parameterTypes": []
+        },
+        {
+          "name": "getRpcTimeout",
+          "parameterTypes": []
+        },
+        {
+          "name": "getSslContext",
+          "parameterTypes": []
+        },
+        {
+          "name": "getSystemInfoTimeout",
+          "parameterTypes": []
+        },
+        {
+          "name": "getTarget",
+          "parameterTypes": []
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "newBuilder",
+          "parameterTypes": []
+        },
+        {
+          "name": "newBuilder",
+          "parameterTypes": [
+            "io.temporal.serviceclient.ServiceStubsOptions"
+          ]
+        },
+        {
+          "name": "notify",
+          "parameterTypes": []
+        },
+        {
+          "name": "notifyAll",
+          "parameterTypes": []
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "wait",
+          "parameterTypes": []
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long",
+            "int"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "io.temporal.serviceclient.WorkflowServiceStubsOptions$Builder",
+      "methods": [
+        {
+          "name": "build",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "io.temporal.serviceclient.ServiceStubs",
+      "methods": [
+        {
+          "name": "awaitTermination",
+          "parameterTypes": [
+            "long",
+            "java.util.concurrent.TimeUnit"
+          ]
+        },
+        {
+          "name": "blockingStub",
+          "parameterTypes": []
+        },
+        {
+          "name": "connect",
+          "parameterTypes": [
+            "java.time.Duration"
+          ]
+        },
+        {
+          "name": "futureStub",
+          "parameterTypes": []
+        },
+        {
+          "name": "getRawChannel",
+          "parameterTypes": []
+        },
+        {
+          "name": "getServerCapabilities",
+          "parameterTypes": []
+        },
+        {
+          "name": "healthCheck",
+          "parameterTypes": []
+        },
+        {
+          "name": "isShutdown",
+          "parameterTypes": []
+        },
+        {
+          "name": "isTerminated",
+          "parameterTypes": []
+        },
+        {
+          "name": "shutdown",
+          "parameterTypes": []
+        },
+        {
+          "name": "shutdownNow",
+          "parameterTypes": []
+        }
+      ]
+    }
+  ]
+}

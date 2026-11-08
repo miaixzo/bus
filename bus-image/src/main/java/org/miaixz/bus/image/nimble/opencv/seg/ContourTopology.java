@@ -21,10 +21,10 @@ package org.miaixz.bus.image.nimble.opencv.seg;
 
 import java.awt.geom.Point2D;
 
-import org.opencv.core.Mat;
-import org.opencv.core.MatOfPoint;
-import org.opencv.core.MatOfPoint2f;
-import org.opencv.core.Point;
+import org.miaixz.bus.opencv.core.Mat;
+import org.miaixz.bus.opencv.core.MatOfPoint;
+import org.miaixz.bus.opencv.core.MatOfPoint2f;
+import org.miaixz.bus.opencv.core.Point;
 
 /**
  * Represents a contour topology containing a segment and its parent relationship. This class encapsulates the

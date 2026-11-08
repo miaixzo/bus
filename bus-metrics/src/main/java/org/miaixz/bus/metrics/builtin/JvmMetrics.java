@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.function.LongSupplier;
 
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.metrics.Metrics;
 import org.miaixz.bus.metrics.Provider;
@@ -137,7 +138,7 @@ public class JvmMetrics implements MetricBinder {
      * @return normalized name
      */
     private static String normalize(String name) {
-        return name.replace(Symbol.SPACE, Symbol.UNDERLINE).toLowerCase();
+        return StringKit.toLowerCase(name.replace(Symbol.SPACE, Symbol.UNDERLINE));
     }
 
     /**

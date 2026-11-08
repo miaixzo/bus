@@ -31,6 +31,7 @@ import org.miaixz.bus.core.lang.Keys;
 import org.miaixz.bus.core.xyz.CollKit;
 import org.miaixz.bus.core.xyz.DateKit;
 import org.miaixz.bus.core.xyz.NetKit;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.core.xyz.ThreadKit;
 import org.miaixz.bus.health.builtin.*;
 import org.miaixz.bus.health.builtin.hardware.*;
@@ -230,18 +231,307 @@ public class Collector {
      * @param map  The result map.
      */
     public void appendHardware(String type, Map<String, Object> map) {
+        HardwareAbstractionLayer hardware = getHardware();
         Map<String, Object> hardwareMap = new HashMap<>();
-        hardwareMap.put(TID.MEMORY, getHardware().getMemory());
-        hardwareMap.put("sensors", getHardware().getSensors());
-        hardwareMap.put("logicalVolumeGroups", getHardware().getLogicalVolumeGroups());
-        hardwareMap.put("soundCards", getHardware().getSoundCards());
-        hardwareMap.put("bluetoothDevices", getHardware().getBluetoothDevices());
-        hardwareMap.put("graphicsCards", getHardware().getGraphicsCards());
-        hardwareMap.put("displays", getHardware().getDisplays());
-        hardwareMap.put("diskStores", getHardware().getDiskStores());
-        hardwareMap.put("powerSources", getHardware().getPowerSources());
-        hardwareMap.put("networkIFs", getHardware().getNetworkIFs());
+        hardwareMap.put(TID.MEMORY, memoryDetails(hardware.getMemory()));
+        hardwareMap.put("sensors", sensorDetails(hardware.getSensors()));
+        hardwareMap.put(
+                "logicalVolumeGroups",
+                hardware.getLogicalVolumeGroups().stream().map(Collector::volumeGroupDetails).toList());
+        hardwareMap.put("soundCards", hardware.getSoundCards().stream().map(Collector::soundCardDetails).toList());
+        hardwareMap.put(
+                "bluetoothDevices",
+                hardware.getBluetoothDevices().stream().map(Collector::bluetoothDetails).toList());
+        hardwareMap.put("graphicsCards", hardware.getGraphicsCards().stream().map(Collector::graphicsDetails).toList());
+        hardwareMap.put("displays", hardware.getDisplays().stream().map(Collector::displayDetails).toList());
+        hardwareMap.put("diskStores", hardware.getDiskStores().stream().map(Collector::diskDetails).toList());
+        hardwareMap
+                .put("powerSources", hardware.getPowerSources().stream().map(Collector::powerSourceDetails).toList());
+        hardwareMap.put("networkIFs", hardware.getNetworkIFs().stream().map(Collector::networkDetails).toList());
         map.put(type, hardwareMap);
+    }
+
+    /**
+     * Reads physical and virtual memory through the existing memory interface.
+     *
+     * @param value hardware measurement source
+     * @return the hardware detail values for the health response
+     */
+    private static Map<String, Object> memoryDetails(GlobalMemory value) {
+        Map<String, Object> details = new LinkedHashMap<>();
+        details.put("total", value.getTotal());
+        details.put("available", value.getAvailable());
+        details.put("pageSize", value.getPageSize());
+        details.put("virtualMemory", virtualMemoryDetails(value.getVirtualMemory()));
+        details.put(
+                "physicalMemory",
+                value.getPhysicalMemory().stream().map(Collector::physicalMemoryDetails).toList());
+        return details;
+    }
+
+    /**
+     * Reads swap and virtual memory measurements.
+     *
+     * @param value hardware measurement source
+     * @return the hardware detail values for the health response
+     */
+    private static Map<String, Object> virtualMemoryDetails(VirtualMemory value) {
+        Map<String, Object> details = new LinkedHashMap<>();
+        details.put("swapTotal", value.getSwapTotal());
+        details.put("swapUsed", value.getSwapUsed());
+        details.put("virtualMax", value.getVirtualMax());
+        details.put("virtualInUse", value.getVirtualInUse());
+        details.put("swapPagesIn", value.getSwapPagesIn());
+        details.put("swapPagesOut", value.getSwapPagesOut());
+        return details;
+    }
+
+    /**
+     * Reads the reported attributes of a physical memory bank.
+     *
+     * @param value hardware measurement source
+     * @return the hardware detail values for the health response
+     */
+    private static Map<String, Object> physicalMemoryDetails(PhysicalMemory value) {
+        Map<String, Object> details = new LinkedHashMap<>();
+        details.put("bankLabel", value.getBankLabel());
+        details.put("capacity", value.getCapacity());
+        details.put("clockSpeed", value.getClockSpeed());
+        details.put("manufacturer", value.getManufacturer());
+        details.put("memoryType", value.getMemoryType());
+        details.put("partNumber", value.getPartNumber());
+        details.put("serialNumber", value.getSerialNumber());
+        return details;
+    }
+
+    /**
+     * Reads CPU temperature, voltage, and fan speeds.
+     *
+     * @param value hardware measurement source
+     * @return the hardware detail values for the health response
+     */
+    private static Map<String, Object> sensorDetails(Sensors value) {
+        Map<String, Object> details = new LinkedHashMap<>();
+        details.put("cpuTemperature", finiteMeasurement(value.getCpuTemperature()));
+        details.put("fanSpeeds", value.getFanSpeeds());
+        details.put("cpuVoltage", finiteMeasurement(value.getCpuVoltage()));
+        return details;
+    }
+
+    /**
+     * Reads the volume group name and its physical and logical volume assignments.
+     *
+     * @param value hardware measurement source
+     * @return the hardware detail values for the health response
+     */
+    private static Map<String, Object> volumeGroupDetails(LogicalVolumeGroup value) {
+        Map<String, Object> details = new LinkedHashMap<>();
+        details.put("name", value.getName());
+        details.put("physicalVolumes", value.getPhysicalVolumes());
+        details.put("logicalVolumes", value.getLogicalVolumes());
+        return details;
+    }
+
+    /**
+     * Reads the sound card name, codec, and driver version.
+     *
+     * @param value hardware measurement source
+     * @return the hardware detail values for the health response
+     */
+    private static Map<String, Object> soundCardDetails(SoundCard value) {
+        Map<String, Object> details = new LinkedHashMap<>();
+        details.put("name", value.getName());
+        details.put("codec", value.getCodec());
+        details.put("driverVersion", value.getDriverVersion());
+        return details;
+    }
+
+    /**
+     * Reads the Bluetooth device identity and connection status.
+     *
+     * @param value hardware measurement source
+     * @return the hardware detail values for the health response
+     */
+    private static Map<String, Object> bluetoothDetails(BluetoothDevice value) {
+        Map<String, Object> details = new LinkedHashMap<>();
+        details.put("name", value.getName());
+        details.put("address", value.getAddress());
+        details.put("majorDeviceClass", value.getMajorDeviceClass());
+        details.put("connected", value.isConnected());
+        details.put("paired", value.isPaired());
+        details.put("batteryLevel", value.getBatteryLevel());
+        details.put("adapterName", value.getAdapterName());
+        return details;
+    }
+
+    /**
+     * Reads the graphics card identity and video memory capacity.
+     *
+     * @param value hardware measurement source
+     * @return the hardware detail values for the health response
+     */
+    private static Map<String, Object> graphicsDetails(GraphicsCard value) {
+        Map<String, Object> details = new LinkedHashMap<>();
+        details.put("name", value.getName());
+        details.put("deviceId", value.getDeviceId());
+        details.put("vendor", value.getVendor());
+        details.put("versionInfo", value.getVersionInfo());
+        details.put("VRam", value.getVRam());
+        return details;
+    }
+
+    /**
+     * Reads the public display information derived from the EDID.
+     *
+     * @param value hardware measurement source
+     * @return the hardware detail values for the health response
+     */
+    private static Map<String, Object> displayDetails(Display value) {
+        DisplayInfo info = value.getDisplayInfo();
+        Map<String, Object> details = new LinkedHashMap<>();
+        details.put("displayInfo", info == null ? null : displayInfoDetails(info));
+        return details;
+    }
+
+    /**
+     * Reads display identity, geometry, and preferred resolution.
+     *
+     * @param value hardware measurement source
+     * @return the hardware detail values for the health response
+     */
+    private static Map<String, Object> displayInfoDetails(DisplayInfo value) {
+        Map<String, Object> details = new LinkedHashMap<>();
+        details.put("edid", value.getEdid());
+        details.put("edidSynthetic", value.isEdidSynthetic());
+        details.put("manufacturerID", value.getManufacturerID());
+        details.put("productID", value.getProductID());
+        details.put("serialNo", value.getSerialNo());
+        details.put("week", value.getWeek());
+        details.put("year", value.getYear());
+        details.put("version", value.getVersion());
+        details.put("digital", value.isDigital());
+        details.put("hcm", value.getHcm());
+        details.put("vcm", value.getVcm());
+        details.put("preferredResolution", value.getPreferredResolution());
+        details.put("model", value.getModel());
+        details.put("productSerialNumber", value.getProductSerialNumber());
+        return details;
+    }
+
+    /**
+     * Reads the physical disk identity, counters, and partitions.
+     *
+     * @param value hardware measurement source
+     * @return the hardware detail values for the health response
+     */
+    private static Map<String, Object> diskDetails(HWDiskStore value) {
+        Map<String, Object> details = new LinkedHashMap<>();
+        details.put("name", value.getName());
+        details.put("model", value.getModel());
+        details.put("serial", value.getSerial());
+        details.put("size", value.getSize());
+        details.put("reads", value.getReads());
+        details.put("readBytes", value.getReadBytes());
+        details.put("writes", value.getWrites());
+        details.put("writeBytes", value.getWriteBytes());
+        details.put("currentQueueLength", value.getCurrentQueueLength());
+        details.put("transferTime", value.getTransferTime());
+        details.put("timeStamp", value.getTimeStamp());
+        details.put("partitions", value.getPartitions().stream().map(Collector::partitionDetails).toList());
+        return details;
+    }
+
+    /**
+     * Reads a disk partition identifier, size, and mount point.
+     *
+     * @param value hardware measurement source
+     * @return the hardware detail values for the health response
+     */
+    private static Map<String, Object> partitionDetails(HWPartition value) {
+        Map<String, Object> details = new LinkedHashMap<>();
+        details.put("identification", value.getIdentification());
+        details.put("name", value.getName());
+        details.put("type", value.getType());
+        details.put("uuid", value.getUuid());
+        details.put("label", value.getLabel());
+        details.put("size", value.getSize());
+        details.put("major", value.getMajor());
+        details.put("minor", value.getMinor());
+        details.put("mountPoint", value.getMountPoint());
+        return details;
+    }
+
+    /**
+     * Reads battery identity, capacity, charge state, and electrical measurements.
+     *
+     * @param value hardware measurement source
+     * @return the hardware detail values for the health response
+     */
+    private static Map<String, Object> powerSourceDetails(PowerSource value) {
+        Map<String, Object> details = new LinkedHashMap<>();
+        details.put("name", value.getName());
+        details.put("deviceName", value.getDeviceName());
+        details.put("powerOnLine", value.isPowerOnLine());
+        details.put("charging", value.isCharging());
+        details.put("discharging", value.isDischarging());
+        details.put("currentCapacity", value.getCurrentCapacity());
+        details.put("maxCapacity", value.getMaxCapacity());
+        details.put("designCapacity", value.getDesignCapacity());
+        details.put("cycleCount", value.getCycleCount());
+        details.put("chemistry", value.getChemistry());
+        details.put("serialNumber", value.getSerialNumber());
+        details.put("manufacturer", value.getManufacturer());
+        details.put("remainingCapacityPercent", finiteMeasurement(value.getRemainingCapacityPercent()));
+        details.put("timeRemainingEstimated", finiteMeasurement(value.getTimeRemainingEstimated()));
+        details.put("timeRemainingInstant", finiteMeasurement(value.getTimeRemainingInstant()));
+        details.put("amperage", finiteMeasurement(value.getAmperage()));
+        details.put("powerUsageRate", finiteMeasurement(value.getPowerUsageRate()));
+        details.put("voltage", finiteMeasurement(value.getVoltage()));
+        details.put("temperature", finiteMeasurement(value.getTemperature()));
+        details.put("capacityUnits", Objects.toString(value.getCapacityUnits(), null));
+        details.put("manufactureDate", Objects.toString(value.getManufactureDate(), null));
+        return details;
+    }
+
+    /**
+     * Reads network interface identity, addresses, and traffic counters.
+     *
+     * @param value hardware measurement source
+     * @return the hardware detail values for the health response
+     */
+    private static Map<String, Object> networkDetails(NetworkIF value) {
+        Map<String, Object> details = new LinkedHashMap<>();
+        details.put("name", value.getName());
+        details.put("index", value.getIndex());
+        details.put("displayName", value.getDisplayName());
+        details.put("mtu", value.getMTU());
+        details.put("macaddr", value.getMacaddr());
+        details.put("ipv4addr", value.getIPv4addr());
+        details.put("subnetMasks", value.getSubnetMasks());
+        details.put("ipv6addr", value.getIPv6addr());
+        details.put("prefixLengths", value.getPrefixLengths());
+        details.put("bytesRecv", value.getBytesRecv());
+        details.put("bytesSent", value.getBytesSent());
+        details.put("packetsRecv", value.getPacketsRecv());
+        details.put("packetsSent", value.getPacketsSent());
+        details.put("inErrors", value.getInErrors());
+        details.put("outErrors", value.getOutErrors());
+        details.put("inDrops", value.getInDrops());
+        details.put("collisions", value.getCollisions());
+        details.put("speed", value.getSpeed());
+        details.put("timeStamp", value.getTimeStamp());
+        details.put("knownVmMacAddr", value.isKnownVmMacAddr());
+        return details;
+    }
+
+    /**
+     * Omits non-finite sensor values, which JSON cannot represent as numbers.
+     *
+     * @param value the reported measurement
+     * @return the measurement, or {@code null} if it is unavailable
+     */
+    private static Double finiteMeasurement(double value) {
+        return Double.isFinite(value) ? value : null;
     }
 
     /**
@@ -251,7 +541,7 @@ public class Collector {
      * @param map  The result map.
      */
     public void append(String type, Map<String, Object> map) {
-        switch (type.toLowerCase()) {
+        switch (StringKit.toLowerCase(type)) {
             case TID.HOST:
                 map.put(type, getHost());
                 break;

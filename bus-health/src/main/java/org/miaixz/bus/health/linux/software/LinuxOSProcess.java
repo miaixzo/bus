@@ -62,9 +62,8 @@ public class LinuxOSProcess extends AbstractOSProcess {
      */
     private static final boolean LOG_PROCFS_WARNING = Builder.get(Builder._LINUX_PROCFS_LOGWARNING, false);
 
-    // Get a list of orders to pass to Parsing
     /**
-     * The PROC_PID_STAT_ORDERS constant.
+     * Get a list of orders to pass to Parsing.
      */
     private static final int[] PROC_PID_STAT_ORDERS = new int[ProcPidStat.values().length];
 
@@ -894,10 +893,10 @@ public class LinuxOSProcess extends AbstractOSProcess {
      */
     private enum ProcPidStat {
 
-        // The parsing implementation in Parsing requires these to be declared
-        // in increasing order
         /**
          * Parent process identifier field.
+         * <p>
+         * The parsing implementation in Parsing requires these to be declared in increasing order.
          */
         PPID(4),
         /**

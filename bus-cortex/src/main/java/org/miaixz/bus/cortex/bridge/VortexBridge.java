@@ -20,7 +20,6 @@
 package org.miaixz.bus.cortex.bridge;
 
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
@@ -673,8 +672,7 @@ public class VortexBridge
     private CortexChangeRecord toOutboxRecord(RegistryChange<Assets> event) {
         CortexChangeRecord record = new CortexChangeRecord();
         record.setDomain(OUTBOX_DOMAIN);
-        record.setAction(
-                event.getAction() == null ? "sync" : StringKit.toLowerCase(event.getAction().name(), Locale.ROOT));
+        record.setAction(event.getAction() == null ? "sync" : StringKit.toLowerCase(event.getAction().name()));
         record.setResourceType(OUTBOX_RESOURCE_TYPE);
         record.setResourceId(resourceId(event));
         record.setTenant_id(event.getTenant_id());

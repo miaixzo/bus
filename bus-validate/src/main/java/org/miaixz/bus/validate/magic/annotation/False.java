@@ -49,14 +49,14 @@ public @interface False {
      *
      * @return the error code.
      */
-    String errcode() default ErrorCode._FALSE;
+    String code() default ErrorCode._FALSE;
 
     /**
      * The error message to be used when validation fails. The message can be a template with placeholders.
      *
      * @return the error message.
      */
-    String errmsg() default ErrorCode._FALSE_VALUE;
+    String desc() default ErrorCode._FALSE_VALUE;
 
     /**
      * The validation groups this constraint belongs to.

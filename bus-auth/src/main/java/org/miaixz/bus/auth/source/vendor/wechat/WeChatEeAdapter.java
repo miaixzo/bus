@@ -33,7 +33,7 @@ public class WeChatEeAdapter extends WeChatAdapterSupport {
     /**
      * Creates one enterprise WeChat adapter for an exact compiled Source.
      *
-     * @param spaceId  Source space identifier
+     * @param tenantId Source tenant identifier
      * @param sourceId Source identifier
      * @param manifest selected WeChat manifest
      * @param variant  selected enterprise variant manifest
@@ -41,9 +41,9 @@ public class WeChatEeAdapter extends WeChatAdapterSupport {
      * @param services capability-limited Source services
      * @throws ValidateException if the selected variant is not an EE product
      */
-    public WeChatEeAdapter(final String spaceId, final String sourceId, final WeChatManifest manifest,
+    public WeChatEeAdapter(final String tenantId, final String sourceId, final WeChatManifest manifest,
             final VendorManifest.Variant variant, final WeChatOptions options, final SourceServices services) {
-        super(spaceId, sourceId, manifest, variant, options, services);
+        super(tenantId, sourceId, manifest, variant, options, services);
         if (!WeChatManifest.EE.equals(options.variant()) && !WeChatManifest.EE_QRCODE.equals(options.variant())
                 && !WeChatManifest.EE_WEB.equals(options.variant())) {
             throw new ValidateException("WeChat EE adapter requires an enterprise variant");

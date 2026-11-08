@@ -49,11 +49,13 @@ public class Uptime {
      */
     private static final long DAY_MS = 24L * HOUR_MS;
 
-    // sample format:
-    // 18:36pm up 10 days 8:11, 2 users, load average: 3.14, 2.74, 2.41
-
     /**
-     * The PREFIX constant.
+     * Example input:
+     *
+     * <pre>
+     * sample format:
+     * 18:36pm up 10 days 8:11, 2 users, load average: 3.14, 2.74, 2.41
+     * </pre>
      */
     private static final String PREFIX = ".*\\sup\\s+";
 

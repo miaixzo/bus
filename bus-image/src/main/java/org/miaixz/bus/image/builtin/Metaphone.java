@@ -21,6 +21,7 @@ package org.miaixz.bus.image.builtin;
 
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.xyz.StringKit;
 
 /**
  * Implements the Metaphone algorithm for phonetic encoding of words. This algorithm converts a word into a phonetic
@@ -60,7 +61,7 @@ public class Metaphone implements FuzzyString {
         if (null == s || s.length() == 0)
             return Normal.EMPTY;
 
-        char[] in = s.toUpperCase().toCharArray();
+        char[] in = StringKit.toUpperCase(s).toCharArray();
         int countX = 0;
         for (char c : in)
             if (c == Symbol.C_X)

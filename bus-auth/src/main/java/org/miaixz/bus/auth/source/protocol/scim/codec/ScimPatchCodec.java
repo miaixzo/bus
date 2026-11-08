@@ -21,7 +21,6 @@ package org.miaixz.bus.auth.source.protocol.scim.codec;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 import org.miaixz.bus.auth.FabricX.Body;
 import org.miaixz.bus.auth.shared.SecretLease;
@@ -32,6 +31,7 @@ import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.extra.json.JsonRecordVerifier;
 import org.miaixz.bus.extra.json.JsonValue;
 
@@ -182,7 +182,7 @@ public class ScimPatchCodec {
      * @return matching add, remove, or replace operation
      */
     private static PatchOperation.Op operationName(final String value) {
-        return switch (value.toLowerCase(Locale.ROOT)) {
+        return switch (StringKit.toLowerCase(value)) {
             case Scim.Operations.ADD -> PatchOperation.Op.ADD;
             case Scim.Operations.REMOVE -> PatchOperation.Op.REMOVE;
             case Scim.Operations.REPLACE -> PatchOperation.Op.REPLACE;
@@ -197,7 +197,7 @@ public class ScimPatchCodec {
      * @return whether the path selects password
      */
     private static boolean passwordPath(final String value) {
-        final String normalized = value.toLowerCase(Locale.ROOT);
+        final String normalized = StringKit.toLowerCase(value);
         return "password".equals(normalized) || normalized.endsWith(":password");
     }
 

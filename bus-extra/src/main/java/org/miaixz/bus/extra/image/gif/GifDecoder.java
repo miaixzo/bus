@@ -30,6 +30,7 @@ import java.net.URL;
 import java.util.ArrayList;
 
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.xyz.StringKit;
 
 /**
  * Class GifDecoder - Decodes a GIF file into one or more frames.
@@ -89,94 +90,92 @@ public class GifDecoder {
     /**
      * The full image width.
      */
-    protected int width; // full image width
+    protected int width;
     /**
      * The full image height.
      */
-    protected int height; // full image height
+    protected int height;
     /**
      * Flag indicating if a global color table is used.
      */
-    protected boolean gctFlag; // global color table used
+    protected boolean gctFlag;
     /**
      * Size of the global color table.
      */
-    protected int gctSize; // size of global color table
+    protected int gctSize;
     /**
      * Number of iterations; 0 means repeat forever.
      */
-    protected int loopCount = 1; // iterations; 0 = repeat forever
+    protected int loopCount = 1;
     /**
      * The global color table.
      */
-    protected int[] gct; // global color table
+    protected int[] gct;
     /**
      * The local color table.
      */
-    protected int[] lct; // local color table
+    protected int[] lct;
     /**
      * The active color table.
      */
-    protected int[] act; // active color table
+    protected int[] act;
     /**
      * The background color index.
      */
-    protected int bgIndex; // background color index
+    protected int bgIndex;
     /**
      * The background color.
      */
-    protected int bgColor; // background color
+    protected int bgColor;
     /**
      * The previous background color.
      */
-    protected int lastBgColor; // previous bg color
+    protected int lastBgColor;
     /**
-     * The pixel aspect ratio.
+     * Encoded pixel-aspect-ratio value read from the logical screen descriptor.
      */
-    protected int pixelAspect; // pixel aspect ratio
+    protected int pixelAspect;
     /**
      * Flag indicating if a local color table is used.
      */
-    protected boolean lctFlag; // local color table flag
+    protected boolean lctFlag;
     /**
      * Flag indicating if the image is interlaced.
      */
-    protected boolean interlace; // interlace flag
+    protected boolean interlace;
     /**
      * The size of the local color table.
      */
-    protected int lctSize; // local color table size
+    protected int lctSize;
     /**
      * The current image rectangle coordinates and dimensions.
      */
-    protected int ix, iy, iw, ih; // current image rectangle
+    protected int ix, iy, iw, ih;
     /**
      * The last image rectangle.
      */
-    protected Rectangle lastRect; // last image rect
+    protected Rectangle lastRect;
     /**
      * The current frame image.
      */
-    protected BufferedImage image; // current frame
+    protected BufferedImage image;
     /**
      * The previous frame image.
      */
-    protected BufferedImage lastImage; // previous frame
+    protected BufferedImage lastImage;
     /**
      * The current data block.
      */
-    protected byte[] block = new byte[256]; // current data block
+    protected byte[] block = new byte[256];
     /**
      * The size of the current block.
      */
-    protected int blockSize = 0; // block size
-    // last graphic control extension info
+    protected int blockSize = 0;
     /**
      * The disposal method for the last graphic control extension.
      */
     protected int dispose = 0;
 
-    // 0=no action; 1=leave in place; 2=restore to bg; 3=restore to prev
     /**
      * The last disposal method used.
      */
@@ -185,17 +184,15 @@ public class GifDecoder {
     /**
      * Flag indicating if a transparent color is used.
      */
-    protected boolean transparency = false; // use transparent color
+    protected boolean transparency = false;
     /**
      * The delay in milliseconds.
      */
-    protected int delay = 0; // delay in milliseconds
+    protected int delay = 0;
     /**
      * The transparent color index.
      */
-    protected int transIndex; // transparent color index
-    // max decoder pixel stack size
-    // LZW decoder working arrays
+    protected int transIndex;
     /**
      * LZW decoder working array.
      */
@@ -219,7 +216,7 @@ public class GifDecoder {
     /**
      * List of frames read from the current file.
      */
-    protected ArrayList<GifFrame> frames; // frames read from current file
+    protected ArrayList<GifFrame> frames;
     /**
      * The total number of frames.
      */
@@ -452,7 +449,7 @@ public class GifDecoder {
     public int read(String name) {
         status = STATUS_OK;
         try {
-            name = name.trim().toLowerCase();
+            name = StringKit.toLowerCase(name.trim());
             if ((name.indexOf("file:") >= 0) || (name.indexOf(":/") > 0)) {
                 URL url = new URL(name);
                 in = new BufferedInputStream(url.openStream());

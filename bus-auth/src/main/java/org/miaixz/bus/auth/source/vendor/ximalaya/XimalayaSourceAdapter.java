@@ -117,7 +117,7 @@ public class XimalayaSourceAdapter implements VendorAdapter {
     /**
      * Creates one Source-bound Ximalaya adapter from the frozen default manifest.
      *
-     * @param spaceId  Source space isolating browser state and credentials
+     * @param tenantId Source tenant isolating browser state and credentials
      * @param sourceId Source identifier
      * @param manifest selected Ximalaya manifest
      * @param variant  exact selected default manifest
@@ -126,7 +126,7 @@ public class XimalayaSourceAdapter implements VendorAdapter {
      * @throws IllegalArgumentException if an identifier is blank or a collaborator is {@code null}
      * @throws ValidateException        if profile, manifest, options, or routing differ from the frozen variant
      */
-    public XimalayaSourceAdapter(final String spaceId, final String sourceId, final XimalayaManifest manifest,
+    public XimalayaSourceAdapter(final String tenantId, final String sourceId, final XimalayaManifest manifest,
             final VendorManifest.Variant variant, final XimalayaOptions options, final SourceServices services) {
         final XimalayaManifest selected = Assert.notNull(manifest, "Ximalaya manifest must not be null");
         this.sourceId = Assert.notBlank(sourceId, "Ximalaya Source id must not be blank");
@@ -140,7 +140,7 @@ public class XimalayaSourceAdapter implements VendorAdapter {
                 || !XimalayaManifest.DEFAULT.equals(options.variant())) {
             throw new ValidateException("Ximalaya adapter requires the ximalaya/default OAuth 2.0 manifest");
         }
-        this.redirectManager = RedirectManager.create(spaceId, sourceId, variant, options, services);
+        this.redirectManager = RedirectManager.create(tenantId, sourceId, variant, options, services);
         final VendorTargets.Resolved resolvedTargets = variant.targets().resolve(options);
         this.authorizationEncoder = new AuthorizationRequestEncoder(resolvedTargets.authorization().getOrNull());
         this.authority = Protocol.HTTPS_PREFIX + resolvedTargets.userInfo().getOrNull().url().host();

@@ -97,18 +97,18 @@ public class JpushSmsProvider extends AbstractProvider<JpushNotice, Context> {
 
         String response = post(this.getUrl(entity), bodys, headers);
         boolean succeed = Objects.equals(JsonKit.getValue(response, "success_count"), 0);
-        String errcode = succeed ? ErrorCode._SUCCESS.getKey() : ErrorCode._FAILURE.getKey();
-        String errmsg = succeed ? ErrorCode._SUCCESS.getValue() : JsonKit.getValue(response, "error.message");
+        String code = succeed ? ErrorCode._SUCCESS.getKey() : ErrorCode._FAILURE.getKey();
+        String desc = succeed ? ErrorCode._SUCCESS.getValue() : JsonKit.getValue(response, "error.message");
 
-        Message<Void> result = Message.<Void>builder().errcode(errcode).errmsg(errmsg).build();
+        Message<Void> result = Message.<Void>builder().code(code).desc(desc).build();
         Logger.info(
                 false,
                 "Notify",
-                "JPush SMS send completed: template={}, targetCount={}, successCount={}, errcode={}, responseBytes={}",
+                "JPush SMS send completed: template={}, targetCount={}, successCount={}, code={}, responseBytes={}",
                 entity == null ? null : entity.getTemplate(),
                 entity == null || entity.getReceive() == null ? 0 : entity.getReceive().split(Symbol.COMMA).length,
                 JsonKit.getValue(response, "success_count"),
-                result.getErrcode(),
+                result.getCode(),
                 response == null ? 0 : response.length());
         return result;
     }

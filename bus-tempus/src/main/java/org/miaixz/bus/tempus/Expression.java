@@ -28,6 +28,7 @@ import java.util.*;
 
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.DateKit;
+import org.miaixz.bus.core.xyz.StringKit;
 
 /**
  * Provides a parser and evaluator for unix-like cron expressions. Cron expressions provide the ability to specify
@@ -81,13 +82,13 @@ public class Expression implements Serializable, Cloneable {
     protected static final int YEAR = 6;
 
     /**
-     * Special value representing '*' in cron expressions.
+     * Sentinel representing the wildcard ({@code *}) in a cron field.
      */
-    protected static final int ALL_SPEC_INT = 99; // '*'
+    protected static final int ALL_SPEC_INT = 99;
     /**
-     * Special value representing '?' in cron expressions.
+     * Sentinel representing an unspecified value ({@code ?}) in a cron field.
      */
-    protected static final int NO_SPEC_INT = 98; // '?'
+    protected static final int NO_SPEC_INT = 98;
     /**
      * Integer wrapper for ALL_SPEC_INT.
      */
@@ -217,7 +218,7 @@ public class Expression implements Serializable, Cloneable {
             throw new IllegalArgumentException("cronExpression cannot be null");
         }
 
-        this.cronExpression = cronExpression.toUpperCase(Locale.US);
+        this.cronExpression = StringKit.toUpperCase(cronExpression, Locale.US);
 
         buildExpression(this.cronExpression);
     }

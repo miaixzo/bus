@@ -139,11 +139,7 @@ public class SixtyCycleMonth extends Loops {
      * @return The {@link NineStar} instance.
      */
     public NineStar getNineStar() {
-        int index = month.getEarthBranch().getIndex();
-        if (index < 2) {
-            index += 3;
-        }
-        return NineStar.fromIndex(27 - getYear().getEarthBranch().getIndex() % 3 * 3 - index);
+        return NineStar.fromYm(year, month);
     }
 
     /**

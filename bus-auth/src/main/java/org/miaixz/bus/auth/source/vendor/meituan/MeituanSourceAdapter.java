@@ -115,7 +115,7 @@ public class MeituanSourceAdapter implements VendorAdapter {
     /**
      * Creates one Source-bound Meituan adapter from the frozen default manifest.
      *
-     * @param spaceId  Source space used to isolate browser state and credentials
+     * @param tenantId Source tenant used to isolate browser state and credentials
      * @param sourceId Source identifier
      * @param manifest selected Meituan manifest
      * @param variant  exact selected default manifest
@@ -124,7 +124,7 @@ public class MeituanSourceAdapter implements VendorAdapter {
      * @throws IllegalArgumentException if an identifier is blank or a collaborator is {@code null}
      * @throws ValidateException        if routing, protocol, manifest, or options differ from the frozen manifest
      */
-    public MeituanSourceAdapter(final String spaceId, final String sourceId, final MeituanManifest manifest,
+    public MeituanSourceAdapter(final String tenantId, final String sourceId, final MeituanManifest manifest,
             final VendorManifest.Variant variant, final MeituanOptions options, final SourceServices services) {
         final MeituanManifest selectedProfile = Assert.notNull(manifest, "Meituan manifest must not be null");
         this.sourceId = Assert.notBlank(sourceId, "Meituan Source id must not be blank");
@@ -138,7 +138,7 @@ public class MeituanSourceAdapter implements VendorAdapter {
                 || options.redirectUri().isEmpty() || !options.scopes().isEmpty()) {
             throw new ValidateException("Meituan adapter requires the meituan/default OAuth 2.0 manifest");
         }
-        this.redirectManager = RedirectManager.create(spaceId, sourceId, variant, options, services);
+        this.redirectManager = RedirectManager.create(tenantId, sourceId, variant, options, services);
         this.standardAdapter = new StandardAdapter(variant, options, Optional.of(redirectManager),
                 List.of(
                         new StandardAdapter.Binding<>(OAuth2ClientScheme.AUTHORIZATION,

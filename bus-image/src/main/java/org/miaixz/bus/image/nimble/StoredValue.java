@@ -22,11 +22,10 @@ package org.miaixz.bus.image.nimble;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.opencv.core.CvType;
-
 import org.miaixz.bus.image.Tag;
 import org.miaixz.bus.image.galaxy.data.Attributes;
 import org.miaixz.bus.image.nimble.opencv.ImageCV;
+import org.miaixz.bus.opencv.core.CvType;
 
 /**
  * Interprets stored integer pixel samples and supplies shared lookup ramps for image rendering. Signed and unsigned

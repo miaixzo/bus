@@ -316,7 +316,7 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
         final Map<String, Integer> displayNames = cal.getDisplayNames(field, Calendar.ALL_STYLES, locale);
         final TreeSet<String> sorted = new TreeSet<>(LONGER_FIRST_LOWERCASE);
         for (final Map.Entry<String, Integer> displayName : displayNames.entrySet()) {
-            final String key = displayName.getKey().toLowerCase(locale);
+            final String key = StringKit.toLowerCase(displayName.getKey(), locale);
             if (sorted.add(key)) {
                 values.put(key, displayName.getValue());
             }
@@ -800,7 +800,7 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
          */
         @Override
         void setCalendar(final FastDateParser parser, final Calendar cal, final String value) {
-            final Integer iVal = lKeyValues.get(value.toLowerCase(locale));
+            final Integer iVal = lKeyValues.get(StringKit.toLowerCase(value, locale));
             cal.set(field, iVal);
         }
 
@@ -966,7 +966,7 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
                         default -> tzInfo;
                     };
                     if (zoneNames[i] != null) {
-                        final String key = zoneNames[i].toLowerCase(locale);
+                        final String key = StringKit.toLowerCase(zoneNames[i], locale);
                         if (sorted.add(key)) {
                             tzNames.put(key, tzInfo);
                         }
@@ -993,10 +993,10 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
                 final TimeZone tz = ZoneKit.getTimeZone(ZoneId.GMT.name() + value);
                 cal.setTimeZone(tz);
             } else if (value.regionMatches(true, 0, ZoneId.GMT.name(), 0, ZoneId.GMT.name().length())) {
-                final TimeZone tz = ZoneKit.getTimeZone(value.toUpperCase());
+                final TimeZone tz = ZoneKit.getTimeZone(StringKit.toUpperCase(value));
                 cal.setTimeZone(tz);
             } else {
-                final TzInfo tzInfo = tzNames.get(value.toLowerCase(locale));
+                final TzInfo tzInfo = tzNames.get(StringKit.toLowerCase(value, locale));
                 cal.set(Calendar.DST_OFFSET, tzInfo.dstOffset);
                 cal.set(Calendar.ZONE_OFFSET, parser.getTimeZone().getRawOffset());
             }

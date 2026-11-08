@@ -12,6 +12,10 @@
         {
           "name": "builder",
           "parameterTypes": []
+        },
+        {
+          "parameterTypes": [],
+          "name": "<init>"
         }
       ]
     },
@@ -378,6 +382,14 @@
             "org.miaixz.bus.mapper.binding.condition.Condition"
           ]
         }
+      ],
+      "fields": [
+        {
+          "name": "mapper"
+        },
+        {
+          "name": "operatorProvider"
+        }
       ]
     },
     {
@@ -451,6 +463,11 @@
           "parameterTypes": [
             "java.lang.Object"
           ]
+        }
+      ],
+      "fields": [
+        {
+          "name": "service"
         }
       ]
     }

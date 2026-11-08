@@ -217,49 +217,49 @@ public interface LinuxLibc extends LibC, CLibrary {
     class LinuxUtmpx extends Structure {
 
         /**
-         * The ut_type value.
+         * Type of login.
          */
-        public short ut_type; // Type of login.
+        public short ut_type;
         /**
-         * The ut_pid value.
+         * Process ID of login process.
          */
-        public int ut_pid; // Process ID of login process.
+        public int ut_pid;
         /**
-         * The ut_line value.
+         * Devicename.
          */
-        public byte[] ut_line = new byte[UT_LINESIZE]; // Devicename.
+        public byte[] ut_line = new byte[UT_LINESIZE];
         /**
-         * The ut_id value.
+         * Inittab ID.
          */
-        public byte[] ut_id = new byte[4]; // Inittab ID.
+        public byte[] ut_id = new byte[4];
         /**
-         * The ut_user value.
+         * Username.
          */
-        public byte[] ut_user = new byte[UT_NAMESIZE]; // Username.
+        public byte[] ut_user = new byte[UT_NAMESIZE];
         /**
-         * The ut_host value.
+         * Hostname for remote login.
          */
-        public byte[] ut_host = new byte[UT_HOSTSIZE]; // Hostname for remote login.
+        public byte[] ut_host = new byte[UT_HOSTSIZE];
         /**
-         * The ut_exit value.
+         * Exit status of a process marked as DEAD_PROCESS.
          */
-        public Exit_status ut_exit; // Exit status of a process marked as DEAD_PROCESS.
+        public Exit_status ut_exit;
         /**
-         * The ut_session value.
+         * Session ID, used for windowing.
          */
-        public int ut_session; // Session ID, used for windowing.
+        public int ut_session;
         /**
-         * The ut_tv value.
+         * Time entry was made.
          */
-        public Ut_Tv ut_tv; // Time entry was made.
+        public Ut_Tv ut_tv;
         /**
-         * The ut_addr_v6 value.
+         * Internet address of remote host; IPv4 address uses just ut_addr_v6[0].
          */
-        public int[] ut_addr_v6 = new int[4]; // Internet address of remote host; IPv4 address uses just ut_addr_v6[0]
+        public int[] ut_addr_v6 = new int[4];
         /**
-         * The reserved value.
+         * Reserved for future use.
          */
-        public byte[] reserved = new byte[20]; // Reserved for future use.
+        public byte[] reserved = new byte[20];
 
         /**
          * Constructs a new {@code LinuxUtmpx} instance.
@@ -282,13 +282,13 @@ public interface LinuxLibc extends LibC, CLibrary {
     class Exit_status extends Structure {
 
         /**
-         * The e_termination value.
+         * Process termination status.
          */
-        public short e_termination; // Process termination status
+        public short e_termination;
         /**
-         * The e_exit value.
+         * Process exit status.
          */
-        public short e_exit; // Process exit status
+        public short e_exit;
 
         /**
          * Constructs a new {@code Exit_status} instance.
@@ -311,13 +311,13 @@ public interface LinuxLibc extends LibC, CLibrary {
     class Ut_Tv extends Structure {
 
         /**
-         * The tv_sec value.
+         * Seconds.
          */
-        public int tv_sec; // seconds
+        public int tv_sec;
         /**
-         * The tv_usec value.
+         * Microseconds.
          */
-        public int tv_usec; // microseconds
+        public int tv_usec;
 
         /**
          * Constructs a new {@code Ut_Tv} instance.

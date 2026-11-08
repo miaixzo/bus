@@ -52,14 +52,14 @@ public @interface Equals {
      *
      * @return the error code.
      */
-    String errcode() default ErrorCode._EQUALS;
+    String code() default ErrorCode._EQUALS;
 
     /**
      * The error message to be used when validation fails. The message can be a template with placeholders.
      *
      * @return the error message.
      */
-    String errmsg() default ErrorCode._EQUALS_VALUE;
+    String desc() default ErrorCode._EQUALS_VALUE;
 
     /**
      * The validation groups this constraint belongs to.

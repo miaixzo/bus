@@ -27,7 +27,6 @@ package org.miaixz.bus.shade.beans;
  */
 public enum MySQLColumnType implements ColumnType {
 
-    // Primitive types
     /**
      * Represents the primitive byte type.
      */
@@ -61,7 +60,6 @@ public enum MySQLColumnType implements ColumnType {
      */
     BASE_BOOLEAN("boolean", null),
 
-    // Wrapper types
     /**
      * Represents the Byte wrapper type.
      */
@@ -99,7 +97,6 @@ public enum MySQLColumnType implements ColumnType {
      */
     STRING("String", null),
 
-    // SQL package data types
     /**
      * Represents {@code java.sql.Date}.
      */
@@ -121,7 +118,6 @@ public enum MySQLColumnType implements ColumnType {
      */
     CLOB("Clob", "java.sql.Clob"),
 
-    // Java 8 new time types
     /**
      * Represents {@code java.time.LocalDate}.
      */
@@ -143,7 +139,6 @@ public enum MySQLColumnType implements ColumnType {
      */
     LOCAL_DATE_TIME("LocalDateTime", "java.time.LocalDateTime"),
 
-    // Other miscellaneous types
     /**
      * Represents a byte array.
      */

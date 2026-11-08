@@ -19,8 +19,7 @@
 */
 package org.miaixz.bus.image.nimble.mpr;
 
-import java.util.Locale;
-
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.image.Tag;
 import org.miaixz.bus.image.galaxy.data.Attributes;
 import org.miaixz.bus.image.galaxy.data.DicomModule;
@@ -75,7 +74,7 @@ public class MprGeometryModule extends DicomModule {
      */
     public MprThicknessType getMprThicknessType() {
         String value = dcmItems.getString(Tag.MPRThicknessType);
-        return value == null ? null : MprThicknessType.valueOf(value.toUpperCase(Locale.ROOT));
+        return value == null ? null : MprThicknessType.valueOf(StringKit.toUpperCase(value));
     }
 
     /**

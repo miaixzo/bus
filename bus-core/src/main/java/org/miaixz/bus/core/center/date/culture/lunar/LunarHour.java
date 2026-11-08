@@ -32,7 +32,6 @@ import org.miaixz.bus.core.center.date.culture.sixty.HeavenStem;
 import org.miaixz.bus.core.center.date.culture.sixty.SixtyCycle;
 import org.miaixz.bus.core.center.date.culture.sixty.SixtyCycleHour;
 import org.miaixz.bus.core.center.date.culture.solar.SolarDay;
-import org.miaixz.bus.core.center.date.culture.solar.SolarTerms;
 import org.miaixz.bus.core.center.date.culture.solar.SolarTime;
 import org.miaixz.bus.core.center.date.culture.star.nine.NineStar;
 import org.miaixz.bus.core.center.date.culture.star.twelve.TwelveStar;
@@ -153,7 +152,7 @@ public class LunarHour extends SecondParts {
      * @return true if this hour is before the target, false otherwise
      */
     public boolean isBefore(LunarHour target) {
-        return getCompareIndex() < target.getCompareIndex();
+        return super.isBefore(target);
     }
 
     /**
@@ -163,7 +162,7 @@ public class LunarHour extends SecondParts {
      * @return true if this hour is after the target, false otherwise
      */
     public boolean isAfter(LunarHour target) {
-        return getCompareIndex() > target.getCompareIndex();
+        return super.isAfter(target);
     }
 
     /**
@@ -205,18 +204,8 @@ public class LunarHour extends SecondParts {
      * @return the nine star
      */
     public NineStar getNineStar() {
-        LunarDay d = getLunarDay();
-        SolarDay solar = d.getSolarDay();
-        SolarTerms dongZhi = SolarTerms.fromIndex(solar.getYear(), 0);
-        int earthBranchIndex = getIndexInDay() % 12;
-        int index = 8 - 3 * (d.getSixtyCycle().getEarthBranch().getIndex() % 3);
-        if (!solar.isBefore(dongZhi.getJulianDay().getSolarDay())
-                && solar.isBefore(dongZhi.next(12).getJulianDay().getSolarDay())) {
-            index = 8 + earthBranchIndex - index;
-        } else {
-            index -= earthBranchIndex;
-        }
-        return NineStar.fromIndex(index);
+        LunarDay day = getLunarDay();
+        return NineStar.fromHour(day.getSolarDay(), day.getSixtyCycle(), getIndexInDay());
     }
 
     /**

@@ -43,6 +43,7 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.xyz.IoKit;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.core.xyz.ThreadKit;
 import org.miaixz.bus.fabric.Builder;
 import org.miaixz.bus.fabric.network.dns.message.DnsCodec;
@@ -272,12 +273,12 @@ public class DnsDohServer implements AutoCloseable, Lifecycle {
      */
     private static byte[] postDnsFromHttp1(final InputStream input, final Map<String, String> headers)
             throws IOException {
-        final String contentType = headers.get(Http.Header.CONTENT_TYPE.toLowerCase(Locale.ROOT));
+        final String contentType = headers.get(StringKit.toLowerCase(Http.Header.CONTENT_TYPE));
         if (!isDnsMessageContentType(contentType)) {
             throw new StatefulException(Http.Status.UNSUPPORTED_MEDIA_TYPE,
                     "HTTP " + Http.Status.UNSUPPORTED_MEDIA_TYPE);
         }
-        final int length = contentLength(headers.get(Http.Header.CONTENT_LENGTH.toLowerCase(Locale.ROOT)));
+        final int length = contentLength(headers.get(StringKit.toLowerCase(Http.Header.CONTENT_LENGTH)));
         if (length <= 0 || length > DnsCodec.MAX_MESSAGE_BYTES) {
             throw new StatefulException(Http.Status.CONTENT_TOO_LARGE, "HTTP " + Http.Status.CONTENT_TOO_LARGE);
         }
@@ -295,7 +296,7 @@ public class DnsDohServer implements AutoCloseable, Lifecycle {
      * @return DNS query wire bytes
      */
     private static byte[] postDnsFromHttp2(final Http2RequestState state) {
-        final String contentType = state.headers.get(Http.Header.CONTENT_TYPE.toLowerCase(Locale.ROOT));
+        final String contentType = state.headers.get(StringKit.toLowerCase(Http.Header.CONTENT_TYPE));
         if (!isDnsMessageContentType(contentType)) {
             throw new StatefulException(Http.Status.UNSUPPORTED_MEDIA_TYPE,
                     "HTTP " + Http.Status.UNSUPPORTED_MEDIA_TYPE);
@@ -315,7 +316,7 @@ public class DnsDohServer implements AutoCloseable, Lifecycle {
         }
         final int separator = contentType.indexOf(Symbol.C_SEMICOLON);
         final String mediaType = separator < 0 ? contentType : contentType.substring(0, separator);
-        return MediaType.APPLICATION_DNS_MESSAGE.equals(mediaType.trim().toLowerCase(Locale.ROOT));
+        return MediaType.APPLICATION_DNS_MESSAGE.equals(StringKit.toLowerCase(mediaType.trim()));
     }
 
     /**
@@ -402,8 +403,8 @@ public class DnsDohServer implements AutoCloseable, Lifecycle {
             final byte[] body) throws IOException {
         final ArrayList<Http2Header> headers = new ArrayList<>();
         headers.add(Http2Header.of(":status", Integer.toString(status)));
-        headers.add(Http2Header.of(Http.Header.CONTENT_TYPE.toLowerCase(Locale.ROOT), contentType));
-        headers.add(Http2Header.of(Http.Header.CONTENT_LENGTH.toLowerCase(Locale.ROOT), Integer.toString(body.length)));
+        headers.add(Http2Header.of(StringKit.toLowerCase(Http.Header.CONTENT_TYPE), contentType));
+        headers.add(Http2Header.of(StringKit.toLowerCase(Http.Header.CONTENT_LENGTH), Integer.toString(body.length)));
         final byte[] encoded = hpack.encodeBuffer(headers).readByteArray();
         final int headerFlags = H2_FLAG_END_HEADERS | (body.length == 0 ? H2_FLAG_END_STREAM : 0);
         writeFrame(output, H2_HEADERS, headerFlags, streamId, encoded);
@@ -457,7 +458,7 @@ public class DnsDohServer implements AutoCloseable, Lifecycle {
             if (separator <= 0) {
                 throw new StatefulException(Http.Status.BAD_REQUEST, "HTTP " + Http.Status.BAD_REQUEST);
             }
-            headers.put(line.substring(0, separator).toLowerCase(Locale.ROOT), line.substring(separator + 1).trim());
+            headers.put(StringKit.toLowerCase(line.substring(0, separator)), line.substring(separator + 1).trim());
         }
     }
 
@@ -1170,7 +1171,7 @@ public class DnsDohServer implements AutoCloseable, Lifecycle {
         private static Http2RequestState from(final List<Http2Header> decoded) {
             final HashMap<String, String> headers = new HashMap<>();
             for (final Http2Header header : decoded) {
-                headers.put(header.name().toLowerCase(Locale.ROOT), header.value());
+                headers.put(StringKit.toLowerCase(header.name()), header.value());
             }
             return new Http2RequestState(headers);
         }

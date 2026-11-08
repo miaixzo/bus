@@ -170,7 +170,7 @@ public class GenericS3Provider extends AbstractProvider {
             if (response.metadata() != null && !response.metadata().isEmpty()) {
                 extend.put("metadata", new HashMap<>(response.metadata()));
             }
-            return Message.<Blob>builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
+            return Message.<Blob>builder().code(ErrorCode._SUCCESS.getKey()).desc(ErrorCode._SUCCESS.getValue())
                     .data(
                             Blob.builder().bucket(bucket).key(objectKey).name(name).path(objectKey)
                                     .size(StringKit.toString(response.contentLength())).type(response.contentType())
@@ -202,7 +202,7 @@ public class GenericS3Provider extends AbstractProvider {
                     error.getKey(),
                     e.getMessage(),
                     e);
-            return Message.<Blob>builder().errcode(error.getKey()).errmsg(error.getValue()).build();
+            return Message.<Blob>builder().code(error.getKey()).desc(error.getValue()).build();
         }
     }
 
@@ -254,7 +254,7 @@ public class GenericS3Provider extends AbstractProvider {
             if (response.metadata() != null && !response.metadata().isEmpty()) {
                 extend.put("metadata", new HashMap<>(response.metadata()));
             }
-            return Message.<Blob>builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
+            return Message.<Blob>builder().code(ErrorCode._SUCCESS.getKey()).desc(ErrorCode._SUCCESS.getValue())
                     .data(
                             Blob.builder().inputStream(stream).bucket(bucket).key(objectKey).name(name).path(objectKey)
                                     .size(StringKit.toString(response.contentLength())).type(response.contentType())
@@ -286,7 +286,7 @@ public class GenericS3Provider extends AbstractProvider {
                     error.getKey(),
                     e.getMessage(),
                     e);
-            return Message.<Blob>builder().errcode(error.getKey()).errmsg(error.getValue()).build();
+            return Message.<Blob>builder().code(error.getKey()).desc(error.getValue()).build();
         }
     }
 
@@ -325,8 +325,8 @@ public class GenericS3Provider extends AbstractProvider {
             // Use try-with-resources to automatically close the InputStream and prevent resource leaks
             try (InputStream inputStream = client.getObject(request)) {
                 byte[] content = inputStream.readAllBytes();
-                return Message.<byte[]>builder().errcode(ErrorCode._SUCCESS.getKey())
-                        .errmsg(ErrorCode._SUCCESS.getValue()).data(content).build();
+                return Message.<byte[]>builder().code(ErrorCode._SUCCESS.getKey()).desc(ErrorCode._SUCCESS.getValue())
+                        .data(content).build();
             }
         } catch (Exception e) {
             Logger.error(
@@ -338,7 +338,7 @@ public class GenericS3Provider extends AbstractProvider {
                     fileName,
                     e.getMessage(),
                     e);
-            return Message.<byte[]>builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue())
+            return Message.<byte[]>builder().code(ErrorCode._FAILURE.getKey()).desc(ErrorCode._FAILURE.getValue())
                     .build();
         }
     }
@@ -386,7 +386,7 @@ public class GenericS3Provider extends AbstractProvider {
                 IoKit.copy(inputStream, outputStream);
             }
 
-            return Message.<Void>builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
+            return Message.<Void>builder().code(ErrorCode._SUCCESS.getKey()).desc(ErrorCode._SUCCESS.getValue())
                     .build();
         } catch (Exception e) {
             Logger.error(
@@ -399,7 +399,7 @@ public class GenericS3Provider extends AbstractProvider {
                     file != null,
                     e.getMessage(),
                     e);
-            return Message.<Void>builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue())
+            return Message.<Void>builder().code(ErrorCode._FAILURE.getKey()).desc(ErrorCode._FAILURE.getValue())
                     .build();
         }
     }
@@ -419,8 +419,8 @@ public class GenericS3Provider extends AbstractProvider {
                                     : Builder.buildNormalizedPrefix(context.getPrefix()) + Symbol.SLASH)
                     .build();
             ListObjectsV2Response response = client.listObjectsV2(request);
-            return Message.<List<Blob>>builder().errcode(ErrorCode._SUCCESS.getKey())
-                    .errmsg(ErrorCode._SUCCESS.getValue()).data(response.contents().stream().map(item -> {
+            return Message.<List<Blob>>builder().code(ErrorCode._SUCCESS.getKey()).desc(ErrorCode._SUCCESS.getValue())
+                    .data(response.contents().stream().map(item -> {
                         Map<String, Object> extend = new HashMap<>();
                         extend.put("tag", item.eTag());
                         extend.put("storageClass", item.storageClassAsString());
@@ -438,8 +438,8 @@ public class GenericS3Provider extends AbstractProvider {
                     this.context.getBucket(),
                     e.getMessage(),
                     e);
-            return Message.<List<Blob>>builder().errcode(ErrorCode._FAILURE.getKey())
-                    .errmsg(ErrorCode._FAILURE.getValue()).build();
+            return Message.<List<Blob>>builder().code(ErrorCode._FAILURE.getKey()).desc(ErrorCode._FAILURE.getValue())
+                    .build();
         }
     }
 
@@ -498,7 +498,7 @@ public class GenericS3Provider extends AbstractProvider {
                         .build();
                 client.deleteObject(deleteRequest);
             }
-            return Message.<Void>builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
+            return Message.<Void>builder().code(ErrorCode._SUCCESS.getKey()).desc(ErrorCode._SUCCESS.getValue())
                     .build();
         } catch (Exception e) {
             Logger.error(
@@ -512,7 +512,7 @@ public class GenericS3Provider extends AbstractProvider {
                     newName,
                     e.getMessage(),
                     e);
-            return Message.<Void>builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue())
+            return Message.<Void>builder().code(ErrorCode._FAILURE.getKey()).desc(ErrorCode._FAILURE.getValue())
                     .build();
         }
     }
@@ -605,7 +605,7 @@ public class GenericS3Provider extends AbstractProvider {
             PresignedGetObjectRequest presignedRequest = presigner.presignGetObject(presignRequest);
             String presignedUrl = presignedRequest.url().toString();
 
-            return Message.<Blob>builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
+            return Message.<Blob>builder().code(ErrorCode._SUCCESS.getKey()).desc(ErrorCode._SUCCESS.getValue())
                     .data(Blob.builder().name(fileName).url(presignedUrl).path(objectKey).build()).build();
         } catch (Exception e) {
             Logger.error(
@@ -618,7 +618,7 @@ public class GenericS3Provider extends AbstractProvider {
                     fileName,
                     e.getMessage(),
                     e);
-            return Message.<Blob>builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue())
+            return Message.<Blob>builder().code(ErrorCode._FAILURE.getKey()).desc(ErrorCode._FAILURE.getValue())
                     .build();
         }
     }
@@ -661,7 +661,7 @@ public class GenericS3Provider extends AbstractProvider {
             String objectKey = Builder.buildObjectKey(prefix, path, fileName);
             DeleteObjectRequest request = DeleteObjectRequest.builder().bucket(bucket).key(objectKey).build();
             client.deleteObject(request);
-            return Message.<Void>builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
+            return Message.<Void>builder().code(ErrorCode._SUCCESS.getKey()).desc(ErrorCode._SUCCESS.getValue())
                     .build();
         } catch (Exception e) {
             Logger.error(
@@ -674,7 +674,7 @@ public class GenericS3Provider extends AbstractProvider {
                     fileName,
                     e.getMessage(),
                     e);
-            return Message.<Void>builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue())
+            return Message.<Void>builder().code(ErrorCode._FAILURE.getKey()).desc(ErrorCode._FAILURE.getValue())
                     .build();
         }
     }

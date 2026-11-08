@@ -23,6 +23,8 @@ import java.util.*;
 import java.util.function.*;
 import java.util.stream.*;
 
+import org.miaixz.bus.core.xyz.StringKit;
+
 /**
  * A wrapper for {@link Stream} instances, used to enhance the original {@link Stream} by providing additional
  * intermediate and terminal operations. Two primary implementations are provided:
@@ -220,13 +222,14 @@ public interface WrappedStream<T, S extends WrappedStream<T, S>> extends Stream<
     /**
      * Performs an action for each element of this stream. This is a stateless intermediate operation.
      * <p>
-     * For example, to observe elements at various points in a pipeline:
+     * For example, to observe elements at various points in a pipeline, using
+     * {@link StringKit#toLowerCase(CharSequence)} for case conversion:
      *
      * <pre>{@code
      *     .of("one", "two", "three", "four")
      *         .filter(e -> e.length() > 3)
      *         .peek(e -> System.out.println("Filtered value: " + e))
-     *         .map(String::toUpperCase)
+     *         .map(StringKit::toUpperCase)
      *         .peek(e -> System.out.println("Mapped value: " + e))
      *         .collect(Collectors.toList());
      * }</pre>

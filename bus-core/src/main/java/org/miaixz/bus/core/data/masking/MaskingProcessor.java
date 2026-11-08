@@ -142,7 +142,7 @@ public class MaskingProcessor {
                     }
 
                     if (tagNameEnd > tagNameStart) {
-                        currentTag = html.substring(tagNameStart, tagNameEnd).toLowerCase();
+                        currentTag = StringKit.toLowerCase(html.substring(tagNameStart, tagNameEnd));
                     }
                 }
             } else if (c == Symbol.C_GT && inTag) {

@@ -35,9 +35,9 @@ import org.miaixz.bus.core.basic.entity.Tracer;
  * Sources, each independently selecting its Driver type, actual protocol, and typed protocol options.
  * </p>
  * <p>
- * A Source does not own a persistent {@code space_id}. Its resource space is resolved only through
- * {@code provider_id -> Provider.library_id -> Library.space_id}; inherited Tracer fields are transient request context
- * and do not define configuration ownership.
+ * A Source does not own a persistent {@code tenant_id}. Its owning tenant is resolved only through
+ * {@code provider_id -> Provider.library_id -> Library.tenant_id}; inherited Tracer fields are transient request
+ * context and do not define configuration ownership.
  * </p>
  * <p>
  * This mutable configuration model exposes no runtime operation, protocol implementation, vendor-specific field, or

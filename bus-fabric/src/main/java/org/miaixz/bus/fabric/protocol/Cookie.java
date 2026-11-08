@@ -23,7 +23,6 @@ import java.time.Instant;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.Locale;
 
 import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.Assert;
@@ -150,8 +149,8 @@ public class Cookie {
                 continue;
             }
             final int attributeSeparator = attribute.indexOf(Symbol.C_EQUAL);
-            final String name = (attributeSeparator >= 0 ? attribute.substring(0, attributeSeparator) : attribute)
-                    .trim().toLowerCase(Locale.ROOT);
+            final String name = StringKit.toLowerCase(
+                    (attributeSeparator >= 0 ? attribute.substring(0, attributeSeparator) : attribute).trim());
             final String value = attributeSeparator >= 0 ? attribute.substring(attributeSeparator + 1).trim()
                     : Normal.EMPTY;
             switch (name) {
@@ -269,7 +268,7 @@ public class Cookie {
         if (isAddressLiteral(normalized)) {
             return normalized;
         }
-        return normalized.toLowerCase(Locale.ROOT);
+        return StringKit.toLowerCase(normalized);
     }
 
     /**

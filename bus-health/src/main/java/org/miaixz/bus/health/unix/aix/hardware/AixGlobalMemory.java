@@ -43,10 +43,9 @@ import org.miaixz.bus.health.unix.aix.driver.perfstat.PerfstatMemory;
 @ThreadSafe
 final class AixGlobalMemory extends AbstractGlobalMemory {
 
-    // AIX has multiple page size units, but for purposes of "pages" in perfstat,
-    // the docs specify 4KB pages so we hardcode this
     /**
-     * The PAGESIZE constant.
+     * AIX has multiple page size units, but for purposes of "pages" in perfstat, the docs specify 4KB pages so we
+     * hardcode this.
      */
     private static final long PAGESIZE = 4096L;
 

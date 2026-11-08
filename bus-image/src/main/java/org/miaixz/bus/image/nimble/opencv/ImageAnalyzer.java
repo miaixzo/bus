@@ -28,10 +28,10 @@ import java.awt.image.RenderedImage;
 import java.util.*;
 import java.util.List;
 
-import org.opencv.core.*;
-import org.opencv.core.Core.MinMaxLocResult;
-import org.opencv.core.Point;
-import org.opencv.imgproc.Imgproc;
+import org.miaixz.bus.opencv.core.*;
+import org.miaixz.bus.opencv.core.Core.MinMaxLocResult;
+import org.miaixz.bus.opencv.core.Point;
+import org.miaixz.bus.opencv.imgproc.Imgproc;
 
 /**
  * Provides statistical analysis and measurement operations for medical images.
@@ -298,8 +298,6 @@ public class ImageAnalyzer {
             }
         }
     }
-
-    // Private methods
 
     /**
      * Creates the shape mask.

@@ -33,6 +33,7 @@ import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.Memoizer;
 import org.miaixz.bus.health.Parsing;
@@ -57,7 +58,7 @@ public class OpenBsdOSProcess extends AbstractOSProcess {
      * The PS_THREAD_COLUMNS constant.
      */
     static final String PS_THREAD_COLUMNS = Arrays.stream(PsThreadColumns.values()).map(Enum::name)
-            .map(name -> name.toLowerCase(Locale.ROOT)).collect(Collectors.joining(Symbol.COMMA));
+            .map(name -> StringKit.toLowerCase(name)).collect(Collectors.joining(Symbol.COMMA));
 
     /**
      * The ARGMAX constant.

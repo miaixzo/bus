@@ -20,11 +20,12 @@
 package org.miaixz.bus.health.windows.driver.perfmon;
 
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.tuple.Pair;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.health.windows.PerfCounterQuery;
 import org.miaixz.bus.health.windows.PerfCounterWildcardQuery;
 
@@ -58,14 +59,16 @@ public class ThreadInformation {
     /**
      * Returns thread counters filtered to the specified process name and thread.
      *
-     * @param name      The process name to filter
+     * @param name      The non-null process name to filter
      * @param threadNum The thread number to match. -1 matches all threads.
      * @return Thread counters for each thread.
+     * @throws NullPointerException if {@code name} is null
      */
     public static Pair<List<String>, Map<ThreadPerformanceProperty, List<Long>>> queryThreadCounters(
             String name,
             int threadNum) {
-        String procName = name.toLowerCase(Locale.ROOT);
+        Objects.requireNonNull(name, "Process name must not be null");
+        String procName = StringKit.toLowerCase(name);
         if (threadNum >= 0) {
             Pair<List<String>, Map<ThreadPerformanceProperty, List<Long>>> threads = PerfCounterWildcardQuery
                     .queryInstancesAndValues(

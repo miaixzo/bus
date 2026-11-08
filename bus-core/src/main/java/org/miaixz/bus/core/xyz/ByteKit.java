@@ -26,7 +26,6 @@ import java.nio.ByteOrder;
 import java.nio.CharBuffer;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Locale;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.DoubleAdder;
@@ -397,8 +396,8 @@ public class ByteKit {
      * @return The int value.
      */
     public static int toInt(final byte[] bytes, final int start, final ByteOrder byteOrder) {
-        if (bytes.length - start < Integer.BYTES) {
-            throw new IllegalArgumentException("bytes length must be greater than or equal to " + Integer.BYTES);
+        if (bytes == null || start < 0 || start > bytes.length - Integer.BYTES) {
+            throw new IllegalArgumentException("bytes must contain at least four bytes at a non-negative offset");
         }
 
         int values = 0;
@@ -1446,7 +1445,7 @@ public class ByteKit {
             sb.append(Character.forDigit((b & 0xf0) >>> 4, 16));
             sb.append(Character.forDigit(b & 0x0f, 16));
         }
-        return sb.toString().toUpperCase(Locale.ROOT);
+        return StringKit.toUpperCase(sb.toString());
     }
 
     /**

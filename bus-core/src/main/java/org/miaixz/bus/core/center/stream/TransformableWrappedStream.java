@@ -280,13 +280,13 @@ public interface TransformableWrappedStream<T, S extends TransformableWrappedStr
      * Returns a stream consisting of the results of applying the given action to each element of this stream, providing
      * the element and its index. This is a stateless intermediate operation.
      * <p>
-     * Example:
+     * Example using {@link StringKit#toLowerCase(CharSequence)} for case conversion:
      *
      * <pre>
      *     {@code
      * Stream.of("one", "two", "three", "four").filter(e -> e.length() > 3)
      *         .peekIdx((e, i) -> System.out.println("Filtered value: " + e + " Filtered idx:" + i))
-     *         .map(String::toUpperCase)
+     *         .map(StringKit::toUpperCase)
      *         .peekIdx((e, i) -> System.out.println("Mapped value: " + e + " Mapped idx:" + i))
      *         .collect(Collectors.toList());
      * }</pre>

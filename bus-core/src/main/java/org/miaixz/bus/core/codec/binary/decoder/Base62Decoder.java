@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.core.codec.binary.decoder;
 
+import java.util.Arrays;
+
 import org.miaixz.bus.core.codec.Decoder;
 import org.miaixz.bus.core.codec.binary.encoder.Base62Encoder;
 import org.miaixz.bus.core.codec.binary.provider.Base62Provider;
@@ -53,6 +55,7 @@ public class Base62Decoder implements Decoder<byte[], byte[]> {
      */
     public Base62Decoder(final byte[] alphabet) {
         lookupTable = new byte['z' + 1];
+        Arrays.fill(lookupTable, (byte) -1);
         for (int i = 0; i < alphabet.length; i++) {
             lookupTable[alphabet[i]] = (byte) i;
         }
@@ -63,6 +66,7 @@ public class Base62Decoder implements Decoder<byte[], byte[]> {
      *
      * @param encoded The Base62 encoded data.
      * @return The decoded byte array.
+     * @throws IllegalArgumentException If the input contains a byte outside the Base62 alphabet.
      */
     @Override
     public byte[] decode(final byte[] encoded) {

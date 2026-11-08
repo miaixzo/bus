@@ -22,13 +22,12 @@ package org.miaixz.bus.image.nimble.reader;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.Arrays;
-import java.util.Locale;
 import java.util.Objects;
 
 import javax.imageio.ImageIO;
 
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.xyz.StringKit;
 
 /**
  * JDK ImageIO codec facade for non-DICOM still image formats.
@@ -152,18 +151,25 @@ public class ImageioCodec {
     }
 
     /**
-     * Determines whether ignore case.
+     * Tests whether codec metadata contains the requested value, ignoring case.
      *
-     * @param values the values.
-     * @param value  the value.
-     * @return true if the condition is met; otherwise false.
+     * @param values supported codec values; examined elements must be non-null
+     * @param value  the requested value; null or blank returns false without examining metadata
+     * @return whether a matching value is found
+     * @throws NullPointerException if a non-blank value is supplied and the array or an examined element is null
      */
     private static boolean containsIgnoreCase(String[] values, String value) {
         if (value == null || value.isBlank()) {
             return false;
         }
-        String normalized = value.trim().toLowerCase(Locale.ROOT);
-        return Arrays.stream(values).anyMatch(item -> normalized.equals(item.toLowerCase(Locale.ROOT)));
+        String normalized = StringKit.toLowerCase(value.trim());
+        for (String item : values) {
+            Objects.requireNonNull(item, "Codec format name must not be null");
+            if (normalized.equals(StringKit.toLowerCase(item))) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**

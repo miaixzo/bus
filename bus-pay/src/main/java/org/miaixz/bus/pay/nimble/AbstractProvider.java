@@ -541,24 +541,24 @@ public abstract class AbstractProvider<T extends Voucher, K extends Context> imp
      * @return A {@link Message} object representing the error.
      */
     protected Message responseError(Exception e) {
-        String errorCode = ErrorCode._FAILURE.getKey();
-        String errorMsg = e.getMessage();
+        String code = ErrorCode._FAILURE.getKey();
+        String desc = e.getMessage();
         if (e instanceof PaymentException) {
             PaymentException authException = ((PaymentException) e);
-            errorCode = authException.getErrcode();
-            if (StringKit.isNotEmpty(authException.getErrmsg())) {
-                errorMsg = authException.getErrmsg();
+            code = authException.getCode();
+            if (StringKit.isNotEmpty(authException.getDesc())) {
+                desc = authException.getDesc();
             }
         }
         Logger.warn(
                 false,
                 "Pay",
                 e,
-                "Payment response error assembled: provider={}, errorCode={}, exception={}",
+                "Payment response error assembled: provider={}, code={}, exception={}",
                 getClass().getSimpleName(),
-                errorCode,
+                code,
                 e == null ? null : e.getClass().getSimpleName());
-        return Message.builder().errcode(errorCode).errmsg(errorMsg).build();
+        return Message.builder().code(code).desc(desc).build();
     }
 
     /**

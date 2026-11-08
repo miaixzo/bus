@@ -56,6 +56,7 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.net.Protocol;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.extra.json.JsonValue;
 
@@ -124,7 +125,7 @@ public class GitHubSourceAdapter implements VendorAdapter {
     /**
      * Creates one Source-bound GitHub.com OAuth App adapter.
      *
-     * @param spaceId  Source space used to isolate state and credential resolution
+     * @param tenantId Source tenant used to isolate state and credential resolution
      * @param sourceId Source identifier
      * @param manifest selected GitHub manifest
      * @param variant  exact selected default manifest
@@ -133,7 +134,7 @@ public class GitHubSourceAdapter implements VendorAdapter {
      * @throws IllegalArgumentException if an identifier is blank or a collaborator is {@code null}
      * @throws ValidateException        if routing, protocol, manifest, callback, or authorization is inconsistent
      */
-    public GitHubSourceAdapter(final String spaceId, final String sourceId, final GitHubManifest manifest,
+    public GitHubSourceAdapter(final String tenantId, final String sourceId, final GitHubManifest manifest,
             final VendorManifest.Variant variant, final GitHubOptions options, final SourceServices services) {
         final GitHubManifest selected = Assert.notNull(manifest, "GitHub manifest must not be null");
         this.sourceId = Assert.notBlank(sourceId, "GitHub Source id must not be blank");
@@ -146,7 +147,7 @@ public class GitHubSourceAdapter implements VendorAdapter {
                 || options.redirectUri().isEmpty()) {
             throw new ValidateException("GitHub adapter requires the github/default OAuth 2.0 manifest");
         }
-        this.redirectManager = RedirectManager.create(spaceId, sourceId, variant, options, services);
+        this.redirectManager = RedirectManager.create(tenantId, sourceId, variant, options, services);
         final var targets = variant.targets().resolve(options);
         final OAuth2ClientOptions oauthSettings = new OAuth2ClientOptions(targets.authorization(), Optional.empty(),
                 Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(),
@@ -603,8 +604,8 @@ public class GitHubSourceAdapter implements VendorAdapter {
             final boolean expiring = object.values().containsKey(OAuth2.Parameters.EXPIRES_IN)
                     || object.values().containsKey(OAuth2.Parameters.REFRESH_TOKEN)
                     || object.values().containsKey("refresh_token_expires_in");
-            if (!tokenMembers(object, expiring) || !"bearer"
-                    .equals(requiredString(object, OAuth2.Parameters.TOKEN_TYPE).toLowerCase(Locale.ROOT))) {
+            if (!tokenMembers(object, expiring)
+                    || !"bearer".equals(StringKit.toLowerCase(requiredString(object, OAuth2.Parameters.TOKEN_TYPE)))) {
                 throw new ValidateException("GitHub token response has an invalid branch");
             }
             final String scope = string(object, OAuth2.Parameters.SCOPE);

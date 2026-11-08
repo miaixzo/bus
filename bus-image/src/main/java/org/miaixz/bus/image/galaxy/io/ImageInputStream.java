@@ -109,9 +109,9 @@ public class ImageInputStream extends FilterInputStream implements ImageInputHan
     private static final int ZLIB_HEADER = 0x789c;
 
     /**
-     * The def allocate limit value.
+     * 64MiB.
      */
-    private static final int DEF_ALLOCATE_LIMIT = 0x4000000; // 64MiB
+    private static final int DEF_ALLOCATE_LIMIT = 0x4000000;
     /**
      * The default preamble length value.
      */
@@ -122,9 +122,8 @@ public class ImageInputStream extends FilterInputStream implements ImageInputHan
      */
     private static final int UNDEFINED_LENGTH = -1;
 
-    // Length of the buffer used for readFully(short[], int, int)
     /**
-     * The byte buf length value.
+     * Length of the buffer used for readFully(short[], int, int).
      */
     private static final int BYTE_BUF_LENGTH = 8192;
 

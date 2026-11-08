@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.metrics.bridge;
 
+import org.miaixz.bus.core.xyz.StringKit;
+
 /**
  * Immutable filesystem usage snapshot.
  *
@@ -40,7 +42,7 @@ public record FileSystemSnapshot(String device, String mountpoint, String type, 
     public FileSystemSnapshot {
         device = normalized(device, "unknown");
         mountpoint = normalized(mountpoint, "unknown");
-        type = normalized(type, "unknown").toLowerCase();
+        type = StringKit.toLowerCase(normalized(type, "unknown"));
         mode = "ro".equals(mode) || "rw".equals(mode) ? mode : "unknown";
         if (totalBytes < 0 || freeBytes < 0 || usableBytes < 0) {
             throw new IllegalArgumentException("Filesystem sizes must not be negative");

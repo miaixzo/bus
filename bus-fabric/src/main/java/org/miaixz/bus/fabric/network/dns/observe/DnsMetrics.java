@@ -20,10 +20,10 @@
 package org.miaixz.bus.fabric.network.dns.observe;
 
 import java.time.Duration;
-import java.util.Locale;
 import java.util.Map;
 
 import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.fabric.network.dns.forward.DnsUpstream;
 import org.miaixz.bus.fabric.network.dns.message.DnsResponseCode;
 import org.miaixz.bus.fabric.network.dns.server.DnsTransport;
@@ -158,7 +158,7 @@ public class DnsMetrics {
         if (transport == null) {
             throw new ValidateException("DNS metric transport must not be null");
         }
-        return transport.name().toLowerCase(Locale.ROOT);
+        return StringKit.toLowerCase(transport.name());
     }
 
     /**
@@ -171,7 +171,7 @@ public class DnsMetrics {
         if (responseCode == null) {
             throw new ValidateException("DNS metric response code must not be null");
         }
-        return responseCode.name().toLowerCase(Locale.ROOT);
+        return StringKit.toLowerCase(responseCode.name());
     }
 
     /**
@@ -270,7 +270,7 @@ public class DnsMetrics {
         if (!enabled || elapsedNanos < 0L) {
             return;
         }
-        final String transport = upstream == null ? "unknown" : upstream.transport().name().toLowerCase(Locale.ROOT);
+        final String transport = upstream == null ? "unknown" : StringKit.toLowerCase(upstream.transport().name());
         final Duration elapsed = Duration.ofNanos(elapsedNanos);
         timing(FORWARD_UPSTREAM_LATENCY, elapsed);
         timing(PREFIX + "forward.upstream." + transport + ".latency", elapsed);
