@@ -42,13 +42,13 @@ class SOFSegment {
     private final int samplePrecision;
 
     /**
-     * The lines value.
+     * Height.
      */
-    private final int lines; // height
+    private final int lines;
     /**
-     * The samples per line value.
+     * Width.
      */
-    private final int samplesPerLine; // width
+    private final int samplesPerLine;
     /**
      * The components value.
      */

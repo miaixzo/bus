@@ -59,9 +59,8 @@ public class Who {
      */
     private static final File SYSTEMD_SESSIONS_DIR = new File("/run/systemd/sessions");
 
-    // oshi pts/0 2020-05-14 21:23 (192.168.1.23)
     /**
-     * The WHO_FORMAT_LINUX constant.
+     * pts/0 2020-05-14 21:23 (192.168.1.23).
      */
     private static final Pattern WHO_FORMAT_LINUX = Pattern
             .compile("(\\S+)\\s+(\\S+)\\s+(\\d{4}-\\d{2}-\\d{2})\\s+(\\d{2}:\\d{2})\\s*(?:\\((.+)\\))?");

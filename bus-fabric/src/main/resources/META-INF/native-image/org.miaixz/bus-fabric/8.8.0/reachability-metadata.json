@@ -1,6 +1,17 @@
 {
   "reflection": [
     {
+      "type": "org.miaixz.bus.fabric.runtime.resource.Cancellation",
+      "fields": [
+        {
+          "name": "callbacks"
+        },
+        {
+          "name": "state"
+        }
+      ]
+    },
+    {
       "type": "org.miaixz.bus.fabric.cache.DiskLruCache",
       "fields": [
         {

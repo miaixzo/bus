@@ -27,6 +27,7 @@ import java.util.Map;
 
 import org.miaixz.bus.core.center.function.FunctionX;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.xyz.StringKit;
 
 /**
  * A {@link Map} implementation that treats character-sequence keys as case-insensitive. Such keys are converted to
@@ -110,7 +111,7 @@ public class CaseInsensitiveMap<K, V> extends FunctionKeyMap<K, V> {
         // The FunctionX is made Serializable to allow the map to be serialized.
         super(emptyMapBuilder.build(), (FunctionX<Object, K> & Serializable) (key) -> {
             if (key instanceof CharSequence) {
-                key = key.toString().toLowerCase(Locale.ROOT);
+                key = StringKit.toLowerCase(key.toString());
             }
             return (K) key;
         });

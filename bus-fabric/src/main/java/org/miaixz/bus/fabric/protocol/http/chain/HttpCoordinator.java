@@ -19,8 +19,6 @@
 */
 package org.miaixz.bus.fabric.protocol.http.chain;
 
-import java.util.Locale;
-
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
@@ -112,7 +110,7 @@ public class HttpCoordinator implements HttpStage {
         Assert.isFalse(
                 StringKit.isBlank(value) || StringKit.containsAny(value, Symbol.C_CR, Symbol.C_LF),
                 () -> new ValidateException("HTTP cache name must be non-blank and single-line"));
-        return StringKit.trim(value).toLowerCase(Locale.ROOT);
+        return StringKit.toLowerCase(StringKit.trim(value));
     }
 
     /**

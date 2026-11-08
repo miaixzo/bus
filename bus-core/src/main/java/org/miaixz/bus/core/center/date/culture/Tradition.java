@@ -19,6 +19,10 @@
 */
 package org.miaixz.bus.core.center.date.culture;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.IntFunction;
+
 import org.miaixz.bus.core.center.date.Almanac;
 import org.miaixz.bus.core.center.date.Culture;
 
@@ -43,6 +47,22 @@ public abstract class Tradition implements Culture {
      */
     public String getName() {
         throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Builds a mutable list from zero-based indexes.
+     *
+     * @param size    the number of elements
+     * @param factory the element factory
+     * @param <T>     the element type
+     * @return the generated list
+     */
+    protected static <T> List<T> buildList(int size, IntFunction<T> factory) {
+        List<T> list = new ArrayList<>(size);
+        for (int i = 0; i < size; i++) {
+            list.add(factory.apply(i));
+        }
+        return list;
     }
 
     /**

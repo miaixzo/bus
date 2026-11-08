@@ -441,8 +441,6 @@ public class PipelineApi extends AbstractApi implements Constants {
             return (response.readEntity(Pipeline.class));
         }
 
-        // The create pipeline REST API expects the variable data in an unusual format, this
-        // class is used to create the JSON for the POST data.
         /**
          * The create pipeline form class.
          *

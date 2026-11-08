@@ -162,10 +162,13 @@ public class Args {
     private URL sopClassesTCS;
 
     /**
-     * Constructs a new {@code Args} instance.
+     * Creates operation arguments with no extended query options, the default transfer syntax order and normal
+     * priority, matching the defaults supplied by the builder.
      */
     public Args() {
-        // No initialization required.
+        this.queryOptions = EnumSet.noneOf(QueryOption.class);
+        this.tsuidOrder = Arrays.copyOf(IVR_LE_FIRST, IVR_LE_FIRST.length);
+        this.priority = Priority.NORMAL;
     }
 
     /**
@@ -185,6 +188,7 @@ public class Args {
      * @param sopClasses  URL to a properties file for SOP Class extension.
      */
     public Args(List<Editors> editors, boolean negociation, URL sopClasses) {
+        this();
         this.editors = editors;
         this.negociation = negociation;
         this.sopClasses = sopClasses;
@@ -200,6 +204,7 @@ public class Args {
      * @param acceptedCallingAETitles A list of acceptable calling AETs. An empty list accepts all.
      */
     public Args(Option option, boolean bindCallingAet, URL sopClassesTCS, String... acceptedCallingAETitles) {
+        this();
         this.option = option;
         this.bindCallingAet = bindCallingAet;
         this.sopClassesTCS = sopClassesTCS;

@@ -2305,17 +2305,17 @@ public enum UID {
     }
 
     /**
-     * Retrieves the UID string for a given keyword (enum constant name).
+     * Resolves an exact, case-sensitive enum keyword to its numeric DICOM UID string without reflective field access.
      *
-     * @param keyword The name of the enum constant.
-     * @return The corresponding UID string.
-     * @throws IllegalArgumentException if the specified keyword does not exist.
+     * @param keyword the enum constant name used in SOP class or transfer syntax configuration
+     * @return the numeric UID represented by the named constant
+     * @throws IllegalArgumentException if the keyword is null or does not name a UID constant
      */
     public static String forName(String keyword) {
         try {
-            return (String) UID.class.getField(keyword).get(null);
-        } catch (Exception var2) {
-            throw new IllegalArgumentException(keyword);
+            return valueOf(keyword).uid;
+        } catch (IllegalArgumentException | NullPointerException e) {
+            throw new IllegalArgumentException(keyword, e);
         }
     }
 

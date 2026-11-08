@@ -149,7 +149,7 @@ public abstract class AbstractStrategy implements Strategy {
         if (StringKit.hasText(forwardedHeader)) {
             String hostPrefix = "host" + Symbol.EQUAL;
             Optional<String> authority = Arrays.stream(forwardedHeader.split(Symbol.SEMICOLON)).map(String::trim)
-                    .filter(part -> part.toLowerCase().startsWith(hostPrefix))
+                    .filter(part -> StringKit.toLowerCase(part).startsWith(hostPrefix))
                     .map(part -> part.substring(hostPrefix.length()).trim().replace(Symbol.DOUBLE_QUOTES, Normal.EMPTY))
                     .findFirst();
             if (authority.isPresent()) {
@@ -304,7 +304,7 @@ public abstract class AbstractStrategy implements Strategy {
         if (StringKit.hasText(forwardedHeader)) {
             String protoPrefix = "proto" + Symbol.EQUAL;
             Optional<String> proto = Arrays.stream(forwardedHeader.split(Symbol.SEMICOLON)).map(String::trim)
-                    .filter(part -> part.toLowerCase().startsWith(protoPrefix))
+                    .filter(part -> StringKit.toLowerCase(part).startsWith(protoPrefix))
                     .map(
                             part -> part.substring(protoPrefix.length()).trim()
                                     .replace(Symbol.DOUBLE_QUOTES, Normal.EMPTY))

@@ -49,14 +49,14 @@ public @interface Date {
      *
      * @return the error code.
      */
-    String errcode() default ErrorCode._DATE;
+    String code() default ErrorCode._DATE;
 
     /**
      * The error message to be used when validation fails. The message can be a template with placeholders.
      *
      * @return the error message.
      */
-    String errmsg() default ErrorCode._DATE_VALUE;
+    String desc() default ErrorCode._DATE_VALUE;
 
     /**
      * The validation groups this constraint belongs to.

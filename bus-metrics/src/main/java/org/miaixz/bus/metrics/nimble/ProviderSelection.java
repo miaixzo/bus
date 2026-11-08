@@ -24,6 +24,7 @@ import java.util.Comparator;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.metrics.Provider;
 
 /**
@@ -69,25 +70,25 @@ public final class ProviderSelection {
             Candidate checked = Objects.requireNonNull(candidate, "Provider candidate must not be null");
             if (indexed.putIfAbsent(checked.type(), checked) != null) {
                 throw new IllegalStateException(
-                        "Duplicate metrics provider candidate: " + checked.type().name().toLowerCase(Locale.ROOT));
+                        "Duplicate metrics provider candidate: " + StringKit.toLowerCase(checked.type().name()));
             }
         }
         Candidate selected = requested == Type.AUTO ? automatic(indexed) : indexed.get(requested);
         Type selectedType = selected == null ? requested == Type.AUTO ? Type.NATIVE : requested : selected.type();
         if (selected == null) {
             throw new IllegalStateException(
-                    "No candidate was registered for metrics provider " + selectedType.name().toLowerCase(Locale.ROOT)
+                    "No candidate was registered for metrics provider " + StringKit.toLowerCase(selectedType.name())
                             + " (expected " + EXPECTED_TYPES.get(selectedType) + ")");
         }
         if (!selected.available()) {
-            throw new IllegalStateException("Metrics provider " + selectedType.name().toLowerCase(Locale.ROOT)
+            throw new IllegalStateException("Metrics provider " + StringKit.toLowerCase(selectedType.name())
                     + " is unavailable: " + selected.reason() + " (expected " + EXPECTED_TYPES.get(selectedType) + ")");
         }
         try {
             return Objects.requireNonNull(selected.factory().orElseThrow().get(), "Provider factory returned null");
         } catch (RuntimeException exception) {
             throw new IllegalStateException(
-                    "Metrics provider construction failed for " + selected.type().name().toLowerCase(Locale.ROOT),
+                    "Metrics provider construction failed for " + StringKit.toLowerCase(selected.type().name()),
                     exception);
         }
     }
@@ -103,7 +104,7 @@ public final class ProviderSelection {
                 .filter(candidate -> candidate.external() && candidate.available())
                 .sorted(Comparator.comparing(candidate -> candidate.type().name())).toList();
         if (external.size() > 1) {
-            String names = external.stream().map(candidate -> candidate.type().name().toLowerCase(Locale.ROOT))
+            String names = external.stream().map(candidate -> StringKit.toLowerCase(candidate.type().name()))
                     .collect(Collectors.joining(", "));
             throw new IllegalStateException("Multiple external metrics providers are available: " + names
                     + "; configure bus.metrics.provider explicitly");
@@ -152,7 +153,7 @@ public final class ProviderSelection {
                 throw new IllegalArgumentException("bus.metrics.provider must not be blank");
             }
             try {
-                return valueOf(value.trim().toUpperCase(Locale.ROOT));
+                return valueOf(StringKit.toUpperCase(value.trim()));
             } catch (IllegalArgumentException exception) {
                 throw new IllegalArgumentException("Unsupported bus.metrics.provider: " + value
                         + "; expected native, micrometer, opentelemetry, prometheus or auto", exception);

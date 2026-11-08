@@ -24,8 +24,12 @@ import org.miaixz.bus.core.xyz.MathKit;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * Calculates text similarity. This class provides methods to compute the similarity between two strings primarily using
- * variations of the Levenshtein distance and longest common subsequence algorithms.
+ * Provides longest common subsequence (LCS) matching, raw scores and normalized similarity.
+ * {@link #match(String, String)} returns one LCS and {@link #score(String, String)} returns its length. Both compare
+ * unfiltered UTF-16 code units without Unicode normalization or code point/grapheme grouping. The {@code similar}
+ * methods first retain only ASCII letters, ASCII digits and characters in U+4E00-U+9FFF, then normalize the LCS score
+ * of the filtered inputs. {@link #filter(String)} exposes this preprocessing rule, and {@link #accepts(char)} checks
+ * whether an individual UTF-16 code unit is retained.
  *
  * @author Kimi Liu
  */
@@ -39,194 +43,204 @@ public class TextSimilarity {
     }
 
     /**
-     * Calculates the similarity between two strings using the Levenshtein distance algorithm. If both strings are
-     * empty, the similarity is considered 1 (identical). The comparison method involves:
-     * <ul>
-     * <li>Only comparing alphanumeric and Chinese characters; other symbols are removed.</li>
-     * <li>Calculating the length of the longest common subsequence and dividing it by the length of the longer
-     * string.</li>
-     * </ul>
+     * Tests whether a single UTF-16 code unit is retained by {@link #filter(String)}. Accepted ranges are ASCII A-Z,
+     * ASCII a-z, ASCII 0-9 and the inclusive interval U+4E00-U+9FFF. This predicate checks the fixed filtering rule; it
+     * does not validate whether an arbitrary Unicode character is legal or accept every letter, digit or Han character.
+     * Supplementary characters require two UTF-16 code units, and neither surrogate code unit is accepted.
      *
-     * @param strA The first string.
-     * @param strB The second string.
-     * @return The similarity score, a double value between 0 and 1.
+     * @param character The UTF-16 code unit to check.
+     * @return {@code true} if the code unit belongs to one of the accepted ranges; {@code false} otherwise.
      */
-    public static double similar(final String strA, final String strB) {
-        final String newStrA;
-        final String newStrB;
-        if (strA.length() < strB.length()) {
-            newStrA = removeSign(strB);
-            newStrB = removeSign(strA);
-        } else {
-            newStrA = removeSign(strA);
-            newStrB = removeSign(strB);
+    public static boolean accepts(final char character) {
+        return (character >= 0x4E00 && character <= 0X9FFF) || // Basic CJK range used by the legacy filter
+                (character >= 'a' && character <= 'z') || // ASCII lowercase letters
+                (character >= 'A' && character <= 'Z') || // ASCII uppercase letters
+                (character >= Symbol.C_ZERO && character <= Symbol.C_NINE); // ASCII digits
+    }
+
+    /**
+     * Retains exactly the UTF-16 code units accepted by {@link #accepts(char)}: ASCII letters A-Z/a-z, digits 0-9 and
+     * U+4E00-U+9FFF. Order and case are preserved; no Unicode normalization or case folding is performed. All other
+     * code units are removed, including accented letters, supplementary characters and symbols. An empty input or an
+     * input with no accepted code units produces an empty string.
+     * <p>
+     * This is the preprocessing used by {@link #similar(String, String)}. {@link #match(String, String)} and
+     * {@link #score(String, String)} compare their inputs directly and do not apply this filter automatically.
+     *
+     * @param text The non-null input string.
+     * @return The filtered string, possibly empty.
+     * @throws NullPointerException if the input is null
+     */
+    public static String filter(final String text) {
+        final int textLength = text.length();
+        final StringBuilder filteredText = StringKit.builder(textLength);
+        // Apply the fixed legacy ranges without Unicode normalization or case folding.
+        char character;
+        for (int index = 0; index < textLength; index++) {
+            character = text.charAt(index);
+            if (accepts(character)) {
+                filteredText.append(character);
+            }
         }
 
-        // Use the length of the longer string as the denominator, and the common subsequence as the numerator to
-        // calculate similarity.
-        final int temp = Math.max(newStrA.length(), newStrB.length());
-        if (0 == temp) {
-            // If both are empty strings, similarity is 1, considered identical.
+        return filteredText.toString();
+    }
+
+    /**
+     * Calculates the raw longest common subsequence (LCS) score using two rolling rows. Each matched UTF-16 code unit
+     * contributes one point; matches need not be contiguous. The score equals the LCS length and is not normalized.
+     * Inputs are unfiltered and compared case-sensitively, including individual surrogate code units. Unlike this
+     * method, {@link #similar(String, String)} filters its inputs before scoring and normalizes the result. An empty
+     * input produces zero. For non-empty inputs of lengths m and n, the computation takes O(m*n) time; each working row
+     * has {@code secondText.length() + 1} integers. The inputs are not reordered to minimize row size.
+     *
+     * @param firstText  The first non-null string.
+     * @param secondText The second non-null string.
+     * @return The raw LCS score, equal to the matched UTF-16 code unit count.
+     * @throws NullPointerException if either input is null
+     */
+    public static int score(final String firstText, final String secondText) {
+        final int firstLength = firstText.length();
+        final int secondLength = secondText.length();
+
+        // Matching code units extend the diagonal LCS by one; other cells take the larger left/upper value.
+        // Column zero stays zero, and the completed current row becomes the previous row after each iteration.
+        int[] previousRow = new int[secondLength + 1];
+        int[] currentRow = new int[secondLength + 1];
+        int[] reusableRow;
+        for (int rowIndex = 1; rowIndex <= firstLength; rowIndex++) {
+            for (int columnIndex = 1; columnIndex <= secondLength; columnIndex++) {
+                if (firstText.charAt(rowIndex - 1) == secondText.charAt(columnIndex - 1)) {
+                    currentRow[columnIndex] = previousRow[columnIndex - 1] + 1;
+                } else {
+                    currentRow[columnIndex] = Math.max(currentRow[columnIndex - 1], previousRow[columnIndex]);
+                }
+            }
+            reusableRow = previousRow;
+            previousRow = currentRow;
+            currentRow = reusableRow;
+        }
+
+        return previousRow[secondLength];
+    }
+
+    /**
+     * Returns one longest common subsequence using a full dynamic-programming matrix and backtracking. Matches need not
+     * be contiguous. Inputs are unfiltered and compared case-sensitively as UTF-16 code units, so parts of surrogate
+     * pairs may match independently. An empty input or no common code units produces an empty result. When several
+     * longest subsequences exist, this method returns one of them. For non-empty inputs of lengths m and n, matrix
+     * construction takes O(m*n) time and space.
+     *
+     * @param firstText  The first non-null string.
+     * @param secondText The second non-null string.
+     * @return One longest common subsequence as a string.
+     * @throws NullPointerException if either input is null
+     */
+    public static String match(final String firstText, final String secondText) {
+        // Rows and columns index prefixes of firstText and secondText; the empty-prefix row and column are zero.
+        final int[][] lengthMatrix = matrix(firstText, secondText);
+
+        int rowIndex = firstText.length();
+        int columnIndex = secondText.length();
+        // Backtrack from the full prefixes. Skip equal-valued neighbors; otherwise record the matching code unit
+        // and move diagonally. Fill the matched-character buffer from right to left.
+        final char[] matchedChars = new char[lengthMatrix[rowIndex][columnIndex]];
+        int writeIndex = matchedChars.length - 1;
+        while (lengthMatrix[rowIndex][columnIndex] != 0) {
+            if (lengthMatrix[rowIndex][columnIndex] == lengthMatrix[rowIndex][columnIndex - 1]) {
+                columnIndex--;
+            } else if (lengthMatrix[rowIndex][columnIndex] == lengthMatrix[rowIndex - 1][columnIndex]) {
+                rowIndex--;
+            } else {
+                matchedChars[writeIndex] = firstText.charAt(rowIndex - 1);
+                writeIndex--;
+                columnIndex--;
+                rowIndex--;
+            }
+        }
+        return new String(matchedChars);
+    }
+
+    /**
+     * Calculates LCS similarity after applying {@link #filter(String)}. Comparison is case-sensitive. The method:
+     * <ul>
+     * <li>Retains only ASCII letters A-Z/a-z, digits 0-9 and characters in U+4E00-U+9FFF.</li>
+     * <li>Divides the LCS length by the longer filtered string's length.</li>
+     * <li>Returns 1 when both filtered strings are empty, even if the original inputs differ; returns 0 when only one
+     * filtered string is empty.</li>
+     * </ul>
+     * The quotient is rounded to 10 decimal places using HALF_UP before conversion to double.
+     *
+     * @param firstText  The first non-null string.
+     * @param secondText The second non-null string.
+     * @return The similarity score, a double value between 0 and 1.
+     * @throws NullPointerException if either input is null
+     */
+    public static double similar(final String firstText, final String secondText) {
+        final String filteredRowText;
+        final String filteredColumnText;
+        // Choose DP row/column inputs by original length; filtering may change their relative lengths.
+        if (firstText.length() < secondText.length()) {
+            filteredRowText = filter(secondText);
+            filteredColumnText = filter(firstText);
+        } else {
+            filteredRowText = filter(firstText);
+            filteredColumnText = filter(secondText);
+        }
+
+        // Normalize the LCS length by the longer filtered input's length.
+        final int maxFilteredLength = Math.max(filteredRowText.length(), filteredColumnText.length());
+        if (0 == maxFilteredLength) {
+            // Both filtered inputs are empty; this also covers non-empty inputs containing only removed characters.
             return 1;
         }
 
-        final int commonLength = longestCommonSubstringLength(newStrA, newStrB);
-        return MathKit.div(commonLength, temp).doubleValue();
+        final int rawScore = score(filteredRowText, filteredColumnText);
+        return MathKit.div(rawScore, maxFilteredLength).doubleValue();
     }
 
     /**
-     * Calculates the similarity percentage between two strings using the Levenshtein distance algorithm.
+     * Formats {@link #similar(String, String)} as a percentage using the default FORMAT locale. The same filtering,
+     * case sensitivity, null rejection and score-rounding rules apply. Trailing zeroes are not forced.
      *
-     * @param strA  The first string.
-     * @param strB  The second string.
-     * @param scale The number of decimal places to retain for the percentage.
+     * @param firstText         The first non-null string.
+     * @param secondText        The second non-null string.
+     * @param maxFractionDigits The maximum number of fractional digits in the formatted percentage; negative values act
+     *                          as zero.
      * @return The similarity as a formatted percentage string.
+     * @throws NullPointerException if either input is null
      */
-    public static String similar(final String strA, final String strB, final int scale) {
-        return MathKit.formatPercent(similar(strA, strB), scale);
+    public static String similar(final String firstText, final String secondText, final int maxFractionDigits) {
+        return MathKit.formatPercent(similar(firstText, secondText), maxFractionDigits);
     }
 
     /**
-     * Finds the longest common subsequence between two strings using a dynamic programming algorithm. This method does
-     * not require the characters in the subsequence to be contiguous in the original strings. Algorithm explanation:
-     * <a href=
-     * "https://leetcode-cn.com/problems/longest-common-subsequence/solution/zui-chang-gong-gong-zi-xu-lie-by-leetcod-y7u0/">Longest
-     * Common Subsequence</a>
+     * Builds the unfiltered UTF-16 LCS matrix. Rows index prefixes of firstText and columns index prefixes of
+     * secondText; each entry is the LCS length for those prefixes. The first row and column are zero; subsequence
+     * matches need not be contiguous.
      *
-     * @param strA The first string.
-     * @param strB The second string.
-     * @return The longest common subsequence as a string.
+     * @param firstText  The first string.
+     * @param secondText The second string.
+     * @return An {@code (firstText.length() + 1) x (secondText.length() + 1)} prefix-length matrix.
      */
-    public static String longestCommonSubstring(final String strA, final String strB) {
-        // Initialize matrix data. matrix[0][0] is 0. If corresponding characters in chars_strA and chars_strB are the
-        // same,
-        // matrix[i][j] is the value of the top-left cell + 1. Otherwise, matrix[i][j] is the maximum of the values
-        // from the cell directly above and the cell directly to the left. Other matrix values are 0.
-        final int[][] matrix = generateMatrix(strA, strB);
+    private static int[][] matrix(final String firstText, final String secondText) {
+        final int firstLength = firstText.length();
+        final int secondLength = secondText.length();
 
-        int m = strA.length();
-        int n = strB.length();
-        // In the matrix, if matrix[m][n] is not equal to matrix[m-1][n] and not equal to matrix[m][n-1],
-        // then the character corresponding to matrix[m][n] is a common character and is stored in the result array.
-        final char[] result = new char[matrix[m][n]];
-        int currentIndex = result.length - 1;
-        while (matrix[m][n] != 0) {
-            if (matrix[m][n] == matrix[m][n - 1]) {
-                n--;
-            } else if (matrix[m][n] == matrix[m - 1][n]) {
-                m--;
-            } else {
-                result[currentIndex] = strA.charAt(m - 1);
-                currentIndex--;
-                n--;
-                m--;
-            }
-        }
-        return new String(result);
-    }
-
-    /**
-     * Removes non-alphanumeric and non-Chinese characters from a string. This method iterates through the input string
-     * and appends only valid characters (Chinese characters, digits, or letters) to a new string builder.
-     *
-     * @param text The input string.
-     * @return The processed string with only valid characters.
-     */
-    private static String removeSign(final String text) {
-        final int length = text.length();
-        final StringBuilder sb = StringKit.builder(length);
-        // Iterate through the string. If a character is a Chinese character, digit, or letter, append it to sb.
-        char c;
-        for (int i = 0; i < length; i++) {
-            c = text.charAt(i);
-            if (isValidChar(c)) {
-                sb.append(c);
-            }
-        }
-
-        return sb.toString();
-    }
-
-    /**
-     * Checks if a character is a valid character for similarity comparison. Valid characters include Chinese
-     * characters, digits, and letters. Symbols are not considered as they have no practical meaning in similarity
-     * comparison.
-     *
-     * @param charValue The character to check.
-     * @return {@code true} if the character is a Chinese character, digit, or letter; {@code false} otherwise.
-     */
-    private static boolean isValidChar(final char charValue) {
-        return (charValue >= 0x4E00 && charValue <= 0X9FFF) || // Chinese characters
-                (charValue >= 'a' && charValue <= 'z') || // Lowercase letters
-                (charValue >= 'A' && charValue <= 'Z') || // Uppercase letters
-                (charValue >= Symbol.C_ZERO && charValue <= Symbol.C_NINE); // Digits
-    }
-
-    /**
-     * Calculates the length of the longest common subsequence between two strings using a dynamic programming
-     * algorithm. This method does not require the characters in the subsequence to be contiguous in the original
-     * strings. Optimized on 2023-04-06 to reduce heap memory usage, as only the bottom-right value of the matrix is
-     * needed.
-     *
-     * @param strA The first string.
-     * @param strB The second string.
-     * @return The length of the longest common subsequence.
-     */
-    public static int longestCommonSubstringLength(final String strA, final String strB) {
-        final int m = strA.length();
-        final int n = strB.length();
-
-        // Initialize matrix data. matrix[0][0] is 0. If corresponding characters in chars_strA and chars_strB are the
-        // same,
-        // matrix[i][j] is the value of the top-left cell + 1. Otherwise, matrix[i][j] is the maximum of the values
-        // from the cell directly above and the cell directly to the left. Other matrix values are 0.
-        int[] lastLine = new int[n + 1];
-        int[] currLine = new int[n + 1];
-        int[] temp;
-        for (int i = 1; i <= m; i++) {
-            for (int j = 1; j <= n; j++) {
-                if (strA.charAt(i - 1) == strB.charAt(j - 1)) {
-                    currLine[j] = lastLine[j - 1] + 1;
+        // Java zero-initializes the empty-prefix row and column; fill the remaining cells using the LCS recurrence.
+        final int[][] lengthMatrix = new int[firstLength + 1][secondLength + 1];
+        for (int rowIndex = 1; rowIndex <= firstLength; rowIndex++) {
+            for (int columnIndex = 1; columnIndex <= secondLength; columnIndex++) {
+                if (firstText.charAt(rowIndex - 1) == secondText.charAt(columnIndex - 1)) {
+                    lengthMatrix[rowIndex][columnIndex] = lengthMatrix[rowIndex - 1][columnIndex - 1] + 1;
                 } else {
-                    currLine[j] = Math.max(currLine[j - 1], lastLine[j]);
-                }
-            }
-            temp = lastLine;
-            lastLine = currLine;
-            currLine = temp;
-        }
-
-        return lastLine[n];
-    }
-
-    /**
-     * Generates the dynamic programming matrix for calculating the longest common subsequence. This method does not
-     * require the characters in the subsequence to be contiguous in the original strings.
-     *
-     * @param strA The first string.
-     * @param strB The second string.
-     * @return A 2D integer array representing the common subsequence matrix.
-     */
-    private static int[][] generateMatrix(final String strA, final String strB) {
-        final int m = strA.length();
-        final int n = strB.length();
-
-        // Initialize matrix data. matrix[0][0] is 0. If corresponding characters in chars_strA and chars_strB are the
-        // same,
-        // matrix[i][j] is the value of the top-left cell + 1. Otherwise, matrix[i][j] is the maximum of the values
-        // from the cell directly above and the cell directly to the left. Other matrix values are 0.
-        final int[][] matrix = new int[m + 1][n + 1];
-        for (int i = 1; i <= m; i++) {
-            for (int j = 1; j <= n; j++) {
-                if (strA.charAt(i - 1) == strB.charAt(j - 1)) {
-                    matrix[i][j] = matrix[i - 1][j - 1] + 1;
-                } else {
-                    matrix[i][j] = Math.max(matrix[i][j - 1], matrix[i - 1][j]);
+                    lengthMatrix[rowIndex][columnIndex] = Math
+                            .max(lengthMatrix[rowIndex][columnIndex - 1], lengthMatrix[rowIndex - 1][columnIndex]);
                 }
             }
         }
 
-        return matrix;
+        return lengthMatrix;
     }
 
 }

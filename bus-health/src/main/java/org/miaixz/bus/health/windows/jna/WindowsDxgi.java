@@ -22,7 +22,6 @@ package org.miaixz.bus.health.windows.jna;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Locale;
 
 import com.sun.jna.Native;
 import com.sun.jna.Pointer;
@@ -39,6 +38,7 @@ import com.sun.jna.win32.StdCallLibrary;
 
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.health.windows.driver.DxgiAdapterInfo;
 import org.miaixz.bus.logger.Logger;
 
@@ -68,22 +68,16 @@ import org.miaixz.bus.logger.Logger;
  */
 public class WindowsDxgi {
 
-    // IID for IDXGIFactory {7B7166EC-21C7-44AE-B21A-C9AE321AE369}
-
     /**
-     * The IID_IDXGI_FACTORY constant.
+     * IID for IDXGIFactory {7B7166EC-21C7-44AE-B21A-C9AE321AE369}.
      */
     private static final Guid.IID IID_IDXGI_FACTORY = new Guid.IID("{7B7166EC-21C7-44AE-B21A-C9AE321AE369}");
 
-    // DXGI_ERROR_NOT_FOUND: returned by EnumAdapters when index is out of range
     /**
-     * The DXGI_ERROR_NOT_FOUND constant.
+     * DXGI_ERROR_NOT_FOUND: returned by EnumAdapters when index is out of range.
      */
     private static final int DXGI_ERROR_NOT_FOUND = 0x887A0002;
 
-    // -------------------------------------------------------------------------
-    // Native function entry point
-    // -------------------------------------------------------------------------
     /**
      * The DXGI_AVAILABLE constant.
      */
@@ -193,9 +187,9 @@ public class WindowsDxgi {
         return Collections.unmodifiableList(result);
     }
 
-    // -------------------------------------------------------------------------
-    // DXGI_ADAPTER_DESC structure
-    // -------------------------------------------------------------------------
+    /*
+     * Adapter matching.
+     */
 
     /**
      * Finds the best-matching DXGI adapter for a given vendor ID, device ID, and adapter name.
@@ -242,9 +236,9 @@ public class WindowsDxgi {
         return null;
     }
 
-    // -------------------------------------------------------------------------
-    // IDXGIAdapter vtable wrapper
-    // -------------------------------------------------------------------------
+    /*
+     * Registry value conversion.
+     */
 
     /**
      * Converts a registry value (REG_QWORD as Long, REG_DWORD as Integer, or REG_BINARY as byte[]) to a VRAM size in
@@ -274,9 +268,9 @@ public class WindowsDxgi {
         return 0L;
     }
 
-    // -------------------------------------------------------------------------
-    // IDXGIFactory vtable wrapper
-    // -------------------------------------------------------------------------
+    /*
+     * Adapter name normalization.
+     */
 
     /**
      * Normalizes an adapter name for fuzzy matching: lower-case, strips {@code (R)}/{@code (TM)}, collapses whitespace.
@@ -288,13 +282,13 @@ public class WindowsDxgi {
         if (name == null) {
             return Normal.EMPTY;
         }
-        return name.toLowerCase(Locale.ROOT).replace("(r)", Normal.EMPTY).replace("(tm)", Normal.EMPTY)
+        return StringKit.toLowerCase(name).replace("(r)", Normal.EMPTY).replace("(tm)", Normal.EMPTY)
                 .replaceAll("\\s+", Symbol.SPACE).trim();
     }
 
-    // -------------------------------------------------------------------------
-    // Public API
-    // -------------------------------------------------------------------------
+    /*
+     * Native DXGI library binding.
+     */
 
     /**
      * Minimal binding to {@code dxgi.dll} just to call {@code CreateDXGIFactory}.
@@ -367,9 +361,8 @@ public class WindowsDxgi {
          */
         public int Revision;
 
-        // SIZE_T is pointer-sized; use long (8 bytes on x64, 4 bytes on x86)
         /**
-         * The DedicatedVideoMemory value.
+         * Dedicated video-memory capacity reported by DXGI, in bytes.
          */
         public BaseTSD.SIZE_T DedicatedVideoMemory;
 

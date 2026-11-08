@@ -29,8 +29,8 @@ import org.miaixz.bus.core.lang.Assert;
 /**
  * Stores one-time OpenID Connect nonce bindings independently from callback state.
  * <p>
- * Keys are irreversible digests isolated by space, Source, and nonce purpose. A successful ID Token validation consumes
- * the value with the inherited atomic take operation so the same nonce cannot establish identity twice.
+ * Keys are irreversible digests isolated by tenant, Source, and nonce purpose. A successful ID Token validation
+ * consumes the value with the inherited atomic take operation so the same nonce cannot establish identity twice.
  * </p>
  *
  * @author Kimi Liu

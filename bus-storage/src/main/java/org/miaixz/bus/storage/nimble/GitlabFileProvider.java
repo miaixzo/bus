@@ -108,7 +108,7 @@ public class GitlabFileProvider extends AbstractProvider {
     public Message<Blob> statKey(String bucket, String objectKey) {
         try {
             if (StringKit.isBlank(objectKey)) {
-                return Message.<Blob>builder().errcode(ErrorCode._113006.getKey()).errmsg(ErrorCode._113006.getValue())
+                return Message.<Blob>builder().code(ErrorCode._113006.getKey()).desc(ErrorCode._113006.getValue())
                         .build();
             }
 
@@ -122,7 +122,7 @@ public class GitlabFileProvider extends AbstractProvider {
             extend.put("commitId", file.getCommitId());
             extend.put("lastCommitId", file.getLastCommitId());
 
-            return Message.<Blob>builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
+            return Message.<Blob>builder().code(ErrorCode._SUCCESS.getKey()).desc(ErrorCode._SUCCESS.getValue())
                     .data(
                             Blob.builder().bucket(bucket).key(objectKey).name(name).path(objectKey)
                                     .size(StringKit.toString(file.getSize())).hash(file.getContentSha256())
@@ -146,7 +146,7 @@ public class GitlabFileProvider extends AbstractProvider {
                     error.getKey(),
                     e.getMessage(),
                     e);
-            return Message.<Blob>builder().errcode(error.getKey()).errmsg(error.getValue()).build();
+            return Message.<Blob>builder().code(error.getKey()).desc(error.getValue()).build();
         }
     }
 
@@ -185,7 +185,7 @@ public class GitlabFileProvider extends AbstractProvider {
     public Message<Blob> streamKey(String bucket, String objectKey) {
         try {
             if (StringKit.isBlank(objectKey)) {
-                return Message.<Blob>builder().errcode(ErrorCode._113006.getKey()).errmsg(ErrorCode._113006.getValue())
+                return Message.<Blob>builder().code(ErrorCode._113006.getKey()).desc(ErrorCode._113006.getValue())
                         .build();
             }
 
@@ -200,7 +200,7 @@ public class GitlabFileProvider extends AbstractProvider {
             extend.put("commitId", file.getCommitId());
             extend.put("lastCommitId", file.getLastCommitId());
 
-            return Message.<Blob>builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
+            return Message.<Blob>builder().code(ErrorCode._SUCCESS.getKey()).desc(ErrorCode._SUCCESS.getValue())
                     .data(
                             Blob.builder().inputStream(inputStream).bucket(bucket).key(objectKey).name(name)
                                     .path(objectKey).size(StringKit.toString(file.getSize()))
@@ -224,7 +224,7 @@ public class GitlabFileProvider extends AbstractProvider {
                     error.getKey(),
                     e.getMessage(),
                     e);
-            return Message.<Blob>builder().errcode(error.getKey()).errmsg(error.getValue()).build();
+            return Message.<Blob>builder().code(error.getKey()).desc(error.getValue()).build();
         }
     }
 
@@ -264,7 +264,7 @@ public class GitlabFileProvider extends AbstractProvider {
             RepositoryFile file = client.getRepositoryFileApi().getFile(bucket, objectKey, "master");
             byte[] content = file.getContent().getBytes();
 
-            return Message.<byte[]>builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
+            return Message.<byte[]>builder().code(ErrorCode._SUCCESS.getKey()).desc(ErrorCode._SUCCESS.getValue())
                     .data(content).build();
         } catch (Exception e) {
             Logger.error(
@@ -276,7 +276,7 @@ public class GitlabFileProvider extends AbstractProvider {
                     fileName,
                     e.getMessage(),
                     e);
-            return Message.<byte[]>builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue())
+            return Message.<byte[]>builder().code(ErrorCode._FAILURE.getKey()).desc(ErrorCode._FAILURE.getValue())
                     .build();
         }
     }
@@ -323,7 +323,7 @@ public class GitlabFileProvider extends AbstractProvider {
                 outputStream.write(content);
             }
 
-            return Message.<Void>builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
+            return Message.<Void>builder().code(ErrorCode._SUCCESS.getKey()).desc(ErrorCode._SUCCESS.getValue())
                     .build();
         } catch (Exception e) {
             Logger.error(
@@ -336,8 +336,7 @@ public class GitlabFileProvider extends AbstractProvider {
                     file != null,
                     e.getMessage(),
                     e);
-            return Message.<Void>builder().errcode(ErrorCode._FAILURE.getKey()).errmsg("Failed to download file")
-                    .build();
+            return Message.<Void>builder().code(ErrorCode._FAILURE.getKey()).desc("Failed to download file").build();
         }
     }
 
@@ -355,8 +354,8 @@ public class GitlabFileProvider extends AbstractProvider {
             // Use getTree method to retrieve the repository tree, with "master" as the branch.
             List<TreeItem> treeItems = client.getRepositoryApi()
                     .getTree(this.context.getBucket(), prefix, "master", true);
-            return Message.<List<Blob>>builder().errcode(ErrorCode._SUCCESS.getKey())
-                    .errmsg(ErrorCode._SUCCESS.getValue()).data(
+            return Message.<List<Blob>>builder().code(ErrorCode._SUCCESS.getKey()).desc(ErrorCode._SUCCESS.getValue())
+                    .data(
                             treeItems.stream()
                                     // Filter for file types (assuming TreeItem has a getType method, where "blob"
                                     // indicates a file).
@@ -379,8 +378,8 @@ public class GitlabFileProvider extends AbstractProvider {
                     this.context.getBucket(),
                     e.getMessage(),
                     e);
-            return Message.<List<Blob>>builder().errcode(ErrorCode._FAILURE.getKey())
-                    .errmsg(ErrorCode._FAILURE.getValue()).build();
+            return Message.<List<Blob>>builder().code(ErrorCode._FAILURE.getKey()).desc(ErrorCode._FAILURE.getValue())
+                    .build();
         }
     }
 
@@ -432,7 +431,7 @@ public class GitlabFileProvider extends AbstractProvider {
                 newFile.setContent(file.getContent());
                 client.getRepositoryFileApi().createFile(bucket, newFile, "master", "create");
             }
-            return Message.<Void>builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
+            return Message.<Void>builder().code(ErrorCode._SUCCESS.getKey()).desc(ErrorCode._SUCCESS.getValue())
                     .build();
         } catch (Exception e) {
             Logger.error(
@@ -446,7 +445,7 @@ public class GitlabFileProvider extends AbstractProvider {
                     newName,
                     e.getMessage(),
                     e);
-            return Message.<Void>builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue())
+            return Message.<Void>builder().code(ErrorCode._FAILURE.getKey()).desc(ErrorCode._FAILURE.getValue())
                     .build();
         }
     }
@@ -540,7 +539,7 @@ public class GitlabFileProvider extends AbstractProvider {
 
             String url = client.getProjectApi().getProject(bucket).getWebUrl() + "/-/blob/master/" + objectKey;
 
-            return Message.<Blob>builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
+            return Message.<Blob>builder().code(ErrorCode._SUCCESS.getKey()).desc(ErrorCode._SUCCESS.getValue())
                     .data(Blob.builder().name(fileName).url(url).path(objectKey).build()).build();
         } catch (Exception e) {
             Logger.error(
@@ -553,7 +552,7 @@ public class GitlabFileProvider extends AbstractProvider {
                     fileName,
                     e.getMessage(),
                     e);
-            return Message.<Blob>builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue())
+            return Message.<Blob>builder().code(ErrorCode._FAILURE.getKey()).desc(ErrorCode._FAILURE.getValue())
                     .build();
         }
     }
@@ -595,7 +594,7 @@ public class GitlabFileProvider extends AbstractProvider {
             String prefix = Builder.buildNormalizedPrefix(context.getPrefix());
             String objectKey = Builder.buildObjectKey(prefix, path, fileName);
             client.getRepositoryFileApi().deleteFile(bucket, objectKey, "master", "delete");
-            return Message.<Void>builder().errcode(ErrorCode._SUCCESS.getKey()).errmsg(ErrorCode._SUCCESS.getValue())
+            return Message.<Void>builder().code(ErrorCode._SUCCESS.getKey()).desc(ErrorCode._SUCCESS.getValue())
                     .build();
         } catch (Exception e) {
             Logger.error(
@@ -608,7 +607,7 @@ public class GitlabFileProvider extends AbstractProvider {
                     fileName,
                     e.getMessage(),
                     e);
-            return Message.<Void>builder().errcode(ErrorCode._FAILURE.getKey()).errmsg(ErrorCode._FAILURE.getValue())
+            return Message.<Void>builder().code(ErrorCode._FAILURE.getKey()).desc(ErrorCode._FAILURE.getValue())
                     .build();
         }
     }

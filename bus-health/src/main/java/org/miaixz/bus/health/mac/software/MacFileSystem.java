@@ -44,6 +44,7 @@ import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.health.Builder;
 import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.software.OSFileStore;
@@ -85,13 +86,11 @@ public class MacFileSystem extends AbstractFileSystem {
     protected static final List<PathMatcher> FS_VOLUME_INCLUDES = Builder
             .loadAndParseFileSystemConfig(Builder._MAC_FS_VOLUME_INCLUDES);
 
-    // Regexp matcher for /dev/disk0s2 etc.
     /**
-     * The LOCAL_DISK constant.
+     * Regexp matcher for /dev/disk0s2 etc.
      */
     protected static final Pattern LOCAL_DISK = Pattern.compile("/dev/disk\\d+(s\\d+)?");
 
-    // User specifiable flags.
     /**
      * The MNT_RDONLY constant.
      */
@@ -350,7 +349,7 @@ public class MacFileSystem extends AbstractFileSystem {
                                         // Now get the UUID
                                         uuid = fsEntry.getStringProperty("UUID");
                                         if (uuid != null) {
-                                            uuid = uuid.toLowerCase(Locale.ROOT);
+                                            uuid = StringKit.toLowerCase(uuid);
                                         }
                                     }
                                     fsEntry.release();

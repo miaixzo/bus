@@ -127,10 +127,10 @@ public class ZhutongSmsProvider extends AbstractProvider<ZhutongNotice, Context>
         String response = post(url, bodys, headers);
 
         boolean succeed = Objects.equals(JsonKit.getValue(response, "code"), 0);
-        String errcode = succeed ? ErrorCode._SUCCESS.getKey() : JsonKit.getValue(response, "code");
-        String errmsg = succeed ? ErrorCode._SUCCESS.getValue() : JsonKit.getValue(response, "message");
+        String code = succeed ? ErrorCode._SUCCESS.getKey() : JsonKit.getValue(response, "code");
+        String desc = succeed ? ErrorCode._SUCCESS.getValue() : JsonKit.getValue(response, "message");
 
-        return Message.<Void>builder().errcode(errcode).errmsg(errmsg).build();
+        return Message.<Void>builder().code(code).desc(desc).build();
     }
 
     /**
@@ -187,10 +187,10 @@ public class ZhutongSmsProvider extends AbstractProvider<ZhutongNotice, Context>
         String response = post(url, bodys, headers);
 
         boolean succeed = Objects.equals(JsonKit.getValue(response, "code"), 0);
-        String errcode = succeed ? ErrorCode._SUCCESS.getKey() : JsonKit.getValue(response, "code");
-        String errmsg = succeed ? ErrorCode._SUCCESS.getValue() : JsonKit.getValue(response, "message");
+        String code = succeed ? ErrorCode._SUCCESS.getKey() : JsonKit.getValue(response, "code");
+        String desc = succeed ? ErrorCode._SUCCESS.getValue() : JsonKit.getValue(response, "message");
 
-        return Message.<Void>builder().errcode(errcode).errmsg(errmsg).build();
+        return Message.<Void>builder().code(code).desc(desc).build();
     }
 
     /**

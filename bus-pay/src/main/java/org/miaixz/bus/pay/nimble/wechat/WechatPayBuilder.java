@@ -30,6 +30,7 @@ import java.security.spec.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import javax.crypto.Cipher;
 import javax.crypto.NoSuchPaddingException;
@@ -185,6 +186,7 @@ public class WechatPayBuilder {
      * @param algorithm  The signature algorithm.
      * @param signKey    The key used for the signature field.
      * @return {@code true} if the signature is valid, {@code false} otherwise.
+     * @throws NullPointerException if a non-MD5 algorithm is selected and {@code partnerKey} is null
      */
     public static boolean verifyNotify(
             Map<String, String> params,
@@ -218,6 +220,7 @@ public class WechatPayBuilder {
      * @param partnerKey The payment key.
      * @param algorithm  The signature algorithm.
      * @return {@code true} if the signature is valid, {@code false} otherwise.
+     * @throws NullPointerException if a non-MD5 algorithm is selected and {@code partnerKey} is null
      */
     public static boolean verifyNotify(Map<String, String> params, String partnerKey, Algorithm algorithm) {
         return verifyNotify(params, partnerKey, algorithm, null);
@@ -227,9 +230,10 @@ public class WechatPayBuilder {
      * Generates a signature.
      *
      * @param params     The parameters to be signed.
-     * @param partnerKey The key.
+     * @param partnerKey The key; required for non-MD5 signing.
      * @param algorithm  The signature algorithm.
      * @return The signed data.
+     * @throws NullPointerException if a non-MD5 algorithm is selected and {@code partnerKey} is null
      */
     public static String createSign(Map<String, String> params, String partnerKey, Algorithm algorithm) {
         return createSign(params, partnerKey, algorithm, null);
@@ -239,16 +243,20 @@ public class WechatPayBuilder {
      * Generates a signature.
      *
      * @param params     The parameters to be signed.
-     * @param partnerKey The key.
+     * @param partnerKey The key; required for non-MD5 signing.
      * @param algorithm  The signature algorithm.
      * @param signKey    The key used for the signature field.
      * @return The signed data.
+     * @throws NullPointerException if a non-MD5 algorithm is selected and {@code partnerKey} is null
      */
     public static String createSign(
             Map<String, String> params,
             String partnerKey,
             Algorithm algorithm,
             String signKey) {
+        if (algorithm != null && algorithm != Algorithm.MD5) {
+            Objects.requireNonNull(partnerKey, "Partner key must not be null for HMAC signing");
+        }
         if (algorithm == null) {
             algorithm = Algorithm.MD5;
         }
@@ -260,9 +268,9 @@ public class WechatPayBuilder {
         String tempStr = Builder.createLinkString(params);
         String stringSignTemp = tempStr + "&key=" + partnerKey;
         if (algorithm == Algorithm.MD5) {
-            return org.miaixz.bus.crypto.Builder.md5(stringSignTemp).toUpperCase();
+            return StringKit.toUpperCase(org.miaixz.bus.crypto.Builder.md5(stringSignTemp));
         } else {
-            return org.miaixz.bus.crypto.Builder.hmac(Algorithm.HMACSHA256, partnerKey.toUpperCase())
+            return org.miaixz.bus.crypto.Builder.hmac(Algorithm.HMACSHA256, StringKit.toUpperCase(partnerKey))
                     .digestHex(stringSignTemp);
         }
     }
@@ -279,16 +287,17 @@ public class WechatPayBuilder {
         params.remove(FIELD_SIGN);
         String tempStr = Builder.createLinkString(params);
         String stringSignTemp = tempStr + "&secret=" + secret;
-        return org.miaixz.bus.crypto.Builder.md5(stringSignTemp).toUpperCase();
+        return StringKit.toUpperCase(org.miaixz.bus.crypto.Builder.md5(stringSignTemp));
     }
 
     /**
      * Builds a signature.
      *
      * @param params     The parameters to be signed.
-     * @param partnerKey The key.
+     * @param partnerKey The key; required for non-MD5 signing.
      * @param algorithm  The signature algorithm.
      * @return A map containing the signed parameters.
+     * @throws NullPointerException if a non-MD5 algorithm is selected and {@code partnerKey} is null
      */
     public static Map<String, String> buildSign(Map<String, String> params, String partnerKey, Algorithm algorithm) {
         return buildSign(params, partnerKey, algorithm, true);
@@ -302,6 +311,7 @@ public class WechatPayBuilder {
      * @param algorithm    The signature algorithm.
      * @param haveSignType Whether the signature includes the sign_type field.
      * @return A map containing the signed parameters.
+     * @throws NullPointerException if a non-MD5 algorithm is selected and {@code partnerKey} is null
      */
     public static Map<String, String> buildSign(
             Map<String, String> params,
@@ -321,6 +331,7 @@ public class WechatPayBuilder {
      * @param signTypeKey  The string for the signature type field.
      * @param haveSignType Whether the signature includes the signature type string.
      * @return A map containing the signed parameters.
+     * @throws NullPointerException if a non-MD5 algorithm is selected and {@code partnerKey} is null
      */
     public static Map<String, String> buildSign(
             Map<String, String> params,
@@ -937,7 +948,7 @@ public class WechatPayBuilder {
             InputStream certInputStream) throws Exception {
         // Get platform certificate serial number
         X509Certificate certificate = Builder.getCertificate(certInputStream);
-        String serialNumber = certificate.getSerialNumber().toString(16).toUpperCase();
+        String serialNumber = StringKit.toUpperCase(certificate.getSerialNumber().toString(16));
         // Verify certificate serial number
         if (serialNumber.equals(serialNo)) {
             boolean verifySignature = WechatPayBuilder

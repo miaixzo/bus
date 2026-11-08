@@ -52,6 +52,7 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.net.Protocol;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.extra.json.JsonValue;
 
@@ -115,7 +116,7 @@ public class GiteeSourceAdapter implements VendorAdapter {
     /**
      * Creates one Source-bound Gitee.com adapter.
      *
-     * @param spaceId  Source space used to isolate state and credential resolution
+     * @param tenantId Source tenant used to isolate state and credential resolution
      * @param sourceId Source identifier
      * @param manifest selected Gitee manifest
      * @param variant  exact selected default manifest
@@ -124,7 +125,7 @@ public class GiteeSourceAdapter implements VendorAdapter {
      * @throws IllegalArgumentException if an identifier is blank or a collaborator is {@code null}
      * @throws ValidateException        if routing, protocol, manifest, callback, or authorization is inconsistent
      */
-    public GiteeSourceAdapter(final String spaceId, final String sourceId, final GiteeManifest manifest,
+    public GiteeSourceAdapter(final String tenantId, final String sourceId, final GiteeManifest manifest,
             final VendorManifest.Variant variant, final GiteeOptions options, final SourceServices services) {
         final GiteeManifest selectedProfile = Assert.notNull(manifest, "Gitee manifest must not be null");
         this.sourceId = Assert.notBlank(sourceId, "Gitee Source id must not be blank");
@@ -138,7 +139,7 @@ public class GiteeSourceAdapter implements VendorAdapter {
                 || options.redirectUri().isEmpty()) {
             throw new ValidateException("Gitee adapter requires the gitee/default OAuth 2.0 manifest");
         }
-        this.redirectManager = RedirectManager.create(spaceId, sourceId, variant, options, services);
+        this.redirectManager = RedirectManager.create(tenantId, sourceId, variant, options, services);
         final var targets = variant.targets().resolve(options);
         final OAuth2ClientOptions oauthSettings = new OAuth2ClientOptions(targets.authorization(), Optional.empty(),
                 Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(),
@@ -567,8 +568,8 @@ public class GiteeSourceAdapter implements VendorAdapter {
             final String accessToken = requiredString(object, OAuth2.Parameters.ACCESS_TOKEN);
             requiredString(object, OAuth2.Parameters.REFRESH_TOKEN);
             final Scope scope = Scope.parse(requiredString(object, OAuth2.Parameters.SCOPE));
-            if (!scope.values().contains("user_info") || !"bearer"
-                    .equals(requiredString(object, OAuth2.Parameters.TOKEN_TYPE).toLowerCase(Locale.ROOT))) {
+            if (!scope.values().contains("user_info")
+                    || !"bearer".equals(StringKit.toLowerCase(requiredString(object, OAuth2.Parameters.TOKEN_TYPE)))) {
                 throw new ValidateException("Gitee token response does not retain the required authorization");
             }
             final long expiresIn = requiredPositiveLong(object, OAuth2.Parameters.EXPIRES_IN);

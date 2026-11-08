@@ -114,7 +114,7 @@ public class MicrosoftSourceAdapter implements VendorAdapter {
     /**
      * Creates one Source-bound Microsoft cloud adapter.
      *
-     * @param spaceId  Source space used to isolate state and credential resolution
+     * @param tenantId Source tenant used to isolate state and credential resolution
      * @param sourceId Source identifier
      * @param manifest selected Microsoft platform manifest
      * @param variant  exact selected global or China manifest
@@ -123,7 +123,7 @@ public class MicrosoftSourceAdapter implements VendorAdapter {
      * @throws IllegalArgumentException if an identifier is blank or a collaborator is {@code null}
      * @throws ValidateException        if profile, variant, protocol, options, or required standard operations disagree
      */
-    public MicrosoftSourceAdapter(final String spaceId, final String sourceId, final MicrosoftManifest manifest,
+    public MicrosoftSourceAdapter(final String tenantId, final String sourceId, final MicrosoftManifest manifest,
             final VendorManifest.Variant variant, final MicrosoftOptions options, final SourceServices services) {
         final MicrosoftManifest selected = Assert.notNull(manifest, "Microsoft manifest must not be null");
         this.sourceId = Assert.notBlank(sourceId, "Microsoft Source id must not be blank");
@@ -138,7 +138,7 @@ public class MicrosoftSourceAdapter implements VendorAdapter {
                 || options.redirectUri().isEmpty()) {
             throw new ValidateException("Microsoft adapter requires a matching global or China OAuth 2.0 manifest");
         }
-        this.redirectManager = RedirectManager.create(spaceId, sourceId, variant, options, services);
+        this.redirectManager = RedirectManager.create(tenantId, sourceId, variant, options, services);
         final var targets = variant.targets().resolve(options);
         final OAuth2ClientOptions oauthSettings = new OAuth2ClientOptions(targets.authorization(), targets.token(),
                 Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(),

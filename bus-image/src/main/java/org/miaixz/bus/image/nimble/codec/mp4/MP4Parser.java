@@ -44,59 +44,59 @@ import org.miaixz.bus.image.nimble.codec.mpeg.MPEGHeader;
 public class MP4Parser implements XPEGParser {
 
     /**
-     * The file box type value.
+     * Ftyp;
      */
-    private static final int FileBoxType = 0x66747970; // ftyp;
+    private static final int FileBoxType = 0x66747970;
 
     /**
-     * The movie box type value.
+     * Moov;
      */
-    private static final int MovieBoxType = 0x6d6f6f76; // moov;
+    private static final int MovieBoxType = 0x6d6f6f76;
 
     /**
-     * The track box type value.
+     * Trak.
      */
-    private static final int TrackBoxType = 0x7472616b; // trak
+    private static final int TrackBoxType = 0x7472616b;
     /**
-     * The media box type value.
+     * Mdia.
      */
-    private static final int MediaBoxType = 0x6d646961; // mdia
+    private static final int MediaBoxType = 0x6d646961;
     /**
-     * The media header box type value.
+     * Mdhd.
      */
-    private static final int MediaHeaderBoxType = 0x6d646864; // mdhd
+    private static final int MediaHeaderBoxType = 0x6d646864;
     /**
-     * The media information box type value.
+     * Minf.
      */
-    private static final int MediaInformationBoxType = 0x6d696e66; // minf
+    private static final int MediaInformationBoxType = 0x6d696e66;
     /**
-     * The sample table box type value.
+     * Stbl.
      */
-    private static final int SampleTableBoxType = 0x7374626c; // stbl
+    private static final int SampleTableBoxType = 0x7374626c;
     /**
-     * The sample description box type value.
+     * Stsd.
      */
-    private static final int SampleDescriptionBoxType = 0x73747364; // stsd
+    private static final int SampleDescriptionBoxType = 0x73747364;
     /**
-     * The visual sample entry type avc1 value.
+     * Avc1.
      */
-    private static final int VisualSampleEntryTypeAVC1 = 0x61766331; // avc1
+    private static final int VisualSampleEntryTypeAVC1 = 0x61766331;
     /**
-     * The avc configuration box type value.
+     * AvcC.
      */
-    private static final int AvcConfigurationBoxType = 0x61766343; // avcC
+    private static final int AvcConfigurationBoxType = 0x61766343;
     /**
-     * The visual sample entry type hvc1 value.
+     * Hvc1.
      */
-    private static final int VisualSampleEntryTypeHVC1 = 0x68766331; // hvc1
+    private static final int VisualSampleEntryTypeHVC1 = 0x68766331;
     /**
-     * The hevc configuration box type value.
+     * HvcC.
      */
-    private static final int HevcConfigurationBoxType = 0x68766343; // hvcC
+    private static final int HevcConfigurationBoxType = 0x68766343;
     /**
-     * The sample size box type value.
+     * Stsz.
      */
-    private static final int SampleSizeBoxType = 0x7374737a; // stsz
+    private static final int SampleSizeBoxType = 0x7374737a;
 
     /**
      * The buf value.

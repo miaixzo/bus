@@ -269,7 +269,7 @@ final class MapperOptionsResolver {
             }
             switch (normalizePropertyName(key)) {
                 case "enabled" -> schemaOptions.setEnabled(Boolean.parseBoolean(value));
-                case "mode" -> schemaOptions.setMode(Schema.valueOf(value.trim().toUpperCase(Locale.ROOT)));
+                case "mode" -> schemaOptions.setMode(Schema.valueOf(StringKit.toUpperCase(value.trim())));
                 case "dryrun" -> schemaOptions.setDryRun(Boolean.parseBoolean(value));
                 case "printsql" -> schemaOptions.setPrintSql(Boolean.parseBoolean(value));
                 case "failfast" -> schemaOptions.setFailFast(Boolean.parseBoolean(value));
@@ -487,8 +487,7 @@ final class MapperOptionsResolver {
         if (dot >= 0) {
             base = base.substring(0, dot);
         }
-        return base.replace(Symbol.MINUS, Normal.EMPTY).replace(Symbol.UNDERLINE, Normal.EMPTY)
-                .toLowerCase(Locale.ROOT);
+        return StringKit.toLowerCase(base.replace(Symbol.MINUS, Normal.EMPTY).replace(Symbol.UNDERLINE, Normal.EMPTY));
     }
 
 }

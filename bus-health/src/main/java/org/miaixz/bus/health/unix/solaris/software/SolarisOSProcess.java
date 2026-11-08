@@ -200,17 +200,17 @@ public class SolarisOSProcess extends AbstractOSProcess {
     private volatile long majorFaults;
 
     /**
-     * The contextSwitches value.
+     * Default.
      */
-    private volatile long contextSwitches = 0; // default
+    private volatile long contextSwitches = 0;
     /**
-     * The voluntaryContextSwitches value.
+     * Default.
      */
-    private volatile long voluntaryContextSwitches = 0; // default
+    private volatile long voluntaryContextSwitches = 0;
     /**
-     * The involuntaryContextSwitches value.
+     * Default.
      */
-    private volatile long involuntaryContextSwitches = 0; // default
+    private volatile long involuntaryContextSwitches = 0;
 
     /**
      * Creates a new SolarisOSProcess instance.

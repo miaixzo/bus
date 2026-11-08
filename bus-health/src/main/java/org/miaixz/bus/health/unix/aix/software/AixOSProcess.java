@@ -89,9 +89,8 @@ public class AixOSProcess extends AbstractOSProcess {
     private final SupplierX<Pair<List<String>, Map<String, String>>> cmdEnv = Memoizer
             .memoize(this::queryCommandlineEnvironment);
 
-    // Memoized copy from OperatingSystem
     /**
-     * The procCpu value.
+     * Memoized copy from OperatingSystem.
      */
     private final SupplierX<perfstat_process_t[]> procCpu;
 

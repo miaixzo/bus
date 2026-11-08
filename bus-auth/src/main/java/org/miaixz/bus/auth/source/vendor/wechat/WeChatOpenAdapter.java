@@ -33,7 +33,7 @@ public class WeChatOpenAdapter extends WeChatAdapterSupport {
     /**
      * Creates one Open Platform adapter for an exact compiled Source.
      *
-     * @param spaceId  Source space identifier
+     * @param tenantId Source tenant identifier
      * @param sourceId Source identifier
      * @param manifest selected WeChat manifest
      * @param variant  selected Open Platform variant manifest
@@ -41,9 +41,9 @@ public class WeChatOpenAdapter extends WeChatAdapterSupport {
      * @param services capability-limited Source services
      * @throws ValidateException if the selected variant is not {@code open}
      */
-    public WeChatOpenAdapter(final String spaceId, final String sourceId, final WeChatManifest manifest,
+    public WeChatOpenAdapter(final String tenantId, final String sourceId, final WeChatManifest manifest,
             final VendorManifest.Variant variant, final WeChatOptions options, final SourceServices services) {
-        super(spaceId, sourceId, manifest, variant, options, services);
+        super(tenantId, sourceId, manifest, variant, options, services);
         if (!WeChatManifest.OPEN.equals(options.variant())) {
             throw new ValidateException("WeChat Open adapter requires the open variant");
         }

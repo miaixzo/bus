@@ -21,7 +21,6 @@ package org.miaixz.bus.health.unix.shared.hardware;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 import com.sun.jna.Pointer;
@@ -30,6 +29,7 @@ import com.sun.jna.ptr.PointerByReference;
 import org.miaixz.bus.core.center.function.UnaryOperatorX;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.annotation.Immutable;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.Platform;
@@ -182,7 +182,7 @@ public class CupsPrinter extends AbstractPrinter {
      */
     static PrinterStatus parseStateFromCups(String state, String stateReasons) {
         if (!stateReasons.isEmpty() && !"none".equals(stateReasons)) {
-            String lower = stateReasons.toLowerCase(Locale.ROOT);
+            String lower = StringKit.toLowerCase(stateReasons);
             if (lower.contains("error") || lower.contains("fault")) {
                 return PrinterStatus.ERROR;
             }

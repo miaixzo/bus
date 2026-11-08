@@ -22,7 +22,7 @@ package org.miaixz.bus.health.linux.hardware;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
+import java.util.Objects;
 import java.util.function.ToLongFunction;
 
 import org.miaixz.bus.core.center.function.FunctionX;
@@ -31,6 +31,7 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.Immutable;
 import org.miaixz.bus.core.lang.tuple.Pair;
 import org.miaixz.bus.core.lang.tuple.Triplet;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.health.Builder;
 import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.Parsing;
@@ -53,22 +54,19 @@ final class LinuxGraphicsCard extends AbstractGraphicsCard {
      */
     private static final String DRM_PATH = "/sys/class/drm/";
 
-    // sysfs path for this card's device directory, e.g. /sys/class/drm/card0/device
-    // Empty string if this card has no associated DRM sysfs entry.
     /**
-     * The drmDevicePath value.
+     * Sysfs path for this card's device directory, e.g. /sys/class/drm/card0/device Empty string if this card has no
+     * associated DRM sysfs entry.
      */
     private final String drmDevicePath;
 
-    // Driver name detected from the sysfs driver symlink, e.g. "amdgpu", "i915", "xe", "nvidia"
     /**
-     * The driverName value.
+     * Driver name detected from the sysfs driver symlink, e.g. "amdgpu", "i915", "xe", "nvidia".
      */
     private final String driverName;
 
-    // PCI bus ID string for NVML correlation, e.g. "0000:01:00.0". Empty if unknown.
     /**
-     * The pciBusId value.
+     * PCI bus ID string for NVML correlation, e.g. "0000:01:00.0". Empty if unknown.
      */
     private final String pciBusId;
 
@@ -81,14 +79,15 @@ final class LinuxGraphicsCard extends AbstractGraphicsCard {
      * @param versionInfo   The version info
      * @param vram          The VRAM
      * @param drmDevicePath sysfs device path for this card, or empty string if unavailable
-     * @param driverName    driver name (e.g. "amdgpu"), or empty string if unknown
+     * @param driverName    non-null driver name (e.g. "amdgpu"), or empty string if unknown
      * @param pciBusId      PCI bus ID for NVML correlation, or empty string if unknown
+     * @throws NullPointerException if {@code driverName} is null
      */
     LinuxGraphicsCard(String name, String deviceId, String vendor, String versionInfo, long vram, String drmDevicePath,
             String driverName, String pciBusId) {
         super(name, deviceId, vendor, versionInfo, vram);
         this.drmDevicePath = drmDevicePath;
-        this.driverName = driverName;
+        this.driverName = Objects.requireNonNull(driverName, "GPU driver name must not be null");
         this.pciBusId = pciBusId;
     }
 
@@ -147,7 +146,7 @@ final class LinuxGraphicsCard extends AbstractGraphicsCard {
      * @return the best available non-NVML VRAM total
      */
     private static long vramTotal(Attrs attrs) {
-        if (!attrs.getDrmDevicePath().isEmpty() && "amdgpu".equals(attrs.getDriverName().toLowerCase(Locale.ROOT))) {
+        if (!attrs.getDrmDevicePath().isEmpty() && "amdgpu".equals(StringKit.toLowerCase(attrs.getDriverName()))) {
             long total = Builder.getLongFromFile(attrs.getDrmDevicePath() + "/mem_info_vram_total", -1L);
             if (total > Normal._0) {
                 return total;
@@ -351,10 +350,10 @@ final class LinuxGraphicsCard extends AbstractGraphicsCard {
         return findDrmInfo(pciSlot, DRM_PATH);
     }
 
-    // Slower, use as backup
-
     /**
      * Finds the sysfs DRM device path, driver name, and PCI bus ID for a GPU.
+     * <p>
+     * Slower, use as backup.
      *
      * @param pciSlot the PCI slot address, or {@code null} to use first-match
      * @param drmPath the base DRM sysfs directory path
@@ -490,8 +489,9 @@ final class LinuxGraphicsCard extends AbstractGraphicsCard {
          * @param versionInfo   the version info
          * @param vram          the vram
          * @param drmDevicePath the drm device path
-         * @param driverName    the driver name
+         * @param driverName    the non-null driver name, or an empty string if unknown
          * @param pciBusId      the pci bus id
+         * @throws NullPointerException if {@code driverName} is null
          */
         Attrs(String name, String deviceId, String vendor, String versionInfo, long vram, String drmDevicePath,
                 String driverName, String pciBusId) {
@@ -501,7 +501,7 @@ final class LinuxGraphicsCard extends AbstractGraphicsCard {
             this.versionInfo = versionInfo;
             this.vram = vram;
             this.drmDevicePath = drmDevicePath;
-            this.driverName = driverName;
+            this.driverName = Objects.requireNonNull(driverName, "GPU driver name must not be null");
             this.pciBusId = pciBusId;
         }
 

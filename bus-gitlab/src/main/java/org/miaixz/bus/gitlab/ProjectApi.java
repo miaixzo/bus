@@ -2756,7 +2756,7 @@ public class ProjectApi extends AbstractApi implements Constants {
         } catch (RelevantException glae) {
 
             // GitLab 12.8 and older will return HTTP status 400 if called with content instead of code
-            if (!ErrorCode._400.getKey().equals(glae.getErrcode())) {
+            if (!ErrorCode._400.getKey().equals(glae.getCode())) {
                 throw glae;
             }
 

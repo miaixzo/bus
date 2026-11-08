@@ -25,6 +25,7 @@ import java.util.regex.Pattern;
 
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.health.Parsing;
 
 /**
@@ -67,6 +68,9 @@ public final class CpuFrequencyResidency {
      * @param stateResidency the ticks spent in each state, in channel order
      * @param table          the frequency table in ascending order
      * @return the frequency in hertz, or {@code 0} if the data cannot be paired
+     * @throws NullPointerException if {@code table} is null, or if a non-empty table is supplied and
+     *                              {@code stateResidency} or a state name examined before finding the first active
+     *                              state is null
      */
     public static long activeWeightedFrequency(Map<String, Long> stateResidency, long[] table) {
         if (table.length == Normal._0) {
@@ -76,8 +80,12 @@ public final class CpuFrequencyResidency {
         long observedTicks = Normal._0;
         int firstActive = Normal.__1;
         for (Map.Entry<String, Long> state : stateResidency.entrySet()) {
-            if (firstActive < Normal._0 && !IDLE_STATES.contains(state.getKey().toUpperCase(Locale.ROOT))) {
-                firstActive = residency.size();
+            if (firstActive < Normal._0) {
+                String stateName = state.getKey();
+                Objects.requireNonNull(stateName, "CPU state name must not be null");
+                if (!IDLE_STATES.contains(StringKit.toUpperCase(stateName))) {
+                    firstActive = residency.size();
+                }
             }
             Long ticks = state.getValue();
             long clamped = ticks == null ? Normal._0 : Math.max(ticks, Normal._0);

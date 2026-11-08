@@ -97,10 +97,10 @@ public class UniSmsProvider extends AbstractProvider<UniNotice, Context> {
         Logger.info(
                 false,
                 "Notify",
-                "UniSMS send completed: template={}, targetCount={}, errcode={}",
+                "UniSMS send completed: template={}, targetCount={}, code={}",
                 entity == null ? null : entity.getTemplate(),
                 entity == null || entity.getReceive() == null ? 0 : entity.getReceive().split(Symbol.COMMA).length,
-                result == null ? null : result.getErrcode());
+                result == null ? null : result.getCode());
         return result;
     }
 
@@ -156,16 +156,16 @@ public class UniSmsProvider extends AbstractProvider<UniNotice, Context> {
         String response = post(url, JsonKit.toJsonString(bodys), headers, MediaType.APPLICATION_JSON);
 
         boolean succeed = Objects.equals(JsonKit.getValue(response, "code"), 0);
-        String errcode = succeed ? ErrorCode._SUCCESS.getKey() : ErrorCode._FAILURE.getKey();
-        String errmsg = succeed ? ErrorCode._SUCCESS.getValue() : JsonKit.getValue(response, "message");
+        String code = succeed ? ErrorCode._SUCCESS.getKey() : ErrorCode._FAILURE.getKey();
+        String desc = succeed ? ErrorCode._SUCCESS.getValue() : JsonKit.getValue(response, "message");
 
-        Message<Void> result = Message.<Void>builder().errcode(errcode).errmsg(errmsg).build();
+        Message<Void> result = Message.<Void>builder().code(code).desc(desc).build();
         Logger.debug(
                 false,
                 "Notify",
-                "UniSMS request completed: action={}, errcode={}, responseBytes={}",
+                "UniSMS request completed: action={}, code={}, responseBytes={}",
                 action,
-                result.getErrcode(),
+                result.getCode(),
                 response == null ? 0 : response.length());
         return result;
     }

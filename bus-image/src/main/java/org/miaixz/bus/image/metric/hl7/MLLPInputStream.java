@@ -29,17 +29,17 @@ import java.io.*;
 public class MLLPInputStream extends BufferedInputStream {
 
     /**
-     * The som value.
+     * MLLP start-of-message byte ({@code 0x0b}).
      */
-    private static final int SOM = 0x0b; // Message Start
+    private static final int SOM = 0x0b;
     /**
-     * The eom1 value.
+     * First end-of-message byte ({@code 0x1c}).
      */
-    private static final int EOM1 = 0x1c; // End of Message Byte 1
+    private static final int EOM1 = 0x1c;
     /**
-     * The eom2 value.
+     * Second end-of-message byte ({@code 0x0d}).
      */
-    private static final int EOM2 = 0x0d; // End of Message Byte 2
+    private static final int EOM2 = 0x0d;
     /**
      * The read buffer value.
      */

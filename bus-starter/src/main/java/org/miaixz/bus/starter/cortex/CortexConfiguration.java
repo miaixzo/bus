@@ -887,15 +887,15 @@ public class CortexConfiguration {
         }
 
         /**
-         * Delegates the atomic runtime observation update to the shared durable registry store.
-         * The delegate retains responsibility for rejecting stale service or instance snapshots and avoiding registration
-         * or publication side effects.
+         * Delegates the atomic runtime observation update to the shared durable registry store. The delegate retains
+         * responsibility for rejecting stale service or instance snapshots and avoiding registration or publication
+         * side effects.
          *
-         * @param entry the exact service snapshot captured before probing
-         * @param expected the exact runtime snapshot captured before probing
+         * @param entry       the exact service snapshot captured before probing
+         * @param expected    the exact runtime snapshot captured before probing
          * @param observation the completed probe result
-         * @param started the probe start time in epoch milliseconds
-         * @param finished the probe completion time in epoch milliseconds
+         * @param started     the probe start time in epoch milliseconds
+         * @param finished    the probe completion time in epoch milliseconds
          * @return the updated runtime snapshot, or {@code null} when the captured snapshots are no longer authoritative
          */
         @Override
@@ -906,10 +906,10 @@ public class CortexConfiguration {
         /**
          * Delegates publication to the shared store while retaining its definition and association consistency checks.
          *
-         * @param entry the exact captured service definition
+         * @param entry    the exact captured service definition
          * @param instance the exact captured runtime association
          * @param previous the retired runtime for a removal, or {@code null}
-         * @param action the event construction and dispatch action after the originating transaction has committed
+         * @param action   the event construction and dispatch action after the originating transaction has committed
          */
         @Override
         public void publish(T entry, Instance instance, Instance previous, Runnable action) {
@@ -917,8 +917,8 @@ public class CortexConfiguration {
         }
 
         /**
-         * Reads runtime association snapshots for the exact typed service through the shared registry store.
-         * Does not introduce cache writes or process-level deduplication.
+         * Reads runtime association snapshots for the exact typed service through the shared registry store. Does not
+         * introduce cache writes or process-level deduplication.
          *
          * @param entry the complete service definition, including its request verb
          * @return the runtime association snapshots returned by the delegate

@@ -19,7 +19,6 @@
 */
 package org.miaixz.bus.core.center.date.culture.rabjung;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.miaixz.bus.core.center.date.culture.Zodiac;
@@ -229,15 +228,7 @@ public class RabjungYear extends AbstractTraditionalYear {
      * @return A list of {@link RabjungMonth} objects for this year.
      */
     public List<RabjungMonth> getMonths() {
-        List<RabjungMonth> l = new ArrayList<>(13);
-        int leapMonth = getLeapMonth();
-        for (int i = 1; i < 13; i++) {
-            l.add(RabjungMonth.fromYm(year, i));
-            if (i == leapMonth) {
-                l.add(RabjungMonth.fromYm(year, -i));
-            }
-        }
-        return l;
+        return buildMonths(i -> RabjungMonth.fromYm(year, i));
     }
 
 }

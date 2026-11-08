@@ -22,6 +22,7 @@ package org.miaixz.bus.health.linux.software;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -29,11 +30,9 @@ import com.sun.jna.Native;
 import com.sun.jna.platform.linux.LibC;
 import com.sun.jna.platform.unix.LibCAPI;
 
-import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.Builder;
-import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.jna.ByRef;
 import org.miaixz.bus.health.builtin.software.NetworkParams;
@@ -56,15 +55,6 @@ final class LinuxNetworkParams extends AbstractNetworkParams {
      * The LIBC constant.
      */
     private static final LinuxLibc LIBC = LinuxLibc.INSTANCE;
-
-    /**
-     * The IPV4_DEFAULT_DEST constant.
-     */
-    private static final String IPV4_DEFAULT_DEST = "0.0.0.0"; // NOSONAR
-    /**
-     * The IPV6_DEFAULT_DEST constant.
-     */
-    private static final String IPV6_DEFAULT_DEST = "::/0";
 
     /**
      * Returns the domain name.
@@ -129,26 +119,7 @@ final class LinuxNetworkParams extends AbstractNetworkParams {
      */
     @Override
     public String getIpv4DefaultGateway() {
-        List<String> routes = Executor.runNative("route -A inet -n");
-        if (routes.size() <= 2) {
-            return Normal.EMPTY;
-        }
-
-        String gateway = Normal.EMPTY;
-        int minMetric = Integer.MAX_VALUE;
-
-        for (int i = 2; i < routes.size(); i++) {
-            String[] fields = Pattern.SPACES_PATTERN.split(routes.get(i));
-            if (fields.length > 4 && fields[0].equals(IPV4_DEFAULT_DEST)) {
-                boolean isGateway = fields[3].indexOf('G') != -1;
-                int metric = Parsing.parseIntOrDefault(fields[4], Integer.MAX_VALUE);
-                if (isGateway && metric < minMetric) {
-                    minMetric = metric;
-                    gateway = fields[1];
-                }
-            }
-        }
-        return gateway;
+        return defaultGateway(RouteTable.queryIpv4Routes(Collections.emptyMap()));
     }
 
     /**
@@ -158,26 +129,24 @@ final class LinuxNetworkParams extends AbstractNetworkParams {
      */
     @Override
     public String getIpv6DefaultGateway() {
-        List<String> routes = Executor.runNative("route -A inet6 -n");
-        if (routes.size() <= 2) {
-            return Normal.EMPTY;
-        }
+        return defaultGateway(RouteTable.queryIpv6Routes(Collections.emptyMap()));
+    }
 
-        String gateway = Normal.EMPTY;
-        int minMetric = Integer.MAX_VALUE;
-
-        for (int i = 2; i < routes.size(); i++) {
-            String[] fields = Pattern.SPACES_PATTERN.split(routes.get(i));
-            if (fields.length > 3 && fields[0].equals(IPV6_DEFAULT_DEST)) {
-                boolean isGateway = fields[2].indexOf('G') != -1;
-                int metric = Parsing.parseIntOrDefault(fields[3], Integer.MAX_VALUE);
-                if (isGateway && metric < minMetric) {
-                    minMetric = metric;
-                    gateway = fields[1];
-                }
+    /**
+     * Selects the default gateway with the lowest metric.
+     *
+     * @param routes The routes for one address family.
+     * @return The gateway address, or an empty string if no default gateway exists.
+     */
+    static String defaultGateway(List<NetworkParams.IPRoute> routes) {
+        NetworkParams.IPRoute best = null;
+        for (NetworkParams.IPRoute route : routes) {
+            if (route.getPrefixLength() == Normal._0 && route.isGateway() && route.getGateway().length > Normal._0
+                    && (best == null || route.getMetric() < best.getMetric())) {
+                best = route;
             }
         }
-        return gateway;
+        return best == null ? Normal.EMPTY : Parsing.formatIpAddress(best.getGateway());
     }
 
     /**

@@ -105,7 +105,7 @@ public class GitLabFailure {
     private static RelevantException failure(String message, int httpStatus, Throwable cause) {
         RelevantException failure = new RelevantException(ErrorCode._FAILURE, message, cause);
         if (httpStatus > 0) {
-            failure.setErrcode(Integer.toString(httpStatus));
+            failure.setCode(Integer.toString(httpStatus));
         }
         return failure;
     }

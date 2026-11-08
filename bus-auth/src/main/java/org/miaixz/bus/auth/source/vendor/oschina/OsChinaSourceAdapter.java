@@ -123,7 +123,7 @@ public class OsChinaSourceAdapter implements VendorAdapter {
     /**
      * Creates one Source-bound OSChina adapter from the frozen default manifest.
      *
-     * @param spaceId  Source space isolating browser and credential state
+     * @param tenantId Source tenant isolating browser and credential state
      * @param sourceId Source identifier
      * @param manifest selected OSChina manifest
      * @param variant  selected default variant manifest
@@ -132,7 +132,7 @@ public class OsChinaSourceAdapter implements VendorAdapter {
      * @throws IllegalArgumentException if an identifier is blank or a collaborator is {@code null}
      * @throws ValidateException        if profile, manifest, options, or routing differ from the frozen variant
      */
-    public OsChinaSourceAdapter(final String spaceId, final String sourceId, final OsChinaManifest manifest,
+    public OsChinaSourceAdapter(final String tenantId, final String sourceId, final OsChinaManifest manifest,
             final VendorManifest.Variant variant, final OsChinaOptions options, final SourceServices services) {
         Assert.notNull(manifest, "OSChina manifest must not be null");
         this.sourceId = Assert.notBlank(sourceId, "OSChina Source id must not be blank");
@@ -144,7 +144,7 @@ public class OsChinaSourceAdapter implements VendorAdapter {
                 || !OsChinaManifest.ID.equals(options.vendor()) || !OsChinaManifest.DEFAULT.equals(options.variant())) {
             throw new ValidateException("OSChina adapter requires the oschina/default OAuth 2.0 manifest");
         }
-        this.redirectManager = RedirectManager.create(spaceId, sourceId, variant, options, services);
+        this.redirectManager = RedirectManager.create(tenantId, sourceId, variant, options, services);
         this.authorizationEncoder = new AuthorizationRequestEncoder(
                 variant.targets().resolve(options).authorization().getOrNull());
         this.callbackDecoder = new AuthorizationResponseDecoder();

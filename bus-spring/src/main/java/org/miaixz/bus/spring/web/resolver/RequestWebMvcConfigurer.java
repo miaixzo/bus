@@ -150,8 +150,11 @@ public class RequestWebMvcConfigurer implements WebMvcConfigurer {
          * @throws Exception when native construction, binding, or validation fails
          */
         @Override
-        public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer container,
-                NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
+        public Object resolveArgument(
+                MethodParameter parameter,
+                ModelAndViewContainer container,
+                NativeWebRequest webRequest,
+                WebDataBinderFactory binderFactory) throws Exception {
             RequestObjectArgumentResolver binder = this.resolver.getObject();
             ModelAttributeProcessor processor = new ModelAttributeProcessor(binder);
             Object target = processor.resolveArgument(parameter, container, webRequest, binderFactory);

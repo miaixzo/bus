@@ -38,6 +38,7 @@ import org.apache.ibatis.session.Configuration;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
 
 /**
@@ -282,10 +283,10 @@ public class DialectRegistry {
             return UNKNOWN;
         }
 
-        String lowerName = dialectName.toLowerCase();
+        String lowerName = StringKit.toLowerCase(dialectName);
         for (Dialect dialect : DIALECTS) {
-            if (dialect.getDatabase().toLowerCase().equals(lowerName)
-                    || dialect.getDatabase().toLowerCase().replace(Symbol.SPACE, Normal.EMPTY).equals(lowerName)) {
+            if (StringKit.toLowerCase(dialect.getDatabase()).equals(lowerName) || StringKit
+                    .toLowerCase(dialect.getDatabase()).replace(Symbol.SPACE, Normal.EMPTY).equals(lowerName)) {
                 return dialect;
             }
         }

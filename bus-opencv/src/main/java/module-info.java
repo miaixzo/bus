@@ -21,22 +21,22 @@
  * Module: {@code bus.opencv}
  *
  * <p>
- * Provides Java bindings for native OpenCV image-processing functionality.
+ * Provides Java bindings and native libraries for OpenCV image processing and computer vision.
  *
  * <p>
- * Includes core matrix and geometry types, image codecs, image processing operations, perceptual image hashing, native
- * resource management, conversion utilities, and OSGi integration.
+ * Includes matrix and geometry operations, image codecs, image transformations, perceptual hashing, native library
+ * loading, and OSGi integration.
  *
  * @author Kimi Liu
  */
 module bus.opencv {
 
-    exports org.opencv.core;
-    exports org.opencv.geometry;
-    exports org.opencv.img_hash;
-    exports org.opencv.imgcodecs;
-    exports org.opencv.imgproc;
-    exports org.opencv.osgi;
-    exports org.opencv.utils;
+    exports org.miaixz.bus.opencv.core;
+    exports org.miaixz.bus.opencv.geometry;
+    exports org.miaixz.bus.opencv.img_hash;
+    exports org.miaixz.bus.opencv.imgcodecs;
+    exports org.miaixz.bus.opencv.imgproc;
+    exports org.miaixz.bus.opencv.osgi;
+    exports org.miaixz.bus.opencv.utils;
 
 }

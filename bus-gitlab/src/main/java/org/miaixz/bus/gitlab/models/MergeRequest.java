@@ -319,9 +319,8 @@ public class MergeRequest implements Serializable {
      */
     private Boolean rebaseInProgress;
 
-    // The approval fields will only be available when listing approvals, approving or unapproving a merge reuest.
     /**
-     * The approvals required value.
+     * The approval fields will only be available when listing approvals, approving or unapproving a merge request.
      */
     private Integer approvalsRequired;
 

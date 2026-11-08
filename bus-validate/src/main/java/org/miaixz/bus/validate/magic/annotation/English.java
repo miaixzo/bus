@@ -41,14 +41,14 @@ public @interface English {
      *
      * @return the error code.
      */
-    String errcode() default ErrorCode._ENGLISH;
+    String code() default ErrorCode._ENGLISH;
 
     /**
      * The error message to be used when validation fails. The message can be a template with placeholders.
      *
      * @return the error message.
      */
-    String errmsg() default ErrorCode._ENGLISH_VALUE;
+    String desc() default ErrorCode._ENGLISH_VALUE;
 
     /**
      * The validation groups this constraint belongs to.

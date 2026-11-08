@@ -360,9 +360,6 @@ public class Todo implements Serializable {
         return (JacksonJson.toJsonString(this));
     }
 
-    // This deserializer will determine the target type and deserialize to the correct class (either MergeRequest or
-    // Issue).
-
     /**
      * The target deserializer class.
      *

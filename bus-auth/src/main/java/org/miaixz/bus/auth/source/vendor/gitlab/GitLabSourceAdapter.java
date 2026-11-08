@@ -117,7 +117,7 @@ public class GitLabSourceAdapter implements VendorAdapter {
     /**
      * Creates one Source-bound GitLab.com adapter.
      *
-     * @param spaceId  Source space used to isolate state and credential resolution
+     * @param tenantId Source tenant used to isolate state and credential resolution
      * @param sourceId Source identifier
      * @param manifest selected GitLab manifest
      * @param variant  exact selected default manifest
@@ -126,7 +126,7 @@ public class GitLabSourceAdapter implements VendorAdapter {
      * @throws IllegalArgumentException if an identifier is blank or a collaborator is {@code null}
      * @throws ValidateException        if routing, protocol, manifest, callback, or capabilities are inconsistent
      */
-    public GitLabSourceAdapter(final String spaceId, final String sourceId, final GitLabManifest manifest,
+    public GitLabSourceAdapter(final String tenantId, final String sourceId, final GitLabManifest manifest,
             final VendorManifest.Variant variant, final GitLabOptions options, final SourceServices services) {
         final GitLabManifest selected = Assert.notNull(manifest, "GitLab manifest must not be null");
         this.sourceId = Assert.notBlank(sourceId, "GitLab Source id must not be blank");
@@ -139,7 +139,7 @@ public class GitLabSourceAdapter implements VendorAdapter {
                 || options.redirectUri().isEmpty()) {
             throw new ValidateException("GitLab adapter requires the gitlab/default OAuth 2.0 manifest");
         }
-        this.redirectManager = RedirectManager.create(spaceId, sourceId, variant, options, services);
+        this.redirectManager = RedirectManager.create(tenantId, sourceId, variant, options, services);
         this.formCodec = new FormCodec();
         this.tokenResponseDecoder = new TokenResponseDecoder();
         final var targets = variant.targets().resolve(options);

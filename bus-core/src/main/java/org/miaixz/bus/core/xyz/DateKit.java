@@ -1669,7 +1669,7 @@ public class DateKit extends Calendar {
                 return "h";
 
             default:
-                return unit.name().toLowerCase();
+                return StringKit.toLowerCase(unit.name());
         }
     }
 

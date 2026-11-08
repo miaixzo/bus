@@ -107,10 +107,10 @@ public class AliyunVmsProvider extends AliyunProvider<AliyunNotice, Context> {
         Logger.info(
                 false,
                 "Notify",
-                "Aliyun VMS send completed: template={}, targetCount={}, errcode={}",
+                "Aliyun VMS send completed: template={}, targetCount={}, code={}",
                 entity == null ? null : entity.getTemplate(),
                 entity == null || entity.getReceive() == null ? 0 : entity.getReceive().split(Symbol.COMMA).length,
-                result == null ? null : result.getErrcode());
+                result == null ? null : result.getCode());
         return result;
     }
 

@@ -141,7 +141,7 @@ public class OktaRealmAdapter implements VendorAdapter {
     /**
      * Creates one Source-isolated Okta management realm adapter.
      *
-     * @param spaceId  Source space used for key isolation
+     * @param tenantId Source tenant used for key isolation
      * @param sourceId Source identifier used for ownership validation
      * @param manifest exact Okta manifest
      * @param variant  exact selected management Variant
@@ -150,9 +150,9 @@ public class OktaRealmAdapter implements VendorAdapter {
      * @throws IllegalArgumentException if an identifier is blank or a collaborator is {@code null}
      * @throws ValidateException        if manifest, Variant, protocol, targets, or options are inconsistent
      */
-    public OktaRealmAdapter(final String spaceId, final String sourceId, final OktaManifest manifest,
+    public OktaRealmAdapter(final String tenantId, final String sourceId, final OktaManifest manifest,
             final VendorManifest.Variant variant, final OktaOptions options, final SourceServices services) {
-        Assert.notBlank(spaceId, "Okta management space id must not be blank");
+        Assert.notBlank(tenantId, "Okta management tenant id must not be blank");
         Assert.notBlank(sourceId, "Okta management Source id must not be blank");
         final OktaManifest selectedManifest = Assert.notNull(manifest, "Okta manifest must not be null");
         this.variant = Assert.notNull(variant, "Okta management Variant must not be null");
@@ -196,7 +196,7 @@ public class OktaRealmAdapter implements VendorAdapter {
      */
     private static boolean nextRelation(final String parameters) {
         for (String parameter : parameters.split(";")) {
-            final String normalized = StringKit.trim(parameter).toLowerCase(Locale.ROOT);
+            final String normalized = StringKit.toLowerCase(StringKit.trim(parameter));
             if ("rel=next".equals(normalized) || "rel=\"next\"".equals(normalized)) {
                 return true;
             }

@@ -172,6 +172,11 @@
         </dependency>
         <dependency>
             <groupId>org.miaixz</groupId>
+            <artifactId>bus-preset</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.miaixz</groupId>
             <artifactId>bus-proxy</artifactId>
             <optional>true</optional>
         </dependency>

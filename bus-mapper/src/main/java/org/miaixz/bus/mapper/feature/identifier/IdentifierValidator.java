@@ -31,6 +31,7 @@ import javax.sql.DataSource;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.MapperException;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.mapper.Args;
 import org.miaixz.bus.mapper.Order;
 import org.miaixz.bus.mapper.feature.affix.AffixRuleConfig;
@@ -209,6 +210,9 @@ public class IdentifierValidator {
 
     /**
      * Determines whether any effective scope requires the validator.
+     *
+     * @param properties mapper options, or {@code null} for defaults
+     * @return {@code true} if validation is enabled for at least one effective scope
      */
     private static boolean required(Properties properties) {
         if (enabled(properties, Normal.DEFAULT)) {
@@ -224,6 +228,10 @@ public class IdentifierValidator {
 
     /**
      * Resolves enablement with namespace, shared, default, then enabled-default precedence.
+     *
+     * @param properties    mapper options, or {@code null} for defaults
+     * @param datasourceKey the datasource namespace; blank values use the default namespace
+     * @return {@code true} if identifier validation is enabled for the namespace
      */
     private static boolean enabled(Properties properties, String datasourceKey) {
         if (properties == null) {
@@ -243,6 +251,10 @@ public class IdentifierValidator {
 
     /**
      * Adds PostgreSQL words whose server-side category requires identifier quoting.
+     *
+     * @param connection    the PostgreSQL connection used to read keyword classifications
+     * @param reservedWords the mutable set receiving normalized reserved words
+     * @throws SQLException if the server keyword classifications cannot be read
      */
     private static void addPostgreSqlReservedWords(Connection connection, Set<String> reservedWords)
             throws SQLException {
@@ -256,6 +268,10 @@ public class IdentifierValidator {
 
     /**
      * Adds JDBC-reported database keywords for drivers without a more precise classification source.
+     *
+     * @param metadata      the database metadata supplying SQL keywords
+     * @param reservedWords the mutable set receiving normalized keywords
+     * @throws SQLException if the driver cannot provide SQL keywords
      */
     private static void addJdbcKeywords(DatabaseMetaData metadata, Set<String> reservedWords) throws SQLException {
         String keywords = metadata.getSQLKeywords();
@@ -268,6 +284,9 @@ public class IdentifierValidator {
 
     /**
      * Normalizes and adds one non-empty word.
+     *
+     * @param reservedWords the mutable set receiving the word
+     * @param word          the word to normalize; null or blank values are ignored
      */
     private static void addWord(Set<String> reservedWords, String word) {
         String normalized = normalize(word);
@@ -278,6 +297,9 @@ public class IdentifierValidator {
 
     /**
      * Adds a non-duplicate quote rule.
+     *
+     * @param quotes the mutable list of supported quote rules
+     * @param quote  the rule to add if not already present
      */
     private static void addQuote(List<Quote> quotes, Quote quote) {
         if (!quotes.contains(quote)) {
@@ -287,6 +309,9 @@ public class IdentifierValidator {
 
     /**
      * Removes qualification and common explicit quotes for comparisons and suggestions.
+     *
+     * @param identifier the possibly qualified and quoted identifier
+     * @return the trimmed simple name without common surrounding quotes, or an empty string for {@code null}
      */
     private static String plain(String identifier) {
         if (identifier == null) {
@@ -307,6 +332,9 @@ public class IdentifierValidator {
 
     /**
      * Joins physical columns for diagnostics.
+     *
+     * @param columns the physical column names, or {@code null}
+     * @return comma-separated column names, or {@code null} when the list is null
      */
     private static String joined(List<String> columns) {
         return columns == null ? null : String.join(Symbol.COMMA, columns);
@@ -314,6 +342,9 @@ public class IdentifierValidator {
 
     /**
      * Creates an immutable normalized word set.
+     *
+     * @param values the words to normalize; null and blank entries are ignored
+     * @return an immutable set of normalized, non-empty words
      */
     private static Set<String> words(String... values) {
         Set<String> words = new LinkedHashSet<>();
@@ -330,13 +361,19 @@ public class IdentifierValidator {
 
     /**
      * Normalizes a keyword.
+     *
+     * @param value the keyword to normalize
+     * @return the trimmed uppercase keyword, or an empty string for {@code null}
      */
     private static String normalize(String value) {
-        return value == null ? Normal.EMPTY : value.trim().toUpperCase(Locale.ROOT);
+        return value == null ? Normal.EMPTY : StringKit.toUpperCase(value.trim());
     }
 
     /**
      * Normalizes an optional JDBC value.
+     *
+     * @param value the optional JDBC metadata value
+     * @return the original value, or an empty string for {@code null}
      */
     private static String value(String value) {
         return value == null ? Normal.EMPTY : value;
@@ -344,6 +381,9 @@ public class IdentifierValidator {
 
     /**
      * Formats an optional diagnostic value.
+     *
+     * @param value the optional diagnostic value
+     * @return the original value, or a dash for null or blank values
      */
     private static String display(String value) {
         return value == null || value.isBlank() ? Symbol.MINUS : value;
@@ -433,6 +473,10 @@ public class IdentifierValidator {
 
     /**
      * Resolves and caches the database identifier policy for a connection.
+     *
+     * @param connection the connection whose database rules are required
+     * @return the immutable policy cached for the database identity
+     * @throws SQLException if database metadata or keyword rules cannot be read
      */
     private Policy policy(Connection connection) throws SQLException {
         DatabaseMetaData metadata = connection.getMetaData();
@@ -449,10 +493,16 @@ public class IdentifierValidator {
 
     /**
      * Builds one immutable policy from JDBC metadata and database-native keyword classification when available.
+     *
+     * @param connection the connection used to obtain database-native keywords
+     * @param metadata   the JDBC metadata supplying keywords and identifier quotes
+     * @param key        the database identity, including its product name
+     * @return the immutable reserved-word and quoting policy
+     * @throws SQLException if keyword or quoting metadata cannot be read
      */
     private Policy policy(Connection connection, DatabaseMetaData metadata, DatabaseKey key) throws SQLException {
         Set<String> reservedWords = new LinkedHashSet<>(STANDARD_RESERVED_WORDS);
-        String product = key.product().toLowerCase(Locale.ROOT);
+        String product = StringKit.toLowerCase(key.product());
         if (product.contains("postgresql")) {
             addPostgreSqlReservedWords(connection, reservedWords);
         } else {
@@ -473,6 +523,10 @@ public class IdentifierValidator {
 
     /**
      * Converts one entity table into generic validation entries.
+     *
+     * @param table           the entity metadata containing physical identifiers
+     * @param affixRuleConfig the effective physical table-name affix rules
+     * @return validation entries for the table, columns, constraints and referenced identifiers
      */
     private List<Entry> entries(TableMeta table, AffixRuleConfig affixRuleConfig) {
         List<Entry> entries = new ArrayList<>();
@@ -525,6 +579,14 @@ public class IdentifierValidator {
 
     /**
      * Adds an optional qualified identifier when present.
+     *
+     * @param entries    the mutable list receiving the identifier entry
+     * @param type       the identifier category used in diagnostics
+     * @param entity     the entity class name used in diagnostics
+     * @param table      the physical table name used in diagnostics
+     * @param identifier the optional identifier; null or blank values are ignored
+     * @param suffix     the suffix used to disambiguate replacement suggestions
+     * @param qualified  whether the identifier may contain qualified name parts
      */
     private void addOptional(
             List<Entry> entries,
@@ -541,6 +603,12 @@ public class IdentifierValidator {
 
     /**
      * Adds referenced columns that are not already represented by an exact mapped column.
+     *
+     * @param entries       the mutable list receiving column-reference entries
+     * @param table         the entity table metadata used to resolve mapped columns
+     * @param entity        the entity class name used in diagnostics
+     * @param physicalTable the resolved physical table name
+     * @param columns       the referenced physical column names; null lists are ignored
      */
     private void addColumnReferences(
             List<Entry> entries,
@@ -563,6 +631,10 @@ public class IdentifierValidator {
 
     /**
      * Finds a mapped column for a physical column reference.
+     *
+     * @param table  the entity table metadata to search
+     * @param column the physical column reference to match
+     * @return the first matching mapped column, or {@code null} when none matches
      */
     private ColumnMeta mapped(TableMeta table, String column) {
         String target = plain(column);
@@ -572,6 +644,10 @@ public class IdentifierValidator {
 
     /**
      * Resolves Java properties corresponding to physical columns.
+     *
+     * @param table   the entity table metadata used to resolve properties
+     * @param columns the physical column names in declaration order
+     * @return comma-separated property names with dashes for missing mappings, or {@code null} for an empty list
      */
     private String properties(TableMeta table, List<String> columns) {
         if (columns == null || columns.isEmpty()) {
@@ -586,6 +662,10 @@ public class IdentifierValidator {
 
     /**
      * Applies effective affix rules while retaining an explicit table quote.
+     *
+     * @param table  the physical table name, optionally quoted
+     * @param config the effective affix configuration, or {@code null}
+     * @return the affixed table name, retaining surrounding quotes; the original name when no rules apply
      */
     private String affixed(String table, AffixRuleConfig config) {
         if (table == null || config == null || config.getProvider() == null) {
@@ -617,6 +697,11 @@ public class IdentifierValidator {
 
     /**
      * Validates all entries and reports every violation together.
+     *
+     * @param policy        the database reserved-word and quoting rules
+     * @param datasourceKey the datasource namespace used in diagnostics
+     * @param entries       the identifiers to validate; null collections and entries are ignored
+     * @throws MapperException if any identifier violates the database rules
      */
     private void inspect(Policy policy, String datasourceKey, Collection<Entry> entries) {
         List<String> violations = new ArrayList<>();
@@ -644,6 +729,10 @@ public class IdentifierValidator {
 
     /**
      * Returns a violation reason, or {@code null} when the identifier is valid.
+     *
+     * @param policy     the database reserved-word and quoting rules
+     * @param identifier the simple identifier to validate
+     * @return the violation reason, or {@code null} when the identifier is valid
      */
     private String violation(Policy policy, String identifier) {
         if (identifier == null || identifier.isBlank()) {
@@ -669,6 +758,10 @@ public class IdentifierValidator {
 
     /**
      * Tests quote escaping inside an explicitly quoted identifier.
+     *
+     * @param content the identifier content without its surrounding quotes
+     * @param quote   the quote rule defining escaped closing sequences
+     * @return {@code true} if every closing quote inside the content is escaped
      */
     private boolean escaped(String content, Quote quote) {
         int index = 0;
@@ -687,6 +780,10 @@ public class IdentifierValidator {
 
     /**
      * Splits a qualified identifier without splitting quoted content.
+     *
+     * @param policy     the database quote rules
+     * @param identifier the qualified identifier to split
+     * @return the qualified parts retaining quotes, or a singleton null entry for a null identifier
      */
     private List<String> split(Policy policy, String identifier) {
         if (identifier == null) {
@@ -725,6 +822,11 @@ public class IdentifierValidator {
 
     /**
      * Finds a quote rule opening at an identifier position.
+     *
+     * @param policy     the supported database quote rules
+     * @param identifier the identifier being scanned
+     * @param index      the character offset at which to check for an opening quote
+     * @return the first matching quote rule, or {@code null} when none matches
      */
     private Quote opening(Policy policy, String identifier, int index) {
         return policy.quotes().stream().filter(quote -> identifier.startsWith(quote.start(), index)).findFirst()
@@ -733,10 +835,15 @@ public class IdentifierValidator {
 
     /**
      * Builds one stable replacement suggestion without applying it.
+     *
+     * @param policy the database reserved-word and quoting rules
+     * @param entry  the identifier context supplying a candidate and fallback suffix
+     * @return an unquoted replacement name suitable for the supported identifier alphabet
      */
     private String suggestion(Policy policy, Entry entry) {
-        String value = plain(entry.candidate()).replaceAll("[^A-Za-z0-9_]+", Symbol.UNDERLINE)
-                .replaceAll("_+", Symbol.UNDERLINE).replaceAll("^_+|_+$", Normal.EMPTY).toLowerCase(Locale.ROOT);
+        String value = StringKit.toLowerCase(
+                plain(entry.candidate()).replaceAll("[^A-Za-z0-9_]+", Symbol.UNDERLINE)
+                        .replaceAll("_+", Symbol.UNDERLINE).replaceAll("^_+|_+$", Normal.EMPTY));
         if (value.isBlank() || Character.isDigit(value.charAt(0))) {
             value = "mapper" + Symbol.UNDERLINE + value;
         }
@@ -748,6 +855,12 @@ public class IdentifierValidator {
 
     /**
      * Builds one detailed diagnostic line.
+     *
+     * @param entry      the identifier and its entity mapping context
+     * @param identifier the invalid identifier or qualified name part
+     * @param reason     the validation failure reason
+     * @param suggestion the proposed replacement name
+     * @return a diagnostic line containing mapping context, failure reason and replacement suggestion
      */
     private String message(Entry entry, String identifier, String reason, String suggestion) {
         return "type=" + entry.type() + ", entity=" + display(entry.entity()) + ", property="

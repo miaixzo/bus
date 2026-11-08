@@ -73,8 +73,8 @@ final class AdapterBindings {
         final Class<D> checkedManifestType = Assert.notNull(manifestType, "Vendor manifest type must not be null");
         final VendorAdapter.Factory<O> checkedFactory = Assert
                 .notNull(factory, "Vendor adapter factory must not be null");
-        return new Binding((spaceId, sourceId, manifest, variant, options, services) -> checkedFactory
-                .create(spaceId, sourceId, checkedManifestType.cast(manifest), variant, narrow(options), services));
+        return new Binding((tenantId, sourceId, manifest, variant, options, services) -> checkedFactory
+                .create(tenantId, sourceId, checkedManifestType.cast(manifest), variant, narrow(options), services));
     }
 
     /**
@@ -91,11 +91,11 @@ final class AdapterBindings {
         final VendorManifest<O> checkedManifest = Assert.notNull(manifest, "Vendor manifest must not be null");
         final VendorAdapter.Factory<O> checkedFactory = Assert
                 .notNull(factory, "Vendor adapter factory must not be null");
-        return new Binding((spaceId, sourceId, selected, variant, options, services) -> {
+        return new Binding((tenantId, sourceId, selected, variant, options, services) -> {
             if (selected != checkedManifest) {
                 throw new ValidateException("Vendor binding received a different manifest instance");
             }
-            return checkedFactory.create(spaceId, sourceId, checkedManifest, variant, narrow(options), services);
+            return checkedFactory.create(tenantId, sourceId, checkedManifest, variant, narrow(options), services);
         });
     }
 
@@ -134,7 +134,7 @@ final class AdapterBindings {
     /**
      * Creates one Vendor adapter after validating the complete manifest, variant, options, and service relation.
      *
-     * @param spaceId  runtime space identifier
+     * @param tenantId owning Library tenant identifier
      * @param sourceId configured Source identifier
      * @param manifest selected Vendor manifest
      * @param variant  selected manifest variant
@@ -144,13 +144,13 @@ final class AdapterBindings {
      * @throws ValidateException if routing is inconsistent, no factory exists, or factory construction fails
      */
     VendorAdapter create(
-            final String spaceId,
+            final String tenantId,
             final String sourceId,
             final VendorManifest<?> manifest,
             final VendorManifest.Variant variant,
             final VendorOptions<?> options,
             final SourceServices services) {
-        Assert.notBlank(spaceId, "Vendor adapter space id must not be blank");
+        Assert.notBlank(tenantId, "Vendor adapter tenant id must not be blank");
         Assert.notBlank(sourceId, "Vendor adapter Source id must not be blank");
         final VendorManifest<?> checkedManifest = Assert.notNull(manifest, "Vendor adapter manifest must not be null");
         final VendorManifest.Variant checkedVariant = Assert
@@ -169,7 +169,7 @@ final class AdapterBindings {
         final VendorAdapter adapter;
         try {
             adapter = binding.invoker()
-                    .create(spaceId, sourceId, checkedManifest, checkedVariant, checkedOptions, checkedServices);
+                    .create(tenantId, sourceId, checkedManifest, checkedVariant, checkedOptions, checkedServices);
         } catch (RuntimeException cause) {
             if (cause instanceof ValidateException validation) {
                 throw validation;
@@ -202,7 +202,7 @@ final class AdapterBindings {
         /**
          * Invokes the factory relation validated when the binding was assembled.
          *
-         * @param spaceId  runtime space identifier
+         * @param tenantId owning Library tenant identifier
          * @param sourceId configured Source identifier
          * @param manifest selected Vendor manifest
          * @param variant  selected manifest variant
@@ -211,7 +211,7 @@ final class AdapterBindings {
          * @return constructed Vendor adapter
          */
         VendorAdapter create(
-                String spaceId,
+                String tenantId,
                 String sourceId,
                 VendorManifest<?> manifest,
                 VendorManifest.Variant variant,

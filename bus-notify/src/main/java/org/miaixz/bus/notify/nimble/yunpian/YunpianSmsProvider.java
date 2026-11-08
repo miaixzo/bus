@@ -76,17 +76,17 @@ public class YunpianSmsProvider extends AbstractProvider<YunpianNotice, Context>
 
         String response = post(this.getUrl(entity), bodys);
         boolean succeed = Objects.equals(JsonKit.getValue(response, "code"), 0);
-        String errcode = succeed ? ErrorCode._SUCCESS.getKey() : JsonKit.getValue(response, "code");
-        String errmsg = succeed ? ErrorCode._SUCCESS.getValue() : JsonKit.getValue(response, "msg");
+        String code = succeed ? ErrorCode._SUCCESS.getKey() : JsonKit.getValue(response, "code");
+        String desc = succeed ? ErrorCode._SUCCESS.getValue() : JsonKit.getValue(response, "msg");
 
-        Message<Void> result = Message.<Void>builder().errcode(errcode).errmsg(errmsg).build();
+        Message<Void> result = Message.<Void>builder().code(code).desc(desc).build();
         Logger.info(
                 false,
                 "Notify",
-                "Yunpian SMS send completed: template={}, targetCount={}, errcode={}, responseBytes={}",
+                "Yunpian SMS send completed: template={}, targetCount={}, code={}, responseBytes={}",
                 entity == null ? null : entity.getTemplate(),
                 entity == null || entity.getReceive() == null ? 0 : entity.getReceive().split(Symbol.COMMA).length,
-                result.getErrcode(),
+                result.getCode(),
                 response == null ? 0 : response.length());
         return result;
     }

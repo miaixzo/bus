@@ -20,13 +20,13 @@
 package org.miaixz.bus.fabric.protocol.http.cache;
 
 import java.util.ArrayList;
-import java.util.Locale;
 
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.fabric.protocol.http.HttpHeaders;
 import org.miaixz.bus.fabric.protocol.http.HttpRequest;
 import org.miaixz.bus.fabric.protocol.http.HttpResponse;
@@ -111,7 +111,7 @@ final class HttpCacheKey {
         }
         final ArrayList<String> parts = new ArrayList<>();
         for (final String name : vary.split(Symbol.COMMA)) {
-            final String normalized = name.trim().toLowerCase(Locale.ROOT);
+            final String normalized = StringKit.toLowerCase(name.trim());
             if (Symbol.STAR.equals(normalized)) {
                 throw new ProtocolException("Vary star is not cacheable");
             }

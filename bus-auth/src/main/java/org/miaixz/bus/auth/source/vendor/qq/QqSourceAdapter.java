@@ -82,9 +82,9 @@ public class QqSourceAdapter implements VendorAdapter {
     private static final String MINI_CODE_PURPOSE = "qq-mini-program-code";
 
     /**
-     * Source space used for Mini Program replay digest isolation.
+     * Source tenant used for Mini Program replay digest isolation.
      */
-    private final String spaceId;
+    private final String tenantId;
 
     /**
      * Source identifier copied into verified identities.
@@ -129,7 +129,7 @@ public class QqSourceAdapter implements VendorAdapter {
     /**
      * Creates one Source-bound QQ adapter for the selected frozen variant.
      *
-     * @param spaceId  Source space isolating state, replay, and credentials
+     * @param tenantId Source tenant isolating state, replay, and credentials
      * @param sourceId Source identifier
      * @param manifest selected QQ manifest
      * @param variant  exact selected variant manifest
@@ -138,10 +138,10 @@ public class QqSourceAdapter implements VendorAdapter {
      * @throws IllegalArgumentException if an identifier is blank or a collaborator is {@code null}
      * @throws ValidateException        if profile, variant, protocol, or options routing is inconsistent
      */
-    public QqSourceAdapter(final String spaceId, final String sourceId, final QqManifest manifest,
+    public QqSourceAdapter(final String tenantId, final String sourceId, final QqManifest manifest,
             final VendorManifest.Variant variant, final QqOptions options, final SourceServices services) {
         final QqManifest selected = Assert.notNull(manifest, "QQ manifest must not be null");
-        this.spaceId = Assert.notBlank(spaceId, "QQ space id must not be blank");
+        this.tenantId = Assert.notBlank(tenantId, "QQ tenant id must not be blank");
         this.sourceId = Assert.notBlank(sourceId, "QQ Source id must not be blank");
         this.variant = Assert.notNull(variant, "QQ manifest must not be null");
         this.options = Assert.notNull(options, "QQ options must not be null");
@@ -153,7 +153,7 @@ public class QqSourceAdapter implements VendorAdapter {
             throw new ValidateException("QQ adapter profile, variant, protocol, and options must match");
         }
         this.redirectManager = QqManifest.OPEN.equals(options.variant())
-                ? RedirectManager.create(spaceId, sourceId, variant, options, services)
+                ? RedirectManager.create(tenantId, sourceId, variant, options, services)
                 : null;
         this.callbackDecoder = new AuthorizationResponseDecoder();
         this.formCodec = new FormCodec();
@@ -782,7 +782,7 @@ public class QqSourceAdapter implements VendorAdapter {
             final Timeout timeout) {
         final var rule = services.policies().require(Protocol.HTTPS);
         return new ReplayGuard(services.replayCache()).register(
-                spaceId,
+                tenantId,
                 Protocol.HTTPS,
                 MINI_AUTHORITY,
                 MINI_CODE_PURPOSE,

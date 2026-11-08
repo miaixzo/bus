@@ -83,7 +83,7 @@ public enum Chrono {
      */
     public static Chrono of(final ChronoUnit chrono) {
         switch (chrono) {
-            case MICROS:
+            case MILLIS:
                 return Chrono.MILLISECOND;
 
             case SECONDS:
@@ -113,7 +113,7 @@ public enum Chrono {
     public static ChronoUnit of(final Chrono chrono) {
         switch (chrono) {
             case MILLISECOND:
-                return ChronoUnit.MICROS;
+                return ChronoUnit.MILLIS;
 
             case SECOND:
                 return ChronoUnit.SECONDS;

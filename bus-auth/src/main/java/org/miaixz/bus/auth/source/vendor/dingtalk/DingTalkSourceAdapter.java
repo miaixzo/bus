@@ -111,7 +111,7 @@ public class DingTalkSourceAdapter implements VendorAdapter {
     /**
      * Creates one Source-bound DingTalk adapter for the selected frozen variant.
      *
-     * @param spaceId  Source space used to isolate state and credentials
+     * @param tenantId Source tenant used to isolate state and credentials
      * @param sourceId Source identifier
      * @param manifest selected DingTalk manifest
      * @param variant  exact selected variant manifest
@@ -120,7 +120,7 @@ public class DingTalkSourceAdapter implements VendorAdapter {
      * @throws IllegalArgumentException if an identifier is blank or a collaborator is {@code null}
      * @throws ValidateException        if profile, variant, protocol, or options routing is inconsistent
      */
-    public DingTalkSourceAdapter(final String spaceId, final String sourceId, final DingTalkManifest manifest,
+    public DingTalkSourceAdapter(final String tenantId, final String sourceId, final DingTalkManifest manifest,
             final VendorManifest.Variant variant, final DingTalkOptions options, final SourceServices services) {
         final DingTalkManifest selectedProfile = Assert.notNull(manifest, "DingTalk manifest must not be null");
         this.sourceId = Assert.notBlank(sourceId, "DingTalk Source id must not be blank");
@@ -134,7 +134,7 @@ public class DingTalkSourceAdapter implements VendorAdapter {
                 || DingTalkManifest.ACCOUNT.equals(options.variant()) && variant.protocol() != Protocol.HTTPS) {
             throw new ValidateException("DingTalk adapter profile, variant, and options must match");
         }
-        this.redirectManager = RedirectManager.create(spaceId, sourceId, variant, options, services);
+        this.redirectManager = RedirectManager.create(tenantId, sourceId, variant, options, services);
         this.authorizationEncoder = DingTalkManifest.OAUTH2.equals(options.variant())
                 ? new AuthorizationRequestEncoder(variant.targets().resolve(options).authorization().getOrNull())
                 : null;

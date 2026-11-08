@@ -1,6 +1,15 @@
 {
   "reflection": [
     {
+      "type": "org.miaixz.bus.crypto.nimble.BouncyCastleServiceProvider",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
       "type": "org.miaixz.bus.crypto.builtin.asymmetric.AbstractCrypto",
       "methods": [
         {

@@ -131,7 +131,7 @@ public class GitHubRealmAdapter implements VendorAdapter {
     /**
      * Creates one Source-isolated GitHub Enterprise realm adapter.
      *
-     * @param spaceId  Source space used for isolation
+     * @param tenantId Source tenant used for isolation
      * @param sourceId Source identifier
      * @param manifest exact GitHub manifest
      * @param variant  selected Enterprise Variant
@@ -140,9 +140,9 @@ public class GitHubRealmAdapter implements VendorAdapter {
      * @throws IllegalArgumentException if an identifier is blank or collaborator is {@code null}
      * @throws ValidateException        if the manifest, Variant, options, protocol, or targets are inconsistent
      */
-    public GitHubRealmAdapter(final String spaceId, final String sourceId, final GitHubManifest manifest,
+    public GitHubRealmAdapter(final String tenantId, final String sourceId, final GitHubManifest manifest,
             final VendorManifest.Variant variant, final GitHubOptions options, final SourceServices services) {
-        Assert.notBlank(spaceId, "GitHub Enterprise space id must not be blank");
+        Assert.notBlank(tenantId, "GitHub Enterprise tenant id must not be blank");
         Assert.notBlank(sourceId, "GitHub Enterprise Source id must not be blank");
         final GitHubManifest selectedManifest = Assert.notNull(manifest, "GitHub manifest must not be null");
         this.variant = Assert.notNull(variant, "GitHub Enterprise Variant must not be null");
@@ -172,7 +172,7 @@ public class GitHubRealmAdapter implements VendorAdapter {
      */
     private static boolean nextRelation(final String parameters) {
         for (String parameter : parameters.split(";")) {
-            final String normalized = StringKit.trim(parameter).toLowerCase(Locale.ROOT);
+            final String normalized = StringKit.toLowerCase(StringKit.trim(parameter));
             if ("rel=next".equals(normalized) || "rel=\"next\"".equals(normalized)) {
                 return true;
             }

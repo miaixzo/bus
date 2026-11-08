@@ -39,23 +39,21 @@ public interface EntityMapper<T, I> extends ClassMapper<T> {
      * Saves an entity object.
      *
      * @param entity The entity object to save.
-     * @param <S>    A subtype of the entity class.
      * @return The number of affected rows (1 for success, 0 for failure).
      */
     @Lang(Caching.class)
     @InsertProvider(type = EntityProvider.class, method = "insert")
-    <S extends T> int insert(S entity);
+    int insert(T entity);
 
     /**
      * Saves only the non-null fields of an entity object.
      *
      * @param entity The entity object to save.
-     * @param <S>    A subtype of the entity class.
      * @return The number of affected rows (1 for success, 0 for failure).
      */
     @Lang(Caching.class)
     @InsertProvider(type = EntityProvider.class, method = "insertSelective")
-    <S extends T> int insertSelective(S entity);
+    int insertSelective(T entity);
 
     /**
      * Deletes an entity by its primary key.
@@ -81,23 +79,21 @@ public interface EntityMapper<T, I> extends ClassMapper<T> {
      * Updates an entity object by its primary key.
      *
      * @param entity The entity object with updated values.
-     * @param <S>    A subtype of the entity class.
      * @return The number of affected rows (1 for success, 0 for failure).
      */
     @Lang(Caching.class)
     @UpdateProvider(type = EntityProvider.class, method = "updateByPrimaryKey")
-    <S extends T> int updateByPrimaryKey(S entity);
+    int updateByPrimaryKey(T entity);
 
     /**
      * Updates only the non-null fields of an entity object by its primary key.
      *
      * @param entity The entity object with updated values.
-     * @param <S>    A subtype of the entity class.
      * @return The number of affected rows (1 for success, 0 for failure).
      */
     @Lang(Caching.class)
     @UpdateProvider(type = EntityProvider.class, method = "updateByPrimaryKeySelective")
-    <S extends T> int updateByPrimaryKeySelective(S entity);
+    int updateByPrimaryKeySelective(T entity);
 
     /**
      * Selects an entity by its primary key.

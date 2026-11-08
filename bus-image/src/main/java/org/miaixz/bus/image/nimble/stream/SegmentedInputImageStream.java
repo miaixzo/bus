@@ -71,9 +71,8 @@ public class SegmentedInputImageStream extends ImageInputStreamImpl {
      */
     private int firstSegment = 1, lastSegment = Integer.MAX_VALUE;
 
-    // The end of the current segment, in streamPos units, not in underlying stream units
     /**
-     * The cur segment end value.
+     * The end of the current segment, in streamPos units, not in underlying stream units.
      */
     private long curSegmentEnd = -1;
 

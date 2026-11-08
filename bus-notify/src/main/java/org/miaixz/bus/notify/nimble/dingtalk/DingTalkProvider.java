@@ -30,7 +30,6 @@ import java.util.concurrent.atomic.AtomicReference;
 import lombok.Setter;
 
 import org.miaixz.bus.core.basic.entity.Message;
-import org.miaixz.bus.core.basic.normal.Consts;
 import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.extra.json.JsonKit;
@@ -99,16 +98,16 @@ public class DingTalkProvider extends AbstractProvider<DingTalkNotice, Context> 
         }
         bodys.put("to_all_user", String.valueOf(entity.isToAllUser()));
         String response = post(this.getUrl(entity), bodys);
-        String errcode = JsonKit.getValue(response, Consts.ERRCODE);
+        String code = JsonKit.getValue(response, "errcode");
         Message<Void> result = Message.<Void>builder()
-                .errcode(String.valueOf(Http.Status.OK).equals(errcode) ? ErrorCode._SUCCESS.getKey() : errcode)
-                .errmsg(JsonKit.getValue(response, Consts.ERRMSG)).build();
+                .code(String.valueOf(Http.Status.OK).equals(code) ? ErrorCode._SUCCESS.getKey() : code)
+                .desc(JsonKit.getValue(response, "errmsg")).build();
         Logger.info(
                 false,
                 "Notify",
-                "DingTalk notify send completed: agentId={}, errcode={}, responseBytes={}",
+                "DingTalk notify send completed: agentId={}, code={}, responseBytes={}",
                 entity == null ? null : entity.getAgentId(),
-                result.getErrcode(),
+                result.getCode(),
                 response == null ? 0 : response.length());
         return result;
     }
@@ -144,16 +143,16 @@ public class DingTalkProvider extends AbstractProvider<DingTalkNotice, Context> 
         paramMap.put("corpid", context.getAppKey());
         paramMap.put("corpsecret", context.getAppSecret());
         String response = get(url, paramMap);
-        String errcode = JsonKit.getValue(response, Consts.ERRCODE);
-        if (String.valueOf(Http.Status.OK).equals(errcode)) {
+        String code = JsonKit.getValue(response, "errcode");
+        if (String.valueOf(Http.Status.OK).equals(code)) {
             String access_token = JsonKit.getValue(response, "access_token");
             refreshTokenTime = System.currentTimeMillis();
             accessToken.set(access_token);
             Logger.info(
                     false,
                     "Notify",
-                    "DingTalk token refresh completed: errcode={}, tokenPresent={}",
-                    errcode,
+                    "DingTalk token refresh completed: code={}, tokenPresent={}",
+                    code,
                     StringKit.isNotEmpty(access_token));
             return access_token;
         }
@@ -161,8 +160,8 @@ public class DingTalkProvider extends AbstractProvider<DingTalkNotice, Context> 
         Logger.error(
                 false,
                 "Notify",
-                "DingTalk token refresh failed: errcode={}, responseBytes={}",
-                errcode,
+                "DingTalk token refresh failed: code={}, responseBytes={}",
+                code,
                 response == null ? 0 : response.length());
         return null;
     }

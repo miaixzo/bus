@@ -31,7 +31,6 @@ public class ImageParameters {
      */
     public static final int DEFAULT_TILE_SIZE = 512;
 
-    // List of supported color model format
     /**
      * The cm s rgb value.
      */
@@ -72,13 +71,11 @@ public class ImageParameters {
      */
     public static final int CM_CMYK = 8;
 
-    // Extend type of DataBuffer
     /**
-     * The type bit value.
+     * Extend type of DataBuffer.
      */
     public static final int TYPE_BIT = 6;
 
-    // Basic image parameters
     /**
      * The height value.
      */
@@ -89,21 +86,18 @@ public class ImageParameters {
      */
     private int width;
 
-    //
     /**
      * The bits per sample value.
      */
     private int bitsPerSample;
 
-    // Bands
     /**
-     * The bands value.
+     * Bands.
      */
     private int bands;
 
-    // Nb of components
     /**
-     * The samples per pixel value.
+     * Nb of components.
      */
     private int samplesPerPixel;
 
@@ -117,15 +111,13 @@ public class ImageParameters {
      */
     private boolean bigEndian;
 
-    // DataBuffer types + TYPE_BIT
     /**
-     * The data type value.
+     * DataBuffer types + TYPE_BIT.
      */
     private int dataType;
 
-    // Data offset of binary data
     /**
-     * The bit offset value.
+     * Data offset of binary data.
      */
     private int bitOffset;
 

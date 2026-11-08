@@ -1,0 +1,28 @@
+{
+  "reflection": [
+    {
+      "type": "org.springframework.context.SmartLifecycle",
+      "fields": [
+        {
+          "name": "DEFAULT_PHASE"
+        }
+      ],
+      "methods": [
+        {
+          "name": "getPhase",
+          "parameterTypes": []
+        },
+        {
+          "name": "isAutoStartup",
+          "parameterTypes": []
+        },
+        {
+          "name": "stop",
+          "parameterTypes": [
+            "java.lang.Runnable"
+          ]
+        }
+      ]
+    }
+  ]
+}

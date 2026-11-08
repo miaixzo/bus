@@ -22,6 +22,7 @@ package org.miaixz.bus.gitlab.models;
 import java.io.Serial;
 import java.io.Serializable;
 
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.gitlab.support.JacksonJson;
 
 /**
@@ -205,7 +206,7 @@ public class TreeItem implements Serializable {
 
         @Override
         public String toString() {
-            return (name().toLowerCase());
+            return (StringKit.toLowerCase(name()));
         }
 
     }

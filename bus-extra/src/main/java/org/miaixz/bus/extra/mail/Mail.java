@@ -397,8 +397,8 @@ public class Mail implements Builder<MimeMessage> {
      */
     @Override
     public SMTPMessage build() {
-        return SMTPMessage.of(this.mailAccount, this.useGlobalSession, this.debugOutput)
-                .setTos(this.tos).setCcs(this.ccs).setBccs(this.bccs).setReply(this.reply).setTitle(this.title)
+        return SMTPMessage.of(this.mailAccount, this.useGlobalSession, this.debugOutput).setTos(this.tos)
+                .setCcs(this.ccs).setBccs(this.bccs).setReply(this.reply).setTitle(this.title)
                 .setContent(this.content, this.isHtml).addAttachments(this.attachments);
     }
 

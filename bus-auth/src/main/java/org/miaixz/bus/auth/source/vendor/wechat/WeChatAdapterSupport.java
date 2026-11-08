@@ -91,9 +91,9 @@ public abstract class WeChatAdapterSupport implements VendorAdapter {
     private static final String PROFILE_LANGUAGE = "zh_CN";
 
     /**
-     * Registered space used to isolate replay and browser correlation keys.
+     * Registered tenant used to isolate replay and browser correlation keys.
      */
-    private final String spaceId;
+    private final String tenantId;
 
     /**
      * Source identifier copied into verified external identities.
@@ -138,7 +138,7 @@ public abstract class WeChatAdapterSupport implements VendorAdapter {
     /**
      * Creates one Source-bound adapter for the selected frozen WeChat variant.
      *
-     * @param spaceId  Source space isolating state, replay, and credentials
+     * @param tenantId Source tenant isolating state, replay, and credentials
      * @param sourceId Source identifier
      * @param manifest selected WeChat manifest
      * @param variant  exact selected variant manifest
@@ -147,10 +147,10 @@ public abstract class WeChatAdapterSupport implements VendorAdapter {
      * @throws IllegalArgumentException if an identifier is blank or a collaborator is {@code null}
      * @throws ValidateException        if profile, variant, protocol, or options routing is inconsistent
      */
-    public WeChatAdapterSupport(final String spaceId, final String sourceId, final WeChatManifest manifest,
+    public WeChatAdapterSupport(final String tenantId, final String sourceId, final WeChatManifest manifest,
             final VendorManifest.Variant variant, final WeChatOptions options, final SourceServices services) {
         final WeChatManifest selected = Assert.notNull(manifest, "WeChat manifest must not be null");
-        this.spaceId = Assert.notBlank(spaceId, "WeChat space id must not be blank");
+        this.tenantId = Assert.notBlank(tenantId, "WeChat tenant id must not be blank");
         this.sourceId = Assert.notBlank(sourceId, "WeChat Source id must not be blank");
         this.manifest = selected;
         this.variant = Assert.notNull(variant, "WeChat manifest must not be null");
@@ -163,7 +163,7 @@ public abstract class WeChatAdapterSupport implements VendorAdapter {
             throw new ValidateException("WeChat adapter profile, variant, protocol, and options must match");
         }
         this.redirectManager = WeChatManifest.MINI.equals(options.variant()) ? null
-                : RedirectManager.create(spaceId, sourceId, variant, options, services);
+                : RedirectManager.create(tenantId, sourceId, variant, options, services);
         this.callbackDecoder = new AuthorizationResponseDecoder();
         this.standardAdapter = new StandardAdapter(variant, options, Optional.ofNullable(redirectManager),
                 oauthVariant() ? List.of(
@@ -1399,7 +1399,7 @@ public abstract class WeChatAdapterSupport implements VendorAdapter {
             final Timeout timeout) {
         final var rule = services.policies().require(Protocol.HTTPS);
         return new ReplayGuard(services.replayCache()).register(
-                spaceId,
+                tenantId,
                 Protocol.HTTPS,
                 WECHAT_AUTHORITY,
                 MINI_CODE_PURPOSE,

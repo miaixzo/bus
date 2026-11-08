@@ -21,13 +21,13 @@ package org.miaixz.bus.auth.source.protocol.scim.codec;
 
 import java.math.BigDecimal;
 import java.net.URI;
-import java.util.Locale;
 
 import org.miaixz.bus.auth.source.protocol.scim.Filter;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.core.xyz.StringKit;
 
 /**
  * Parses the RFC 7644 filter ABNF with the mandated {@code not}, {@code and}, and {@code or} precedence.
@@ -367,7 +367,7 @@ public class ScimFilterParser {
             return new Filter.ValuePath(path, nested);
         }
         requireSpaces("SCIM attribute expression requires a spaced operator");
-        final String operator = parseWord().toLowerCase(Locale.ROOT);
+        final String operator = StringKit.toLowerCase(parseWord());
         if ("pr".equals(operator)) {
             return new Filter.Present(path);
         }

@@ -20,7 +20,6 @@
 package org.miaixz.bus.spring.web.wrapper;
 
 import java.io.*;
-import java.util.Locale;
 
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.WriteListener;
@@ -30,6 +29,7 @@ import jakarta.servlet.http.HttpServletResponseWrapper;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.net.MediaType;
+import org.miaixz.bus.core.xyz.StringKit;
 
 /**
  * Pass-through response wrapper that retains at most a configured number of diagnostic bytes.
@@ -230,10 +230,10 @@ public class CachedBodyResponseWrapper extends HttpServletResponseWrapper {
     private void refreshPassthroughState() {
         String contentType = getContentType();
         String disposition = getHeader("Content-Disposition");
-        String normalized = contentType == null ? Normal.EMPTY : contentType.toLowerCase(Locale.ROOT);
+        String normalized = contentType == null ? Normal.EMPTY : StringKit.toLowerCase(contentType);
         if (normalized.contains(MediaType.SERVER_SENT_EVENTS)
                 || normalized.startsWith(MediaType.APPLICATION_OCTET_STREAM)
-                || disposition != null && disposition.toLowerCase(Locale.ROOT).contains("attachment")) {
+                || disposition != null && StringKit.toLowerCase(disposition).contains("attachment")) {
             switchToPassthrough();
         }
     }

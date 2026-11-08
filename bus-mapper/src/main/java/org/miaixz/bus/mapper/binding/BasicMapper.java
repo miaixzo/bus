@@ -63,26 +63,22 @@ public interface BasicMapper<T, I extends Serializable> extends EntityMapper<T, 
      *
      * @param entity The entity object containing the updated values.
      * @param fields A collection of fields to be forcibly updated, created via {@link Fn#of(Fn...)}.
-     * @param <S>    The type of the entity.
      * @return The number of affected rows (1 for success, 0 for failure).
      */
     @Lang(Caching.class)
     @UpdateProvider(type = FunctionProvider.class, method = "updateByPrimaryKeySelectiveWithForceFields")
-    <S extends T> int updateByPrimaryKeySelectiveWithForceFields(
-            @Param("entity") S entity,
-            @Param("fns") Fn.FnArray<T> fields);
+    int updateByPrimaryKeySelectiveWithForceFields(@Param("entity") T entity, @Param("fns") Fn.FnArray<T> fields);
 
     /**
      * Updates a specified set of fields for an entity by its primary key.
      *
      * @param entity The entity object containing the updated values.
      * @param fields A collection of fields to be updated, created via {@link Fn#of(Fn...)}.
-     * @param <S>    The type of the entity.
      * @return The number of affected rows (1 for success, 0 for failure).
      */
     @Lang(Caching.class)
     @UpdateProvider(type = FunctionProvider.class, method = "updateForFieldListByPrimaryKey")
-    <S extends T> int updateForFieldListByPrimaryKey(@Param("entity") S entity, @Param("fns") Fn.FnArray<T> fields);
+    int updateForFieldListByPrimaryKey(@Param("entity") T entity, @Param("fns") Fn.FnArray<T> fields);
 
     /**
      * Selects a list of entities where the specified field is in the given list of values (i.e.,

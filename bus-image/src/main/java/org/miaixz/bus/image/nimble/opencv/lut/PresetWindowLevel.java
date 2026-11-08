@@ -590,10 +590,11 @@ public class PresetWindowLevel {
             return presetList;
         }
 
-        // The presentation state windows come first, each source with its own explanations and VOI
-        // LUT Function (PS3.3 C.11.2 for the image, C.11.8 for the presentation state).
         /**
          * Adds presentation-state windows before image windows, retaining each source LUT function.
+         * <p>
+         * The presentation state windows come first, each source with its own explanations and VOI LUT Function (PS3.3
+         * C.11.2 for the image, C.11.8 for the presentation state).
          */
         private void buildPresetsFromWindowLevel() {
             int presetCounter = 1;
@@ -613,7 +614,6 @@ public class PresetWindowLevel {
             return prVoi().orElse(vLut);
         }
 
-        // The presentation state may window each image or frame differently, or leave some alone
         /**
          * Finds the presentation-state VOI item referencing the selected image and frame.
          *
@@ -752,7 +752,7 @@ public class PresetWindowLevel {
          * @return the resolved VOI lookup shape
          */
         private LutShape getLutShape(VoiLutModule voi) {
-            return voi.getVoiLutFunction().map(function -> switch (function.trim().toUpperCase(Locale.ROOT)) {
+            return voi.getVoiLutFunction().map(function -> switch (StringKit.toUpperCase(function.trim())) {
                 case "SIGMOID" -> new LutShape(Function.SIGMOID, Function.SIGMOID + dicomKeyWord);
                 case "LINEAR_EXACT" -> new LutShape(Function.LINEAR_EXACT, Function.LINEAR_EXACT + dicomKeyWord);
                 case "LINEAR" -> new LutShape(Function.LINEAR, Function.LINEAR + dicomKeyWord);

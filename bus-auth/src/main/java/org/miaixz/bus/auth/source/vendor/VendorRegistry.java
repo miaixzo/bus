@@ -78,8 +78,8 @@ public interface VendorRegistry extends Registry<Vendor.Id, VendorConnector> {
         final AdapterConstructor<M, O> checked = Assert
                 .notNull(constructor, "Vendor adapter constructor must not be null");
         Assert.notNull(variants, "Vendor adapter variants must not be null");
-        return new Adapter<>(List.of(variants), (spaceId, sourceId, manifest, variant, options, services) -> checked
-                .create(spaceId, sourceId, type.cast(manifest), variant, options, services));
+        return new Adapter<>(List.of(variants), (tenantId, sourceId, manifest, variant, options, services) -> checked
+                .create(tenantId, sourceId, type.cast(manifest), variant, options, services));
     }
 
     /**
@@ -251,7 +251,7 @@ public interface VendorRegistry extends Registry<Vendor.Id, VendorConnector> {
         /**
          * Creates one Source-bound concrete platform adapter.
          *
-         * @param spaceId  Source space identifier
+         * @param tenantId owning Library tenant identifier
          * @param sourceId Source identifier
          * @param manifest exact concrete platform manifest
          * @param variant  exact selected variant
@@ -260,7 +260,7 @@ public interface VendorRegistry extends Registry<Vendor.Id, VendorConnector> {
          * @return non-null concrete adapter
          */
         VendorAdapter create(
-                String spaceId,
+                String tenantId,
                 String sourceId,
                 M manifest,
                 VendorManifest.Variant variant,

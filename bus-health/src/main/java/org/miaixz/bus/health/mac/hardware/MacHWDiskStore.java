@@ -19,9 +19,13 @@
 */
 package org.miaixz.bus.health.mac.hardware;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.*;
+import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 
+import com.sun.jna.Native;
 import com.sun.jna.Pointer;
 import com.sun.jna.platform.mac.CoreFoundation;
 import com.sun.jna.platform.mac.CoreFoundation.*;
@@ -32,7 +36,10 @@ import com.sun.jna.platform.mac.IOKit;
 import com.sun.jna.platform.mac.IOKit.IOIterator;
 import com.sun.jna.platform.mac.IOKit.IORegistryEntry;
 import com.sun.jna.platform.mac.IOKitUtil;
+import com.sun.jna.platform.mac.IOReturnException;
+import com.sun.jna.platform.mac.SystemB.Statfs;
 
+import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.builtin.hardware.HWDiskStore;
@@ -40,6 +47,7 @@ import org.miaixz.bus.health.builtin.hardware.HWPartition;
 import org.miaixz.bus.health.builtin.hardware.common.AbstractHWDiskStore;
 import org.miaixz.bus.health.mac.CFKit;
 import org.miaixz.bus.health.mac.driver.disk.Fsstat;
+import org.miaixz.bus.health.mac.jna.SystemB;
 import org.miaixz.bus.logger.Logger;
 
 /**
@@ -59,6 +67,27 @@ public class MacHWDiskStore extends AbstractHWDiskStore {
      * The DA constant.
      */
     private static final DiskArbitration DA = DiskArbitration.INSTANCE;
+
+    /** IORegistry property naming a media object's BSD device. */
+    private static final String BSD_NAME = "BSD Name";
+
+    /** IORegistry property marking a whole disk. */
+    private static final String WHOLE = "Whole";
+
+    /** IOKit class of a block storage medium. */
+    private static final String IO_MEDIA = "IOMedia";
+
+    /** IORegistry property naming a disk image URL. */
+    private static final String DISK_IMAGE_URL = "DiskImageURL";
+
+    /** IOKit class of a modern disk image device. */
+    private static final String DISK_IMAGE_DEVICE = "AppleDiskImageDevice";
+
+    /** IOKit class of a legacy disk image device. */
+    private static final String LEGACY_DISK_IMAGE_DEVICE = "IOHDIXHDDrive";
+
+    /** IOKit class at the top of the IOService device tree. */
+    private static final String PLATFORM_EXPERT = "IOPlatformExpertDevice";
 
     /**
      * The currentQueueLength value.
@@ -101,6 +130,11 @@ public class MacHWDiskStore extends AbstractHWDiskStore {
     private List<HWPartition> partitionList = Collections.emptyList();
 
     /**
+     * The stores this disk is built on.
+     */
+    private final Optional<List<String>> backingStores;
+
+    /**
      * Constructs a {@code MacHWDiskStore} object.
      *
      * @param name          The name of the disk.
@@ -114,7 +148,27 @@ public class MacHWDiskStore extends AbstractHWDiskStore {
      */
     public MacHWDiskStore(String name, String model, String serial, long size, String diskType, DASessionRef session,
             Map<String, String> mountPointMap, Map<CFKey, CFStringRef> cfKeyMap) {
-        super(name, model, serial, size, diskType);
+        this(name, model, serial, size, diskType, Optional.empty(), session, mountPointMap, cfKeyMap);
+    }
+
+    /**
+     * Constructs a disk store with its backing stores.
+     *
+     * @param name          The disk name.
+     * @param model         The disk model.
+     * @param serial        The serial number.
+     * @param size          The size in bytes.
+     * @param diskType      The media type.
+     * @param backingStores The backing stores.
+     * @param session       The DiskArbitration session.
+     * @param mountPointMap The partition mount points.
+     * @param cfKeyMap      The Core Foundation keys.
+     */
+    private MacHWDiskStore(String name, String model, String serial, long size, String diskType,
+            Optional<List<String>> backingStores, DASessionRef session, Map<String, String> mountPointMap,
+            Map<CFKey, CFStringRef> cfKeyMap) {
+        super(name, model, serial, size, backingStores.map(List::isEmpty).orElse(true) ? diskType : "Virtual");
+        this.backingStores = backingStores;
         updateDiskStats(session, mountPointMap, cfKeyMap);
     }
 
@@ -139,11 +193,11 @@ public class MacHWDiskStore extends AbstractHWDiskStore {
             try {
                 // Get IOMedia objects representing whole drives
                 List<String> bsdNames = new ArrayList<>();
-                IOIterator iter = IOKitUtil.getMatchingServices("IOMedia");
+                IOIterator iter = IOKitUtil.getMatchingServices(IO_MEDIA);
                 if (iter != null) {
                     IORegistryEntry media = iter.next();
                     while (media != null) {
-                        Boolean whole = media.getBooleanProperty("Whole");
+                        Boolean whole = media.getBooleanProperty(WHOLE);
                         if (whole != null && whole) {
                             DADiskRef disk = DA.DADiskCreateFromIOMedia(CF.CFAllocatorGetDefault(), session, media);
                             if (disk != null) {
@@ -230,7 +284,7 @@ public class MacHWDiskStore extends AbstractHWDiskStore {
                             continue;
                         }
                         HWDiskStore diskStore = new MacHWDiskStore(bsdName, model.trim(), serial.trim(), size,
-                                detectDiskType(bsdName), session, mountPointMap, cfKeyMap);
+                                detectDiskType(bsdName), queryBackingStores(bsdName), session, mountPointMap, cfKeyMap);
                         diskList.add(diskStore);
                     }
                 }
@@ -256,6 +310,128 @@ public class MacHWDiskStore extends AbstractHWDiskStore {
             keyMap.put(cfKey, CFStringRef.createCFString(cfKey.getKey()));
         }
         return keyMap;
+    }
+
+    /**
+     * Finds what a disk is built on by walking its IOService ancestors.
+     *
+     * @param bsdName The disk's BSD name.
+     * @return The backing stores, an empty list for a non-layered disk, or an empty optional when unavailable.
+     */
+    private static Optional<List<String>> queryBackingStores(String bsdName) {
+        CFMutableDictionaryRef matchingDict = IOKitUtil.getBSDNameMatchingDict(bsdName);
+        if (matchingDict == null) {
+            return Optional.empty();
+        }
+        IOIterator iter = IOKitUtil.getMatchingServices(matchingDict);
+        if (iter == null) {
+            return Optional.empty();
+        }
+        try {
+            IORegistryEntry media = iter.next();
+            if (media == null) {
+                return Optional.empty();
+            }
+            IORegistryEntry entry;
+            try {
+                entry = media.getParentEntry("IOService");
+            } finally {
+                media.release();
+            }
+            while (entry != null) {
+                IORegistryEntry current = entry;
+                try {
+                    if (current.conformsTo(IO_MEDIA)) {
+                        return mediaBackingStore(
+                                current.getStringProperty(BSD_NAME),
+                                current.getBooleanProperty(WHOLE));
+                    }
+                    if (current.conformsTo(DISK_IMAGE_DEVICE)) {
+                        String imageUrl = current.getStringProperty(DISK_IMAGE_URL);
+                        return imageUrl == null ? Optional.empty()
+                                : imageBackingStore(imageUrl, MacHWDiskStore::queryMountPoint);
+                    }
+                    if (current.conformsTo(LEGACY_DISK_IMAGE_DEVICE)) {
+                        return Optional.empty();
+                    }
+                    if (current.conformsTo(PLATFORM_EXPERT)) {
+                        return Optional.of(Collections.emptyList());
+                    }
+                    entry = current.getParentEntry("IOService");
+                } finally {
+                    current.release();
+                }
+            }
+            return Optional.empty();
+        } catch (IOReturnException e) {
+            Logger.debug(
+                    false,
+                    "Health",
+                    "Unable to walk the IORegistry for {}: {}",
+                    bsdName,
+                    e.getClass().getSimpleName());
+            return Optional.empty();
+        } finally {
+            iter.release();
+        }
+    }
+
+    /**
+     * Builds the backing store of a disk layered on another media object.
+     *
+     * @param bsdName The ancestor's BSD name.
+     * @param whole   Whether the ancestor is a whole disk.
+     * @return The backing store, or an empty optional if no BSD name is available.
+     */
+    private static Optional<List<String>> mediaBackingStore(String bsdName, Boolean whole) {
+        if (bsdName == null) {
+            return Optional.empty();
+        }
+        StoreKind kind = Boolean.TRUE.equals(whole) ? StoreKind.DISK : StoreKind.PARTITION;
+        return Optional.of(Collections.singletonList(kind.entry(bsdName)));
+    }
+
+    /**
+     * Builds the file-store backing entry of a disk image.
+     *
+     * @param imageUrl The disk image URL.
+     * @param mountOf  A function resolving a path to its mount point.
+     * @return The backing store, or an empty optional when unavailable.
+     */
+    private static Optional<List<String>> imageBackingStore(String imageUrl, UnaryOperator<String> mountOf) {
+        String path = imagePath(imageUrl);
+        if (path.isEmpty()) {
+            return Optional.empty();
+        }
+        String mount = mountOf.apply(path);
+        return mount.isEmpty() ? Optional.empty() : Optional.of(Collections.singletonList(StoreKind.FILE.entry(mount)));
+    }
+
+    /**
+     * Converts a local disk image URL to its decoded path.
+     *
+     * @param imageUrl The disk image URL.
+     * @return The local path, or an empty string for a non-file or invalid URL.
+     */
+    private static String imagePath(String imageUrl) {
+        try {
+            URI uri = new URI(imageUrl);
+            return "file".equals(uri.getScheme()) && uri.getPath() != null ? uri.getPath() : Normal.EMPTY;
+        } catch (URISyntaxException e) {
+            return Normal.EMPTY;
+        }
+    }
+
+    /**
+     * Resolves the mount point containing a path.
+     *
+     * @param path The local path.
+     * @return The mount point, or an empty string when unavailable.
+     */
+    private static String queryMountPoint(String path) {
+        Statfs fs = new Statfs();
+        return SystemB.INSTANCE.statfs64(path, fs) == Normal._0 ? Native.toString(fs.f_mntonname, Charset.UTF_8)
+                : Normal.EMPTY;
     }
 
     /**
@@ -408,6 +584,16 @@ public class MacHWDiskStore extends AbstractHWDiskStore {
     }
 
     /**
+     * Returns the backing stores.
+     *
+     * @return The backing stores, or an empty optional when unavailable.
+     */
+    @Override
+    public Optional<List<String>> getBackingStores() {
+        return backingStores;
+    }
+
+    /**
      * Description inherited from parent class or interface.
      */
     @Override
@@ -461,7 +647,7 @@ public class MacHWDiskStore extends AbstractHWDiskStore {
                     // Should be an IOMedia object with a parent
                     // IOBlockStorageDriver or AppleAPFSContainerScheme object
                     // Get the properties from the parent
-                    if (drive.conformsTo("IOMedia")) {
+                    if (drive.conformsTo(IO_MEDIA)) {
                         IORegistryEntry parent = drive.getParentEntry("IOService");
                         if (parent != null && (parent.conformsTo("IOBlockStorageDriver")
                                 || parent.conformsTo("AppleAPFSContainerScheme"))) {
@@ -612,12 +798,12 @@ public class MacHWDiskStore extends AbstractHWDiskStore {
         /**
          * Key for IOPropertyMatch.
          */
-        IO_PROPERTY_MATCH("IOPropertyMatch"), //
+        IO_PROPERTY_MATCH("IOPropertyMatch"),
 
         /**
          * Key for Statistics.
          */
-        STATISTICS("Statistics"), //
+        STATISTICS("Statistics"),
         /**
          * Key for Read Operations.
          */
@@ -629,7 +815,7 @@ public class MacHWDiskStore extends AbstractHWDiskStore {
         /**
          * Key for Total Time (Read).
          */
-        READ_TIME("Total Time (Read)"), //
+        READ_TIME("Total Time (Read)"),
         /**
          * Key for Write Operations.
          */
@@ -641,7 +827,7 @@ public class MacHWDiskStore extends AbstractHWDiskStore {
         /**
          * Key for Total Time (Write).
          */
-        WRITE_TIME("Total Time (Write)"), //
+        WRITE_TIME("Total Time (Write)"),
 
         /**
          * Key for BSD Unit.
@@ -654,7 +840,7 @@ public class MacHWDiskStore extends AbstractHWDiskStore {
         /**
          * Key for Whole.
          */
-        WHOLE("Whole"), //
+        WHOLE(MacHWDiskStore.WHOLE),
 
         /**
          * Key for DAMediaName.
@@ -667,7 +853,7 @@ public class MacHWDiskStore extends AbstractHWDiskStore {
         /**
          * Key for DAMediaSize.
          */
-        DA_MEDIA_SIZE("DAMediaSize"), //
+        DA_MEDIA_SIZE("DAMediaSize"),
         /**
          * Key for DADeviceModel.
          */

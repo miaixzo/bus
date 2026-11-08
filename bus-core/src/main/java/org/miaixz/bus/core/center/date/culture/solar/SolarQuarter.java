@@ -19,7 +19,6 @@
 */
 package org.miaixz.bus.core.center.date.culture.solar;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.miaixz.bus.core.center.date.culture.parts.YearParts;
@@ -131,11 +130,7 @@ public class SolarQuarter extends YearParts {
      * @return a list of 3 SolarMonth objects
      */
     public List<SolarMonth> getMonths() {
-        List<SolarMonth> l = new ArrayList<>(3);
-        for (int i = 1; i < 4; i++) {
-            l.add(SolarMonth.fromYm(year, index * 3 + i));
-        }
-        return l;
+        return buildList(3, i -> SolarMonth.fromYm(year, index * 3 + i + 1));
     }
 
 }

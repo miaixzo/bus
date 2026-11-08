@@ -18,20 +18,14 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Provides protocol-standard authentication services and registered external identity integrations.
+ * Module: {@code bus.auth}
+ *
  * <p>
- * The module exports protocol-neutral contracts including the non-entity {@code Realm} resource model, project data
- * loaders, pure parsers, runtime and Roster services, standard LDAP, OAuth 2.0, OpenID Connect, RADIUS, SAML, and SCIM
- * models and services, shared security value types, build-time Connector and Registry contracts, and immutable Vendor
- * Source schemes. Protocol and Vendor connectors are discovered through one sealed Source SPI and dispatched to typed
- * build-scoped registries before runtime assembly. They do not establish remote connections; HTTP transport remains
- * owned by {@code bus.fabric}.
- * </p>
+ * Provides authentication and delegated authorization through standard protocols and external identity providers.
+ *
  * <p>
- * Protocol drivers, server-side issuers, runtime assembly classes, and Roster snapshot classes use explicit public
- * responsibility packages instead of hidden {@code internal} packages. {@code Authorize} provides the unified runtime
- * assembly entry, while Blueprint queries and capability execution remain separate through Roster and Dispatcher.
- * </p>
+ * Includes LDAP, OAuth 2.0, OpenID Connect, RADIUS, SAML, and SCIM integrations, along with protocol-neutral
+ * {@code Realm} resources, connector registration, runtime assembly, roster queries, and capability dispatch.
  *
  * @author Kimi Liu
  */

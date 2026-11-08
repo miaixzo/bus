@@ -1,0 +1,23 @@
+{
+  "reflection": [
+    {
+      "type": "com.github.benmanes.caffeine.cache.SSMS",
+      "fields": [
+        {
+          "name": "maximum"
+        },
+        {
+          "name": "weightedSize"
+        }
+      ]
+    },
+    {
+      "type": "com.github.benmanes.caffeine.cache.SSMSW",
+      "fields": [
+        {
+          "name": "expiresAfterWriteNanos"
+        }
+      ]
+    }
+  ]
+}

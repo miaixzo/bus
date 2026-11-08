@@ -21,8 +21,9 @@ package org.miaixz.bus.image.nimble;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
+
+import org.miaixz.bus.core.lang.Charset;
 
 /**
  * Value of one EXIF/TIFF tag, kept as its raw bytes with the byte order of the TIFF block it comes from, and decoded on
@@ -172,7 +173,7 @@ public final class ExifValue {
         while (end < data.length && data[end] != 0) {
             end++;
         }
-        return new String(data, 0, end, StandardCharsets.UTF_8).trim();
+        return new String(data, 0, end, Charset.UTF_8).trim();
     }
 
     /**

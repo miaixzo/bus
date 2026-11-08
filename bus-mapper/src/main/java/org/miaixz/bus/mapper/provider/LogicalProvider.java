@@ -474,7 +474,8 @@ public class LogicalProvider extends BasicProvider {
                                                 column -> ifTest(
                                                         column.notNullTest(),
                                                         () -> "AND " + column.columnEqualsProperty()))
-                                        .collect(Collectors.joining(Symbol.LF)) + logicalCondition(entity, true));
+                                        .collect(Collectors.joining(Symbol.LF)) + " AND "
+                                        + logicalCondition(entity, true));
             }
         });
     }
@@ -500,7 +501,7 @@ public class LogicalProvider extends BasicProvider {
                 return "UPDATE " + entity.tableName() + " SET "
                         + columnEqualsValue(logicColumn, deleteValue(logicColumn)) + " WHERE " + entity.idColumns()
                                 .stream().map(ColumnMeta::columnEqualsProperty).collect(Collectors.joining(" AND "))
-                        + logicalCondition(entity, true);
+                        + " AND " + logicalCondition(entity, true);
             }
         });
     }

@@ -1451,7 +1451,7 @@ public class Format extends java.text.Format {
                     Object dateTimeOffset,
                     UnaryOperatorX<String> splice) {
                 String s = attrs.getString(tag, index);
-                return s != null ? s.toUpperCase() : null;
+                return s != null ? StringKit.toUpperCase(s) : null;
             }
         },
         /**

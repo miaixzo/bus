@@ -113,7 +113,7 @@ public class BooleanKit {
      */
     public static boolean toBoolean(final String values) {
         if (StringKit.isNotBlank(values)) {
-            return TRUE_SET.contains(values.trim().toLowerCase());
+            return TRUE_SET.contains(StringKit.toLowerCase(values.trim()));
         }
         return false;
     }
@@ -128,7 +128,7 @@ public class BooleanKit {
      */
     public static Boolean toBooleanObject(String values) {
         if (StringKit.isNotBlank(values)) {
-            values = values.trim().toLowerCase();
+            values = StringKit.toLowerCase(values.trim());
             if (TRUE_SET.contains(values)) {
                 return Boolean.TRUE;
             } else if (FALSE_SET.contains(values)) {

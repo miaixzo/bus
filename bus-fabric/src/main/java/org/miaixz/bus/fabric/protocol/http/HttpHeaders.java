@@ -124,7 +124,7 @@ public class HttpHeaders {
             if (Symbol.STAR.equals(name)) {
                 return false;
             }
-            vary.putIfAbsent(name.toLowerCase(Locale.ROOT), name);
+            vary.putIfAbsent(StringKit.toLowerCase(name), name);
         }
         for (final String name : vary.values()) {
             if (!values(cached, name).equals(values(request, name))) {

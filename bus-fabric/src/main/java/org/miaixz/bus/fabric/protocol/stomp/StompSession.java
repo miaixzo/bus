@@ -36,6 +36,7 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.*;
 import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.Protocol;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.core.xyz.ThreadKit;
 import org.miaixz.bus.fabric.*;
 import org.miaixz.bus.fabric.guard.GuardRule;
@@ -437,7 +438,7 @@ public class StompSession implements Session {
         return write(() -> {
             final Payload outgoing = snapshot(source);
             final Headers headers = Headers.builder().add(Builder.STOMP_HEADER_DESTINATION, target)
-                    .add(Http.Header.CONTENT_LENGTH.toLowerCase(Locale.ROOT), Long.toString(outgoing.length())).build();
+                    .add(StringKit.toLowerCase(Http.Header.CONTENT_LENGTH), Long.toString(outgoing.length())).build();
             Logger.info(
                     false,
                     "Fabric",
@@ -486,8 +487,8 @@ public class StompSession implements Session {
         return write(() -> {
             final Payload outgoing = snapshot(source.payload());
             final Headers headers = Headers.builder().add(Builder.STOMP_HEADER_DESTINATION, target)
-                    .add(Http.Header.CONTENT_TYPE.toLowerCase(Locale.ROOT), source.media().toString())
-                    .add(Http.Header.CONTENT_LENGTH.toLowerCase(Locale.ROOT), Long.toString(outgoing.length())).build();
+                    .add(StringKit.toLowerCase(Http.Header.CONTENT_TYPE), source.media().toString())
+                    .add(StringKit.toLowerCase(Http.Header.CONTENT_LENGTH), Long.toString(outgoing.length())).build();
             Logger.info(
                     false,
                     "Fabric",

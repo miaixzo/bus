@@ -145,8 +145,8 @@ public class AliyunProvider<T extends Notice, K extends Context> extends Abstrac
                 "Aliyun notify response received: code={}, responseBytes={}",
                 code,
                 response == null ? 0 : response.getBytes(Charset.UTF_8).length);
-        return Message.<Void>builder().errcode(SUCCESS_RESULT.equals(code) ? ErrorCode._SUCCESS.getKey() : code)
-                .errmsg(code).build();
+        return Message.<Void>builder().code(SUCCESS_RESULT.equals(code) ? ErrorCode._SUCCESS.getKey() : code).desc(code)
+                .build();
     }
 
 }

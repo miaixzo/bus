@@ -786,6 +786,28 @@ random.nextBytes(key);  // 可预测!
 
 -----
 
+## GraalVM Native Image 元数据
+
+Bus Crypto 使用 [官方可达性元数据仓库](https://github.com/oracle/graalvm-reachability-metadata/tree/master/metadata/org.bouncycastle/bcpkix-jdk18on) 中的 Bouncy Castle 配置。官方 `1.77` 配置集明确将当前依赖版本 `1.85` 列为已测试版本，元数据目录名无需与依赖版本一致。
+
+构建原生可执行文件的应用必须启用元数据仓库；使用 Bouncy Castle 时，还需声明可选依赖 `org.bouncycastle:bcpkix-jdk18on`。继承 `bus-parent` 的应用在启用其管理的 `native-maven-plugin` 后，会继承仓库配置。其他应用在现有插件中配置：
+
+```xml
+<configuration>
+    <metadataRepository>
+        <enabled>true</enabled>
+    </metadataRepository>
+</configuration>
+```
+
+原生构建必须能取得包含 `1.85` 测试记录的官方仓库版本，本次核对使用 Native Build Tools 和元数据仓库 `1.1.18`。仅引入 Bus Crypto 依赖不会自动启用官方仓库；离线构建需通过插件的本地仓库配置提供同一份元数据。
+
+Bus Crypto 仅保留官方配置尚未覆盖的 25 项有条件构造方法注册，在 `bus-preset` JAR 中单独存放于 `org.bouncycastle/bcpkix-jdk18on/1.85`：10 个动态加载的算法映射、14 个 JCA 服务及 Provider 构造方法。不再重复注册直接构造的辅助类，也不保留包级资源通配配置。Bus 自身反射配置、精确 SPI 资源和 Bus 初始化留在原模块；Bouncy Castle 初始化配置也迁入 `bus-preset`。升级 Bouncy Castle 或官方元数据时，需重新核对这些差异项。
+
+JSON 格式校验、成员核对和 JVM 功能测试不能替代原生验证。发布原生应用前，应对实际使用的算法启用 `--exact-reachability-metadata` 构建，并使用 `-XX:MissingRegistrationReportingMode=Exit` 运行验证。
+
+-----
+
 ## 📚 其他资源
 
 - [Java加密架构 (JCA)](https://docs.oracle.com/javase/8/docs/technotes/guides/security/crypto/CryptoSpec.html)

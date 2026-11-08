@@ -122,12 +122,12 @@ public class AutoValidateAdvice {
                 Logger.warn(
                         false,
                         "Starter",
-                        "Validation rejected invocation: declaringType={}, method={}, parameterIndex={}, parameterName={}, errorCode={}, exceptionType={}",
+                        "Validation rejected invocation: declaringType={}, method={}, parameterIndex={}, parameterName={}, code={}, exceptionType={}",
                         method.getDeclaringClass().getName(),
                         method.getName(),
                         i,
                         names[i],
-                        exception.getErrcode(),
+                        exception.getCode(),
                         exception.getClass().getName());
                 throw exception;
             }

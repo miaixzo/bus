@@ -210,7 +210,7 @@ public class UnoUrl {
         if (scheme == null) {
             return Normal.__1;
         }
-        final String normalized = scheme.toLowerCase(Locale.ROOT);
+        final String normalized = StringKit.toLowerCase(scheme);
         if (Protocol.HTTP.name.equals(normalized) || Protocol.WS.name.equals(normalized)) {
             return Port._80.getPort();
         }
@@ -488,7 +488,7 @@ public class UnoUrl {
         }
         final int colon = authority.lastIndexOf(Symbol.C_COLON);
         final String host = colon > 0 ? authority.substring(0, colon) : authority;
-        if (StringKit.isEmpty(host) || !host.equals(host.toLowerCase(Locale.ROOT))) {
+        if (StringKit.isEmpty(host) || !host.equals(StringKit.toLowerCase(host))) {
             return null;
         }
         final int port = colon > 0 ? parsePort(authority.substring(colon + 1)) : defaultPort(scheme);
@@ -599,7 +599,7 @@ public class UnoUrl {
                 || uri.getPort() < 0 || StringKit.isEmpty(path)) {
             return false;
         }
-        if (!scheme.equals(scheme.toLowerCase(Locale.ROOT)) || !host.equals(host.toLowerCase(Locale.ROOT))) {
+        if (!scheme.equals(StringKit.toLowerCase(scheme)) || !host.equals(StringKit.toLowerCase(host))) {
             return false;
         }
         final String query = uri.getRawQuery();
@@ -1121,7 +1121,7 @@ public class UnoUrl {
          * @return this builder
          */
         public Builder scheme(final String scheme) {
-            this.scheme = validateText(scheme, "Scheme").toLowerCase(Locale.ROOT);
+            this.scheme = StringKit.toLowerCase(validateText(scheme, "Scheme"));
             return this;
         }
 
@@ -1132,7 +1132,7 @@ public class UnoUrl {
          * @return this builder
          */
         public Builder host(final String host) {
-            this.host = validateText(host, "Host").toLowerCase(Locale.ROOT);
+            this.host = StringKit.toLowerCase(validateText(host, "Host"));
             return this;
         }
 

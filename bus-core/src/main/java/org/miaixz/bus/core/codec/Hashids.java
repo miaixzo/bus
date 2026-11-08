@@ -97,7 +97,6 @@ public class Hashids implements Encoder<long[], String>, Decoder<String, long[]>
     private static final char[] DEFAULT_SEPARATORS = { 'c', 'f', 'h', 'i', 's', 't', Symbol.C_U, 'C', 'F', 'H', 'I',
             'S', 'T', 'U' };
 
-    // algorithm properties
     /**
      * The effective alphabet used for encoding and decoding after initialization and filtering.
      */
@@ -148,19 +147,13 @@ public class Hashids implements Encoder<long[], String>, Decoder<String, long[]>
         char[] tmpAlphabet = validateAndFilterAlphabet(alphabet, tmpSeparators);
 
         // check separator threshold
-        if (tmpSeparators.length == 0 || ((double) (tmpAlphabet.length / tmpSeparators.length)) > SEPARATOR_THRESHOLD) {
+        if (tmpSeparators.length == 0 || ((double) tmpAlphabet.length / tmpSeparators.length) > SEPARATOR_THRESHOLD) {
             final int minSeparatorsSize = (int) Math.ceil(tmpAlphabet.length / SEPARATOR_THRESHOLD);
             // check minimum size of separators
             if (minSeparatorsSize > tmpSeparators.length) {
                 // fill separators from alphabet
                 final int missingSeparators = minSeparatorsSize - tmpSeparators.length;
                 tmpSeparators = Arrays.copyOf(tmpSeparators, tmpSeparators.length + missingSeparators);
-                System.arraycopy(
-                        tmpAlphabet,
-                        0,
-                        tmpSeparators,
-                        tmpSeparators.length - missingSeparators,
-                        missingSeparators);
                 System.arraycopy(
                         tmpAlphabet,
                         0,

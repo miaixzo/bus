@@ -126,7 +126,7 @@ public final class ColorMapCompiler {
 
     /**
      * Byte lookup table indexed by stored pixel value, with B, G, R and optionally A bands, so a 16-bit single-channel
-     * image becomes an 8-bit color image in one {@link LookupTableCV#lookup(org.opencv.core.Mat)} pass.
+     * image becomes an 8-bit color image in one {@link LookupTableCV#lookup(org.miaixz.bus.opencv.core.Mat)} pass.
      */
     public static LookupTableCV toLookupTable(
             ColorMap map,

@@ -24,7 +24,7 @@
  * Provides scheduling and workflow orchestration for background tasks.
  *
  * <p>
- * Includes cron expressions, pattern parsers and matchers, timing utilities, listeners, Temporal activities and
+ * Includes cron expressions, pattern parsers and matchers, timing wheels, task listeners, Temporal activities and
  * workflows, payload conversion, worker management, notifications, and workflow publishing and subscription.
  *
  * @author Kimi Liu

@@ -37,15 +37,13 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class Morse {
 
     /**
-     * Maps character code points to their Morse code representation (e.g., 'A' -> "01"). The '0' represents a dit
-     * (short mark or dot) and '1' represents a dah (longer mark or dash).
+     * Maps Unicode code points to Morse code.
      */
-    private static final Map<Integer, String> ALPHABETS = new HashMap<>(); // code point -> morse
+    private static final Map<Integer, String> ALPHABETS = new HashMap<>();
     /**
-     * Maps Morse code representations to their character code points (e.g., "01" -> 'A'). The '0' represents a dit
-     * (short mark or dot) and '1' represents a dah (longer mark or dash).
+     * Maps Morse code to Unicode code points.
      */
-    private static final Map<String, Integer> DICTIONARIES = new HashMap<>(); // morse -> code point
+    private static final Map<String, Integer> DICTIONARIES = new HashMap<>();
 
     static {
         // Letters
@@ -166,7 +164,7 @@ public class Morse {
     public String encode(String text) {
         Assert.notNull(text, "Text should not be null.");
 
-        text = text.toUpperCase();
+        text = StringKit.toUpperCase(text);
         final StringBuilder morseBuilder = new StringBuilder();
         final int len = text.codePointCount(0, text.length());
         for (int i = 0; i < len; i++) {

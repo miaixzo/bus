@@ -52,10 +52,10 @@ public class AuthorizedException extends UncheckedException {
     /**
      * Constructs a new AuthorizedException with the specified detail message.
      *
-     * @param errmsg The detail message.
+     * @param desc The detail message.
      */
-    public AuthorizedException(final String errmsg) {
-        super(errmsg);
+    public AuthorizedException(final String desc) {
+        super(desc);
     }
 
     /**
@@ -71,10 +71,10 @@ public class AuthorizedException extends UncheckedException {
      * Constructs a new AuthorizedException with the specified error object and detail message.
      *
      * @param errors The error object containing error code.
-     * @param errmsg The detail message.
+     * @param desc   The detail message.
      */
-    public AuthorizedException(final Errors errors, final String errmsg) {
-        super(errors, errmsg);
+    public AuthorizedException(final Errors errors, final String desc) {
+        super(errors, desc);
     }
 
     /**
@@ -90,21 +90,21 @@ public class AuthorizedException extends UncheckedException {
     /**
      * Constructs a new AuthorizedException with the specified error code and detail message.
      *
-     * @param errcode The error code.
-     * @param errmsg  The detail message.
+     * @param code The error code.
+     * @param desc The detail message.
      */
-    public AuthorizedException(final String errcode, final String errmsg) {
-        super(errcode, errmsg);
+    public AuthorizedException(final String code, final String desc) {
+        super(code, desc);
     }
 
     /**
      * Constructs a new AuthorizedException with the specified detail message and cause.
      *
-     * @param errmsg The detail message.
-     * @param cause  The cause (which is saved for later retrieval by the {@link Throwable#getCause()} method).
+     * @param desc  The detail message.
+     * @param cause The cause (which is saved for later retrieval by the {@link Throwable#getCause()} method).
      */
-    public AuthorizedException(final String errmsg, final Throwable cause) {
-        super(errmsg, cause);
+    public AuthorizedException(final String desc, final Throwable cause) {
+        super(desc, cause);
     }
 
     /**
@@ -121,27 +121,27 @@ public class AuthorizedException extends UncheckedException {
     /**
      * Constructs a new AuthorizedException with the specified error code, detail message, and cause.
      *
-     * @param errcode The error code.
-     * @param errmsg  The detail message.
-     * @param cause   The cause (which is saved for later retrieval by the {@link Throwable#getCause()} method).
+     * @param code  The error code.
+     * @param desc  The detail message.
+     * @param cause The cause (which is saved for later retrieval by the {@link Throwable#getCause()} method).
      */
-    public AuthorizedException(final String errcode, final String errmsg, final Throwable cause) {
-        super(errcode, errmsg, cause);
+    public AuthorizedException(final String code, final String desc, final Throwable cause) {
+        super(code, desc, cause);
     }
 
     /**
      * Constructs a new AuthorizedException with the specified detail message, cause, suppression enabled or disabled,
      * and writable stack trace enabled or disabled.
      *
-     * @param errmsg             The detail message.
+     * @param desc               The detail message.
      * @param cause              The cause (which is saved for later retrieval by the {@link Throwable#getCause()}
      *                           method).
      * @param enableSuppression  Whether or not suppression is enabled or disabled.
      * @param writableStackTrace Whether or not the stack trace should be writable.
      */
-    public AuthorizedException(final String errmsg, final Throwable cause, final boolean enableSuppression,
+    public AuthorizedException(final String desc, final Throwable cause, final boolean enableSuppression,
             final boolean writableStackTrace) {
-        super(errmsg, cause, enableSuppression, writableStackTrace);
+        super(desc, cause, enableSuppression, writableStackTrace);
     }
 
 }

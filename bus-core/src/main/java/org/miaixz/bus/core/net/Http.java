@@ -22,7 +22,6 @@ package org.miaixz.bus.core.net;
 import java.lang.reflect.Array;
 import java.util.Collection;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -30,6 +29,7 @@ import java.util.stream.Stream;
 import org.miaixz.bus.core.center.function.FunctionX;
 import org.miaixz.bus.core.lang.EnumValue;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.xyz.StringKit;
 
 /**
  * HTTP protocol constants, conventional endpoint contracts, and framework-independent authentication operations.
@@ -286,7 +286,7 @@ public class Http {
             if (method == null || method.isBlank()) {
                 throw new IllegalArgumentException("HTTP method cannot be blank");
             }
-            Method resolved = BY_VALUE.get(method.trim().toUpperCase(Locale.ROOT));
+            Method resolved = BY_VALUE.get(StringKit.toUpperCase(method.trim()));
             if (resolved == null) {
                 throw new IllegalArgumentException("Unsupported HTTP method: " + method);
             }
@@ -336,7 +336,7 @@ public class Http {
          * @return {@code true} when the token resolves to this method
          */
         public boolean matches(String method) {
-            return method != null && this == BY_VALUE.get(method.trim().toUpperCase(Locale.ROOT));
+            return method != null && this == BY_VALUE.get(StringKit.toUpperCase(method.trim()));
         }
 
     }

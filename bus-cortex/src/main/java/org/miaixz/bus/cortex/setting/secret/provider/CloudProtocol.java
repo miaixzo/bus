@@ -212,7 +212,7 @@ final class CloudProtocol {
             throw new IllegalArgumentException("A fixed HTTPS root endpoint is required");
         }
         try {
-            return new URI(Protocol.HTTPS.name, null, StringKit.toLowerCase(uri.getHost(), Locale.ROOT),
+            return new URI(Protocol.HTTPS.name, null, StringKit.toLowerCase(uri.getHost()),
                     uri.getPort() == Port._443.getPort() ? -1 : uri.getPort(), Symbol.SLASH, null, null);
         } catch (URISyntaxException failure) {
             throw new IllegalArgumentException("Invalid HTTPS endpoint");
@@ -298,7 +298,7 @@ final class CloudProtocol {
      * @return canonical Host header value
      */
     static String host(URI uri) {
-        return StringKit.toLowerCase(uri.getRawAuthority(), Locale.ROOT);
+        return StringKit.toLowerCase(uri.getRawAuthority());
     }
 
     /**

@@ -19,12 +19,13 @@
 */
 package org.miaixz.bus.mapper.feature.affix;
 
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Deque;
 import java.util.List;
 import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
@@ -32,6 +33,9 @@ import org.miaixz.bus.core.xyz.StringKit;
  * <p>
  * The rewriter recognizes table names introduced by {@code FROM}, {@code JOIN}, {@code INTO}, and {@code UPDATE},
  * preserves schema qualifiers and identifier delimiters, and avoids applying the same affix more than once.
+ * Non-recursive CTE names are resolved within their query scope, after their definition; physical tables inside CTEs
+ * remain eligible. Quoted CTE references must use the same spelling as their declaration. Recursive CTEs are not
+ * supported.
  *
  * @author Kimi Liu
  */
@@ -41,14 +45,6 @@ public class AffixSqlRewriter {
      * Tokens that can follow a table-introducing keyword but are not table names.
      */
     private static final Set<String> TABLE_NAME_STOP_WORDS = Set.of("SET", "VALUES", "SELECT", "WHERE", "RETURNING");
-
-    /**
-     * Matches table names after the SQL tokens that introduce physical table references.
-     */
-    private static final Pattern TABLE_NAME_PATTERN = Pattern.compile(
-            "(?i)\\b(FROM|JOIN|INTO|UPDATE)\\s+(?:([a-zA-Z_][a-zA-Z0-9_]*)\\.)?\\s*"
-                    + "([`\"\\[]?)([a-zA-Z_][a-zA-Z0-9_]*)([`\"\\]]?)",
-            Pattern.CASE_INSENSITIVE);
 
     /**
      * Text prepended to eligible physical table names.
@@ -107,19 +103,38 @@ public class AffixSqlRewriter {
             return sql;
         }
 
-        Matcher matcher = TABLE_NAME_PATTERN.matcher(sql);
-        StringBuffer result = new StringBuffer();
-        while (matcher.find()) {
-            String keyword = matcher.group(1);
-            String schema = matcher.group(2);
-            String startDelimiter = matcher.group(3);
-            String tableName = matcher.group(4);
-            String endDelimiter = matcher.group(5);
-
-            if (TABLE_NAME_STOP_WORDS.contains(tableName.toUpperCase())) {
+        List<Token> tokens = tokenize(sql);
+        List<Cte> ctes = ctes(tokens);
+        StringBuilder result = new StringBuilder(sql.length());
+        int copied = 0;
+        for (int index = 0; index < tokens.size(); index++) {
+            Token keyword = tokens.get(index);
+            boolean source = keyword.is("FROM") || keyword.is("JOIN");
+            if (!source && !keyword.is("INTO") && !keyword.is("UPDATE")) {
+                continue;
+            }
+            int tableIndex = index + 1;
+            if (tableIndex >= tokens.size() || !tokens.get(tableIndex).identifier()) {
+                continue;
+            }
+            Token table = tokens.get(tableIndex);
+            if (table.quote() == 0 && TABLE_NAME_STOP_WORDS.contains(StringKit.toUpperCase(table.value()))) {
+                continue;
+            }
+            boolean qualified = false;
+            while (tableIndex + 2 < tokens.size() && tokens.get(tableIndex + 1).is(".")
+                    && tokens.get(tableIndex + 2).identifier()) {
+                qualified = true;
+                tableIndex += 2;
+                table = tokens.get(tableIndex);
+            }
+            index = tableIndex;
+            if (source && (tableIndex + 1 < tokens.size() && tokens.get(tableIndex + 1).is("(")
+                    || !qualified && visible(table, tableIndex, ctes))) {
                 continue;
             }
 
+            String tableName = table.value();
             boolean prefixed = StringKit.isEmpty(prefix) || tableName.startsWith(prefix)
                     || shouldIgnore(tableName, prefixIgnore);
             boolean suffixed = StringKit.isEmpty(suffix) || tableName.endsWith(suffix)
@@ -127,24 +142,271 @@ public class AffixSqlRewriter {
             if (prefixed && suffixed) {
                 continue;
             }
-
-            StringBuilder replacement = new StringBuilder(keyword).append(Symbol.SPACE);
-            if (StringKit.isNotEmpty(schema)) {
-                replacement.append(schema).append(Symbol.DOT);
-            }
-            replacement.append(startDelimiter);
-            if (!prefixed) {
-                replacement.append(prefix);
-            }
-            replacement.append(tableName);
-            if (!suffixed) {
-                replacement.append(suffix);
-            }
-            replacement.append(endDelimiter);
-            matcher.appendReplacement(result, Matcher.quoteReplacement(replacement.toString()));
+            String replacement = (prefixed ? "" : prefix) + tableName + (suffixed ? "" : suffix);
+            result.append(sql, copied, table.start()).append(table.render(replacement));
+            copied = table.end();
         }
-        matcher.appendTail(result);
-        return result.toString();
+        return copied == 0 ? sql : result.append(sql, copied, sql.length()).toString();
+    }
+
+    /**
+     * Finds ordinary CTE declarations and their lexical visibility intervals. A declaration is visible only after its
+     * own body, so a later declaration cannot hide a physical table in an earlier body.
+     *
+     * @param tokens the SQL tokens with original source offsets
+     * @return the non-recursive CTE names and their token visibility intervals
+     */
+    private static List<Cte> ctes(List<Token> tokens) {
+        int[] closing = new int[tokens.size()];
+        int[] container = new int[tokens.size()];
+        Arrays.fill(closing, -1);
+        Arrays.fill(container, -1);
+        Deque<Integer> openings = new ArrayDeque<>();
+        for (int index = 0; index < tokens.size(); index++) {
+            if (!openings.isEmpty()) {
+                container[index] = openings.peek();
+            }
+            if (tokens.get(index).is("(")) {
+                openings.push(index);
+            } else if (tokens.get(index).is(")") && !openings.isEmpty()) {
+                closing[openings.pop()] = index;
+            }
+        }
+        List<Cte> result = new ArrayList<>();
+        for (int index = 0; index < tokens.size(); index++) {
+            if (!tokens.get(index).is("WITH") || index + 1 >= tokens.size() || tokens.get(index + 1).is("RECURSIVE")) {
+                continue;
+            }
+            int end = container[index] < 0 ? tokens.size() : closing[container[index]];
+            if (end < 0) {
+                continue;
+            }
+            for (int boundary = index + 1; boundary < end; boundary++) {
+                if (container[boundary] == container[index] && tokens.get(boundary).is(";")) {
+                    end = boundary;
+                    break;
+                }
+            }
+            int cursor = index + 1;
+            while (cursor < end && tokens.get(cursor).identifier()) {
+                Token name = tokens.get(cursor++);
+                if (cursor < end && tokens.get(cursor).is("(")) {
+                    int columns = closing[cursor];
+                    if (columns < 0) {
+                        break;
+                    }
+                    cursor = columns + 1;
+                }
+                if (cursor + 1 >= end || !tokens.get(cursor).is("AS") || !tokens.get(cursor + 1).is("(")) {
+                    break;
+                }
+                int body = closing[cursor + 1];
+                if (body < 0 || body >= end) {
+                    break;
+                }
+                result.add(new Cte(name, body + 1, end));
+                cursor = body + 1;
+                if (cursor >= end || !tokens.get(cursor).is(",")) {
+                    break;
+                }
+                cursor++;
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Resolves unqualified CTE references without leaking aliases into an enclosing or subsequent statement.
+     *
+     * @param table the table-name token to check
+     * @param index the table token index in the SQL token list
+     * @param ctes  the non-recursive CTE names and their visibility intervals
+     * @return {@code true} when the token refers to a visible, unqualified CTE name
+     */
+    private static boolean visible(Token table, int index, List<Cte> ctes) {
+        for (Cte cte : ctes) {
+            if (index >= cte.visible() && index < cte.end()
+                    && (cte.name().quote() == 0 && table.quote() == 0
+                            ? cte.name().value().equalsIgnoreCase(table.value())
+                            : cte.name().value().equals(table.value()))) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Tokenizes only the SQL structure needed by affix rewriting. Original whitespace, parameters, comments and literal
+     * bytes remain in the source and are copied unchanged; comments and literals cannot introduce table references.
+     *
+     * @param sql the SQL text to scan
+     * @return identifier and structural tokens with offsets into the original SQL
+     */
+    private static List<Token> tokenize(String sql) {
+        List<Token> result = new ArrayList<>();
+        int cursor = 0;
+        while (cursor < sql.length()) {
+            char value = sql.charAt(cursor);
+            if (Character.isWhitespace(value)) {
+                cursor++;
+                continue;
+            }
+            if (value == '-' && cursor + 1 < sql.length() && sql.charAt(cursor + 1) == '-') {
+                cursor += 2;
+                while (cursor < sql.length() && sql.charAt(cursor) != '\n' && sql.charAt(cursor) != '\r') {
+                    cursor++;
+                }
+                continue;
+            }
+            if (value == '/' && cursor + 1 < sql.length() && sql.charAt(cursor + 1) == '*') {
+                cursor += 2;
+                int depth = 1;
+                while (cursor < sql.length() && depth > 0) {
+                    if (cursor + 1 < sql.length() && sql.charAt(cursor) == '/' && sql.charAt(cursor + 1) == '*') {
+                        depth++;
+                        cursor += 2;
+                    } else if (cursor + 1 < sql.length() && sql.charAt(cursor) == '*'
+                            && sql.charAt(cursor + 1) == '/') {
+                        depth--;
+                        cursor += 2;
+                    } else {
+                        cursor++;
+                    }
+                }
+                continue;
+            }
+            int start = cursor;
+            if ((value == '#' || value == '$') && cursor + 1 < sql.length() && sql.charAt(cursor + 1) == '{') {
+                int finish = sql.indexOf('}', cursor + 2);
+                cursor = finish < 0 ? sql.length() : finish + 1;
+                result.add(new Token("", start, cursor, false, (char) 0));
+                continue;
+            }
+            if (value == '\'' || value == '"' || value == '`' || value == '[') {
+                char close = value == '[' ? ']' : value;
+                cursor++;
+                StringBuilder identifier = new StringBuilder();
+                boolean complete = false;
+                while (cursor < sql.length()) {
+                    char current = sql.charAt(cursor++);
+                    if (current == close) {
+                        if (cursor < sql.length() && sql.charAt(cursor) == close) {
+                            identifier.append(close);
+                            cursor++;
+                        } else {
+                            complete = true;
+                            break;
+                        }
+                    } else if (value == '\'' && current == '\\' && cursor < sql.length()) {
+                        identifier.append(current).append(sql.charAt(cursor++));
+                    } else {
+                        identifier.append(current);
+                    }
+                }
+                result.add(new Token(identifier.toString(), start, cursor, complete && value != '\'', value));
+                continue;
+            }
+            if (value == '$') {
+                int delimiter = cursor + 1;
+                while (delimiter < sql.length() && (letter(sql.charAt(delimiter))
+                        || delimiter > cursor + 1 && Character.isDigit(sql.charAt(delimiter)))) {
+                    delimiter++;
+                }
+                if (delimiter < sql.length() && sql.charAt(delimiter) == '$') {
+                    String marker = sql.substring(cursor, delimiter + 1);
+                    int finish = sql.indexOf(marker, delimiter + 1);
+                    cursor = finish < 0 ? sql.length() : finish + marker.length();
+                    result.add(new Token("", start, cursor, false, (char) 0));
+                    continue;
+                }
+            }
+            if ((value == ':' || value == '@' || value == '$') && cursor + 1 < sql.length()
+                    && (letter(sql.charAt(cursor + 1)) || Character.isDigit(sql.charAt(cursor + 1)))) {
+                cursor += 2;
+                while (cursor < sql.length() && part(sql.charAt(cursor))) {
+                    cursor++;
+                }
+                result.add(new Token("", start, cursor, false, (char) 0));
+                continue;
+            }
+            if (letter(value)) {
+                cursor++;
+                while (cursor < sql.length() && part(sql.charAt(cursor))) {
+                    cursor++;
+                }
+                result.add(new Token(sql.substring(start, cursor), start, cursor, true, (char) 0));
+                continue;
+            }
+            cursor++;
+            result.add(new Token(String.valueOf(value), start, cursor, false, (char) 0));
+        }
+        return result;
+    }
+
+    /**
+     * The unquoted identifier alphabet already accepted by the affix rewriter.
+     *
+     * @param value the character to test
+     * @return {@code true} for an ASCII letter or underscore
+     */
+    private static boolean letter(char value) {
+        return value >= 'a' && value <= 'z' || value >= 'A' && value <= 'Z' || value == '_';
+    }
+
+    /**
+     * Unquoted identifier continuation, including the dollar sign accepted by supported SQL engines.
+     *
+     * @param value the character to test
+     * @return {@code true} for an identifier letter, digit or dollar sign
+     */
+    private static boolean part(char value) {
+        return letter(value) || value >= '0' && value <= '9' || value == '$';
+    }
+
+    /**
+     * A source token; a zero quote denotes an unquoted identifier or structural symbol.
+     *
+     * @param value      the token text, excluding surrounding quotes for quoted identifiers
+     * @param start      the inclusive character offset in the original SQL
+     * @param end        the exclusive character offset in the original SQL
+     * @param identifier whether this token represents an identifier
+     * @param quote      the opening quote character, or zero for an unquoted token
+     */
+    private record Token(String value, int start, int end, boolean identifier, char quote) {
+
+        /**
+         * Matches a keyword or symbol without treating quoted identifiers as keywords.
+         *
+         * @param expected the unquoted keyword or structural symbol to match
+         * @return {@code true} for an unquoted, case-insensitive match
+         */
+        private boolean is(String expected) {
+            return quote == 0 && value.equalsIgnoreCase(expected);
+        }
+
+        /**
+         * Renders a replacement identifier while retaining the original quoting style.
+         *
+         * @param replacement the replacement identifier text without surrounding quotes
+         * @return the replacement with the original quote style and escaped closing quotes, if quoted
+         */
+        private String render(String replacement) {
+            if (quote == 0) {
+                return replacement;
+            }
+            char close = quote == '[' ? ']' : quote;
+            return quote + replacement.replace(String.valueOf(close), "" + close + close) + close;
+        }
+    }
+
+    /**
+     * One non-recursive CTE name and the token interval in which it can be referenced.
+     *
+     * @param name    the CTE name token
+     * @param visible the inclusive token index from which the CTE can be referenced
+     * @param end     the exclusive token index ending the visibility interval
+     */
+    private record Cte(Token name, int visible, int end) {
     }
 
     /**

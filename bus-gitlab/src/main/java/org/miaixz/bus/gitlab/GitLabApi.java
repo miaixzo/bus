@@ -27,6 +27,7 @@ import jakarta.ws.rs.core.Response;
 
 import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.lang.exception.RelevantException;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.gitlab.models.Constants.TokenType;
 import org.miaixz.bus.gitlab.models.OauthTokenResponse;
 import org.miaixz.bus.gitlab.models.User;
@@ -55,9 +56,8 @@ public class GitLabApi implements AutoCloseable {
     private static final java.util.logging.Logger LOGGER = java.util.logging.Logger
             .getLogger(GitLabApi.class.getName());
 
-    // Used to keep track of RelevantExceptions on calls that return Optional<?>
     /**
-     * The optional exception map value.
+     * Used to keep track of RelevantExceptions on calls that return Optional&lt;?&gt;.
      */
     private static final Map<Integer, RelevantException> optionalExceptionMap = Collections
             .synchronizedMap(new WeakHashMap<>());
@@ -2305,7 +2305,7 @@ public class GitLabApi implements AutoCloseable {
          */
 
         public String getApiNamespace() {
-            return ("/api/" + name().toLowerCase());
+            return ("/api/" + StringKit.toLowerCase(name()));
         }
 
     }

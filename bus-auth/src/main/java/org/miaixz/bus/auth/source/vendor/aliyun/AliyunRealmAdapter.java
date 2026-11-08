@@ -160,7 +160,7 @@ public class AliyunRealmAdapter implements VendorAdapter {
     /**
      * Creates one Source-isolated Alibaba Cloud RAM realm adapter.
      *
-     * @param spaceId  Source space used for isolation
+     * @param tenantId Source tenant used for isolation
      * @param sourceId Source identifier
      * @param manifest exact Alibaba Cloud manifest
      * @param variant  selected Realm Variant
@@ -169,9 +169,9 @@ public class AliyunRealmAdapter implements VendorAdapter {
      * @throws IllegalArgumentException if an identifier is blank or collaborator is {@code null}
      * @throws ValidateException        if the manifest, Variant, options, protocol, or targets are inconsistent
      */
-    public AliyunRealmAdapter(final String spaceId, final String sourceId, final AliyunManifest manifest,
+    public AliyunRealmAdapter(final String tenantId, final String sourceId, final AliyunManifest manifest,
             final VendorManifest.Variant variant, final AliyunOptions options, final SourceServices services) {
-        Assert.notBlank(spaceId, "Alibaba Cloud Realm space id must not be blank");
+        Assert.notBlank(tenantId, "Alibaba Cloud Realm tenant id must not be blank");
         Assert.notBlank(sourceId, "Alibaba Cloud Realm Source id must not be blank");
         final AliyunManifest selectedManifest = Assert.notNull(manifest, "Alibaba Cloud manifest must not be null");
         this.variant = Assert.notNull(variant, "Alibaba Cloud Realm Variant must not be null");

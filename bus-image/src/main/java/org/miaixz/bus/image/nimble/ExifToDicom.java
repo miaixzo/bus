@@ -19,7 +19,6 @@
 */
 package org.miaixz.bus.image.nimble;
 
-import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Locale;
@@ -28,6 +27,8 @@ import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.miaixz.bus.core.lang.Charset;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.image.Tag;
 import org.miaixz.bus.image.galaxy.data.Attributes;
 import org.miaixz.bus.image.galaxy.data.ElementDictionary;
@@ -52,7 +53,6 @@ import org.miaixz.bus.image.galaxy.data.VR;
  */
 public final class ExifToDicom {
 
-    // IFD0
     /**
      * EXIF tag identifier for image description.
      */
@@ -69,7 +69,6 @@ public final class ExifToDicom {
      * EXIF tag identifier for software.
      */
     static final int SOFTWARE = 0x0131;
-    // Exif sub-IFD
     /**
      * EXIF tag identifier for exif version.
      */
@@ -118,7 +117,6 @@ public final class ExifToDicom {
      * EXIF tag identifier for lens serial number.
      */
     static final int LENS_SERIAL_NUMBER = 0xA435;
-    // GPS sub-IFD
     /**
      * EXIF tag identifier for gps time stamp.
      */
@@ -354,7 +352,7 @@ public final class ExifToDicom {
                 text = text.substring(0, max).trim();
             }
             if (vr == VR.CS) {
-                text = text.toUpperCase(Locale.ROOT);
+                text = StringKit.toUpperCase(text);
             }
         }
         attrs.setString(tag, vr, text);
@@ -385,17 +383,17 @@ public final class ExifToDicom {
         if (data.length <= USER_COMMENT_CODE_LENGTH) {
             return "";
         }
-        String code = new String(data, 0, USER_COMMENT_CODE_LENGTH, StandardCharsets.US_ASCII).replace("\0", "").trim();
+        String code = new String(data, 0, USER_COMMENT_CODE_LENGTH, Charset.US_ASCII).replace("\0", "").trim();
         byte[] text = Arrays.copyOfRange(data, USER_COMMENT_CODE_LENGTH, data.length);
         String comment;
         if ("UNICODE".equals(code)) {
             // UCS-2, in practice in the byte order of the TIFF block. Guess it from the zero bytes.
             boolean littleEndian = text.length > 1 && text[0] != 0 && text[1] == 0;
-            comment = new String(text, littleEndian ? StandardCharsets.UTF_16LE : StandardCharsets.UTF_16BE);
+            comment = new String(text, littleEndian ? Charset.UTF_16_LE : Charset.UTF_16_BE);
         } else if ("JIS".equals(code)) {
             return ""; // Not supported
         } else {
-            comment = new String(text, StandardCharsets.UTF_8);
+            comment = new String(text, Charset.UTF_8);
         }
         return comment.replace("\0", "").trim();
     }

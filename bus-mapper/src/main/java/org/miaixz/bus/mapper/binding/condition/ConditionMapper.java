@@ -63,12 +63,11 @@ public interface ConditionMapper<T, E> {
      *
      * @param entity    The entity object with updated values.
      * @param condition The condition object.
-     * @param <S>       A subtype of the entity class.
      * @return The number of affected rows (>=1 for success, 0 for failure).
      */
     @Lang(Caching.class)
     @UpdateProvider(type = ConditionProvider.class, method = "updateByCondition")
-    <S extends T> int updateByCondition(@Param("entity") S entity, @Param("condition") E condition);
+    int updateByCondition(@Param("entity") T entity, @Param("condition") E condition);
 
     /**
      * Updates fields based on the given {@link Condition} and the values set in it.
@@ -85,12 +84,11 @@ public interface ConditionMapper<T, E> {
      *
      * @param entity    The entity object with updated values.
      * @param condition The condition object.
-     * @param <S>       A subtype of the entity class.
      * @return The number of affected rows (>=1 for success, 0 for failure).
      */
     @Lang(Caching.class)
     @UpdateProvider(type = ConditionProvider.class, method = "updateByConditionSelective")
-    <S extends T> int updateByConditionSelective(@Param("entity") S entity, @Param("condition") E condition);
+    int updateByConditionSelective(@Param("entity") T entity, @Param("condition") E condition);
 
     /**
      * Selects a list of entities based on the given {@link Condition}.

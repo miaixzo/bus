@@ -209,7 +209,7 @@ public class CGetForward implements AutoCloseable {
                         streamSCU.open();
                     }
                 } else {
-                    streamSCUService.start();
+                    streamSCUService.start(true);
                     // Add Presentation Context for the association
                     streamSCU.addData(cuid, tsuid);
                     streamSCU.open();
@@ -476,7 +476,7 @@ public class CGetForward implements AutoCloseable {
                 throw new IllegalArgumentException(queryRetrieveLevel + " is not supported as query retrieve level!");
             }
 
-            service.start();
+            service.start(true);
             try {
                 Status dcmState = forward.getState();
                 long t1 = System.currentTimeMillis();

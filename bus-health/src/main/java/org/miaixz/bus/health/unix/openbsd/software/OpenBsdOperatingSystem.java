@@ -27,6 +27,7 @@ import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.tuple.Pair;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.software.*;
@@ -48,7 +49,7 @@ public class OpenBsdOperatingSystem extends AbstractOperatingSystem {
      * The PS_COMMAND_ARGS constant.
      */
     static final String PS_COMMAND_ARGS = Arrays.stream(PsKeywords.values()).map(Enum::name)
-            .map(name -> name.toLowerCase(Locale.ROOT)).collect(Collectors.joining(Symbol.COMMA));
+            .map(name -> StringKit.toLowerCase(name)).collect(Collectors.joining(Symbol.COMMA));
 
     /**
      * The BOOTTIME constant.
@@ -349,7 +350,7 @@ public class OpenBsdOperatingSystem extends AbstractOperatingSystem {
         if (dir.exists() && dir.isDirectory() && (listFiles = dir.listFiles()) != null) {
             for (File f : listFiles) {
                 String name = f.getName();
-                if (f.canExecute() && !name.equals(name.toUpperCase(Locale.ROOT)) && !running.contains(name)) {
+                if (f.canExecute() && !name.equals(StringKit.toUpperCase(name)) && !running.contains(name)) {
                     OSService s = new OSService(name, 0, OSService.State.STOPPED);
                     services.add(s);
                 }

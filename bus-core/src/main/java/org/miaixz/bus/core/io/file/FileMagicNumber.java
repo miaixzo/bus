@@ -1130,7 +1130,7 @@ public enum FileMagicNumber {
          */
         @Override
         public boolean match(final byte[] bytes) {
-            return bytes.length > 128 && Objects.equals(bytes[128], (byte) 0x44)
+            return bytes.length > 131 && Objects.equals(bytes[128], (byte) 0x44)
                     && Objects.equals(bytes[129], (byte) 0x49) && Objects.equals(bytes[130], (byte) 0x43)
                     && Objects.equals(bytes[131], (byte) 0x4d);
         }

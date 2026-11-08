@@ -1,0 +1,11 @@
+[
+  {
+    "latest": true,
+    "metadata-version": "2.0.0",
+    "description": "SLF4J build-time initialization settings used by Bus integrations.",
+    "tested-versions": [
+      "2.0.0",
+      "2.0.18"
+    ]
+  }
+]

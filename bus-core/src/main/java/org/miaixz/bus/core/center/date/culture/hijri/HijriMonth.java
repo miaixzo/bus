@@ -19,7 +19,6 @@
 */
 package org.miaixz.bus.core.center.date.culture.hijri;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.miaixz.bus.core.center.date.culture.parts.AbstractMonth;
@@ -140,12 +139,7 @@ public class HijriMonth extends AbstractMonth {
      * @return days in this month
      */
     public List<HijriDay> getDays() {
-        int size = getDayCount();
-        List<HijriDay> l = new ArrayList<>(size);
-        for (int i = 1; i <= size; i++) {
-            l.add(HijriDay.fromYmd(year, month, i));
-        }
-        return l;
+        return buildDays(i -> HijriDay.fromYmd(year, month, i));
     }
 
     /**

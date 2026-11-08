@@ -30,6 +30,7 @@ import java.util.TreeMap;
 
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.xyz.StringKit;
 
 /**
  * Represents the MultipartInputStream type.
@@ -341,7 +342,7 @@ public class MultipartInputStream extends FilterInputStream {
             }
             List<String> list = map.get(name);
             if (list == null) {
-                map.put(name.toLowerCase(), list = new ArrayList<>(1));
+                map.put(StringKit.toLowerCase(name), list = new ArrayList<>(1));
             }
             list.add(value);
         }

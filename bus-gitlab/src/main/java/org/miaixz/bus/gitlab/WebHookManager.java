@@ -42,9 +42,8 @@ public class WebHookManager implements HookManager {
      */
     private final JacksonJson jacksonJson = new JacksonJson();
 
-    // Collection of objects listening for WebHook events.
     /**
-     * The webhook listeners value.
+     * Collection of objects listening for WebHook events.
      */
     private final List<WebHookListener> webhookListeners = new CopyOnWriteArrayList<WebHookListener>();
 

@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.core.center.date.culture.festival;
 
+import java.util.Arrays;
+
 /**
  * Defines the supported festival rule types.
  *
@@ -84,15 +86,8 @@ public enum FestivalRule {
      * @return matching rule type, or {@code null} if not found
      */
     public static FestivalRule fromCode(Integer code) {
-        if (null == code) {
-            return null;
-        }
-        for (FestivalRule item : values()) {
-            if (item.getCode() == code) {
-                return item;
-            }
-        }
-        return null;
+        return code == null ? null
+                : Arrays.stream(values()).filter(item -> item.getCode() == code).findFirst().orElse(null);
     }
 
     /**
@@ -102,15 +97,8 @@ public enum FestivalRule {
      * @return matching rule type, or {@code null} if not found
      */
     public static FestivalRule fromName(String name) {
-        if (null == name) {
-            return null;
-        }
-        for (FestivalRule item : values()) {
-            if (item.getName().equals(name)) {
-                return item;
-            }
-        }
-        return null;
+        return name == null ? null
+                : Arrays.stream(values()).filter(item -> item.getName().equals(name)).findFirst().orElse(null);
     }
 
     /**

@@ -63,14 +63,14 @@ public @interface Regex {
      *
      * @return the error code.
      */
-    String errcode() default ErrorCode._REGEX;
+    String code() default ErrorCode._REGEX;
 
     /**
      * The error message to be used when validation fails. The message can be a template with placeholders.
      *
      * @return the error message.
      */
-    String errmsg() default ErrorCode._REGEX_VALUE;
+    String desc() default ErrorCode._REGEX_VALUE;
 
     /**
      * The validation groups this constraint belongs to.

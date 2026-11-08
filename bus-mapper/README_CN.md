@@ -139,6 +139,40 @@ public class Application {
 
 -----
 
+## GraalVM 可达性元数据
+
+MyBatis 通用配置由[官方元数据仓库](https://github.com/oracle/graalvm-reachability-metadata/tree/master/metadata/org.mybatis/mybatis)提供。
+`bus-mapper` 不重复附带完整的官方元数据。bus 所需的拦截器代理、明确访问的成员及 XML 解析资源在 `bus-preset` JAR 中
+单独存放于 `org.mybatis/mybatis/3.6.0`，对应当前依赖基线；Bus 自身注册保留在 `org.miaixz/bus-mapper`。
+已发布的仓库 `1.1.18` 尚未包含仓库 `master` 分支的全部条目，剩余补充项不能一并删除。
+
+`bus-parent` 已管理 Native Build Tools，启用 `metadataRepository.enabled=true` 并指定 Maven Central 的 `1.1.18` 仓库 ZIP；
+插件默认的仓库 `1.1.2` 不包含 MyBatis 元数据。继承 `bus-parent` 的应用仍需在原生构建 profile 中启用
+`native-maven-plugin`；使用其他父 POM 的应用需要自行配置元数据仓库：
+
+```xml
+<metadataRepository>
+    <enabled>true</enabled>
+    <url>https://repo.maven.apache.org/maven2/org/graalvm/buildtools/graalvm-reachability-metadata/1.1.18/graalvm-reachability-metadata-1.1.18-repository.zip</url>
+</metadataRepository>
+```
+
+官方索引列出的已测试 MyBatis 版本是 `3.5.19`，不代表 `3.6.0` 已通过官方原生运行验证。其他版本需结合应用实际原生
+运行环境验证；bus 不强制应用使用的 MyBatis 版本，也不内置官方元数据副本。
+
+应用 Mapper XML、实体反射及应用 Mapper 代理由应用或其 AOT 集成负责。例如 XML 位于 `mapper/` 下时，在应用自身的
+`META-INF/native-image/<group>/<application>/reachability-metadata.json` 中声明：
+
+```json
+{
+  "resources": [
+    { "glob": "mapper/**/*.xml" }
+  ]
+}
+```
+
+请按应用真实资源路径配置；`bus-mapper` 不再全局收集应用 XML。
+
 ## 📝 使用示例
 
 ### 1. 定义实体类

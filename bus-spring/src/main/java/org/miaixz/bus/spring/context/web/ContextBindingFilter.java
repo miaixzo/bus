@@ -246,11 +246,12 @@ public final class ContextBindingFilter implements Filter {
                     CopyOptions.of().setTransientSupport(false).setIgnoreCase(true)
                             .setPropertiesFilter((field, value) -> field.getDeclaringClass() == Authorize.class));
             if (BeanKit.getBeanDesc(Authorize.class).getProps().stream()
-                    .filter(property -> property.getField() != null
-                            && property.getField().getDeclaringClass() == Authorize.class)
-                    .map(property -> property.getValue(authorize, false))
-                    .anyMatch(value -> value != null
-                            && (!(value instanceof String text) || StringKit.isNotBlank(text)))) {
+                    .filter(
+                            property -> property.getField() != null
+                                    && property.getField().getDeclaringClass() == Authorize.class)
+                    .map(property -> property.getValue(authorize, false)).anyMatch(
+                            value -> value != null
+                                    && (!(value instanceof String text) || StringKit.isNotBlank(text)))) {
                 state = state.withAuthorize(authorize);
             }
         }

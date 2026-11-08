@@ -244,7 +244,7 @@ public abstract class MacOperatingSystem extends AbstractOperatingSystem {
         File[] listFiles;
         File dir = new File(SYSTEM_LIBRARY_LAUNCH_AGENTS);
         if (dir.exists() && dir.isDirectory()) {
-            if ((listFiles = dir.listFiles((f, name) -> name.toLowerCase(Locale.ROOT).endsWith(".plist"))) != null) {
+            if ((listFiles = dir.listFiles((f, name) -> StringKit.toLowerCase(name).endsWith(".plist"))) != null) {
                 files.addAll(Arrays.asList(listFiles));
             }
         } else {
@@ -252,7 +252,7 @@ public abstract class MacOperatingSystem extends AbstractOperatingSystem {
         }
         dir = new File(SYSTEM_LIBRARY_LAUNCH_DAEMONS);
         if (dir.exists() && dir.isDirectory()) {
-            if ((listFiles = dir.listFiles((f, name) -> name.toLowerCase(Locale.ROOT).endsWith(".plist"))) != null) {
+            if ((listFiles = dir.listFiles((f, name) -> StringKit.toLowerCase(name).endsWith(".plist"))) != null) {
                 files.addAll(Arrays.asList(listFiles));
             }
         } else {

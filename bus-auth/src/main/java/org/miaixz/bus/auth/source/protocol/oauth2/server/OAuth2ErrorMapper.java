@@ -425,7 +425,7 @@ public class OAuth2ErrorMapper {
         Assert.notNull(request, "OAuth 2.x token HTTP request must not be null");
         Assert.notNull(failure, "OAuth 2.x token parsing failure must not be null");
         final OAuth2ErrorCode error = failure instanceof UncheckedException unchecked
-                && OAuth2ErrorCode.UNSUPPORTED_GRANT_TYPE.value().equals(unchecked.getErrcode())
+                && OAuth2ErrorCode.UNSUPPORTED_GRANT_TYPE.value().equals(unchecked.getCode())
                         ? OAuth2ErrorCode.UNSUPPORTED_GRANT_TYPE
                         : OAuth2ErrorCode.INVALID_REQUEST;
         return tokenJson(

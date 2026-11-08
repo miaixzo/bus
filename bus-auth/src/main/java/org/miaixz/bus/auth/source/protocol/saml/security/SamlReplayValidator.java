@@ -37,10 +37,9 @@ import org.miaixz.bus.core.net.Protocol;
 /**
  * Atomically registers validated SAML Response and Assertion identifiers against replay.
  * <p>
- * The Source space is injected from the owning Source configuration at compilation time. Raw XML never crosses the
- * replay-cache boundary; the root guard hashes the isolated tuple before caching. Registration remains ordered so a
- * repeated Response prevents any assertion processing and the first repeated assertion terminates the operation
- * immediately.
+ * The Source tenant is injected from its owning Library at compilation time. Raw XML never crosses the replay-cache
+ * boundary; the root guard hashes the isolated tuple before caching. Registration remains ordered so a repeated
+ * Response prevents any assertion processing and the first repeated assertion terminates the operation immediately.
  * </p>
  *
  * @author Kimi Liu
@@ -53,20 +52,20 @@ public class SamlReplayValidator {
     private final ReplayGuard replayGuard;
 
     /**
-     * External Source space isolating this Source's replay entries.
+     * Tenant from the owning Library isolating this Source's replay entries.
      */
-    private final String space;
+    private final String tenantId;
 
     /**
-     * Creates a space-isolated SAML replay validator.
+     * Creates a tenant-isolated SAML replay validator.
      *
      * @param replayGuard shared atomic replay guard
-     * @param space       non-blank space from the owning Source configuration
-     * @throws IllegalArgumentException if the guard is null or space is blank
+     * @param tenantId    non-blank tenant from the owning Library
+     * @throws IllegalArgumentException if the guard is null or tenant is blank
      */
-    public SamlReplayValidator(final ReplayGuard replayGuard, final String space) {
+    public SamlReplayValidator(final ReplayGuard replayGuard, final String tenantId) {
         this.replayGuard = Assert.notNull(replayGuard, "SAML ReplayGuard must not be null");
-        this.space = Assert.notBlank(space, "SAML replay space must not be blank");
+        this.tenantId = Assert.notBlank(tenantId, "SAML replay tenant must not be blank");
     }
 
     /**
@@ -145,7 +144,7 @@ public class SamlReplayValidator {
         Assert.notNull(timeout, "SAML replay timeout must not be null");
         final Instant responseExpiry = responseExpiry(response, options, timeout.deadline());
         CompletionStage<Outcome<Void>> stage = replayGuard.register(
-                space,
+                tenantId,
                 Protocol.SAML,
                 options.identityProviderEntityId(),
                 "response",
@@ -159,7 +158,7 @@ public class SamlReplayValidator {
             final Assertion assertion = plain.assertion();
             stage = stage.thenCompose(outcome -> switch (outcome) {
                 case Outcome.Succeeded<Void> ignored -> replayGuard.register(
-                        space,
+                        tenantId,
                         Protocol.SAML,
                         options.identityProviderEntityId(),
                         "assertion",

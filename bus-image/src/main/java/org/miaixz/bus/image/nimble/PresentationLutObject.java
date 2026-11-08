@@ -698,7 +698,6 @@ public class PresentationLutObject implements PresentationStateLut {
      */
     private record VoiItem(List<Attributes> referencedImages, VoiLutModule voiLut) {
 
-        // Without Referenced Image Sequence, the item applies to all the images of the state
         /**
          * Tests whether this VOI item references the requested image and one-based frame.
          *

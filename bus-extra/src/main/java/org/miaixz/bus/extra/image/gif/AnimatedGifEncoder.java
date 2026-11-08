@@ -56,20 +56,19 @@ public class AnimatedGifEncoder {
     /**
      * The transparent color, if specified.
      */
-    protected Color transparent = null; // transparent color if given
+    protected Color transparent = null;
     /**
      * Determines if the transparent color match should be exact.
      */
-    protected boolean transparentExactMatch = false; // transparent color will be found by looking for the closest color
-    // or for the exact color if transparentExactMatch == true
+    protected boolean transparentExactMatch = false;
     /**
      * The background color, if specified.
      */
-    protected Color background = null; // background color if given
+    protected Color background = null;
     /**
      * The index of the transparent color in the color table.
      */
-    protected int transIndex; // transparent index in color table
+    protected int transIndex;
     /**
      * The repeat setting, where 0 means infinite loop.
      */
@@ -78,11 +77,11 @@ public class AnimatedGifEncoder {
     /**
      * Frame delay in hundredths of a second.
      */
-    protected int delay = 0; // frame delay (hundredths)
+    protected int delay = 0;
     /**
      * Flag indicating if the encoder is ready to output frames.
      */
-    protected boolean started = false; // ready to output frames
+    protected boolean started = false;
     /**
      * The output stream to write the GIF to.
      */
@@ -91,39 +90,39 @@ public class AnimatedGifEncoder {
     /**
      * The current frame image.
      */
-    protected BufferedImage image; // current frame
+    protected BufferedImage image;
     /**
      * BGR byte array from the current frame.
      */
-    protected byte[] pixels; // BGR byte array from frame
+    protected byte[] pixels;
     /**
      * The frame's pixels indexed to the palette.
      */
-    protected byte[] indexedPixels; // converted frame indexed to palette
+    protected byte[] indexedPixels;
     /**
      * The number of bit planes.
      */
-    protected int colorDepth; // number of bit planes
+    protected int colorDepth;
     /**
      * The RGB color palette.
      */
-    protected byte[] colorTab; // RGB palette
+    protected byte[] colorTab;
     /**
      * A boolean array indicating which palette entries are active.
      */
-    protected boolean[] usedEntry = new boolean[256]; // active palette entries
+    protected boolean[] usedEntry = new boolean[256];
     /**
      * The color table size (in bits - 1).
      */
-    protected int palSize = 7; // color table size (bits-1)
+    protected int palSize = 7;
     /**
      * The disposal code (-1 means use default).
      */
-    protected int dispose = -1; // disposal code (-1 = use default)
+    protected int dispose = -1;
     /**
      * Flag to close the stream when finished.
      */
-    protected boolean closeStream = false; // close stream when finished
+    protected boolean closeStream = false;
     /**
      * Flag for the first frame.
      */
@@ -132,11 +131,11 @@ public class AnimatedGifEncoder {
     /**
      * Flag indicating if the size has been set. If false, size is taken from the first frame.
      */
-    protected boolean sizeSet = false; // if false, get size from first frame
+    protected boolean sizeSet = false;
     /**
      * The default sample interval for the quantizer.
      */
-    protected int sample = 10; // default sample interval for quantizer
+    protected int sample = 10;
 
     /**
      * Constructs a new AnimatedGifEncoder instance.

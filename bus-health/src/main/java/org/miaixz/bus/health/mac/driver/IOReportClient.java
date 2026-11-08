@@ -113,15 +113,13 @@ public class IOReportClient implements IOReportCpuSampler {
      */
     private final CFDictionaryRef subscribedChannels;
 
-    // Previous sample for the usage delta
     /**
-     * The previousUsageSample value.
+     * Previous sample for the usage delta.
      */
     private CFDictionaryRef previousUsageSample;
 
-    // Previous sample and timestamp for power delta
     /**
-     * The prevSamplePower value.
+     * Previous sample and timestamp for power delta.
      */
     private CFDictionaryRef prevSamplePower;
 

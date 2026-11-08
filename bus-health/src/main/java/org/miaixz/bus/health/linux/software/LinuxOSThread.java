@@ -299,8 +299,6 @@ public class LinuxOSThread extends AbstractOSThread {
      */
     private enum ThreadPidStat {
 
-        // The parsing implementation in Parsing requires these to be declared
-        // in increasing order
         /**
          * Parent process identifier field.
          */

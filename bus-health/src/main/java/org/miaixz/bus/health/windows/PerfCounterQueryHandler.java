@@ -37,15 +37,13 @@ import org.miaixz.bus.logger.Logger;
 @NotThreadSafe
 public class PerfCounterQueryHandler implements AutoCloseable {
 
-    // Map of counter handles
     /**
-     * The counterHandleMap value.
+     * Map of counter handles.
      */
     private final Map<PerfCounter, ByRef.CloseableHANDLEByReference> counterHandleMap = new HashMap<>();
 
-    // The query handle
     /**
-     * The queryHandle value.
+     * The query handle.
      */
     private ByRef.CloseableHANDLEByReference queryHandle = null;
 

@@ -117,7 +117,7 @@ public class VkSourceAdapter implements VendorAdapter {
     /**
      * Creates one Source-bound VK ID adapter.
      *
-     * @param spaceId  Source space used to isolate browser state
+     * @param tenantId Source tenant used to isolate browser state
      * @param sourceId Source identifier
      * @param manifest selected VK Source manifest
      * @param variant  exact selected default manifest
@@ -126,7 +126,7 @@ public class VkSourceAdapter implements VendorAdapter {
      * @throws IllegalArgumentException if an identifier is blank or a collaborator is {@code null}
      * @throws ValidateException        if routing, protocol, manifest, callback, or PKCE options are inconsistent
      */
-    public VkSourceAdapter(final String spaceId, final String sourceId, final VkManifest manifest,
+    public VkSourceAdapter(final String tenantId, final String sourceId, final VkManifest manifest,
             final VendorManifest.Variant variant, final VkOptions options, final SourceServices services) {
         final VkManifest selected = Assert.notNull(manifest, "VK manifest must not be null");
         this.sourceId = Assert.notBlank(sourceId, "VK Source id must not be blank");
@@ -139,7 +139,7 @@ public class VkSourceAdapter implements VendorAdapter {
                 || options.redirectUri().isEmpty()) {
             throw new ValidateException("VK adapter requires the vk/default OAuth 2.0 manifest with S256 PKCE");
         }
-        this.redirectManager = RedirectManager.create(spaceId, sourceId, variant, options, services);
+        this.redirectManager = RedirectManager.create(tenantId, sourceId, variant, options, services);
         final var targets = variant.targets().resolve(options);
         final OAuth2ClientOptions oauthSettings = new OAuth2ClientOptions(targets.authorization(), Optional.empty(),
                 Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(),

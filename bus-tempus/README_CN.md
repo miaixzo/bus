@@ -659,4 +659,16 @@ static List<Date> matchedDates(...)                      // 在范围内查找�
 
 -----
 
+## 原生镜像
+
+使用 Temporal 的 gRPC 传输时，应用需要通过 Native Build Tools 插件启用 GraalVM 可达性元数据仓库。
+插件及仓库版本 1.1.18 会为 gRPC Netty Shaded 1.83.1 选择官方 1.68.0 元数据目录，该目录的索引明确
+将 1.83.1 列为已测试版本。Bus 不再重复登记 shaded JCTools 队列字段；
+`DefaultWorkflowTransport` 所需的代理检测方法和动态代理注册在 `bus-preset` JAR 中单独存放于 `io.grpc/grpc-api/1.83.1`，
+并保留原有传输类可达条件。Protobuf 和 Temporal 注册也分别按自身坐标存放，Bus 自身注册保留在 `org.miaixz/bus-tempus`。
+应用自身的工作流实现及定制集成仍需补充相应元数据。
+本次已验证元数据选择及 JVM 传输行为，未执行原生镜像构建。
+
+-----
+
 如需更多信息和更新，请访问: [https://github.com/818000/bus](https://github.com/818000/bus)

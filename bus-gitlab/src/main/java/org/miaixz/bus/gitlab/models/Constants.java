@@ -30,6 +30,7 @@ import com.fasterxml.jackson.annotation.JsonValue;
 
 import org.miaixz.bus.core.center.function.FunctionX;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.gitlab.support.JacksonJsonEnumCodec;
 
 /**
@@ -134,7 +135,7 @@ public interface Constants {
 
         @JsonCreator
         public static Encoding forValue(String value) {
-            return enumCodec.forValue((value != null ? value.toLowerCase() : value));
+            return enumCodec.forValue((value != null ? StringKit.toLowerCase(value) : value));
         }
 
         /**
@@ -1975,7 +1976,7 @@ public interface Constants {
          * Creates an archive format using the normalized enum name.
          */
         ArchiveFormat() {
-            this.value = name().toLowerCase().replace(Symbol.C_UNDERLINE, Symbol.C_DOT);
+            this.value = StringKit.toLowerCase(name()).replace(Symbol.C_UNDERLINE, Symbol.C_DOT);
         }
 
         /**

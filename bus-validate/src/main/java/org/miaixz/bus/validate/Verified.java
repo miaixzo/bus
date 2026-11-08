@@ -258,14 +258,14 @@ public class Verified extends Provider {
         Class<? extends Annotation> annotationType = annotation.annotationType();
         try {
             String[] groups = (String[]) annotationType.getMethod(Builder.GROUP).invoke(annotation);
-            String errmsg = (String) annotationType.getMethod(Consts.ERRMSG).invoke(annotation);
-            String errcode = (String) annotationType.getMethod(Consts.ERRCODE).invoke(annotation);
+            String desc = (String) annotationType.getMethod(Consts.DESC).invoke(annotation);
+            String code = (String) annotationType.getMethod(Consts.CODE).invoke(annotation);
             String name = (String) annotationType.getMethod(Builder.FIELD).invoke(annotation);
             this.field = Builder.DEFAULT_FIELD.equals(name) ? this.field : name;
             Criterion criterion = new Criterion();
             criterion.setAnnotation(annotation);
-            criterion.setErrcode(errcode);
-            criterion.setErrmsg(errmsg);
+            criterion.setCode(code);
+            criterion.setDesc(desc);
             criterion.setField(this.field);
             criterion.setGroup(groups);
             criterion.addParam(Builder.FIELD, this.field);

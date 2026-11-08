@@ -49,14 +49,12 @@ final class SolarisVirtualMemory extends AbstractVirtualMemory {
      */
     private final SolarisGlobalMemory global;
 
-    // Physical
     /**
      * The availTotal value.
      */
     private final SupplierX<Pair<Long, Long>> availTotal = Memoizer
             .memoize(SystemPages::queryAvailableTotal, Memoizer.defaultExpiration());
 
-    // Swap
     /**
      * The usedTotal value.
      */

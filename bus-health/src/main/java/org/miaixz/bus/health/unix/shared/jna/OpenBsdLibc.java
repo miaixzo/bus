@@ -232,77 +232,77 @@ public interface OpenBsdLibc extends CLibrary {
     class Bcachestats extends Structure {
 
         /**
-         * The numbufs value.
+         * Number of buffers allocated.
          */
-        public long numbufs; // number of buffers allocated
+        public long numbufs;
         /**
-         * The numbufpages value.
+         * Number of pages in buffer cache.
          */
-        public long numbufpages; // number of pages in buffer cache
+        public long numbufpages;
         /**
-         * The numdirtypages value.
+         * Number of dirty free pages.
          */
-        public long numdirtypages; // number of dirty free pages
+        public long numdirtypages;
         /**
-         * The numcleanpages value.
+         * Number of clean free pages.
          */
-        public long numcleanpages; // number of clean free pages
+        public long numcleanpages;
         /**
-         * The pendingwrites value.
+         * Number of pending writes.
          */
-        public long pendingwrites; // number of pending writes
+        public long pendingwrites;
         /**
-         * The pendingreads value.
+         * Number of pending reads.
          */
-        public long pendingreads; // number of pending reads
+        public long pendingreads;
         /**
-         * The numwrites value.
+         * Total writes started.
          */
-        public long numwrites; // total writes started
+        public long numwrites;
         /**
-         * The numreads value.
+         * Total reads started.
          */
-        public long numreads; // total reads started
+        public long numreads;
         /**
-         * The cachehits value.
+         * Total reads found in cache.
          */
-        public long cachehits; // total reads found in cache
+        public long cachehits;
         /**
-         * The busymapped value.
+         * Number of busy and mapped buffers.
          */
-        public long busymapped; // number of busy and mapped buffers
+        public long busymapped;
         /**
-         * The dmapages value.
+         * Dma reachable pages in buffer cache.
          */
-        public long dmapages; // dma reachable pages in buffer cache
+        public long dmapages;
         /**
-         * The highpages value.
+         * Pages above dma region.
          */
-        public long highpages; // pages above dma region
+        public long highpages;
         /**
-         * The delwribufs value.
+         * Delayed write buffers.
          */
-        public long delwribufs; // delayed write buffers
+        public long delwribufs;
         /**
-         * The kvaslots value.
+         * Kva slots total.
          */
-        public long kvaslots; // kva slots total
+        public long kvaslots;
         /**
-         * The kvaslots_avail value.
+         * Available kva slots.
          */
-        public long kvaslots_avail; // available kva slots
+        public long kvaslots_avail;
         /**
-         * The highflips value.
+         * Total flips to above DMA.
          */
-        public long highflips; // total flips to above DMA
+        public long highflips;
         /**
-         * The highflops value.
+         * Total failed flips to above DMA.
          */
-        public long highflops; // total failed flips to above DMA
+        public long highflops;
         /**
-         * The dmaflips value.
+         * Total flips from high to DMA.
          */
-        public long dmaflips; // total flips from high to DMA
+        public long dmaflips;
 
         /**
          * Creates a new Bcachestats instance.

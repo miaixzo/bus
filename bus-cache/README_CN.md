@@ -316,7 +316,7 @@ public class ProductService {
     @Cached(name = "redis", prefix = "product:")
     public Product getProduct(
         @CacheKey String productId,
-        @CacheKey("#region.toUpperCase()") String region
+        @CacheKey String region
     ) {
         // 缓存键：product:{productId}{region}
         // 示例：product:12345US
@@ -333,6 +333,15 @@ public class ProductService {
         return userRepository.findByIdAndType(userId, type);
     }
 }
+```
+
+在调用代理服务之前规范化地区代码，确保缓存键生成和数据访问使用相同的值：
+
+```java
+import org.miaixz.bus.core.xyz.StringKit;
+
+String normalizedRegion = StringKit.toUpperCase(region);
+productService.getProduct(productId, normalizedRegion);
 ```
 
 #### 多键批量操作
@@ -1049,6 +1058,21 @@ public class CacheWarmupService implements ApplicationRunner {
 | `port`       | `int`            | `6379`               | Redis 服务器端口 |
 | `timeout`    | `int`            | `2000`               | 连接超时（毫秒） |
 | `serializer` | `BaseSerializer` | `Hessian2Serializer` | 值序列化器       |
+
+-----
+
+## 原生镜像元数据
+
+当前实际解析的 HikariCP 版本为 7.1.0。原生构建必须启用 GraalVM 可达性元数据仓库。
+Native Build Tools 及仓库 1.1.18 会选择官方 HikariCP 7.0.2 元数据，其测试版本列表明确包含 7.1.0。
+Bus 不再重复附带完整的官方 HikariCP 元数据。
+
+官方元数据覆盖五个 HikariConfig setter。其余 34 个配置 setter 和六个 HikariDataSource
+反射入口在 `bus-preset` 中单独存放于 `com.zaxxer/HikariCP/7.1.0`，与 Bus 自身注册分离，并以 `com.zaxxer.hikari.util.PropertyElf` 可达为生效条件，保留现有属性绑定覆盖且不使用宽泛反射授权。
+JDBC 驱动、应用自定义数据源、凭证提供者、异常处理器及指标集成仍需各自适用的元数据。
+其他缓存后端与 Bus 注册保持不变。本次检查覆盖元数据、打包和 JVM 行为，应用级原生镜像仍需单独验证。
+
+- [官方 HikariCP 元数据](https://github.com/oracle/graalvm-reachability-metadata/tree/master/metadata/com.zaxxer/HikariCP)
 
 -----
 
