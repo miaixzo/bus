@@ -25,7 +25,7 @@
  *
  * <p>
  * Includes symmetric and asymmetric encryption, message digests, message authentication codes, signatures, key
- * handling, cipher utilities, and adapters for Java and Bouncy Castle cryptography providers.
+ * handling, and cipher adapters for the Java Cryptography Extension and Bouncy Castle.
  *
  * @author Kimi Liu
  */

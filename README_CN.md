@@ -72,6 +72,7 @@ Bus主要版本 3.x、5.x、6.x、8.x，具体如下：
 | [√]  | [bus-opencv](bus-opencv)       | 计算机视觉库，封装OpenCV提供图像识别/人脸检测/视频分析能力                |
 | [√]  | [bus-parent](bus-parent)       | 父级POM，统一管理依赖版本/构建配置/编码规范                               |
 | [√]  | [bus-pay](bus-pay)             | 支付聚合服务，集成微信/支付宝/银联等20+支付渠道                           |
+| [√]  | [bus-preset](bus-preset)       | 第三方 GraalVM 可达性元数据与原生初始化配置，不包含第三方运行库 |
 | [√]  | [bus-proxy](bus-proxy)         | 动态代理工具，简化JDK/CGLIB代理实现                                       |
 | [√]  | [bus-sensitive](bus-sensitive) | 敏感数据脱敏，提供注解式/规则式数据遮蔽方案                               |
 | [√]  | [bus-setting](bus-setting)     | 配置管理工具，支持多环境配置/动态刷新/加密存储                            |

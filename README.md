@@ -76,6 +76,7 @@ Bus primarily has versions 3.x, 5.x, 6.x, and 8.x, as detailed below:
 | [√]    | [bus-opencv](bus-opencv)       | Computer vision library, wrapping OpenCV to provide image recognition/face detection/video analysis capabilities                 |
 | [√]    | [bus-parent](bus-parent)       | Parent POM, unified management of dependency versions/build configurations/coding standards                                      |
 | [√]    | [bus-pay](bus-pay)             | Payment aggregation service, integrating 20+ payment channels including WeChat Pay/Alipay/UnionPay                               |
+| [√]    | [bus-preset](bus-preset)       | Third-party GraalVM reachability metadata and initialization settings, without third-party runtime dependencies |
 | [√]    | [bus-proxy](bus-proxy)         | Dynamic proxy tool, simplifying JDK/CGLIB proxy implementation                                                                   |
 | [√]    | [bus-sensitive](bus-sensitive) | Sensitive data masking, providing annotation-based/rule-based data obfuscation solutions                                         |
 | [√]    | [bus-setting](bus-setting)     | Configuration management tool, supporting multi-environment configuration/dynamic refresh/encrypted storage                      |

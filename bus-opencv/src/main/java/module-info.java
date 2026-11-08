@@ -18,7 +18,14 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Java bindings and native library integration for bus computer vision and DICOM image processing.
+ * Module: {@code bus.opencv}
+ *
+ * <p>
+ * Provides Java bindings and native libraries for OpenCV image processing and computer vision.
+ *
+ * <p>
+ * Includes matrix and geometry operations, image codecs, image transformations, perceptual hashing, native library
+ * loading, and OSGi integration.
  *
  * @author Kimi Liu
  */

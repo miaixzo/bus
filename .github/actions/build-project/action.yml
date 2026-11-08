@@ -14,6 +14,7 @@ inputs:
       bus-parent
       bus-core
       bus-opencv
+      bus-preset
       bus-logger
       bus-crypto
       bus-gitlab
@@ -52,7 +53,7 @@ inputs:
     required: false
     default: '21'
   goals:
-    description: 'Maven goals to execute for every module.'
+    description: 'Maven goals to execute for every module. Include install to verify installed artifacts.'
     required: false
     default: 'clean install'
   gpg-skip:
@@ -276,6 +277,7 @@ runs:
       shell: bash
       env:
         MODULES: ${{ steps.metadata.outputs.modules }}
+        BUS_BUILD_REVISION: ${{ steps.metadata.outputs.version }}
         MAVEN_ARGS: ${{ inputs.maven-args }}
         COMPILER_RELEASE: ${{ inputs.compiler-release }}
         GOALS: ${{ inputs.goals }}
@@ -290,15 +292,25 @@ runs:
 
         for module in $MODULES; do
           echo "::group::Build $module"
-          GROOM_ARGS=""
-          if [ "$module" = "bus-parent" ]; then
-            GROOM_ARGS="-Dgroom.skip=true"
-          fi
-
           if [ "$GPG_SKIP" = "true" ]; then
-            mvn $MAVEN_ARGS $COMPILER_ARGS -Dgpg.skip=true $GROOM_ARGS -f "$module/pom.xml" $GOALS
+            mvn $MAVEN_ARGS $COMPILER_ARGS -Drevision="$BUS_BUILD_REVISION" -Dgpg.skip=true -f "$module/pom.xml" $GOALS
           else
-            mvn $MAVEN_ARGS $COMPILER_ARGS $GROOM_ARGS -f "$module/pom.xml" $GOALS
+            mvn $MAVEN_ARGS $COMPILER_ARGS -Drevision="$BUS_BUILD_REVISION" -f "$module/pom.xml" $GOALS
           fi
           echo "::endgroup::"
         done
+
+    - name: Audit Native Metadata
+      shell: bash
+      run: node .github/scripts/native.cjs
+
+    - name: Verify Installed Artifacts
+      shell: bash
+      env:
+        GOALS: ${{ inputs.goals }}
+      run: |
+        set -euo pipefail
+
+        if [[ "$GOALS" =~ (^|[[:space:]])install($|[[:space:]]) ]]; then
+          node .github/scripts/artifact.cjs
+        fi

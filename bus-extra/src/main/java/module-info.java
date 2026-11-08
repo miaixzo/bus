@@ -21,11 +21,11 @@
  * Module: {@code bus.extra}
  *
  * <p>
- * Provides optional utilities and integrations that extend the core Bus libraries.
+ * Extends Bus with integrations for external services and common data formats.
  *
  * <p>
- * Includes captchas, archive processing, emoji handling, FTP and SSH clients, image helpers, JSON adapters, mail,
- * message queues, natural-language processing, pinyin conversion, QR codes, and template engines.
+ * Includes CAPTCHA generation, archive processing, emoji handling, FTP and SSH clients, image processing, JSON
+ * adapters, mail, message queues, natural language processing, pinyin conversion, QR codes, and template engines.
  *
  * @author Kimi Liu
  */

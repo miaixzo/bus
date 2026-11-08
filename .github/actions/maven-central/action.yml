@@ -52,15 +52,53 @@ runs:
           COMPILER_ARGS="-Dmaven.compiler.release=$COMPILER_RELEASE"
         fi
 
-        SOURCE_PARENT_INSTALLED=false
+        BUS_RELEASE_VERSION="$(tr -d '[:space:]' < VERSION)"
+        PARENT_WORK_DIR="$(mktemp -d)"
+        trap 'rm -rf "$PARENT_WORK_DIR"' EXIT
 
-        requires_source_parent() {
-          awk '
-            /<parent>/ { in_parent = 1 }
-            /<\/parent>/ { in_parent = 0 }
-            in_parent && /<artifactId>bus-parent<\/artifactId>/ { found = 1 }
-            END { exit(found ? 0 : 1) }
-          ' "$1"
+        central_request() {
+          local token="$1"
+          shift
+          printf 'Authorization: Bearer %s\n' "$token" | \
+            curl --disable --fail --silent --show-error --connect-timeout 15 --max-time 120 --header @- "$@"
+        }
+
+        publish_parent_bundle() {
+          local bundle="$1" token deployment_id status state deadline
+          local api="https://central.sonatype.com/api/v1/publisher"
+          token="$(printf '%s:%s' "$MAVEN_CENTRAL_TOKEN_USERNAME" "$MAVEN_CENTRAL_TOKEN_PASSWORD" | base64 | tr -d '\r\n')"
+          deployment_id="$(central_request "$token" \
+            --form "bundle=@$bundle;type=application/octet-stream" \
+            "$api/upload?publishingType=AUTOMATIC&name=bus-parent-$BUS_RELEASE_VERSION")"
+          if ! [[ "$deployment_id" =~ ^[[:xdigit:]]{8}(-[[:xdigit:]]{4}){3}-[[:xdigit:]]{12}$ ]]; then
+            echo "::error::Maven Central did not return a valid bus-parent deployment ID"
+            return 1
+          fi
+
+          # Match the Maven publishing plugin's default validation wait.
+          deadline=$((SECONDS + 1800))
+          while (( SECONDS < deadline )); do
+            status="$(central_request "$token" --request POST "$api/status?id=$deployment_id")"
+            state="$(jq -er '.deploymentState | strings' <<< "$status")"
+            case "$state" in
+              VALIDATED|PUBLISHING|PUBLISHED)
+                echo "bus-parent deployment $deployment_id reached $state"
+                return 0
+                ;;
+              PENDING|VALIDATING) sleep 5 ;;
+              FAILED)
+                echo "::error::Maven Central rejected bus-parent deployment $deployment_id"
+                jq -c '.errors // {}' <<< "$status"
+                return 1
+                ;;
+              *)
+                echo "::error::Unexpected bus-parent deployment state"
+                return 1
+                ;;
+            esac
+          done
+          echo "::error::Timed out waiting for bus-parent deployment $deployment_id to be validated"
+          return 1
         }
 
         for module in $MODULES; do
@@ -71,24 +109,96 @@ runs:
               exit 1
               ;;
           esac
+        done
 
-          if [ "$SOURCE_PARENT_INSTALLED" = false ] && requires_source_parent "$module/pom.xml"; then
-            echo "::group::Install source bus-parent for module publishing"
-            mvn $MAVEN_ARGS $COMPILER_ARGS -Dgpg.skip=true -Dgroom.skip=true -f bus-parent/pom.xml clean install
-            echo "::endgroup::"
-            SOURCE_PARENT_INSTALLED=true
-          fi
+        # Both parent POM checks must pass before publishing even the first module.
+        echo "::group::Install bus-bom locally for parent preflight"
+        mvn $MAVEN_ARGS $COMPILER_ARGS -Dgpg.skip=true -Dgroom.updatePomFile=true \
+          -f bus-bom/pom.xml clean install
+        echo "::endgroup::"
 
+        echo "::group::Prepare and verify bus-parent release bundle"
+        mvn $MAVEN_ARGS $COMPILER_ARGS -Dgroom.updatePomFile=true -Dgroom.pomElements.buildPlugins=remove \
+          -f bus-parent/pom.xml $GOALS -DskipUpload=true
+        # Keep the exact verified bundle outside target because reinstall cleans it.
+        PARENT_BUNDLE="$PARENT_WORK_DIR/central-bundle.zip"
+        cp bus-parent/target/central-publishing/central-bundle.zip "$PARENT_BUNDLE"
+        SOURCE_PARENT_POM="$PARENT_WORK_DIR/source-parent.pom"
+        cp bus-parent/pom.xml "$SOURCE_PARENT_POM"
+        ruby - "$BUS_RELEASE_VERSION" "$PARENT_BUNDLE" "$SOURCE_PARENT_POM" <<'RUBY'
+          require 'open3'
+          require 'rexml/document'
+
+          def project(xml)
+            root = REXML::Document.new(xml).root
+            abort 'Expected a Maven project POM' unless root&.name == 'project'
+            root
+          end
+
+          # Maven can omit the standard plugin group ID in a generated POM.
+          def plugins(pom, path)
+            pom.get_elements(path).map do |plugin|
+              [plugin.elements['groupId']&.text || 'org.apache.maven.plugins', plugin.elements['artifactId']&.text]
+            end.sort
+          end
+
+          version, bundle, source_path = ARGV
+          abort 'Invalid release version' unless version.match?(/\A\d+\.\d+\.\d+(?:[.-][0-9A-Za-z]+)*\z/)
+          source = project(File.binread(source_path))
+          active_plugins = 'build/plugins/plugin'
+          managed_plugins = 'build/pluginManagement/plugins/plugin'
+          abort 'Source bus-parent POM has no active build plugins' if plugins(source, active_plugins).empty?
+
+          # A single expected POM entry rules out wrong or duplicate artifacts.
+          entry = "org/miaixz/bus-parent/#{version}/bus-parent-#{version}.pom"
+          listing, status = Open3.capture2('unzip', '-Z1', bundle)
+          unless status.success? && listing.lines.map(&:strip).grep(/\.pom\z/) == [entry]
+            abort "Expected only #{entry} in the bus-parent bundle"
+          end
+          xml, status = Open3.capture2('unzip', '-p', bundle, entry)
+          abort 'Could not read the bundled bus-parent POM' unless status.success?
+
+          bundled = project(xml)
+          coordinates = {
+            'groupId' => 'org.miaixz',
+            'artifactId' => 'bus-parent',
+            'version' => version,
+            'packaging' => 'pom',
+            'parent/groupId' => 'org.miaixz',
+            'parent/artifactId' => 'bus-bom',
+            'parent/version' => version
+          }
+          coordinates.each do |element, expected|
+            abort "Bundled bus-parent POM must have #{element}=#{expected}" unless bundled.elements[element]&.text == expected
+          end
+          abort 'Bundled bus-parent POM contains an unresolved version placeholder' if xml.match?(/\$\{(?:revision|sha1|changelist)\}/)
+          abort 'Bundled bus-parent POM contains active build plugins' unless plugins(bundled, active_plugins).empty?
+          unless plugins(bundled, managed_plugins) == plugins(source, managed_plugins)
+            abort 'Bundled bus-parent POM changed the managed plugin list'
+          end
+          puts 'bus-parent bundle POM verification passed'
+        RUBY
+        echo "::endgroup::"
+
+        echo "::group::Install and verify source bus-parent"
+        mvn $MAVEN_ARGS $COMPILER_ARGS -Dgpg.skip=true -Dgroom.skip=true -f bus-parent/pom.xml \
+          clean install org.apache.maven.plugins:maven-help-plugin:3.5.2:evaluate \
+          -Dexpression=session.localRepository.basedir -Doutput="$PARENT_WORK_DIR/local-repository"
+        LOCAL_REPOSITORY="$(cat "$PARENT_WORK_DIR/local-repository")"
+        INSTALLED_PARENT_POM="$LOCAL_REPOSITORY/org/miaixz/bus-parent/$BUS_RELEASE_VERSION/bus-parent-$BUS_RELEASE_VERSION.pom"
+        # Match the source captured before reinstall, including every plugin execution.
+        if ! cmp -s "$SOURCE_PARENT_POM" "$INSTALLED_PARENT_POM"; then
+          echo "::error::Installed bus-parent POM differs from the source POM"
+          exit 1
+        fi
+        echo "bus-parent installed POM verification passed"
+        echo "::endgroup::"
+
+        for module in $MODULES; do
           echo "::group::Deploy $module"
           case "$module" in
             bus-parent)
-              mvn $MAVEN_ARGS $COMPILER_ARGS -Dgroom.updatePomFile=true -Dgroom.pomElements.buildPlugins=remove -f "$module/pom.xml" $GOALS
-              echo "::endgroup::"
-              echo "::group::Install source bus-parent for module publishing"
-              mvn $MAVEN_ARGS $COMPILER_ARGS -Dgpg.skip=true -Dgroom.skip=true -f bus-parent/pom.xml clean install
-              echo "::endgroup::"
-              SOURCE_PARENT_INSTALLED=true
-              continue
+              publish_parent_bundle "$PARENT_BUNDLE"
               ;;
             *)
               mvn $MAVEN_ARGS $COMPILER_ARGS -Dgroom.updatePomFile=true -DautoPublish=true -DpublishingServerId=central -f "$module/pom.xml" \
