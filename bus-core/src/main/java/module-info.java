@@ -21,7 +21,7 @@
  * Module: {@code bus.core}
  *
  * <p>
- * Provides the foundational APIs and general-purpose utilities used throughout the Bus ecosystem.
+ * Provides the foundational APIs and shared types used throughout Bus.
  *
  * <p>
  * Includes collections, beans, builders, codecs, type conversion, date and time handling, I/O, reflection, concurrency,

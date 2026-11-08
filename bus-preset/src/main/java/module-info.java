@@ -22,11 +22,13 @@
  * Module: {@code bus.preset}
  *
  * <p>
- * Third-party reachability metadata and initialization settings for Bus integrations.
+ * Packages GraalVM Native Image configuration for third-party libraries used by Bus.
+ *
  * <p>
- * GraalVM Native Image discovers these resources under {@code META-INF/native-image}. Each dependency's
- * {@code index.json} identifies the metadata baseline and lists the tested versions supported by that baseline.
- * </p>
+ * Includes reflection, proxy, JNI, and resource registrations, plus class initialization settings under
+ * {@code META-INF/native-image}. Version indexes identify each dependency's metadata baseline and tested versions.
+ *
+ * @author Kimi Liu
  */
 module bus.preset {
 

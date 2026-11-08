@@ -122,7 +122,8 @@ dependencies {
 
 ## 打包说明
 
-`bus-all` 在打包阶段会将 Bus 运行时模块聚合到一个发布制品中，各份 GraalVM native-image 元数据保留原坐标目录，不再合并为 Bus 总配置。发布 POM 会被规范化处理，使用方以
+`bus-all` 在打包阶段会将 Bus 运行时模块聚合到一个发布制品中，各份 GraalVM native-image 元数据保留原坐标目录，不再合并为
+Bus 总配置。发布 POM 会被规范化处理，使用方以
 `bus-all` 作为单一入口，而不是把每个内部模块都作为普通传递依赖展开。
 
 元数据继续随 JAR 发布：Bus 自身注册位于 `org.miaixz/<模块>`，第三方注册按第三方的 group、artifact 和 version
