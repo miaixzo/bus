@@ -89,10 +89,6 @@
             <artifactId>bus-health</artifactId>
             <optional>true</optional>
         </dependency>
-        <dependency>
-            <groupId>org.miaixz</groupId>
-            <artifactId>bus-preset</artifactId>
-        </dependency>
 
         <dependency>
             <groupId>io.micrometer</groupId>

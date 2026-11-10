@@ -21,6 +21,8 @@ package org.miaixz.bus.cortex.registry;
 
 import java.util.*;
 
+import org.miaixz.bus.errors.ComponentFailure;
+import org.miaixz.bus.errors.ErrorType;
 import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
@@ -43,6 +45,11 @@ import org.miaixz.bus.logger.Logger;
  * @author Kimi Liu
  */
 public class StoreBackedRegistry<T extends Assets> extends AbstractRegistry<T> {
+
+    /**
+     * Reports registry listener failures without changing event delivery or the listener error callback.
+     */
+    private static final ComponentFailure FAILURES = new ComponentFailure("bus-cortex", "registry-listener");
 
     /**
      * Durable storage adapter.
@@ -597,9 +604,11 @@ public class StoreBackedRegistry<T extends Assets> extends AbstractRegistry<T> {
                 try {
                     listener.onEvent(event);
                 } catch (Exception e) {
+                    FAILURES.failed(ErrorType.CALLBACK_FAILURE, e);
                     try {
                         listener.onError(event, e);
                     } catch (Exception errorHandlerFailure) {
+                        FAILURES.failed(ErrorType.CALLBACK_FAILURE, errorHandlerFailure);
                         Logger.warn(
                                 false,
                                 "Cortex",

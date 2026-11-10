@@ -1447,6 +1447,21 @@
           "parameterTypes": [
             "org.miaixz.bus.starter.vortex.VortexProperties"
           ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.starter.vortex.VortexProperties",
+            "java.util.Optional"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.starter.vortex.VortexProperties",
+            "java.util.Optional",
+            "java.util.Optional"
+          ]
         }
       ]
     },
@@ -1589,6 +1604,49 @@
             "java.util.List",
             "java.util.Set",
             "java.lang.String"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.util.List",
+            "java.util.Set",
+            "java.lang.String",
+            "boolean",
+            "java.util.Set",
+            "org.miaixz.bus.starter.wrapper.routing.RouteErrorProperties$ListenerPaths",
+            "org.miaixz.bus.starter.wrapper.routing.RouteErrorProperties$ListenerPaths"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.starter.wrapper.routing.RouteErrorProperties$ListenerPaths",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.util.List"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.util.List",
+            "java.util.List"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.starter.wrapper.routing.RouteErrorProperties$RouteRule",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.util.Set",
+            "org.miaixz.bus.errors.policy.PolicySnapshot$Mode"
           ]
         }
       ]

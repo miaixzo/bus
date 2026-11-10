@@ -149,8 +149,10 @@ public class OpenAIProvider implements LlmProvider {
 
         return Egress.request(HttpMethod.POST, chatCompletionsUri())
                 .header(Http.Header.AUTHORIZATION, Http.Auth.BEARER_PREFIX + this.apiKey)
-                .header(Http.Header.CONTENT_TYPE, MediaType.APPLICATION_JSON).bodyValue(requestBody).retrieve()
-                .onStatus(status -> true, clientResponse -> Mono.empty()).toEntityFlux(DataBuffer.class)
+                .header(Http.Header.CONTENT_TYPE, MediaType.APPLICATION_JSON)
+                .bodyValue(JsonKit.toJsonString(requestBody)).retrieve()
+                .onStatus(status -> true, clientResponse -> Mono.empty()).toEntityFlux(
+                        DataBuffer.class)
                 .flatMap(
                         responseEntity -> Octets
                                 .readForParsing(
@@ -158,13 +160,13 @@ public class OpenAIProvider implements LlmProvider {
                                         Math.toIntExact(Holder.get().getMaxBufferedResponseSize()),
                                         Holder.responseBufferBudget(),
                                         responseEntity.getHeaders().getContentLength())
-                                .flatMap(
-                                        bufferedBody -> Mono
-                                                .fromCallable(
-                                                        () -> this.parseResponse(
-                                                                new String(bufferedBody.bytes(), Charset.UTF_8)))
-                                                .doFinally(signalType -> bufferedBody.close())))
-                .doOnError(e -> Logger.error(false, "Vortex", "Request failed: {}", e.getClass().getSimpleName()));
+                                .flatMap(bufferedBody -> Mono.fromCallable(() -> {
+                                    if (!responseEntity.getStatusCode().is2xxSuccessful()) {
+                                        throw new IllegalStateException(
+                                                "LLM provider returned HTTP " + responseEntity.getStatusCode().value());
+                                    }
+                                    return this.parseResponse(new String(bufferedBody.bytes(), Charset.UTF_8));
+                                }).doFinally(signalType -> bufferedBody.close())));
     }
 
     /**
@@ -191,8 +193,9 @@ public class OpenAIProvider implements LlmProvider {
 
         return Egress.request(HttpMethod.POST, chatCompletionsUri())
                 .header(Http.Header.AUTHORIZATION, Http.Auth.BEARER_PREFIX + this.apiKey)
-                .header(Http.Header.CONTENT_TYPE, MediaType.APPLICATION_JSON).bodyValue(requestBody).retrieve()
-                .bodyToFlux(String.class).map(chunk -> "data: " + chunk + Symbol.LF + Symbol.LF).doOnError(
+                .header(Http.Header.CONTENT_TYPE, MediaType.APPLICATION_JSON)
+                .bodyValue(JsonKit.toJsonString(requestBody)).retrieve().bodyToFlux(String.class)
+                .map(chunk -> "data: " + chunk + Symbol.LF + Symbol.LF).doOnError(
                         e -> Logger
                                 .error(false, "Vortex", "Streaming request failed: {}", e.getClass().getSimpleName()));
     }
@@ -297,7 +300,6 @@ public class OpenAIProvider implements LlmProvider {
         try {
             return JsonKit.toPojo(json, LlmResponse.class);
         } catch (Exception e) {
-            Logger.error(false, "Vortex", "Failed to parse response: {}", e.getClass().getSimpleName());
             throw new RuntimeException("Failed to parse LLM response", e);
         }
     }

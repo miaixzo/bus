@@ -35,6 +35,7 @@ module bus.office {
     requires java.xml;
 
     requires bus.core;
+    requires bus.errors;
     requires bus.logger;
 
     requires static lombok;

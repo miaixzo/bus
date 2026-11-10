@@ -4,9 +4,8 @@
     "metadata-version": "8.8.0",
     "source-code-url": "https://repo.maven.apache.org/maven2/org/miaixz/bus-sensitive/$version$/bus-sensitive-$version$-sources.jar",
     "repository-url": "https://github.com/818000/bus",
-    "test-code-url": "https://github.com/818000/abarth/tree/main/bus-testing/src/test",
     "documentation-url": "https://repo.maven.apache.org/maven2/org/miaixz/bus-sensitive/$version$/bus-sensitive-$version$-javadoc.jar",
-    "description": "Bus Sensitive provides data masking, sensitive word matching, and privacy filtering utilities.",
+    "description": "Bus Sensitive - Privacy protection for field desensitization, token concealment and configurable anonymization strategies.",
     "tested-versions": [
       "8.8.0",
       "8.8.1",

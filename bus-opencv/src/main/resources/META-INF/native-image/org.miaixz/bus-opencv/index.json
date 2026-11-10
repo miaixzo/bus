@@ -4,9 +4,8 @@
     "metadata-version": "8.8.0",
     "source-code-url": "https://repo.maven.apache.org/maven2/org/miaixz/bus-opencv/$version$/bus-opencv-$version$-sources.jar",
     "repository-url": "https://github.com/818000/bus",
-    "test-code-url": "https://github.com/818000/abarth/tree/main/bus-testing/src/test",
     "documentation-url": "https://repo.maven.apache.org/maven2/org/miaixz/bus-opencv/$version$/bus-opencv-$version$-javadoc.jar",
-    "description": "Bus OpenCV provides native computer vision bindings and DICOM image codecs.",
+    "description": "Bus OpenCV - Computer vision bindings for native OpenCV interop, matrix operators, codec hooks and camera capture.",
     "tested-versions": [
       "8.8.0",
       "8.8.1",

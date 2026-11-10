@@ -20,6 +20,7 @@
 package org.miaixz.bus.extra.mq.provider.rocketmq;
 
 import java.io.IOException;
+import java.util.Objects;
 
 import org.apache.rocketmq.client.consumer.MQPushConsumer;
 import org.apache.rocketmq.client.consumer.listener.ConsumeConcurrentlyStatus;
@@ -29,6 +30,8 @@ import org.apache.rocketmq.common.message.MessageExt;
 
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.MQueueException;
+import org.miaixz.bus.errors.ErrorBoundary;
+import org.miaixz.bus.errors.transport.ProtocolErrorBoundary;
 import org.miaixz.bus.extra.mq.Consumer;
 import org.miaixz.bus.extra.mq.Message;
 import org.miaixz.bus.extra.mq.MessageHandler;
@@ -48,6 +51,11 @@ public class RocketMQConsumer implements Consumer {
      * The native Apache RocketMQ push consumer object, responsible for receiving messages.
      */
     private final MQPushConsumer consumer;
+/**
+ * Shared classification and observation for RocketMQ batch failures.
+ */
+
+    private final ErrorBoundary boundary;
 
     /**
      * Constructs a {@code RocketMQConsumer} with the specified native RocketMQ push consumer.
@@ -55,7 +63,18 @@ public class RocketMQConsumer implements Consumer {
      * @param consumer The native RocketMQ {@link MQPushConsumer} object.
      */
     public RocketMQConsumer(final MQPushConsumer consumer) {
+        this(consumer, ErrorBoundary.standard());
+    }
+
+    /**
+     * Creates a consumer with a common broker error boundary.
+     *
+     * @param consumer native RocketMQ consumer
+     * @param boundary shared failure classification and observation
+     */
+    public RocketMQConsumer(MQPushConsumer consumer, ErrorBoundary boundary) {
         this.consumer = consumer;
+        this.boundary = Objects.requireNonNull(boundary, "boundary");
     }
 
     /**
@@ -103,7 +122,7 @@ public class RocketMQConsumer implements Consumer {
         Logger.info(true, "Extra", "RocketMQ message listener registration started");
         this.consumer.registerMessageListener((MessageListenerConcurrently) (msgs, context) -> {
             final long startedAt = System.nanoTime();
-            try {
+            return ProtocolErrorBoundary.deliver(this.boundary, "rocketmq", () -> {
                 for (final MessageExt msg : msgs) {
                     messageHandler.handle(new RawMessage(msg.getTopic(), msg.getBody()));
                 }
@@ -113,18 +132,8 @@ public class RocketMQConsumer implements Consumer {
                         "RocketMQ batch handled: batchSize={}, elapsedMs={}",
                         msgs == null ? 0 : msgs.size(),
                         (System.nanoTime() - startedAt) / 1_000_000L);
-            } catch (RuntimeException e) {
-                Logger.warn(
-                        false,
-                        "Extra",
-                        e,
-                        "RocketMQ batch handling failed: batchSize={}, exception={}, elapsedMs={}",
-                        msgs == null ? 0 : msgs.size(),
-                        e.getClass().getSimpleName(),
-                        (System.nanoTime() - startedAt) / 1_000_000L);
-                throw e;
-            }
-            return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
+                return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
+            });
         });
         Logger.info(false, "Extra", "RocketMQ message listener registered");
     }

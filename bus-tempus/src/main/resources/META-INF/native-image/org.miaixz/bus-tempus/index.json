@@ -4,9 +4,8 @@
     "metadata-version": "8.8.0",
     "source-code-url": "https://repo.maven.apache.org/maven2/org/miaixz/bus-tempus/$version$/bus-tempus-$version$-sources.jar",
     "repository-url": "https://github.com/818000/bus",
-    "test-code-url": "https://github.com/818000/abarth/tree/main/bus-testing/src/test",
     "documentation-url": "https://repo.maven.apache.org/maven2/org/miaixz/bus-tempus/$version$/bus-tempus-$version$-javadoc.jar",
-    "description": "Bus Tempus provides workflow, scheduling, temporal, and time based worker support.",
+    "description": "Bus Tempus - Temporal orchestration for scheduled jobs, cron coordination, workflow execution and task state control.",
     "tested-versions": [
       "8.8.0",
       "8.8.1",

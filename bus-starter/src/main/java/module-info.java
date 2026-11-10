@@ -39,6 +39,7 @@ module bus.starter {
     requires bus.core;
     requires bus.cortex;
     requires bus.crypto;
+    requires bus.errors;
     requires bus.extra;
     requires bus.fabric;
     requires bus.health;
@@ -70,8 +71,8 @@ module bus.starter {
     requires static jakarta.persistence;
     requires static jakarta.servlet;
     requires static lombok;
-    requires static org.aspectj.weaver;
     requires static org.apache.httpcomponents.client5.httpclient5;
+    requires static org.aspectj.weaver;
     requires static org.mongodb.driver.core;
     requires static org.mybatis;
     requires static org.mybatis.spring;
@@ -100,6 +101,7 @@ module bus.starter {
     exports org.miaixz.bus.starter.cortex;
     exports org.miaixz.bus.starter.dubbo;
     exports org.miaixz.bus.starter.elastic;
+    exports org.miaixz.bus.starter.errors;
     exports org.miaixz.bus.starter.fabric;
     exports org.miaixz.bus.starter.health;
     exports org.miaixz.bus.starter.i18n;
@@ -135,6 +137,7 @@ module bus.starter {
     opens org.miaixz.bus.starter.cortex to spring.beans, spring.boot, spring.context, spring.core;
     opens org.miaixz.bus.starter.dubbo to spring.beans, spring.boot, spring.context, spring.core;
     opens org.miaixz.bus.starter.elastic to spring.beans, spring.boot, spring.context, spring.core;
+    opens org.miaixz.bus.starter.errors to spring.beans, spring.boot, spring.context, spring.core;
     opens org.miaixz.bus.starter.fabric to spring.beans, spring.boot, spring.context, spring.core;
     opens org.miaixz.bus.starter.health to spring.beans, spring.boot, spring.context, spring.core;
     opens org.miaixz.bus.starter.i18n to spring.beans, spring.boot, spring.context, spring.core;

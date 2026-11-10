@@ -84,10 +84,6 @@
             <groupId>org.miaixz</groupId>
             <artifactId>bus-setting</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.miaixz</groupId>
-            <artifactId>bus-preset</artifactId>
-        </dependency>
 
         <dependency>
             <groupId>com.alibaba.fastjson2</groupId>

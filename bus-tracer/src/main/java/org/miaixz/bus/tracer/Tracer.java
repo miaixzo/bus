@@ -19,9 +19,11 @@
 */
 package org.miaixz.bus.tracer;
 
+import org.miaixz.bus.errors.ErrorBoundary;
+import org.miaixz.bus.errors.spi.ErrorObserver;
+
 /**
- * Provides core functionality for distributed tracing. This class serves as a central point for managing and accessing
- * tracing-related components.
+ * Connects safe Bus failure events to an application-owned tracing sink.
  *
  * @author Kimi Liu
  */
@@ -32,6 +34,17 @@ public class Tracer {
      */
     public Tracer() {
         // No initialization required.
+    }
+
+    /**
+     * Attaches a tracing sink to the standard component failure pipeline. The sink runs on the reporting thread,
+     * so it can attach the event to the active trace according to the application's tracing policy.
+     *
+     * @param observer tracing sink for safe component failure events
+     * @return subscription to close with the tracing integration
+     */
+    public ErrorBoundary.Subscription observeErrors(ErrorObserver observer) {
+        return ErrorBoundary.subscribeStandard(observer);
     }
 
 }

@@ -24,6 +24,9 @@ import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
 import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.errors.ComponentFailure;
+import org.miaixz.bus.errors.ErrorType;
+import org.miaixz.bus.errors.transport.reactive.ReactiveErrorHandler;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.vortex.Args;
 import org.miaixz.bus.vortex.Context;
@@ -46,6 +49,11 @@ import reactor.core.publisher.Mono;
  * @author Kimi Liu
  */
 public class LlmRouter implements Router<ServerRequest, ServerResponse> {
+
+    /**
+     * Reports failures whose llm-routing response or lifecycle is owned by this adapter.
+     */
+    private static final ComponentFailure FAILURES = new ComponentFailure("vortex", "llm-routing");
 
     /**
      * Executor responsible for provider selection and LLM request dispatch.
@@ -79,11 +87,12 @@ public class LlmRouter implements Router<ServerRequest, ServerResponse> {
             final String modelName = extractModelName(path);
 
             if (StringKit.isBlank(modelName)) {
-                Logger.warn(false, "Vortex", "{} Model name is missing in path: {}", context.getX_request_ip(), path);
+                FAILURES.failed(ErrorType.INVALID_REQUEST, 400, null, context.getX_request_id());
                 return ServerResponse.status(HttpStatus.BAD_REQUEST).bodyValue(
                         "{\"error\":{\"message\":\"Model name is required in path: /router/llm/{model}\",\"type\":\"invalid_request_error\",\"code\":\"model_name_missing\"}}");
             }
 
+            ReactiveErrorHandler.verifyJsonContentType(input.exchange());
             context.getParameters().put("modelName", modelName);
             context.getParameters().put("serverRequest", input);
 

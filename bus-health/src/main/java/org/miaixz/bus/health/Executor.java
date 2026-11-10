@@ -23,6 +23,8 @@ import java.io.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import org.miaixz.bus.errors.ComponentFailure;
+import org.miaixz.bus.errors.ErrorType;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
@@ -36,6 +38,11 @@ import org.miaixz.bus.logger.Logger;
  */
 @ThreadSafe
 public class Executor {
+
+    /**
+     * Reports process and file probe failures while preserving partial results and interruption.
+     */
+    private static final ComponentFailure FAILURES = new ComponentFailure("bus-health", "probe");
 
     /**
      * Default environment settings to ensure command output uses standard language format.
@@ -105,6 +112,7 @@ public class Executor {
             p = Runtime.getRuntime().exec(cmdToRunWithArgs, envp);
             return getProcessOutput(p, cmdToRunWithArgs);
         } catch (SecurityException | IOException e) {
+            FAILURES.failed(ErrorType.IO_FAILURE, e);
             Logger.trace(
                     false,
                     "Health",
@@ -172,6 +180,7 @@ public class Executor {
                     Arrays.toString(cmd),
                     e.getClass().getSimpleName());
         } catch (InterruptedException ie) {
+            FAILURES.failed(ErrorType.CANCELLED, ie);
             Logger.trace(
                     true,
                     "Health",
@@ -270,8 +279,10 @@ public class Executor {
                 Logger.debug(false, "Health", "Privileged file read exited with code {}: {}", exitCode, error);
             }
         } catch (SecurityException | IOException e) {
+            FAILURES.failed(ErrorType.IO_FAILURE, e);
             Logger.debug(false, "Health", "Privileged file read failed: {}", e.getClass().getSimpleName());
         } catch (InterruptedException e) {
+            FAILURES.failed(ErrorType.CANCELLED, e);
             Thread.currentThread().interrupt();
             Logger.debug(false, "Health", "Privileged file read interrupted");
         } finally {

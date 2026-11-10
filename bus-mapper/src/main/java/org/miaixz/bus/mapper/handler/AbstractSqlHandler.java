@@ -32,6 +32,8 @@ import org.apache.ibatis.reflection.DefaultReflectorFactory;
 import org.apache.ibatis.reflection.MetaObject;
 import org.apache.ibatis.reflection.SystemMetaObject;
 
+import org.miaixz.bus.errors.ComponentFailure;
+import org.miaixz.bus.errors.ErrorType;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.FieldKit;
 import org.miaixz.bus.core.xyz.StringKit;
@@ -43,6 +45,11 @@ import org.miaixz.bus.logger.Logger;
  * @author Kimi Liu
  */
 public abstract class AbstractSqlHandler {
+
+    /**
+     * Reports a failed SQL rewrite without changing the existing boolean fallback.
+     */
+    private static final ComponentFailure FAILURES = new ComponentFailure("bus-mapper", "statement");
 
     /**
      * The property path for the `boundSql` field within a delegate proxy object.
@@ -202,6 +209,7 @@ public abstract class AbstractSqlHandler {
             FieldKit.setFieldValue(boundSql, "sql", actualSql);
             return true;
         } catch (Exception e) {
+            FAILURES.failed(ErrorType.EXECUTION_FAILURE, e);
             Logger.warn(
                     false,
                     "Mapper",

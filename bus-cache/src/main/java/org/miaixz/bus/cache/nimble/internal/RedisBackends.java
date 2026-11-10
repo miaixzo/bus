@@ -24,6 +24,8 @@ import java.util.Set;
 import java.util.concurrent.Executor;
 import java.util.stream.Collectors;
 
+import org.miaixz.bus.errors.ComponentFailure;
+import org.miaixz.bus.errors.ErrorType;
 import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.cache.Factory;
 import org.miaixz.bus.cache.Options;
@@ -42,6 +44,11 @@ import redis.clients.jedis.*;
  * @author Kimi Liu
  */
 public class RedisBackends {
+
+    /**
+     * Reports malformed Redis endpoint configuration before the original parse exception is propagated.
+     */
+    private static final ComponentFailure FAILURES = new ComponentFailure("bus-cache", "redis-address");
 
     /**
      * Keeps Redis backend construction on the static factory API.
@@ -172,6 +179,7 @@ public class RedisBackends {
         try {
             return new HostAndPort(parts[0], Integer.parseInt(parts[1]));
         } catch (NumberFormatException e) {
+            FAILURES.failed(ErrorType.CONFIGURATION_FAILURE, e);
             Logger.warn(
                     false,
                     "Cache",

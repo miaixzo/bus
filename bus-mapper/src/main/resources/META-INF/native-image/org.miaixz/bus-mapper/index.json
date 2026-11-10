@@ -4,9 +4,8 @@
     "metadata-version": "8.8.0",
     "source-code-url": "https://repo.maven.apache.org/maven2/org/miaixz/bus-mapper/$version$/bus-mapper-$version$-sources.jar",
     "repository-url": "https://github.com/818000/bus",
-    "test-code-url": "https://github.com/818000/abarth/tree/main/bus-testing/src/test",
     "documentation-url": "https://repo.maven.apache.org/maven2/org/miaixz/bus-mapper/$version$/bus-mapper-$version$-javadoc.jar",
-    "description": "Bus Mapper provides MyBatis mapper integration, SQL generation, dialect, provider, and schema mapping support.",
+    "description": "Bus Mapper - ORM mapper for entity models, SQL synthesis and data-access acceleration.",
     "tested-versions": [
       "8.8.0",
       "8.8.1",

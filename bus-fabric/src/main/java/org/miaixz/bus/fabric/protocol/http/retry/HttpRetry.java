@@ -28,6 +28,8 @@ import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.errors.recovery.RecoveryCoordinator;
+import org.miaixz.bus.errors.recovery.RecoveryPlan;
 import org.miaixz.bus.fabric.Headers;
 import org.miaixz.bus.fabric.UnoUrl;
 import org.miaixz.bus.fabric.guard.route.AddressPolicy;
@@ -384,7 +386,8 @@ public class HttpRetry implements HttpStage {
      * @return {@code true} when policy and request semantics permit replay
      */
     private boolean recover(final HttpRequest request, final Throwable cause, final int attempt) {
-        return idempotent(request.method()) && request.body().repeatable() && recover(cause, attempt);
+        return RecoveryCoordinator.canReplay(idempotent(request.method()), request.body().repeatable(),
+                RecoveryPlan.Delivery.UNPROCESSED) && recover(cause, attempt);
     }
 
     /**

@@ -2,7 +2,7 @@
   {
     "latest": true,
     "metadata-version": "2.0.0",
-    "description": "Fastjson2 initialization settings used by Bus integrations.",
+    "description": "Fastjson is a JSON processor (JSON parser + JSON generator) written in Java",
     "tested-versions": [
       "2.0.0",
       "2.0.62"

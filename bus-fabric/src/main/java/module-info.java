@@ -36,6 +36,7 @@ module bus.fabric {
 
     requires bus.core;
     requires bus.crypto;
+    requires bus.errors;
     requires bus.logger;
 
     requires static jakarta.xml.soap;

@@ -24,9 +24,13 @@ import java.io.PrintStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.UndeclaredThrowableException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.ExecutionException;
 
@@ -76,7 +80,7 @@ public class ExceptionKit {
      * Wraps a checked exception with a runtime exception. If the provided throwable is already a `RuntimeException`, it
      * is returned directly.
      *
-     * @param throwable The throwable.
+     * @param throwable Exception to inspect or convert.
      * @return A `RuntimeException`.
      */
     public static RuntimeException wrapRuntime(final Throwable throwable) {
@@ -102,7 +106,7 @@ public class ExceptionKit {
     /**
      * Wraps a throwable and a formatted message in a `RuntimeException`.
      *
-     * @param throwable The throwable.
+     * @param throwable Exception to inspect or convert.
      * @param message   The formatted message.
      * @param args      The message arguments.
      * @return A `RuntimeException`.
@@ -130,7 +134,7 @@ public class ExceptionKit {
      * Wraps and re-throws a throwable. `RuntimeException` and `Error` are re-thrown directly; other checked exceptions
      * are wrapped in `UndeclaredThrowableException`.
      *
-     * @param throwable The throwable.
+     * @param throwable Exception to inspect or convert.
      */
     public static void wrapAndThrow(final Throwable throwable) {
         if (throwable instanceof RuntimeException) {
@@ -222,7 +226,7 @@ public class ExceptionKit {
     /**
      * Converts a stack trace to a single-line string.
      *
-     * @param throwable The throwable.
+     * @param throwable Exception to inspect or convert.
      * @return The stack trace as a string.
      */
     public static String stacktraceToOneLineString(final Throwable throwable) {
@@ -232,7 +236,7 @@ public class ExceptionKit {
     /**
      * Converts a stack trace to a single-line string with a character limit.
      *
-     * @param throwable The throwable.
+     * @param throwable Exception to inspect or convert.
      * @param limit     The maximum length.
      * @return The stack trace as a string.
      */
@@ -248,7 +252,7 @@ public class ExceptionKit {
     /**
      * Converts a stack trace to a full string.
      *
-     * @param throwable The throwable.
+     * @param throwable Exception to inspect or convert.
      * @return The stack trace as a string.
      */
     public static String stacktraceToString(final Throwable throwable) {
@@ -258,7 +262,7 @@ public class ExceptionKit {
     /**
      * Converts a stack trace to a full string with a character limit.
      *
-     * @param throwable The throwable.
+     * @param throwable Exception to inspect or convert.
      * @param limit     The maximum length.
      * @return The stack trace as a string.
      */
@@ -269,7 +273,7 @@ public class ExceptionKit {
     /**
      * Converts a stack trace to a full string with a character limit and custom character replacements.
      *
-     * @param throwable           The throwable.
+     * @param throwable           Exception to inspect or convert.
      * @param limit               The maximum length.
      * @param replaceCharToStrMap A map for character replacements.
      * @return The stack trace as a string.
@@ -343,7 +347,7 @@ public class ExceptionKit {
     /**
      * Checks if a throwable is an instance of, is caused by, or has a suppressed exception of a specific type.
      *
-     * @param throwable      The throwable.
+     * @param throwable      Exception to inspect or convert.
      * @param exceptionClass The exception class to check for.
      * @return `true` if found.
      */
@@ -356,7 +360,7 @@ public class ExceptionKit {
     /**
      * Checks if a throwable is an instance of, is caused by, or has a suppressed exception of a specific type.
      *
-     * @param throwable      The throwable.
+     * @param throwable      Exception to inspect or convert.
      * @param exceptionClass The exception class to check for.
      * @param checkCause     Whether to check the cause chain.
      * @return `true` if found.
@@ -372,7 +376,7 @@ public class ExceptionKit {
      * Finds and returns the first throwable in the hierarchy (self, cause, suppressed) that matches a specific type.
      *
      * @param <T>            The exception type.
-     * @param throwable      The throwable.
+     * @param throwable      Exception to inspect or convert.
      * @param exceptionClass The exception class to find.
      * @return The matching throwable, or `null`.
      */
@@ -386,7 +390,7 @@ public class ExceptionKit {
      * Finds and returns the first throwable in the hierarchy (self, cause, suppressed) that matches a specific type.
      *
      * @param <T>            The exception type.
-     * @param throwable      The throwable.
+     * @param throwable      Exception to inspect or convert.
      * @param exceptionClass The exception class to find.
      * @param checkCause     Whether to check the cause chain.
      * @return The matching throwable, or `null`.
@@ -419,14 +423,16 @@ public class ExceptionKit {
     }
 
     /**
-     * Gets a list of all exceptions in the cause chain.
+     * Lists distinct exceptions in cause order. Identity comparison makes cyclic chains safe and avoids invoking
+     * user-defined equality methods on exceptions.
      *
-     * @param throwable The throwable.
+     * @param throwable Exception to inspect or convert.
      * @return A list of all throwables in the chain.
      */
     public static List<Throwable> getThrowableList(Throwable throwable) {
         final List<Throwable> list = new ArrayList<>();
-        while (throwable != null && !list.contains(throwable)) {
+        final Set<Throwable> visited = Collections.newSetFromMap(new IdentityHashMap<>());
+        while (throwable != null && visited.add(throwable)) {
             list.add(throwable);
             throwable = throwable.getCause();
         }
@@ -434,23 +440,28 @@ public class ExceptionKit {
     }
 
     /**
-     * Gets the root cause of an exception.
+     * Returns the deepest distinct cause without recursion. For a cycle, the last cause before the repeated
+     * exception is returned.
      *
-     * @param throwable The throwable.
-     * @return The root cause.
+     * @param throwable starting exception
+     * @return deepest distinct cause, or the starting exception when it has no distinct cause
+     * @throws NullPointerException if the starting exception is null
      */
     public static Throwable getRootCause(final Throwable throwable) {
-        final Throwable cause = throwable.getCause();
-        if (null == cause) {
-            return throwable;
+        Throwable current = Objects.requireNonNull(throwable, "throwable");
+        final Set<Throwable> visited = Collections.newSetFromMap(new IdentityHashMap<>());
+        visited.add(current);
+        Throwable cause;
+        while ((cause = current.getCause()) != null && visited.add(cause)) {
+            current = cause;
         }
-        return getRootCause(cause);
+        return current;
     }
 
     /**
      * Gets the message of the root cause of an exception.
      *
-     * @param th The throwable.
+     * @param th Exception to inspect or convert.
      * @return The root cause message.
      */
     public static String getRootCauseMessage(final Throwable th) {

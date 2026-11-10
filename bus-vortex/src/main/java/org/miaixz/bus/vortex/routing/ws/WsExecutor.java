@@ -32,6 +32,8 @@ import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.UrlKit;
 import org.miaixz.bus.cortex.Assets;
+import org.miaixz.bus.errors.ComponentFailure;
+import org.miaixz.bus.errors.ErrorType;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.vortex.Context;
@@ -60,6 +62,11 @@ import reactor.core.publisher.Mono;
  * @author Kimi Liu
  */
 public class WsExecutor extends Coordinator<Object, ServerResponse> {
+
+    /**
+     * Reports failures whose ws-cleanup response or lifecycle is owned by this adapter.
+     */
+    private static final ComponentFailure FAILURES = new ComponentFailure("vortex", "ws-cleanup");
 
     /**
      * WebSocket scheme prefix.
@@ -280,13 +287,7 @@ public class WsExecutor extends Coordinator<Object, ServerResponse> {
             try {
                 if (session.isOpen()) {
                     return session.close()
-                            .doOnError(
-                                    error -> Logger.error(
-                                            false,
-                                            "Vortex",
-                                            "Error closing WebSocket session: protocol=ws, {}",
-                                            session.getId(),
-                                            error))
+                            .doOnError(error -> FAILURES.failed(ErrorType.IO_FAILURE, error))
                             .doOnSuccess(
                                     v -> Logger.debug(
                                             false,
@@ -297,12 +298,7 @@ public class WsExecutor extends Coordinator<Object, ServerResponse> {
                     return Mono.empty();
                 }
             } catch (Exception e) {
-                Logger.error(
-                        false,
-                        "Vortex",
-                        "WS failed to close WebSocket session: protocol=ws, {}",
-                        session.getId(),
-                        e);
+                FAILURES.failed(ErrorType.IO_FAILURE, e);
                 return Mono.error(e);
             }
         }).doOnComplete(() -> {

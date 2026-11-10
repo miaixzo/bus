@@ -2,7 +2,7 @@
   {
     "latest": true,
     "metadata-version": "7.0.0",
-    "description": "Conditional Bus integration metadata only; supplements upstream metadata without replacing it.",
+    "description": "Spring Web",
     "tested-versions": [
       "7.0.0",
       "7.0.9"

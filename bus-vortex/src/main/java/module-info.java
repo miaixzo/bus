@@ -35,6 +35,7 @@ module bus.vortex {
     requires bus.core;
     requires bus.cortex;
     requires bus.crypto;
+    requires bus.errors;
     requires bus.extra;
     requires bus.logger;
 

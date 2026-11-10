@@ -2,7 +2,7 @@
   {
     "latest": true,
     "metadata-version": "4.0.0",
-    "description": "Conditional Bus integration metadata only; supplements upstream metadata without replacing it.",
+    "description": "Jakarta RESTful Web Services",
     "tested-versions": [
       "4.0.0"
     ]

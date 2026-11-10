@@ -27,6 +27,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.miaixz.bus.errors.ComponentFailure;
+import org.miaixz.bus.errors.ErrorType;
 import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Charset;
@@ -52,6 +54,11 @@ import org.miaixz.bus.pay.magic.Voucher;
  * @author Kimi Liu
  */
 public abstract class AbstractProvider<T extends Voucher, K extends Context> implements Provider<T> {
+
+    /**
+     * Reports payment transport failure without retrying a request whose result may be unknown.
+     */
+    private static final ComponentFailure FAILURES = new ComponentFailure("bus-pay", "payment");
 
     /**
      * The context object containing configuration and other necessary information.
@@ -192,6 +199,7 @@ public abstract class AbstractProvider<T extends Voucher, K extends Context> imp
                     body == null ? 0 : body.getBytes(Charset.UTF_8).length);
             return body;
         } catch (Exception e) {
+            FAILURES.failed(ErrorType.OUTCOME_UNKNOWN, e);
             Logger.error(
                     false,
                     "Pay",
@@ -225,6 +233,7 @@ public abstract class AbstractProvider<T extends Voucher, K extends Context> imp
                     body == null ? 0 : body.getBytes(Charset.UTF_8).length);
             return Message.builder().body(body).status(response.code()).headers(response.headers()).build();
         } catch (Exception e) {
+            FAILURES.failed(ErrorType.OUTCOME_UNKNOWN, e);
             Logger.error(
                     false,
                     "Pay",
@@ -258,6 +267,7 @@ public abstract class AbstractProvider<T extends Voucher, K extends Context> imp
                     body == null ? 0 : body.getBytes(Charset.UTF_8).length);
             return Message.builder().body(body).status(response.code()).headers(response.headers()).build();
         } catch (Exception e) {
+            FAILURES.failed(ErrorType.DEPENDENCY_UNAVAILABLE, e);
             Logger.error(
                     false,
                     "Pay",
@@ -291,6 +301,7 @@ public abstract class AbstractProvider<T extends Voucher, K extends Context> imp
                     body == null ? 0 : body.getBytes(Charset.UTF_8).length);
             return Message.builder().body(body).status(response.code()).headers(response.headers()).build();
         } catch (Exception e) {
+            FAILURES.failed(ErrorType.OUTCOME_UNKNOWN, e);
             Logger.error(
                     false,
                     "Pay",
@@ -332,6 +343,7 @@ public abstract class AbstractProvider<T extends Voucher, K extends Context> imp
                     body == null ? 0 : body.getBytes(Charset.UTF_8).length);
             return Message.builder().body(body).status(response.code()).headers(response.headers()).build();
         } catch (Exception e) {
+            FAILURES.failed(ErrorType.OUTCOME_UNKNOWN, e);
             Logger.error(
                     false,
                     "Pay",
@@ -351,7 +363,7 @@ public abstract class AbstractProvider<T extends Voucher, K extends Context> imp
      * @param data     The request data.
      * @param certPath The certificate path.
      * @param certPass The certificate password.
-     * @param protocol The protocol.
+     * @param protocol TLS protocol used to initialize the certificate-backed client.
      * @return The result of the request.
      */
     public static String post(String url, String data, String certPath, String certPass, String protocol) {
@@ -377,6 +389,7 @@ public abstract class AbstractProvider<T extends Voucher, K extends Context> imp
                     body == null ? 0 : body.getBytes(Charset.UTF_8).length);
             return body;
         } catch (Exception e) {
+            FAILURES.failed(ErrorType.OUTCOME_UNKNOWN, e);
             Logger.error(
                     false,
                     "Pay",
@@ -397,7 +410,7 @@ public abstract class AbstractProvider<T extends Voucher, K extends Context> imp
      * @param data     The request data.
      * @param certFile The certificate file input stream.
      * @param certPass The certificate password.
-     * @param protocol The protocol.
+     * @param protocol TLS protocol used to initialize the certificate-backed client.
      * @return The result of the request.
      */
     public static String post(String url, String data, InputStream certFile, String certPass, String protocol) {
@@ -423,6 +436,7 @@ public abstract class AbstractProvider<T extends Voucher, K extends Context> imp
                     body == null ? 0 : body.getBytes(Charset.UTF_8).length);
             return body;
         } catch (Exception e) {
+            FAILURES.failed(ErrorType.OUTCOME_UNKNOWN, e);
             Logger.error(
                     false,
                     "Pay",
@@ -458,6 +472,7 @@ public abstract class AbstractProvider<T extends Voucher, K extends Context> imp
                     body == null ? 0 : body.getBytes(Charset.UTF_8).length);
             return Message.builder().body(body).status(response.code()).headers(response.headers()).build();
         } catch (Exception e) {
+            FAILURES.failed(ErrorType.OUTCOME_UNKNOWN, e);
             Logger.error(
                     false,
                     "Pay",
@@ -477,7 +492,7 @@ public abstract class AbstractProvider<T extends Voucher, K extends Context> imp
      * @param certPath The certificate path.
      * @param certPass The certificate password.
      * @param filePath The path of the file to be uploaded.
-     * @param protocol The protocol.
+     * @param protocol TLS protocol used to initialize the certificate-backed client.
      * @return The result of the request.
      */
     public static String upload(
@@ -508,6 +523,7 @@ public abstract class AbstractProvider<T extends Voucher, K extends Context> imp
                     body == null ? 0 : body.getBytes(Charset.UTF_8).length);
             return body;
         } catch (Exception e) {
+            FAILURES.failed(ErrorType.OUTCOME_UNKNOWN, e);
             Logger.error(
                     false,
                     "Pay",
@@ -541,6 +557,7 @@ public abstract class AbstractProvider<T extends Voucher, K extends Context> imp
      * @return A {@link Message} object representing the error.
      */
     protected Message responseError(Exception e) {
+        FAILURES.failed(ErrorType.EXECUTION_FAILURE, e);
         String code = ErrorCode._FAILURE.getKey();
         String desc = e.getMessage();
         if (e instanceof PaymentException) {
@@ -628,6 +645,7 @@ public abstract class AbstractProvider<T extends Voucher, K extends Context> imp
                     body == null ? 0 : body.getBytes(Charset.UTF_8).length);
             return Message.builder().body(body).status(response.code()).headers(response.headers()).build();
         } catch (Exception e) {
+            FAILURES.failed(ErrorType.OUTCOME_UNKNOWN, e);
             Logger.error(
                     false,
                     "Pay",

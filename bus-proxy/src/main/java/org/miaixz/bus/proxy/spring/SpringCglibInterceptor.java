@@ -26,6 +26,8 @@ import java.lang.reflect.Method;
 import org.springframework.cglib.proxy.MethodInterceptor;
 import org.springframework.cglib.proxy.MethodProxy;
 
+import org.miaixz.bus.errors.ComponentFailure;
+import org.miaixz.bus.errors.ErrorType;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.proxy.Aspect;
 import org.miaixz.bus.proxy.invoker.Interceptor;
@@ -38,6 +40,14 @@ import org.miaixz.bus.proxy.invoker.Interceptor;
  */
 public class SpringCglibInterceptor extends Interceptor implements MethodInterceptor {
 
+    /**
+     * Reports target failures after the aspect selects propagation or continuation.
+     */
+    private static final ComponentFailure FAILURES = new ComponentFailure("bus-proxy", "cglib-invoke");
+
+    /**
+     * Serialization version of the CGLIB invocation interceptor.
+     */
     @Serial
     private static final long serialVersionUID = 2552195001808L;
 
@@ -95,8 +105,10 @@ public class SpringCglibInterceptor extends Interceptor implements MethodInterce
                         method.getName(),
                         throwable == null ? null : throwable.getClass().getSimpleName());
                 if (aspect.afterException(target, method, args, throwable)) {
+                    FAILURES.failed(ErrorType.EXECUTION_FAILURE, throwable);
                     throw throwable;
                 }
+                FAILURES.attempt(ErrorType.EXECUTION_FAILURE, throwable);
             }
         }
 

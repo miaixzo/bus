@@ -1,6 +1,12 @@
 {
   "properties": [
     {
+      "name": "bus.errors.logging.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Whether Bus error records are sent to bus-logger. Independent diagnostics can use the JDK logging fallback.",
+      "defaultValue": true
+    },
+    {
       "name": "bus.auth.enabled",
       "type": "java.lang.Boolean",
       "description": "Whether bus-auth Source discovery, Vendor configuration, and Runtime integration are enabled.",
@@ -446,13 +452,23 @@
     {
       "name": "bus.wrapper.route-errors.enabled",
       "type": "java.lang.Boolean",
-      "description": "Whether to preserve selected MVC HTTP errors on configured route prefixes.",
+      "description": "Whether to preserve selected HTTP errors on configured MVC or Vortex route prefixes.",
       "defaultValue": false
+    },
+    {
+      "name": "bus.wrapper.route-errors.mvc.rules",
+      "type": "java.util.List<org.miaixz.bus.starter.wrapper.routing.RouteErrorProperties$RouteRule>",
+      "description": "Typed route error rules for this listener. Each rule selects a literal path prefix (or /), error types and a response mode."
+    },
+    {
+      "name": "bus.wrapper.route-errors.mvc.path-prefixes",
+      "type": "java.util.List<java.lang.String>",
+      "description": "MVC listener prefixes that replace the common list when configured."
     },
     {
       "name": "bus.wrapper.route-errors.path-prefixes",
       "type": "java.util.List<java.lang.String>",
-      "description": "Literal MVC route prefixes with leading and trailing slashes. Omit the application context and servlet mapping prefixes.",
+      "description": "Common listener-relative route prefixes with leading and trailing slashes. Omit the application context and servlet mapping prefixes.",
       "defaultValue": []
     },
     {
@@ -460,6 +476,22 @@
       "type": "java.util.Set<java.lang.Integer>",
       "description": "HTTP 4xx statuses to preserve on the configured route prefixes.",
       "defaultValue": [404, 405, 415]
+    },
+    {
+      "name": "bus.wrapper.route-errors.targets",
+      "type": "java.util.Set<org.miaixz.bus.starter.wrapper.routing.RouteErrorProperties$Target>",
+      "description": "Listeners that apply route error handling. Supported values are mvc and vortex.",
+      "defaultValue": ["mvc"]
+    },
+    {
+      "name": "bus.wrapper.route-errors.vortex.rules",
+      "type": "java.util.List<org.miaixz.bus.starter.wrapper.routing.RouteErrorProperties$RouteRule>",
+      "description": "Typed route error rules for this listener. Each rule selects a literal path prefix (or /), error types and a response mode."
+    },
+    {
+      "name": "bus.wrapper.route-errors.vortex.path-prefixes",
+      "type": "java.util.List<java.lang.String>",
+      "description": "Vortex listener prefixes that replace the common list when configured."
     },
     {
       "name": "bus.zookeeper.enabled",

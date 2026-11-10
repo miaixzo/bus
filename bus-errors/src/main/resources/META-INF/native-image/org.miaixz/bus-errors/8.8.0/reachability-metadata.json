@@ -1,0 +1,39 @@
+{
+  "reflection": [
+    {
+      "type": "org.miaixz.bus.errors.BusException",
+      "serializable": true
+    },
+    {
+      "type": "org.miaixz.bus.errors.ErrorDescriptor",
+      "serializable": true
+    },
+    {
+      "type": "org.miaixz.bus.errors.ErrorType",
+      "serializable": true
+    },
+    {
+      "type": "org.miaixz.bus.errors.policy.PolicySnapshot$Mode",
+      "fields": [
+        {
+          "name": "LEGACY"
+        },
+        {
+          "name": "NATIVE_HTTP"
+        }
+      ],
+      "methods": [
+        {
+          "name": "valueOf",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "values",
+          "parameterTypes": []
+        }
+      ]
+    }
+  ]
+}

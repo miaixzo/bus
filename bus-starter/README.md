@@ -424,8 +424,8 @@ bus:
       enabled: false
 ```
 
-Enable route errors when selected paths need the original Spring MVC status and headers. Other paths retain the
-application's existing exception handling.
+Enable route errors when selected paths need the original MVC or Vortex HTTP status and headers. Other paths retain
+the listener's existing exception handling.
 
 ```yaml
 bus:
@@ -440,11 +440,28 @@ bus:
       cache-control: no-store
 ```
 
-Use literal path prefixes with leading and trailing slashes, relative to the MVC servlet mapping. Omit any application
-context path or DispatcherServlet mapping prefix. The default statuses are `404`, `405`, and `415`. The resolver preserves
-the exception's status and headers, such as `Allow` and `Accept`, and sends an empty body. Set `cache-control` to override
-the cache header. The feature handles Spring MVC exceptions that implement `ErrorResponse`, including routing errors
-raised before a controller is selected.
+Use literal path prefixes with leading and trailing slashes, relative to the selected listener. For MVC, omit the
+application context and servlet mapping prefixes. The default statuses are `404`, `405`, and `415`. For matching
+`ErrorResponse` exceptions, the handler preserves the status and headers, such as `Allow` and `Accept`, and sends an
+empty body. Set `cache-control` to override the cache header.
+
+`targets` defaults to `[mvc]`. Select `[vortex]` for the Vortex gateway or `[mvc, vortex]` for both listeners. Both use
+the common `path-prefixes` unless a listener supplies its own `mvc.path-prefixes` or `vortex.path-prefixes`.
+
+```yaml
+bus:
+  wrapper:
+    enabled: true
+    route-errors:
+      enabled: true
+      targets: [vortex]
+      path-prefixes: [/router/mcp/]
+      cache-control: no-store
+```
+
+Each active listener validates its effective policy at startup. The gateway continues to classify route and
+authorization failures through its existing pipeline. The policy applies to the HTTP errors produced by that pipeline.
+A standalone gateway without Spring MVC uses `bus.wrapper.message-converters.enabled=false` to disable the Wrapper MVC converters.
 
 Message converter target-type policies are:
 

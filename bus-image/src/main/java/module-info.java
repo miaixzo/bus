@@ -56,6 +56,7 @@ module bus.image {
 
     requires bus.core;
     requires bus.crypto;
+    requires bus.errors;
     requires bus.health;
     requires bus.logger;
     requires bus.opencv;

@@ -201,6 +201,11 @@
             </dependency>
             <dependency>
                 <groupId>org.miaixz</groupId>
+                <artifactId>bus-errors</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.miaixz</groupId>
                 <artifactId>bus-extra</artifactId>
                 <version>${project.version}</version>
             </dependency>

@@ -82,11 +82,7 @@
     <dependencies>
         <dependency>
             <groupId>org.miaixz</groupId>
-            <artifactId>bus-logger</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.miaixz</groupId>
-            <artifactId>bus-preset</artifactId>
+            <artifactId>bus-errors</artifactId>
         </dependency>
 
         <dependency>

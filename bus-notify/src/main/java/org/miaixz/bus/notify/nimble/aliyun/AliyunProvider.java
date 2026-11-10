@@ -30,6 +30,8 @@ import java.util.TreeMap;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
+import org.miaixz.bus.errors.ComponentFailure;
+import org.miaixz.bus.errors.ErrorType;
 import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.lang.Algorithm;
 import org.miaixz.bus.core.lang.Charset;
@@ -51,6 +53,11 @@ import org.miaixz.bus.notify.nimble.AbstractProvider;
  * @author Kimi Liu
  */
 public class AliyunProvider<T extends Notice, K extends Context> extends AbstractProvider<T, K> {
+
+    /**
+     * Reports failures constructing signed notification requests without exposing credentials.
+     */
+    private static final ComponentFailure FAILURES = new ComponentFailure("bus-notify", "aliyun-signature");
 
     /**
      * The success result code returned by Alibaba Cloud services.
@@ -120,6 +127,7 @@ public class AliyunProvider<T extends Notice, K extends Context> extends Abstrac
             byte[] signData = mac.doFinal(stringToSign.getBytes(Charset.UTF_8));
             return Base64.getEncoder().encodeToString(signData);
         } catch (NoSuchAlgorithmException | InvalidKeyException e) {
+            FAILURES.failed(ErrorType.SECURITY_FAILURE, e);
             Logger.error(
                     false,
                     "Notify",

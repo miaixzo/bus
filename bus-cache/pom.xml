@@ -86,15 +86,7 @@
         </dependency>
         <dependency>
             <groupId>org.miaixz</groupId>
-            <artifactId>bus-preset</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.miaixz</groupId>
             <artifactId>bus-proxy</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.miaixz</groupId>
-            <artifactId>bus-setting</artifactId>
         </dependency>
 
         <dependency>

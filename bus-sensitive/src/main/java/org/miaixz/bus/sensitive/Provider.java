@@ -31,6 +31,8 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
+import org.miaixz.bus.errors.ComponentFailure;
+import org.miaixz.bus.errors.ErrorType;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.*;
@@ -49,6 +51,11 @@ import org.miaixz.bus.sensitive.nimble.StrategyProvider;
  * @author Kimi Liu
  */
 public class Provider<T> {
+
+    /**
+     * Reports cloning and reflective redaction failures before preserving the original exception conversion.
+     */
+    private static final ComponentFailure FAILURES = new ComponentFailure("bus-sensitive", "redaction-provider");
 
     /**
      * An array of specific field names to desensitize. If not null, only these fields are considered.
@@ -81,6 +88,7 @@ public class Provider<T> {
                 return (T) ois.readObject();
             }
         } catch (Exception e) {
+            FAILURES.failed(ErrorType.SECURITY_FAILURE, e);
             Logger.warn(
                     false,
                     "Sensitive",
@@ -222,6 +230,7 @@ public class Provider<T> {
                 }
             }
         } catch (IllegalAccessException e) {
+            FAILURES.failed(ErrorType.SECURITY_FAILURE, e);
             Logger.warn(
                     false,
                     "Sensitive",
@@ -349,6 +358,7 @@ public class Provider<T> {
             }
             return entry;
         } catch (Exception e) {
+            FAILURES.failed(ErrorType.SECURITY_FAILURE, e);
             Logger.warn(
                     false,
                     "Sensitive",
@@ -412,6 +422,7 @@ public class Provider<T> {
                 }
             }
         } catch (IllegalAccessException e) {
+            FAILURES.failed(ErrorType.SECURITY_FAILURE, e);
             Logger.warn(
                     false,
                     "Sensitive",

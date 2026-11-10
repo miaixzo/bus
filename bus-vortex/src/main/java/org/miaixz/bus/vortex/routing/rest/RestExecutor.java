@@ -47,6 +47,8 @@ import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.core.xyz.UrlKit;
 import org.miaixz.bus.cortex.Assets;
+import org.miaixz.bus.errors.ComponentFailure;
+import org.miaixz.bus.errors.ErrorType;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.vortex.*;
@@ -73,6 +75,11 @@ import reactor.core.publisher.Mono;
  * @author Kimi Liu
  */
 public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
+
+    /**
+     * Reports failures whose rest-request response or lifecycle is owned by this adapter.
+     */
+    private static final ComponentFailure FAILURES = new ComponentFailure("vortex", "rest-request");
 
     /**
      * Default constructor.
@@ -235,7 +242,7 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
                     ip,
                     method,
                     path);
-            return executeStreaming(bodySpec, assets, targetUri, delivery, ip, method, path);
+            return executeStreaming(bodySpec, assets, targetUri, delivery, ip, method, path, context.getX_request_id());
         } else {
             Logger.info(
                     true,
@@ -244,7 +251,7 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
                     ip,
                     method,
                     path);
-            return executeBuffering(bodySpec, assets, targetUri, ip, method, path);
+            return executeBuffering(bodySpec, assets, targetUri, ip, method, path, context.getX_request_id());
         }
     }
 
@@ -530,6 +537,7 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
      * @param ip        client IP for logging
      * @param method    incoming HTTP method
      * @param path      incoming request path
+     * @param requestId server-generated identifier for cancellation diagnostics
      * @return proxied streaming response
      */
     private Mono<ServerResponse> executeStreaming(
@@ -539,7 +547,8 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
             Delivery delivery,
             String ip,
             String method,
-            String path) {
+            String path,
+            String requestId) {
         HttpMethod httpMethod = HttpMethod.valueOf(method);
         Mono<ResponseEntity<Flux<DataBuffer>>> response = bodySpec.retrieve()
                 .onStatus(status -> true, clientResponse -> Mono.empty()).toEntityFlux(DataBuffer.class);
@@ -562,24 +571,7 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
                                 method,
                                 path,
                                 serverResponse.statusCode()))
-                .doOnError(
-                        error -> Logger.error(
-                                false,
-                                "Vortex",
-                                "Request FAILED (Streaming): protocol=http, clientIp={}, method={}, path={}, event=HTTP_ROUTER_ERROR, {}",
-                                ip,
-                                method,
-                                path,
-                                error.getMessage(),
-                                error))
-                .doOnCancel(
-                        () -> Logger.warn(
-                                false,
-                                "Vortex",
-                                "Request was cancelled by client (Streaming).: protocol=http, clientIp={}, method={}, path={}, event=HTTP_ROUTER_CANCEL",
-                                ip,
-                                method,
-                                path));
+                .doOnCancel(() -> FAILURES.failed(ErrorType.CANCELLED, 0, null, requestId));
     }
 
     /**
@@ -597,6 +589,7 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
      * @param ip        the client IP for logging
      * @param method    the incoming request method for logging
      * @param path      the incoming request path for logging
+     * @param requestId server-generated identifier for cancellation diagnostics
      * @return a buffered {@link ServerResponse}
      */
     private Mono<ServerResponse> executeBuffering(
@@ -605,7 +598,8 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
             URI targetUri,
             String ip,
             String method,
-            String path) {
+            String path,
+            String requestId) {
         HttpMethod httpMethod = HttpMethod.valueOf(method);
         Mono<ResponseEntity<Flux<DataBuffer>>> response = bodySpec.retrieve()
                 .onStatus(status -> true, clientResponse -> Mono.empty()).toEntityFlux(DataBuffer.class);
@@ -639,24 +633,7 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
                                 method,
                                 path,
                                 serverResponse.statusCode()))
-                .doOnError(
-                        error -> Logger.error(
-                                false,
-                                "Vortex",
-                                "Request FAILED (Buffering): protocol=http, clientIp={}, method={}, path={}, event=HTTP_ROUTER_ERROR, {}",
-                                ip,
-                                method,
-                                path,
-                                error.getMessage(),
-                                error))
-                .doOnCancel(
-                        () -> Logger.warn(
-                                false,
-                                "Vortex",
-                                "Request was cancelled by client (Buffering).: protocol=http, clientIp={}, method={}, path={}, event=HTTP_ROUTER_CANCEL",
-                                ip,
-                                method,
-                                path));
+                .doOnCancel(() -> FAILURES.failed(ErrorType.CANCELLED, 0, null, requestId));
     }
 
     /**

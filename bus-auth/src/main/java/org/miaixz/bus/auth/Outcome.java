@@ -25,6 +25,8 @@ import java.util.concurrent.CompletionStage;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import org.miaixz.bus.errors.ComponentFailure;
+import org.miaixz.bus.errors.ErrorType;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.lang.Assert;
@@ -66,26 +68,26 @@ public interface Outcome<T> {
         final CompletionStage<Outcome<S>> stage;
         try {
             stage = operation.get();
-        } catch (RuntimeException ignored) {
-            return CompletableFuture.completedFuture(operationFailed("Operation failed before returning a stage"));
+        } catch (RuntimeException failure) {
+            return CompletableFuture.completedFuture(operationFailed("Operation failed before returning a stage", failure));
         }
         if (stage == null) {
-            return CompletableFuture.completedFuture(operationFailed("Operation returned no stage"));
+            return CompletableFuture.completedFuture(operationFailed("Operation returned no stage", null));
         }
         return stage.handle((outcome, cause) -> {
             if (cause != null) {
-                return operationFailed("Operation stage failed");
+                return operationFailed("Operation stage failed", cause);
             }
             if (outcome == null) {
-                return operationFailed("Operation returned no outcome");
+                return operationFailed("Operation returned no outcome", null);
             }
             try {
                 return outcome.map(
                         value -> Assert.notNull(
                                 mapper.apply(Assert.notNull(value, "Operation returned no value")),
                                 "Outcome mapper returned no value"));
-            } catch (RuntimeException ignored) {
-                return operationFailed("Operation result could not be mapped");
+            } catch (RuntimeException failure) {
+                return operationFailed("Operation result could not be mapped", failure);
             }
         });
     }
@@ -95,9 +97,11 @@ public interface Outcome<T> {
      *
      * @param <R>         expected transformed value type
      * @param description safe transformation failure description
+     * @param cause       diagnostic cause, or null when the operation returned no result
      * @return failed transformed outcome
      */
-    private static <R> Outcome<R> operationFailed(final String description) {
+    private static <R> Outcome<R> operationFailed(final String description, final Throwable cause) {
+        new ComponentFailure("bus-auth", "outcome").failed(ErrorType.EXECUTION_FAILURE, cause);
         return Outcome.failed(new Outcome.Failure(ErrorCode._500, description, new JsonValue.ObjectValue(Map.of())));
     }
 
@@ -113,7 +117,7 @@ public interface Outcome<T> {
     }
 
     /**
-     * Creates an expected authentication or protocol rejection.
+     * Creates an expected authentication or protocol rejection and observes it once at creation.
      *
      * @param failure safe structured rejection detail
      * @param <T>     success value type that would have been returned
@@ -121,7 +125,14 @@ public interface Outcome<T> {
      * @throws IllegalArgumentException if the failure is {@code null}
      */
     static <T> Outcome<T> rejected(final Failure failure) {
-        return new Rejected<>(failure);
+        Outcome<T> rejected = new Rejected<>(failure);
+        ErrorType type = switch (failure.error().getKey()) {
+            case "401" -> ErrorType.UNAUTHENTICATED;
+            case "403" -> ErrorType.FORBIDDEN;
+            case null, default -> ErrorType.INVALID_REQUEST;
+        };
+        new ComponentFailure("bus-auth", "rejection").failed(type, null);
+        return rejected;
     }
 
     /**
@@ -147,9 +158,9 @@ public interface Outcome<T> {
         Assert.notNull(mapper, "Outcome mapper must not be null");
         return switch (this) {
             case Succeeded<T> success -> Outcome.succeeded(mapper.apply(success.value()));
-            case Rejected<T> rejected -> Outcome.rejected(rejected.failure());
+            case Rejected<T> rejected -> new Rejected<>(rejected.failure());
             case Failed<T> failed -> Outcome.failed(failed.failure());
-            default -> operationFailed("Unsupported outcome implementation");
+            default -> operationFailed("Unsupported outcome implementation", null);
         };
     }
 
@@ -165,9 +176,9 @@ public interface Outcome<T> {
         return switch (this) {
             case Succeeded<T> success -> Assert
                     .notNull(mapper.apply(success.value()), "Outcome mapper returned no outcome");
-            case Rejected<T> rejected -> Outcome.rejected(rejected.failure());
+            case Rejected<T> rejected -> new Rejected<>(rejected.failure());
             case Failed<T> failed -> Outcome.failed(failed.failure());
-            default -> operationFailed("Unsupported outcome implementation");
+            default -> operationFailed("Unsupported outcome implementation", null);
         };
     }
 

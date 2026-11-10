@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.base.advice;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindException;
@@ -31,12 +32,11 @@ import org.springframework.web.servlet.NoHandlerFoundException;
 
 import org.miaixz.bus.core.basic.advice.ErrorAdvice;
 import org.miaixz.bus.core.basic.entity.Message;
-import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.basic.spring.Controller;
 import org.miaixz.bus.core.instance.Instances;
 import org.miaixz.bus.core.lang.exception.*;
-import org.miaixz.bus.core.xyz.StringKit;
-import org.miaixz.bus.logger.Logger;
+import org.miaixz.bus.errors.ErrorBoundary;
+import org.miaixz.bus.errors.transport.mvc.MvcErrorAdvice;
 
 /**
  * Global exception handling advice class.
@@ -52,6 +52,21 @@ import org.miaixz.bus.logger.Logger;
 @RestControllerAdvice
 @ConditionalOnWebApplication
 public class BaseAdvice extends Controller {
+
+    /**
+     * Uses the application error boundary when registered, including in inherited Advice classes.
+     */
+    private ErrorBoundary errorBoundary = ErrorBoundary.standard();
+
+    /**
+     * Supplies an optional shared application error boundary.
+     *
+     * @param boundary classifier and observer used by this entry point
+     */
+    @Autowired(required = false)
+    public void setErrorBoundary(ErrorBoundary boundary) {
+        this.errorBoundary = java.util.Objects.requireNonNull(boundary, "boundary");
+    }
 
     /**
      * Constructs a new BaseAdvice instance.
@@ -102,8 +117,7 @@ public class BaseAdvice extends Controller {
     @ResponseBody
     @ExceptionHandler(value = Exception.class)
     public Message<Void> defaultException(Exception e) {
-        this.defaultExceptionHandler(e);
-        return write(ErrorCode._FAILURE);
+        return this.handle(e, Exception.class);
     }
 
     /**
@@ -115,11 +129,7 @@ public class BaseAdvice extends Controller {
     @ResponseBody
     @ExceptionHandler(value = InternalException.class)
     public Message<Void> internalException(InternalException e) {
-        this.defaultExceptionHandler(e);
-        if (StringKit.isBlank(e.getCode())) {
-            return write(ErrorCode._100805);
-        }
-        return write(e.getCode(), e.getDesc());
+        return this.handle(e, InternalException.class);
     }
 
     /**
@@ -134,11 +144,7 @@ public class BaseAdvice extends Controller {
     @ResponseBody
     @ExceptionHandler(value = BusinessException.class)
     public Message<Void> businessException(BusinessException e) {
-        this.defaultExceptionHandler(e);
-        if (StringKit.isBlank(e.getCode())) {
-            return write(ErrorCode._100807);
-        }
-        return write(e.getCode());
+        return this.handle(e, BusinessException.class);
     }
 
     /**
@@ -150,11 +156,7 @@ public class BaseAdvice extends Controller {
     @ResponseBody
     @ExceptionHandler(value = CrontabException.class)
     public Message<Void> crontabException(CrontabException e) {
-        this.defaultExceptionHandler(e);
-        if (StringKit.isBlank(e.getCode())) {
-            return write(ErrorCode._100808);
-        }
-        return write(e.getCode(), e.getDesc());
+        return this.handle(e, CrontabException.class);
     }
 
     /**
@@ -166,11 +168,7 @@ public class BaseAdvice extends Controller {
     @ResponseBody
     @ExceptionHandler(value = ValidateException.class)
     public Message<Void> validateException(ValidateException e) {
-        this.defaultExceptionHandler(e);
-        if (StringKit.isBlank(e.getCode())) {
-            return write(ErrorCode._100805);
-        }
-        return write(e.getCode(), e.getDesc());
+        return this.handle(e, ValidateException.class);
     }
 
     /**
@@ -182,11 +180,7 @@ public class BaseAdvice extends Controller {
     @ResponseBody
     @ExceptionHandler(value = AuthorizedException.class)
     public Message<Void> authorizedException(AuthorizedException e) {
-        this.defaultExceptionHandler(e);
-        if (StringKit.isBlank(e.getCode())) {
-            return write(ErrorCode._100806);
-        }
-        return write(e.getCode(), e.getDesc());
+        return this.handle(e, AuthorizedException.class);
     }
 
     /**
@@ -198,11 +192,7 @@ public class BaseAdvice extends Controller {
     @ResponseBody
     @ExceptionHandler(value = ForbiddenException.class)
     public Message<Void> forbiddenException(ForbiddenException e) {
-        this.defaultExceptionHandler(e);
-        if (StringKit.isBlank(e.getCode())) {
-            return write(ErrorCode._403);
-        }
-        return write(e.getCode(), e.getDesc());
+        return this.handle(e, ForbiddenException.class);
     }
 
     /**
@@ -214,11 +204,7 @@ public class BaseAdvice extends Controller {
     @ResponseBody
     @ExceptionHandler(value = SignatureException.class)
     public Message<Void> signatureException(SignatureException e) {
-        this.defaultExceptionHandler(e);
-        if (StringKit.isBlank(e.getCode())) {
-            return write(ErrorCode._100109);
-        }
-        return write(e.getCode(), e.getDesc());
+        return this.handle(e, SignatureException.class);
     }
 
     /**
@@ -230,11 +216,7 @@ public class BaseAdvice extends Controller {
     @ResponseBody
     @ExceptionHandler(value = UncheckedException.class)
     public Message<Void> uncheckedException(UncheckedException e) {
-        this.defaultExceptionHandler(e);
-        if (StringKit.isBlank(e.getCode())) {
-            return write(ErrorCode._100805);
-        }
-        return write(e.getCode(), e.getDesc());
+        return this.handle(e, UncheckedException.class);
     }
 
     /**
@@ -246,11 +228,7 @@ public class BaseAdvice extends Controller {
     @ResponseBody
     @ExceptionHandler(value = RelevantException.class)
     public Message<Void> relevantException(RelevantException e) {
-        this.defaultExceptionHandler(e);
-        if (StringKit.isBlank(e.getCode())) {
-            return write(ErrorCode._100805);
-        }
-        return write(e.getCode(), e.getDesc());
+        return this.handle(e, RelevantException.class);
     }
 
     /**
@@ -263,8 +241,7 @@ public class BaseAdvice extends Controller {
     @ResponseBody
     @ExceptionHandler(value = HttpRequestMethodNotSupportedException.class)
     public Message<Void> httpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException e) {
-        this.defaultExceptionHandler(e);
-        return write(ErrorCode._100802);
+        return this.handle(e, HttpRequestMethodNotSupportedException.class);
     }
 
     /**
@@ -277,8 +254,7 @@ public class BaseAdvice extends Controller {
     @ResponseBody
     @ExceptionHandler(value = HttpMediaTypeNotSupportedException.class)
     public Message<Void> httpMediaTypeNotSupportedException(HttpMediaTypeNotSupportedException e) {
-        this.defaultExceptionHandler(e);
-        return write(ErrorCode._100803);
+        return this.handle(e, HttpMediaTypeNotSupportedException.class);
     }
 
     /**
@@ -290,8 +266,7 @@ public class BaseAdvice extends Controller {
     @ResponseBody
     @ExceptionHandler(value = NoHandlerFoundException.class)
     public Message<Void> noHandlerFoundException(NoHandlerFoundException e) {
-        this.defaultExceptionHandler(e);
-        return write(ErrorCode._100804);
+        return this.handle(e, NoHandlerFoundException.class);
     }
 
     /**
@@ -303,8 +278,7 @@ public class BaseAdvice extends Controller {
     @ResponseBody
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public Message<Void> handleBodyValidException(MethodArgumentNotValidException e) {
-        this.defaultExceptionHandler(e);
-        return write(ErrorCode._100809);
+        return this.handle(e, MethodArgumentNotValidException.class);
     }
 
     /**
@@ -316,40 +290,28 @@ public class BaseAdvice extends Controller {
     @ResponseBody
     @ExceptionHandler(BindException.class)
     public Message<Void> handleBindException(BindException e) {
-        this.defaultExceptionHandler(e);
-        return write(ErrorCode._100809);
+        return this.handle(e, BindException.class);
     }
 
     /**
-     * A default exception handler that logs the exception and delegates to a custom {@link ErrorAdvice} service.
-     * <p>
-     * This method is called by all specific exception handlers to ensure consistent logging and to allow for pluggable
-     * error handling logic. It is wrapped in a try-catch block to prevent failures in the error handling logic itself
-     * from causing a cascade of errors.
-     * </p>
+     * Delegates the MVC exception contract selected by Spring while retaining overridable hooks and response writers.
      *
-     * @param ex the exception to handle
+     * @param failure  exception passed to the selected handler
+     * @param selected exception type declared by the selected handler
+     * @return legacy MVC response with the original application code and description
+     */
+    private Message<Void> handle(Exception failure, Class<? extends Exception> selected) {
+        return MvcErrorAdvice.handle(
+                this.errorBoundary, failure, selected, this::defaultExceptionHandler, this::write, this::write, this::write);
+    }
+
+    /**
+     * Delegates to the legacy {@link ErrorAdvice} service through the shared callback boundary.
+     *
+     * @param ex the original exception
      */
     public void defaultExceptionHandler(Exception ex) {
-        try {
-            Logger.error(
-                    false,
-                    "Base",
-                    "Default exception handler captured error: exceptionType={}, status=failure, error={}",
-                    ex == null ? null : ex.getClass().getName(),
-                    ex == null ? null : ex.getMessage(),
-                    ex);
-            Instances.singletion(ErrorAdvice.class).handler(ex);
-        } catch (RuntimeException ignore) {
-            // Prevents the exception handler itself from crashing the application.
-            Logger.error(
-                    false,
-                    "Base",
-                    "Default exception handler failed while delegating error advice: handler={}, status=failure, error={}",
-                    "ErrorAdvice",
-                    ignore.getMessage(),
-                    ignore);
-        }
+        MvcErrorAdvice.invokeLegacyService(() -> Instances.singletion(ErrorAdvice.class).handler(ex));
     }
 
 }

@@ -21,21 +21,19 @@ package org.miaixz.bus.spring.web.routing;
 
 import java.util.List;
 import java.util.Set;
-import java.util.regex.Pattern;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.Ordered;
-import org.springframework.http.HttpHeaders;
 import org.springframework.web.ErrorResponse;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.util.ServletRequestPathUtils;
-import org.springframework.web.util.pattern.PathPattern;
-import org.springframework.web.util.pattern.PathPatternParser;
 
 import org.miaixz.bus.core.lang.annotation.Nullable;
+import org.miaixz.bus.errors.ErrorBoundary;
+import org.miaixz.bus.errors.transport.mvc.MvcRouteErrorResolver;
 
 /**
  * Preserves selected MVC HTTP errors for configured route prefixes before shared exception advice runs.
@@ -49,24 +47,14 @@ import org.miaixz.bus.core.lang.annotation.Nullable;
 public final class RouteErrorResolver implements HandlerExceptionResolver, Ordered {
 
     /**
-     * Requires leading and trailing slashes and at least one nonempty segment made up of literal path characters.
+     * Active route error policy, or {@code null} when this listener delegates all errors.
      */
-    private static final Pattern LITERAL_PREFIX = Pattern.compile("/(?:[\\p{L}\\p{M}\\p{N}._~!$&'()+,=:@-]+/)+");
+    private MvcRouteErrorResolver delegate;
 
     /**
-     * Compiled prefixes matched against the parsed MVC request path.
+     * Compiled policy used when replacing the error boundary, or null to delegate.
      */
-    private final List<PathPattern> prefixes;
-
-    /**
-     * HTTP client error statuses eligible for this resolver.
-     */
-    private final Set<Integer> statuses;
-
-    /**
-     * Optional override for the Cache-Control header on handled responses.
-     */
-    private final String cacheControl;
+    private final RouteErrorPolicy policy;
 
     /**
      * Creates a resolver for literal, slash-terminated prefixes and an explicit set of client error statuses.
@@ -79,19 +67,27 @@ public final class RouteErrorResolver implements HandlerExceptionResolver, Order
      *                                  outside the client error range, or the cache value contains a line break
      */
     public RouteErrorResolver(List<String> pathPrefixes, Set<Integer> statuses, String cacheControl) {
-        if (pathPrefixes.isEmpty() || pathPrefixes.stream().anyMatch(prefix -> !validPrefix(prefix))) {
-            throw new IllegalArgumentException(
-                    "route-errors.path-prefixes requires literal paths starting and ending with /");
-        }
-        if (statuses.isEmpty() || statuses.stream().anyMatch(status -> status < 400 || status > 499)) {
-            throw new IllegalArgumentException("route-errors.statuses requires at least one 4xx HTTP status");
-        }
-        if (cacheControl.indexOf('\r') >= 0 || cacheControl.indexOf('\n') >= 0) {
-            throw new IllegalArgumentException("Invalid route-errors.cache-control");
-        }
-        this.prefixes = pathPrefixes.stream().map(PathPatternParser.defaultInstance::parse).toList();
-        this.statuses = Set.copyOf(statuses);
-        this.cacheControl = cacheControl;
+        this(new RouteErrorPolicy(pathPrefixes, statuses, cacheControl));
+    }
+
+    /**
+     * Creates the MVC adapter with the policy selected at startup.
+     *
+     * @param policy active MVC policy, or {@code null} to delegate all errors
+     */
+    public RouteErrorResolver(@Nullable RouteErrorPolicy policy) {
+        this.policy = policy;
+        setErrorBoundary(ErrorBoundary.standard());
+    }
+
+    /**
+     * Uses the application's optional shared error boundary.
+     *
+     * @param boundary classifier and observer for MVC
+     */
+    @Autowired(required = false)
+    public void setErrorBoundary(ErrorBoundary boundary) {
+        this.delegate = new MvcRouteErrorResolver(this.policy == null ? null : this.policy.compiled(), boundary);
     }
 
     /**
@@ -121,48 +117,7 @@ public final class RouteErrorResolver implements HandlerExceptionResolver, Order
             HttpServletResponse response,
             @Nullable Object handler,
             Exception exception) {
-        if (response.isCommitted() || !(exception instanceof ErrorResponse error)
-                || !this.statuses.contains(error.getStatusCode().value()) || !matches(request)) {
-            return null;
-        }
-        error.getHeaders().forEach((name, values) -> values.forEach(value -> response.addHeader(name, value)));
-        if (!this.cacheControl.isBlank()) {
-            response.setHeader(HttpHeaders.CACHE_CONTROL, this.cacheControl);
-        }
-        // Set the status directly to keep servlet error-page handling from replacing the empty response.
-        response.setStatus(error.getStatusCode().value());
-        return new ModelAndView();
-    }
-
-    /**
-     * Matches prefixes using the same parsed path as MVC, excluding the application context and servlet mapping prefix.
-     * Spring decodes each segment individually, so encoded separators cannot create new path segments.
-     *
-     * @param request current servlet request
-     * @return whether a configured prefix matches the parsed path
-     */
-    private boolean matches(HttpServletRequest request) {
-        try {
-            var requestPath = ServletRequestPathUtils.hasParsedRequestPath(request)
-                    ? ServletRequestPathUtils.getParsedRequestPath(request)
-                    : ServletRequestPathUtils.parse(request);
-            return this.prefixes.stream()
-                    .anyMatch(prefix -> prefix.matchStartOfPath(requestPath.pathWithinApplication()) != null);
-        } catch (IllegalArgumentException invalidPath) {
-            // Leave the original exception available to the remaining resolvers.
-            return false;
-        }
-    }
-
-    /**
-     * Checks the literal path syntax and rejects dot segments before a prefix is compiled.
-     *
-     * @param prefix configured path prefix
-     * @return whether the prefix can be used as a literal MVC route prefix
-     */
-    private static boolean validPrefix(String prefix) {
-        return prefix != null && LITERAL_PREFIX.matcher(prefix).matches() && !prefix.contains("/./")
-                && !prefix.contains("/../");
+        return this.delegate.resolve(request, response, exception);
     }
 
 }

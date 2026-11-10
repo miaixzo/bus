@@ -337,8 +337,8 @@ for (const relative of layouts) {
         errors.push(`${ relative }: missing artifact index or invalid layout`);
 }
 
-// POMs, the aggregate module and the third-party container are exempt. All
-// remaining Bus components must provide their own metadata document.
+// POMs, the aggregate module and the third-party container are exempt.
+// The remaining Bus components must provide their own metadata document.
 for (const module of modules.filter(m => ![
         'bus-all',
         'bus-bom',

@@ -23,6 +23,8 @@ import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.miaixz.bus.errors.ComponentFailure;
+import org.miaixz.bus.errors.ErrorType;
 import org.miaixz.bus.core.xyz.MethodKit;
 import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.core.xyz.StringKit;
@@ -38,6 +40,11 @@ import org.miaixz.bus.logger.Logger;
  * @author Kimi Liu
  */
 public class FallbackProvider implements Provider {
+
+    /**
+     * Reports fallback resolution and invocation failures while preserving the selected callback contract.
+     */
+    private static final ComponentFailure FAILURES = new ComponentFailure("bus-limiter", "fallback");
 
     /**
      * A concurrent hash map to cache fallback methods for performance. The key is the generated fallback method name
@@ -93,8 +100,12 @@ public class FallbackProvider implements Provider {
         if (map.containsKey(fallbackMethodName)) {
             fallbackMethod = map.get(fallbackMethodName);
         } else {
-            fallbackMethod = MethodKit.getMethod(bean.getClass(), fallbackMethodName, method.getParameterTypes());
-            map.put(fallbackMethodName, fallbackMethod);
+            try {
+                fallbackMethod = MethodKit.getMethod(bean.getClass(), fallbackMethodName, method.getParameterTypes());
+                map.put(fallbackMethodName, fallbackMethod);
+            } catch (RuntimeException failure) {
+                throw FAILURES.propagate(ErrorType.CONFIGURATION_FAILURE, failure);
+            }
         }
 
         if (ObjectKit.isNull(fallbackMethod)) {
@@ -106,13 +117,18 @@ public class FallbackProvider implements Provider {
                         fallbackMethodName,
                         bean.getClass().getName());
             }
-            throw new RuntimeException(StringKit.format(
+            throw FAILURES.propagate(ErrorType.CONFIGURATION_FAILURE, new RuntimeException(StringKit.format(
                     "Can't find fallback method [{}] in bean [{}]",
                     fallbackMethodName,
-                    bean.getClass().getName()));
+                    bean.getClass().getName())));
         }
 
-        Object result = MethodKit.invoke(bean, fallbackMethod, args);
+        Object result;
+        try {
+            result = MethodKit.invoke(bean, fallbackMethod, args);
+        } catch (RuntimeException failure) {
+            throw FAILURES.propagate(ErrorType.CALLBACK_FAILURE, failure);
+        }
         if (Holder.load().isLogger()) {
             Logger.info(
                     false,

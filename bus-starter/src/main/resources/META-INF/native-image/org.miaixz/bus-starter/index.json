@@ -4,9 +4,8 @@
     "metadata-version": "8.8.0",
     "source-code-url": "https://repo.maven.apache.org/maven2/org/miaixz/bus-starter/$version$/bus-starter-$version$-sources.jar",
     "repository-url": "https://github.com/818000/bus",
-    "test-code-url": "https://github.com/818000/abarth/tree/main/bus-testing/src/test",
     "documentation-url": "https://repo.maven.apache.org/maven2/org/miaixz/bus-starter/$version$/bus-starter-$version$-javadoc.jar",
-    "description": "Bus Starter provides Spring Boot auto-configuration, mapper, metrics, and Bus application starter integration.",
+    "description": "Bus Starter - Spring Boot auto-configuration bundle for conditional beans, starter defaults and startup conventions.",
     "tested-versions": [
       "8.8.0",
       "8.8.1",

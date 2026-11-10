@@ -26,6 +26,8 @@ import java.util.*;
 
 import javax.sql.DataSource;
 
+import org.miaixz.bus.errors.ComponentFailure;
+import org.miaixz.bus.errors.ErrorType;
 import org.miaixz.bus.logger.Logger;
 
 /**
@@ -45,6 +47,11 @@ import org.miaixz.bus.logger.Logger;
  * @author Kimi Liu
  */
 class JdbcRunner {
+
+    /**
+     * Reports cache SQL failures after JDBC has released its local resources.
+     */
+    private static final ComponentFailure FAILURES = new ComponentFailure("bus-cache", "jdbc");
 
     /**
      * The underlying data source from which all connections are obtained.
@@ -128,6 +135,7 @@ class JdbcRunner {
         try (Connection conn = dataSource.getConnection(); Statement stmt = conn.createStatement()) {
             stmt.execute(sql);
         } catch (SQLException e) {
+            reportSqlFailure(e);
             Logger.error(
                     false,
                     "Cache",
@@ -153,6 +161,7 @@ class JdbcRunner {
             }
             return ps.executeUpdate();
         } catch (SQLException e) {
+            reportSqlFailure(e);
             Logger.error(
                     false,
                     "Cache",
@@ -196,6 +205,7 @@ class JdbcRunner {
                 return rows;
             }
         } catch (SQLException e) {
+            reportSqlFailure(e);
             Logger.error(
                     false,
                     "Cache",
@@ -329,6 +339,16 @@ class JdbcRunner {
             return false;
         }
 
+    }
+
+    /**
+     * Distinguishes JDBC timeouts from other backend failures without changing the SQLException contract.
+     *
+     * @param failure original exception from JDBC
+     */
+    private static void reportSqlFailure(SQLException failure) {
+        FAILURES.failed(failure instanceof SQLTimeoutException ? ErrorType.TIMEOUT : ErrorType.DEPENDENCY_UNAVAILABLE,
+                failure);
     }
 
 }

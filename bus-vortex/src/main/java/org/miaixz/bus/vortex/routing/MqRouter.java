@@ -130,13 +130,7 @@ public class MqRouter implements Router<ServerRequest, ServerResponse> {
                                 context.getX_request_ip(),
                                 Map.of("body", body));
                         return executor.execute(context, body).doFinally(signal -> bufferedBody.close());
-                    }).doOnError(
-                            error -> Logger.error(
-                                    true,
-                                    "Vortex",
-                                    "Failed to forward request to topic: protocol=mq, {} - {}",
-                                    context.getAssets().getMethod(),
-                                    error.getMessage()));
+                    });
         });
     }
 

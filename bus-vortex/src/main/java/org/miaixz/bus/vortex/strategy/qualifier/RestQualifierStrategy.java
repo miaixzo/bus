@@ -23,7 +23,6 @@ import org.springframework.web.server.ServerWebExchange;
 
 import org.miaixz.bus.core.Order;
 import org.miaixz.bus.core.basic.normal.Consts;
-import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.cortex.Assets;
 import org.miaixz.bus.cortex.Keying;
 import org.miaixz.bus.logger.Logger;
@@ -86,7 +85,7 @@ public class RestQualifierStrategy extends QualifierStrategy {
                         method,
                         version,
                         verb);
-                return Mono.error(new ValidateException(ErrorCode._100103));
+                return Mono.error(routeMiss(exchange, requestRoute, ErrorCode._100103));
             })).flatMap(match -> {
                 Assets assets = match.assets();
                 context.setAssets(assets);
