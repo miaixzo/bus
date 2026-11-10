@@ -439,6 +439,29 @@
       "defaultValue": "application"
     },
     {
+      "name": "bus.wrapper.route-errors.cache-control",
+      "type": "java.lang.String",
+      "description": "Optional Cache-Control header value for handled route errors."
+    },
+    {
+      "name": "bus.wrapper.route-errors.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Whether to preserve selected MVC HTTP errors on configured route prefixes.",
+      "defaultValue": false
+    },
+    {
+      "name": "bus.wrapper.route-errors.path-prefixes",
+      "type": "java.util.List<java.lang.String>",
+      "description": "Literal MVC route prefixes with leading and trailing slashes. Omit the application context and servlet mapping prefixes.",
+      "defaultValue": []
+    },
+    {
+      "name": "bus.wrapper.route-errors.statuses",
+      "type": "java.util.Set<java.lang.Integer>",
+      "description": "HTTP 4xx statuses to preserve on the configured route prefixes.",
+      "defaultValue": [404, 405, 415]
+    },
+    {
       "name": "bus.zookeeper.enabled",
       "type": "java.lang.Boolean",
       "description": "Whether ZooKeeper integration is enabled.",

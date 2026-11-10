@@ -380,6 +380,7 @@ public class OrderService {
 | 消息转换器   | `bus.wrapper.message-converters.enabled` | `true`                  |
 | 有界主体缓存 | `bus.wrapper.body-cache.enabled`         | `false`                 |
 | 回复建议     | `bus.wrapper.response-advice.enabled`    | `false`                 |
+| 路由错误     | `bus.wrapper.route-errors.enabled`       | `false`                 |
 | 路由前缀     | `bus.wrapper.route-prefix.enabled`       | `false`                 |
 
 ```yaml
@@ -401,6 +402,25 @@ bus:
     route-prefix:
       enabled: false
 ```
+
+需要保留 Spring MVC 原始 HTTP 状态和响应头的路径，可以单独启用路由错误处理。其他路径继续使用应用现有的异常处理。
+
+```yaml
+bus:
+  wrapper:
+    enabled: true
+    route-errors:
+      enabled: true
+      path-prefixes:
+        - /internal/sso/
+        - /internal/application/o/
+      statuses: [404, 405, 415]
+      cache-control: no-store
+```
+
+路径前缀必须是以斜杠开头和结尾的字面路径。配置中省略应用上下文路径和 DispatcherServlet 映射前缀。状态码默认使用
+`404`、`405` 和 `415`。处理器保留异常中的状态码和响应头，例如 `Allow` 与 `Accept`，并返回空响应体。可用
+`cache-control` 覆盖缓存头。该功能处理实现了 `ErrorResponse` 的 Spring MVC 异常，包括选中控制器前发生的路由错误。
 
 消息转换器目标类型策略是：
 

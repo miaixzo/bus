@@ -29,8 +29,8 @@ import org.miaixz.bus.starter.wrapper.WrapperConfiguration;
  * Enables request/response wrapping and XSS protection.
  * <p>
  * This annotation enables the application JSON provider and imports {@link WrapperConfiguration}, which assembles
- * request binding, message conversion, body caching, response advice, and route-prefix support. JSON is enabled because
- * the default wrapper message converter requires the application-wide provider.
+ * request binding, message conversion, body caching, response advice, route prefixes, and route error handling. The
+ * default wrapper message converter uses the application-wide JSON provider.
  *
  * @author Kimi Liu
  */
