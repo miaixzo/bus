@@ -92,7 +92,8 @@ public class CachedBodyFilter implements Filter, Ordered {
         boolean cacheRequest = this.options.shouldCacheRequest(httpRequest);
         long contentLength = httpRequest.getContentLengthLong();
         if (cacheRequest && contentLength > this.options.getRequestLimit()) {
-            ServletErrorHandler.reject(this.errorBoundary, httpResponse, HttpServletResponse.SC_REQUEST_ENTITY_TOO_LARGE, null);
+            ServletErrorHandler
+                    .reject(this.errorBoundary, httpResponse, HttpServletResponse.SC_REQUEST_ENTITY_TOO_LARGE, null);
             return;
         }
 
@@ -102,7 +103,11 @@ public class CachedBodyFilter implements Filter, Ordered {
             try {
                 effectiveRequest = new CachedBodyRequestWrapper(httpRequest, this.options.getRequestLimit());
             } catch (RelevantException overflow) {
-                ServletErrorHandler.reject(this.errorBoundary, httpResponse, HttpServletResponse.SC_REQUEST_ENTITY_TOO_LARGE, overflow);
+                ServletErrorHandler.reject(
+                        this.errorBoundary,
+                        httpResponse,
+                        HttpServletResponse.SC_REQUEST_ENTITY_TOO_LARGE,
+                        overflow);
                 return;
             }
         }

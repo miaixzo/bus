@@ -286,14 +286,12 @@ public class WsExecutor extends Coordinator<Object, ServerResponse> {
         return Flux.fromIterable(activeSessions.values()).flatMap(session -> {
             try {
                 if (session.isOpen()) {
-                    return session.close()
-                            .doOnError(error -> FAILURES.failed(ErrorType.IO_FAILURE, error))
-                            .doOnSuccess(
-                                    v -> Logger.debug(
-                                            false,
-                                            "Vortex",
-                                            "WS webSocket session closed: protocol=ws, {}",
-                                            session.getId()));
+                    return session.close().doOnError(error -> FAILURES.failed(ErrorType.IO_FAILURE, error)).doOnSuccess(
+                            v -> Logger.debug(
+                                    false,
+                                    "Vortex",
+                                    "WS webSocket session closed: protocol=ws, {}",
+                                    session.getId()));
                 } else {
                     return Mono.empty();
                 }

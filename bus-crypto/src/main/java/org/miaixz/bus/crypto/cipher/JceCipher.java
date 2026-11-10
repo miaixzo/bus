@@ -27,14 +27,14 @@ import java.security.spec.AlgorithmParameterSpec;
 
 import javax.crypto.ShortBufferException;
 
-import org.miaixz.bus.errors.ComponentFailure;
-import org.miaixz.bus.errors.ErrorType;
 import org.miaixz.bus.core.lang.Algorithm;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.CryptoException;
 import org.miaixz.bus.core.lang.wrapper.SimpleWrapper;
 import org.miaixz.bus.crypto.Builder;
 import org.miaixz.bus.crypto.Cipher;
+import org.miaixz.bus.errors.ComponentFailure;
+import org.miaixz.bus.errors.ErrorType;
 import org.miaixz.bus.logger.Logger;
 
 /**

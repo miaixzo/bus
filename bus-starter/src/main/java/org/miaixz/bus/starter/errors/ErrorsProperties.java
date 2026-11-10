@@ -66,12 +66,13 @@ public record ErrorsProperties(@DefaultValue Logging logging, @DefaultValue Rout
     }
 
     /**
-     * Selects verified errors that use their HTTP status, approved headers and an empty body.
-     * Other errors use the listener's protocol or legacy response format.
+     * Selects verified errors that use their HTTP status, approved headers and an empty body. Other errors use the
+     * listener's protocol or legacy response format.
      *
      * @param enabled      whether to select native HTTP responses
      * @param targets      explicit listeners sharing the same rule when enabled
-     * @param pathPrefixes literal slash-terminated listener-relative paths, with {@code /} selecting the entire listener
+     * @param pathPrefixes literal slash-terminated listener-relative paths, with {@code /} selecting the entire
+     *                     listener
      * @param statuses     explicit numeric HTTP error statuses from 400 through 599
      * @param cacheControl optional Cache-Control override, or blank to preserve an approved header if present
      * @author Kimi Liu

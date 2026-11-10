@@ -22,9 +22,9 @@ package org.miaixz.bus.image.metric.service;
 import java.io.IOException;
 import java.util.HashMap;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.errors.ComponentFailure;
 import org.miaixz.bus.errors.ErrorType;
-import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.image.Dimse;
 import org.miaixz.bus.image.Status;
 import org.miaixz.bus.image.Tag;
@@ -37,8 +37,8 @@ import org.miaixz.bus.image.metric.pdu.PresentationContext;
 import org.miaixz.bus.logger.Logger;
 
 /**
- * Dispatches incoming DICOM DIMSE requests to registered SOP Class handlers.
- * A service failure is observed through Bus and sent to the peer with its original DIMSE status.
+ * Dispatches incoming DICOM DIMSE requests to registered SOP Class handlers. A service failure is observed through Bus
+ * and sent to the peer with its original DIMSE status.
  *
  * @author Kimi Liu
  */

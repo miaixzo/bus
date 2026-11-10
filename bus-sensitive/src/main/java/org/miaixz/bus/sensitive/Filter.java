@@ -26,10 +26,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.miaixz.bus.errors.ComponentFailure;
-import org.miaixz.bus.errors.ErrorType;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.*;
+import org.miaixz.bus.errors.ComponentFailure;
+import org.miaixz.bus.errors.ErrorType;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.sensitive.magic.annotation.Condition;
 import org.miaixz.bus.sensitive.magic.annotation.Entry;

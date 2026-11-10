@@ -22,12 +22,12 @@ package org.miaixz.bus.extra.json;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 
-import org.miaixz.bus.errors.ComponentFailure;
-import org.miaixz.bus.errors.ErrorType;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.loader.spi.NormalSpiLoader;
 import org.miaixz.bus.core.lang.loader.spi.ServiceLoader;
 import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.errors.ComponentFailure;
+import org.miaixz.bus.errors.ErrorType;
 
 /**
  * Factory for creating JSON provider instances. Explicit selection is deterministic; automatic selection is accepted
@@ -267,7 +267,7 @@ public class JsonFactory {
      *
      * @param provider active provider
      * @param bound    whether the provider has been explicitly installed by an application context
- * @author Kimi Liu
+     * @author Kimi Liu
      */
     private record ProviderState(JsonProvider provider, boolean bound) {
 

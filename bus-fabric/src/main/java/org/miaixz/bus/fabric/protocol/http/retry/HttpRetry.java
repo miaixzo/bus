@@ -386,8 +386,9 @@ public class HttpRetry implements HttpStage {
      * @return {@code true} when policy and request semantics permit replay
      */
     private boolean recover(final HttpRequest request, final Throwable cause, final int attempt) {
-        return RecoveryCoordinator.canReplay(idempotent(request.method()), request.body().repeatable(),
-                RecoveryPlan.Delivery.UNPROCESSED) && recover(cause, attempt);
+        return RecoveryCoordinator
+                .canReplay(idempotent(request.method()), request.body().repeatable(), RecoveryPlan.Delivery.UNPROCESSED)
+                && recover(cause, attempt);
     }
 
     /**

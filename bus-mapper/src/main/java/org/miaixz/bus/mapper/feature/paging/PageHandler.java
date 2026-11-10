@@ -36,11 +36,11 @@ import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.ResultHandler;
 import org.apache.ibatis.session.RowBounds;
 
-import org.miaixz.bus.errors.ComponentFailure;
-import org.miaixz.bus.errors.ErrorType;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.MapperException;
 import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.errors.ComponentFailure;
+import org.miaixz.bus.errors.ErrorType;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.mapper.Args;
 import org.miaixz.bus.mapper.dialect.Dialect;
@@ -920,7 +920,7 @@ public class PageHandler<T> extends AbstractSqlHandler implements MapperHandler<
      * @param reasonable              whether page numbers are normalized
      * @param supportMethodsArguments whether mapper arguments may supply pagination
      * @param params                  immutable pagination parameter mapping
- * @author Kimi Liu
+     * @author Kimi Liu
      */
     private record PageSettings(boolean enabled, boolean reasonable, boolean supportMethodsArguments,
             Map<String, String> params) {

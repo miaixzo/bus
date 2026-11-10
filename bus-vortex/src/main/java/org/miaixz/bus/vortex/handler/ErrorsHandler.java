@@ -88,8 +88,8 @@ public class ErrorsHandler implements WebExceptionHandler {
     /**
      * Serializes the original gateway DTO using the negotiated media type and byte length.
      *
-     * @param exchange exchange whose response is still writable
-     * @param code legacy application error code
+     * @param exchange    exchange whose response is still writable
+     * @param code        legacy application error code
      * @param description legacy description, possibly null
      * @return completion of the legacy response write
      */

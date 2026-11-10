@@ -33,14 +33,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.miaixz.bus.errors.ComponentFailure;
-import org.miaixz.bus.errors.ErrorType;
 import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.errors.ComponentFailure;
+import org.miaixz.bus.errors.ErrorType;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.storage.Builder;
 import org.miaixz.bus.storage.Context;
@@ -140,7 +140,8 @@ public class LocalFileProvider extends AbstractProvider {
                                     .extend(extend).build())
                     .build();
         } catch (Exception e) {
-            FAILURES.failed(e instanceof IllegalArgumentException ? ErrorType.INVALID_REQUEST : ErrorType.IO_FAILURE,
+            FAILURES.failed(
+                    e instanceof IllegalArgumentException ? ErrorType.INVALID_REQUEST : ErrorType.IO_FAILURE,
                     e);
             Errors error = e instanceof IllegalArgumentException ? ErrorCode._113006 : ErrorCode._113010;
             Logger.error(
@@ -225,7 +226,8 @@ public class LocalFileProvider extends AbstractProvider {
                                     .type(Files.probeContentType(filePath)).extend(extend).build())
                     .build();
         } catch (Exception e) {
-            FAILURES.failed(e instanceof IllegalArgumentException ? ErrorType.INVALID_REQUEST : ErrorType.IO_FAILURE,
+            FAILURES.failed(
+                    e instanceof IllegalArgumentException ? ErrorType.INVALID_REQUEST : ErrorType.IO_FAILURE,
                     e);
             Errors error = e instanceof IllegalArgumentException ? ErrorCode._113006 : ErrorCode._113010;
             Logger.error(

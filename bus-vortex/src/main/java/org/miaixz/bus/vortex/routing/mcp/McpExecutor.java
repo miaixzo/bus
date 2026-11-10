@@ -527,7 +527,7 @@ public class McpExecutor extends Coordinator<ServerRequest, ServerResponse> {
      * Rebuilds recognizable JSON-RPC errors even when the upstream HTTP status is successful. Successful JSON-RPC data
      * is left byte-for-byte intact.
      *
-     * @param bytes detached response or SSE data
+     * @param bytes       detached response or SSE data
      * @param expectsJson whether malformed content is a protocol error
      * @return normalized error document, or null if the original body can pass through
      */
@@ -567,29 +567,35 @@ public class McpExecutor extends Coordinator<ServerRequest, ServerResponse> {
     /**
      * Creates a fixed JSON-RPC error without copying upstream message or data.
      *
-     * @param id numeric identifier or JSON null
+     * @param id    numeric identifier or JSON null
      * @param error approved JSON-RPC error definition
      * @return public error document
      */
     private static JsonValue.ObjectValue rpcError(JsonValue id, PublicHttpError error) {
         return new JsonValue.ObjectValue(Map.of(
-                "jsonrpc", new JsonValue.StringValue("2.0"),
-                "id", id,
-                "error", new JsonValue.ObjectValue(Map.of(
-                        "code", new JsonValue.NumberValue(new BigDecimal(error.code())),
-                        "message", new JsonValue.StringValue(error.description())))));
+                "jsonrpc",
+                new JsonValue.StringValue("2.0"),
+                "id",
+                id,
+                "error",
+                new JsonValue.ObjectValue(Map.of(
+                        "code",
+                        new JsonValue.NumberValue(new BigDecimal(error.code())),
+                        "message",
+                        new JsonValue.StringValue(error.description())))));
     }
 
     /**
      * Filters complete SSE frames so an error split across network chunks is still recognized.
      *
-     * @param body response body owned by the relay
+     * @param body     response body owned by the relay
      * @param exchange active gateway exchange
      * @return SSE frames with safe error payloads
      */
     private static Flux<DataBuffer> filterSseErrors(Flux<DataBuffer> body, ServerWebExchange exchange) {
-        var decoder = StringDecoder.allMimeTypes(List.of("\r\n\r\n", "\r\n\n", "\n\r\n", "\r\n\r",
-                "\r\r\n", "\n\n", "\r\r", "\n\r"), false);
+        var decoder = StringDecoder.allMimeTypes(
+                List.of("\r\n\r\n", "\r\n\n", "\n\r\n", "\r\n\r", "\r\r\n", "\n\n", "\r\r", "\n\r"),
+                false);
         decoder.setMaxInMemorySize(Math.toIntExact(Holder.get().getMaxBufferedResponseSize()));
         return decoder.decode(body, ResolvableType.forClass(String.class), MediaType.TEXT_EVENT_STREAM, Map.of())
                 .map(frame -> DefaultDataBufferFactory.sharedInstance.wrap(publicSseFrame(frame, exchange)));
@@ -598,7 +604,7 @@ public class McpExecutor extends Coordinator<ServerRequest, ServerResponse> {
     /**
      * Recognizes named error events and JSON-RPC error messages within an SSE frame.
      *
-     * @param frame complete decoded event with its original delimiter
+     * @param frame    complete decoded event with its original delimiter
      * @param exchange active gateway exchange for error observation
      * @return original frame bytes or a safe replacement event
      */

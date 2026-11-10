@@ -28,9 +28,9 @@ import java.util.Enumeration;
 
 import org.springframework.boot.loader.launch.LaunchedClassLoader;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.errors.ComponentFailure;
 import org.miaixz.bus.errors.ErrorType;
-import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.shade.safety.Builder;
 import org.miaixz.bus.shade.safety.algorithm.Key;

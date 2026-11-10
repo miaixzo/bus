@@ -221,16 +221,21 @@ public class Metrics {
     }
 
     /**
-     * Connects standard Bus errors to the active metrics provider. Terminal failures and failed attempts use
-     * separate counter names and stable component, operation and error type tags.
+     * Connects standard Bus errors to the active metrics provider. Terminal failures and failed attempts use separate
+     * counter names and stable component, operation and error type tags.
      *
      * @return subscription to close before shutting down the metrics integration
      */
     public static ErrorBoundary.Subscription observeErrors() {
-        return ErrorBoundary.subscribeStandard(event -> counter(
-                event.terminal() ? "bus.errors.failures" : "bus.errors.attempts",
-                "component", event.context().listener(), "operation", event.context().protocol(),
-                "error.type", event.type().id()).increment());
+        return ErrorBoundary.subscribeStandard(
+                event -> counter(
+                        event.terminal() ? "bus.errors.failures" : "bus.errors.attempts",
+                        "component",
+                        event.context().listener(),
+                        "operation",
+                        event.context().protocol(),
+                        "error.type",
+                        event.type().id()).increment());
     }
 
     /**
@@ -313,8 +318,8 @@ public class Metrics {
 
     /**
      * Provider facade ownership modes.
- *
- * @author Kimi Liu
+     *
+     * @author Kimi Liu
      */
     private enum Mode {
         /**
@@ -342,7 +347,7 @@ public class Metrics {
      * @param provider   active provider, or {@code null}
      * @param owner      lease owner, or {@code null}
      * @param leaseToken unique lease token, or {@code null}
- * @author Kimi Liu
+     * @author Kimi Liu
      */
     private record State(Mode mode, Provider provider, Object owner, Object leaseToken) {
     }

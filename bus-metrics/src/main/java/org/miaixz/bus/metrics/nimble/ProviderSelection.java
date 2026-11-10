@@ -24,9 +24,9 @@ import java.util.Comparator;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.errors.ComponentFailure;
 import org.miaixz.bus.errors.ErrorType;
-import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.metrics.Provider;
 
 /**
@@ -125,8 +125,8 @@ public final class ProviderSelection {
 
     /**
      * Supported provider selections.
- *
- * @author Kimi Liu
+     *
+     * @author Kimi Liu
      */
     public enum Type {
 
@@ -179,7 +179,7 @@ public final class ProviderSelection {
      * @param available whether the candidate can be selected
      * @param reason    stable explanation when the candidate is unavailable
      * @param factory   lazy provider factory when the candidate is available
- * @author Kimi Liu
+     * @author Kimi Liu
      */
     public record Candidate(Type type, boolean external, boolean available, String reason,
             Optional<Supplier<Provider>> factory) {
