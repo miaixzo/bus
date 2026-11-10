@@ -440,8 +440,8 @@ public class ExceptionKit {
     }
 
     /**
-     * Returns the deepest distinct cause without recursion. For a cycle, the last cause before the repeated
-     * exception is returned.
+     * Returns the deepest distinct cause without recursion. For a cycle, the last cause before the repeated exception
+     * is returned.
      *
      * @param throwable starting exception
      * @return deepest distinct cause, or the starting exception when it has no distinct cause

@@ -132,8 +132,8 @@ public class AccessHandler extends AbstractHandler {
      * Asynchronous completion method, executed after the request is fully completed (whether successfully or with an
      * exception).
      * <p>
-     * This method is typically used for cleanup, resource release, or final logging. It records request completion and leaves
-     * exception diagnostics to the gateway error boundary.
+     * This method is typically used for cleanup, resource release, or final logging. It records request completion and
+     * leaves exception diagnostics to the gateway error boundary.
      * </p>
      *
      * @param exchange  The current {@link ServerWebExchange} object, containing the HTTP request and response.

@@ -783,7 +783,8 @@ public class SamlServerDriver implements ProtocolDriver<SamlServerOptions> {
                 factory.newXMLSignature(signedInfo, null).sign(signingContext);
                 Node signature = null;
                 for (Node child = root.getFirstChild(); child != null; child = child.getNextSibling()) {
-                    if (XMLSignature.XMLNS.equals(child.getNamespaceURI()) && "Signature".equals(child.getLocalName())) {
+                    if (XMLSignature.XMLNS.equals(child.getNamespaceURI())
+                            && "Signature".equals(child.getLocalName())) {
                         if (signature != null) {
                             throw new ValidateException("SAML signing produced an ambiguous Signature element");
                         }

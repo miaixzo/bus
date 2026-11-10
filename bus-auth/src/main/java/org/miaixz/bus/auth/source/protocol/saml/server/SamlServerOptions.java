@@ -162,8 +162,8 @@ public record SamlServerOptions(String entityId, Endpoint singleSignOnServiceEnd
         try {
             final URI uri = new URI(value);
             if (!uri.isAbsolute() || (!allowFragment && uri.getRawFragment() != null)) {
-                throw new ValidateException(
-                        label + (allowFragment ? " must be an absolute URI" : " must be an absolute fragment-free URI"));
+                throw new ValidateException(label
+                        + (allowFragment ? " must be an absolute URI" : " must be an absolute fragment-free URI"));
             }
             return value;
         } catch (URISyntaxException exception) {

@@ -51,10 +51,10 @@ public class RocketMQConsumer implements Consumer {
      * The native Apache RocketMQ push consumer object, responsible for receiving messages.
      */
     private final MQPushConsumer consumer;
-/**
- * Shared classification and observation for RocketMQ batch failures.
- */
 
+    /**
+     * Shared classification and observation for RocketMQ batch failures.
+     */
     private final ErrorBoundary boundary;
 
     /**

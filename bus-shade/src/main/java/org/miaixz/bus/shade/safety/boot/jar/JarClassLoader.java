@@ -27,9 +27,9 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.Enumeration;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.errors.ComponentFailure;
 import org.miaixz.bus.errors.ErrorType;
-import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.shade.safety.Builder;
 import org.miaixz.bus.shade.safety.algorithm.Key;

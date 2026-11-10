@@ -23,11 +23,11 @@ import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.miaixz.bus.errors.ComponentFailure;
-import org.miaixz.bus.errors.ErrorType;
 import org.miaixz.bus.core.xyz.MethodKit;
 import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.errors.ComponentFailure;
+import org.miaixz.bus.errors.ErrorType;
 import org.miaixz.bus.limiter.Holder;
 import org.miaixz.bus.limiter.Provider;
 import org.miaixz.bus.limiter.magic.StrategyMode;
@@ -117,10 +117,12 @@ public class FallbackProvider implements Provider {
                         fallbackMethodName,
                         bean.getClass().getName());
             }
-            throw FAILURES.propagate(ErrorType.CONFIGURATION_FAILURE, new RuntimeException(StringKit.format(
-                    "Can't find fallback method [{}] in bean [{}]",
-                    fallbackMethodName,
-                    bean.getClass().getName())));
+            throw FAILURES.propagate(
+                    ErrorType.CONFIGURATION_FAILURE,
+                    new RuntimeException(StringKit.format(
+                            "Can't find fallback method [{}] in bean [{}]",
+                            fallbackMethodName,
+                            bean.getClass().getName())));
         }
 
         Object result;

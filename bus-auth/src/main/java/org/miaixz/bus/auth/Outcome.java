@@ -25,11 +25,11 @@ import java.util.concurrent.CompletionStage;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import org.miaixz.bus.errors.ComponentFailure;
-import org.miaixz.bus.errors.ErrorType;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.errors.ComponentFailure;
+import org.miaixz.bus.errors.ErrorType;
 import org.miaixz.bus.extra.json.JsonValue;
 
 /**
@@ -69,7 +69,8 @@ public interface Outcome<T> {
         try {
             stage = operation.get();
         } catch (RuntimeException failure) {
-            return CompletableFuture.completedFuture(operationFailed("Operation failed before returning a stage", failure));
+            return CompletableFuture
+                    .completedFuture(operationFailed("Operation failed before returning a stage", failure));
         }
         if (stage == null) {
             return CompletableFuture.completedFuture(operationFailed("Operation returned no stage", null));

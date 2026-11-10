@@ -301,20 +301,23 @@ public final class ReactiveErrorHandler implements WebExceptionHandler {
      * messages, so this operation neither claims its termination nor changes its committed status.
      *
      * @param exchange active gateway exchange for correlation
-     * @param type shared failure classification
-     * @param error code-owned public error definition
+     * @param type     shared failure classification
+     * @param error    code-owned public error definition
      * @param renderer serializer for one protocol frame
-     * @param <T> encoded frame type
+     * @param <T>      encoded frame type
      * @return safe protocol frame
      */
-    public static <T> T renderFrame(ServerWebExchange exchange, ErrorType type, PublicHttpError error,
+    public static <T> T renderFrame(
+            ServerWebExchange exchange,
+            ErrorType type,
+            PublicHttpError error,
             Function<PublicHttpError, T> renderer) {
         HttpErrorPolicy policy = exchange.getAttribute(POLICY);
         var context = new ErrorContext("vortex", "sse-frame", ErrorContext.Phase.OPEN,
                 policy == null ? 0 : policy.version());
         var operation = ErrorBoundary.standard().open();
-        var decision = operation.decide(context,
-                new FailureFacts(FailureFacts.Source.LOCAL, ErrorEngine.descriptor(type), 0), null);
+        var decision = operation
+                .decide(context, new FailureFacts(FailureFacts.Source.LOCAL, ErrorEngine.descriptor(type), 0), null);
         return operation.complete(context, decision, null, exchange.getRequest().getId(), () -> renderer.apply(error));
     }
 

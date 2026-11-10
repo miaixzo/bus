@@ -23,8 +23,6 @@ import java.util.*;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.miaixz.bus.errors.ComponentFailure;
-import org.miaixz.bus.errors.ErrorType;
 import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.basic.entity.Tenant;
 import org.miaixz.bus.core.center.date.Chrono;
@@ -42,6 +40,8 @@ import org.miaixz.bus.cortex.magic.runtime.CortexLifecycle;
 import org.miaixz.bus.cortex.magic.runtime.DiagnosticsSnapshot;
 import org.miaixz.bus.cortex.registry.RegistryChange;
 import org.miaixz.bus.cortex.registry.RegistryIdentity;
+import org.miaixz.bus.errors.ComponentFailure;
+import org.miaixz.bus.errors.ErrorType;
 import org.miaixz.bus.logger.Logger;
 
 /**

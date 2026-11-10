@@ -27,8 +27,6 @@ import java.nio.file.Path;
 import java.util.*;
 import java.util.Map.Entry;
 
-import org.miaixz.bus.errors.ComponentFailure;
-import org.miaixz.bus.errors.ErrorType;
 import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.io.LineReader;
 import org.miaixz.bus.core.io.resource.Resource;
@@ -41,6 +39,8 @@ import org.miaixz.bus.core.text.CharsBacker;
 import org.miaixz.bus.core.xyz.FileKit;
 import org.miaixz.bus.core.xyz.PatternKit;
 import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.errors.ComponentFailure;
+import org.miaixz.bus.errors.ErrorType;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.setting.format.*;
 import org.miaixz.bus.setting.magic.GroupedMap;

@@ -169,7 +169,8 @@ public class Egress {
             var coordinator = new RecoveryCoordinator(plan);
             var operation = ErrorBoundary.standard().open();
             var context = new ErrorContext("vortex-egress", scene == null ? "retry" : scene, ErrorContext.Phase.LOCAL);
-            var facts = new FailureFacts(FailureFacts.Source.LOCAL, ErrorEngine.descriptor(ErrorType.DEPENDENCY_UNAVAILABLE), 0);
+            var facts = new FailureFacts(FailureFacts.Source.LOCAL,
+                    ErrorEngine.descriptor(ErrorType.DEPENDENCY_UNAVAILABLE), 0);
             return Retry.backoff(maxRetries, Duration.ofMillis(Holder.outboundRetryBackoffMillis()))
                     .maxBackoff(Duration.ofMillis(Holder.outboundRetryMaxBackoffMillis()))
                     .filter(
@@ -178,7 +179,12 @@ public class Egress {
                     .doBeforeRetry(retrySignal -> {
                         Throwable failure = retrySignal.failure();
                         var decision = operation.decide(context, facts, failure);
-                        operation.observe(context, decision, false, failure, null,
+                        operation.observe(
+                                context,
+                                decision,
+                                false,
+                                failure,
+                                null,
                                 "retry-" + (retrySignal.totalRetries() + 1) + "-of-" + maxRetries);
                     }).onRetryExhaustedThrow((retryBackoffSpec, retrySignal) -> retrySignal.failure())
                     .generateCompanion(signals);

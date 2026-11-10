@@ -302,7 +302,13 @@ public class BaseAdvice extends Controller {
      */
     private Message<Void> handle(Exception failure, Class<? extends Exception> selected) {
         return MvcErrorAdvice.handle(
-                this.errorBoundary, failure, selected, this::defaultExceptionHandler, this::write, this::write, this::write);
+                this.errorBoundary,
+                failure,
+                selected,
+                this::defaultExceptionHandler,
+                this::write,
+                this::write,
+                this::write);
     }
 
     /**

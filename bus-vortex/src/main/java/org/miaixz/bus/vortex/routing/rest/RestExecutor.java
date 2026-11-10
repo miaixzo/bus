@@ -64,8 +64,8 @@ import reactor.core.publisher.Mono;
  * <p>
  * This executor encapsulates all the logic for using Spring's {@link WebClient} to act as a reverse proxy. It builds
  * the downstream request based on the provided {@link Assets} and {@link Context}, sends it, and then transforms the
- * successful downstream response back into a {@link ServerResponse} for the original client. Upstream HTTP
- * errors such as 415 are handled by {@code bus-errors} with the verified status and approved response headers.
+ * successful downstream response back into a {@link ServerResponse} for the original client. Upstream HTTP errors such
+ * as 415 are handled by {@code bus-errors} with the verified status and approved response headers.
  * <p>
  * The route asset explicitly selects bounded atomic relay, realtime streaming or protected file download. Atomic
  * responses retain a bounded logical-byte lease through the network write; streaming modes preserve downstream

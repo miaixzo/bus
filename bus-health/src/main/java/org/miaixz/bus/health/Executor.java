@@ -23,12 +23,12 @@ import java.io.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import org.miaixz.bus.errors.ComponentFailure;
-import org.miaixz.bus.errors.ErrorType;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
+import org.miaixz.bus.errors.ComponentFailure;
+import org.miaixz.bus.errors.ErrorType;
 import org.miaixz.bus.logger.Logger;
 
 /**

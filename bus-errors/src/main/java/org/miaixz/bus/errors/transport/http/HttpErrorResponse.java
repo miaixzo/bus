@@ -37,8 +37,12 @@ public record HttpErrorResponse(HttpStatusCode status, HttpHeaders headers) {
     /**
      * Authentication challenges with fixed public values for framework errors.
      */
-    private static final Set<String> CHALLENGES = Set.of("Basic", "Bearer", "Bearer error=\"invalid_token\"",
-            "Bearer error=\"insufficient_scope\"", "Bearer error=\"invalid_request\"");
+    private static final Set<String> CHALLENGES = Set.of(
+            "Basic",
+            "Bearer",
+            "Bearer error=\"invalid_token\"",
+            "Bearer error=\"insufficient_scope\"",
+            "Bearer error=\"invalid_request\"");
 
     /**
      * Copies legal repeated header values without retaining writable aliases.
@@ -99,7 +103,7 @@ public record HttpErrorResponse(HttpStatusCode status, HttpHeaders headers) {
     /**
      * Validates the syntax or fixed vocabulary of a permitted protocol header.
      *
-     * @param name permitted header name
+     * @param name  permitted header name
      * @param value proposed header value
      * @return whether the value can be included in the public response
      */
@@ -108,8 +112,9 @@ public record HttpErrorResponse(HttpStatusCode status, HttpHeaders headers) {
             return false;
         }
         if (HttpHeaders.ALLOW.equalsIgnoreCase(name)) {
-            return value.matches("(GET|HEAD|POST|PUT|PATCH|DELETE|OPTIONS|TRACE|CONNECT)"
-                    + "(, *?(GET|HEAD|POST|PUT|PATCH|DELETE|OPTIONS|TRACE|CONNECT))*");
+            return value.matches(
+                    "(GET|HEAD|POST|PUT|PATCH|DELETE|OPTIONS|TRACE|CONNECT)"
+                            + "(, *?(GET|HEAD|POST|PUT|PATCH|DELETE|OPTIONS|TRACE|CONNECT))*");
         }
         if (HttpHeaders.WWW_AUTHENTICATE.equalsIgnoreCase(name)) {
             return CHALLENGES.contains(value);
@@ -126,8 +131,9 @@ public record HttpErrorResponse(HttpStatusCode status, HttpHeaders headers) {
             }
         }
         if (HttpHeaders.CACHE_CONTROL.equalsIgnoreCase(name)) {
-            return value.matches("(no-store|no-cache|private|public|max-age=[0-9]{1,10}|must-revalidate)"
-                    + "(, *?(no-store|no-cache|private|public|max-age=[0-9]{1,10}|must-revalidate))*");
+            return value.matches(
+                    "(no-store|no-cache|private|public|max-age=[0-9]{1,10}|must-revalidate)"
+                            + "(, *?(no-store|no-cache|private|public|max-age=[0-9]{1,10}|must-revalidate))*");
         }
         try {
             return !MediaType.parseMediaTypes(value).isEmpty();

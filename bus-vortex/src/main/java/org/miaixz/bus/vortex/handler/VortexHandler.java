@@ -205,7 +205,8 @@ public class VortexHandler {
                                             path,
                                             serverResponse.statusCode().value());
                                 }
-                            }).onErrorResume(Throwable.class,
+                            }).onErrorResume(
+                                    Throwable.class,
                                     error -> executePostHandlersThenError(exchange, router, error));
                 }
 
@@ -236,8 +237,8 @@ public class VortexHandler {
                                         path,
                                         serverResponse.statusCode().value());
                             }
-                        }).onErrorResume(Throwable.class,
-                                error -> executePostHandlersThenError(exchange, router, error));
+                        })
+                        .onErrorResume(Throwable.class, error -> executePostHandlersThenError(exchange, router, error));
             });
         });
     }
@@ -309,9 +310,13 @@ public class VortexHandler {
         return executePostHandlers(exchange, router, null, error).onErrorResume(handlerError -> {
             if (handlerError != error) {
                 error.addSuppressed(handlerError);
-                var phase = exchange.getResponse().isCommitted() ? ErrorContext.Phase.COMMITTED : ErrorContext.Phase.OPEN;
-                ErrorBoundary.diagnose(new ErrorContext("vortex", "http", phase), "vortex-post-handler",
-                        handlerError, exchange.getRequest().getId());
+                var phase = exchange.getResponse().isCommitted() ? ErrorContext.Phase.COMMITTED
+                        : ErrorContext.Phase.OPEN;
+                ErrorBoundary.diagnose(
+                        new ErrorContext("vortex", "http", phase),
+                        "vortex-post-handler",
+                        handlerError,
+                        exchange.getRequest().getId());
             }
             return Mono.empty();
         }).then(Mono.error(error));

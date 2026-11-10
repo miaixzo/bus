@@ -347,7 +347,8 @@ class JdbcRunner {
      * @param failure original exception from JDBC
      */
     private static void reportSqlFailure(SQLException failure) {
-        FAILURES.failed(failure instanceof SQLTimeoutException ? ErrorType.TIMEOUT : ErrorType.DEPENDENCY_UNAVAILABLE,
+        FAILURES.failed(
+                failure instanceof SQLTimeoutException ? ErrorType.TIMEOUT : ErrorType.DEPENDENCY_UNAVAILABLE,
                 failure);
     }
 

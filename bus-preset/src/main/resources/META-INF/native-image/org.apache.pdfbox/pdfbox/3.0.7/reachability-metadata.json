@@ -1,0 +1,10 @@
+{
+  "resources": [
+    {
+      "condition": {
+        "typeReached": "org.apache.pdfbox.pdmodel.font.Standard14Fonts"
+      },
+      "glob": "org/apache/pdfbox/resources/afm/*.afm"
+    }
+  ]
+}

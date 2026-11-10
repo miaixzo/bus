@@ -111,7 +111,8 @@ public class SlugRequestStrategy extends RequestStrategy {
             Set<HttpMethod> methods = exchange.getAttribute(ALLOWED_METHODS);
             if (methods != null) {
                 if (!ReactiveErrorHandler.usesNativeStatus(exchange, HttpStatus.METHOD_NOT_ALLOWED)) {
-                    return Mono.error(new RouteFailure(ErrorCode._BLOCKED, HttpStatus.METHOD_NOT_ALLOWED, HttpHeaders.EMPTY));
+                    return Mono.error(
+                            new RouteFailure(ErrorCode._BLOCKED, HttpStatus.METHOD_NOT_ALLOWED, HttpHeaders.EMPTY));
                 }
                 HttpHeaders headers = new HttpHeaders();
                 headers.setAllow(methods);

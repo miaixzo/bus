@@ -37,8 +37,8 @@ public class Tracer {
     }
 
     /**
-     * Attaches a tracing sink to the standard component failure pipeline. The sink runs on the reporting thread,
-     * so it can attach the event to the active trace according to the application's tracing policy.
+     * Attaches a tracing sink to the standard component failure pipeline. The sink runs on the reporting thread, so it
+     * can attach the event to the active trace according to the application's tracing policy.
      *
      * @param observer tracing sink for safe component failure events
      * @return subscription to close with the tracing integration
