@@ -42,7 +42,6 @@ import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.cortex.Assets;
 import org.miaixz.bus.cortex.Keying;
 import org.miaixz.bus.cortex.Type;
-import org.miaixz.bus.errors.ErrorType;
 import org.miaixz.bus.errors.transport.http.RouteFailure;
 import org.miaixz.bus.errors.transport.reactive.ReactiveErrorHandler;
 import org.miaixz.bus.logger.Logger;
@@ -212,7 +211,7 @@ public class QualifierStrategy extends AbstractStrategy {
         if (!route.routable()) {
             return new ValidateException(legacy);
         }
-        if (ReactiveErrorHandler.usesNativeRule(exchange, ErrorType.METHOD_NOT_ALLOWED)) {
+        if (ReactiveErrorHandler.needsRouteMethodFacts(exchange)) {
             Set<HttpMethod> methods = this.registry.publicMethods(route);
             if (!methods.isEmpty()) {
                 HttpHeaders headers = new HttpHeaders();

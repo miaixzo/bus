@@ -34,11 +34,8 @@ import java.util.Objects;
  *
  * @author Kimi Liu
  */
-public final class BusException extends RuntimeException {
+public final class ClassifiedException extends RuntimeException {
 
-    /**
-     * Serialization version of the exception fields.
-     */
     @Serial
     private static final long serialVersionUID = 1L;
 
@@ -53,7 +50,7 @@ public final class BusException extends RuntimeException {
      * @param error nonnull error descriptor
      * @throws NullPointerException if the descriptor is {@code null}
      */
-    public BusException(ErrorDescriptor error) {
+    public ClassifiedException(ErrorDescriptor error) {
         this(error, null);
     }
 
@@ -64,7 +61,7 @@ public final class BusException extends RuntimeException {
      * @param cause original diagnostic failure, or {@code null} if absent
      * @throws NullPointerException if the descriptor is {@code null}
      */
-    public BusException(ErrorDescriptor error, Throwable cause) {
+    public ClassifiedException(ErrorDescriptor error, Throwable cause) {
         super(Objects.requireNonNull(error, "error").messageKey(), cause);
         this.error = error;
     }

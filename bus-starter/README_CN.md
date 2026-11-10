@@ -380,7 +380,6 @@ public class OrderService {
 | 消息转换器   | `bus.wrapper.message-converters.enabled` | `true`                  |
 | 有界主体缓存 | `bus.wrapper.body-cache.enabled`         | `false`                 |
 | 回复建议     | `bus.wrapper.response-advice.enabled`    | `false`                 |
-| 路由错误     | `bus.wrapper.route-errors.enabled`       | `false`                 |
 | 路由前缀     | `bus.wrapper.route-prefix.enabled`       | `false`                 |
 
 ```yaml
@@ -403,42 +402,6 @@ bus:
       enabled: false
 ```
 
-需要保留 MVC 或 Vortex 原始 HTTP 状态和响应头的路径，可以单独启用路由错误处理。其他路径继续使用所在监听端口的异常处理。
-
-```yaml
-bus:
-  wrapper:
-    enabled: true
-    route-errors:
-      enabled: true
-      path-prefixes:
-        - /internal/sso/
-        - /internal/application/o/
-      statuses: [404, 405, 415]
-      cache-control: no-store
-```
-
-路径前缀必须是以斜杠开头和结尾的字面路径，相对于所选监听入口。MVC 前缀省略应用上下文路径和 Servlet 映射前缀。
-状态码默认使用 `404`、`405` 和 `415`。命中规则的 `ErrorResponse` 保留异常中的状态码和响应头，例如 `Allow` 与
-`Accept`，并返回空响应体。可用 `cache-control` 覆盖缓存头。
-
-`targets` 默认是 `[mvc]`。配置 `[vortex]` 可仅在 Vortex 网关启用，配置 `[mvc, vortex]` 可在两个监听入口同时启用。
-两端共用 `path-prefixes`，也可通过 `mvc.path-prefixes` 或 `vortex.path-prefixes` 为对应入口替换公共列表。
-
-```yaml
-bus:
-  wrapper:
-    enabled: true
-    route-errors:
-      enabled: true
-      targets: [vortex]
-      path-prefixes: [/router/mcp/]
-      cache-control: no-store
-```
-
-各入口在启动时校验自己的生效规则。网关的路由和授权失败仍由现有处理链判定，路由错误策略负责输出其中的 HTTP 异常。
-独立网关的运行环境若缺少 Spring MVC，请设置 `bus.wrapper.message-converters.enabled=false` 以关闭 Wrapper 的 MVC 转换器。
-
 消息转换器目标类型策略是：
 
 - `framework`：允许Bus框架类型、内置标量/容器类型和显式规则；
@@ -450,6 +413,48 @@ bus:
 
 请求对象绑定需要 `@RequestObject`，排除框架和简单标量类型，并且不允许请求 输入以替换受信任的租户上下文。正文缓存是有限的；多部分和响应诊断缓存仍然存在
 选择加入。
+
+## 统一 HTTP 错误响应
+
+`bus.errors.routing` 选择哪些已确认的错误使用原生 HTTP 状态、经过校验的响应头和空响应体。其余错误继续使用所属入口的协议格式或兼容响应格式。关闭路由规则后，`bus-errors` 仍负责保护对外错误内容。
+
+| 配置项 | 默认值 | 作用 |
+|---|---|---|
+| `bus.errors.routing.enabled` | `false` | 启用匹配错误的原生 HTTP 响应。 |
+| `bus.errors.routing.targets` | 空集合 | 启用时必填。可选 `[mvc]`、`[vortex]` 或 `[mvc, vortex]`。`vortex` 只选网关监听端口，独立的 Spring MVC 管理端口属于 `mvc`。 |
+| `bus.errors.routing.path-prefixes` | 空列表 | 启用时必填。填写以 `/` 开头和结尾的字面路径，`/` 覆盖所选入口的所有路径。MVC 前缀省略应用上下文和 Servlet 映射前缀。 |
+| `bus.errors.routing.statuses` | 空集合 | 启用时必填。显式填写 `400` 到 `599` 的数字状态码。监听入口、路径和已确认的状态码同时匹配时生效。 |
+| `bus.errors.routing.cache-control` | 空字符串 | 覆盖匹配的原生 HTTP 响应的 `Cache-Control`。留空时保留可用且经过校验的缓存头。 |
+| `bus.errors.logging.enabled` | `true` | 启用发送至 `bus-logger` 的标准错误日志订阅。错误响应独立于该订阅。 |
+
+两个目标共用同一组路径和状态码。旧的 `bus.wrapper.route-errors` 配置应迁移到这里。Vortex 网关可独立于 Wrapper 使用这套规则。独立网关缺少 Spring MVC 时，可通过 `bus.wrapper.message-converters.enabled=false` 关闭 Wrapper 的 MVC 转换器。
+
+MVC 私有协议路径示例。
+
+```yaml
+bus:
+  errors:
+    routing:
+      enabled: true
+      targets: [mvc]
+      path-prefixes: [/internal/sso/, /internal/application/o/, /internal/application/saml/]
+      statuses: [404, 405, 415]
+      cache-control: no-store
+```
+
+Vortex 网关示例。
+
+```yaml
+bus:
+  errors:
+    routing:
+      enabled: true
+      targets: [vortex]
+      path-prefixes: [/]
+      statuses: [404, 405, 415, 429]
+```
+
+监听入口先确认错误事实。MVC 使用 Spring 的 `ErrorResponse`，Vortex 还使用路由确认的错误及上游状态错误。存在可用且经过校验的响应头时，`405` 可保留 `Allow`，`415` 可保留 `Accept`。网关过载直接返回的 `503` 等响应仍按各自的协议契约输出。REST 的具体条件见 [Bus Vortex](../bus-vortex/README_CN.md#网关错误响应)。
 
 ## 客户端和服务生命周期
 

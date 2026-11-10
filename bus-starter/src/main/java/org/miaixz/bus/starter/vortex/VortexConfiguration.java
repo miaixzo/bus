@@ -26,6 +26,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -49,11 +50,13 @@ import org.miaixz.bus.cortex.Keying;
 import org.miaixz.bus.cortex.builtin.RegistryGenerator;
 import org.miaixz.bus.errors.ErrorBoundary;
 import org.miaixz.bus.errors.transport.reactive.ReactiveErrorHandler;
+import org.miaixz.bus.errors.transport.reactive.ReactiveResponseGuard;
 import org.miaixz.bus.spring.boot.condition.ConditionalOnEnabled;
 import org.miaixz.bus.starter.GeniusBuilder;
 import org.miaixz.bus.starter.annotation.EnableVortex;
-import org.miaixz.bus.starter.wrapper.routing.RouteErrorProperties;
-import org.miaixz.bus.starter.wrapper.routing.RouteErrorProperties.Target;
+import org.miaixz.bus.starter.errors.ErrorsConfiguration;
+import org.miaixz.bus.starter.errors.ErrorsProperties;
+import org.miaixz.bus.starter.errors.ErrorsProperties.Target;
 import org.miaixz.bus.vortex.*;
 import org.miaixz.bus.vortex.filter.AdmissionFilter;
 import org.miaixz.bus.vortex.filter.PrimaryFilter;
@@ -129,6 +132,7 @@ import reactor.netty.http.server.HttpServer;
  * @see Strategy
  */
 @EnableConfigurationProperties(value = { VortexProperties.class })
+@ImportAutoConfiguration(ErrorsConfiguration.class)
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnClass(name = { "org.miaixz.bus.vortex.Context", "reactor.netty.http.server.HttpServer" })
 @ConditionalOnEnabled(annotation = EnableVortex.class, prefix = GeniusBuilder.VORTEX)
@@ -150,9 +154,9 @@ public class VortexConfiguration {
     private final VortexProperties properties;
 
     /**
-     * Shared Wrapper settings when that integration is active.
+     * Shared error settings used to select the gateway route policy.
      */
-    private final Optional<RouteErrorProperties> routeErrors;
+    private final Optional<ErrorsProperties> routeErrors;
 
     /**
      * Application error boundary shared by gateway admission and exception handling.
@@ -173,9 +177,9 @@ public class VortexConfiguration {
      * Initializes the gateway with its transport settings and the shared route error configuration.
      *
      * @param properties  bound gateway configuration properties
-     * @param routeErrors optional Wrapper route error settings
+     * @param routeErrors optional shared error settings
      */
-    public VortexConfiguration(VortexProperties properties, Optional<RouteErrorProperties> routeErrors) {
+    public VortexConfiguration(VortexProperties properties, Optional<ErrorsProperties> routeErrors) {
         this(properties, routeErrors, Optional.empty());
     }
 
@@ -183,11 +187,11 @@ public class VortexConfiguration {
      * Initializes the gateway with an optional application classifier and observer.
      *
      * @param properties  bound gateway configuration
-     * @param routeErrors optional shared route error policy
+     * @param routeErrors optional shared error settings
      * @param boundary    optional application error boundary
      */
     @Autowired
-    public VortexConfiguration(VortexProperties properties, Optional<RouteErrorProperties> routeErrors,
+    public VortexConfiguration(VortexProperties properties, Optional<ErrorsProperties> routeErrors,
             Optional<ErrorBoundary> boundary) {
         this.errorBoundary = boundary.orElseGet(ErrorBoundary::standard);
         this.properties = properties;
@@ -272,8 +276,7 @@ public class VortexConfiguration {
 
         WebHandler webHandler = RouterFunctions.toWebHandler(routerFunction);
         AdmissionFilter admissionFilter = new AdmissionFilter(this.errorBoundary);
-        var policy = this.routeErrors.flatMap(settings -> settings.policy(Target.VORTEX)).map(value -> value.compiled())
-                .orElse(null);
+        var policy = this.routeErrors.map(settings -> ErrorsConfiguration.policy(settings, Target.VORTEX)).orElse(null);
         HttpHandler httpHandler = WebHttpHandlerBuilder.webHandler(webHandler).filters(list -> {
             if (policy != null) {
                 list.add((exchange, chain) -> {
@@ -286,7 +289,8 @@ public class VortexConfiguration {
         }).exceptionHandlers(list -> list.add(new ErrorsHandler(policy, this.errorBoundary)))
                 .codecConfigurer(configurer).build();
 
-        ReactorHttpHandlerAdapter adapter = new ReactorHttpHandlerAdapter(httpHandler);
+        ReactorHttpHandlerAdapter adapter = new ReactorHttpHandlerAdapter(
+                ReactiveResponseGuard.guard(httpHandler, this.errorBoundary));
         WriteBufferWaterMark writeWaterMark = new WriteBufferWaterMark(
                 this.properties.getPerformance().getWriteBufferLowWatermarkBytes(),
                 this.properties.getPerformance().getWriteBufferHighWatermarkBytes());

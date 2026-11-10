@@ -55,7 +55,7 @@ public record ErrorDecision(Action action, ErrorDescriptor error, int status, Ba
          */
         VERIFIED_FACT,
         /**
-         * Descriptor carried by a BusException.
+         * Descriptor carried by a {@link ClassifiedException}.
          */
         STRUCTURED_EXCEPTION,
         /**

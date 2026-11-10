@@ -62,7 +62,7 @@ Bus primarily has versions 3.x, 5.x, 6.x, and 8.x, as detailed below:
 | [√]    | [bus-core](bus-core)           | Core utility library, containing 20+ common utility classes for concurrency/reflection/date/collections                          |
 | [√]    | [bus-cortex](bus-cortex)       | Unified registry and configuration center for API/MCP/Prompt entries, with health probing and space isolation                    |
 | [√]    | [bus-crypto](bus-crypto)       | Encryption/decryption component, supporting AES/DES/SM4/MD5 algorithms and national cipher suites                                |
-| [√]    | [bus-errors](bus-errors)       | Transport-independent error types, immutable descriptions and an exception carrier                                               |
+| [√]    | [bus-errors](bus-errors)       | Shared error classification, public HTTP responses and diagnostics                                               |
 | [√]    | [bus-extra](bus-extra)         | Extended functionality package, integrating peripheral services like FTP/QR code/MQ/file processing                              |
 | [√]    | [bus-gitlab](bus-gitlab)       | Deep GitLab integration, providing full lifecycle management for CI/CD/repositories/issues                                       |
 | [√]    | [bus-health](bus-health)       | Health monitoring center, real-time collection of JVM/OS/container/middleware monitoring metrics                                 |

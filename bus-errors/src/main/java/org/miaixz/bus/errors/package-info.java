@@ -22,9 +22,9 @@
  *
  * <p>
  * Use {@link org.miaixz.bus.errors.ErrorDescriptor} to carry a failure as a value, or
- * {@link org.miaixz.bus.errors.BusException} when it needs to travel through an exception boundary. The descriptor
- * carries structured message data. Use the engine's public projection before rendering a new response contract. The
- * exception retains diagnostics separately in its cause.
+ * {@link org.miaixz.bus.errors.ClassifiedException} when it needs to travel through an exception boundary. The
+ * descriptor carries structured message data. Use the engine's public projection before rendering a new response
+ * contract. The exception retains diagnostics separately in its cause.
  * </p>
  */
 package org.miaixz.bus.errors;

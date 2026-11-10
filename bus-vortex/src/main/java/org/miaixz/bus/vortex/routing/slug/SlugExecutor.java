@@ -42,6 +42,7 @@ import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.core.xyz.UrlKit;
 import org.miaixz.bus.cortex.Assets;
+import org.miaixz.bus.errors.transport.reactive.ReactiveErrorHandler;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.vortex.*;
 import org.miaixz.bus.vortex.magic.ErrorCode;
@@ -128,7 +129,7 @@ public class SlugExecutor implements Executor<ServerRequest, ServerResponse> {
                 request.path(),
                 target);
 
-        return bodySpec.retrieve().onStatus(status -> true, clientResponse -> Mono.empty())
+        return bodySpec.retrieve().onStatus(status -> status.isError(), ReactiveErrorHandler::upstreamFailure)
                 .toEntityFlux(DataBuffer.class).flatMap(responseEntity -> {
                     ServerResponse.BodyBuilder responseBuilder = ServerResponse.status(responseEntity.getStatusCode());
                     responseBuilder.headers(headers -> {

@@ -39,8 +39,8 @@ public interface ErrorLogSink {
     /**
      * Writes a preselected severity and approved diagnostic fields.
      *
-     * @param level policy-selected severity
-     * @param format policy-selected log template
+     * @param level     policy-selected severity
+     * @param format    policy-selected log template
      * @param arguments approved log fields in template order
      */
     void write(Level level, String format, Object... arguments);

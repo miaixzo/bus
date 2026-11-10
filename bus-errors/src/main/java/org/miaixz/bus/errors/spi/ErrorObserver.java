@@ -26,8 +26,8 @@ import org.miaixz.bus.errors.ErrorDecision;
 import org.miaixz.bus.errors.ErrorType;
 
 /**
- * Receives safe attempt or terminal events from the operation boundary. Observer failures are handled by the
- * boundary through a separate diagnostic channel.
+ * Receives safe attempt or terminal events from the operation boundary. Observer failures are handled by the boundary
+ * through a separate diagnostic channel.
  *
  * @author Kimi Liu
  */
@@ -80,8 +80,7 @@ public interface ErrorObserver {
      * @author Kimi Liu
      */
     record Details(ErrorDecision.Action action, ErrorDecision.Basis basis, String requestId, String outcome,
-            String exceptionType,
-            List<String> frames) {
+            String exceptionType, List<String> frames) {
 
         /**
          * Detaches the frame list from the caller.

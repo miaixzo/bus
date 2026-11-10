@@ -41,8 +41,7 @@ public final class ErrorLogPolicy {
     /**
      * Compact fields shared by every error log level.
      */
-    private static final String SUMMARY =
-            "Bus error component={} operation={} type={} status={} phase={} terminal={} requestId={} outcome={}";
+    private static final String SUMMARY = "Bus error component={} operation={} type={} status={} phase={} terminal={} requestId={} outcome={}";
 
     /**
      * Diagnostic fields used for attempts, unexpected failures and trace-level inspection.
@@ -88,7 +87,7 @@ public final class ErrorLogPolicy {
     /**
      * Selects the stack detail supported by the backend threshold for the given event.
      *
-     * @param sink selected logging backend
+     * @param sink  selected logging backend
      * @param event structured failure event
      * @return number of safe stack frames to collect
      */
@@ -103,8 +102,8 @@ public final class ErrorLogPolicy {
     /**
      * Writes the format and fields chosen for the severity and current backend threshold.
      *
-     * @param sink selected logging backend
-     * @param event structured failure event
+     * @param sink    selected logging backend
+     * @param event   structured failure event
      * @param details safe diagnostic snapshot
      */
     public static void write(ErrorLogSink sink, Event event, Details details) {
@@ -118,13 +117,34 @@ public final class ErrorLogPolicy {
         String type = label(event.type().id());
         Object status = event.status() == 0 ? null : event.status();
         if (level == Level.INFO && !sink.isEnabled(Level.TRACE)) {
-            sink.write(level, SUMMARY, component, operation, type, status, context.phase(), event.terminal(),
-                    details.requestId(), details.outcome());
+            sink.write(
+                    level,
+                    SUMMARY,
+                    component,
+                    operation,
+                    type,
+                    status,
+                    context.phase(),
+                    event.terminal(),
+                    details.requestId(),
+                    details.outcome());
             return;
         }
-        sink.write(level, DETAIL, component, operation, type, status, context.phase(), event.terminal(),
-                details.requestId(), details.outcome(), details.action(), details.basis(),
-                context.policyVersion() == 0 ? null : context.policyVersion(), details.exceptionType(),
+        sink.write(
+                level,
+                DETAIL,
+                component,
+                operation,
+                type,
+                status,
+                context.phase(),
+                event.terminal(),
+                details.requestId(),
+                details.outcome(),
+                details.action(),
+                details.basis(),
+                context.policyVersion() == 0 ? null : context.policyVersion(),
+                details.exceptionType(),
                 details.frames());
     }
 

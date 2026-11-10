@@ -34,8 +34,9 @@ import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.cortex.Assets;
-import org.miaixz.bus.errors.ComponentFailure;
 import org.miaixz.bus.errors.ErrorType;
+import org.miaixz.bus.errors.transport.http.PublicHttpError;
+import org.miaixz.bus.errors.transport.reactive.ReactiveErrorHandler;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.vortex.Context;
@@ -58,11 +59,6 @@ import reactor.core.publisher.Mono;
  * @author Kimi Liu
  */
 public class LlmExecutor extends Coordinator {
-
-    /**
-     * Reports failures whose llm response or lifecycle is owned by this adapter.
-     */
-    private static final ComponentFailure FAILURES = new ComponentFailure("vortex", "llm");
 
     /**
      * The factory for creating and caching LLM provider instances.
@@ -101,25 +97,28 @@ public class LlmExecutor extends Coordinator {
         Logger.debug(true, "Vortex", "{} Executing LLM request for model: {}", context.getX_request_ip(), modelName);
 
         if (assets == null) {
-            FAILURES.failed(ErrorType.CONFIGURATION_FAILURE, 500, null, context.getX_request_id());
-            return ServerResponse.status(HttpStatus.INTERNAL_SERVER_ERROR).bodyValue(
-                    "{\"error\":{\"message\":\"Assets configuration not found\",\"type\":\"server_error\",\"code\":\"assets_not_found\"}}");
+            return error(
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                    ErrorType.CONFIGURATION_FAILURE,
+                    null,
+                    "assets_not_found",
+                    "Assets configuration not found");
         }
 
         final ProviderConfig providerConfig;
         try {
             providerConfig = findProviderForModel(assets, modelName);
         } catch (Exception e) {
-            FAILURES.failed(ErrorType.CONFIGURATION_FAILURE, 500, e, context.getX_request_id());
-            return ServerResponse.status(HttpStatus.INTERNAL_SERVER_ERROR).bodyValue(
-                    "{\"error\":{\"message\":\"Failed to parse provider configuration\",\"type\":\"server_error\",\"code\":\"config_parse_error\"}}");
+            return error(
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                    ErrorType.CONFIGURATION_FAILURE,
+                    e,
+                    "config_parse_error",
+                    "Failed to parse provider configuration");
         }
 
         if (providerConfig == null) {
-            FAILURES.failed(ErrorType.ROUTE_NOT_FOUND, 404, null, context.getX_request_id());
-            return ServerResponse.status(HttpStatus.NOT_FOUND).bodyValue(
-                    "{\"error\":{\"message\":\"Model not found: " + modelName
-                            + "\",\"type\":\"invalid_request_error\",\"code\":\"model_not_found\"}}");
+            return error(HttpStatus.NOT_FOUND, ErrorType.ROUTE_NOT_FOUND, null, "model_not_found", "Model not found");
         }
 
         Logger.debug(
@@ -139,9 +138,12 @@ public class LlmExecutor extends Coordinator {
                     providerConfig.apiKey,
                     providerConfig.model);
         } catch (Exception e) {
-            FAILURES.failed(ErrorType.CONFIGURATION_FAILURE, 500, e, context.getX_request_id());
-            return ServerResponse.status(HttpStatus.INTERNAL_SERVER_ERROR).bodyValue(
-                    "{\"error\":{\"message\":\"Failed to create provider\",\"type\":\"server_error\",\"code\":\"provider_creation_error\"}}");
+            return error(
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                    ErrorType.CONFIGURATION_FAILURE,
+                    e,
+                    "provider_creation_error",
+                    "Failed to create provider");
         }
 
         final ServerRequest serverRequest = (ServerRequest) context.getParameters().get("serverRequest");
@@ -172,10 +174,12 @@ public class LlmExecutor extends Coordinator {
                     try {
                         request = parseRequest(body, modelName);
                     } catch (Exception e) {
-                        FAILURES.failed(ErrorType.INVALID_REQUEST, 400, e, context.getX_request_id());
-                        return ServerResponse.status(HttpStatus.BAD_REQUEST).bodyValue(
-                                "{\"error\":{\"message\":\"Invalid request body\",\"type\":\"invalid_request_error\",\"code\":\"invalid_request_body\"}}")
-                                .doFinally(signal -> bufferedBody.close());
+                        return error(
+                                HttpStatus.BAD_REQUEST,
+                                ErrorType.INVALID_REQUEST,
+                                e,
+                                "invalid_request_body",
+                                "Invalid request body").doFinally(signal -> bufferedBody.close());
                     }
 
                     final boolean stream = request.isStream();
@@ -211,22 +215,51 @@ public class LlmExecutor extends Coordinator {
                                 .flatMap(
                                         response -> ServerResponse.ok().contentType(MediaType.APPLICATION_JSON)
                                                 .bodyValue(response))
-                                .onErrorResume(e -> {
-                                    FAILURES.failed(ErrorType.DEPENDENCY_UNAVAILABLE, 500, e, context.getX_request_id());
-                                    return ServerResponse.status(HttpStatus.INTERNAL_SERVER_ERROR).bodyValue(
-                                            JsonKit.toJsonString(
-                                                    Map.of(
-                                                            "error",
-                                                            Map.of(
-                                                                    "message",
-                                                                    "LLM request failed: " + e.getMessage(),
-                                                                    "type",
-                                                                    "server_error",
-                                                                    "code",
-                                                                    "llm_request_failed"))));
-                                }).doFinally(signal -> bufferedBody.close());
+                                .onErrorResume(
+                                        e -> error(
+                                                HttpStatus.INTERNAL_SERVER_ERROR,
+                                                ErrorType.DEPENDENCY_UNAVAILABLE,
+                                                e,
+                                                "llm_request_failed",
+                                                "LLM request failed"))
+                                .doFinally(signal -> bufferedBody.close());
                     }
                 });
+    }
+
+    /**
+     * Renders the existing LLM envelope using a code-owned error definition.
+     *
+     * @param status  verified response status
+     * @param type    shared classification
+     * @param failure optional diagnostic cause
+     * @param code    fixed LLM error code
+     * @param message fixed public description
+     * @return response owned by the common error boundary
+     */
+    public static Mono<ServerResponse> error(
+            HttpStatus status,
+            ErrorType type,
+            Throwable failure,
+            String code,
+            String message) {
+        String category = status.is5xxServerError() ? "server_error" : "invalid_request_error";
+        return ReactiveErrorHandler.render(
+                status,
+                type,
+                failure,
+                new PublicHttpError(code, message),
+                error -> ServerResponse.status(status).bodyValue(
+                        JsonKit.toJsonString(
+                                Map.of(
+                                        "error",
+                                        Map.of(
+                                                "message",
+                                                error.description(),
+                                                "type",
+                                                category,
+                                                "code",
+                                                error.code())))));
     }
 
     /**
@@ -245,29 +278,16 @@ public class LlmExecutor extends Coordinator {
             return null;
         }
 
-        final Map<String, Object> root = JsonKit.toMap(metadata);
-        final Object providersObj = root.get("providers");
-
-        if (!(providersObj instanceof List)) {
+        Object decoded = JsonKit.toJavaValue(JsonKit.readValue(metadata.getBytes(Charset.UTF_8), 64, true));
+        if (!(decoded instanceof Map<?, ?> root) || !(root.get("providers") instanceof List<?> providers)) {
             return null;
         }
 
-        final List<Map<String, Object>> providers = (List<Map<String, Object>>) providersObj;
-
-        for (Map<String, Object> provider : providers) {
-            final String type = (String) provider.get("type");
-            final String endpoint = (String) provider.get("endpoint");
-            final String apiKey = (String) provider.get("apiKey");
-            final String model = (String) provider.get("model");
-
-            final Object modelsObj = provider.get("models");
-            if (modelsObj instanceof List) {
-                final List<String> models = (List<String>) modelsObj;
-                for (String mod : models) {
-                    if (mod.equals(modelName)) {
-                        return new ProviderConfig(type, endpoint, apiKey, model);
-                    }
-                }
+        for (Object value : providers) {
+            if (value instanceof Map<?, ?> provider && provider.get("models") instanceof List<?> models
+                    && models.contains(modelName)) {
+                return new ProviderConfig((String) provider.get("type"), (String) provider.get("endpoint"),
+                        (String) provider.get("apiKey"), (String) provider.get("model"));
             }
         }
 

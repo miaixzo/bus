@@ -58,7 +58,7 @@ Bus主要版本 3.x、5.x、6.x、8.x，具体如下：
 | [√]  | [bus-core](bus-core)           | 核心工具库，包含并发/反射/日期/集合等20+常用工具类                        |
 | [√]  | [bus-cortex](bus-cortex)       | 统一注册与配置中心，支持API/MCP/Prompt注册、健康探测及空间隔离            |
 | [√]  | [bus-crypto](bus-crypto)       | 加密解密组件，支持AES/DES/SM4/MD5等算法及国密套件                         |
-| [√]  | [bus-errors](bus-errors)       | 跨组件错误类型、不可变错误描述及异常载体                                  |
+| [√]  | [bus-errors](bus-errors)       | 公共错误分类、HTTP 错误响应及诊断                                  |
 | [√]  | [bus-extra](bus-extra)         | 扩展功能包，集成FTP/二维码/MQ/文件处理等外围服务                          |
 | [√]  | [bus-gitlab](bus-gitlab)       | GitLab深度集成，提供CI/CD/仓库/问题等全生命周期管理                       |
 | [√]  | [bus-health](bus-health)       | 健康监控中心，实时采集JVM/OS/容器/中间件监控指标                          |

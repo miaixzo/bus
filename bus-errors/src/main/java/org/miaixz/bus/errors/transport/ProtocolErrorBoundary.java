@@ -74,7 +74,7 @@ public final class ProtocolErrorBoundary {
      * @param boundary classifier and observer for the broker
      * @param protocol broker identifier
      * @param delivery callback that acknowledges only successful delivery
-     * @param <T> acknowledgement result
+     * @param <T>      acknowledgement result
      * @return acknowledgement supplied by the successful callback
      */
     public static <T> T deliver(ErrorBoundary boundary, String protocol, Supplier<T> delivery) {
@@ -98,14 +98,18 @@ public final class ProtocolErrorBoundary {
      * Claims asynchronous termination and includes safe correlation and cause metadata in the terminal event.
      *
      * @param operation state for the active operation
-     * @param context current protocol phase
-     * @param decision original failure decision
-     * @param failure diagnostic exception, or null
+     * @param context   current protocol phase
+     * @param decision  original failure decision
+     * @param failure   diagnostic exception, or null
      * @param requestId server-generated request identifier, or null
      * @return whether this caller owns the terminal signal
      */
-    public static boolean claim(ErrorBoundary.Operation operation, ErrorContext context, ErrorDecision decision,
-            Throwable failure, String requestId) {
+    public static boolean claim(
+            ErrorBoundary.Operation operation,
+            ErrorContext context,
+            ErrorDecision decision,
+            Throwable failure,
+            String requestId) {
         if (decision.action() != ErrorDecision.Action.TERMINATE || !operation.claimTermination()) {
             return false;
         }

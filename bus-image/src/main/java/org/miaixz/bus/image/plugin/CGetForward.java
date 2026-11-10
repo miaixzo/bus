@@ -81,9 +81,6 @@ public class CGetForward implements AutoCloseable {
      */
     static final class DestinationRefusedException extends ImageServiceException {
 
-        /**
-         * Serialization identifier for destination refusal exceptions.
-         */
         @Serial
         private static final long serialVersionUID = 4290567021474434745L;
 

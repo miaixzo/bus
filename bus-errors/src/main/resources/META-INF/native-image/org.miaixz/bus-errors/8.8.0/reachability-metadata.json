@@ -1,7 +1,7 @@
 {
   "reflection": [
     {
-      "type": "org.miaixz.bus.errors.BusException",
+      "type": "org.miaixz.bus.errors.ClassifiedException",
       "serializable": true
     },
     {

@@ -32,9 +32,6 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
  */
 public final class RouteFailure extends ValidateException {
 
-    /**
-     * Serialization version for the verified status and legacy validation fields.
-     */
     @java.io.Serial
     private static final long serialVersionUID = 1L;
 

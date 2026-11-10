@@ -85,9 +85,6 @@ public class PageHandler<T> extends AbstractSqlHandler implements MapperHandler<
      */
     private static final ComponentFailure FAILURES = new ComponentFailure("bus-mapper", "pagination");
 
-    /**
-     * Serialization version of the pagination handler.
-     */
     @Serial
     private static final long serialVersionUID = 2551599500001L;
 

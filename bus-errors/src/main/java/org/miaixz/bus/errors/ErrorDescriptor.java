@@ -28,9 +28,10 @@ import java.util.Objects;
  * Describes a classified failure as an immutable value.
  *
  * <p>
- * Callers can return a descriptor for an expected refusal or carry it through a {@link BusException}. The message key
- * is resolved at the rendering boundary. Supply only parameters that the receiving boundary is authorized to disclose,
- * such as a public limit. Retain exception text, credentials, and provider payloads in the diagnostic path.
+ * Callers can return a descriptor for an expected refusal or carry it through a {@link ClassifiedException}. The
+ * message key is resolved at the rendering boundary. Supply only parameters that the receiving boundary is authorized
+ * to disclose, such as a public limit. Retain exception text, credentials, and provider payloads in the diagnostic
+ * path.
  * </p>
  *
  * @param type             semantic failure type
@@ -42,9 +43,6 @@ import java.util.Objects;
 public record ErrorDescriptor(ErrorType type, String legacyCode, String messageKey,
         Map<String, String> publicParameters) implements Serializable {
 
-    /**
-     * Serialization version of the descriptor fields.
-     */
     @Serial
     private static final long serialVersionUID = 1L;
 

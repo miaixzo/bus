@@ -28,7 +28,6 @@ import org.springframework.web.server.ServerWebExchange;
 
 import org.miaixz.bus.core.Order;
 import org.miaixz.bus.core.lang.exception.ValidateException;
-import org.miaixz.bus.errors.ErrorType;
 import org.miaixz.bus.errors.transport.http.RouteFailure;
 import org.miaixz.bus.errors.transport.reactive.ReactiveErrorHandler;
 import org.miaixz.bus.logger.Logger;
@@ -78,7 +77,7 @@ public class SlugRequestStrategy extends RequestStrategy {
     }
 
     /**
-     * Returns whether the current request matches a public slug asset.
+     * Selects a visible slug or a method mismatch that affects the configured route status.
      *
      * @param exchange current exchange
      * @return {@code true} when matched
@@ -88,7 +87,7 @@ public class SlugRequestStrategy extends RequestStrategy {
         if (this.matcher.match(exchange) != null) {
             return true;
         }
-        if (!ReactiveErrorHandler.usesNativeRule(exchange, ErrorType.METHOD_NOT_ALLOWED)) {
+        if (!ReactiveErrorHandler.needsRouteMethodFacts(exchange)) {
             return false;
         }
         var methods = this.matcher.publicMethods(exchange);
@@ -111,6 +110,9 @@ public class SlugRequestStrategy extends RequestStrategy {
         return Mono.deferContextual(contextView -> {
             Set<HttpMethod> methods = exchange.getAttribute(ALLOWED_METHODS);
             if (methods != null) {
+                if (!ReactiveErrorHandler.usesNativeStatus(exchange, HttpStatus.METHOD_NOT_ALLOWED)) {
+                    return Mono.error(new RouteFailure(ErrorCode._BLOCKED, HttpStatus.METHOD_NOT_ALLOWED, HttpHeaders.EMPTY));
+                }
                 HttpHeaders headers = new HttpHeaders();
                 headers.setAllow(methods);
                 return Mono.error(new RouteFailure(ErrorCode._100800, HttpStatus.METHOD_NOT_ALLOWED, headers));
