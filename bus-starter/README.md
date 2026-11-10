@@ -401,6 +401,7 @@ controlled:
 | Message converters     | `bus.wrapper.message-converters.enabled` | `true`                           |
 | Bounded body cache     | `bus.wrapper.body-cache.enabled`         | `false`                          |
 | Response advice        | `bus.wrapper.response-advice.enabled`    | `false`                          |
+| Route errors           | `bus.wrapper.route-errors.enabled`       | `false`                          |
 | Route prefix           | `bus.wrapper.route-prefix.enabled`       | `false`                          |
 
 ```yaml
@@ -422,6 +423,28 @@ bus:
     route-prefix:
       enabled: false
 ```
+
+Enable route errors when selected paths need the original Spring MVC status and headers. Other paths retain the
+application's existing exception handling.
+
+```yaml
+bus:
+  wrapper:
+    enabled: true
+    route-errors:
+      enabled: true
+      path-prefixes:
+        - /internal/sso/
+        - /internal/application/o/
+      statuses: [404, 405, 415]
+      cache-control: no-store
+```
+
+Use literal path prefixes with leading and trailing slashes, relative to the MVC servlet mapping. Omit any application
+context path or DispatcherServlet mapping prefix. The default statuses are `404`, `405`, and `415`. The resolver preserves
+the exception's status and headers, such as `Allow` and `Accept`, and sends an empty body. Set `cache-control` to override
+the cache header. The feature handles Spring MVC exceptions that implement `ErrorResponse`, including routing errors
+raised before a controller is selected.
 
 Message converter target-type policies are:
 

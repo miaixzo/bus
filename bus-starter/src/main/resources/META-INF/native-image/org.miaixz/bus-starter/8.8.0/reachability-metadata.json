@@ -1572,6 +1572,28 @@
       ]
     },
     {
+      "type": "org.miaixz.bus.starter.wrapper.routing.RouteErrorConfiguration",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.starter.wrapper.routing.RouteErrorProperties",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.util.List",
+            "java.util.Set",
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
       "type": "org.miaixz.bus.starter.wrapper.routing.RoutePrefixConfiguration",
       "methods": [
         {

@@ -30,17 +30,18 @@ import org.miaixz.bus.starter.wrapper.advice.ResponseAdviceConfiguration;
 import org.miaixz.bus.starter.wrapper.binding.RequestBindingConfiguration;
 import org.miaixz.bus.starter.wrapper.body.BodyCacheConfiguration;
 import org.miaixz.bus.starter.wrapper.converter.MessageConverterConfiguration;
+import org.miaixz.bus.starter.wrapper.routing.RouteErrorConfiguration;
 import org.miaixz.bus.starter.wrapper.routing.RoutePrefixConfiguration;
 
 /**
- * Root configuration that composes the five independent wrapper capabilities.
+ * Root configuration that composes the independent wrapper capabilities.
  *
  * @author Kimi Liu
  */
 @Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties(WrapperProperties.class)
 @Import({ BodyCacheConfiguration.class, RequestBindingConfiguration.class, MessageConverterConfiguration.class,
-        ResponseAdviceConfiguration.class, RoutePrefixConfiguration.class })
+        ResponseAdviceConfiguration.class, RouteErrorConfiguration.class, RoutePrefixConfiguration.class })
 @ConditionalOnEnabled(annotation = EnableWrapper.class, prefix = GeniusBuilder.WRAPPER)
 public class WrapperConfiguration {
 

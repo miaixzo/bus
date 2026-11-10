@@ -24,8 +24,8 @@
  * Provides shared integration APIs for Spring Framework and Spring Boot applications.
  *
  * <p>
- * Includes annotations, AOP, bean lookup, runtime context propagation, startup hooks, conditional configuration,
- * JDBC data source routing, web advice, converters, interceptors, argument resolvers, and request wrappers.
+ * Includes annotations, AOP, bean lookup, runtime context propagation, startup hooks, conditional configuration, JDBC
+ * data source routing, web advice, converters, interceptors, argument resolvers, and request wrappers.
  *
  * @author Kimi Liu
  */

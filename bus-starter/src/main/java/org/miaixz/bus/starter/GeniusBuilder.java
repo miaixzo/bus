@@ -182,6 +182,11 @@ public class GeniusBuilder {
     public static final String WRAPPER_RESPONSE_ADVICE = WRAPPER + ".response-advice";
 
     /**
+     * Configuration prefix for preserving selected MVC HTTP errors on configured route prefixes.
+     */
+    public static final String WRAPPER_ROUTE_ERRORS = WRAPPER + ".route-errors";
+
+    /**
      * Configuration prefix for wrapper route prefix.
      */
     public static final String WRAPPER_ROUTE_PREFIX = WRAPPER + ".route-prefix";
