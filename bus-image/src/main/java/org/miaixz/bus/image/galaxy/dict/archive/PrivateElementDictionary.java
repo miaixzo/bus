@@ -39,7 +39,7 @@ public class PrivateElementDictionary extends ElementDictionary {
      * Creates a new instance.
      */
     public PrivateElementDictionary() {
-        super(Normal.EMPTY, PrivateTag.class);
+        super(PrivateTag.PrivateCreator, PrivateTag.class);
     }
 
     /**
@@ -96,6 +96,7 @@ public class PrivateElementDictionary extends ElementDictionary {
             case PrivateTag.StudyUpdateDateTime:
             case PrivateTag.StudyAccessDateTime:
             case PrivateTag.StudyModifiedDateTime:
+            case PrivateTag.LogicalStudyID:
             case PrivateTag.SeriesReceiveDateTime:
             case PrivateTag.SeriesUpdateDateTime:
             case PrivateTag.ScheduledMetadataUpdateDateTimeOfSeries:
