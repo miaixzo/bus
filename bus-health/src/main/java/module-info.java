@@ -35,6 +35,7 @@ module bus.health {
     requires java.management;
 
     requires bus.core;
+    requires bus.errors;
     requires bus.logger;
     requires bus.setting;
 

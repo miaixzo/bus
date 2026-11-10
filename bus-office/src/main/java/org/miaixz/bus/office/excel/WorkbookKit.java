@@ -29,6 +29,8 @@ import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
+import org.miaixz.bus.errors.ComponentFailure;
+import org.miaixz.bus.errors.ErrorType;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.FileKit;
 import org.miaixz.bus.core.xyz.IoKit;
@@ -41,6 +43,11 @@ import org.miaixz.bus.logger.Logger;
  * @author Kimi Liu
  */
 public class WorkbookKit {
+
+    /**
+     * Reports workbook parsing and I/O errors while retaining the legacy InternalException wrapper.
+     */
+    private static final ComponentFailure FAILURES = new ComponentFailure("bus-office", "workbook");
 
     /**
      * Constructs a new WorkbookKit instance.
@@ -138,6 +145,7 @@ public class WorkbookKit {
         try {
             return WorkbookFactory.create(excelFile, password, readOnly);
         } catch (final Exception e) {
+            FAILURES.failed(ErrorType.INVALID_DATA, e);
             Logger.warn(
                     false,
                     "Office",
@@ -163,13 +171,14 @@ public class WorkbookKit {
      * Creates or loads a workbook (read-only mode). The stream is closed automatically after use.
      *
      * @param in       The Excel input stream.
-     * @param password The password.
+     * @param password Workbook password, or null for an unencrypted workbook.
      * @return A {@link Workbook} instance.
      */
     public static Workbook createBook(final InputStream in, final String password) {
         try {
             return WorkbookFactory.create(IoKit.toMarkSupport(in), password);
         } catch (final Exception e) {
+            FAILURES.failed(ErrorType.INVALID_DATA, e);
             Logger.warn(
                     false,
                     "Office",
@@ -193,6 +202,7 @@ public class WorkbookKit {
         try {
             return WorkbookFactory.create(isXlsx);
         } catch (final IOException e) {
+            FAILURES.failed(ErrorType.IO_FAILURE, e);
             Logger.warn(
                     false,
                     "Office",
@@ -283,7 +293,7 @@ public class WorkbookKit {
      * Creates or loads an {@link SXSSFWorkbook} workbook (read-only mode).
      *
      * @param in       The Excel input stream.
-     * @param password The password.
+     * @param password Workbook password, or null for an unencrypted workbook.
      * @return An {@link SXSSFWorkbook} instance.
      */
     public static SXSSFWorkbook createSXSSFBook(final InputStream in, final String password) {
@@ -336,6 +346,7 @@ public class WorkbookKit {
         try {
             book.write(out);
         } catch (final IOException e) {
+            FAILURES.failed(ErrorType.IO_FAILURE, e);
             Logger.warn(
                     false,
                     "Office",

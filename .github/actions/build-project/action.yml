@@ -16,6 +16,7 @@ inputs:
       bus-opencv
       bus-preset
       bus-logger
+      bus-errors
       bus-crypto
       bus-gitlab
       bus-mapper
@@ -47,7 +48,7 @@ inputs:
   maven-args:
     description: 'Additional Maven arguments.'
     required: false
-    default: '-B -ntp -DskipTests'
+    default: '-B -ntp'
   compiler-release:
     description: 'Maven compiler release target. Leave empty to use Maven defaults.'
     required: false

@@ -23,7 +23,11 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+
 import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.errors.transport.http.RouteFailure;
 import org.miaixz.bus.vortex.strategy.LimiterStrategy;
 
 /**
@@ -101,7 +105,7 @@ public class Limiter {
      */
     public void acquire() {
         if (!fetchRateLimiter().tryAcquire()) {
-            throw new ValidateException(ErrorCode._LIMITER);
+            throw new RouteFailure(ErrorCode._LIMITER, HttpStatus.TOO_MANY_REQUESTS, HttpHeaders.EMPTY);
         }
     }
 

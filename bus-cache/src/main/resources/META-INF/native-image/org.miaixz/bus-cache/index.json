@@ -4,9 +4,8 @@
     "metadata-version": "8.8.0",
     "source-code-url": "https://repo.maven.apache.org/maven2/org/miaixz/bus-cache/$version$/bus-cache-$version$-sources.jar",
     "repository-url": "https://github.com/818000/bus",
-    "test-code-url": "https://github.com/818000/abarth/tree/main/bus-testing/src/test",
     "documentation-url": "https://repo.maven.apache.org/maven2/org/miaixz/bus-cache/$version$/bus-cache-$version$-javadoc.jar",
-    "description": "Bus Cache provides cache abstractions and integrations backed by local and external cache providers.",
+    "description": "Bus Cache - Cache SPI spanning local memory, clustered stores, no-op implementations and predictable expiry behavior.",
     "tested-versions": [
       "8.8.0",
       "8.8.1",

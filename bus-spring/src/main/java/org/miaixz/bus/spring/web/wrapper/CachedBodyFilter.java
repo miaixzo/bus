@@ -26,9 +26,12 @@ import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.Ordered;
 
 import org.miaixz.bus.core.lang.exception.RelevantException;
+import org.miaixz.bus.errors.ErrorBoundary;
+import org.miaixz.bus.errors.transport.servlet.ServletErrorHandler;
 
 /**
  * Applies optional hard-bounded request and response body caching.
@@ -41,6 +44,21 @@ public class CachedBodyFilter implements Filter, Ordered {
      * Immutable cache policy for this filter.
      */
     private final BodyCacheOptions options;
+
+    /**
+     * Optional application error boundary; directly constructed filters use the standard boundary.
+     */
+    private ErrorBoundary errorBoundary = ErrorBoundary.standard();
+
+    /**
+     * Supplies an optional shared application error boundary.
+     *
+     * @param boundary classifier and observer used by this entry point
+     */
+    @Autowired(required = false)
+    public void setErrorBoundary(ErrorBoundary boundary) {
+        this.errorBoundary = java.util.Objects.requireNonNull(boundary, "boundary");
+    }
 
     /**
      * Creates a body-cache filter for one Context's immutable options.
@@ -74,7 +92,7 @@ public class CachedBodyFilter implements Filter, Ordered {
         boolean cacheRequest = this.options.shouldCacheRequest(httpRequest);
         long contentLength = httpRequest.getContentLengthLong();
         if (cacheRequest && contentLength > this.options.getRequestLimit()) {
-            httpResponse.sendError(HttpServletResponse.SC_REQUEST_ENTITY_TOO_LARGE);
+            ServletErrorHandler.reject(this.errorBoundary, httpResponse, HttpServletResponse.SC_REQUEST_ENTITY_TOO_LARGE, null);
             return;
         }
 
@@ -83,8 +101,8 @@ public class CachedBodyFilter implements Filter, Ordered {
         if (cacheRequest && !(httpRequest instanceof CachedBodyRequestWrapper)) {
             try {
                 effectiveRequest = new CachedBodyRequestWrapper(httpRequest, this.options.getRequestLimit());
-            } catch (RelevantException ignored) {
-                httpResponse.sendError(HttpServletResponse.SC_REQUEST_ENTITY_TOO_LARGE);
+            } catch (RelevantException overflow) {
+                ServletErrorHandler.reject(this.errorBoundary, httpResponse, HttpServletResponse.SC_REQUEST_ENTITY_TOO_LARGE, overflow);
                 return;
             }
         }

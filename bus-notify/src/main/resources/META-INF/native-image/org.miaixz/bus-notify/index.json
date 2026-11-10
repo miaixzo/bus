@@ -4,9 +4,8 @@
     "metadata-version": "8.8.0",
     "source-code-url": "https://repo.maven.apache.org/maven2/org/miaixz/bus-notify/$version$/bus-notify-$version$-sources.jar",
     "repository-url": "https://github.com/818000/bus",
-    "test-code-url": "https://github.com/818000/abarth/tree/main/bus-testing/src/test",
     "documentation-url": "https://repo.maven.apache.org/maven2/org/miaixz/bus-notify/$version$/bus-notify-$version$-javadoc.jar",
-    "description": "Bus Notify provides notification integrations for messaging, mail, webhook, and third-party channels.",
+    "description": "Bus Notify - Messaging outlets for SMS, chat notifications and vendor-specific outbound communication.",
     "tested-versions": [
       "8.8.0",
       "8.8.1",

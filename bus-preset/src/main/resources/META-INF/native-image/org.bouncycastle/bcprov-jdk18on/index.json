@@ -2,7 +2,7 @@
   {
     "latest": true,
     "metadata-version": "1.85",
-    "description": "Bouncy Castle provider reflection and initialization supplements used by Bus Crypto.",
+    "description": "The Bouncy Castle Crypto package is a Java implementation of cryptographic algorithms. This jar contains the  JCA/JCE provider and low-level API for the BC Java version 1.85 for Java 1.8 and later.",
     "tested-versions": [
       "1.85"
     ]

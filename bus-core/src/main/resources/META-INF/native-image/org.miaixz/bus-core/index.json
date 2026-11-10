@@ -4,9 +4,8 @@
     "metadata-version": "8.8.0",
     "source-code-url": "https://repo.maven.apache.org/maven2/org/miaixz/bus-core/$version$/bus-core-$version$-sources.jar",
     "repository-url": "https://github.com/818000/bus",
-    "test-code-url": "https://github.com/818000/abarth/tree/main/bus-testing/src/test",
     "documentation-url": "https://repo.maven.apache.org/maven2/org/miaixz/bus-core/$version$/bus-core-$version$-javadoc.jar",
-    "description": "Bus Core provides the foundational utilities, data structures, conversion helpers, reflection support, resource scanning, caching, tree handling, and common entity types used by the Bus modules.",
+    "description": "Bus Core - Primitive foundation for collections, byte buffers, reflection handles, type coercion, text parsing and time values.",
     "tested-versions": [
       "8.8.0",
       "8.8.1",

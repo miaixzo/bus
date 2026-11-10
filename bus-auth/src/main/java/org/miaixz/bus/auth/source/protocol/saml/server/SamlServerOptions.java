@@ -76,11 +76,25 @@ public record SamlServerOptions(String entityId, Endpoint singleSignOnServiceEnd
     /**
      * Normalizes optional values and enforces the fixed Redirect-request/Post-response identity-provider profile.
      *
+     * @param entityId                    identity-provider SAML entityID
+     * @param singleSignOnServiceEndpoint HTTP-Redirect SingleSignOnService endpoint
+     * @param singleLogoutServiceEndpoint optional HTTP-Redirect SingleLogoutService endpoint
+     * @param metadataEndpoint            HTTPS Metadata publication endpoint
+     * @param requestBinding              binding accepted for service-provider initiated requests
+     * @param responseBinding             binding used to return SAML protocol responses
+     * @param signingKeyId                external identifier of the identity-provider signing key
+     * @param signatureAlgorithm          XML Signature algorithm URI
+     * @param wantAuthnRequestsSigned     whether Authentication Requests require valid signatures
+     * @param wantLogoutRequestsSigned    whether Logout Requests require valid signatures
+     * @param signAssertions              whether issued assertions carry XML signatures
+     * @param signResponses               whether issued protocol responses carry XML signatures
+     * @param assertionLifetime           positive issued assertion lifetime
+     * @param clockSkew                   maximum accepted clock difference at request time boundaries
      * @throws IllegalArgumentException if a required component or optional container is {@code null}
      * @throws ValidateException        if a URI, endpoint, binding, signing policy, or duration violates the profile
      */
     public SamlServerOptions {
-        entityId = absoluteUri(entityId, "SAML identity-provider entityID");
+        entityId = absoluteUri(entityId, "SAML identity-provider entityID", false);
         requireEndpoint(singleSignOnServiceEndpoint, Http.Method.GET, "SAML SingleSignOnService endpoint");
         Assert.notNull(singleLogoutServiceEndpoint, "SAML SingleLogoutService endpoint container must not be null");
         final Endpoint logout = singleLogoutServiceEndpoint.getOrNull();
@@ -99,7 +113,7 @@ public record SamlServerOptions(String entityId, Endpoint singleSignOnServiceEnd
             throw new ValidateException("SAML Identity Provider returns responses through HTTP-POST Binding only");
         }
         signingKeyId = Assert.notBlank(signingKeyId, "SAML signing key identifier must not be blank");
-        signatureAlgorithm = absoluteUri(signatureAlgorithm, "SAML signature algorithm");
+        signatureAlgorithm = absoluteUri(signatureAlgorithm, "SAML signature algorithm", true);
         if (!signAssertions && !signResponses) {
             throw new ValidateException("SAML identity-provider must sign assertions, responses, or both");
         }
@@ -135,19 +149,21 @@ public record SamlServerOptions(String entityId, Endpoint singleSignOnServiceEnd
     }
 
     /**
-     * Validates one non-blank absolute fragment-free URI.
+     * Validates one non-blank absolute URI, allowing a fragment only for an algorithm identifier.
      *
-     * @param value URI lexical value
-     * @param label safe semantic label
+     * @param value         URI lexical value
+     * @param label         safe semantic label
+     * @param allowFragment whether the identifier may contain a fragment
      * @return unchanged URI lexical value
      * @throws ValidateException if the value is not an allowed absolute URI
      */
-    private static String absoluteUri(final String value, final String label) {
+    private static String absoluteUri(final String value, final String label, final boolean allowFragment) {
         Assert.notBlank(value, label + " must not be blank");
         try {
             final URI uri = new URI(value);
-            if (!uri.isAbsolute() || uri.getRawFragment() != null) {
-                throw new ValidateException(label + " must be an absolute fragment-free URI");
+            if (!uri.isAbsolute() || (!allowFragment && uri.getRawFragment() != null)) {
+                throw new ValidateException(
+                        label + (allowFragment ? " must be an absolute URI" : " must be an absolute fragment-free URI"));
             }
             return value;
         } catch (URISyntaxException exception) {

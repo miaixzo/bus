@@ -2,7 +2,7 @@
   {
     "latest": true,
     "metadata-version": "4.1.0",
-    "description": "Conditional Bus integration metadata only; supplements upstream metadata without replacing it.",
+    "description": "Spring Boot Loader",
     "tested-versions": [
       "4.1.0",
       "4.1.1"

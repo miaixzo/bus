@@ -35,6 +35,8 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.cortex.Assets;
+import org.miaixz.bus.errors.ComponentFailure;
+import org.miaixz.bus.errors.ErrorType;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.extra.mq.MQConfig;
 import org.miaixz.bus.extra.mq.MQFactory;
@@ -75,6 +77,11 @@ import reactor.core.scheduler.Schedulers;
  * @author Kimi Liu
  */
 public class MqExecutor extends Coordinator<String, ServerResponse> {
+
+    /**
+     * Reports failures whose mq-cleanup response or lifecycle is owned by this adapter.
+     */
+    private static final ComponentFailure FAILURES = new ComponentFailure("vortex", "mq-cleanup");
 
     /**
      * A dedicated thread pool for asynchronously handling MQ message sending operations.
@@ -123,13 +130,7 @@ public class MqExecutor extends Coordinator<String, ServerResponse> {
                         "Producer evicted from cache: protocol=mq, brokerKeyChars={}",
                         key == null ? 0 : key.length());
             } catch (Exception e) {
-                Logger.error(
-                        false,
-                        "Vortex",
-                        e,
-                        "Failed to close evicted MQ Producer: protocol=mq, brokerKeyChars={}, exception={}",
-                        key == null ? 0 : key.length(),
-                        e.getClass().getSimpleName());
+                FAILURES.failed(ErrorType.IO_FAILURE, e);
             }
         });
 
@@ -259,13 +260,7 @@ public class MqExecutor extends Coordinator<String, ServerResponse> {
             } catch (RejectedExecutionException e) {
                 sink.error(e);
             }
-        }).doOnError(
-                e -> Logger.error(
-                        false,
-                        "Vortex",
-                        "Failed to send message to topic '{}': protocol=mq",
-                        assets.getMethod(),
-                        e));
+        });
     }
 
     /**
@@ -292,13 +287,6 @@ public class MqExecutor extends Coordinator<String, ServerResponse> {
                 Producer producer = MQFactory.createEngine(config).getProducer();
                 return producer;
             } catch (Exception e) {
-                Logger.error(
-                        false,
-                        "Vortex",
-                        e,
-                        "Producer creation failed: protocol=mq, brokerUrlChars={}, exception={}",
-                        brokerUrl.length(),
-                        e.getClass().getSimpleName());
                 throw new RuntimeException("Failed to get or create MQ Producer", e);
             }
         });

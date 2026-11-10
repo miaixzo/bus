@@ -19,10 +19,18 @@
 */
 package org.miaixz.bus.vortex.strategy.request;
 
+import java.util.Set;
+
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ServerWebExchange;
 
 import org.miaixz.bus.core.Order;
 import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.errors.ErrorType;
+import org.miaixz.bus.errors.transport.http.RouteFailure;
+import org.miaixz.bus.errors.transport.reactive.ReactiveErrorHandler;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.vortex.Args;
 import org.miaixz.bus.vortex.Context;
@@ -39,6 +47,11 @@ import reactor.core.publisher.Mono;
  */
 @org.springframework.core.annotation.Order(Order.FIRST)
 public class SlugRequestStrategy extends RequestStrategy {
+
+    /**
+     * Exchange attribute holding verified alternate methods for a public slug route.
+     */
+    private static final String ALLOWED_METHODS = SlugRequestStrategy.class.getName() + ".allowedMethods";
 
     /**
      * Matcher used to decide whether the request belongs to public slug forwarding.
@@ -72,7 +85,18 @@ public class SlugRequestStrategy extends RequestStrategy {
      */
     @Override
     public boolean supports(ServerWebExchange exchange) {
-        return this.matcher.match(exchange) != null;
+        if (this.matcher.match(exchange) != null) {
+            return true;
+        }
+        if (!ReactiveErrorHandler.usesNativeRule(exchange, ErrorType.METHOD_NOT_ALLOWED)) {
+            return false;
+        }
+        var methods = this.matcher.publicMethods(exchange);
+        if (methods.isEmpty()) {
+            return false;
+        }
+        exchange.getAttributes().put(ALLOWED_METHODS, Set.copyOf(methods));
+        return true;
     }
 
     /**
@@ -85,6 +109,12 @@ public class SlugRequestStrategy extends RequestStrategy {
     @Override
     public Mono<Void> apply(ServerWebExchange exchange, Chain chain) {
         return Mono.deferContextual(contextView -> {
+            Set<HttpMethod> methods = exchange.getAttribute(ALLOWED_METHODS);
+            if (methods != null) {
+                HttpHeaders headers = new HttpHeaders();
+                headers.setAllow(methods);
+                return Mono.error(new RouteFailure(ErrorCode._100800, HttpStatus.METHOD_NOT_ALLOWED, headers));
+            }
             if (this.matcher.match(exchange) == null) {
                 return Mono.error(new ValidateException(ErrorCode._100800));
             }

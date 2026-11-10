@@ -38,6 +38,7 @@ import org.miaixz.bus.auth.shared.jwt.JwtVerifier;
 import org.miaixz.bus.auth.shared.pkce.PkceValidator;
 import org.miaixz.bus.auth.source.SourceServices;
 import org.miaixz.bus.auth.source.protocol.ProtocolDriver;
+import org.miaixz.bus.auth.source.protocol.oauth2.TokenEndpointResponse;
 import org.miaixz.bus.auth.source.protocol.oauth2.codec.*;
 import org.miaixz.bus.auth.source.protocol.oauth2.grant.AccessTokenIssuer;
 import org.miaixz.bus.auth.source.protocol.oauth2.grant.AuthorizationCodeIssuer;
@@ -282,9 +283,22 @@ public class OpenIdServerDriver implements ProtocolDriver<OpenIdServerOptions> {
                     options.oauth2Options(), services, scopeValidator, pkceValidator, idTokenIssuer, tokenMaterial);
             final RefreshTokenRotator rotator = new RefreshTokenRotator(source.getId(), options.oauth2Options(),
                     services, scopeValidator, issuer, tokenMaterial);
+            final OpenIdTokenResponseCodec openIdEncoder = new OpenIdTokenResponseCodec(new TokenResponseDecoder(),
+                    new TokenResponseEncoder());
+            final TokenResponseEncoder tokenEncoder = new TokenResponseEncoder() {
+
+                /**
+                 * {@inheritDoc}
+                 */
+                @Override
+                public Response encode(final Request request, final TokenEndpointResponse response) {
+                    return response instanceof OpenIdTokenResponse openId ? openIdEncoder.encode(request, openId)
+                            : super.encode(request, response);
+                }
+            };
             final TokenEndpoint endpoint = new TokenEndpoint(new TokenRequestDecoder(),
                     new OAuth2ClientAuthenticator(library.getTenant_id(), options.oauth2Options(), services),
-                    new TokenService(issuer, rotator), new TokenResponseEncoder(), oauthErrorMapper);
+                    new TokenService(issuer, rotator), tokenEncoder, oauthErrorMapper);
             endpoints.put(OAuth2ServerScheme.TOKEN, endpoint::handle);
         }
         if (options.oauth2Options().introspectionEndpoint().isPresent()) {

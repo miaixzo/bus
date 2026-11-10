@@ -23,6 +23,7 @@ import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.ToDoubleFunction;
 
+import org.miaixz.bus.errors.ErrorBoundary;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.metrics.guard.ProviderLease;
 import org.miaixz.bus.metrics.nimble.*;
@@ -220,6 +221,19 @@ public class Metrics {
     }
 
     /**
+     * Connects standard Bus errors to the active metrics provider. Terminal failures and failed attempts use
+     * separate counter names and stable component, operation and error type tags.
+     *
+     * @return subscription to close before shutting down the metrics integration
+     */
+    public static ErrorBoundary.Subscription observeErrors() {
+        return ErrorBoundary.subscribeStandard(event -> counter(
+                event.terminal() ? "bus.errors.failures" : "bus.errors.attempts",
+                "component", event.context().listener(), "operation", event.context().protocol(),
+                "error.type", event.type().id()).increment());
+    }
+
+    /**
      * Returns a {@link Meter} (EWMA rate) for the given name and tags.
      *
      * @param name   metric name
@@ -299,6 +313,8 @@ public class Metrics {
 
     /**
      * Provider facade ownership modes.
+ *
+ * @author Kimi Liu
      */
     private enum Mode {
         /**
@@ -326,6 +342,7 @@ public class Metrics {
      * @param provider   active provider, or {@code null}
      * @param owner      lease owner, or {@code null}
      * @param leaseToken unique lease token, or {@code null}
+ * @author Kimi Liu
      */
     private record State(Mode mode, Provider provider, Object owner, Object leaseToken) {
     }

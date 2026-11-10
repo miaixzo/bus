@@ -32,8 +32,14 @@ import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.cortex.Assets;
+import org.miaixz.bus.errors.ErrorBoundary;
+import org.miaixz.bus.errors.ErrorContext;
+import org.miaixz.bus.errors.ErrorEngine;
+import org.miaixz.bus.errors.ErrorType;
+import org.miaixz.bus.errors.FailureFacts;
+import org.miaixz.bus.errors.recovery.RecoveryCoordinator;
+import org.miaixz.bus.errors.recovery.RecoveryPlan;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.vortex.magic.Performance;
 
@@ -148,31 +154,35 @@ public class Egress {
      * @param retries max retry attempts; values below or equal to zero disable retry
      * @param scene   logical outbound scene
      * @param method  outbound HTTP method
-     * @param uri     outbound URI
+     * @param uri     outbound URI retained in the public retry API
      * @return retry specification
      */
     public static Retry retrySpec(int retries, String scene, String method, URI uri) {
-        int maxRetries = isRetrySafe(method) ? Math.min(Math.max(retries, 0), Holder.get().getMaxRetries()) : 0;
+        boolean replayable = RecoveryCoordinator
+                .canReplay(isRetrySafe(method), true, RecoveryPlan.Delivery.REPLAY_SAFE);
+        int maxRetries = replayable ? Math.min(Math.max(retries, 0), Holder.get().getMaxRetries()) : 0;
         if (maxRetries <= 0) {
             return Retry.max(0).filter(error -> false);
         }
-        return Retry.backoff(maxRetries, Duration.ofMillis(Holder.outboundRetryBackoffMillis()))
-                .maxBackoff(Duration.ofMillis(Holder.outboundRetryMaxBackoffMillis())).filter(Egress::isRetryable)
-                .doBeforeRetry(retrySignal -> {
-                    Throwable failure = retrySignal.failure();
-                    Throwable root = rootCause(failure);
-                    Logger.warn(
-                            true,
-                            "Vortex",
-                            "Retry attempt {}/{}: scene={}, method={}, uri={}, event=RETRY_ATTEMPT, failure={}, root={}",
-                            retrySignal.totalRetries() + 1,
-                            maxRetries,
-                            scene,
-                            method,
-                            safeUri(uri),
-                            failure == null ? null : failure.getClass().getSimpleName(),
-                            root == null ? null : root.getClass().getSimpleName());
-                }).onRetryExhaustedThrow((retryBackoffSpec, retrySignal) -> retrySignal.failure());
+        return Retry.from(signals -> {
+            var plan = new RecoveryPlan("vortex-egress", maxRetries, Duration.ofNanos(Long.MAX_VALUE));
+            var coordinator = new RecoveryCoordinator(plan);
+            var operation = ErrorBoundary.standard().open();
+            var context = new ErrorContext("vortex-egress", scene == null ? "retry" : scene, ErrorContext.Phase.LOCAL);
+            var facts = new FailureFacts(FailureFacts.Source.LOCAL, ErrorEngine.descriptor(ErrorType.DEPENDENCY_UNAVAILABLE), 0);
+            return Retry.backoff(maxRetries, Duration.ofMillis(Holder.outboundRetryBackoffMillis()))
+                    .maxBackoff(Duration.ofMillis(Holder.outboundRetryMaxBackoffMillis()))
+                    .filter(
+                            error -> isRetryable(error) && coordinator
+                                    .tryRetry(plan.owner(), true, true, RecoveryPlan.Delivery.REPLAY_SAFE, false))
+                    .doBeforeRetry(retrySignal -> {
+                        Throwable failure = retrySignal.failure();
+                        var decision = operation.decide(context, facts, failure);
+                        operation.observe(context, decision, false, failure, null,
+                                "retry-" + (retrySignal.totalRetries() + 1) + "-of-" + maxRetries);
+                    }).onRetryExhaustedThrow((retryBackoffSpec, retrySignal) -> retrySignal.failure())
+                    .generateCompanion(signals);
+        });
     }
 
     /**
@@ -288,29 +298,6 @@ public class Egress {
                 "reactor-netty",
                 "nio");
         return webClient;
-    }
-
-    /**
-     * Returns a URI string safe for logs by removing query and fragment parts.
-     *
-     * @param uri source URI
-     * @return safe URI string
-     */
-    private static String safeUri(URI uri) {
-        if (uri == null) {
-            return null;
-        }
-        StringBuilder builder = new StringBuilder();
-        if (uri.getScheme() != null) {
-            builder.append(uri.getScheme()).append(Symbol.COLON);
-        }
-        if (uri.getRawAuthority() != null) {
-            builder.append(Symbol.SLASH).append(Symbol.SLASH).append(uri.getRawAuthority());
-        }
-        if (uri.getRawPath() != null) {
-            builder.append(uri.getRawPath());
-        }
-        return builder.toString();
     }
 
     /**

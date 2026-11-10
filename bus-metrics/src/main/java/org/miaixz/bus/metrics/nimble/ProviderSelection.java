@@ -24,6 +24,8 @@ import java.util.Comparator;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+import org.miaixz.bus.errors.ComponentFailure;
+import org.miaixz.bus.errors.ErrorType;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.metrics.Provider;
 
@@ -33,6 +35,11 @@ import org.miaixz.bus.metrics.Provider;
  * @author Kimi Liu
  */
 public final class ProviderSelection {
+
+    /**
+     * Reports backend initialization failure without changing metrics provider selection.
+     */
+    private static final ComponentFailure FAILURES = new ComponentFailure("bus-metrics", "provider");
 
     /**
      * Expected implementation class for each built-in provider key.
@@ -87,6 +94,7 @@ public final class ProviderSelection {
         try {
             return Objects.requireNonNull(selected.factory().orElseThrow().get(), "Provider factory returned null");
         } catch (RuntimeException exception) {
+            FAILURES.failed(ErrorType.CONFIGURATION_FAILURE, exception);
             throw new IllegalStateException(
                     "Metrics provider construction failed for " + StringKit.toLowerCase(selected.type().name()),
                     exception);
@@ -117,6 +125,8 @@ public final class ProviderSelection {
 
     /**
      * Supported provider selections.
+ *
+ * @author Kimi Liu
      */
     public enum Type {
 
@@ -169,6 +179,7 @@ public final class ProviderSelection {
      * @param available whether the candidate can be selected
      * @param reason    stable explanation when the candidate is unavailable
      * @param factory   lazy provider factory when the candidate is available
+ * @author Kimi Liu
      */
     public record Candidate(Type type, boolean external, boolean available, String reason,
             Optional<Supplier<Provider>> factory) {
@@ -176,6 +187,11 @@ public final class ProviderSelection {
         /**
          * Validates candidate availability and lazy factory consistency.
          *
+         * @param type      provider type represented by the candidate
+         * @param external  whether the candidate depends on an external telemetry runtime
+         * @param available whether the candidate can be selected
+         * @param reason    stable explanation when the candidate is unavailable
+         * @param factory   lazy provider factory when the candidate is available
          * @throws IllegalArgumentException if the candidate represents {@link Type#AUTO} or its availability and
          *                                  factory state disagree
          */

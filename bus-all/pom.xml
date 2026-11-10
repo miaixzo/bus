@@ -92,62 +92,12 @@
         </dependency>
         <dependency>
             <groupId>org.miaixz</groupId>
-            <artifactId>bus-cache</artifactId>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>org.miaixz</groupId>
-            <artifactId>bus-core</artifactId>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>org.miaixz</groupId>
-            <artifactId>bus-cortex</artifactId>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>org.miaixz</groupId>
-            <artifactId>bus-crypto</artifactId>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>org.miaixz</groupId>
-            <artifactId>bus-extra</artifactId>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>org.miaixz</groupId>
-            <artifactId>bus-fabric</artifactId>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>org.miaixz</groupId>
-            <artifactId>bus-gitlab</artifactId>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>org.miaixz</groupId>
-            <artifactId>bus-health</artifactId>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>org.miaixz</groupId>
             <artifactId>bus-image</artifactId>
             <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>org.miaixz</groupId>
             <artifactId>bus-limiter</artifactId>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>org.miaixz</groupId>
-            <artifactId>bus-logger</artifactId>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>org.miaixz</groupId>
-            <artifactId>bus-mapper</artifactId>
             <optional>true</optional>
         </dependency>
         <dependency>
@@ -172,32 +122,12 @@
         </dependency>
         <dependency>
             <groupId>org.miaixz</groupId>
-            <artifactId>bus-preset</artifactId>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>org.miaixz</groupId>
-            <artifactId>bus-proxy</artifactId>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>org.miaixz</groupId>
             <artifactId>bus-sensitive</artifactId>
             <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>org.miaixz</groupId>
-            <artifactId>bus-setting</artifactId>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>org.miaixz</groupId>
             <artifactId>bus-shade</artifactId>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>org.miaixz</groupId>
-            <artifactId>bus-spring</artifactId>
             <optional>true</optional>
         </dependency>
         <dependency>
@@ -218,11 +148,6 @@
         <dependency>
             <groupId>org.miaixz</groupId>
             <artifactId>bus-tracer</artifactId>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>org.miaixz</groupId>
-            <artifactId>bus-validate</artifactId>
             <optional>true</optional>
         </dependency>
         <dependency>

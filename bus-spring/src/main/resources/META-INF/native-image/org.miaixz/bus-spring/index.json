@@ -4,9 +4,8 @@
     "metadata-version": "8.8.0",
     "source-code-url": "https://repo.maven.apache.org/maven2/org/miaixz/bus-spring/$version$/bus-spring-$version$-sources.jar",
     "repository-url": "https://github.com/818000/bus",
-    "test-code-url": "https://github.com/818000/abarth/tree/main/bus-testing/src/test",
     "documentation-url": "https://repo.maven.apache.org/maven2/org/miaixz/bus-spring/$version$/bus-spring-$version$-javadoc.jar",
-    "description": "Bus Spring provides shared Spring Boot lifecycle, context, web, metrics, and environment integration.",
+    "description": "Bus Spring - Shared Spring and Spring Boot integration infrastructure, lifecycle hooks and web adapters.",
     "tested-versions": [
       "8.8.0",
       "8.8.1",

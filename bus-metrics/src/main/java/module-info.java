@@ -35,6 +35,7 @@ module bus.metrics {
 
     requires bus.cache;
     requires bus.core;
+    requires transitive bus.errors;
     requires bus.health;
     requires bus.logger;
 

@@ -223,7 +223,6 @@ public class GrpcExecutor extends Coordinator<String, ServerResponse> {
                                                     .doFinally(signalType -> bufferedBody.close())));
 
         } catch (Exception e) {
-            Logger.error(false, "Vortex", "Failed to invoke gRPC method '{}': protocol=grpc", assets.getMethod(), e);
             return Mono.error(new RuntimeException("Failed to invoke gRPC method: " + assets.getMethod(), e));
         }
     }

@@ -32,6 +32,7 @@
 module bus.setting {
 
     requires bus.core;
+    requires bus.errors;
     requires bus.logger;
 
     requires static org.yaml.snakeyaml;

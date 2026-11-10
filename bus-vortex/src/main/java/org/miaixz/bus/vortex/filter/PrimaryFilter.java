@@ -22,6 +22,8 @@ package org.miaixz.bus.vortex.filter;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.WebFilter;
 import org.springframework.web.server.WebFilterChain;
@@ -31,6 +33,7 @@ import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.xyz.DateKit;
+import org.miaixz.bus.errors.transport.http.RouteFailure;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.vortex.Context;
 import org.miaixz.bus.vortex.Strategy;
@@ -101,15 +104,13 @@ public class PrimaryFilter extends AbstractFilter {
                 exchange.getRequest().getQueryParams().keySet());
 
         if (isPathTraversalAttempt(path)) {
-            Logger.warn(false, "Vortex", "Path traversal attempt detected: clientIp=N/A, path={}", path);
             throw new ValidateException(ErrorCode._LIMITER);
         }
 
         return Mono.defer(() -> {
             List<Strategy> strategies = factory.getStrategiesFor(exchange);
             if (strategies == null || strategies.isEmpty()) {
-                Logger.warn(false, "Vortex", "Unknown path blocked: clientIp=N/A, path={}", path);
-                throw new ValidateException(ErrorCode._BLOCKED);
+                throw new RouteFailure(ErrorCode._BLOCKED, HttpStatus.NOT_FOUND, HttpHeaders.EMPTY);
             }
             Context context = new Context();
             context.setX_request_id(exchange.getRequest().getId());
@@ -118,14 +119,7 @@ public class PrimaryFilter extends AbstractFilter {
             try {
                 context.setHttpMethod(Http.Method.of(exchange.getRequest().getMethod().name()));
             } catch (IllegalArgumentException e) {
-                Logger.warn(
-                        false,
-                        "Vortex",
-                        e,
-                        "HTTP method mapping failed: methodPresent={}, exception={}",
-                        exchange.getRequest().getMethod() != null,
-                        e.getClass().getSimpleName());
-                throw new ValidateException(ErrorCode._100802);
+                throw new ValidateException(ErrorCode._100802.getKey(), ErrorCode._100802.getValue(), e);
             }
 
             exchange.getAttributes().put(Context.$, context);

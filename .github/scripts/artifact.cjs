@@ -223,14 +223,15 @@ function walk(dir) {
     return fs.readdirSync(dir, { withFileTypes: true }).sort((a, b) => a.name.localeCompare(b.name)).flatMap(e => e.isDirectory() ? walk(path.join(dir, e.name)) : [path.join(dir, e.name)]);
 }
 
-// Keep both aggregate readers open across module comparisons. The explicit Bus
-// artifact references in bus-all's POM determine aggregate coverage; standalone
-// JNI components must not be assumed to be included automatically.
+// bus-all packages the Bus components, including transitive dependencies.
+// bus-opencv is shipped separately alongside the aggregate.
 const allFile = path.join(root, 'bus-all/target', `bus-all-${ version }.jar`), all = new Zip(allFile);
 const allSources = new Zip(path.join(root, 'bus-all/target', `bus-all-${ version }-sources.jar`));
-const direct = new Set([...fs.readFileSync(path.join(root, 'bus-all/pom.xml'), 'utf8').matchAll(/<artifactId>(bus-[^<]+)<\/artifactId>/g)].map(m => m[1]).filter(m => ![
-    'bus-parent',
-    'bus-all'
+const aggregatedModules = new Set(modules.filter(m => ![
+    'bus-all',
+    'bus-bom',
+    'bus-opencv',
+    'bus-parent'
 ].includes(m)));
 
 // These counters describe comparisons, not a new compilation. Report the
@@ -264,7 +265,7 @@ for (const module of modules) {
             if (!actual || hash(actual) !== expected)
                 errors.push(module + ': source JAR differs: ' + name);
             sourceFiles++;
-            if (direct.has(module) && path.basename(name) !== 'module-info.java') {
+            if (aggregatedModules.has(module) && path.basename(name) !== 'module-info.java') {
                 const entry = allSources.data(name);
                 if (!entry || hash(entry) !== expected)
                     errors.push(module + ': bus-all source JAR differs: ' + name);
@@ -287,7 +288,7 @@ for (const module of modules) {
             errors.push(module + ': component JAR class differs: ' + name);
         classes++;
         compiledClasses++;
-        if (direct.has(module)) {
+        if (aggregatedModules.has(module)) {
             const data = all.data(name);
             if (!data || hash(data) !== expected)
                 errors.push(module + ': bus-all class differs: ' + name);
@@ -322,7 +323,7 @@ for (const module of modules) {
         module,
         sha256: hash(bytes),
         classes,
-        aggregated: direct.has(module),
+        aggregated: aggregatedModules.has(module),
         bytes: bytes.length
     });
     zip.close();
@@ -382,7 +383,7 @@ function sameMember(a, b) {
 // Resource sections require an exact normalized row, including conditions;
 // coverage by a broader glob is not inferred by this verifier.
 for (const {module, section, row} of sourceRows) {
-    if (!direct.has(module))
+    if (!aggregatedModules.has(module))
         continue;
     if ([
             'reflection',
@@ -417,7 +418,7 @@ for (const {module, section, row} of sourceRows) {
 // Check property arguments separately: join continuation lines, then locate
 // initialization targets and -H: options in exported property text. Presence
 // checking does not detect initialization-mode conflicts or option equivalence.
-for (const module of direct)
+for (const module of aggregatedModules)
     for (const f of walk(path.join(root, module, 'src/main/resources/META-INF/native-image')).filter(f => f.endsWith('/native-image.properties'))) {
         const text = fs.readFileSync(f, 'utf8').replace(/\\\r?\n\s*/g, ' ');
         for (const match of text.matchAll(/--initialize-at-(build|run)-time=([^\s]+)/g))

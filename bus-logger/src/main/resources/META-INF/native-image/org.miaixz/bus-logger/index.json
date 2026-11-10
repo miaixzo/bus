@@ -4,9 +4,8 @@
     "metadata-version": "8.8.0",
     "source-code-url": "https://repo.maven.apache.org/maven2/org/miaixz/bus-logger/$version$/bus-logger-$version$-sources.jar",
     "repository-url": "https://github.com/818000/bus",
-    "test-code-url": "https://github.com/818000/abarth/tree/main/bus-testing/src/test",
     "documentation-url": "https://repo.maven.apache.org/maven2/org/miaixz/bus-logger/$version$/bus-logger-$version$-javadoc.jar",
-    "description": "Bus Logger provides logging abstractions and bridges for common Java logging frameworks.",
+    "description": "Bus Logger - Provider abstraction, neutral log processing extensions, severity controls and layout templates.",
     "tested-versions": [
       "8.8.0",
       "8.8.1",

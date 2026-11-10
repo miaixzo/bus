@@ -22,8 +22,12 @@ package org.miaixz.bus.vortex.strategy;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ServerWebExchange;
 
 import org.miaixz.bus.core.Order;
@@ -38,6 +42,9 @@ import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.cortex.Assets;
 import org.miaixz.bus.cortex.Keying;
 import org.miaixz.bus.cortex.Type;
+import org.miaixz.bus.errors.ErrorType;
+import org.miaixz.bus.errors.transport.http.RouteFailure;
+import org.miaixz.bus.errors.transport.reactive.ReactiveErrorHandler;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.vortex.Args;
 import org.miaixz.bus.vortex.Channel;
@@ -113,7 +120,7 @@ public class QualifierStrategy extends AbstractStrategy {
                         method,
                         version,
                         verb);
-                return Mono.error(new ValidateException(ErrorCode._100800));
+                return Mono.error(routeMiss(exchange, requestRoute, ErrorCode._100800));
             })).flatMap(match -> {
                 Assets assets = match.assets();
                 context.setAssets(assets);
@@ -190,6 +197,30 @@ public class QualifierStrategy extends AbstractStrategy {
         String version = this.version(exchange, context);
         Integer verb = context.getHttpMethod() == null ? null : context.getHttpMethod().verb();
         return Keying.RegistrySpec.route(null, type, appId, method, version, verb);
+    }
+
+    /**
+     * Supplies route-specific status and headers for a confirmed lookup miss. The original validation code remains
+     * available to legacy clients.
+     *
+     * @param exchange gateway exchange with its selected policy
+     * @param route    exact request coordinates used for lookup
+     * @param legacy   original lookup failure code
+     * @return routing failure or the original validation failure for an incomplete lookup
+     */
+    protected ValidateException routeMiss(ServerWebExchange exchange, Keying.RegistrySpec route, Errors legacy) {
+        if (!route.routable()) {
+            return new ValidateException(legacy);
+        }
+        if (ReactiveErrorHandler.usesNativeRule(exchange, ErrorType.METHOD_NOT_ALLOWED)) {
+            Set<HttpMethod> methods = this.registry.publicMethods(route);
+            if (!methods.isEmpty()) {
+                HttpHeaders headers = new HttpHeaders();
+                headers.setAllow(methods);
+                return new RouteFailure(legacy, HttpStatus.METHOD_NOT_ALLOWED, headers);
+            }
+        }
+        return new RouteFailure(legacy, HttpStatus.NOT_FOUND, HttpHeaders.EMPTY);
     }
 
     /**

@@ -4,9 +4,8 @@
     "metadata-version": "8.8.0",
     "source-code-url": "https://repo.maven.apache.org/maven2/org/miaixz/bus-validate/$version$/bus-validate-$version$-sources.jar",
     "repository-url": "https://github.com/818000/bus",
-    "test-code-url": "https://github.com/818000/abarth/tree/main/bus-testing/src/test",
     "documentation-url": "https://repo.maven.apache.org/maven2/org/miaixz/bus-validate/$version$/bus-validate-$version$-javadoc.jar",
-    "description": "Bus Validate provides validation annotations, validators, and constraint utilities.",
+    "description": "Bus Validate - Constraint validation suite with composable predicates, rule evaluators and domain-specific annotations.",
     "tested-versions": [
       "8.8.0",
       "8.8.1",

@@ -2,7 +2,7 @@
   {
     "latest": true,
     "metadata-version": "3.2.0",
-    "description": "Supplemental Bus integration metadata; complements the upstream metadata repository.",
+    "description": "A high performance caching library",
     "tested-versions": [
       "3.2.0",
       "3.2.4"

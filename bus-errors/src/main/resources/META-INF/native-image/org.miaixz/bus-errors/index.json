@@ -1,0 +1,17 @@
+[
+  {
+    "latest": true,
+    "metadata-version": "8.8.0",
+    "source-code-url": "https://repo.maven.apache.org/maven2/org/miaixz/bus-errors/$version$/bus-errors-$version$-sources.jar",
+    "repository-url": "https://github.com/818000/bus",
+    "documentation-url": "https://repo.maven.apache.org/maven2/org/miaixz/bus-errors/$version$/bus-errors-$version$-javadoc.jar",
+    "description": "Bus Errors - Shared error handling, HTTP adapters and recovery decisions.",
+    "tested-versions": [
+      "8.8.0",
+      "8.8.50"
+    ],
+    "allowed-packages": [
+      "org.miaixz"
+    ]
+  }
+]

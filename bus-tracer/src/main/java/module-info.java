@@ -21,14 +21,16 @@
  * Module: {@code bus.tracer}
  *
  * <p>
- * Provides a minimal entry point for distributed call-chain tracing.
+ * Connects the shared Bus failure pipeline to application-owned tracing integrations.
  *
  * <p>
- * Currently exposes the {@code Tracer} type as the public module surface for future tracing integrations.
+ * Includes the {@code Tracer} facade for subscribing to safe component error events during an active trace.
  *
  * @author Kimi Liu
  */
 module bus.tracer {
+
+    requires transitive bus.errors;
 
     exports org.miaixz.bus.tracer;
 

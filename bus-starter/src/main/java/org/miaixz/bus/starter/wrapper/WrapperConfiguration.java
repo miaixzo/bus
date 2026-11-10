@@ -31,6 +31,7 @@ import org.miaixz.bus.starter.wrapper.binding.RequestBindingConfiguration;
 import org.miaixz.bus.starter.wrapper.body.BodyCacheConfiguration;
 import org.miaixz.bus.starter.wrapper.converter.MessageConverterConfiguration;
 import org.miaixz.bus.starter.wrapper.routing.RouteErrorConfiguration;
+import org.miaixz.bus.starter.wrapper.routing.RouteErrorProperties;
 import org.miaixz.bus.starter.wrapper.routing.RoutePrefixConfiguration;
 
 /**
@@ -39,7 +40,7 @@ import org.miaixz.bus.starter.wrapper.routing.RoutePrefixConfiguration;
  * @author Kimi Liu
  */
 @Configuration(proxyBeanMethods = false)
-@EnableConfigurationProperties(WrapperProperties.class)
+@EnableConfigurationProperties({ WrapperProperties.class, RouteErrorProperties.class })
 @Import({ BodyCacheConfiguration.class, RequestBindingConfiguration.class, MessageConverterConfiguration.class,
         ResponseAdviceConfiguration.class, RouteErrorConfiguration.class, RoutePrefixConfiguration.class })
 @ConditionalOnEnabled(annotation = EnableWrapper.class, prefix = GeniusBuilder.WRAPPER)

@@ -4,9 +4,8 @@
     "metadata-version": "8.8.0",
     "source-code-url": "https://repo.maven.apache.org/maven2/org/miaixz/bus-image/$version$/bus-image-$version$-sources.jar",
     "repository-url": "https://github.com/818000/bus",
-    "test-code-url": "https://github.com/818000/abarth/tree/main/bus-testing/src/test",
     "documentation-url": "https://repo.maven.apache.org/maven2/org/miaixz/bus-image/$version$/bus-image-$version$-javadoc.jar",
-    "description": "Bus Image provides DICOM, image metadata, codec, network, and medical image utilities.",
+    "description": "Bus Image - Imaging pipeline for raster conversion, EXIF metadata, DICOM studies and pixel transformations.",
     "tested-versions": [
       "8.8.0",
       "8.8.1",

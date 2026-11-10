@@ -28,6 +28,8 @@ import java.util.Enumeration;
 
 import org.springframework.boot.loader.launch.LaunchedClassLoader;
 
+import org.miaixz.bus.errors.ComponentFailure;
+import org.miaixz.bus.errors.ErrorType;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.shade.safety.Builder;
@@ -42,6 +44,11 @@ import org.miaixz.bus.shade.safety.provider.EncryptorProvider;
  * @author Kimi Liu
  */
 public class BootClassLoader extends LaunchedClassLoader {
+
+    /**
+     * Reports archive definition failures while preserving ClassNotFoundException and loader fallback.
+     */
+    private static final ComponentFailure FAILURES = new ComponentFailure("bus-shade", "archive-loader");
 
     static {
         // Registers this class loader as parallel-capable, allowing concurrent loading of classes.
@@ -158,6 +165,7 @@ public class BootClassLoader extends LaunchedClassLoader {
                         bytes.length);
                 return definedClass;
             } catch (Throwable t) {
+                FAILURES.failed(ErrorType.INVALID_DATA, t);
                 Logger.warn(
                         false,
                         "Shade",

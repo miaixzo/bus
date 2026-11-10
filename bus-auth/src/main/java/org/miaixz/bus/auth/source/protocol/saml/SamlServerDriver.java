@@ -43,7 +43,6 @@ import javax.xml.transform.stream.StreamResult;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 import org.miaixz.bus.auth.*;
 import org.miaixz.bus.auth.Scheme.Options;
@@ -782,11 +781,16 @@ public class SamlServerDriver implements ProtocolDriver<SamlServerOptions> {
                 signingContext.setDefaultNamespacePrefix("ds");
                 signingContext.setProperty("org.jcp.xml.dsig.secureValidation", Boolean.TRUE);
                 factory.newXMLSignature(signedInfo, null).sign(signingContext);
-                final NodeList signatures = root.getElementsByTagNameNS(XMLSignature.XMLNS, "Signature");
-                if (signatures.getLength() != 1) {
-                    throw new ValidateException("SAML signing produced an ambiguous Signature element");
+                Node signature = null;
+                for (Node child = root.getFirstChild(); child != null; child = child.getNextSibling()) {
+                    if (XMLSignature.XMLNS.equals(child.getNamespaceURI()) && "Signature".equals(child.getLocalName())) {
+                        if (signature != null) {
+                            throw new ValidateException("SAML signing produced an ambiguous Signature element");
+                        }
+                        signature = child;
+                    }
                 }
-                return serialize(signatures.item(0));
+                return serialize(Assert.notNull(signature, "SAML signing produced no root Signature element"));
             } catch (ValidateException exception) {
                 throw exception;
             } catch (Exception exception) {

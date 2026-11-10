@@ -21,11 +21,11 @@ package org.miaixz.bus.vortex.filter;
 
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.WebFilterChain;
 
+import org.miaixz.bus.errors.ErrorBoundary;
+import org.miaixz.bus.errors.transport.reactive.ReactiveErrorHandler;
 import org.miaixz.bus.vortex.Holder;
 import org.miaixz.bus.vortex.guard.AdmissionGate;
 
@@ -44,10 +44,24 @@ import reactor.core.publisher.Mono;
 public class AdmissionFilter extends AbstractFilter {
 
     /**
+     * Shared gateway boundary for direct admission rejection.
+     */
+    private final ErrorBoundary boundary;
+
+    /**
      * Creates the stateless process-wide admission filter.
      */
     public AdmissionFilter() {
-        // No initialization required.
+        this(ErrorBoundary.standard());
+    }
+
+    /**
+     * Creates an admission filter using the listener's common error boundary.
+     *
+     * @param boundary classifier and observer for admission rejections
+     */
+    public AdmissionFilter(ErrorBoundary boundary) {
+        this.boundary = java.util.Objects.requireNonNull(boundary, "boundary");
     }
 
     /**
@@ -61,11 +75,11 @@ public class AdmissionFilter extends AbstractFilter {
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
         return Mono.defer(() -> {
             if (Holder.memoryPressure().rejectAll()) {
-                return reject(exchange);
+                return ReactiveErrorHandler.rejectOverload(exchange, this.boundary);
             }
             AdmissionGate.Lease lease = Holder.admissionGate().tryAcquireRequest();
             if (lease == null) {
-                return reject(exchange);
+                return ReactiveErrorHandler.rejectOverload(exchange, this.boundary);
             }
             try {
                 return chain.filter(exchange).doFinally(signal -> lease.close());
@@ -74,18 +88,6 @@ public class AdmissionFilter extends AbstractFilter {
                 return Mono.error(error);
             }
         });
-    }
-
-    /**
-     * Writes a body-less overload response that clients may retry after one second.
-     *
-     * @param exchange rejected exchange
-     * @return response-write completion
-     */
-    private Mono<Void> reject(ServerWebExchange exchange) {
-        exchange.getResponse().setStatusCode(HttpStatus.SERVICE_UNAVAILABLE);
-        exchange.getResponse().getHeaders().set(HttpHeaders.RETRY_AFTER, "1");
-        return exchange.getResponse().setComplete();
     }
 
 }

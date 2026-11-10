@@ -2,7 +2,7 @@
   {
     "latest": true,
     "metadata-version": "5.19.0",
-    "description": "Conditional Bus integration metadata only; supplements upstream metadata without replacing it.",
+    "description": "Java Native Access",
     "tested-versions": [
       "5.19.0",
       "5.19.1"

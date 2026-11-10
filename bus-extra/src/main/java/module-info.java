@@ -34,6 +34,7 @@ module bus.extra {
     requires java.desktop;
 
     requires bus.core;
+    requires bus.errors;
     requires bus.logger;
     requires bus.setting;
 

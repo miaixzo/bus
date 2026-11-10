@@ -36,6 +36,8 @@ import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.ResultHandler;
 import org.apache.ibatis.session.RowBounds;
 
+import org.miaixz.bus.errors.ComponentFailure;
+import org.miaixz.bus.errors.ErrorType;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.MapperException;
 import org.miaixz.bus.core.xyz.StringKit;
@@ -78,6 +80,14 @@ import org.miaixz.bus.mapper.handler.MapperHandler;
  */
 public class PageHandler<T> extends AbstractSqlHandler implements MapperHandler<T> {
 
+    /**
+     * Reports SQL and pagination failures while preserving MyBatis exception and fallback contracts.
+     */
+    private static final ComponentFailure FAILURES = new ComponentFailure("bus-mapper", "pagination");
+
+    /**
+     * Serialization version of the pagination handler.
+     */
     @Serial
     private static final long serialVersionUID = 2551599500001L;
 
@@ -445,6 +455,7 @@ public class PageHandler<T> extends AbstractSqlHandler implements MapperHandler<
             }
 
         } catch (Exception e) {
+            FAILURES.failed(ErrorType.EXECUTION_FAILURE, e);
             Logger.error(
                     false,
                     "Mapper",
@@ -912,6 +923,7 @@ public class PageHandler<T> extends AbstractSqlHandler implements MapperHandler<
      * @param reasonable              whether page numbers are normalized
      * @param supportMethodsArguments whether mapper arguments may supply pagination
      * @param params                  immutable pagination parameter mapping
+ * @author Kimi Liu
      */
     private record PageSettings(boolean enabled, boolean reasonable, boolean supportMethodsArguments,
             Map<String, String> params) {

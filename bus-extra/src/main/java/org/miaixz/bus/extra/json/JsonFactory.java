@@ -22,6 +22,8 @@ package org.miaixz.bus.extra.json;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 
+import org.miaixz.bus.errors.ComponentFailure;
+import org.miaixz.bus.errors.ErrorType;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.loader.spi.NormalSpiLoader;
 import org.miaixz.bus.core.lang.loader.spi.ServiceLoader;
@@ -34,6 +36,11 @@ import org.miaixz.bus.core.xyz.StringKit;
  * @author Kimi Liu
  */
 public class JsonFactory {
+
+    /**
+     * Reports a provider that could not be loaded while allowing other optional JSON engines to be selected.
+     */
+    private static final ComponentFailure FAILURES = new ComponentFailure("bus-extra", "json-provider");
 
     /**
      * Stores the application-wide JSON provider state after its first successful resolution or explicit installation.
@@ -237,7 +244,8 @@ public class JsonFactory {
             try {
                 provider = loader.getService(serviceName);
             } catch (RuntimeException | ServiceConfigurationError | LinkageError unavailable) {
-                // An optional engine is not installed or the third-party provider is incompatible.
+                // Discovery may continue when an optional engine is missing or incompatible.
+                FAILURES.attempt(ErrorType.DEPENDENCY_UNAVAILABLE, unavailable);
                 continue;
             }
             if (provider != null) {
@@ -259,6 +267,7 @@ public class JsonFactory {
      *
      * @param provider active provider
      * @param bound    whether the provider has been explicitly installed by an application context
+ * @author Kimi Liu
      */
     private record ProviderState(JsonProvider provider, boolean bound) {
 

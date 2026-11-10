@@ -26,6 +26,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.miaixz.bus.errors.ComponentFailure;
+import org.miaixz.bus.errors.ErrorType;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.*;
 import org.miaixz.bus.logger.Logger;
@@ -43,6 +45,11 @@ import org.miaixz.bus.sensitive.nimble.StrategyProvider;
  * @author Kimi Liu
  */
 public class Filter {
+
+    /**
+     * Reports failed object redaction without sending any sensitive data to the shared observer.
+     */
+    private static final ComponentFailure FAILURES = new ComponentFailure("bus-sensitive", "redaction");
 
     /**
      * The desensitization context.
@@ -217,6 +224,7 @@ public class Filter {
             context.setEntry(null);
             return originalFieldVal;
         } catch (Exception e) {
+            FAILURES.failed(ErrorType.SECURITY_FAILURE, e);
             Logger.warn(
                     false,
                     "Sensitive",

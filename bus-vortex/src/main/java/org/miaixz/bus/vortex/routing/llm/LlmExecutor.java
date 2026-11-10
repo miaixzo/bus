@@ -34,6 +34,8 @@ import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.cortex.Assets;
+import org.miaixz.bus.errors.ComponentFailure;
+import org.miaixz.bus.errors.ErrorType;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.vortex.Context;
@@ -56,6 +58,11 @@ import reactor.core.publisher.Mono;
  * @author Kimi Liu
  */
 public class LlmExecutor extends Coordinator {
+
+    /**
+     * Reports failures whose llm response or lifecycle is owned by this adapter.
+     */
+    private static final ComponentFailure FAILURES = new ComponentFailure("vortex", "llm");
 
     /**
      * The factory for creating and caching LLM provider instances.
@@ -94,7 +101,7 @@ public class LlmExecutor extends Coordinator {
         Logger.debug(true, "Vortex", "{} Executing LLM request for model: {}", context.getX_request_ip(), modelName);
 
         if (assets == null) {
-            Logger.warn(false, "Vortex", "{} No Assets found in context", context.getX_request_ip());
+            FAILURES.failed(ErrorType.CONFIGURATION_FAILURE, 500, null, context.getX_request_id());
             return ServerResponse.status(HttpStatus.INTERNAL_SERVER_ERROR).bodyValue(
                     "{\"error\":{\"message\":\"Assets configuration not found\",\"type\":\"server_error\",\"code\":\"assets_not_found\"}}");
         }
@@ -103,24 +110,13 @@ public class LlmExecutor extends Coordinator {
         try {
             providerConfig = findProviderForModel(assets, modelName);
         } catch (Exception e) {
-            Logger.error(
-                    false,
-                    "Vortex",
-                    e,
-                    "{} Failed to parse provider config: exception={}",
-                    context.getX_request_ip(),
-                    e.getClass().getSimpleName());
+            FAILURES.failed(ErrorType.CONFIGURATION_FAILURE, 500, e, context.getX_request_id());
             return ServerResponse.status(HttpStatus.INTERNAL_SERVER_ERROR).bodyValue(
                     "{\"error\":{\"message\":\"Failed to parse provider configuration\",\"type\":\"server_error\",\"code\":\"config_parse_error\"}}");
         }
 
         if (providerConfig == null) {
-            Logger.warn(
-                    false,
-                    "Vortex",
-                    "{} Model not found in any provider: {}",
-                    context.getX_request_ip(),
-                    modelName);
+            FAILURES.failed(ErrorType.ROUTE_NOT_FOUND, 404, null, context.getX_request_id());
             return ServerResponse.status(HttpStatus.NOT_FOUND).bodyValue(
                     "{\"error\":{\"message\":\"Model not found: " + modelName
                             + "\",\"type\":\"invalid_request_error\",\"code\":\"model_not_found\"}}");
@@ -143,13 +139,7 @@ public class LlmExecutor extends Coordinator {
                     providerConfig.apiKey,
                     providerConfig.model);
         } catch (Exception e) {
-            Logger.error(
-                    false,
-                    "Vortex",
-                    e,
-                    "{} Failed to create provider: exception={}",
-                    context.getX_request_ip(),
-                    e.getClass().getSimpleName());
+            FAILURES.failed(ErrorType.CONFIGURATION_FAILURE, 500, e, context.getX_request_id());
             return ServerResponse.status(HttpStatus.INTERNAL_SERVER_ERROR).bodyValue(
                     "{\"error\":{\"message\":\"Failed to create provider\",\"type\":\"server_error\",\"code\":\"provider_creation_error\"}}");
         }
@@ -182,13 +172,7 @@ public class LlmExecutor extends Coordinator {
                     try {
                         request = parseRequest(body, modelName);
                     } catch (Exception e) {
-                        Logger.error(
-                                false,
-                                "Vortex",
-                                e,
-                                "{} Failed to parse request: exception={}",
-                                context.getX_request_ip(),
-                                e.getClass().getSimpleName());
+                        FAILURES.failed(ErrorType.INVALID_REQUEST, 400, e, context.getX_request_id());
                         return ServerResponse.status(HttpStatus.BAD_REQUEST).bodyValue(
                                 "{\"error\":{\"message\":\"Invalid request body\",\"type\":\"invalid_request_error\",\"code\":\"invalid_request_body\"}}")
                                 .doFinally(signal -> bufferedBody.close());
@@ -228,16 +212,18 @@ public class LlmExecutor extends Coordinator {
                                         response -> ServerResponse.ok().contentType(MediaType.APPLICATION_JSON)
                                                 .bodyValue(response))
                                 .onErrorResume(e -> {
-                                    Logger.error(
-                                            false,
-                                            "Vortex",
-                                            e,
-                                            "{} LLM request failed: exception={}",
-                                            context.getX_request_ip(),
-                                            e.getClass().getSimpleName());
+                                    FAILURES.failed(ErrorType.DEPENDENCY_UNAVAILABLE, 500, e, context.getX_request_id());
                                     return ServerResponse.status(HttpStatus.INTERNAL_SERVER_ERROR).bodyValue(
-                                            "{\"error\":{\"message\":\"LLM request failed: " + e.getMessage()
-                                                    + "\",\"type\":\"server_error\",\"code\":\"llm_request_failed\"}}");
+                                            JsonKit.toJsonString(
+                                                    Map.of(
+                                                            "error",
+                                                            Map.of(
+                                                                    "message",
+                                                                    "LLM request failed: " + e.getMessage(),
+                                                                    "type",
+                                                                    "server_error",
+                                                                    "code",
+                                                                    "llm_request_failed"))));
                                 }).doFinally(signal -> bufferedBody.close());
                     }
                 });
@@ -263,7 +249,6 @@ public class LlmExecutor extends Coordinator {
         final Object providersObj = root.get("providers");
 
         if (!(providersObj instanceof List)) {
-            Logger.warn(false, "Vortex", "Invalid metadata format: 'providers' array not found");
             return null;
         }
 

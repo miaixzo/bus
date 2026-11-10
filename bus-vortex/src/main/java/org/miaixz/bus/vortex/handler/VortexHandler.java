@@ -34,6 +34,8 @@ import org.miaixz.bus.core.basic.normal.Consts;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.cortex.Assets;
+import org.miaixz.bus.errors.ErrorBoundary;
+import org.miaixz.bus.errors.ErrorContext;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.vortex.*;
 import org.miaixz.bus.vortex.magic.ErrorCode;
@@ -102,7 +104,7 @@ public class VortexHandler {
      * <li>Execute pre-handle logic for all interceptors</li>
      * <li>Delegate actual forwarding or processing to the selected {@link Router}</li>
      * <li>Execute post-handle and after-completion logic for all interceptors</li>
-     * <li>Log request duration, success/failure information</li>
+     * <li>Log successful request duration and propagate failures to the gateway error boundary</li>
      * </ol>
      *
      * @param request the client's {@link ServerRequest} containing full request information
@@ -116,12 +118,6 @@ public class VortexHandler {
 
             final Context context = contextView.get(Context.class);
             if (context == null) {
-                Logger.info(
-                        true,
-                        "Vortex",
-                        "Request context is null: clientIp=N/A, method={}, path={}, event=CONTEXT_ERROR",
-                        method,
-                        path);
                 throw new ValidateException(ErrorCode._100710);
             }
             final String ip = context.getX_request_ip();
@@ -149,40 +145,16 @@ public class VortexHandler {
 
             Assets assets = context.getAssets();
             if (assets == null) {
-                Logger.info(
-                        true,
-                        "Vortex",
-                        "Assets is null in request context: clientIp={}, method={}, path={}, event=ASSETS_ERROR",
-                        ip,
-                        method,
-                        path);
                 throw new ValidateException(ErrorCode._100800);
             }
 
             Integer protocol = assets.getProtocol();
             if (protocol == null) {
-                Logger.info(
-                        true,
-                        "Vortex",
-                        "Invalid protocol: clientIp={}, method={}, path={}, event=INVALID_PROTOCOL, {}",
-                        ip,
-                        method,
-                        path,
-                        protocol);
                 throw new ValidateException(ErrorCode._116000);
             }
 
             Router<ServerRequest, ?> router = routers.get(protocol);
             if (router == null) {
-                Logger.info(
-                        true,
-                        "Vortex",
-                        "No router found for protocol: clientIp={}, method={}, path={}, event=ROUTER_NOT_FOUND, protocol={}, registeredProtocols={}",
-                        ip,
-                        method,
-                        path,
-                        protocol,
-                        routers.keySet());
                 throw new ValidateException(ErrorCode._100800, "No router for protocol: " + protocol);
             }
 
@@ -197,13 +169,6 @@ public class VortexHandler {
 
             return executePreHandle(exchange, router).flatMap(preHandleResult -> {
                 if (!preHandleResult) {
-                    Logger.info(
-                            true,
-                            "Vortex",
-                            "Pre-handle validation failed: clientIp={}, method={}, path={}, event=PREHANDLE_ERROR",
-                            ip,
-                            method,
-                            path);
                     throw new ValidateException(ErrorCode._100800);
                 }
 
@@ -240,17 +205,8 @@ public class VortexHandler {
                                             path,
                                             serverResponse.statusCode().value());
                                 }
-                            }).onErrorResume(Throwable.class, error -> {
-                                Logger.error(
-                                        false,
-                                        "Vortex",
-                                        "Error: clientIp={}, method={}, path={}, event=MOCK_ERROR, {}",
-                                        ip,
-                                        method,
-                                        path,
-                                        error.getMessage());
-                                return executePostHandlersThenError(exchange, router, error);
-                            });
+                            }).onErrorResume(Throwable.class,
+                                    error -> executePostHandlersThenError(exchange, router, error));
                 }
 
                 return router.route(request).timeout(Duration.ofSeconds(routeTimeoutSeconds(assets, request)))
@@ -280,18 +236,8 @@ public class VortexHandler {
                                         path,
                                         serverResponse.statusCode().value());
                             }
-                        }).onErrorResume(Throwable.class, error -> {
-                            Logger.info(
-                                    false,
-                                    "Vortex",
-                                    "Error: clientIp={}, method={}, path={}, event=REQUEST_ERROR, {}",
-                                    ip,
-                                    method,
-                                    path,
-                                    error.getMessage());
-
-                            return executePostHandlersThenError(exchange, router, error);
-                        });
+                        }).onErrorResume(Throwable.class,
+                                error -> executePostHandlersThenError(exchange, router, error));
             });
         });
     }
@@ -361,18 +307,11 @@ public class VortexHandler {
             Router<ServerRequest, ?> router,
             Throwable error) {
         return executePostHandlers(exchange, router, null, error).onErrorResume(handlerError -> {
-            try {
-                if (handlerError != error) {
-                    error.addSuppressed(handlerError);
-                }
-                Logger.error(
-                        false,
-                        "Vortex",
-                        "Post handlers failed after routing error: event=POST_HANDLER_ERROR, original={}, suppressed={}",
-                        error.getClass().getName(),
-                        handlerError.getClass().getName());
-            } catch (Throwable ignored) {
-                // Preserve the original routing error even when suppression or logging fails.
+            if (handlerError != error) {
+                error.addSuppressed(handlerError);
+                var phase = exchange.getResponse().isCommitted() ? ErrorContext.Phase.COMMITTED : ErrorContext.Phase.OPEN;
+                ErrorBoundary.diagnose(new ErrorContext("vortex", "http", phase), "vortex-post-handler",
+                        handlerError, exchange.getRequest().getId());
             }
             return Mono.empty();
         }).then(Mono.error(error));

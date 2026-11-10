@@ -22,6 +22,8 @@ package org.miaixz.bus.image.metric.service;
 import java.io.IOException;
 import java.util.HashMap;
 
+import org.miaixz.bus.errors.ComponentFailure;
+import org.miaixz.bus.errors.ErrorType;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.image.Dimse;
 import org.miaixz.bus.image.Status;
@@ -35,38 +37,44 @@ import org.miaixz.bus.image.metric.pdu.PresentationContext;
 import org.miaixz.bus.logger.Logger;
 
 /**
- * Represents the ImageServiceRegistry type.
+ * Dispatches incoming DICOM DIMSE requests to registered SOP Class handlers.
+ * A service failure is observed through Bus and sent to the peer with its original DIMSE status.
  *
  * @author Kimi Liu
  */
 public class ImageServiceRegistry implements DimseRQHandler {
 
     /**
-     * The services value.
+     * Reports DICOM command failures while the association retains ownership of the DIMSE response.
+     */
+    private static final ComponentFailure FAILURES = new ComponentFailure("bus-image", "dicom-dimse");
+
+    /**
+     * DIMSE request handlers indexed by SOP Class UID.
      */
     private final HashMap<String, DimseRQHandler> services = new HashMap<>();
 
     /**
-     * Constructs a new ImageServiceRegistry instance.
+     * Creates a registry without any DIMSE request handlers.
      */
     public ImageServiceRegistry() {
         // No initialization required.
     }
 
     /**
-     * Adds the dicom service.
+     * Registers a DICOM service for all SOP classes it declares.
      *
-     * @param service the service.
+     * @param service DICOM service whose declared SOP classes are registered
      */
     public void addDicomService(ImageService service) {
         addDimseRQHandler(service, service.getSOPClasses());
     }
 
     /**
-     * Adds the dimse rq handler.
+     * Registers a DIMSE request handler for each given SOP Class UID.
      *
-     * @param service    the service.
-     * @param sopClasses the sop classes.
+     * @param service    DIMSE request handler to register
+     * @param sopClasses SOP Class UIDs affected by this registration change
      */
     public synchronized void addDimseRQHandler(DimseRQHandler service, String... sopClasses) {
         for (String uid : sopClasses)
@@ -74,18 +82,18 @@ public class ImageServiceRegistry implements DimseRQHandler {
     }
 
     /**
-     * Removes the dicom service.
+     * Removes registrations for the SOP classes declared by a service.
      *
-     * @param service the service.
+     * @param service DICOM service whose declared SOP classes are removed
      */
     public void removeDicomService(ImageService service) {
         removeDimseRQHandler(service.getSOPClasses());
     }
 
     /**
-     * Removes the dimse rq handler.
+     * Removes the handler registration for each given SOP Class UID.
      *
-     * @param sopClasses the sop classes.
+     * @param sopClasses SOP Class UIDs affected by this registration change
      */
     public synchronized void removeDimseRQHandler(String... sopClasses) {
         for (String uid : sopClasses)
@@ -93,14 +101,14 @@ public class ImageServiceRegistry implements DimseRQHandler {
     }
 
     /**
-     * Executes the on dimse rq operation.
+     * Dispatches a DIMSE request and writes the original protocol error if the service rejects it.
      *
-     * @param as    the as.
-     * @param pc    the pc.
-     * @param dimse the dimse.
-     * @param cmd   the cmd.
-     * @param data  the data.
-     * @throws IOException if the operation cannot be completed.
+     * @param as    association that received the request
+     * @param pc    presentation context negotiated for the request
+     * @param dimse DIMSE request command
+     * @param cmd   request command attributes
+     * @param data  request data stream, when the command carries a data set
+     * @throws IOException if the selected service cannot read or process the request stream
      */
     @Override
     public void onDimseRQ(Association as, PresentationContext pc, Dimse dimse, Attributes cmd, PDVInputStream data)
@@ -108,6 +116,7 @@ public class ImageServiceRegistry implements DimseRQHandler {
         try {
             lookupService(as, dimse, cmd).onDimseRQ(as, pc, dimse, cmd, data);
         } catch (ImageServiceException e) {
+            FAILURES.failed(ErrorType.EXECUTION_FAILURE, e);
             Logger.info(
                     false,
                     "Image",
@@ -120,13 +129,13 @@ public class ImageServiceRegistry implements DimseRQHandler {
     }
 
     /**
-     * Executes the rsp for dimse rq exception operation.
+     * Constructs and attempts to write the DIMSE failure response for the original request.
      *
-     * @param as    the as.
-     * @param pc    the pc.
-     * @param dimse the dimse.
-     * @param cmd   the cmd.
-     * @param e     the e.
+     * @param as    association that received the request
+     * @param pc    presentation context negotiated for the request
+     * @param dimse DIMSE request command
+     * @param cmd   request command attributes
+     * @param e     failure carrying the original protocol status and optional data set
      */
     private void rspForDimseRQException(
             Association as,
@@ -139,13 +148,13 @@ public class ImageServiceRegistry implements DimseRQHandler {
     }
 
     /**
-     * Executes the lookup service operation.
+     * Selects a handler by SOP Class UID and applies negotiated C-STORE fallback rules.
      *
-     * @param as    the as.
-     * @param dimse the dimse.
-     * @param cmd   the cmd.
-     * @return the operation result.
-     * @throws ImageServiceException if the operation cannot be completed.
+     * @param as    association that received the request
+     * @param dimse DIMSE request command
+     * @param cmd   request command attributes
+     * @return handler that supports the requested or negotiated SOP class
+     * @throws ImageServiceException if the command omits its SOP class or no handler supports it
      */
     private DimseRQHandler lookupService(Association as, Dimse dimse, Attributes cmd) throws ImageServiceException {
         String cuid = cmd.getString(dimse.tagOfSOPClassUID());
@@ -176,9 +185,9 @@ public class ImageServiceRegistry implements DimseRQHandler {
     }
 
     /**
-     * Executes the on close operation.
+     * Notifies registered DIMSE handlers when the association closes.
      *
-     * @param as the as.
+     * @param as closed DICOM association
      */
     @Override
     public void onClose(Association as) {

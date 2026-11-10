@@ -36,6 +36,7 @@ module bus.spring {
     requires java.sql;
 
     requires bus.core;
+    requires bus.errors;
     requires bus.extra;
     requires bus.logger;
 
@@ -63,8 +64,8 @@ module bus.spring {
     exports org.miaixz.bus.spring.boot.listener;
     exports org.miaixz.bus.spring.boot.startup;
     exports org.miaixz.bus.spring.context;
-    exports org.miaixz.bus.spring.context.task;
     exports org.miaixz.bus.spring.context.spi;
+    exports org.miaixz.bus.spring.context.task;
     exports org.miaixz.bus.spring.context.web;
     exports org.miaixz.bus.spring.jdbc;
     exports org.miaixz.bus.spring.web;

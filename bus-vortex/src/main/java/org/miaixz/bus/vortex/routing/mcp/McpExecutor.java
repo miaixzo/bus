@@ -47,6 +47,8 @@ import org.miaixz.bus.core.xyz.UrlKit;
 import org.miaixz.bus.cortex.Assets;
 import org.miaixz.bus.cortex.Type;
 import org.miaixz.bus.cortex.registry.RegistryAssets;
+import org.miaixz.bus.errors.ComponentFailure;
+import org.miaixz.bus.errors.ErrorType;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.vortex.*;
@@ -68,6 +70,11 @@ import reactor.core.publisher.Mono;
  * @author Kimi Liu
  */
 public class McpExecutor extends Coordinator<ServerRequest, ServerResponse> {
+
+    /**
+     * Reports failures whose mcp-request response or lifecycle is owned by this adapter.
+     */
+    private static final ComponentFailure FAILURES = new ComponentFailure("vortex", "mcp-request");
 
     /**
      * Creates an MCP Streamable HTTP reverse proxy executor.
@@ -474,24 +481,7 @@ public class McpExecutor extends Coordinator<ServerRequest, ServerResponse> {
                                 method,
                                 path,
                                 serverResponse.statusCode()))
-                .doOnError(
-                        error -> Logger.error(
-                                false,
-                                "Vortex",
-                                "Request FAILED (Streaming): protocol=mcp, clientIp={}, method={}, path={}, event=MCP_ROUTER_ERROR, {}",
-                                ip,
-                                method,
-                                path,
-                                error.getMessage(),
-                                error))
-                .doOnCancel(
-                        () -> Logger.warn(
-                                false,
-                                "Vortex",
-                                "Request was cancelled by client (Streaming).: protocol=mcp, clientIp={}, method={}, path={}, event=MCP_ROUTER_CANCEL",
-                                ip,
-                                method,
-                                path));
+                .doOnCancel(() -> FAILURES.failed(ErrorType.CANCELLED, 0, null, context.getX_request_id()));
     }
 
     /**
@@ -715,24 +705,7 @@ public class McpExecutor extends Coordinator<ServerRequest, ServerResponse> {
                                 method,
                                 path,
                                 serverResponse.statusCode()))
-                .doOnError(
-                        error -> Logger.error(
-                                false,
-                                "Vortex",
-                                "Request FAILED (Buffering): protocol=mcp, clientIp={}, method={}, path={}, event=MCP_ROUTER_ERROR, {}",
-                                ip,
-                                method,
-                                path,
-                                error.getMessage(),
-                                error))
-                .doOnCancel(
-                        () -> Logger.warn(
-                                false,
-                                "Vortex",
-                                "Request was cancelled by client (Buffering).: protocol=mcp, clientIp={}, method={}, path={}, event=MCP_ROUTER_CANCEL",
-                                ip,
-                                method,
-                                path));
+                .doOnCancel(() -> FAILURES.failed(ErrorType.CANCELLED, 0, null, context.getX_request_id()));
     }
 
     /**

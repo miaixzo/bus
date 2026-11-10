@@ -2,7 +2,7 @@
   {
     "latest": true,
     "metadata-version": "4.2.0.Final",
-    "description": "Netty runtime initialization settings used by Bus integrations.",
+    "description": "Netty is an asynchronous event-driven network application framework for rapid development of maintainable high performance protocol servers and clients.",
     "tested-versions": [
       "4.2.0.Final",
       "4.2.17.Final"

@@ -132,8 +132,8 @@ public class AccessHandler extends AbstractHandler {
      * Asynchronous completion method, executed after the request is fully completed (whether successfully or with an
      * exception).
      * <p>
-     * This method is typically used for cleanup, resource release, or final logging. It logs basic request information
-     * and any exception that occurred during processing.
+     * This method is typically used for cleanup, resource release, or final logging. It records request completion and leaves
+     * exception diagnostics to the gateway error boundary.
      * </p>
      *
      * @param exchange  The current {@link ServerWebExchange} object, containing the HTTP request and response.
@@ -157,16 +157,15 @@ public class AccessHandler extends AbstractHandler {
             ServerHttpRequest request = exchange.getRequest();
             String path = request.getPath().value();
             String method = request.getMethod() != null ? request.getMethod().name() : "UNKNOWN";
-            String exceptionMsg = exception != null ? exception.getMessage() : "none";
 
             Logger.info(
                     false,
                     "Vortex",
-                    "Request completed: clientIp={}, method={}, path={}, event=ACCESS_COMPLETION, exception={}",
+                    "Request completed: clientIp={}, method={}, path={}, event=ACCESS_COMPLETION, failed={}",
                     ip,
                     method,
                     path,
-                    exceptionMsg);
+                    exception != null);
         });
     }
 

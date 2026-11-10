@@ -21,8 +21,10 @@ package org.miaixz.bus.vortex.strategy.vetting;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.server.reactive.ServerHttpRequest;
@@ -88,12 +90,16 @@ public class McpVettingStrategy extends VettingStrategy {
             ServerHttpRequest request = exchange.getRequest();
             Http.Method method = context.getHttpMethod();
             if (method != Http.Method.POST && method != Http.Method.GET && method != Http.Method.DELETE) {
-                throw new ResponseStatusException(HttpStatus.METHOD_NOT_ALLOWED, "Unsupported MCP method");
+                HttpHeaders headers = new HttpHeaders();
+                headers.setAllow(Set.of(HttpMethod.GET, HttpMethod.POST, HttpMethod.DELETE));
+                throw withHeaders(HttpStatus.METHOD_NOT_ALLOWED, "Unsupported MCP method", headers);
             }
             if (method == Http.Method.POST) {
                 MediaType contentType = request.getHeaders().getContentType();
                 if (contentType == null || !org.miaixz.bus.core.net.MediaType.isJson(contentType.toString())) {
-                    throw new ResponseStatusException(HttpStatus.UNSUPPORTED_MEDIA_TYPE, "MCP POST requires JSON");
+                    HttpHeaders headers = new HttpHeaders();
+                    headers.setAccept(List.of(MediaType.APPLICATION_JSON));
+                    throw withHeaders(HttpStatus.UNSUPPORTED_MEDIA_TYPE, "MCP POST requires JSON", headers);
                 }
                 if (!accepts(request, MediaType.APPLICATION_JSON) || !accepts(request, MediaType.TEXT_EVENT_STREAM)) {
                     throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE,
@@ -117,6 +123,30 @@ public class McpVettingStrategy extends VettingStrategy {
                     request.getPath().value(),
                     request.getHeaders().getFirst(Args.MCP_PROTOCOL_VERSION));
         }).thenReturn(exchange);
+    }
+
+    /**
+     * Attaches MCP response headers while retaining the reason used by the existing Vortex error response.
+     *
+     * @param status  HTTP status for the validation error
+     * @param reason  original Vortex error description
+     * @param headers protocol response headers
+     * @return status exception carrying the supplied headers
+     */
+    private static ResponseStatusException withHeaders(HttpStatus status, String reason, HttpHeaders headers) {
+        return new ResponseStatusException(status, reason) {
+
+            /**
+             * Returns the protocol headers for the validation error.
+             *
+             * @return response headers
+             */
+            @Override
+            public HttpHeaders getHeaders() {
+                return headers;
+            }
+
+        };
     }
 
     /**

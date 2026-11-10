@@ -4,9 +4,8 @@
     "metadata-version": "8.8.0",
     "source-code-url": "https://repo.maven.apache.org/maven2/org/miaixz/bus-base/$version$/bus-base-$version$-sources.jar",
     "repository-url": "https://github.com/818000/bus",
-    "test-code-url": "https://github.com/818000/abarth/tree/main/bus-testing/src/test",
     "documentation-url": "https://repo.maven.apache.org/maven2/org/miaixz/bus-base/$version$/bus-base-$version$-javadoc.jar",
-    "description": "Bus Base provides mapper, validation, and base application integration types shared across Bus modules.",
+    "description": "Bus Base - Enterprise base for business entities, persistence contracts and model superclasses.",
     "tested-versions": [
       "8.8.0",
       "8.8.1",

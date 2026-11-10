@@ -19,343 +19,91 @@
 */
 package org.miaixz.bus.vortex.handler;
 
-import java.net.SocketTimeoutException;
-import java.net.UnknownHostException;
-import java.util.concurrent.TimeoutException;
-import java.util.concurrent.atomic.AtomicInteger;
-
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
-import org.springframework.core.io.buffer.DataBuffer;
-import org.springframework.core.io.buffer.DataBufferLimitException;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.server.reactive.ServerHttpRequest;
-import org.springframework.http.server.reactive.ServerHttpResponse;
-import org.springframework.web.reactive.function.client.WebClientException;
-import org.springframework.web.reactive.function.client.WebClientRequestException;
-import org.springframework.web.reactive.function.client.WebClientResponseException;
-import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.WebExceptionHandler;
 
 import org.miaixz.bus.core.lang.Charset;
-import org.miaixz.bus.core.lang.exception.UncheckedException;
-import org.miaixz.bus.core.lang.exception.ValidateException;
-import org.miaixz.bus.core.xyz.StringKit;
-import org.miaixz.bus.logger.Logger;
+import org.miaixz.bus.errors.ErrorBoundary;
+import org.miaixz.bus.errors.transport.http.HttpErrorPolicy;
+import org.miaixz.bus.errors.transport.reactive.ReactiveErrorHandler;
 import org.miaixz.bus.vortex.Context;
-import org.miaixz.bus.vortex.Egress;
 import org.miaixz.bus.vortex.Formats;
-import org.miaixz.bus.vortex.magic.ErrorCode;
 
 import reactor.core.publisher.Mono;
-import reactor.util.annotation.NonNull;
 
 /**
- * Global exception handler that maps gateway failures to transport status codes and standardized response bodies.
- * <p>
- * Wrapped causes are inspected before selecting the status and application error code. Capacity and memory-pressure
- * failures return HTTP 503 with {@code Retry-After: 1}; timeout, downstream and size failures retain their
- * corresponding gateway status. The response format follows the request context and falls back to JSON when no context
- * exists.
+ * Vortex compatibility facade retaining the negotiated legacy response DTO and its serializer.
  *
  * @author Kimi Liu
  */
 public class ErrorsHandler implements WebExceptionHandler {
 
     /**
-     * Creates a global errors handler.
+     * Unified reactive handler using the gateway’s legacy formatter when required.
+     */
+    private final ReactiveErrorHandler delegate;
+
+    /**
+     * Creates the original gateway handler without a listener route policy.
      */
     public ErrorsHandler() {
-        // No initialization required.
+        this(null);
     }
 
     /**
-     * Handles exceptions, generating a standardized error response.
-     * <p>
-     * Selects the transport status, builds the application error message, serializes it in the negotiated format and
-     * writes an exact Content-Length. A response that has already been committed is left unchanged.
-     * </p>
+     * Creates a unified handler for the Vortex listener.
      *
-     * @param exchange The current {@link ServerWebExchange} object, containing the request and response.
-     * @param ex       The caught {@link Throwable} object.
-     * @return {@link Mono<Void>} indicating the asynchronous completion of processing.
+     * @param policy selected route policy, or {@code null} for the original gateway behavior
      */
-    @NonNull
+    public ErrorsHandler(HttpErrorPolicy policy) {
+        this(policy, ErrorBoundary.standard());
+    }
+
+    /**
+     * Creates a gateway handler with the application's shared classifier and observer.
+     *
+     * @param policy   optional gateway route policy
+     * @param boundary shared error boundary
+     */
+    public ErrorsHandler(HttpErrorPolicy policy, ErrorBoundary boundary) {
+        this.delegate = new ReactiveErrorHandler(policy, ErrorsHandler::writeLegacy, boundary);
+    }
+
+    /**
+     * Handles the failure through the shared reactive boundary.
+     *
+     * @param exchange current exchange
+     * @param failure  original failure
+     * @return response-write completion
+     */
     @Override
-    public Mono<Void> handle(ServerWebExchange exchange, Throwable ex) {
-        ServerHttpResponse response = exchange.getResponse();
-        ServerHttpRequest request = exchange.getRequest();
+    public Mono<Void> handle(ServerWebExchange exchange, Throwable failure) {
+        return this.delegate.handle(exchange, failure);
+    }
+
+    /**
+     * Serializes the original gateway DTO using the negotiated media type and byte length.
+     *
+     * @param exchange exchange whose response is still writable
+     * @param code legacy application error code
+     * @param description legacy description, possibly null
+     * @return completion of the legacy response write
+     */
+    private static Mono<Void> writeLegacy(ServerWebExchange exchange, String code, String description) {
+        var response = exchange.getResponse();
         Context context = exchange.getAttribute(Context.$);
-        if (context != null) {
-            Logger.info(false, "Vortex", "Context format is: {}", context.getFormat());
-        } else {
-            Logger.info(false, "Vortex", "Context is null, defaulting to JSON format.");
-        }
-
-        String path = request.getPath().value();
-        String method = request.getMethod() != null ? request.getMethod().name() : "UNKNOWN";
-
-        Formats formats = (context != null) ? context.getFormat() : Formats.JSON;
-        HttpStatus status = statusFor(ex);
-        response.setStatusCode(status);
-        if (status == HttpStatus.SERVICE_UNAVAILABLE) {
-            response.getHeaders().set(HttpHeaders.RETRY_AFTER, "1");
-        }
-
-        AtomicInteger responseBytes = new AtomicInteger();
-        Mono<DataBuffer> dataBufferMono = Mono.fromCallable(() -> buildErrorMessage(ex, method, path))
-                .flatMap(message -> formats.getProvider().serialize(message)).map(formatBody -> {
-                    byte[] bytes;
-                    if (formatBody instanceof byte[] value) {
-                        bytes = value;
-                    } else {
-                        bytes = String.valueOf(formatBody).getBytes(Charset.UTF_8);
-                    }
-                    responseBytes.set(bytes.length);
-                    response.getHeaders().setContentType(formats.getMediaType());
-                    response.getHeaders().setContentLength(bytes.length);
-                    return response.bufferFactory().wrap(bytes);
-                });
-
-        if (response.isCommitted()) {
-            Logger.error(
-                    false,
-                    "Vortex",
-                    "Error response skipped because response is already committed: method={}, path={}, event=ERROR_RESPONSE_COMMITTED, exception={}",
-                    method,
-                    path,
-                    ex.getClass().getSimpleName());
-            return Mono.empty();
-        }
-
-        return response.writeWith(dataBufferMono).doOnTerminate(() -> {
-            String exceptionName = ex.getClass().getSimpleName();
-            String ip = "N/A";
-            if (context != null) {
-                ip = context.getX_request_ip() != null ? context.getX_request_ip() : "N/A";
-                long executionTime = System.currentTimeMillis() - context.getTimestamp();
-                Logger.error(
-                        false,
-                        "Vortex",
-                        "Error response handled: clientIp={}, method={}, path={}, event=ERROR_COMPLETION, executionTimeMs={}, responseBytes={}, exception={}",
-                        ip,
-                        method,
-                        path,
-                        executionTime,
-                        responseBytes.get(),
-                        exceptionName);
-            } else {
-                Logger.error(
-                        false,
-                        "Vortex",
-                        "Error response handled: clientIp={}, method={}, path={}, event=ERROR_COMPLETION, responseBytes={}, exception={}",
-                        ip,
-                        method,
-                        path,
-                        responseBytes.get(),
-                        exceptionName);
-            }
+        Formats format = context == null ? Formats.JSON : context.getFormat();
+        var body = format.getProvider().serialize(Message.builder().code(code).desc(description).build()).map(value -> {
+            byte[] bytes = value instanceof byte[] binary ? binary : String.valueOf(value).getBytes(Charset.UTF_8);
+            response.getHeaders().setContentType(format.getMediaType());
+            response.getHeaders().setContentLength(bytes.length);
+            return response.bufferFactory().wrap(bytes);
         });
-    }
-
-    /**
-     * Maps gateway failure categories to transport-level status codes.
-     *
-     * @param error failure chain
-     * @return HTTP status that represents the actual gateway outcome
-     */
-    private HttpStatus statusFor(Throwable error) {
-        ResponseStatusException responseStatus = findCause(error, ResponseStatusException.class);
-        if (responseStatus != null && responseStatus.getStatusCode() instanceof HttpStatus status) {
-            return status;
-        }
-        if (findCause(error, DataBufferLimitException.class) != null) {
-            return HttpStatus.BAD_GATEWAY;
-        }
-        ValidateException validate = findCause(error, ValidateException.class);
-        if (validate != null && ErrorCode._100530.getKey().equals(validate.getCode())) {
-            return HttpStatus.PAYLOAD_TOO_LARGE;
-        }
-        if (findCause(error, TimeoutException.class) != null
-                || findCause(error, SocketTimeoutException.class) != null) {
-            return HttpStatus.GATEWAY_TIMEOUT;
-        }
-        if (findCause(error, WebClientException.class) != null
-                || findCause(error, UnknownHostException.class) != null) {
-            return HttpStatus.BAD_GATEWAY;
-        }
-        if (findCause(error, UncheckedException.class) != null) {
-            return HttpStatus.BAD_REQUEST;
-        }
-        return HttpStatus.INTERNAL_SERVER_ERROR;
-    }
-
-    /**
-     * Builds the error Message object based on the exception type and logs the specific error.
-     *
-     * @param ex     The caught exception
-     * @param method The HTTP method
-     * @param path   The request path
-     * @return A populated Message object
-     */
-    private Message buildErrorMessage(Throwable ex, String method, String path) {
-
-        OutOfMemoryError outOfMemoryError = findCause(ex, OutOfMemoryError.class);
-        if (outOfMemoryError != null) {
-            Logger.error(
-                    false,
-                    "Vortex",
-                    outOfMemoryError,
-                    "Out of memory while processing request: clientIp=N/A, method={}, path={}, event=ERROR_OUT_OF_MEMORY, exception={}",
-                    method,
-                    path,
-                    outOfMemoryError.getClass().getSimpleName());
-            return Message.builder().code(ErrorCode._100807.getKey()).desc(ErrorCode._100807.getValue()).build();
-        }
-
-        DataBufferLimitException dataBufferLimitException = findCause(ex, DataBufferLimitException.class);
-        if (dataBufferLimitException != null) {
-            Logger.error(
-                    false,
-                    "Vortex",
-                    dataBufferLimitException,
-                    "Response buffer limit exceeded: clientIp=N/A, method={}, path={}, event=ERROR_RESPONSE_TOO_LARGE, exception={}",
-                    method,
-                    path,
-                    dataBufferLimitException.getClass().getSimpleName());
-            return Message.builder().code(ErrorCode._100531.getKey()).desc(ErrorCode._100531.getValue()).build();
-        }
-
-        ResponseStatusException rse = findCause(ex, ResponseStatusException.class);
-        if (rse != null) {
-            Logger.error(
-                    false,
-                    "Vortex",
-                    "HTTP status error returned: clientIp=N/A, method={}, path={}, event=ERROR_STATUS, status={}, desc={}",
-                    method,
-                    path,
-                    rse.getStatusCode().value(),
-                    rse.getReason());
-            return Message.builder().code(String.valueOf(rse.getStatusCode().value())).desc(rse.getReason()).build();
-        }
-
-        UncheckedException ue = findCause(ex, UncheckedException.class);
-        if (ue != null) {
-            String code = ue.getCode();
-            String desc = ue.getDesc();
-            if (StringKit.isNotBlank(code)) {
-                Logger.error(
-                        false,
-                        "Vortex",
-                        "Unchecked error returned: clientIp=N/A, method={}, path={}, event=ERROR_UNCHECKED, code={}, desc={}",
-                        method,
-                        path,
-                        code,
-                        desc);
-                return Message.builder().code(code).desc(desc).build();
-            }
-        }
-
-        TimeoutException timeoutException = findCause(ex, TimeoutException.class);
-        SocketTimeoutException socketTimeoutException = findCause(ex, SocketTimeoutException.class);
-        if (timeoutException != null || socketTimeoutException != null) {
-            Throwable timeout = timeoutException != null ? timeoutException : socketTimeoutException;
-            Logger.error(
-                    false,
-                    "Vortex",
-                    timeout,
-                    "Request timed out: clientIp=N/A, method={}, path={}, event=ERROR_TIMEOUT, exception={}",
-                    method,
-                    path,
-                    timeout.getClass().getSimpleName());
-            return Message.builder().code(ErrorCode._100811.getKey()).desc(ErrorCode._100811.getValue()).build();
-        }
-
-        WebClientResponseException responseException = findCause(ex, WebClientResponseException.class);
-        if (responseException != null) {
-            Throwable root = Egress.rootCause(responseException);
-            Logger.error(
-                    false,
-                    "Vortex",
-                    responseException,
-                    "Downstream response error: clientIp=N/A, method={}, path={}, event=ERROR_WEBCLIENT_RESPONSE, status={}, exception={}, rootCauseClass={}, rootCauseMessage={}",
-                    method,
-                    path,
-                    responseException.getStatusCode().value(),
-                    responseException.getClass().getSimpleName(),
-                    root == null ? null : root.getClass().getName(),
-                    root == null ? null : root.getMessage());
-            return Message.builder().code(ErrorCode._100710.getKey()).desc(ErrorCode._100710.getValue()).build();
-        }
-
-        UnknownHostException unknownHostException = findCause(ex, UnknownHostException.class);
-        if (unknownHostException != null) {
-            Throwable root = Egress.rootCause(unknownHostException);
-            Logger.error(
-                    false,
-                    "Vortex",
-                    unknownHostException,
-                    "Unknown host: clientIp=N/A, method={}, path={}, event=ERROR_WEBCLIENT, exception={}, rootCauseClass={}, rootCauseMessage={}",
-                    method,
-                    path,
-                    unknownHostException.getClass().getSimpleName(),
-                    root == null ? null : root.getClass().getName(),
-                    root == null ? null : root.getMessage());
-            return Message.builder().code(ErrorCode._100811.getKey()).desc(ErrorCode._100811.getValue()).build();
-        }
-
-        WebClientRequestException requestException = findCause(ex, WebClientRequestException.class);
-        WebClientException clientException = findCause(ex, WebClientException.class);
-        if (requestException != null || clientException != null) {
-            Throwable webClientError = requestException != null ? requestException : clientException;
-            Throwable root = Egress.rootCause(webClientError);
-            Logger.error(
-                    false,
-                    "Vortex",
-                    webClientError,
-                    "Web client failure: clientIp=N/A, method={}, path={}, event=ERROR_WEBCLIENT, exception={}, rootCauseClass={}, rootCauseMessage={}",
-                    method,
-                    path,
-                    webClientError.getClass().getSimpleName(),
-                    root == null ? null : root.getClass().getName(),
-                    root == null ? null : root.getMessage());
-            return Message.builder().code(ErrorCode._100710.getKey()).desc(ErrorCode._100710.getValue()).build();
-        }
-
-        Logger.error(
-                false,
-                "Vortex",
-                ex,
-                "Unknown exception type: clientIp=N/A, method={}, path={}, event=ERROR_UNKNOWN, exceptionType={}, exception={}",
-                method,
-                path,
-                ex.getClass().getName(),
-                ex.getClass().getSimpleName());
-        return Message.builder().code(ErrorCode._100807.getKey()).desc(ErrorCode._100807.getValue()).build();
-    }
-
-    /**
-     * Finds the first exception of the requested type in the cause chain.
-     *
-     * @param throwable the exception to inspect
-     * @param type      the expected exception type
-     * @param <T>       the expected exception type
-     * @return the first matching exception, or {@code null} when no match exists
-     */
-    private <T extends Throwable> T findCause(Throwable throwable, Class<T> type) {
-        Throwable current = throwable;
-        int depth = 0;
-        while (current != null && depth++ < 64) {
-            if (type.isInstance(current)) {
-                return type.cast(current);
-            }
-            current = current.getCause();
-        }
-        return null;
+        return response.writeWith(body);
     }
 
     /**

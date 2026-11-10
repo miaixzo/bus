@@ -34,6 +34,7 @@ module bus.storage {
     requires bus.cache;
     requires bus.core;
     requires bus.crypto;
+    requires bus.errors;
     requires bus.extra;
     requires bus.fabric;
     requires bus.gitlab;
