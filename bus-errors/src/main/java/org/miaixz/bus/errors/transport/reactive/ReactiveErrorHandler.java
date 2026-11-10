@@ -19,15 +19,18 @@
 */
 package org.miaixz.bus.errors.transport.reactive;
 
+import java.util.Arrays;
 import java.util.Objects;
+import java.util.Set;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
-import org.springframework.http.InvalidMediaTypeException;
-import org.springframework.http.MediaType;
+import org.springframework.http.*;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.ErrorResponse;
+import org.springframework.web.reactive.function.client.ClientResponse;
+import org.springframework.web.reactive.function.server.ServerResponse;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.WebExceptionHandler;
 
@@ -40,6 +43,7 @@ import org.miaixz.bus.errors.policy.PolicySnapshot.Mode;
 import org.miaixz.bus.errors.transport.ProtocolErrorBoundary;
 import org.miaixz.bus.errors.transport.http.HttpErrorPolicy;
 import org.miaixz.bus.errors.transport.http.HttpErrorResponse;
+import org.miaixz.bus.errors.transport.http.PublicHttpError;
 import org.miaixz.bus.errors.transport.http.RouteFailure;
 
 import reactor.core.publisher.Mono;
@@ -121,6 +125,37 @@ public final class ReactiveErrorHandler implements WebExceptionHandler {
     }
 
     /**
+     * Checks the policy before a protocol adapter validates facts for a prospective HTTP error.
+     *
+     * @param exchange active server exchange
+     * @param status   status the adapter is able to verify
+     * @return whether the current path selects the native contract for this status
+     */
+    public static boolean usesNativeStatus(ServerWebExchange exchange, HttpStatus status) {
+        HttpErrorPolicy policy = exchange.getAttribute(POLICY);
+        if (policy == null) {
+            return false;
+        }
+        return policy.isStatusOnly()
+                ? policy.matches(exchange.getRequest().getPath().pathWithinApplication(), status.value())
+                : usesNativeRule(exchange, ErrorEngine.typeForStatus(status.value()));
+    }
+
+    /**
+     * Requests visible route method facts when a verified lookup must distinguish 404 from 405.
+     *
+     * @param exchange active server exchange
+     * @return whether the adapter should look for a visible route with another HTTP method
+     */
+    public static boolean needsRouteMethodFacts(ServerWebExchange exchange) {
+        HttpErrorPolicy policy = exchange.getAttribute(POLICY);
+        return usesNativeStatus(exchange, HttpStatus.METHOD_NOT_ALLOWED) || (policy != null && policy.isStatusOnly()
+                && policy.matches(
+                        exchange.getRequest().getPath().pathWithinApplication(),
+                        HttpStatus.NOT_FOUND.value()));
+    }
+
+    /**
      * Rejects an explicitly incompatible request media type at an endpoint that consumes JSON. Requests without
      * Content-Type retain the endpoint's existing behavior.
      *
@@ -128,7 +163,7 @@ public final class ReactiveErrorHandler implements WebExceptionHandler {
      * @throws RouteFailure if the enabled rule rejects the declared media type
      */
     public static void verifyJsonContentType(ServerWebExchange exchange) {
-        if (!usesNativeRule(exchange, ErrorType.UNSUPPORTED_MEDIA_TYPE)) {
+        if (!usesNativeStatus(exchange, HttpStatus.UNSUPPORTED_MEDIA_TYPE)) {
             return;
         }
         try {
@@ -173,6 +208,117 @@ public final class ReactiveErrorHandler implements WebExceptionHandler {
     }
 
     /**
+     * Maps an upstream HTTP error to its status and approved protocol hints. WebClient discards the unconsumed body.
+     *
+     * @param response upstream HTTP error response
+     * @return a failure carrying the verified status and allowed hints
+     */
+    public static Mono<? extends Throwable> upstreamFailure(ClientResponse response) {
+        return Mono.just(new UpstreamStatus(response.statusCode(), response.headers().asHttpHeaders()));
+    }
+
+    /**
+     * Stores only verified status facts from an upstream error.
+     */
+    private static final class UpstreamStatus extends ResponseStatusException {
+
+        @java.io.Serial
+        private static final long serialVersionUID = 1L;
+        /** Common media types that can be advertised without reflecting an upstream token. */
+        private static final Set<String> PUBLIC_MEDIA = Set.of(
+                "application/json",
+                "application/xml",
+                "text/plain",
+                "application/x-www-form-urlencoded",
+                "multipart/form-data",
+                "text/event-stream",
+                "*/*");
+        /** Detached protocol hints with catalogued or numeric values. */
+        private final transient HttpHeaders headers;
+
+        /**
+         * Creates an upstream failure without retaining arbitrary remote fields.
+         *
+         * @param status verified response status
+         * @param remote remote response headers
+         */
+        private UpstreamStatus(HttpStatusCode status, HttpHeaders remote) {
+            super(status);
+            var safe = new HttpHeaders();
+            if (status.value() == 405) {
+                for (String value : remote.getOrEmpty(HttpHeaders.ALLOW)) {
+                    Arrays.stream(value.split(",")).map(String::trim).filter(
+                            method -> Arrays.stream(HttpMethod.values()).anyMatch(known -> known.matches(method)))
+                            .forEach(method -> safe.add(HttpHeaders.ALLOW, method));
+                }
+            }
+            if (status.value() == 415 || status.value() == 406) {
+                for (String value : remote.getOrEmpty(HttpHeaders.ACCEPT)) {
+                    Arrays.stream(value.split(",")).map(String::trim).filter(PUBLIC_MEDIA::contains)
+                            .forEach(media -> safe.add(HttpHeaders.ACCEPT, media));
+                }
+            }
+            String retry = remote.getFirst(HttpHeaders.RETRY_AFTER);
+            if ((status.value() == 429 || status.value() == 503) && retry != null && retry.matches("[0-9]{1,10}")) {
+                safe.set(HttpHeaders.RETRY_AFTER, retry);
+            }
+            this.headers = HttpHeaders.readOnlyHttpHeaders(safe);
+        }
+
+        /** Returns only the approved upstream protocol hints. */
+        @Override
+        public HttpHeaders getHeaders() {
+            return this.headers == null ? HttpHeaders.EMPTY : this.headers;
+        }
+    }
+
+    /**
+     * Renders an explicit protocol failure with a code-owned public definition.
+     *
+     * @param status   verified error status
+     * @param type     failure classification
+     * @param failure  diagnostic cause, or null for a deliberate rejection
+     * @param error    registered or code-owned public error
+     * @param renderer serializer for the existing protocol contract
+     * @return response that claims the shared boundary only when written
+     */
+    public static Mono<ServerResponse> render(
+            HttpStatusCode status,
+            ErrorType type,
+            Throwable failure,
+            PublicHttpError error,
+            Function<PublicHttpError, Mono<ServerResponse>> renderer) {
+        return Mono.defer(() -> {
+            if (failure != null) {
+                ThrowableNormalizer.rethrowFatal(failure);
+            }
+            return renderer.apply(error);
+        }).map(response -> new ProtocolResponse(response, status, type, failure));
+    }
+
+    /**
+     * Renders an in-band error as a separate protocol message. The HTTP exchange can stay open and carry other
+     * messages, so this operation neither claims its termination nor changes its committed status.
+     *
+     * @param exchange active gateway exchange for correlation
+     * @param type shared failure classification
+     * @param error code-owned public error definition
+     * @param renderer serializer for one protocol frame
+     * @param <T> encoded frame type
+     * @return safe protocol frame
+     */
+    public static <T> T renderFrame(ServerWebExchange exchange, ErrorType type, PublicHttpError error,
+            Function<PublicHttpError, T> renderer) {
+        HttpErrorPolicy policy = exchange.getAttribute(POLICY);
+        var context = new ErrorContext("vortex", "sse-frame", ErrorContext.Phase.OPEN,
+                policy == null ? 0 : policy.version());
+        var operation = ErrorBoundary.standard().open();
+        var decision = operation.decide(context,
+                new FailureFacts(FailureFacts.Source.LOCAL, ErrorEngine.descriptor(type), 0), null);
+        return operation.complete(context, decision, null, exchange.getRequest().getId(), () -> renderer.apply(error));
+    }
+
+    /**
      * Captures the gateway transmission phase and selected policy version.
      *
      * @param exchange active exchange
@@ -194,6 +340,38 @@ public final class ReactiveErrorHandler implements WebExceptionHandler {
      */
     private static ErrorBoundary.Operation operation(ServerWebExchange exchange, ErrorBoundary boundary) {
         return (ErrorBoundary.Operation) exchange.getAttributes().computeIfAbsent(OPERATION, key -> boundary.open());
+    }
+
+    /**
+     * Reports a reactive response write error separately while preserving the original signal and disposition.
+     *
+     * @param exchange  active server exchange
+     * @param operation operation that owns the response
+     * @param context   context of the original failure
+     * @param decision  selected original error decision
+     * @param failure   original error, or null for a structured rejection
+     * @param writer    response preparation and write
+     * @return original write completion or failure
+     */
+    private static Mono<Void> writeResponse(
+            ServerWebExchange exchange,
+            ErrorBoundary.Operation operation,
+            ErrorContext context,
+            ErrorDecision decision,
+            Throwable failure,
+            Supplier<Mono<Void>> writer) {
+        String requestId = exchange.getRequest().getId();
+        return Mono.defer(() -> {
+            var response = exchange.getResponse();
+            response.getHeaders().clear();
+            response.getCookies().clear();
+            ReactiveResponseGuard.approve(response);
+            return writer.get();
+        }).onErrorResume(secondary -> {
+            ErrorBoundary.diagnose(context, "error-response", secondary, requestId);
+            return exchange.getResponse().isCommitted() ? Mono.error(secondary)
+                    : ReactiveResponseGuard.completeSafely(exchange.getResponse(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }).doFinally(signal -> operation.observe(context, decision, true, failure, requestId, signal.name()));
     }
 
     /**
@@ -242,15 +420,14 @@ public final class ReactiveErrorHandler implements WebExceptionHandler {
         if (decision.action() == ErrorDecision.Action.TERMINATE) {
             boolean terminal = ProtocolErrorBoundary
                     .claim(operation, context, decision, failure, exchange.getRequest().getId());
-            // When enabled, hand a committed stream failure to the server so it can terminate the connection.
-            return terminal && this.policy != null && this.policy.hasSemanticRules() ? Mono.error(failure)
-                    : Mono.empty();
+            return terminal ? Mono.error(failure) : Mono.empty();
         }
         if (this.policy != null && status != null
                 && this.policy.select(
                         exchange.getRequest().getPath().pathWithinApplication(),
                         decision,
-                        failure instanceof ErrorResponse) == Mode.NATIVE_HTTP) {
+                        this.policy.isStatusOnly() ? route != null || error != null
+                                : failure instanceof ErrorResponse) == Mode.NATIVE_HTTP) {
             if (!operation.claimTermination()) {
                 return Mono.empty();
             }
@@ -281,32 +458,22 @@ public final class ReactiveErrorHandler implements WebExceptionHandler {
             return Mono.empty();
         }
         var selected = legacy == null ? LegacyErrorSupport.from(failure) : legacy;
+        var outputStatus = error == null ? selected.status() : error.getStatusCode();
         return writeResponse(exchange, operation, context, decision, failure, () -> {
-            response.setStatusCode(selected.status());
-            if (selected.status() == HttpStatus.SERVICE_UNAVAILABLE) {
+            response.setStatusCode(outputStatus);
+            if (error != null) {
+                HttpErrorResponse.empty(outputStatus, error.getHeaders(), "").headers()
+                        .forEach((name, values) -> response.getHeaders().put(name, values));
+            }
+            if (outputStatus.value() == 503 && !response.getHeaders().containsHeader(HttpHeaders.RETRY_AFTER)) {
                 response.getHeaders().set(HttpHeaders.RETRY_AFTER, "1");
+            }
+            if (error != null && !(primary instanceof ResponseStatusException)) {
+                var publicError = PublicHttpError.forStatus(outputStatus);
+                return this.legacyWriter.write(exchange, publicError.code(), publicError.description());
             }
             return this.legacyWriter.write(exchange, selected.code(), selected.description());
         });
-    }
-
-    /**
-     * Reports a reactive response write error separately while preserving the original signal and disposition.
-     *
-     * @param exchange active server exchange
-     * @param operation operation that owns the response
-     * @param context context of the original failure
-     * @param decision selected original error decision
-     * @param failure original error, or null for a structured rejection
-     * @param writer response preparation and write
-     * @return original write completion or failure
-     */
-    private static Mono<Void> writeResponse(ServerWebExchange exchange, ErrorBoundary.Operation operation,
-            ErrorContext context, ErrorDecision decision, Throwable failure, Supplier<Mono<Void>> writer) {
-        String requestId = exchange.getRequest().getId();
-        return Mono.defer(writer)
-                .doOnError(secondary -> ErrorBoundary.diagnose(context, "error-response", secondary, requestId))
-                .doFinally(signal -> operation.observe(context, decision, true, failure, requestId, signal.name()));
     }
 
     /**
@@ -327,6 +494,73 @@ public final class ReactiveErrorHandler implements WebExceptionHandler {
          */
         Mono<Void> write(ServerWebExchange exchange, String code, String description);
 
+    }
+
+    /**
+     * Associates a protocol error with the actual write and its terminal observation.
+     *
+     * @param delegate formatted protocol response
+     * @param status   verified status
+     * @param type     semantic classification supplied by the protocol
+     * @param failure  diagnostic cause
+     */
+    private record ProtocolResponse(ServerResponse delegate, HttpStatusCode status, ErrorType type, Throwable failure)
+            implements ServerResponse {
+
+        /**
+         * Returns the formatted response status.
+         */
+        @Override
+        public HttpStatusCode statusCode() {
+            return this.delegate.statusCode();
+        }
+
+        /**
+         * Returns the formatted response headers.
+         */
+        @Override
+        public HttpHeaders headers() {
+            return this.delegate.headers();
+        }
+
+        /**
+         * Returns the formatted response cookies.
+         */
+        @Override
+        public MultiValueMap<String, ResponseCookie> cookies() {
+            return this.delegate.cookies();
+        }
+
+        /**
+         * Writes the response after claiming termination for this exchange.
+         *
+         * @param exchange      active exchange
+         * @param writerContext response codec context
+         * @return response completion
+         */
+        @Override
+        public Mono<Void> writeTo(ServerWebExchange exchange, ServerResponse.Context writerContext) {
+            var context = ReactiveErrorHandler.context(exchange, exchange.getAttribute(POLICY));
+            var operation = ReactiveErrorHandler.operation(exchange, ErrorBoundary.standard());
+            var decision = operation.decide(
+                    context,
+                    new FailureFacts(FailureFacts.Source.LOCAL, ErrorEngine.descriptor(this.type),
+                            this.status.isError() ? this.status.value() : 0),
+                    this.failure);
+            if (decision.action() == ErrorDecision.Action.PROPAGATE && this.failure != null) {
+                return Mono.error(this.failure);
+            }
+            if (decision.action() != ErrorDecision.Action.RENDER || !operation.claimTermination()) {
+                return Mono.empty();
+            }
+            return writeResponse(
+                    exchange,
+                    operation,
+                    context,
+                    decision,
+                    this.failure,
+                    () -> this.delegate.writeTo(exchange, writerContext));
+        }
     }
 
 }

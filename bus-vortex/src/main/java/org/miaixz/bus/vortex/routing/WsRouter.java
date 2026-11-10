@@ -27,8 +27,9 @@ import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
 import org.miaixz.bus.core.net.Http;
-import org.miaixz.bus.errors.ComponentFailure;
 import org.miaixz.bus.errors.ErrorType;
+import org.miaixz.bus.errors.transport.http.PublicHttpError;
+import org.miaixz.bus.errors.transport.reactive.ReactiveErrorHandler;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.vortex.Context;
@@ -58,11 +59,6 @@ import reactor.core.publisher.Mono;
  * @author Kimi Liu
  */
 public class WsRouter implements Router<ServerRequest, ServerResponse> {
-
-    /**
-     * Reports failures whose ws-upgrade response or lifecycle is owned by this adapter.
-     */
-    private static final ComponentFailure FAILURES = new ComponentFailure("vortex", "ws-upgrade");
 
     /**
      * The executor responsible for managing WebSocket connections and message forwarding.
@@ -129,13 +125,14 @@ public class WsRouter implements Router<ServerRequest, ServerResponse> {
                     .anyMatch(h -> h.equalsIgnoreCase("websocket"));
 
             if (!isWebSocketUpgrade) {
-                FAILURES.failed(ErrorType.INVALID_REQUEST, 400, null, context.getX_request_id());
-
-                return ServerResponse.status(HttpStatus.BAD_REQUEST).contentType(MediaType.APPLICATION_JSON).bodyValue(
-                        JsonKit.toJsonString(
-                                Map.of(
-                                        "error",
-                                        "WebSocket upgrade required. Please use WebSocket client to connect to this endpoint.")));
+                return ReactiveErrorHandler.render(
+                        HttpStatus.BAD_REQUEST,
+                        ErrorType.INVALID_REQUEST,
+                        null,
+                        new PublicHttpError("400",
+                                "WebSocket upgrade required. Please use WebSocket client to connect to this endpoint."),
+                        error -> ServerResponse.badRequest().contentType(MediaType.APPLICATION_JSON)
+                                .bodyValue(JsonKit.toJsonString(Map.of("error", error.description()))));
             }
 
             Logger.info(

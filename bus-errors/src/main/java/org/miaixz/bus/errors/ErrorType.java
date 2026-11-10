@@ -94,9 +94,6 @@ public record ErrorType(String id) implements Serializable {
      * No registered classification applies.
      */
     public static final ErrorType UNKNOWN = new ErrorType("unknown");
-    /**
-     * Serialization version of the type identifier.
-     */
     @Serial
     private static final long serialVersionUID = 1L;
 

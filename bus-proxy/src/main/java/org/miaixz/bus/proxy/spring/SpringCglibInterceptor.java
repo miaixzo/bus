@@ -45,9 +45,6 @@ public class SpringCglibInterceptor extends Interceptor implements MethodInterce
      */
     private static final ComponentFailure FAILURES = new ComponentFailure("bus-proxy", "cglib-invoke");
 
-    /**
-     * Serialization version of the CGLIB invocation interceptor.
-     */
     @Serial
     private static final long serialVersionUID = 2552195001808L;
 

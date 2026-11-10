@@ -69,9 +69,9 @@ public final class ComponentFailure {
     /**
      * Reports a component-owned terminal failure with server-generated correlation.
      *
-     * @param type semantic failure type
-     * @param status verified HTTP status, or zero when absent
-     * @param failure diagnostic cause, or null for a structured rejection
+     * @param type      semantic failure type
+     * @param status    verified HTTP status, or zero when absent
+     * @param failure   diagnostic cause, or null for a structured rejection
      * @param requestId server-generated request identifier, or null
      */
     public void failed(ErrorType type, int status, Throwable failure, String requestId) {
@@ -104,10 +104,10 @@ public final class ComponentFailure {
     /**
      * Classifies the operation locally and emits one safe event without taking transport ownership.
      *
-     * @param type     semantic classification supplied by the component
-     * @param status   verified remote HTTP error status, or zero
-     * @param failure  diagnostic cause
-     * @param terminal whether this is the final failure at this boundary
+     * @param type      semantic classification supplied by the component
+     * @param status    verified remote HTTP error status, or zero
+     * @param failure   diagnostic cause
+     * @param terminal  whether this is the final failure at this boundary
      * @param requestId server-generated request identifier, or null
      */
     private void report(ErrorType type, int status, Throwable failure, boolean terminal, String requestId) {

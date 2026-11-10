@@ -144,9 +144,9 @@ public final class ErrorEngine {
     /**
      * Classifies the original failure while allowing an operation boundary to report faulty extensions.
      *
-     * @param context execution boundary and phase
-     * @param facts verified failure facts
-     * @param failure original failure, or null
+     * @param context     execution boundary and phase
+     * @param facts       verified failure facts
+     * @param failure     original failure, or null
      * @param diagnostics recipient of isolated classifier failures
      * @return error decision
      */
@@ -178,8 +178,8 @@ public final class ErrorEngine {
             return new ErrorDecision(action, facts.descriptor(), facts.status(), Basis.VERIFIED_FACT,
                     context.policyVersion());
         }
-        if (primary instanceof BusException bus) {
-            return new ErrorDecision(action, bus.error(), facts.status(), Basis.STRUCTURED_EXCEPTION,
+        if (primary instanceof ClassifiedException classifiedFailure) {
+            return new ErrorDecision(action, classifiedFailure.error(), facts.status(), Basis.STRUCTURED_EXCEPTION,
                     context.policyVersion());
         }
         ErrorDescriptor classified = this.classifiers.classify(context, facts, primary, diagnostics);

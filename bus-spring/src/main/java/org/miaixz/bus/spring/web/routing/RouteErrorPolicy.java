@@ -20,6 +20,7 @@
 package org.miaixz.bus.spring.web.routing;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 import org.springframework.http.server.PathContainer;
@@ -61,6 +62,25 @@ public final class RouteErrorPolicy {
     public RouteErrorPolicy(List<String> pathPrefixes, Set<Integer> statuses, String cacheControl,
             PolicySnapshot snapshot) {
         this.delegate = new HttpErrorPolicy(pathPrefixes, statuses, cacheControl, snapshot);
+    }
+
+    /**
+     * Adapts a shared policy for the existing Spring MVC resolver API.
+     *
+     * @param policy compiled shared HTTP error policy
+     * @return compatibility view of the supplied policy
+     */
+    public static RouteErrorPolicy fromCompiled(HttpErrorPolicy policy) {
+        return new RouteErrorPolicy(policy);
+    }
+
+    /**
+     * Reuses an existing immutable listener policy.
+     *
+     * @param policy compiled shared HTTP error policy
+     */
+    private RouteErrorPolicy(HttpErrorPolicy policy) {
+        this.delegate = Objects.requireNonNull(policy, "policy");
     }
 
     /**

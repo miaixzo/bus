@@ -35,6 +35,7 @@ module bus.errors {
     requires bus.logger;
 
     requires static jakarta.servlet;
+    requires static org.reactivestreams;
     requires static reactor.core;
     requires static spring.context;
     requires static spring.core;

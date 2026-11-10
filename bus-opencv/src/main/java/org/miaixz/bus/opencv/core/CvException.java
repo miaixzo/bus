@@ -24,9 +24,6 @@ package org.miaixz.bus.opencv.core;
  */
 public class CvException extends RuntimeException {
 
-    /**
-     * Serialization identifier retained for compatibility with the existing exception representation.
-     */
     private static final long serialVersionUID = 2538650000001L;
 
     /**

@@ -59,13 +59,16 @@ public final class ClassifierRegistry {
     /**
      * Selects the first successful classification, leaving the boundary's fallback available.
      *
-     * @param context execution boundary
-     * @param facts   verified failure facts
-     * @param failure normalized failure, possibly {@code null}
+     * @param context     execution boundary
+     * @param facts       verified failure facts
+     * @param failure     normalized failure, possibly {@code null}
      * @param diagnostics recipient of isolated classifier failures
      * @return classified error, or {@code null} if none applies
      */
-    public ErrorDescriptor classify(ErrorContext context, FailureFacts facts, Throwable failure,
+    public ErrorDescriptor classify(
+            ErrorContext context,
+            FailureFacts facts,
+            Throwable failure,
             Consumer<Throwable> diagnostics) {
         for (ErrorClassifier classifier : this.classifiers) {
             try {

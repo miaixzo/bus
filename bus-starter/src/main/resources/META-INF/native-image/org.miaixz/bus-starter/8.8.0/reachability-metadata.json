@@ -350,6 +350,74 @@
       ]
     },
     {
+      "type": "org.miaixz.bus.starter.errors.ErrorsConfiguration",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.springframework.web.servlet.DispatcherServlet"
+      },
+      "type": "org.miaixz.bus.starter.errors.ErrorsConfiguration$Mvc",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.starter.errors.ErrorsProperties",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.starter.errors.ErrorsProperties$Logging",
+            "org.miaixz.bus.starter.errors.ErrorsProperties$Routing"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.starter.errors.ErrorsProperties$Logging",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "boolean"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.starter.errors.ErrorsProperties$Routing",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "boolean",
+            "java.util.Set",
+            "java.util.List",
+            "java.util.Set",
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.starter.errors.ErrorsProperties$Target",
+      "methods": [
+        {
+          "name": "values",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
       "type": "org.miaixz.bus.starter.fabric.FabricConfiguration",
       "methods": [
         {
@@ -1582,71 +1650,6 @@
             "org.miaixz.bus.starter.wrapper.converter.MessageConverterProperties$TypePolicy",
             "java.lang.String",
             "java.util.List"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.starter.wrapper.routing.RouteErrorConfiguration",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.starter.wrapper.routing.RouteErrorProperties",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.util.List",
-            "java.util.Set",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.util.List",
-            "java.util.Set",
-            "java.lang.String",
-            "boolean",
-            "java.util.Set",
-            "org.miaixz.bus.starter.wrapper.routing.RouteErrorProperties$ListenerPaths",
-            "org.miaixz.bus.starter.wrapper.routing.RouteErrorProperties$ListenerPaths"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.starter.wrapper.routing.RouteErrorProperties$ListenerPaths",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.util.List"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.util.List",
-            "java.util.List"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.starter.wrapper.routing.RouteErrorProperties$RouteRule",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.util.Set",
-            "org.miaixz.bus.errors.policy.PolicySnapshot$Mode"
           ]
         }
       ]

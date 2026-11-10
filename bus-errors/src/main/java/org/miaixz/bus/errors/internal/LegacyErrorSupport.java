@@ -34,7 +34,7 @@ import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.lang.exception.UncheckedException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
-import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.errors.transport.http.PublicHttpError;
 
 /**
  * Keeps the historical gateway status and application-code precedence independent.
@@ -42,7 +42,6 @@ import org.miaixz.bus.core.xyz.StringKit;
  * @param status      legacy gateway status
  * @param code        legacy application code
  * @param description legacy description
- *
  * @author Kimi Liu
  */
 public record LegacyErrorSupport(HttpStatus status, String code, String description) {
@@ -75,12 +74,13 @@ public record LegacyErrorSupport(HttpStatus status, String code, String descript
         if (bufferLimit != null) {
             return registered(status, ErrorCode._100531);
         }
-        if (responseStatus != null) {
-            return new LegacyErrorSupport(status, Integer.toString(responseStatus.getStatusCode().value()),
-                    responseStatus.getReason());
+        if (responseStatus != null && responseStatus.getStatusCode().isError()) {
+            var error = PublicHttpError.forStatus(responseStatus.getStatusCode());
+            return new LegacyErrorSupport(status, error.code(), error.description());
         }
-        if (unchecked != null && StringKit.isNotBlank(unchecked.getCode())) {
-            return new LegacyErrorSupport(status, unchecked.getCode(), unchecked.getDesc());
+        if (unchecked != null) {
+            var error = PublicHttpError.resolve(unchecked.getCode(), ErrorCode._100805);
+            return new LegacyErrorSupport(status, error.code(), error.description());
         }
         if (timeout) {
             return registered(status, ErrorCode._100811);
@@ -112,7 +112,7 @@ public record LegacyErrorSupport(HttpStatus status, String code, String descript
             boolean unchecked,
             boolean timeout,
             boolean downstream) {
-        if (responseStatus != null && responseStatus.getStatusCode() instanceof HttpStatus status) {
+        if (responseStatus != null && responseStatus.getStatusCode() instanceof HttpStatus status && status.isError()) {
             return status;
         }
         if (bufferLimit) {

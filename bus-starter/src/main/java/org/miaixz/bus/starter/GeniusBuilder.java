@@ -152,6 +152,16 @@ public class GeniusBuilder {
     public static final String VALIDATE = "bus.validate";
 
     /**
+     * Configuration root for shared Bus error handling.
+     */
+    public static final String ERRORS = "bus.errors";
+
+    /**
+     * Configuration prefix for the standard error logging subscription.
+     */
+    public static final String ERRORS_LOGGING = ERRORS + ".logging";
+
+    /**
      * Configuration prefix for vortex.
      */
     public static final String VORTEX = "bus.vortex";
@@ -180,11 +190,6 @@ public class GeniusBuilder {
      * Configuration prefix for wrapper response advice.
      */
     public static final String WRAPPER_RESPONSE_ADVICE = WRAPPER + ".response-advice";
-
-    /**
-     * Configuration prefix for preserving selected HTTP errors on MVC and Vortex routes.
-     */
-    public static final String WRAPPER_ROUTE_ERRORS = WRAPPER + ".route-errors";
 
     /**
      * Configuration prefix for wrapper route prefix.

@@ -49,6 +49,7 @@ import org.miaixz.bus.core.xyz.UrlKit;
 import org.miaixz.bus.cortex.Assets;
 import org.miaixz.bus.errors.ComponentFailure;
 import org.miaixz.bus.errors.ErrorType;
+import org.miaixz.bus.errors.transport.reactive.ReactiveErrorHandler;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.vortex.*;
@@ -63,7 +64,8 @@ import reactor.core.publisher.Mono;
  * <p>
  * This executor encapsulates all the logic for using Spring's {@link WebClient} to act as a reverse proxy. It builds
  * the downstream request based on the provided {@link Assets} and {@link Context}, sends it, and then transforms the
- * downstream response back into a {@link ServerResponse} for the original client.
+ * successful downstream response back into a {@link ServerResponse} for the original client. Upstream HTTP
+ * errors such as 415 are handled by {@code bus-errors} with the verified status and approved response headers.
  * <p>
  * The route asset explicitly selects bounded atomic relay, realtime streaming or protected file download. Atomic
  * responses retain a bounded logical-byte lease through the network write; streaming modes preserve downstream
@@ -551,7 +553,8 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
             String requestId) {
         HttpMethod httpMethod = HttpMethod.valueOf(method);
         Mono<ResponseEntity<Flux<DataBuffer>>> response = bodySpec.retrieve()
-                .onStatus(status -> true, clientResponse -> Mono.empty()).toEntityFlux(DataBuffer.class);
+                .onStatus(status -> status.isError(), ReactiveErrorHandler::upstreamFailure)
+                .toEntityFlux(DataBuffer.class);
         return Egress.guard(response, 0, Egress.retryAttempts(assets, httpMethod), "rest-streaming", method, targetUri)
                 .flatMap(responseEntity -> buildStreamingResponse(responseEntity, delivery, ip, method, path))
                 .doOnSubscribe(
@@ -602,7 +605,8 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
             String requestId) {
         HttpMethod httpMethod = HttpMethod.valueOf(method);
         Mono<ResponseEntity<Flux<DataBuffer>>> response = bodySpec.retrieve()
-                .onStatus(status -> true, clientResponse -> Mono.empty()).toEntityFlux(DataBuffer.class);
+                .onStatus(status -> status.isError(), ReactiveErrorHandler::upstreamFailure)
+                .toEntityFlux(DataBuffer.class);
         return Egress.guard(response, 0, Egress.retryAttempts(assets, httpMethod), "rest-atomic", method, targetUri)
                 .flatMap(responseEntity -> {
                     Logger.info(

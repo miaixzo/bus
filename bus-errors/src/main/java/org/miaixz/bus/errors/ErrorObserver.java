@@ -24,7 +24,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.miaixz.bus.errors.policy.ErrorLogPolicy;
 import org.miaixz.bus.errors.spi.ErrorLogSink;
-import org.miaixz.bus.errors.spi.ErrorObserver;
+import org.miaixz.bus.errors.spi.ErrorObserver.Details;
+import org.miaixz.bus.errors.spi.ErrorObserver.Event;
 import org.miaixz.bus.logger.Level;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.logger.Registry;
@@ -34,7 +35,7 @@ import org.miaixz.bus.logger.Registry;
  *
  * @author Kimi Liu
  */
-public final class BusErrorLogObserver implements ErrorObserver, ErrorLogSink {
+public final class ErrorObserver implements org.miaixz.bus.errors.spi.ErrorObserver, ErrorLogSink {
 
     /**
      * Number of active installations sharing the standard observer.
@@ -49,7 +50,7 @@ public final class BusErrorLogObserver implements ErrorObserver, ErrorLogSink {
     /**
      * Creates an observer for direct registration or standalone use.
      */
-    public BusErrorLogObserver() {
+    public ErrorObserver() {
     }
 
     /**
@@ -59,7 +60,7 @@ public final class BusErrorLogObserver implements ErrorObserver, ErrorLogSink {
      */
     public static synchronized ErrorBoundary.Subscription install() {
         if (owners == 0) {
-            subscription = ErrorBoundary.subscribeLogging(new BusErrorLogObserver());
+            subscription = ErrorBoundary.subscribeLogging(new ErrorObserver());
         }
         owners++;
         var closed = new AtomicBoolean();
@@ -102,7 +103,7 @@ public final class BusErrorLogObserver implements ErrorObserver, ErrorLogSink {
     /**
      * Uses the Bus error policy when registered through the original observer SPI.
      *
-     * @param event structured failure event
+     * @param event   structured failure event
      * @param details safe diagnostic snapshot
      */
     @Override
@@ -129,19 +130,19 @@ public final class BusErrorLogObserver implements ErrorObserver, ErrorLogSink {
      */
     @Override
     public boolean isEnabled(ErrorLogPolicy.Level level) {
-        return Registry.get(BusErrorLogObserver.class).isEnabled(Level.valueOf(level.name()));
+        return Registry.get(ErrorObserver.class).isEnabled(Level.valueOf(level.name()));
     }
 
     /**
      * Forwards the prepared severity and fields through the Bus logger operators and provider.
      *
-     * @param level policy-selected severity
-     * @param format policy-selected template
+     * @param level     policy-selected severity
+     * @param format    policy-selected template
      * @param arguments approved diagnostic fields
      */
     @Override
     public void write(ErrorLogPolicy.Level level, String format, Object... arguments) {
-        var provider = Registry.get(BusErrorLogObserver.class);
+        var provider = Registry.get(ErrorObserver.class);
         switch (level) {
             case TRACE -> Logger.trace(provider, format, arguments);
             case DEBUG -> Logger.debug(provider, format, arguments);

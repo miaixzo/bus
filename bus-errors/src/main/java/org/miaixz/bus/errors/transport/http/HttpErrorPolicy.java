@@ -40,11 +40,11 @@ import org.miaixz.bus.errors.policy.PolicySnapshot.Mode;
 public final class HttpErrorPolicy {
 
     /**
-     * Compiled Spring patterns for the existing literal route rules.
+     * Compiled Spring patterns for listener-relative literal prefixes.
      */
     private final List<PathPattern> prefixes;
     /**
-     * Verified HTTP statuses eligible for the legacy route policy.
+     * Verified HTTP statuses eligible for the route policy.
      */
     private final Set<Integer> statuses;
     /**
@@ -55,6 +55,46 @@ public final class HttpErrorPolicy {
      * Semantic path and error type rules for this listener.
      */
     private final PolicySnapshot snapshot;
+    /**
+     * Whether the policy selects native responses solely from verified numeric statuses.
+     */
+    private final boolean statusOnly;
+
+    /**
+     * Whether the root prefix selects all paths on this listener.
+     */
+    private final boolean matchAll;
+
+    /**
+     * Compiles the shared listener policy from literal paths and explicit numeric statuses.
+     *
+     * @param prefixes     listener-relative paths, with {@code /} selecting the entire listener
+     * @param statuses     nonempty HTTP error statuses from 400 through 599
+     * @param cacheControl optional Cache-Control override
+     * @return immutable status policy shared by the MVC and reactive adapters
+     */
+    public static HttpErrorPolicy forStatuses(List<String> prefixes, Set<Integer> statuses, String cacheControl) {
+        return new HttpErrorPolicy(prefixes, statuses, cacheControl, new PolicySnapshot(List.of()), true);
+    }
+
+    /**
+     * Identifies policies configured solely by verified HTTP status.
+     *
+     * @return whether the verified status policy is active
+     */
+    public boolean isStatusOnly() {
+        return this.statusOnly;
+    }
+
+    /**
+     * Checks whether a parsed path is inside the listener policy's scope.
+     *
+     * @param path listener-relative parsed path
+     * @return whether the path matches a configured prefix
+     */
+    public boolean matchesPath(PathContainer path) {
+        return this.matchAll || this.prefixes.stream().anyMatch(prefix -> prefix.matchStartOfPath(path) != null);
+    }
 
     /**
      * Creates a policy with legacy status rules and optional semantic rules.
@@ -65,34 +105,55 @@ public final class HttpErrorPolicy {
      * @param snapshot     compiled semantic rules for the listener
      */
     public HttpErrorPolicy(List<String> prefixes, Set<Integer> statuses, String cacheControl, PolicySnapshot snapshot) {
-        if ((prefixes.isEmpty() && snapshot.rules().isEmpty())
-                || prefixes.stream().anyMatch(prefix -> !ErrorPolicyCompiler.isLiteralPrefix(prefix))) {
+        this(prefixes, statuses, cacheControl, snapshot, false);
+    }
+
+    /**
+     * Validates and compiles the selected route policy representation.
+     *
+     * @param prefixes     listener-relative literal paths
+     * @param statuses     numeric HTTP error statuses
+     * @param cacheControl optional Cache-Control override
+     * @param snapshot     optional semantic rules and snapshot version
+     * @param statusOnly   whether numeric rules may select the root and verified 5xx statuses
+     */
+    private HttpErrorPolicy(List<String> prefixes, Set<Integer> statuses, String cacheControl, PolicySnapshot snapshot,
+            boolean statusOnly) {
+        if ((prefixes.isEmpty() && snapshot.rules().isEmpty()) || prefixes.stream().anyMatch(
+                prefix -> !(statusOnly && "/".equals(prefix)) && !ErrorPolicyCompiler.isLiteralPrefix(prefix))) {
             throw new IllegalArgumentException(
-                    "route-errors.path-prefixes requires literal paths starting and ending with /");
+                    statusOnly ? "bus.errors.routing.path-prefixes requires / or literal slash-terminated paths"
+                            : "route-errors.path-prefixes requires literal paths starting and ending with /");
         }
+        int lastStatus = statusOnly ? 599 : 499;
         if ((!prefixes.isEmpty() && statuses.isEmpty())
-                || statuses.stream().anyMatch(status -> status < 400 || status > 499)) {
-            throw new IllegalArgumentException("route-errors.statuses requires at least one 4xx HTTP status");
+                || statuses.stream().anyMatch(status -> status < 400 || status > lastStatus)) {
+            throw new IllegalArgumentException(
+                    statusOnly ? "bus.errors.routing.statuses requires at least one HTTP status from 400 through 599"
+                            : "route-errors.statuses requires at least one 4xx HTTP status");
         }
         if (cacheControl.indexOf('\r') >= 0 || cacheControl.indexOf('\n') >= 0) {
-            throw new IllegalArgumentException("Invalid route-errors.cache-control");
+            throw new IllegalArgumentException(
+                    statusOnly ? "Invalid bus.errors.routing.cache-control" : "Invalid route-errors.cache-control");
         }
-        this.prefixes = prefixes.stream().map(PathPatternParser.defaultInstance::parse).toList();
+        this.matchAll = statusOnly && prefixes.contains("/");
+        this.statusOnly = statusOnly;
+        this.prefixes = prefixes.stream().filter(prefix -> !"/".equals(prefix))
+                .map(PathPatternParser.defaultInstance::parse).toList();
         this.statuses = Set.copyOf(statuses);
         this.cacheControl = cacheControl;
         this.snapshot = snapshot;
     }
 
     /**
-     * Tests the original listener-relative path and HTTP status rules.
+     * Tests the listener-relative path and verified HTTP status rules.
      *
      * @param path   Spring-parsed request path
      * @param status verified HTTP status
-     * @return whether the legacy route rule matches
+     * @return whether the numeric route rule matches
      */
     public boolean matches(PathContainer path, int status) {
-        return this.statuses.contains(status)
-                && this.prefixes.stream().anyMatch(prefix -> prefix.matchStartOfPath(path) != null);
+        return this.statuses.contains(status) && matchesPath(path);
     }
 
     /**
@@ -100,7 +161,7 @@ public final class HttpErrorPolicy {
      *
      * @param path        Spring-parsed request path
      * @param decision    classification with a verified status
-     * @param legacyRoute whether this error was eligible for the old route resolver
+     * @param legacyRoute whether the adapter verified an error eligible for numeric HTTP matching
      * @return selected contract, or {@code null} to leave the previous behavior in place
      */
     public Mode select(PathContainer path, ErrorDecision decision, boolean legacyRoute) {

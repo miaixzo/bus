@@ -130,9 +130,9 @@ public final class ErrorBoundary {
     /**
      * Reports a secondary failure without dispatching it to error observers or invoking classifiers again.
      *
-     * @param context context of the original operation
-     * @param stage stable name of the failing handler stage
-     * @param failure error raised by the handler
+     * @param context   context of the original operation
+     * @param stage     stable name of the failing handler stage
+     * @param failure   error raised by the handler
      * @param requestId server-generated correlation identifier, or null
      */
     public static void diagnose(ErrorContext context, String stage, Throwable failure, String requestId) {
@@ -143,7 +143,7 @@ public final class ErrorBoundary {
      * Reports a backend-internal failure through the independent sink, bypassing all logging plugins.
      *
      * @param context context of the original logging operation
-     * @param stage stable name of the failed backend stage
+     * @param stage   stable name of the failed backend stage
      * @param failure error raised by the backend extension
      */
     public static void diagnoseLoggingFailure(ErrorContext context, String stage, Throwable failure) {
@@ -153,15 +153,20 @@ public final class ErrorBoundary {
     /**
      * Dispatches a secondary failure outside the observer pipeline and excludes a failing log backend when applicable.
      *
-     * @param context context of the original operation
-     * @param stage stable name of the failing handler stage
-     * @param failure error raised by the handler
-     * @param requestId server-generated correlation identifier, or null
-     * @param excluded backend that caused the failure, or null
+     * @param context    context of the original operation
+     * @param stage      stable name of the failing handler stage
+     * @param failure    error raised by the handler
+     * @param requestId  server-generated correlation identifier, or null
+     * @param excluded   backend that caused the failure, or null
      * @param configured whether the configured logging backends can safely be called
      */
-    private static void diagnose(ErrorContext context, String stage, Throwable failure, String requestId,
-            ErrorLogSink excluded, boolean configured) {
+    private static void diagnose(
+            ErrorContext context,
+            String stage,
+            Throwable failure,
+            String requestId,
+            ErrorLogSink excluded,
+            boolean configured) {
         ThrowableNormalizer.rethrowFatal(failure);
         if (Boolean.TRUE.equals(DIAGNOSING.get())) {
             return;
@@ -190,16 +195,21 @@ public final class ErrorBoundary {
     /**
      * Emits one policy-selected log record and isolates a recoverable failure of its backend.
      *
-     * @param sink selected log backend
-     * @param event structured failure event
-     * @param decision classification and disposition
-     * @param failure original error for bounded stack extraction, or null
+     * @param sink      selected log backend
+     * @param event     structured failure event
+     * @param decision  classification and disposition
+     * @param failure   original error for bounded stack extraction, or null
      * @param requestId server-generated correlation identifier, or null
-     * @param outcome response write signal, or null
+     * @param outcome   response write signal, or null
      * @return whether the backend handled the event, including applying its threshold
      */
-    private static boolean writeLog(ErrorLogSink sink, ErrorObserver.Event event, ErrorDecision decision,
-            Throwable failure, String requestId, String outcome) {
+    private static boolean writeLog(
+            ErrorLogSink sink,
+            ErrorObserver.Event event,
+            ErrorDecision decision,
+            Throwable failure,
+            String requestId,
+            String outcome) {
         try {
             int limit = failure == null ? 0 : ErrorLogPolicy.stackFrameLimit(sink, event);
             ErrorLogPolicy.write(sink, event, details(decision, failure, requestId, outcome, limit));
@@ -213,17 +223,23 @@ public final class ErrorBoundary {
     /**
      * Delivers a primary event and isolates observer failures from the original outcome and remaining observers.
      *
-     * @param observer recipient of the approved event
-     * @param event original event contract
-     * @param decision classification and disposition for this operation
-     * @param failure diagnostic exception, or null
+     * @param observer  recipient of the approved event
+     * @param event     original event contract
+     * @param decision  classification and disposition for this operation
+     * @param failure   diagnostic exception, or null
      * @param requestId server-generated identifier, or null
-     * @param outcome response write signal, or null
+     * @param outcome   response write signal, or null
      */
-    private static void notifyObserver(ErrorObserver observer, ErrorObserver.Event event, ErrorDecision decision,
-            Throwable failure, String requestId, String outcome) {
+    private static void notifyObserver(
+            ErrorObserver observer,
+            ErrorObserver.Event event,
+            ErrorDecision decision,
+            Throwable failure,
+            String requestId,
+            String outcome) {
         try {
-            int limit = failure == null ? 0 : Math.min(ErrorLogPolicy.MAX_STACK_FRAMES, observer.stackFrameLimit(event));
+            int limit = failure == null ? 0
+                    : Math.min(ErrorLogPolicy.MAX_STACK_FRAMES, observer.stackFrameLimit(event));
             observer.observe(event, details(decision, failure, requestId, outcome, limit));
         } catch (RuntimeException | Error observerFailure) {
             diagnose(event.context(), "error-observer", observerFailure, requestId);
@@ -233,15 +249,19 @@ public final class ErrorBoundary {
     /**
      * Projects a failure and correlation data to bounded diagnostic fields.
      *
-     * @param decision classification and disposition
-     * @param failure original exception, or null
+     * @param decision  classification and disposition
+     * @param failure   original exception, or null
      * @param requestId server-generated correlation identifier, or null
-     * @param outcome response write signal, or null
-     * @param limit maximum number of stack entries to examine
+     * @param outcome   response write signal, or null
+     * @param limit     maximum number of stack entries to examine
      * @return diagnostic data without raw request content or exception messages
      */
-    private static ErrorObserver.Details details(ErrorDecision decision, Throwable failure, String requestId,
-            String outcome, int limit) {
+    private static ErrorObserver.Details details(
+            ErrorDecision decision,
+            Throwable failure,
+            String requestId,
+            String outcome,
+            int limit) {
         return new ErrorObserver.Details(decision.action(), decision.basis(), safeToken(requestId), safeToken(outcome),
                 failure == null ? null : safeToken(failure.getClass().getName()), stackFrames(failure, limit));
     }
@@ -378,8 +398,8 @@ public final class ErrorBoundary {
         /**
          * Formats approved values for the JDK logger, which uses indexed placeholders.
          *
-         * @param level policy-selected severity
-         * @param format template using sequential placeholders
+         * @param level     policy-selected severity
+         * @param format    template using sequential placeholders
          * @param arguments approved diagnostic fields
          */
         @Override
@@ -411,10 +431,10 @@ public final class ErrorBoundary {
     /**
      * Executes a handler callback whose recoverable failure must leave the original operation available.
      *
-     * @param context context of the original operation
-     * @param stage stable handler stage
+     * @param context   context of the original operation
+     * @param stage     stable handler stage
      * @param requestId server-generated correlation identifier, or null
-     * @param callback handler side effect
+     * @param callback  handler side effect
      */
     public static void runCallback(ErrorContext context, String stage, String requestId, Runnable callback) {
         try {
@@ -480,7 +500,10 @@ public final class ErrorBoundary {
          * @return classified decision
          */
         public ErrorDecision decide(ErrorContext context, FailureFacts facts, Throwable failure) {
-            return engine.decide(context, facts, failure,
+            return engine.decide(
+                    context,
+                    facts,
+                    failure,
                     secondary -> diagnose(context, "error-classifier", secondary, null));
         }
 
@@ -496,18 +519,22 @@ public final class ErrorBoundary {
         /**
          * Executes a selected response and reports its own failure separately from the original error.
          *
-         * @param context execution boundary
-         * @param decision selected original error decision
-         * @param failure original error, or null
+         * @param context   execution boundary
+         * @param decision  selected original error decision
+         * @param failure   original error, or null
          * @param requestId server-generated correlation identifier, or null
-         * @param effect response construction or write
-         * @param <T> transport result
-         * @param <X> checked exception preserved for the transport
+         * @param effect    response construction or write
+         * @param <T>       transport result
+         * @param <X>       checked exception preserved for the transport
          * @return result of the response effect
          * @throws X if the response effect fails
          */
-        public <T, X extends Exception> T complete(ErrorContext context, ErrorDecision decision, Throwable failure,
-                String requestId, Effect<T, X> effect) throws X {
+        public <T, X extends Exception> T complete(
+                ErrorContext context,
+                ErrorDecision decision,
+                Throwable failure,
+                String requestId,
+                Effect<T, X> effect) throws X {
             try {
                 return effect.run();
             } catch (Exception | Error secondary) {

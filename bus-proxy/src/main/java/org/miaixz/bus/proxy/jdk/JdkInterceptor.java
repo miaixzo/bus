@@ -45,9 +45,6 @@ public class JdkInterceptor extends Interceptor implements InvocationHandler {
      */
     private static final ComponentFailure FAILURES = new ComponentFailure("bus-proxy", "jdk-invoke");
 
-    /**
-     * Serialization version of the JDK invocation interceptor.
-     */
     @Serial
     private static final long serialVersionUID = 2552191151665L;
 

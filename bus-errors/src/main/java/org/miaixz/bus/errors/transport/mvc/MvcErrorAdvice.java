@@ -26,30 +26,30 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
+import org.springframework.core.annotation.AnnotatedElementUtils;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindException;
 import org.springframework.web.ErrorResponse;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.NoHandlerFoundException;
 
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.basic.normal.Errors;
-import org.miaixz.bus.core.lang.exception.AuthorizedException;
-import org.miaixz.bus.core.lang.exception.BusinessException;
-import org.miaixz.bus.core.lang.exception.CrontabException;
-import org.miaixz.bus.core.lang.exception.ForbiddenException;
-import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.core.lang.exception.RelevantException;
-import org.miaixz.bus.core.lang.exception.SignatureException;
-import org.miaixz.bus.core.lang.exception.UncheckedException;
-import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.core.lang.exception.*;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.errors.*;
+import org.miaixz.bus.errors.transport.http.PublicHttpError;
+import org.miaixz.bus.errors.transport.servlet.ServletErrorFilter;
+import org.miaixz.bus.errors.transport.servlet.ServletErrorHandler;
 
 /**
  * Implements the legacy mappings selected by the existing BaseAdvice methods.
@@ -110,18 +110,21 @@ public final class MvcErrorAdvice {
             Function<String, T> codeWriter,
             BiFunction<String, String, T> detailWriter) {
         String requestId = requestId(null);
-        var operation = boundary.open();
+        var operation = ServletErrorHandler.operation(boundary, currentRequest(null));
         var decision = operation.decide(CONTEXT, facts(failure), failure);
         ErrorBoundary.runCallback(CONTEXT, "mvc-error-advice", requestId, () -> legacyHook.accept(failure));
         return operation.complete(CONTEXT, decision, failure, requestId, () -> {
+            resetAndApprove();
             if (selected != Exception.class && failure instanceof UncheckedException legacy
                     && StringKit.isNotBlank(legacy.getCode())) {
-                return selected == BusinessException.class ? codeWriter.apply(legacy.getCode())
-                        : detailWriter.apply(legacy.getCode(), legacy.getDesc());
+                var error = PublicHttpError.resolve(legacy.getCode(), DEFAULTS.get(selected));
+                return selected == BusinessException.class ? codeWriter.apply(error.code())
+                        : detailWriter.apply(error.code(), error.description());
             }
             if (selected == RelevantException.class && failure instanceof RelevantException legacy
                     && StringKit.isNotBlank(legacy.getCode())) {
-                return detailWriter.apply(legacy.getCode(), legacy.getDesc());
+                var error = PublicHttpError.resolve(legacy.getCode(), DEFAULTS.get(selected));
+                return detailWriter.apply(error.code(), error.description());
             }
             return errorWriter.apply(DEFAULTS.get(selected));
         });
@@ -140,12 +143,14 @@ public final class MvcErrorAdvice {
      * Handles a controller-local MVC error whose return value is written by Spring.
      *
      * @param component stable owner of the application error contract
-     * @param failure original application exception
-     * @param renderer existing response mapping
-     * @param <T> application response body type
+     * @param failure   original application exception
+     * @param renderer  existing response mapping
+     * @param <T>       application response body type
      * @return existing response with its verified status and headers
      */
-    public static <T> ResponseEntity<T> handleResponse(String component, Exception failure,
+    public static <T> ResponseEntity<T> handleResponse(
+            String component,
+            Exception failure,
             Supplier<ResponseEntity<T>> renderer) {
         return handleResponse(component, failure, null, renderer, ignored -> {
         });
@@ -155,19 +160,23 @@ public final class MvcErrorAdvice {
      * Handles a controller-local error and keeps its existing response mapping and optional direct write.
      *
      * @param component stable owner of the application error contract
-     * @param failure original application exception
-     * @param request current servlet request, or null to use the bound request
-     * @param renderer existing response mapping
-     * @param writer existing direct response write
-     * @param <T> application response body type
-     * @param <X> checked write exception preserved for MVC
+     * @param failure   original application exception
+     * @param request   current servlet request, or null to use the bound request
+     * @param renderer  existing response mapping
+     * @param writer    existing direct response write
+     * @param <T>       application response body type
+     * @param <X>       checked write exception preserved for MVC
      * @return existing response with its verified status and headers
      * @throws X if the direct response write fails
      */
-    public static <T, X extends Exception> ResponseEntity<T> handleResponse(String component, Exception failure,
-            HttpServletRequest request, Supplier<ResponseEntity<T>> renderer, ResponseWriter<T, X> writer) throws X {
+    public static <T, X extends Exception> ResponseEntity<T> handleResponse(
+            String component,
+            Exception failure,
+            HttpServletRequest request,
+            Supplier<ResponseEntity<T>> renderer,
+            ResponseWriter<T, X> writer) throws X {
         var context = new ErrorContext(component, "http", ErrorContext.Phase.OPEN);
-        var operation = ErrorBoundary.standard().open();
+        var operation = ServletErrorHandler.operation(ErrorBoundary.standard(), currentRequest(request));
         String requestId = requestId(request);
         ResponseEntity<T> response;
         try {
@@ -181,29 +190,10 @@ public final class MvcErrorAdvice {
         var verified = new FailureFacts(FailureFacts.Source.LOCAL, null, response.getStatusCode().value());
         var decision = operation.decide(context, verified, failure);
         return operation.complete(context, decision, failure, requestId, () -> {
+            resetAndApprove();
             writer.write(response);
             return response;
         });
-    }
-
-    /**
-     * Writes a previously selected application error response through its servlet or protocol contract.
-     *
-     * @param <T> response body type
-     * @param <X> checked write exception
-     * @author Kimi Liu
-     */
-    @FunctionalInterface
-    public interface ResponseWriter<T, X extends Exception> {
-
-        /**
-         * Writes the selected response.
-         *
-         * @param response existing application response
-         * @throws X if the response cannot be written
-         */
-        void write(ResponseEntity<T> response) throws X;
-
     }
 
     /**
@@ -214,7 +204,8 @@ public final class MvcErrorAdvice {
      */
     static String requestId(HttpServletRequest request) {
         try {
-            if (request == null && RequestContextHolder.getRequestAttributes() instanceof ServletRequestAttributes current) {
+            if (request == null
+                    && RequestContextHolder.getRequestAttributes() instanceof ServletRequestAttributes current) {
                 request = current.getRequest();
             }
             return request == null ? null : request.getRequestId();
@@ -242,6 +233,117 @@ public final class MvcErrorAdvice {
         };
         return type == null ? FailureFacts.UNKNOWN
                 : new FailureFacts(FailureFacts.Source.LOCAL, ErrorEngine.descriptor(type), 0);
+    }
+
+    /**
+     * Renders a legacy business failure whose wire contract uses an HTTP success status.
+     *
+     * @param component   stable owner of the business error contract
+     * @param failure     original failure for diagnostic observation
+     * @param publicError already projected public code and description
+     * @param renderer    existing business envelope renderer
+     * @param <T>         legacy response body type
+     * @return safe response in the existing business format
+     */
+    public static <T> T handleBusiness(
+            String component,
+            Exception failure,
+            PublicHttpError publicError,
+            Function<PublicHttpError, T> renderer) {
+        var context = new ErrorContext(component, "http", ErrorContext.Phase.OPEN);
+        var operation = ServletErrorHandler.operation(ErrorBoundary.standard(), currentRequest(null));
+        var decision = operation.decide(context, FailureFacts.UNKNOWN, failure);
+        return operation.complete(context, decision, failure, requestId(null), () -> {
+            approve();
+            return renderer.apply(publicError);
+        });
+    }
+
+    /**
+     * Provides a final safe MVC error after specific controller and advice handlers had an opportunity to resolve it.
+     *
+     * @param request  active Servlet request
+     * @param response active Servlet response
+     * @param handler  selected MVC handler, if any
+     * @param failure  unhandled MVC failure
+     * @return resolved empty view, or null after commitment or a failed connection write
+     */
+    public static ModelAndView resolveFallback(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            Object handler,
+            Exception failure) {
+        if (response.isCommitted()) {
+            return null;
+        }
+        var mapping = AnnotatedElementUtils.findMergedAnnotation(failure.getClass(), ResponseStatus.class);
+        int status = mapping == null || !mapping.code().isError() ? 500 : mapping.code().value();
+        HttpHeaders headers = HttpHeaders.EMPTY;
+        if (failure instanceof ErrorResponse error && error.getStatusCode().isError()) {
+            status = error.getStatusCode().value();
+            headers = error.getHeaders();
+        }
+        try {
+            response.reset();
+            ServletErrorHandler.fallback(request, response, status, failure, headers);
+            return new ModelAndView();
+        } catch (java.io.IOException disconnected) {
+            return null;
+        }
+    }
+
+    /**
+     * Discards diagnostic headers or buffered content before a replacement error response is prepared.
+     */
+    private static void resetAndApprove() {
+        if (RequestContextHolder.getRequestAttributes() instanceof ServletRequestAttributes current
+                && current.getResponse() != null && !current.getResponse().isCommitted()) {
+            current.getResponse().reset();
+            ServletErrorFilter.approve(current.getResponse());
+        }
+    }
+
+    /**
+     * Approves a compatibility response when Spring writes it through the current Servlet exchange.
+     */
+    private static void approve() {
+        if (RequestContextHolder.getRequestAttributes() instanceof ServletRequestAttributes current
+                && current.getResponse() != null) {
+            ServletErrorFilter.approve(current.getResponse());
+        }
+    }
+
+    /**
+     * Resolves the Servlet request supplied by the caller or bound to the current MVC thread.
+     *
+     * @param request explicit request, when available
+     * @return active request, or null outside MVC dispatch
+     */
+    private static HttpServletRequest currentRequest(HttpServletRequest request) {
+        return request == null
+                && RequestContextHolder.getRequestAttributes() instanceof ServletRequestAttributes current
+                        ? current.getRequest()
+                        : request;
+    }
+
+    /**
+     * Writes a previously selected application error response through its servlet or protocol contract.
+     *
+     * @param <T> response body type
+     * @param <X> checked write exception
+     * @author Kimi Liu
+     */
+    @FunctionalInterface
+    public interface ResponseWriter<T, X extends Exception> {
+
+        /**
+         * Writes the selected response.
+         *
+         * @param response existing application response
+         * @throws X if the response cannot be written
+         */
+        void write(ResponseEntity<T> response) throws X;
+
     }
 
 }

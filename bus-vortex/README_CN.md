@@ -132,7 +132,7 @@ bus:
     performance:
       max-connections: 5000
       pending-acquire-timeout-seconds: 45
-      pending-acquire-max-count: 0  # 0 表示按 max-connections * 2 派生
+      pending-acquire-max-count: 0  # 0 表示使用 max-connections
       sanitize-null-like-parameters: true
 ```
 
@@ -359,13 +359,38 @@ putQueryParameter("lang","en");
 | 属性                                                   | 类型    | 默认值       | 描述                                                        |
 |:-------------------------------------------------------|:--------|:-------------|:------------------------------------------------------------|
 | bus.vortex.port                                        | int     | 8765         | 网关服务器端口                                              |
-| bus.vortex.path                                        | String  | /router/rest | 网关路由路径                                                |
+| bus.vortex.path | String | 未设置 | 网关路由前缀，未设置或设为 `/` 时接收所有路径。 |
 | bus.vortex.condition                                   | boolean | false        | 是否启用自定义 Spring MVC 条件桥接                          |
 | bus.vortex.limit.enabled                               | boolean | false        | 启用限流                                                    |
 | bus.vortex.performance.max-connections                 | int     | 5000         | 出站 HTTP 连接池最大连接数                                  |
-| bus.vortex.performance.pending-acquire-timeout-seconds | int     | 45           | 等待获取出站连接的最长时间                                  |
-| bus.vortex.performance.pending-acquire-max-count       | int     | 0            | 出站连接等待队列上限；`0` 表示按 `max-connections * 2` 派生 |
+| bus.vortex.performance.pending-acquire-timeout-seconds | int     | 5            | 等待获取出站连接的最长时间                                  |
+| bus.vortex.performance.pending-acquire-max-count | int | 5000 | 出站连接等待队列上限。设为 `0` 时使用 `max-connections`。 |
 | bus.vortex.performance.sanitize-null-like-parameters   | boolean | true         | 在路由前移除 `null` / `"null"` / `"undefined"` 参数         |
+
+### 网关错误响应
+
+`bus-errors` 处理网关本地失败和上游 HTTP 错误。启用 `bus.errors.routing` 可为匹配的已确认状态选择原生 HTTP 状态和空响应体。`vortex` 只选网关端口，`/` 包含 `/router/rest` 和其他网关路径。
+
+```yaml
+bus:
+  errors:
+    routing:
+      enabled: true
+      targets: [vortex]
+      path-prefixes: [/]
+      statuses: [404, 405, 415, 429]
+```
+
+| 状态码 | REST 路由的触发条件 |
+|---|---|
+| `400` | 路由查找前的 REST 参数校验失败，例如缺少必填的 `timestamp` 或时间戳无效。 |
+| `404` | 按请求的路由坐标无法确认可见路由。 |
+| `405` | 网关确认同一可见路由注册了其他方法。例如参数合法的 `GET` 请求命中仅注册 `POST` 的公开路由时，返回 `Allow: POST`。受保护或要求签名的路由不参与生成 `Allow`。 |
+| `415` | REST 上游返回 `415`，网关使用已确认的状态及经过校验的响应头。REST 本地路由没有通用的媒体类型校验规则。 |
+| `429` | 配置的限流器拒绝请求，或上游返回该状态。 |
+| `503` | 准入过滤器可独立返回空 `503` 和 `Retry-After: 1`。上游 `503` 使用经过校验的状态和可用的重试提示。 |
+
+未匹配的错误使用各自的协议或兼容响应。关闭路由选择后，公开错误映射仍生效。MCP JSON-RPC 错误及可识别的 SSE 错误帧即使通过 HTTP `200` 传输，也会重新生成安全内容。全部配置项和默认值见 [Starter 配置](../bus-starter/README_CN.md#统一-http-错误响应)。
 
 -----
 

@@ -401,7 +401,6 @@ controlled:
 | Message converters     | `bus.wrapper.message-converters.enabled` | `true`                           |
 | Bounded body cache     | `bus.wrapper.body-cache.enabled`         | `false`                          |
 | Response advice        | `bus.wrapper.response-advice.enabled`    | `false`                          |
-| Route errors           | `bus.wrapper.route-errors.enabled`       | `false`                          |
 | Route prefix           | `bus.wrapper.route-prefix.enabled`       | `false`                          |
 
 ```yaml
@@ -424,45 +423,6 @@ bus:
       enabled: false
 ```
 
-Enable route errors when selected paths need the original MVC or Vortex HTTP status and headers. Other paths retain
-the listener's existing exception handling.
-
-```yaml
-bus:
-  wrapper:
-    enabled: true
-    route-errors:
-      enabled: true
-      path-prefixes:
-        - /internal/sso/
-        - /internal/application/o/
-      statuses: [404, 405, 415]
-      cache-control: no-store
-```
-
-Use literal path prefixes with leading and trailing slashes, relative to the selected listener. For MVC, omit the
-application context and servlet mapping prefixes. The default statuses are `404`, `405`, and `415`. For matching
-`ErrorResponse` exceptions, the handler preserves the status and headers, such as `Allow` and `Accept`, and sends an
-empty body. Set `cache-control` to override the cache header.
-
-`targets` defaults to `[mvc]`. Select `[vortex]` for the Vortex gateway or `[mvc, vortex]` for both listeners. Both use
-the common `path-prefixes` unless a listener supplies its own `mvc.path-prefixes` or `vortex.path-prefixes`.
-
-```yaml
-bus:
-  wrapper:
-    enabled: true
-    route-errors:
-      enabled: true
-      targets: [vortex]
-      path-prefixes: [/router/mcp/]
-      cache-control: no-store
-```
-
-Each active listener validates its effective policy at startup. The gateway continues to classify route and
-authorization failures through its existing pipeline. The policy applies to the HTTP errors produced by that pipeline.
-A standalone gateway without Spring MVC uses `bus.wrapper.message-converters.enabled=false` to disable the Wrapper MVC converters.
-
 Message converter target-type policies are:
 
 - `framework`: allows Bus framework types, built-in scalar/container types, and explicit rules;
@@ -476,6 +436,55 @@ type. Prefer `allowed-types` for new applications.
 Request-object binding requires `@RequestObject`, excludes framework and simple scalar types, and does not allow request
 input to replace trusted tenant context. Body caching is bounded; multipart and response diagnostic caching remain
 opt-in.
+
+## Shared HTTP error responses
+
+`bus.errors.routing` selects which verified errors use their native HTTP status, approved response headers, and an
+empty body. Errors outside that selection use the listener's existing protocol or legacy response contract.
+`bus-errors` continues to protect public error responses when routing rules are disabled.
+
+| Property | Default | Effect |
+|---|---|---|
+| `bus.errors.routing.enabled` | `false` | Enables native HTTP rendering for matching errors. |
+| `bus.errors.routing.targets` | Empty | Required when enabled. Use `[mvc]`, `[vortex]`, or `[mvc, vortex]`. `vortex` selects the gateway listener. A separate Spring MVC management port is an `mvc` listener. |
+| `bus.errors.routing.path-prefixes` | Empty | Required when enabled. Use literal prefixes starting and ending with `/`, or `/` for all paths on a selected listener. MVC paths omit the application context and Servlet mapping prefixes. |
+| `bus.errors.routing.statuses` | Empty | Required when enabled. Provide explicit HTTP status numbers from `400` through `599`. A rule applies when the listener, path, and verified status all match. |
+| `bus.errors.routing.cache-control` | Empty string | Overrides `Cache-Control` on matching native HTTP responses. A blank value preserves the approved header when one is available. |
+| `bus.errors.logging.enabled` | `true` | Enables the standard error log subscription to `bus-logger`. Response handling is independent of this subscription. |
+
+Both targets use the same path and status lists. Use this prefix in place of the former `bus.wrapper.route-errors`
+configuration. Vortex can use these rules independently of Wrapper. A standalone gateway without Spring MVC can
+disable the Wrapper MVC converters with `bus.wrapper.message-converters.enabled=false`.
+
+This example selects private MVC protocol paths.
+
+```yaml
+bus:
+  errors:
+    routing:
+      enabled: true
+      targets: [mvc]
+      path-prefixes: [/internal/sso/, /internal/application/o/, /internal/application/saml/]
+      statuses: [404, 405, 415]
+      cache-control: no-store
+```
+
+This example selects the Vortex gateway.
+
+```yaml
+bus:
+  errors:
+    routing:
+      enabled: true
+      targets: [vortex]
+      path-prefixes: [/]
+      statuses: [404, 405, 415, 429]
+```
+
+The listener must first identify the error. MVC uses Spring `ErrorResponse` signals. Vortex also uses verified route
+facts and status errors from upstream. A matching `405` can retain `Allow`, and a matching `415` can retain `Accept`,
+when those headers are available and approved. Existing direct responses, such as an admission rejection with `503`,
+use their own protocol contract. For REST-specific behavior, see [Bus Vortex](../bus-vortex/README.md#gateway-error-responses).
 
 ## Client and service lifecycle
 

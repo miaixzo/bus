@@ -30,7 +30,7 @@ import org.miaixz.bus.starter.vortex.VortexConfiguration;
  * <p>
  * This annotation imports the {@link VortexConfiguration}, which sets up the WebFlux-based routing engine. It
  * configures a series of filters for concerns like security, rate limiting, and authorization, and establishes the core
- * routing logic.
+ * routing logic. Native HTTP error selection uses {@code bus.errors.routing} with the {@code vortex} target.
  *
  * @author Kimi Liu
  */
