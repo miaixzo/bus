@@ -26,6 +26,7 @@ import org.miaixz.bus.core.lang.annotation.Immutable;
 import org.miaixz.bus.core.lang.tuple.Tuple;
 import org.miaixz.bus.health.Memoizer;
 import org.miaixz.bus.health.builtin.hardware.common.AbstractBaseboard;
+import org.miaixz.bus.health.linux.driver.Devicetree;
 import org.miaixz.bus.health.linux.driver.Sysfs;
 import org.miaixz.bus.health.linux.driver.proc.CpuInfo;
 
@@ -110,7 +111,8 @@ final class LinuxBaseboard extends AbstractBaseboard {
     private String queryManufacturer() {
         String result = null;
         if ((result = Sysfs.queryBoardVendor()) == null
-                && (result = manufacturerModelVersionSerial.get().get(0)) == null) {
+                && (result = manufacturerModelVersionSerial.get().get(Normal._0)) == null
+                && (result = Devicetree.queryManufacturer()) == null) {
             return Normal.UNKNOWN;
         }
         return result;
@@ -124,7 +126,8 @@ final class LinuxBaseboard extends AbstractBaseboard {
     private String queryModel() {
         String result;
         if ((result = Sysfs.queryBoardModel()) == null
-                && (result = manufacturerModelVersionSerial.get().get(1)) == null) {
+                && (result = manufacturerModelVersionSerial.get().get(Normal._1)) == null
+                && (result = Devicetree.queryModel()) == null) {
             return Normal.UNKNOWN;
         }
         return result;
@@ -152,7 +155,8 @@ final class LinuxBaseboard extends AbstractBaseboard {
     private String querySerialNumber() {
         String result;
         if ((result = Sysfs.queryBoardSerial()) == null
-                && (result = manufacturerModelVersionSerial.get().get(3)) == null) {
+                && (result = manufacturerModelVersionSerial.get().get(Normal._3)) == null
+                && (result = Devicetree.querySerialNumber()) == null) {
             return Normal.UNKNOWN;
         }
         return result;

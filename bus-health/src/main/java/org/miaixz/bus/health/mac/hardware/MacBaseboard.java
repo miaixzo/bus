@@ -68,6 +68,12 @@ final class MacBaseboard extends AbstractBaseboard {
                 model = Parsing.decodeNulTerminated(data, Charset.UTF_8);
             }
             if (StringKit.isBlank(model)) {
+                data = platformExpert.getByteArrayProperty("target-type");
+                if (data != null) {
+                    model = Parsing.decodeNulTerminated(data, Charset.UTF_8);
+                }
+            }
+            if (StringKit.isBlank(model)) {
                 data = platformExpert.getByteArrayProperty("model-number");
                 if (data != null) {
                     model = Parsing.decodeNulTerminated(data, Charset.UTF_8);

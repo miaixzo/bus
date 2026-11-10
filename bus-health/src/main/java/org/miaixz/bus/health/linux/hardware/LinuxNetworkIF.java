@@ -33,9 +33,11 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.health.Builder;
+import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.hardware.NetworkIF;
 import org.miaixz.bus.health.builtin.hardware.common.AbstractNetworkIF;
 import org.miaixz.bus.health.linux.SysPath;
+import org.miaixz.bus.health.linux.UdevData;
 import org.miaixz.bus.health.linux.software.LinuxOperatingSystem;
 
 /**
@@ -136,7 +138,7 @@ public class LinuxNetworkIF extends AbstractNetworkIF {
     private static String queryIfModel(NetworkInterface netint) {
         String name = netint.getName();
         if (!LinuxOperatingSystem.HAS_UDEV) {
-            return queryIfModelFromSysfs(name);
+            return queryIfModelFromUdevData(name);
         }
         UdevContext udev = Udev.INSTANCE.udev_new();
         if (udev != null) {
@@ -159,14 +161,15 @@ public class LinuxNetworkIF extends AbstractNetworkIF {
     }
 
     /**
-     * Queries the if model from sysfs.
+     * Queries the interface model from the udev database.
      *
      * @param name the name
-     * @return the query if model from sysfs result
+     * @return the interface model or the interface name when unavailable
      */
-    private static String queryIfModelFromSysfs(String name) {
-        Map<String, String> uevent = Builder.getKeyValueMapFromFile(SysPath.NET + name + "/uevent", Symbol.EQUAL);
-        return formatModel(uevent.get("ID_VENDOR_FROM_DATABASE"), uevent.get("ID_MODEL_FROM_DATABASE"), name);
+    private static String queryIfModelFromUdevData(String name) {
+        int ifindex = Parsing.parseIntOrDefault(Builder.getStringFromFile(SysPath.NET + name + "/ifindex").trim(), 0);
+        Map<String, String> properties = UdevData.queryNetworkInterface(ifindex);
+        return formatModel(properties.get("ID_VENDOR_FROM_DATABASE"), properties.get("ID_MODEL_FROM_DATABASE"), name);
     }
 
     /**

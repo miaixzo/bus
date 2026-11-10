@@ -44,6 +44,7 @@ import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.health.Builder;
 import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.Parsing;
+import org.miaixz.bus.health.Platform;
 import org.miaixz.bus.health.builtin.hardware.CentralProcessor;
 import org.miaixz.bus.health.builtin.hardware.common.AbstractCentralProcessor;
 import org.miaixz.bus.health.linux.ProcPath;
@@ -677,6 +678,7 @@ final class LinuxCentralProcessor extends AbstractCentralProcessor {
         String s390Version = Normal.EMPTY;
         String s390Ident = Normal.EMPTY;
         String s390Machine = Normal.EMPTY;
+        String armArchitecture = Normal.EMPTY;
         String[] flags = Normal.EMPTY_STRING_ARRAY;
         List<String> cpuInfo = Builder.readFile(ProcPath.CPUINFO);
         for (String line : cpuInfo) {
@@ -685,6 +687,7 @@ final class LinuxCentralProcessor extends AbstractCentralProcessor {
                 // special case
                 if (line.startsWith("CPU architecture: ")) {
                     cpuFamily = line.replace("CPU architecture: ", Normal.EMPTY).trim();
+                    armArchitecture = cpuFamily;
                 }
                 continue;
             }
@@ -714,6 +717,12 @@ final class LinuxCentralProcessor extends AbstractCentralProcessor {
 
                 case "features":
                     if (Arrays.asList(Pattern.SPACES_PATTERN.split(splitLine[1].trim())).contains("zarch")) {
+                        cpu64bit = true;
+                    }
+                    break;
+
+                case "isa":
+                    if (splitLine[Normal._1].startsWith("rv64")) {
                         cpu64bit = true;
                     }
                     break;
@@ -791,6 +800,9 @@ final class LinuxCentralProcessor extends AbstractCentralProcessor {
         if (cpuStepping.isEmpty()) {
             cpuStepping = armStepping.toString();
         }
+        if (!armArchitecture.isEmpty() && isArm64bit(armArchitecture, cpuVendor, cpuModel)) {
+            cpu64bit = true;
+        }
         processorID = s390ProcessorId.isEmpty() ? getProcessorID(cpuVendor, cpuStepping, cpuModel, cpuFamily, flags)
                 : s390ProcessorId;
         if (cpuVendor.startsWith("0x") || cpuModel.isEmpty() || cpuName.isEmpty()) {
@@ -808,7 +820,24 @@ final class LinuxCentralProcessor extends AbstractCentralProcessor {
             }
         }
         return new CentralProcessor.ProcessorIdentifier(cpuVendor, cpuName, cpuFamily, cpuModel, cpuStepping,
-                processorID, cpu64bit, cpuFreq);
+                processorID, cpu64bit || Platform.is64Bit(), cpuFreq);
+    }
+
+    /**
+     * Tests whether an ARM processor implements AArch64. ARMv8-A and later application cores do so except for the
+     * 32-bit-only Cortex-A32.
+     *
+     * @param architecture the CPU architecture value
+     * @param implementer  the CPU implementer value
+     * @param part         the CPU part value
+     * @return whether the processor is 64-bit capable
+     */
+    private static boolean isArm64bit(String architecture, String implementer, String part) {
+        if ("AArch64".equalsIgnoreCase(architecture)) {
+            return true;
+        }
+        return Parsing.parseIntOrDefault(architecture, Normal._0) >= Normal._8
+                && !("0x41".equalsIgnoreCase(implementer) && "0xd01".equalsIgnoreCase(part));
     }
 
     /**
@@ -835,8 +864,9 @@ final class LinuxCentralProcessor extends AbstractCentralProcessor {
             logProcs.add(new CentralProcessor.LogicalProcessor(0, 0, 0));
         }
         if (coreEfficiencyMap.isEmpty()) {
-            coreEfficiencyMap.put(0, 0);
+            coreEfficiencyMap.put(Normal._0, Normal._0);
         }
+        applyHybridCoreTypes(coreEfficiencyMap, logProcs, Builder.getStringFromFile(SysPath.HYBRID_PERFORMANCE_CPUS));
         // Sort
         logProcs.sort(Comparator.comparingInt(CentralProcessor.LogicalProcessor::getProcessorNumber));
 
@@ -849,6 +879,31 @@ final class LinuxCentralProcessor extends AbstractCentralProcessor {
                 }).collect(Collectors.toList());
         List<String> featureFlags = CpuInfo.queryFeatureFlags();
         return new Tuple(logProcs, physProcs, caches, featureFlags);
+    }
+
+    /**
+     * Marks Intel hybrid performance cores when the kernel publishes no per-core capacity values.
+     *
+     * @param coreEfficiencyMap efficiencies keyed by package and core
+     * @param logProcs          the logical processors
+     * @param performanceCpus   the performance-core PMU CPU list
+     */
+    static void applyHybridCoreTypes(
+            Map<Integer, Integer> coreEfficiencyMap,
+            List<CentralProcessor.LogicalProcessor> logProcs,
+            String performanceCpus) {
+        if (performanceCpus.isEmpty()
+                || coreEfficiencyMap.values().stream().anyMatch(efficiency -> efficiency != Normal._0)) {
+            return;
+        }
+        Set<Integer> performance = new HashSet<>(Parsing.parseHyphenatedIntList(performanceCpus));
+        for (CentralProcessor.LogicalProcessor processor : logProcs) {
+            if (performance.contains(processor.getProcessorNumber())) {
+                coreEfficiencyMap.put(
+                        (processor.getPhysicalPackageNumber() << Normal._16) + processor.getPhysicalProcessorNumber(),
+                        Normal._1);
+            }
+        }
     }
 
     /**

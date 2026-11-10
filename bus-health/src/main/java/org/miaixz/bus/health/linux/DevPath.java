@@ -28,9 +28,13 @@ import org.miaixz.bus.core.lang.exception.NotFoundException;
 import org.miaixz.bus.health.Builder;
 
 /**
- * Provides constants for paths in the {@code /dev} filesystem on Linux. If the user desires to configure a custom
- * {@code /dev} path, it must be declared in the configuration file or updated in the {@link Builder} class prior to
- * initializing this class.
+ * Provides constants for paths in the {@code /dev} filesystem on Linux.
+ * <p>
+ * {@link #DEV} is where device files are read and may point to a mounted host directory. {@link #NODE_ROOT} is the
+ * device-name root reported by the kernel, udev, {@code /proc/mounts}, and tools such as {@code pvs}. Returned device
+ * names always use {@link #NODE_ROOT}; {@link #toFilePath(String)} converts them to paths below {@link #DEV}.
+ * <p>
+ * A custom {@code /dev} path must be configured through {@link Builder} before this class is initialized.
  *
  * @author Kimi Liu
  */
@@ -38,34 +42,39 @@ import org.miaixz.bus.health.Builder;
 public class DevPath {
 
     /**
-     * The /dev filesystem location.
+     * The configured device filesystem location used for file access.
      */
     public static final String DEV = queryDevConfig() + Symbol.SLASH;
 
     /**
-     * The DISK_BY_UUID constant.
+     * The root of device names reported by the kernel and udev.
+     */
+    public static final String NODE_ROOT = Symbol.SLASH + "dev" + Symbol.SLASH;
+
+    /**
+     * The disk-by-UUID directory below {@link #DEV}.
      */
     public static final String DISK_BY_UUID = DEV + "disk/by-uuid";
 
     /**
-     * The DM constant.
+     * The device-mapper device-name prefix.
      */
-    public static final String DM = DEV + "dm";
+    public static final String DM = NODE_ROOT + "dm";
 
     /**
-     * The LOOP constant.
+     * The loop-device name prefix.
      */
-    public static final String LOOP = DEV + "loop";
+    public static final String LOOP = NODE_ROOT + "loop";
 
     /**
-     * The MAPPER constant.
+     * The mapped device-name prefix.
      */
-    public static final String MAPPER = DEV + "mapper/";
+    public static final String MAPPER = NODE_ROOT + "mapper/";
 
     /**
-     * The RAM constant.
+     * The RAM-disk device-name prefix.
      */
-    public static final String RAM = DEV + "ram";
+    public static final String RAM = NODE_ROOT + "ram";
 
     /**
      * Constructs a new DevPath instance.
@@ -87,6 +96,38 @@ public class DevPath {
             throw new NotFoundException(Builder._DEV_PATH, "The path does not exist");
         }
         return devPath;
+    }
+
+    /**
+     * Converts a device name below {@link #NODE_ROOT} to the configured file path below {@link #DEV}.
+     *
+     * @param nodeName the device name
+     * @return the configured file path, or the input when it is not below {@link #NODE_ROOT}
+     */
+    public static String toFilePath(String nodeName) {
+        return reroot(nodeName, NODE_ROOT, DEV);
+    }
+
+    /**
+     * Converts a configured device file path to the corresponding name below {@link #NODE_ROOT}.
+     *
+     * @param filePath the configured file path
+     * @return the device name, or the input when it is not below {@link #DEV}
+     */
+    public static String toNodeName(String filePath) {
+        return reroot(filePath, DEV, NODE_ROOT);
+    }
+
+    /**
+     * Replaces one path root with another.
+     *
+     * @param path the path to convert
+     * @param from the source root
+     * @param to   the target root
+     * @return the converted path, or the input when it is not below the source root
+     */
+    static String reroot(String path, String from, String to) {
+        return path.startsWith(from) ? to + path.substring(from.length()) : path;
     }
 
 }

@@ -334,13 +334,14 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
     }
 
     /**
-     * Attempts to read /etc/os-release
+     * Attempts to read {@code /etc/os-release}, falling back to {@code /usr/lib/os-release}.
      *
      * @return a triplet with the parsed family, versionID and codeName if file successfully read and NAME= found, null
      *         otherwise
      */
     private static Triplet<String, String, String> readOsRelease() {
-        return readOsRelease(Builder.readFile("/etc/os-release"));
+        List<String> osRelease = Builder.readFile("/etc/os-release", false);
+        return readOsRelease(osRelease.isEmpty() ? Builder.readFile("/usr/lib/os-release", false) : osRelease);
     }
 
     /**
@@ -901,8 +902,23 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
             services.add(s);
             running.add(p.getName());
         }
+        services.addAll(
+                parseServices(Executor.runNative("systemctl list-unit-files"), running, "/etc/init", "/etc/init.d"));
+        return services;
+    }
+
+    /**
+     * Parses stopped services from systemd, OpenRC, SysV, or Upstart data.
+     *
+     * @param systemctl the output from {@code systemctl list-unit-files}
+     * @param running   the names of running services
+     * @param initDir   the Upstart job directory
+     * @param initdDir  the OpenRC and SysV service-script directory
+     * @return stopped service records
+     */
+    static List<OSService> parseServices(List<String> systemctl, Set<String> running, String initDir, String initdDir) {
+        List<OSService> services = new ArrayList<>();
         boolean systemctlFound = false;
-        List<String> systemctl = Executor.runNative("systemctl list-unit-files");
         for (String text : systemctl) {
             String[] split = Pattern.SPACES_PATTERN.split(text);
             if (split.length >= 2 && split[0].endsWith(".service") && Normal.ENABLED.equals(split[1])) {
@@ -918,25 +934,47 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
             }
         }
         if (!systemctlFound) {
-            // Get Directories for stopped services
-            File dir = new File("/etc/init");
-            File[] confFiles = dir.listFiles((f, name) -> StringKit.toLowerCase(name).endsWith(".conf"));
-            if (confFiles != null) {
-                for (File f : confFiles) {
-                    // remove .conf extension
-                    String name = f.getName().substring(0, f.getName().length() - 5);
-                    int index = name.lastIndexOf(Symbol.C_DOT);
-                    String shortName = (index < 0 || index > name.length() - 2) ? name : name.substring(index + 1);
-                    if (!running.contains(name) && !running.contains(shortName)) {
-                        OSService s = new OSService(name, 0, OSService.State.STOPPED);
-                        services.add(s);
-                    }
-                }
-            } else {
-                Logger.error(false, "Health", "Directory: /etc/init does not exist");
+            Set<String> seen = new HashSet<>(running);
+            File[] scripts = new File(initdDir)
+                    .listFiles(file -> file.isFile() && file.canExecute() && !file.getName().startsWith(Symbol.DOT));
+            addStoppedServices(services, scripts, Normal.EMPTY, seen);
+            File[] confFiles = new File(initDir)
+                    .listFiles((file, name) -> StringKit.toLowerCase(name).endsWith(".conf"));
+            addStoppedServices(services, confFiles, ".conf", seen);
+            if (scripts == null && confFiles == null) {
+                Logger.debug(
+                        false,
+                        "Health",
+                        "No systemctl, {} or {}; listing only running services",
+                        initdDir,
+                        initDir);
             }
         }
         return services;
+    }
+
+    /**
+     * Adds stopped services represented by files in an init-system directory.
+     *
+     * @param services the destination service list
+     * @param files    the service files, or {@code null} when the directory is unavailable
+     * @param suffix   the suffix to remove from each file name
+     * @param seen     running or previously added service names
+     */
+    private static void addStoppedServices(List<OSService> services, File[] files, String suffix, Set<String> seen) {
+        if (files == null) {
+            return;
+        }
+        for (File file : files) {
+            String name = file.getName().substring(Normal._0, file.getName().length() - suffix.length());
+            int index = name.lastIndexOf(Symbol.C_DOT);
+            String shortName = (index < Normal._0 || index > name.length() - Normal._2) ? name
+                    : name.substring(index + Normal._1);
+            if (!seen.contains(name) && !seen.contains(shortName)) {
+                services.add(new OSService(name, Normal._0, OSService.State.STOPPED));
+                seen.add(name);
+            }
+        }
     }
 
     /**
