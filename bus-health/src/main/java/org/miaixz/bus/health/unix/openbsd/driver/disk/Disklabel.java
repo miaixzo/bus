@@ -126,9 +126,10 @@ public class Disklabel {
                     // get major and minor from stat
                     Pair<Integer, Integer> majorMinor = getMajorMinor(diskName, name);
                     partitions.add(
-                            new HWPartition(diskName + name, name, split[3], duid + Symbol.DOT + name,
-                                    Parsing.parseLongOrDefault(split[1], 0L) * bytesPerSector, majorMinor.getLeft(),
-                                    majorMinor.getRight(), split.length > 5 ? split[split.length - 1] : Normal.EMPTY));
+                            new HWPartition(diskName + name, name, split[Normal._3],
+                                    duid.isEmpty() ? Normal.EMPTY : duid + Symbol.DOT + name,
+                                    Parsing.parseLongOrDefault(split[Normal._1], Normal._0) * bytesPerSector,
+                                    majorMinor.getLeft(), majorMinor.getRight(), parseMountPoint(line)));
                 }
             }
         }
@@ -137,6 +138,22 @@ public class Disklabel {
             return new Tuple(label, duid, totalSectors * bytesPerSector, fallback.get(3));
         }
         return new Tuple(label, duid, totalSectors * bytesPerSector, partitions);
+    }
+
+    /**
+     * Reads the mount point from the comment at the end of a partition row. OpenBSD writes the mount point from
+     * {@code fstab}; a row without a comment does not identify one. Cylinder-range comments are not mount points.
+     *
+     * @param line the partition row
+     * @return the mount point, or an empty string when no mount point is present
+     */
+    static String parseMountPoint(String line) {
+        int hash = line.indexOf(Symbol.C_HASH);
+        if (hash < Normal._0) {
+            return Normal.EMPTY;
+        }
+        String comment = line.substring(hash + Normal._1).trim();
+        return comment.startsWith(Symbol.PARENTHESE_LEFT) ? Normal.EMPTY : comment;
     }
 
     /**

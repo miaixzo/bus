@@ -26,14 +26,16 @@ import java.util.stream.Collectors;
 import com.sun.jna.platform.linux.Udev;
 
 import org.miaixz.bus.core.center.regex.Pattern;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.health.Builder;
 import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.hardware.LogicalVolumeGroup;
 import org.miaixz.bus.health.builtin.hardware.common.AbstractLogicalVolumeGroup;
 import org.miaixz.bus.health.linux.DevPath;
+import org.miaixz.bus.health.linux.SysPath;
 import org.miaixz.bus.health.linux.software.LinuxOperatingSystem;
-import org.miaixz.bus.logger.Logger;
 
 /**
  * The linux logical volume group class.
@@ -80,8 +82,7 @@ public class LinuxLogicalVolumeGroup extends AbstractLogicalVolumeGroup {
      */
     static List<LogicalVolumeGroup> getLogicalVolumeGroups() {
         if (!LinuxOperatingSystem.HAS_UDEV) {
-            Logger.warn(false, "Health", "Logical Volume Group information requires libudev, which is not present.");
-            return Collections.emptyList();
+            return querySysfsLogicalVolumeGroups();
         }
         Map<String, Map<String, Set<String>>> logicalVolumesMap = new HashMap<>();
         Map<String, Set<String>> physicalVolumesMap = new HashMap<>();
@@ -90,7 +91,7 @@ public class LinuxLogicalVolumeGroup extends AbstractLogicalVolumeGroup {
         // This requires elevated permissions and may fail
         for (String s : Executor.runPrivilegedNative("pvs -o vg_name,pv_name")) {
             String[] split = Pattern.SPACES_PATTERN.split(s.trim());
-            if (split.length == 2 && split[1].startsWith(DevPath.DEV)) {
+            if (split.length == 2 && split[1].startsWith(DevPath.NODE_ROOT)) {
                 physicalVolumesMap.computeIfAbsent(split[0], k -> new HashSet<>()).add(split[1]);
             }
         }
@@ -132,12 +133,12 @@ public class LinuxLogicalVolumeGroup extends AbstractLogicalVolumeGroup {
                                         File[] slaves = slavesDir.listFiles();
                                         if (slaves != null) {
                                             for (File f : slaves) {
-                                                String pvName = f.getName();
+                                                String pvName = f.getName().replace('!', '/');
                                                 lvMapForGroup.computeIfAbsent(lv, k -> new HashSet<>())
-                                                        .add(DevPath.DEV + pvName);
+                                                        .add(DevPath.NODE_ROOT + pvName);
                                                 // Backup to add to pv set if pvs command failed
                                                 // Added /dev/ to remove duplicates like /dev/sda1 and sda1
-                                                pvSetForGroup.add(DevPath.DEV + pvName);
+                                                pvSetForGroup.add(DevPath.NODE_ROOT + pvName);
                                             }
                                         }
                                     }
@@ -158,6 +159,97 @@ public class LinuxLogicalVolumeGroup extends AbstractLogicalVolumeGroup {
                 .map(
                         e -> new LinuxLogicalVolumeGroup(e.getKey(), e.getValue(),
                                 physicalVolumesMap.getOrDefault(e.getKey(), Collections.emptySet())))
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Reads logical volume groups directly from the device-mapper sysfs hierarchy.
+     *
+     * @return logical volume groups available through sysfs
+     */
+    private static List<LogicalVolumeGroup> querySysfsLogicalVolumeGroups() {
+        Map<String, Map<String, Set<String>>> logicalVolumesMap = new HashMap<>();
+        Map<String, Set<String>> physicalVolumesMap = queryPhysicalVolumes();
+        File[] devices = new File(SysPath.BLOCK).listFiles();
+        if (devices == null) {
+            return Collections.emptyList();
+        }
+        for (File device : devices) {
+            String name = device.getName();
+            if (!name.startsWith("dm-")) {
+                continue;
+            }
+            String uuid = Builder.getStringFromFile(device.getPath() + "/dm/uuid").trim();
+            if (!uuid.startsWith("LVM-")) {
+                continue;
+            }
+            String[] vgLv = LinuxHWDiskStore
+                    .splitLvmDmName(Builder.getStringFromFile(device.getPath() + "/dm/name").trim());
+            addLogicalVolume(logicalVolumesMap, physicalVolumesMap, device.getPath(), vgLv[Normal._0], vgLv[Normal._1]);
+        }
+        return toLogicalVolumeGroups(logicalVolumesMap, physicalVolumesMap);
+    }
+
+    /**
+     * Reads physical-volume membership from the LVM command.
+     *
+     * @return volume-group names mapped to their physical volumes
+     */
+    private static Map<String, Set<String>> queryPhysicalVolumes() {
+        Map<String, Set<String>> physicalVolumesMap = new HashMap<>();
+        for (String text : Executor.runPrivilegedNative("pvs -o vg_name,pv_name")) {
+            String[] split = Pattern.SPACES_PATTERN.split(text.trim());
+            if (split.length == Normal._2 && split[Normal._1].startsWith(DevPath.NODE_ROOT)) {
+                physicalVolumesMap.computeIfAbsent(split[Normal._0], key -> new HashSet<>()).add(split[Normal._1]);
+            }
+        }
+        return physicalVolumesMap;
+    }
+
+    /**
+     * Adds one device-mapper logical volume and its sysfs slave devices.
+     *
+     * @param logicalVolumesMap  the logical-volume map being assembled
+     * @param physicalVolumesMap the physical-volume map being assembled
+     * @param syspath            the device sysfs path
+     * @param vgName             the volume-group name
+     * @param lvName             the logical-volume name
+     */
+    private static void addLogicalVolume(
+            Map<String, Map<String, Set<String>>> logicalVolumesMap,
+            Map<String, Set<String>> physicalVolumesMap,
+            String syspath,
+            String vgName,
+            String lvName) {
+        if (StringKit.isBlank(vgName) || StringKit.isBlank(lvName)) {
+            return;
+        }
+        Map<String, Set<String>> lvMap = logicalVolumesMap.computeIfAbsent(vgName, key -> new HashMap<>());
+        Set<String> pvSet = physicalVolumesMap.computeIfAbsent(vgName, key -> new HashSet<>());
+        File[] slaves = new File(syspath + "/slaves").listFiles();
+        if (slaves != null) {
+            for (File slave : slaves) {
+                String pvName = DevPath.NODE_ROOT + slave.getName().replace('!', '/');
+                lvMap.computeIfAbsent(lvName, key -> new HashSet<>()).add(pvName);
+                pvSet.add(pvName);
+            }
+        }
+    }
+
+    /**
+     * Converts assembled maps to logical-volume group records.
+     *
+     * @param logicalVolumesMap  the logical-volume map
+     * @param physicalVolumesMap the physical-volume map
+     * @return logical-volume group records
+     */
+    private static List<LogicalVolumeGroup> toLogicalVolumeGroups(
+            Map<String, Map<String, Set<String>>> logicalVolumesMap,
+            Map<String, Set<String>> physicalVolumesMap) {
+        return logicalVolumesMap.entrySet().stream()
+                .map(
+                        entry -> new LinuxLogicalVolumeGroup(entry.getKey(), entry.getValue(),
+                                physicalVolumesMap.getOrDefault(entry.getKey(), Collections.emptySet())))
                 .collect(Collectors.toList());
     }
 

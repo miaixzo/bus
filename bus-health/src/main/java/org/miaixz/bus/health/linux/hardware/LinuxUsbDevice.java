@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.health.linux.hardware;
 
+import java.io.File;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -27,9 +28,13 @@ import com.sun.jna.platform.linux.Udev.UdevDevice;
 import com.sun.jna.platform.linux.Udev.UdevEnumerate;
 import com.sun.jna.platform.linux.Udev.UdevListEntry;
 
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.Immutable;
+import org.miaixz.bus.health.Builder;
 import org.miaixz.bus.health.builtin.hardware.UsbDevice;
 import org.miaixz.bus.health.builtin.hardware.common.AbstractUsbDevice;
+import org.miaixz.bus.health.linux.SysPath;
 import org.miaixz.bus.health.linux.software.LinuxOperatingSystem;
 import org.miaixz.bus.logger.Logger;
 
@@ -125,8 +130,8 @@ public class LinuxUsbDevice extends AbstractUsbDevice {
      */
     private static List<UsbDevice> getUsbDevices() {
         if (!LinuxOperatingSystem.HAS_UDEV) {
-            Logger.warn(false, "Health", "USB Device information requires libudev, which is not present.");
-            return Collections.emptyList();
+            Logger.debug(false, "Health", "libudev is not present; reading USB devices from sysfs.");
+            return getUsbDevicesFromSysfs();
         }
         // Build a list of devices with no parent; these will be the roots
         List<String> usbControllers = new ArrayList<>();
@@ -218,6 +223,80 @@ public class LinuxUsbDevice extends AbstractUsbDevice {
                                 hubMap,
                                 LinuxUsbDevice::new))
                 .collect(Collectors.toList());
+    }
+
+    /**
+     * Enumerates USB devices directly from the Linux sysfs USB bus hierarchy.
+     *
+     * @return USB devices arranged by controller
+     */
+    private static List<UsbDevice> getUsbDevicesFromSysfs() {
+        String sysUsbPath = SysPath.SYS + "bus/usb/devices/";
+        File[] deviceDirectories = new File(sysUsbPath).listFiles();
+        if (deviceDirectories == null) {
+            return Collections.emptyList();
+        }
+        List<String> usbControllers = new ArrayList<>();
+        Map<String, String> nameMap = new HashMap<>();
+        Map<String, String> vendorMap = new HashMap<>();
+        Map<String, String> vendorIdMap = new HashMap<>();
+        Map<String, String> productIdMap = new HashMap<>();
+        Map<String, String> serialMap = new HashMap<>();
+        Map<String, List<String>> hubMap = new HashMap<>();
+        for (File directory : deviceDirectories) {
+            String syspath = directory.getAbsolutePath();
+            if (Builder.getStringFromFile(syspath + "/devnum").trim().isEmpty()) {
+                continue;
+            }
+            putIfNotEmpty(nameMap, syspath, Builder.getStringFromFile(syspath + "/product").trim());
+            putIfNotEmpty(vendorMap, syspath, Builder.getStringFromFile(syspath + "/manufacturer").trim());
+            putIfNotEmpty(vendorIdMap, syspath, Builder.getStringFromFile(syspath + "/idVendor").trim());
+            putIfNotEmpty(productIdMap, syspath, Builder.getStringFromFile(syspath + "/idProduct").trim());
+            putIfNotEmpty(serialMap, syspath, Builder.getStringFromFile(syspath + "/serial").trim());
+            String name = directory.getName();
+            if (name.startsWith("usb")) {
+                usbControllers.add(syspath);
+            } else {
+                String parentPath;
+                int dot = name.lastIndexOf(Symbol.C_DOT);
+                int dash = name.indexOf(Symbol.C_MINUS);
+                if (dot >= Normal._0) {
+                    parentPath = sysUsbPath + name.substring(Normal._0, dot);
+                } else if (dash >= Normal._0) {
+                    parentPath = sysUsbPath + "usb" + name.substring(Normal._0, dash);
+                } else {
+                    parentPath = sysUsbPath + name;
+                }
+                hubMap.computeIfAbsent(parentPath, key -> new ArrayList<>()).add(syspath);
+            }
+        }
+        return usbControllers.stream()
+                .map(
+                        controller -> buildDeviceTree(
+                                controller,
+                                "0000",
+                                "0000",
+                                nameMap,
+                                vendorMap,
+                                vendorIdMap,
+                                productIdMap,
+                                serialMap,
+                                hubMap,
+                                LinuxUsbDevice::new))
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Adds a non-empty sysfs attribute to a USB device property map.
+     *
+     * @param values  the destination map
+     * @param syspath the USB device sysfs path
+     * @param value   the attribute value
+     */
+    private static void putIfNotEmpty(Map<String, String> values, String syspath, String value) {
+        if (!value.isEmpty()) {
+            values.put(syspath, value);
+        }
     }
 
 }

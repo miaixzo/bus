@@ -91,6 +91,7 @@ public class LinuxPowerSource extends AbstractPowerSource {
      */
     public static List<PowerSource> getPowerSources() {
         List<PowerSource> psList = new ArrayList<>();
+        boolean externalOnLine = queryExternalPowerOnLine();
         if (LinuxOperatingSystem.HAS_UDEV) {
             UdevContext udev = Udev.INSTANCE.udev_new();
             if (udev == null) {
@@ -118,7 +119,7 @@ public class LinuxPowerSource extends AbstractPowerSource {
                                                 props.put(p, val);
                                             }
                                         }
-                                        psList.add(buildPowerSource(name, props));
+                                        psList.add(buildPowerSource(name, props, externalOnLine));
                                     }
                                 } finally {
                                     device.unref();
@@ -151,6 +152,7 @@ public class LinuxPowerSource extends AbstractPowerSource {
         if (psArr == null) {
             return Collections.emptyList();
         }
+        boolean externalOnLine = queryExternalPowerOnLine(powerSupplyPath);
         for (File ps : psArr) {
             String name = ps.getName();
             if (!name.startsWith("ADP") && !name.startsWith("AC") && !name.contains("USBC")) {
@@ -166,7 +168,7 @@ public class LinuxPowerSource extends AbstractPowerSource {
                     }
                 }
                 if (Parsing.parseIntOrDefault(props.get(Prop.POWER_SUPPLY_PRESENT), 1) > 0) {
-                    psList.add(buildPowerSource(name, props));
+                    psList.add(buildPowerSource(name, props, externalOnLine));
                 }
             }
         }
@@ -176,15 +178,17 @@ public class LinuxPowerSource extends AbstractPowerSource {
     /**
      * Builds the power source.
      *
-     * @param name  the name
-     * @param props the props
+     * @param name           the power-source name
+     * @param props          the parsed power-source properties
+     * @param externalOnLine whether an external power supply is online
      * @return the build power source result
      */
-    static LinuxPowerSource buildPowerSource(String name, Map<Prop, String> props) {
+    static LinuxPowerSource buildPowerSource(String name, Map<Prop, String> props, boolean externalOnLine) {
         String psName = props.getOrDefault(Prop.POWER_SUPPLY_NAME, name);
         String status = props.get(Prop.POWER_SUPPLY_STATUS);
         boolean psCharging = "Charging".equals(status);
         boolean psDischarging = "Discharging".equals(status);
+        boolean psPowerOnLine = externalOnLine || psCharging || "Not charging".equals(status);
         double psRemainingCapacityPercent = Parsing.parseIntOrDefault(props.get(Prop.POWER_SUPPLY_CAPACITY), -100)
                 / 100d;
 
@@ -248,19 +252,93 @@ public class LinuxPowerSource extends AbstractPowerSource {
         int rawTemp = Parsing.parseIntOrDefault(props.get(Prop.POWER_SUPPLY_TEMP), -1);
         double psTemperature = rawTemp >= 0 ? rawTemp / 10d : 0d;
 
-        // TIME_TO_EMPTY_NOW when discharging, TIME_TO_FULL_NOW when charging; both in seconds
+        // TIME_TO_EMPTY_NOW when discharging, TIME_TO_FULL_NOW when charging; both in seconds.
         Prop timeKey = psCharging ? Prop.POWER_SUPPLY_TIME_TO_FULL_NOW : Prop.POWER_SUPPLY_TIME_TO_EMPTY_NOW;
         double psTimeRemainingInstant = Parsing.parseIntOrDefault(props.get(timeKey), -1);
+        if (psTimeRemainingInstant < 0 && (psCharging || psDischarging)) {
+            psTimeRemainingInstant = timeFromRate(
+                    psCharging,
+                    psCapacityUnits,
+                    psCurrentCapacity,
+                    psMaxCapacity,
+                    psPowerUsageRate,
+                    psAmperage);
+        }
+        double psTimeRemainingEstimated = -1d;
+        if (psDischarging) {
+            psTimeRemainingEstimated = Parsing.parseIntOrDefault(props.get(Prop.POWER_SUPPLY_TIME_TO_EMPTY_AVG), -1);
+            if (psTimeRemainingEstimated < 0) {
+                psTimeRemainingEstimated = psTimeRemainingInstant;
+            }
+        } else if (psPowerOnLine) {
+            psTimeRemainingEstimated = -2d;
+        }
 
         int year = Parsing.parseIntOrDefault(props.get(Prop.POWER_SUPPLY_MANUFACTURE_YEAR), -1);
         int month = Parsing.parseIntOrDefault(props.get(Prop.POWER_SUPPLY_MANUFACTURE_MONTH), -1);
         int day = Parsing.parseIntOrDefault(props.get(Prop.POWER_SUPPLY_MANUFACTURE_DAY), -1);
         LocalDate psManufactureDate = (year > 0 && month > 0 && day > 0) ? LocalDate.of(year, month, day) : null;
 
-        return new LinuxPowerSource(psName, psDeviceName, psRemainingCapacityPercent, -1d, psTimeRemainingInstant,
-                psPowerUsageRate, psVoltage, psAmperage, false, psCharging, psDischarging, psCapacityUnits,
-                psCurrentCapacity, psMaxCapacity, psDesignCapacity, psCycleCount, psChemistry, psManufactureDate,
-                psManufacturer, psSerialNumber, psTemperature);
+        return new LinuxPowerSource(psName, psDeviceName, psRemainingCapacityPercent, psTimeRemainingEstimated,
+                psTimeRemainingInstant, psPowerUsageRate, psVoltage, psAmperage, psPowerOnLine, psCharging,
+                psDischarging, psCapacityUnits, psCurrentCapacity, psMaxCapacity, psDesignCapacity, psCycleCount,
+                psChemistry, psManufactureDate, psManufacturer, psSerialNumber, psTemperature);
+    }
+
+    /**
+     * Reports whether any external supply is delivering power.
+     *
+     * @return {@code true} when an external supply is online
+     */
+    protected static boolean queryExternalPowerOnLine() {
+        return queryExternalPowerOnLine(SysPath.POWER_SUPPLY);
+    }
+
+    /**
+     * Reports whether any external supply under the given directory is delivering power.
+     *
+     * @param powerSupplyPath the power-supply directory
+     * @return {@code true} when an external supply is online
+     */
+    static boolean queryExternalPowerOnLine(String powerSupplyPath) {
+        File[] supplies = new File(powerSupplyPath).listFiles();
+        if (supplies != null) {
+            for (File supply : supplies) {
+                String path = powerSupplyPath + Symbol.SLASH + supply.getName() + Symbol.SLASH;
+                String type = Builder.getStringFromFile(path + "type");
+                if (("Mains".equals(type) || "USB".equals(type) || "Wireless".equals(type))
+                        && Builder.getIntFromFile(path + "online") > 0) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Computes the seconds to empty, or the seconds to full while charging, from capacity and rate.
+     *
+     * @param charging        whether the battery is charging
+     * @param units           the capacity units
+     * @param currentCapacity the current capacity, or {@code -1} when unknown
+     * @param maxCapacity     the full capacity, or {@code -1} when unknown
+     * @param powerUsageRate  the signed power in milliwatts
+     * @param amperage        the signed current in milliamperes
+     * @return the seconds remaining, or {@code -1} when unknown
+     */
+    private static double timeFromRate(
+            boolean charging,
+            CapacityUnits units,
+            int currentCapacity,
+            int maxCapacity,
+            double powerUsageRate,
+            double amperage) {
+        double rate = Math.abs(units == CapacityUnits.MWH ? powerUsageRate : amperage);
+        int toGo = charging ? maxCapacity - currentCapacity : currentCapacity;
+        if (rate <= 0 || currentCapacity < 0 || (charging && maxCapacity < 0) || toGo < 0) {
+            return -1d;
+        }
+        return 3600d * toGo / rate;
     }
 
     /**
@@ -363,6 +441,10 @@ public class LinuxPowerSource extends AbstractPowerSource {
          * Estimated seconds until empty.
          */
         POWER_SUPPLY_TIME_TO_EMPTY_NOW,
+        /**
+         * Average estimated seconds until empty.
+         */
+        POWER_SUPPLY_TIME_TO_EMPTY_AVG,
         /**
          * Estimated seconds until fully charged.
          */

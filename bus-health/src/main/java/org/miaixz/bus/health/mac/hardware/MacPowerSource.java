@@ -34,6 +34,7 @@ import com.sun.jna.platform.mac.IOKitUtil;
 
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
+import org.miaixz.bus.core.lang.tuple.Triplet;
 import org.miaixz.bus.health.builtin.hardware.PowerSource;
 import org.miaixz.bus.health.builtin.hardware.common.AbstractPowerSource;
 import org.miaixz.bus.health.mac.CFKit;
@@ -48,6 +49,11 @@ import org.miaixz.bus.health.mac.CFKit;
  */
 @ThreadSafe
 public class MacPowerSource extends AbstractPowerSource {
+
+    /**
+     * Smart-battery time value meaning unknown or still calculating.
+     */
+    private static final int TIME_REMAINING_UNKNOWN = 0xffff;
 
     /**
      * CoreFoundation instance for JNA calls.
@@ -103,7 +109,7 @@ public class MacPowerSource extends AbstractPowerSource {
      */
     public static List<PowerSource> getPowerSources() {
         String psDeviceName = Normal.UNKNOWN;
-        double psTimeRemainingInstant = 0d;
+        double psTimeRemainingInstant = -1d;
         double psPowerUsageRate = 0d;
         double psVoltage = -1d;
         double psAmperage = 0d;
@@ -140,6 +146,9 @@ public class MacPowerSource extends AbstractPowerSource {
                 psManufacturer = s;
             }
             s = smartBattery.getStringProperty("BatterySerialNumber");
+            if (s == null) {
+                s = smartBattery.getStringProperty("Serial");
+            }
             if (s != null) {
                 psSerialNumber = s;
             }
@@ -163,20 +172,16 @@ public class MacPowerSource extends AbstractPowerSource {
             if (temp != null) {
                 psDesignCapacity = temp;
             }
-            temp = smartBattery.getIntegerProperty("MaxCapacity");
-            if (temp != null) {
-                psMaxCapacity = temp;
-            }
-            temp = smartBattery.getIntegerProperty("CurrentCapacity");
-            if (temp != null) {
-                psCurrentCapacity = temp;
-            }
-            psCapacityUnits = PowerSource.CapacityUnits.MAH;
+            Triplet<PowerSource.CapacityUnits, Integer, Integer> capacity = chooseCapacity(
+                    smartBattery.getIntegerProperty("AppleRawCurrentCapacity"),
+                    smartBattery.getIntegerProperty("AppleRawMaxCapacity"),
+                    smartBattery.getIntegerProperty("CurrentCapacity"),
+                    smartBattery.getIntegerProperty("MaxCapacity"));
+            psCapacityUnits = capacity.getLeft();
+            psCurrentCapacity = capacity.getMiddle();
+            psMaxCapacity = capacity.getRight();
 
-            temp = smartBattery.getIntegerProperty("TimeRemaining");
-            if (temp != null) {
-                psTimeRemainingInstant = temp * 60d;
-            }
+            psTimeRemainingInstant = minutesToSeconds(smartBattery.getIntegerProperty("TimeRemaining"));
             temp = smartBattery.getIntegerProperty("CycleCount");
             if (temp != null) {
                 psCycleCount = temp;
@@ -293,6 +298,44 @@ public class MacPowerSource extends AbstractPowerSource {
                 powerSourcesInfo.release();
             }
         }
+    }
+
+    /**
+     * Chooses a consistent current and maximum battery-capacity pair.
+     *
+     * @param rawCurrent the raw current capacity in milliampere-hours
+     * @param rawMax     the raw maximum capacity in milliampere-hours
+     * @param current    the generic current capacity
+     * @param max        the generic maximum capacity
+     * @return the capacity units, current capacity, and maximum capacity
+     */
+    static Triplet<PowerSource.CapacityUnits, Integer, Integer> chooseCapacity(
+            Integer rawCurrent,
+            Integer rawMax,
+            Integer current,
+            Integer max) {
+        if (rawCurrent != null && rawMax != null && rawMax > Normal._0) {
+            return new Triplet<>(PowerSource.CapacityUnits.MAH, rawCurrent, rawMax);
+        }
+        if (current != null && max != null && max > Normal._0) {
+            return new Triplet<>(
+                    max <= Normal._100 ? PowerSource.CapacityUnits.RELATIVE : PowerSource.CapacityUnits.MAH, current,
+                    max);
+        }
+        return new Triplet<>(PowerSource.CapacityUnits.RELATIVE, Normal._0, Normal._1);
+    }
+
+    /**
+     * Converts the smart battery's time-remaining value from minutes to seconds.
+     *
+     * @param minutes the time remaining in minutes
+     * @return seconds remaining, or {@code -1} when unknown
+     */
+    static double minutesToSeconds(Integer minutes) {
+        if (minutes == null || minutes < Normal._0 || minutes >= TIME_REMAINING_UNKNOWN) {
+            return -1d;
+        }
+        return minutes * 60d;
     }
 
     /**

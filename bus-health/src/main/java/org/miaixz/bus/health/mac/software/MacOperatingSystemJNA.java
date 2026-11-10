@@ -191,7 +191,12 @@ public class MacOperatingSystemJNA extends MacOperatingSystem {
      */
     @Override
     public int getProcessCount() {
-        return SystemB.INSTANCE.proc_listpids(SystemB.PROC_ALL_PIDS, 0, null, 0) / SystemB.INT_SIZE;
+        int[] pids = new int[SystemB.INSTANCE.proc_listpids(SystemB.PROC_ALL_PIDS, 0, null, 0) / SystemB.INT_SIZE
+                + Normal._10];
+        return Math.min(
+                SystemB.INSTANCE.proc_listpids(SystemB.PROC_ALL_PIDS, 0, pids, pids.length * SystemB.INT_SIZE)
+                        / SystemB.INT_SIZE,
+                pids.length);
     }
 
     /**

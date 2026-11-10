@@ -86,11 +86,6 @@ public class LinuxFileSystem extends AbstractFileSystem {
             .loadAndParseFileSystemConfig(Builder._LINUX_FS_VOLUME_INCLUDES);
 
     /**
-     * The UNICODE_SPACE constant.
-     */
-    private static final String UNICODE_SPACE = "\\040";
-
-    /**
      * Whether NFS mounts should be checked for reachability before querying filesystem statistics.
      */
     private static final boolean CHECK_NFS = Builder.get(Builder._LINUX_FILESYSTEM_CHECKNFS, true);
@@ -148,12 +143,14 @@ public class LinuxFileSystem extends AbstractFileSystem {
     static Map<String, String> buildUuidMap() {
         // Map of volume with device path as key
         Map<String, String> volumeDeviceMap = new HashMap<>();
-        File devMapper = new File(DevPath.MAPPER);
+        File devMapper = new File(DevPath.toFilePath(DevPath.MAPPER));
         File[] volumes = devMapper.listFiles();
         if (volumes != null) {
             for (File volume : volumes) {
                 try {
-                    volumeDeviceMap.put(volume.getCanonicalPath(), volume.getAbsolutePath());
+                    volumeDeviceMap.put(
+                            DevPath.toNodeName(volume.getCanonicalPath()),
+                            DevPath.toNodeName(volume.getAbsolutePath()));
                 } catch (IOException e) {
                     Logger.debug(
                             false,
@@ -172,7 +169,7 @@ public class LinuxFileSystem extends AbstractFileSystem {
             for (File uuid : uuids) {
                 try {
                     // Store UUID as value with path (e.g., /dev/sda1) and volumes as key
-                    String canonicalPath = uuid.getCanonicalPath();
+                    String canonicalPath = DevPath.toNodeName(uuid.getCanonicalPath());
                     uuidMap.put(canonicalPath, StringKit.toLowerCase(uuid.getName()));
                     if (volumeDeviceMap.containsKey(canonicalPath)) {
                         uuidMap.put(volumeDeviceMap.get(canonicalPath), StringKit.toLowerCase(uuid.getName()));
@@ -221,9 +218,9 @@ public class LinuxFileSystem extends AbstractFileSystem {
             }
 
             // Exclude pseudo file systems
-            String volume = split[0].replace(UNICODE_SPACE, Symbol.SPACE);
+            String volume = Parsing.unescapeOctal(split[0]);
             String name = volume;
-            String path = split[1].replace(UNICODE_SPACE, Symbol.SPACE);
+            String path = Parsing.unescapeOctal(split[1]);
             if (path.equals(Symbol.SLASH)) {
                 name = Symbol.SLASH;
             }
@@ -249,10 +246,10 @@ public class LinuxFileSystem extends AbstractFileSystem {
                 continue;
             }
 
-            String uuid = uuidMap != null ? uuidMap.getOrDefault(split[0], Normal.EMPTY) : Normal.EMPTY;
+            String uuid = uuidMap != null ? uuidMap.getOrDefault(volume, Normal.EMPTY) : Normal.EMPTY;
 
             String description;
-            if (volume.startsWith(DevPath.DEV)) {
+            if (volume.startsWith(DevPath.NODE_ROOT)) {
                 description = "Local Disk";
             } else if (volume.equals("tmpfs")) {
                 description = "Ram Disk";
@@ -265,13 +262,13 @@ public class LinuxFileSystem extends AbstractFileSystem {
             // Add in logical volume found at /dev/mapper, useful when linking
             // file system with drive.
             String logicalVolume = Normal.EMPTY;
-            Path link = Paths.get(volume);
+            Path link = Paths.get(DevPath.toFilePath(volume));
             if (link.toFile().exists() && Files.isSymbolicLink(link)) {
                 try {
                     Path slink = Files.readSymbolicLink(link);
-                    Path full = Paths.get(DevPath.MAPPER + slink.toString());
+                    Path full = Paths.get(DevPath.toFilePath(DevPath.MAPPER) + slink.toString()).normalize();
                     if (full.toFile().exists()) {
-                        logicalVolume = full.normalize().toString();
+                        logicalVolume = DevPath.toNodeName(full.toString());
                     }
                 } catch (IOException e) {
                     Logger.warn(

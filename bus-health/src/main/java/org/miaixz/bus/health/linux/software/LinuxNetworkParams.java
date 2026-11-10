@@ -22,9 +22,13 @@ package org.miaixz.bus.health.linux.software;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.function.Supplier;
 
 import com.sun.jna.Native;
 import com.sun.jna.platform.linux.LibC;
@@ -52,9 +56,49 @@ import org.miaixz.bus.logger.Logger;
 final class LinuxNetworkParams extends AbstractNetworkParams {
 
     /**
+     * Resolver configuration containing systemd-resolved upstream servers.
+     */
+    private static final String RESOLVED_UPSTREAM_CONF = "/run/systemd/resolve/resolv.conf";
+
+    /**
+     * Addresses used by systemd-resolved stub listeners.
+     */
+    private static final Set<String> RESOLVED_STUBS = new HashSet<>(Arrays.asList("127.0.0.53", "127.0.0.54"));
+
+    /**
      * The LIBC constant.
      */
     private static final LinuxLibc LIBC = LinuxLibc.INSTANCE;
+
+    /**
+     * Returns configured DNS servers, replacing systemd-resolved stub addresses with their upstream servers.
+     *
+     * @return the DNS server addresses
+     */
+    @Override
+    public String[] getDnsServers() {
+        return getDnsServers(
+                Builder.readFile("/etc/resolv.conf"),
+                () -> Builder.readFile(RESOLVED_UPSTREAM_CONF, false));
+    }
+
+    /**
+     * Selects DNS servers from the primary resolver configuration or systemd-resolved's upstream file.
+     *
+     * @param resolv   the primary resolver configuration lines
+     * @param upstream supplies systemd-resolved's upstream configuration lines
+     * @return the DNS server addresses
+     */
+    static String[] getDnsServers(List<String> resolv, Supplier<List<String>> upstream) {
+        String[] servers = parseDnsServers(resolv);
+        if (servers.length > 0 && Arrays.stream(servers).allMatch(RESOLVED_STUBS::contains)) {
+            String[] upstreamServers = parseDnsServers(upstream.get(), Integer.MAX_VALUE);
+            if (upstreamServers.length > 0) {
+                return upstreamServers;
+            }
+        }
+        return servers;
+    }
 
     /**
      * Returns the domain name.

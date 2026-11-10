@@ -6092,6 +6092,84 @@
         {
           "name": "queryDevConfig",
           "parameterTypes": []
+        },
+        {
+          "name": "toFilePath",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "toNodeName",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "reroot",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.health.linux.UdevData",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "queryBlockDevice",
+          "parameterTypes": [
+            "int",
+            "int"
+          ]
+        },
+        {
+          "name": "queryBlockDevice",
+          "parameterTypes": [
+            "java.lang.String",
+            "int",
+            "int"
+          ]
+        },
+        {
+          "name": "queryNetworkInterface",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "queryNetworkInterface",
+          "parameterTypes": [
+            "java.lang.String",
+            "int"
+          ]
+        },
+        {
+          "name": "queryDevice",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "queryDevice",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "parseProperties",
+          "parameterTypes": [
+            "java.util.List"
+          ]
         }
       ]
     },
@@ -6105,6 +6183,44 @@
         {
           "name": "queryModel",
           "parameterTypes": []
+        },
+        {
+          "name": "queryModel",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "querySerialNumber",
+          "parameterTypes": []
+        },
+        {
+          "name": "querySerialNumber",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "queryManufacturer",
+          "parameterTypes": []
+        },
+        {
+          "name": "queryManufacturer",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "queryVendor",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "readStrings",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
         }
       ]
     },
@@ -7066,6 +7182,22 @@
           "parameterTypes": [
             "java.lang.String"
           ]
+        },
+        {
+          "name": "isArm64bit",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "applyHybridCoreTypes",
+          "parameterTypes": [
+            "java.util.Map",
+            "java.util.List",
+            "java.lang.String"
+          ]
         }
       ]
     },
@@ -7457,6 +7589,14 @@
             "java.lang.String",
             "java.lang.String"
           ]
+        },
+        {
+          "name": "getGraphicsCardsFromDrm",
+          "parameterTypes": [
+            "org.miaixz.bus.core.center.function.FunctionX",
+            "java.lang.String",
+            "java.lang.String"
+          ]
         }
       ]
     },
@@ -7599,6 +7739,12 @@
             "long",
             "java.lang.String"
           ]
+        },
+        {
+          "name": "splitLvmDmName",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
         }
       ]
     },
@@ -7666,6 +7812,31 @@
         {
           "name": "getLogicalVolumeGroups",
           "parameterTypes": []
+        },
+        {
+          "name": "querySysfsLogicalVolumeGroups",
+          "parameterTypes": []
+        },
+        {
+          "name": "queryPhysicalVolumes",
+          "parameterTypes": []
+        },
+        {
+          "name": "addLogicalVolume",
+          "parameterTypes": [
+            "java.util.Map",
+            "java.util.Map",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "toLogicalVolumeGroups",
+          "parameterTypes": [
+            "java.util.Map",
+            "java.util.Map"
+          ]
         }
       ]
     },
@@ -7797,14 +7968,14 @@
           ]
         },
         {
-          "name": "queryIfModelFromSysfs",
+          "name": "updateAttributes",
+          "parameterTypes": []
+        },
+        {
+          "name": "queryIfModelFromUdevData",
           "parameterTypes": [
             "java.lang.String"
           ]
-        },
-        {
-          "name": "updateAttributes",
-          "parameterTypes": []
         }
       ]
     },
@@ -7838,13 +8009,6 @@
           ]
         },
         {
-          "name": "buildPowerSource",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.util.Map"
-          ]
-        },
-        {
           "name": "getPowerSources",
           "parameterTypes": []
         },
@@ -7857,6 +8021,35 @@
         {
           "name": "queryPowerSources",
           "parameterTypes": []
+        },
+        {
+          "name": "buildPowerSource",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.util.Map",
+            "boolean"
+          ]
+        },
+        {
+          "name": "queryExternalPowerOnLine",
+          "parameterTypes": []
+        },
+        {
+          "name": "queryExternalPowerOnLine",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "timeFromRate",
+          "parameterTypes": [
+            "boolean",
+            "org.miaixz.bus.health.builtin.hardware.PowerSource$CapacityUnits",
+            "int",
+            "int",
+            "double",
+            "double"
+          ]
         }
       ]
     },
@@ -7937,6 +8130,9 @@
         },
         {
           "name": "POWER_SUPPLY_VOLTAGE_NOW"
+        },
+        {
+          "name": "POWER_SUPPLY_TIME_TO_EMPTY_AVG"
         }
       ],
       "methods": [
@@ -8019,6 +8215,18 @@
         {
           "name": "queryFanSpeeds",
           "parameterTypes": []
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.util.function.UnaryOperator"
+          ]
+        },
+        {
+          "name": "queryCpuTemperatureFromSysfs",
+          "parameterTypes": []
         }
       ]
     },
@@ -8082,6 +8290,18 @@
           "name": "getUsbDevices",
           "parameterTypes": [
             "boolean"
+          ]
+        },
+        {
+          "name": "getUsbDevicesFromSysfs",
+          "parameterTypes": []
+        },
+        {
+          "name": "putIfNotEmpty",
+          "parameterTypes": [
+            "java.util.Map",
+            "java.lang.String",
+            "java.lang.String"
           ]
         }
       ]
@@ -8678,6 +8898,45 @@
         {
           "name": "queryInstalledApps",
           "parameterTypes": []
+        },
+        {
+          "name": "queryPackageDatabases",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "parseApkInstalled",
+          "parameterTypes": [
+            "java.util.List"
+          ]
+        },
+        {
+          "name": "addApkRecord",
+          "parameterTypes": [
+            "java.util.List",
+            "java.util.Map"
+          ]
+        },
+        {
+          "name": "parsePacmanDesc",
+          "parameterTypes": [
+            "java.util.List"
+          ]
+        },
+        {
+          "name": "toAppInfo",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "long",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String"
+          ]
         }
       ]
     },
@@ -9172,6 +9431,12 @@
         {
           "name": "updateAttributes",
           "parameterTypes": []
+        },
+        {
+          "name": "parseCpusAllowed",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
         }
       ]
     },
@@ -10259,6 +10524,19 @@
         {
           "name": "getSoundCards",
           "parameterTypes": []
+        },
+        {
+          "name": "queryAudioControlChips",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "plistValue",
+          "parameterTypes": [
+            "java.util.List",
+            "java.lang.String"
+          ]
         }
       ]
     },
@@ -12331,6 +12609,18 @@
           "name": "unsignedLongToSignedLong",
           "parameterTypes": [
             "long"
+          ]
+        },
+        {
+          "name": "unescapeOctal",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "isOctalDigit",
+          "parameterTypes": [
+            "char"
           ]
         }
       ]
@@ -15066,6 +15356,12 @@
           "name": "getMajorMinor",
           "parameterTypes": [
             "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "parseMountPoint",
+          "parameterTypes": [
             "java.lang.String"
           ]
         }
@@ -18394,6 +18690,19 @@
         {
           "name": "querySystemCpuLoadTicks",
           "parameterTypes": []
+        },
+        {
+          "name": "parsePiclCaches",
+          "parameterTypes": [
+            "java.util.List"
+          ]
+        },
+        {
+          "name": "addPiclCaches",
+          "parameterTypes": [
+            "java.util.Map",
+            "java.util.Set"
+          ]
         }
       ]
     },

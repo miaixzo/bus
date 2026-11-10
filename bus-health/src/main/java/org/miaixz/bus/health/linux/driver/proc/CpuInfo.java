@@ -20,11 +20,11 @@
 package org.miaixz.bus.health.linux.driver.proc;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.tuple.Tuple;
 import org.miaixz.bus.core.xyz.StringKit;
@@ -65,44 +65,8 @@ public class CpuInfo {
     static String queryCpuManufacturer(List<String> cpuInfo) {
         for (String line : cpuInfo) {
             if (line.startsWith("CPU implementer")) {
-                int part = Parsing.parseLastInt(line, 0);
-                switch (part) {
-                    case 0x41:
-                        return "ARM";
-
-                    case 0x42:
-                        return "Broadcom";
-
-                    case 0x43:
-                        return "Cavium";
-
-                    case 0x44:
-                        return "DEC";
-
-                    case 0x4e:
-                        return "Nvidia";
-
-                    case 0x50:
-                        return "APM";
-
-                    case 0x51:
-                        return "Qualcomm";
-
-                    case 0x53:
-                        return "Samsung";
-
-                    case 0x56:
-                        return "Marvell";
-
-                    case 0x66:
-                        return "Faraday";
-
-                    case 0x69:
-                        return "Intel";
-
-                    default:
-                        return null;
-                }
+                String key = String.format(Locale.ROOT, "hw_impl.0x%02x", Parsing.parseLastInt(line, Normal._0));
+                return Builder.readProperties(Builder._ARCHITECTURE_PROPERTIES).getProperty(key);
             }
         }
         return null;
@@ -141,9 +105,7 @@ public class CpuInfo {
 
                 case "Revision":
                     pcVersion = splitLine[1];
-                    if (pcVersion.length() > 1) {
-                        pcManufacturer = queryBoardManufacturer(pcVersion.charAt(1));
-                    }
+                    pcManufacturer = queryBoardManufacturer(pcVersion);
                     break;
 
                 case "Serial":
@@ -160,31 +122,33 @@ public class CpuInfo {
     /**
      * Queries the board manufacturer.
      *
-     * @param digit the digit
-     * @return the query board manufacturer result
+     * @param revision the hexadecimal board revision
+     * @return the manufacturer, or {@code null} if the revision does not encode one
      */
-    private static String queryBoardManufacturer(char digit) {
-        switch (digit) {
-            case Symbol.C_ZERO:
+    private static String queryBoardManufacturer(String revision) {
+        long code = Parsing.hexStringToLong(revision, Normal._0);
+        if ((code & 0x80_0000L) == Normal._0) {
+            return null;
+        }
+        switch ((int) (code >> Normal._16) & 0xF) {
+            case Normal._0:
                 return "Sony UK";
 
-            case Symbol.C_ONE:
+            case Normal._1:
                 return "Egoman";
 
-            case Symbol.C_TWO:
+            case Normal._2:
+            case Normal._4:
                 return "Embest";
 
-            case Symbol.C_THREE:
+            case Normal._3:
                 return "Sony Japan";
 
-            case Symbol.C_FOUR:
-                return "Embest";
-
-            case Symbol.C_FIVE:
+            case Normal._5:
                 return "Stadium";
 
             default:
-                return Normal.UNKNOWN;
+                return null;
         }
     }
 

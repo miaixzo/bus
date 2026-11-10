@@ -296,6 +296,24 @@ public class LinuxOSProcess extends AbstractOSProcess {
     }
 
     /**
+     * Parses the hexadecimal {@code Cpus_allowed} field from a process status file.
+     *
+     * @param cpusAllowed the comma-separated hexadecimal mask
+     * @return the low 64 bits of the mask, or zero when unparseable
+     */
+    static long parseCpusAllowed(String cpusAllowed) {
+        String hex = cpusAllowed.replace(Symbol.COMMA, Normal.EMPTY).trim();
+        if (hex.isEmpty()) {
+            return 0;
+        }
+        try {
+            return new BigInteger(hex, Normal._16).longValue();
+        } catch (NumberFormatException e) {
+            return 0;
+        }
+    }
+
+    /**
      * Description inherited from parent class or interface.
      *
      * @return the process name
@@ -740,8 +758,12 @@ public class LinuxOSProcess extends AbstractOSProcess {
      */
     @Override
     public long getAffinityMask() {
-        // Would prefer to use native sched_getaffinity call but variable sizing is
-        // kernel-dependent and requires C macros, so we use command line instead.
+        String cpusAllowed = Builder
+                .getKeyValueMapFromFile(String.format(Locale.ROOT, ProcPath.PID_STATUS, getProcessID()), Symbol.COLON)
+                .get("Cpus_allowed");
+        if (cpusAllowed != null) {
+            return parseCpusAllowed(cpusAllowed);
+        }
         return parseAffinityMask(Executor.getFirstAnswer("taskset -p " + getProcessID()));
     }
 
