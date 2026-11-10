@@ -17009,6 +17009,9 @@
           "name": "StudyModifiedDateTime"
         },
         {
+          "name": "LogicalStudyID"
+        },
+        {
           "name": "SeriesReceiveDateTime"
         },
         {
