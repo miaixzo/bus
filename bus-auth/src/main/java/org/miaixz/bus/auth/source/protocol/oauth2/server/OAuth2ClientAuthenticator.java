@@ -26,6 +26,7 @@ import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
+import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.Context;
 import org.miaixz.bus.auth.Endpoint;
 import org.miaixz.bus.auth.FabricX.Request;
@@ -39,6 +40,7 @@ import org.miaixz.bus.auth.source.SourceServices;
 import org.miaixz.bus.auth.source.protocol.oauth2.ClientAuthenticationMethod;
 import org.miaixz.bus.auth.source.protocol.oauth2.GrantType;
 import org.miaixz.bus.auth.source.protocol.oauth2.OAuth2;
+import org.miaixz.bus.auth.source.protocol.oauth2.OAuth2ErrorCode;
 import org.miaixz.bus.auth.worker.loader.ConsumerLoader;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.lang.Assert;
@@ -153,8 +155,10 @@ public class OAuth2ClientAuthenticator implements ClientAuthenticator<Request> {
      * @return immutable failure value
      */
     private static Outcome.Failure failure(final boolean operational, final String description) {
+        Map<String, JsonValue> details = operational ? Map.of()
+                : Map.of(Builder.OAUTH_ERROR, new JsonValue.StringValue(OAuth2ErrorCode.INVALID_CLIENT.value()));
         return new Outcome.Failure(operational ? ErrorCode._500 : ErrorCode._401, description,
-                new JsonValue.ObjectValue(Map.of()));
+                new JsonValue.ObjectValue(details));
     }
 
     /**

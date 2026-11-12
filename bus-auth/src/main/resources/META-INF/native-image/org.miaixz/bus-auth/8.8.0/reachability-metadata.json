@@ -427,6 +427,9 @@
   "resources": [
     {
       "glob": "META-INF/services/org.miaixz.bus.auth.source.SourceConnector"
+    },
+    {
+      "bundle": "com.sun.org.apache.xml.internal.security/resource/xmlsecurity"
     }
   ]
 }

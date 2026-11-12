@@ -2,6 +2,18 @@
   "reflection": [
     {
       "condition": {
+        "typeReached": "org.apache.ibatis.ognl.OgnlRuntime"
+      },
+      "type": "java.util.AbstractCollection",
+      "methods": [
+        {
+          "name": "isEmpty",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "condition": {
         "typeReached": "org.miaixz.bus.mapper.handler.MybatisInterceptor"
       },
       "type": "org.apache.ibatis.executor.Executor",
