@@ -57,8 +57,7 @@ double rolling = latency.percentile(0.95, TimeUnit.MILLISECONDS, Timer.Window.ON
 ```
 
 `NativeTimer.rotate1m()` and `rotate5m()` remain compatibility operations that explicitly clear the corresponding
-rolling view. `BucketWindow`, `NativeRatePair`, `NativeLlmTimer`, `CardinalityViolation` and
-`org.miaixz.bus.metrics.observe.Test` are retained compatibility types.
+rolling view. `BucketWindow`, `NativeRatePair`, `NativeLlmTimer` and `CardinalityViolation` are retained compatibility types.
 
 ## Cardinality
 

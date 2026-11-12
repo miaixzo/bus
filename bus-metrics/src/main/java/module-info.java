@@ -56,7 +56,6 @@ module bus.metrics {
     exports org.miaixz.bus.metrics.nimble.micrometer;
     exports org.miaixz.bus.metrics.nimble.opentelemetry;
     exports org.miaixz.bus.metrics.nimble.prometheus;
-    exports org.miaixz.bus.metrics.observe;
     exports org.miaixz.bus.metrics.observe.slo;
     exports org.miaixz.bus.metrics.observe.tag;
     exports org.miaixz.bus.metrics.window;

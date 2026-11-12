@@ -1564,15 +1564,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.metrics.observe.Test",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
       "type": "org.miaixz.bus.metrics.window.BucketWindow",
       "methods": [
         {
