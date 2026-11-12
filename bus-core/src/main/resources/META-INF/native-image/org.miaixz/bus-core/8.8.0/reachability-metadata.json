@@ -4767,6 +4767,10 @@
             "java.util.List",
             "int"
           ]
+        },
+        {
+          "name": "isEmpty",
+          "parameterTypes": []
         }
       ]
     },
@@ -17524,6 +17528,13 @@
         {
           "name": "<init>",
           "parameterTypes": []
+        },
+        {
+          "name": "partition",
+          "parameterTypes": [
+            "java.util.Collection",
+            "int"
+          ]
         }
       ]
     },
