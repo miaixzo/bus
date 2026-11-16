@@ -18232,5 +18232,34 @@
     {
       "glob": "org/miaixz/bus/core/xyz"
     }
+  ],
+  "serialization": [
+    {
+      "type": "org.miaixz.bus.core.basic.entity.Audit"
+    },
+    {
+      "type": "org.miaixz.bus.core.basic.entity.Authorize"
+    },
+    {
+      "type": "org.miaixz.bus.core.basic.entity.Entity"
+    },
+    {
+      "type": "org.miaixz.bus.core.basic.entity.Message"
+    },
+    {
+      "type": "org.miaixz.bus.core.basic.entity.Query"
+    },
+    {
+      "type": "org.miaixz.bus.core.basic.entity.Result"
+    },
+    {
+      "type": "org.miaixz.bus.core.basic.entity.Space"
+    },
+    {
+      "type": "org.miaixz.bus.core.basic.entity.Tenant"
+    },
+    {
+      "type": "org.miaixz.bus.core.basic.entity.Tracer"
+    }
   ]
 }

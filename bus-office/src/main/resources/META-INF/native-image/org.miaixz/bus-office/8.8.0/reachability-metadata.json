@@ -5015,6 +5015,30 @@
       }
     },
     {
+      "type": "sun.awt.image.BytePackedRaster",
+      "jniAccessible": true,
+      "fields": [
+        {
+          "name": "data"
+        },
+        {
+          "name": "dataBitOffset"
+        },
+        {
+          "name": "pixelBitStride"
+        },
+        {
+          "name": "scanlineStride"
+        },
+        {
+          "name": "type"
+        }
+      ],
+      "condition": {
+        "typeReached": "sun.awt.image.BytePackedRaster"
+      }
+    },
+    {
       "type": "java.awt.GraphicsEnvironment",
       "condition": {
         "typeReached": "java.awt.image.ColorModel"
