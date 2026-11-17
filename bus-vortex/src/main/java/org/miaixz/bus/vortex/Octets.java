@@ -477,6 +477,9 @@ public class Octets {
             }
         }
 
+        /**
+         * Releases all owned byte-budget leases exactly once.
+         */
         @Override
         public void close() {
             List<AsyncByteBudget.Lease> owned;
@@ -599,26 +602,51 @@ public class Octets {
             this.body = body;
         }
 
+        /**
+         * Reads the status of the delegated response.
+         *
+         * @return the upstream response status
+         */
         @Override
         public HttpStatusCode statusCode() {
             return this.delegate.statusCode();
         }
 
+        /**
+         * Reads the headers of the delegated response.
+         *
+         * @return the headers to write to the client
+         */
         @Override
         public HttpHeaders headers() {
             return this.delegate.headers();
         }
 
+        /**
+         * Reads the cookies of the delegated response.
+         *
+         * @return the cookies to write to the client
+         */
         @Override
         public MultiValueMap<String, ResponseCookie> cookies() {
             return this.delegate.cookies();
         }
 
+        /**
+         * Writes the delegated response and releases its owned body when the write terminates.
+         *
+         * @param exchange client exchange that receives the response
+         * @param context  response writers and view resolution context
+         * @return completion of the response write
+         */
         @Override
         public Mono<Void> writeTo(ServerWebExchange exchange, ServerResponse.Context context) {
             return Mono.defer(() -> this.delegate.writeTo(exchange, context)).doFinally(signal -> close());
         }
 
+        /**
+         * Releases the buffered response body and returns its byte-budget lease.
+         */
         @Override
         public void close() {
             this.body.close();
@@ -746,7 +774,9 @@ public class Octets {
             try {
                 this.reservation.close();
             } catch (Exception ignored) {
-                // Terminal cleanup must not mask the original reactive signal.
+                /*
+                 * Terminal cleanup must not mask the original reactive signal.
+                 */
             }
         }
     }

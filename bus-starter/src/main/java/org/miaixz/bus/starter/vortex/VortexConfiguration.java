@@ -75,6 +75,7 @@ import org.miaixz.bus.vortex.routing.llm.LlmFactory;
 import org.miaixz.bus.vortex.routing.mcp.McpExecutor;
 import org.miaixz.bus.vortex.routing.mq.MqExecutor;
 import org.miaixz.bus.vortex.routing.rest.RestExecutor;
+import org.miaixz.bus.vortex.routing.sdc.SdcExecutor;
 import org.miaixz.bus.vortex.routing.slug.SlugExecutor;
 import org.miaixz.bus.vortex.routing.slug.SlugRouteMatcher;
 import org.miaixz.bus.vortex.routing.ws.WsExecutor;
@@ -83,14 +84,8 @@ import org.miaixz.bus.vortex.strategy.qualifier.CstQualifierStrategy;
 import org.miaixz.bus.vortex.strategy.qualifier.McpQualifierStrategy;
 import org.miaixz.bus.vortex.strategy.qualifier.RestQualifierStrategy;
 import org.miaixz.bus.vortex.strategy.qualifier.SlugQualifierStrategy;
-import org.miaixz.bus.vortex.strategy.request.CstRequestStrategy;
-import org.miaixz.bus.vortex.strategy.request.McpRequestStrategy;
-import org.miaixz.bus.vortex.strategy.request.RestRequestStrategy;
-import org.miaixz.bus.vortex.strategy.request.SlugRequestStrategy;
-import org.miaixz.bus.vortex.strategy.vetting.CstVettingStrategy;
-import org.miaixz.bus.vortex.strategy.vetting.McpVettingStrategy;
-import org.miaixz.bus.vortex.strategy.vetting.RestVettingStrategy;
-import org.miaixz.bus.vortex.strategy.vetting.SlugVettingStrategy;
+import org.miaixz.bus.vortex.strategy.request.*;
+import org.miaixz.bus.vortex.strategy.vetting.*;
 
 import io.netty.channel.ChannelOption;
 import io.netty.channel.WriteBufferWaterMark;
@@ -139,29 +134,19 @@ import reactor.netty.http.server.HttpServer;
 public class VortexConfiguration {
 
     /**
-     * Bean name of the HTTP router.
-     */
-    private static final String HTTP_ROUTER = "http";
-
-    /**
-     * Bean name of the WebSocket router.
-     */
-    private static final String WS_ROUTER = "ws";
-
-    /**
      * Bound Vortex configuration properties.
      */
     private final VortexProperties properties;
 
     /**
-     * Shared error settings used to select the gateway route policy.
-     */
-    private final Optional<ErrorsProperties> routeErrors;
-
-    /**
      * Application error boundary shared by gateway admission and exception handling.
      */
     private final ErrorBoundary errorBoundary;
+
+    /**
+     * Shared error settings used to select the gateway route policy.
+     */
+    private final Optional<ErrorsProperties> errors;
 
     /**
      * Stores and validates the Vortex gateway properties and installs performance settings before any runtime Bean is
@@ -176,26 +161,26 @@ public class VortexConfiguration {
     /**
      * Initializes the gateway with its transport settings and the shared route error configuration.
      *
-     * @param properties  bound gateway configuration properties
-     * @param routeErrors optional shared error settings
+     * @param properties bound gateway configuration properties
+     * @param errors     optional shared error settings
      */
-    public VortexConfiguration(VortexProperties properties, Optional<ErrorsProperties> routeErrors) {
-        this(properties, routeErrors, Optional.empty());
+    public VortexConfiguration(VortexProperties properties, Optional<ErrorsProperties> errors) {
+        this(properties, errors, Optional.empty());
     }
 
     /**
      * Initializes the gateway with an optional application classifier and observer.
      *
-     * @param properties  bound gateway configuration
-     * @param routeErrors optional shared error settings
-     * @param boundary    optional application error boundary
+     * @param properties bound gateway configuration
+     * @param errors     optional shared error settings
+     * @param boundary   optional application error boundary
      */
     @Autowired
-    public VortexConfiguration(VortexProperties properties, Optional<ErrorsProperties> routeErrors,
+    public VortexConfiguration(VortexProperties properties, Optional<ErrorsProperties> errors,
             Optional<ErrorBoundary> boundary) {
         this.errorBoundary = boundary.orElseGet(ErrorBoundary::standard);
         this.properties = properties;
-        this.routeErrors = routeErrors;
+        this.errors = errors;
         this.properties.validate();
         Holder.of(this.properties.getPerformance());
     }
@@ -209,13 +194,14 @@ public class VortexConfiguration {
      *
      * @param filters    A list of all available {@link Filter} beans, injected by Spring.
      * @param handlers   A list of all available {@link Handler} beans, injected by Spring.
-     * @param httpRouter The HTTP router bean.
+     * @param restRouter The REST forwarding router bean.
      * @param mqRouter   The MQ router bean.
      * @param mcpRouter  The MCP router bean.
      * @param grpcRouter The gRPC router bean.
      * @param wsRouter   The WebSocket router bean.
      * @param llmRouter  The LLM router bean.
      * @param slugRouter The public slug forwarding router bean.
+     * @param sdcRouter  The service discovery and configuration router bean.
      * @return A {@link Vortex} core component instance, including the HTTP server.
      */
     @Bean(initMethod = "start", destroyMethod = "stop")
@@ -223,28 +209,29 @@ public class VortexConfiguration {
     public Vortex vortex(
             List<Filter> filters,
             List<Handler> handlers,
-            @Qualifier(HTTP_ROUTER) Router<ServerRequest, ?> httpRouter,
+            @Qualifier("http") Router<ServerRequest, ?> restRouter,
             @Qualifier("mq") Router<ServerRequest, ?> mqRouter,
             @Qualifier("mcp") Router<ServerRequest, ?> mcpRouter,
             @Qualifier("grpc") Router<ServerRequest, ?> grpcRouter,
-            @Qualifier(WS_ROUTER) Router<ServerRequest, ?> wsRouter,
+            @Qualifier("ws") Router<ServerRequest, ?> wsRouter,
             @Qualifier("llm") Router<ServerRequest, ?> llmRouter,
-            @Qualifier("slug") Router<ServerRequest, ?> slugRouter) {
-        Map<Integer, Router<ServerRequest, ?>> routers = Map.of(
-                Args.PROTOCOL_HTTP,
-                httpRouter,
-                Args.PROTOCOL_MQ,
-                mqRouter,
-                Args.PROTOCOL_MCP,
-                mcpRouter,
-                Args.PROTOCOL_GRPC,
-                grpcRouter,
-                Args.PROTOCOL_WS,
-                wsRouter,
-                Args.PROTOCOL_LLM,
-                llmRouter,
-                Args.PROTOCOL_SLUG,
-                slugRouter);
+            @Qualifier("slug") Router<ServerRequest, ?> slugRouter,
+            @Qualifier("sdc") Router<ServerRequest, ?> sdcRouter) {
+        Map<Integer, Router<ServerRequest, ?>> routers = Map.ofEntries(
+                /*
+                 * HTTP outbound routes, each with its own strategy chain and executor.
+                 */
+                Map.entry(Args.ROUTE_REST, restRouter),
+                Map.entry(Args.ROUTE_LLM, llmRouter),
+                Map.entry(Args.ROUTE_SLUG, slugRouter),
+                Map.entry(Args.ROUTE_SDC, sdcRouter),
+                /*
+                 * Protocol and message broker adapters.
+                 */
+                Map.entry(Args.ROUTE_MQ, mqRouter),
+                Map.entry(Args.ROUTE_MCP, mcpRouter),
+                Map.entry(Args.ROUTE_GRPC, grpcRouter),
+                Map.entry(Args.ROUTE_WS, wsRouter));
         VortexHandler vortexHandler = new VortexHandler(handlers, routers);
 
         String routePath = this.properties.getPath();
@@ -276,7 +263,7 @@ public class VortexConfiguration {
 
         WebHandler webHandler = RouterFunctions.toWebHandler(routerFunction);
         AdmissionFilter admissionFilter = new AdmissionFilter(this.errorBoundary);
-        var policy = this.routeErrors.map(settings -> ErrorsConfiguration.policy(settings, Target.VORTEX)).orElse(null);
+        var policy = this.errors.map(settings -> ErrorsConfiguration.policy(settings, Target.VORTEX)).orElse(null);
         HttpHandler httpHandler = WebHttpHandlerBuilder.webHandler(webHandler).filters(list -> {
             if (policy != null) {
                 list.add((exchange, chain) -> {
@@ -367,8 +354,8 @@ public class VortexConfiguration {
      * @param executor The RestExecutor instance to be used by the router.
      * @return A new instance of RestRouter.
      */
-    @Bean(name = HTTP_ROUTER)
-    @ConditionalOnMissingBean(name = HTTP_ROUTER)
+    @Bean(name = "http")
+    @ConditionalOnMissingBean(name = "http")
     public Router<ServerRequest, ServerResponse> rest(RestExecutor executor) {
         return new RestRouter(executor);
     }
@@ -380,8 +367,8 @@ public class VortexConfiguration {
      * @param executor The WsExecutor instance to be used by the router.
      * @return A new instance of WsRouter.
      */
-    @Bean(name = WS_ROUTER)
-    @ConditionalOnMissingBean(name = WS_ROUTER)
+    @Bean(name = "ws")
+    @ConditionalOnMissingBean(name = "ws")
     public Router<ServerRequest, ServerResponse> ws(WsExecutor executor) {
         return new WsRouter(executor);
     }
@@ -412,6 +399,18 @@ public class VortexConfiguration {
     }
 
     /**
+     * Provides the service discovery and configuration router.
+     *
+     * @param executor SDC executor
+     * @return SDC router
+     */
+    @Bean(name = "sdc")
+    @ConditionalOnMissingBean(name = "sdc")
+    public Router<ServerRequest, ServerResponse> sdc(SdcExecutor executor) {
+        return new SdcRouter(executor);
+    }
+
+    /**
      * Provides the GrpcExecutor bean. This executor is responsible for executing gRPC requests to downstream services.
      *
      * @return A new instance of GrpcExecutor.
@@ -439,12 +438,24 @@ public class VortexConfiguration {
      * Uses {@link Holder#get()} to obtain the global Performance configuration installed by this configuration's
      * constructor before executor Beans are created.
      *
-     * @return A new instance of MqExecutor with globally configured performance settings
+     * @param mq outbound MQ resource owner
+     * @return MQ route executor
      */
     @Bean
     @ConditionalOnMissingBean(MqExecutor.class)
-    public MqExecutor mqExecutor() {
-        return new MqExecutor();
+    public MqExecutor mqExecutor(Egress.Mq mq) {
+        return new MqExecutor(mq);
+    }
+
+    /**
+     * Provides the producer cache and worker pool for outbound MQ messages.
+     *
+     * @return MQ resource owner
+     */
+    @Bean(destroyMethod = "close")
+    @ConditionalOnMissingBean(Egress.Mq.class)
+    public Egress.Mq mqEgress() {
+        return new Egress.Mq();
     }
 
     /**
@@ -505,6 +516,17 @@ public class VortexConfiguration {
     @ConditionalOnMissingBean(SlugExecutor.class)
     public SlugExecutor slugExecutor(SlugRouteMatcher matcher) {
         return new SlugExecutor(matcher);
+    }
+
+    /**
+     * Provides the service discovery and configuration executor.
+     *
+     * @return SDC executor
+     */
+    @Bean
+    @ConditionalOnMissingBean(SdcExecutor.class)
+    public SdcExecutor sdcExecutor() {
+        return new SdcExecutor();
     }
 
     /**
@@ -618,6 +640,17 @@ public class VortexConfiguration {
     }
 
     /**
+     * Provides the service discovery and configuration request strategy.
+     *
+     * @return SDC request strategy
+     */
+    @Bean
+    @ConditionalOnMissingBean(SdcRequestStrategy.class)
+    public SdcRequestStrategy sdcRequestStrategy() {
+        return new SdcRequestStrategy();
+    }
+
+    /**
      * Provides the basic vetting strategy bean. This strategy supplies common undefined-value validation,
      * authorization-attribute merge, and request metadata enrichment for routes that do not yet have protocol-specific
      * vetting.
@@ -675,6 +708,17 @@ public class VortexConfiguration {
     @ConditionalOnMissingBean(SlugVettingStrategy.class)
     public SlugVettingStrategy slugVettingStrategy() {
         return new SlugVettingStrategy();
+    }
+
+    /**
+     * Provides the service discovery and configuration vetting strategy.
+     *
+     * @return SDC vetting strategy
+     */
+    @Bean
+    @ConditionalOnMissingBean(SdcVettingStrategy.class)
+    public SdcVettingStrategy sdcVettingStrategy() {
+        return new SdcVettingStrategy();
     }
 
     /**

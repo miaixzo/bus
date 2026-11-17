@@ -73,7 +73,7 @@ public class SlugRequestStrategy extends RequestStrategy {
      */
     @Override
     public Integer protocol() {
-        return Args.PROTOCOL_SLUG;
+        return Args.ROUTE_SLUG;
     }
 
     /**

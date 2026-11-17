@@ -599,7 +599,7 @@ public class AssetsRegistry extends AbstractRegistry<Assets> {
      */
     private boolean isMcp(Assets asset) {
         return asset != null && Type.MCP.is(RegistryAssets.typeOf(asset))
-                && Integer.valueOf(Args.PROTOCOL_MCP).equals(asset.getProtocol());
+                && Integer.valueOf(Args.ROUTE_MCP).equals(asset.getProtocol());
     }
 
     /**
@@ -609,7 +609,7 @@ public class AssetsRegistry extends AbstractRegistry<Assets> {
      * @return {@code true} when the asset uses the LLM protocol
      */
     private boolean isLlm(Assets asset) {
-        return asset != null && Integer.valueOf(Args.PROTOCOL_LLM).equals(asset.getProtocol());
+        return asset != null && Integer.valueOf(Args.ROUTE_LLM).equals(asset.getProtocol());
     }
 
     /**

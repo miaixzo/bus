@@ -194,7 +194,7 @@ public class SlugRouteMatcher {
      */
     private Match match(String path, Assets assets) {
         if (assets == null || !Objects.equals(Type.API.key(), assets.getType())
-                || !Objects.equals(Args.PROTOCOL_SLUG, assets.getProtocol())) {
+                || !Objects.equals(Args.ROUTE_SLUG, assets.getProtocol())) {
             return null;
         }
         Match best = null;

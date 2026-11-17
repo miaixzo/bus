@@ -412,11 +412,21 @@ public class RequestStrategy extends AbstractStrategy {
                     Map.of()).defaultIfEmpty(new LinkedMultiValueMap<>()).cache();
             ServerWebExchange newExchange = new ServerWebExchangeDecorator(exchange) {
 
+                /**
+                 * Exposes the decorated request that carries the replayable body.
+                 *
+                 * @return the request used by the remaining strategies
+                 */
                 @Override
                 public ServerHttpRequest getRequest() {
                     return newRequest;
                 }
 
+                /**
+                 * Exposes the form data parsed during request preparation.
+                 *
+                 * @return the parsed form fields
+                 */
                 @Override
                 public Mono<MultiValueMap<String, String>> getFormData() {
                     return formData;

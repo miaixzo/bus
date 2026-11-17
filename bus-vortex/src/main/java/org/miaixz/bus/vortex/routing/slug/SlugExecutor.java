@@ -97,7 +97,7 @@ public class SlugExecutor implements Executor<ServerRequest, ServerResponse> {
     @Override
     public Mono<ServerResponse> execute(Context context, ServerRequest request) {
         URI target = target(context, request);
-        WebClient.RequestBodySpec bodySpec = Egress
+        WebClient.RequestBodySpec bodySpec = Egress.Http
                 .request(HttpMethod.valueOf(context.getHttpMethod().value()), target);
         bodySpec.headers(headers -> {
             headers.addAll(request.headers().asHttpHeaders());

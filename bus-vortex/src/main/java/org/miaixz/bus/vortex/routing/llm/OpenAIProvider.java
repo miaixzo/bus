@@ -68,7 +68,9 @@ import reactor.core.publisher.Mono;
  */
 public class OpenAIProvider implements LlmProvider {
 
-    /** Binds the complete SSE frame so errors cannot be split across transport chunks. */
+    /**
+     * Binds the complete SSE frame so errors cannot be split across transport chunks.
+     */
     private static final ParameterizedTypeReference<ServerSentEvent<String>> STREAM_EVENT = new ParameterizedTypeReference<>() {
     };
 
@@ -108,8 +110,8 @@ public class OpenAIProvider implements LlmProvider {
      * Constructs a new {@code OpenAIProvider} instance.
      * <p>
      * This constructor initializes the provider with the specified configuration. Outbound calls are executed through
-     * the shared {@link Egress} client so LLM traffic reuses the same connection pool and codec settings as REST and
-     * MCP routing. The endpoint URL is normalized by removing any trailing slashes.
+     * the shared {@link Egress.Http} client so LLM traffic reuses the same connection pool and codec settings as REST
+     * and MCP routing. The endpoint URL is normalized by removing any trailing slashes.
      * </p>
      *
      * @param type     The provider type identifier (e.g., "openai", "gemini", "qwen", "vllm", "ollama"). Must not be
@@ -157,7 +159,7 @@ public class OpenAIProvider implements LlmProvider {
 
         Logger.debug(true, "Vortex", "Sending non-streaming request to {}: model={}", type, request.getModel());
 
-        return Egress.request(HttpMethod.POST, chatCompletionsUri())
+        return Egress.Http.request(HttpMethod.POST, chatCompletionsUri())
                 .header(Http.Header.AUTHORIZATION, Http.Auth.BEARER_PREFIX + this.apiKey)
                 .header(Http.Header.CONTENT_TYPE, MediaType.APPLICATION_JSON)
                 .bodyValue(JsonKit.toJsonString(requestBody)).retrieve()
@@ -203,7 +205,7 @@ public class OpenAIProvider implements LlmProvider {
 
         Logger.debug(true, "Vortex", "Sending streaming request to {}: model={}", type, request.getModel());
 
-        return Egress.request(HttpMethod.POST, chatCompletionsUri())
+        return Egress.Http.request(HttpMethod.POST, chatCompletionsUri())
                 .header(Http.Header.AUTHORIZATION, Http.Auth.BEARER_PREFIX + this.apiKey)
                 .header(Http.Header.CONTENT_TYPE, MediaType.APPLICATION_JSON)
                 .bodyValue(JsonKit.toJsonString(requestBody)).retrieve()

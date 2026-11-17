@@ -20,130 +20,56 @@
 package org.miaixz.bus.vortex.routing.mq;
 
 import java.util.Map;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.RejectedExecutionException;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
-
-import jakarta.annotation.PreDestroy;
+import java.util.Objects;
 
 import org.springframework.web.reactive.function.server.ServerResponse;
 
-import org.miaixz.bus.core.cache.provider.LRUCache;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.cortex.Assets;
-import org.miaixz.bus.errors.ComponentFailure;
-import org.miaixz.bus.errors.ErrorType;
 import org.miaixz.bus.extra.json.JsonKit;
-import org.miaixz.bus.extra.mq.MQConfig;
-import org.miaixz.bus.extra.mq.MQFactory;
 import org.miaixz.bus.extra.mq.Message;
-import org.miaixz.bus.extra.mq.Producer;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.vortex.Context;
 import org.miaixz.bus.vortex.Delivery;
+import org.miaixz.bus.vortex.Egress;
 import org.miaixz.bus.vortex.Executor;
-import org.miaixz.bus.vortex.Holder;
-import org.miaixz.bus.vortex.magic.Performance;
 import org.miaixz.bus.vortex.routing.Coordinator;
 
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 
 /**
- * A stateless executor for executing message queue operations.
+ * Translates MQ routes into broker messages and returns their JSON acknowledgments.
  * <p>
- * This executor manages a cache of {@link Producer} instances, keyed by their broker URL. This allows the gateway to
- * efficiently execute messages to multiple different MQ brokers without creating new producers for each request. The
- * actual message sending is performed asynchronously on a dedicated thread pool to avoid blocking reactive threads.
- * <p>
- * Performance optimizations:
- * <ul>
- * <li>Optimized thread pool with core size based on CPU cores, max size for burst handling</li>
- * <li>Producer cache with bounded size (configurable via {@code vortex.performance.max-producer-cache-size})</li>
- * <li>Graceful shutdown with timeout handling</li>
- * <li>Fail-fast rejection policy so blocking broker calls never run on reactive request threads</li>
- * </ul>
- * <ul>
- * <li>{@code stream=1}: returns one bounded JSON acknowledgment</li>
- * <li>{@code stream=2}: uses the realtime acknowledgment branch, still as one bounded JSON document</li>
- * <li>{@code stream=3}: rejected because an MQ acknowledgment is not a file download</li>
- * </ul>
- * Generic type parameters: {@code Executor<String, ServerResponse>}
+ * Producer resources are owned by {@link Egress.Mq}. The configured buffered and realtime modes both return one
+ * acknowledgment. Download mode is rejected.
  *
  * @author Kimi Liu
  */
 public class MqExecutor extends Coordinator<String, ServerResponse> {
 
     /**
-     * Reports failures whose mq-cleanup response or lifecycle is owned by this adapter.
+     * Outbound message delivery and producer lifecycle.
      */
-    private static final ComponentFailure FAILURES = new ComponentFailure("vortex", "mq-cleanup");
+    private final Egress.Mq mq;
 
     /**
-     * A dedicated thread pool for asynchronously handling MQ message sending operations.
-     * <p>
-     * Performance optimizations:
-     * <ul>
-     * <li>Core pool size: CPU cores * 2 for optimal throughput</li>
-     * <li>Max pool size: CPU cores * 4 for burst handling</li>
-     * <li>Keep-alive time: 60 seconds for idle threads</li>
-     * <li>AbortPolicy: Fails fast when the dedicated queue is saturated</li>
-     * </ul>
-     */
-    private final ThreadPoolExecutor executor;
-
-    /**
-     * A thread-safe LRU cache of {@link Producer} instances, keyed by their broker URL.
-     * <p>
-     * Bounded to {@link Holder#getMaxProducerCacheSize()} to prevent memory leaks from broker URL proliferation. Uses
-     * {@link LRUCache} with automatic LRU eviction - least recently used entries are automatically evicted when the
-     * cache reaches maximum size.
-     * <p>
-     * Performance optimizations:
-     * <ul>
-     * <li>Automatic LRU eviction prevents memory leaks</li>
-     * <li>Thread-safe with built-in ReentrantLock</li>
-     * <li>Automatic resource cleanup via CacheListener</li>
-     * <li>Lazy initialization of producers on first access</li>
-     * </ul>
-     */
-    private final LRUCache<String, Producer> producerCache;
-
-    /**
-     * Constructs a new {@code MqExecutor} with centralized performance configuration.
-     * <p>
-     * Uses {@link Holder#getMaxProducerCacheSize()} to obtain the globally configured cache size, which is initialized
-     * during application startup via {@link Holder#of(Performance)}.
+     * Creates an executor with its own MQ resources for standalone use.
      */
     public MqExecutor() {
-        this.producerCache = new LRUCache<>(Holder.getMaxProducerCacheSize(), 0);
-        this.producerCache.setListener((key, producer) -> {
-            try {
-                producer.close();
-                Logger.info(
-                        true,
-                        "Vortex",
-                        "Producer evicted from cache: protocol=mq, brokerKeyChars={}",
-                        key == null ? 0 : key.length());
-            } catch (Exception e) {
-                FAILURES.failed(ErrorType.IO_FAILURE, e);
-            }
-        });
+        this(new Egress.Mq());
+    }
 
-        int corePoolSize = Runtime.getRuntime().availableProcessors() * 2;
-        int maxPoolSize = Runtime.getRuntime().availableProcessors() * 4;
-
-        this.executor = new ThreadPoolExecutor(corePoolSize, maxPoolSize, 60L, TimeUnit.SECONDS,
-                new LinkedBlockingQueue<>(1000), r -> {
-                    Thread t = new Thread(r, "vortex-mq-producer-pool");
-                    t.setDaemon(true);
-                    t.setPriority(Thread.NORM_PRIORITY);
-                    return t;
-                }, new ThreadPoolExecutor.AbortPolicy());
+    /**
+     * Creates an executor using the configured MQ resource owner.
+     *
+     * @param mq outbound MQ resource owner
+     */
+    public MqExecutor(Egress.Mq mq) {
+        this.mq = Objects.requireNonNull(mq);
     }
 
     /**
@@ -246,67 +172,19 @@ public class MqExecutor extends Coordinator<String, ServerResponse> {
             }
         };
 
-        return Mono.<String>create(sink -> {
-            try {
-                this.executor.execute(() -> {
-                    try {
-                        Producer producer = getOrCreateProducer(assets);
-                        producer.send(message);
-                        sink.success(JsonKit.toJsonString(Map.of("status", "Request forwarded to MQ")));
-                    } catch (Throwable e) {
-                        sink.error(e);
-                    }
-                });
-            } catch (RejectedExecutionException e) {
-                sink.error(e);
-            }
-        });
-    }
-
-    /**
-     * Retrieves an existing {@link Producer} from the cache or creates a new one if it doesn't exist.
-     * <p>
-     * Uses {@link LRUCache} with automatic LRU eviction - when the cache reaches the configured maximum
-     * ({@link Holder#getMaxProducerCacheSize()}), least recently used entries are automatically evicted. Thread-safe
-     * with built-in ReentrantLock.
-     *
-     * @param assets The configuration for the target MQ broker.
-     * @return A thread-safe, cached {@link Producer} instance.
-     */
-    private Producer getOrCreateProducer(Assets assets) {
         String brokerUrl = assets.getHost() + Symbol.COLON + assets.getPort();
-
-        return producerCache.get(brokerUrl, true, 0, () -> {
-            Logger.info(
-                    true,
-                    "Vortex",
-                    "Producer not found in cache; creating: protocol=mq, brokerUrlChars={}",
-                    brokerUrl.length());
-            try {
-                MQConfig config = MQConfig.of(brokerUrl);
-                Producer producer = MQFactory.createEngine(config).getProducer();
-                return producer;
-            } catch (Exception e) {
-                throw new RuntimeException("Failed to get or create MQ Producer", e);
-            }
-        });
+        return mq.send(brokerUrl, message)
+                .then(Mono.fromSupplier(() -> JsonKit.toJsonString(Map.of("status", "Request forwarded to MQ"))));
     }
 
     /**
-     * Gracefully shuts down all cached producers and the dedicated executor service. This method is automatically
-     * called by Spring during application shutdown.
+     * Releases this executor's MQ resources when the executor is disposed directly.
      *
-     * @return A {@link Mono<ServerResponse>} that completes when shutdown is finished.
+     * @return completion after the MQ resource owner begins shutdown
      */
-    @PreDestroy
     @Override
     public Mono<ServerResponse> destroy() {
-        return Mono.fromRunnable(() -> {
-            Logger.info(false, "Vortex", "MQ resources shutting down: protocol=mq");
-            producerCache.clear();
-            this.executor.shutdown();
-            Logger.info(false, "Vortex", "MQ resources stopped: protocol=mq");
-        }).subscribeOn(Schedulers.boundedElastic()).then(Mono.empty());
+        return Mono.fromRunnable(mq::close).subscribeOn(Schedulers.boundedElastic()).then(Mono.empty());
     }
 
 }

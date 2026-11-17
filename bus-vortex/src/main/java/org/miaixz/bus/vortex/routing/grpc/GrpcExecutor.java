@@ -25,15 +25,12 @@ import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.core.io.buffer.DataBufferLimitException;
 import org.springframework.core.io.buffer.PooledDataBuffer;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.net.Http;
-import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.core.xyz.UrlKit;
@@ -211,15 +208,16 @@ public class GrpcExecutor extends Coordinator<String, ServerResponse> {
             URI uri = UrlKit.toURI(buildGrpcUrl(assets, fullMethodName));
 
             Logger.info(true, "Vortex", "GRPC method {} invoked successfully: protocol=grpc", fullMethodName);
-            return Egress.request(HttpMethod.POST, uri).header(Http.Header.CONTENT_TYPE, MediaType.APPLICATION_JSON)
-                    .bodyValue(payload).retrieve()
+            return Egress.Grpc.request(uri, payload).retrieve()
                     .onStatus(status -> status.isError(), ReactiveErrorHandler::upstreamFailure)
                     .toEntityFlux(DataBuffer.class).flatMap(
-                            responseEntity -> Octets.readForParsing(
-                                    responseEntity.getBody() == null ? Flux.empty() : responseEntity.getBody(),
-                                    Math.toIntExact(Holder.get().getMaxBufferedResponseSize()),
-                                    Holder.responseBufferBudget(),
-                                    responseEntity.getHeaders().getContentLength()).flatMap(
+                            responseEntity -> Octets
+                                    .readForParsing(
+                                            responseEntity.getBody() == null ? Flux.empty() : responseEntity.getBody(),
+                                            Math.toIntExact(Holder.get().getMaxBufferedResponseSize()),
+                                            Holder.responseBufferBudget(),
+                                            responseEntity.getHeaders().getContentLength())
+                                    .flatMap(
                                             bufferedBody -> Mono
                                                     .fromCallable(() -> new String(bufferedBody.bytes(), Charset.UTF_8))
                                                     .doFinally(signalType -> bufferedBody.close())));
@@ -238,8 +236,7 @@ public class GrpcExecutor extends Coordinator<String, ServerResponse> {
      */
     private WebClient.RequestHeadersSpec<?> request(Assets assets, String payload) {
         URI uri = UrlKit.toURI(buildGrpcUrl(assets, assets.getMethod()));
-        return Egress.request(HttpMethod.POST, uri).header(Http.Header.CONTENT_TYPE, MediaType.APPLICATION_JSON)
-                .bodyValue(payload);
+        return Egress.Grpc.request(uri, payload);
     }
 
     /**

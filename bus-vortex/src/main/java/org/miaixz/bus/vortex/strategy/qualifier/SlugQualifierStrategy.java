@@ -66,7 +66,7 @@ public class SlugQualifierStrategy extends QualifierStrategy {
      */
     @Override
     public Integer protocol() {
-        return Args.PROTOCOL_SLUG;
+        return Args.ROUTE_SLUG;
     }
 
     /**

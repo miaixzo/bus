@@ -19,7 +19,6 @@
 */
 package org.miaixz.bus.vortex;
 
-import java.time.Duration;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.springframework.context.SmartLifecycle;
@@ -30,8 +29,6 @@ import org.miaixz.bus.logger.Logger;
 
 import reactor.netty.DisposableServer;
 import reactor.netty.http.server.HttpServer;
-import reactor.netty.resources.ConnectionProvider;
-import reactor.netty.resources.LoopResources;
 
 /**
  * Manages the lifecycle of the core Reactor Netty HTTP server for the Vortex application.
@@ -107,25 +104,7 @@ public class Vortex implements SmartLifecycle {
                 ErrorBoundary.diagnose(LIFECYCLE, "gateway-stop", e, null);
             }
 
-            try {
-                ConnectionProvider connectionProvider = Holder.getConnectionProviderIfPresent();
-                if (connectionProvider != null) {
-                    connectionProvider.dispose();
-                    Logger.info(false, "Vortex", "Runtime HTTP connection pool closed");
-                }
-            } catch (Exception e) {
-                ErrorBoundary.diagnose(LIFECYCLE, "connection-pool-close", e, null);
-            }
-
-            try {
-                LoopResources loopResources = Holder.getLoopResourcesIfPresent();
-                if (loopResources != null) {
-                    loopResources.disposeLater().block(Duration.ofSeconds(5));
-                    Logger.info(false, "Vortex", "Runtime HTTP event loops closed");
-                }
-            } catch (Exception e) {
-                ErrorBoundary.diagnose(LIFECYCLE, "event-loops-close", e, null);
-            }
+            Egress.Http.close(LIFECYCLE);
 
             try {
                 Holder.closeCapacityResources();

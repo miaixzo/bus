@@ -121,7 +121,7 @@ public class McpExecutor extends Coordinator<ServerRequest, ServerResponse> {
         }
         Assets target = context.getAssets();
         if (target == null || !Type.MCP.is(RegistryAssets.typeOf(target))
-                || !Integer.valueOf(Args.PROTOCOL_MCP).equals(target.getProtocol())
+                || !Integer.valueOf(Args.ROUTE_MCP).equals(target.getProtocol())
                 || StringKit.isBlank(target.getMethod()) || StringKit.isBlank(target.getUrl())
                 || (target.getStatus() != null && !Integer.valueOf(1).equals(target.getStatus()))) {
             return buildErrorResponse(
@@ -144,7 +144,7 @@ public class McpExecutor extends Coordinator<ServerRequest, ServerResponse> {
                 target.getMethod(),
                 targetUri);
 
-        WebClient.RequestBodySpec bodySpec = Egress
+        WebClient.RequestBodySpec bodySpec = Egress.Http
                 .request(HttpMethod.valueOf(context.getHttpMethod().value()), targetUri);
         Logger.info(
                 true,

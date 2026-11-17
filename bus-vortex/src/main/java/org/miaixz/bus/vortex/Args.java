@@ -154,6 +154,11 @@ public class Args {
     public static final String CST_PATH_PREFIX = Symbol.SLASH + "router" + Symbol.SLASH + "cst";
 
     /**
+     * The base URI path for service discovery and configuration (SDC) requests.
+     */
+    public static final String SDC_PATH_PREFIX = Symbol.SLASH + "router" + Symbol.SLASH + "sdc";
+
+    /**
      * Default registry method used to resolve public slug forwarding assets.
      */
     public static final String VORTEX_SLUG_GET = "vortex.slug.get";
@@ -164,39 +169,44 @@ public class Args {
     public static final String DEFAULT_VERSION = "1.0";
 
     /**
-     * Route protocol for HTTP assets.
+     * Gateway route identifier for REST forwarding over HTTP.
      */
-    public static final int PROTOCOL_HTTP = 1;
+    public static final int ROUTE_REST = 1;
 
     /**
-     * Route protocol for MQ assets.
+     * Gateway route identifier for message queue forwarding.
      */
-    public static final int PROTOCOL_MQ = 2;
+    public static final int ROUTE_MQ = 2;
 
     /**
-     * Route protocol for MCP assets.
+     * Gateway route identifier for MCP requests.
      */
-    public static final int PROTOCOL_MCP = 3;
+    public static final int ROUTE_MCP = 3;
 
     /**
-     * Route protocol for gRPC assets.
+     * Gateway route identifier for gRPC requests.
      */
-    public static final int PROTOCOL_GRPC = 4;
+    public static final int ROUTE_GRPC = 4;
 
     /**
-     * Route protocol for WebSocket assets.
+     * Gateway route identifier for WebSocket forwarding.
      */
-    public static final int PROTOCOL_WS = 5;
+    public static final int ROUTE_WS = 5;
 
     /**
-     * Route protocol for LLM assets.
+     * Gateway route identifier for LLM proxy requests.
      */
-    public static final int PROTOCOL_LLM = 6;
+    public static final int ROUTE_LLM = 6;
 
     /**
-     * Route protocol for public slug forwarding assets.
+     * Gateway route identifier for public slug forwarding.
      */
-    public static final int PROTOCOL_SLUG = 7;
+    public static final int ROUTE_SLUG = 7;
+
+    /**
+     * Gateway route identifier for service discovery and configuration (SDC) over HTTP.
+     */
+    public static final int ROUTE_SDC = 8;
 
     /**
      * Creates an empty gateway argument contract holder.
@@ -276,15 +286,24 @@ public class Args {
     }
 
     /**
-     * Checks if the given path matches any of the known gateway prefixes (REST, MCP, MQ, WS, CST, gRPC, or LLM). This
-     * method combines the individual check methods for convenience.
+     * Checks if the given path is the service discovery and configuration (SDC) request path.
      *
      * @param path The URL path string to check.
-     * @return {@code true} if the path matches any known gateway prefix, {@code false} otherwise.
+     * @return {@code true} if the path equals the SDC path, {@code false} otherwise.
+     */
+    public static boolean isSdcRequest(String path) {
+        return SDC_PATH_PREFIX.equals(path);
+    }
+
+    /**
+     * Checks if the given path matches a known gateway route.
+     *
+     * @param path The URL path string to check.
+     * @return {@code true} if the path matches any known gateway route, {@code false} otherwise.
      */
     public static boolean isKnownRequest(String path) {
         return isRestRequest(path) || isMcpRequest(path) || isMqRequest(path) || isWsRequest(path) || isCstRequest(path)
-                || isGrpcRequest(path) || isLlmRequest(path);
+                || isGrpcRequest(path) || isLlmRequest(path) || isSdcRequest(path);
     }
 
     /**

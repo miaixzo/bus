@@ -335,7 +335,7 @@ public class VortexHandler {
      */
     private long routeTimeoutSeconds(Assets assets, ServerRequest request) {
         long timeout = Egress.timeoutSeconds(assets);
-        if (assets.getProtocol() != null && assets.getProtocol() == Args.PROTOCOL_MCP
+        if (assets.getProtocol() != null && assets.getProtocol() == Args.ROUTE_MCP
                 && Http.Method.GET.value().equalsIgnoreCase(request.method().name())) {
             return timeout * 10;
         }

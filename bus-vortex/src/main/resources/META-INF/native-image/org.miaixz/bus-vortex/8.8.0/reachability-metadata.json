@@ -63,6 +63,12 @@
           ]
         },
         {
+          "name": "isSdcRequest",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
           "name": "isWsRequest",
           "parameterTypes": [
             "java.lang.String"
@@ -295,10 +301,19 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.vortex.Egress$ClientHolder",
+      "type": "org.miaixz.bus.vortex.Egress$Http$ClientHolder",
       "methods": [
         {
           "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.vortex.Egress$Mq",
+      "methods": [
+        {
+          "name": "close",
           "parameterTypes": []
         }
       ]
@@ -432,59 +447,10 @@
           "parameterTypes": []
         },
         {
-          "name": "buildErrorMessage",
-          "parameterTypes": [
-            "java.lang.Throwable",
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "findCause",
-          "parameterTypes": [
-            "java.lang.Throwable",
-            "java.lang.Class"
-          ]
-        },
-        {
           "name": "handle",
           "parameterTypes": [
             "org.springframework.web.server.ServerWebExchange",
             "java.lang.Throwable"
-          ]
-        },
-        {
-          "name": "lambda$handle$0",
-          "parameterTypes": [
-            "java.lang.Throwable",
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "lambda$handle$1",
-          "parameterTypes": [
-            "org.miaixz.bus.vortex.Formats",
-            "org.miaixz.bus.vortex.handler.ErrorsHandler$Message"
-          ]
-        },
-        {
-          "name": "lambda$handle$2",
-          "parameterTypes": [
-            "java.util.concurrent.atomic.AtomicInteger",
-            "org.springframework.http.server.reactive.ServerHttpResponse",
-            "org.miaixz.bus.vortex.Formats",
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "lambda$handle$3",
-          "parameterTypes": [
-            "java.lang.Throwable",
-            "org.miaixz.bus.vortex.Context",
-            "java.lang.String",
-            "java.lang.String",
-            "java.util.concurrent.atomic.AtomicInteger"
           ]
         }
       ]
@@ -2717,6 +2683,15 @@
       ]
     },
     {
+      "type": "org.miaixz.bus.vortex.Registry",
+      "methods": [
+        {
+          "name": "init",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
       "type": "org.miaixz.bus.vortex.registry.AbstractRegistry",
       "fields": [
         {
@@ -3798,6 +3773,15 @@
       ]
     },
     {
+      "type": "org.miaixz.bus.vortex.routing.rest.RestExecutor",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
       "type": "org.miaixz.bus.vortex.routing.RestRouter",
       "methods": [
         {
@@ -3805,15 +3789,6 @@
           "parameterTypes": [
             "org.miaixz.bus.vortex.routing.rest.RestExecutor"
           ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.vortex.routing.rest.RestExecutor",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
         }
       ]
     },
@@ -3992,15 +3967,6 @@
         },
         {
           "name": "stop",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.vortex.Registry",
-      "methods": [
-        {
-          "name": "init",
           "parameterTypes": []
         }
       ]

@@ -132,7 +132,7 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
                 path,
                 targetUri);
 
-        WebClient.RequestBodySpec bodySpec = Egress
+        WebClient.RequestBodySpec bodySpec = Egress.Http
                 .request(HttpMethod.valueOf(context.getHttpMethod().value()), targetUri);
         Logger.info(
                 true,
@@ -474,9 +474,11 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
      * @param value parameter value
      */
     private void addQueryPair(List<String> parts, String key, String value) {
-        // The raw authorization projection is gateway-internal evidence. Forwarding it in a GET URI both exposes
-        // internal claims to downstream applications and can exceed the request-line limit for broad administrator
-        // roles. Downstream services receive the bounded, verified identity fields separately.
+        /*
+         * The raw authorization projection is gateway-internal evidence. Forwarding it in a GET URI both exposes
+         * internal claims to downstream applications and can exceed the request-line limit for broad administrator
+         * roles. Downstream services receive the bounded, verified identity fields separately.
+         */
         if (Args.isForwardingControlParameter(key) || "x_raw_data".equalsIgnoreCase(key)) {
             return;
         }
@@ -555,7 +557,8 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
         Mono<ResponseEntity<Flux<DataBuffer>>> response = bodySpec.retrieve()
                 .onStatus(status -> status.isError(), ReactiveErrorHandler::upstreamFailure)
                 .toEntityFlux(DataBuffer.class);
-        return Egress.guard(response, 0, Egress.retryAttempts(assets, httpMethod), "rest-streaming", method, targetUri)
+        return Egress.Http
+                .guard(response, 0, Egress.Http.retryAttempts(assets, httpMethod), "rest-streaming", method, targetUri)
                 .flatMap(responseEntity -> buildStreamingResponse(responseEntity, delivery, ip, method, path))
                 .doOnSubscribe(
                         subscription -> Logger.info(
@@ -607,7 +610,8 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
         Mono<ResponseEntity<Flux<DataBuffer>>> response = bodySpec.retrieve()
                 .onStatus(status -> status.isError(), ReactiveErrorHandler::upstreamFailure)
                 .toEntityFlux(DataBuffer.class);
-        return Egress.guard(response, 0, Egress.retryAttempts(assets, httpMethod), "rest-atomic", method, targetUri)
+        return Egress.Http
+                .guard(response, 0, Egress.Http.retryAttempts(assets, httpMethod), "rest-atomic", method, targetUri)
                 .flatMap(responseEntity -> {
                     Logger.info(
                             false,
