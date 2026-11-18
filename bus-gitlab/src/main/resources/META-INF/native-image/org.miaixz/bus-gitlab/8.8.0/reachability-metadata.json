@@ -42874,6 +42874,9 @@
     },
     {
       "type": "org.miaixz.bus.gitlab.support.JacksonJson$JacksonJsonInstanceHolder",
+      "condition": {
+        "typeReached": "jakarta.ws.rs.ext.ContextResolver"
+      },
       "fields": [
         {
           "name": "JACKSON_JSON"

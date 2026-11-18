@@ -1,6 +1,113 @@
 {
   "reflection": [
     {
+      "type": "java.lang.Boolean",
+      "jniAccessible": true,
+      "methods": [
+        {
+          "name": "getBoolean",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ],
+      "condition": {
+        "typeReached": "java.awt.image.BufferedImage"
+      }
+    },
+    {
+      "type": "sun.font.FontConfigManager$FcCompFont",
+      "jniAccessible": true,
+      "fields": [
+        {
+          "name": "allFonts"
+        },
+        {
+          "name": "fcName"
+        },
+        {
+          "name": "firstFont"
+        }
+      ],
+      "condition": {
+        "typeReached": "java.awt.image.BufferedImage"
+      }
+    },
+    {
+      "type": "sun.font.FontConfigManager$FontConfigFont",
+      "jniAccessible": true,
+      "fields": [
+        {
+          "name": "familyName"
+        },
+        {
+          "name": "fontFile"
+        },
+        {
+          "name": "fullName"
+        },
+        {
+          "name": "styleStr"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ],
+      "condition": {
+        "typeReached": "java.awt.image.BufferedImage"
+      }
+    },
+    {
+      "type": "sun.font.FontConfigManager$FontConfigFont[]",
+      "condition": {
+        "typeReached": "java.awt.image.BufferedImage"
+      }
+    },
+    {
+      "type": "sun.font.FontConfigManager$FontConfigInfo",
+      "jniAccessible": true,
+      "fields": [
+        {
+          "name": "cacheDirs"
+        },
+        {
+          "name": "fcVersion"
+        }
+      ],
+      "condition": {
+        "typeReached": "java.awt.image.BufferedImage"
+      }
+    },
+    {
+      "type": "sun.font.FontUtilities",
+      "jniAccessible": true,
+      "methods": [
+        {
+          "name": "debugFonts",
+          "parameterTypes": []
+        }
+      ],
+      "condition": {
+        "typeReached": "java.awt.image.BufferedImage"
+      }
+    },
+    {
+      "type": "sun.font.FreetypeFontScaler",
+      "jniAccessible": true,
+      "methods": [
+        {
+          "name": "invalidateScaler",
+          "parameterTypes": []
+        }
+      ],
+      "condition": {
+        "typeReached": "java.awt.image.BufferedImage"
+      }
+    },
+    {
       "type": "com.sun.imageio.plugins.jpeg.JPEGImageReader",
       "condition": {
         "typeReached": "com.sun.imageio.plugins.jpeg.JPEGImageReader"

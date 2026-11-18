@@ -1532,7 +1532,6 @@ public class Mat extends CleanableMat {
      * @return a typed accessor bound to the supplied matrix indices
      * @throws RuntimeException if clazz is not one of the supported boxed numeric element classes
      */
-    @SuppressWarnings("unchecked")
     public <T> Atable<T> at(Class<T> clazz, int row, int col) {
         if (clazz == Byte.class || clazz == byte.class) {
             return (Atable<T>) new AtableByte(this, row, col);
@@ -1558,7 +1557,6 @@ public class Mat extends CleanableMat {
      * @return a typed accessor bound to the supplied matrix indices
      * @throws RuntimeException if clazz is not one of the supported boxed numeric element classes
      */
-    @SuppressWarnings("unchecked")
     public <T> Atable<T> at(Class<T> clazz, int[] idx) {
         if (clazz == Byte.class || clazz == byte.class) {
             return (Atable<T>) new AtableByte(this, idx);
