@@ -537,6 +537,7 @@ public class RealSink implements BufferSink {
             public String toString() {
                 return RealSink.this + ".outputStream()";
             }
+
         };
     }
 

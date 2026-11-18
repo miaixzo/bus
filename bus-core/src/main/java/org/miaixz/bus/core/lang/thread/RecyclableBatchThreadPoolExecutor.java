@@ -137,6 +137,7 @@ public class RecyclableBatchThreadPoolExecutor {
             public int size() {
                 return batchCount;
             }
+
         };
     }
 

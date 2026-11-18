@@ -262,6 +262,7 @@ public class WatchServiceWrapper extends SimpleWrapper<WatchService> implements 
                 registerPath(dir, 0); // Register subdirectories with depth 0 (only the current subdirectory).
                 return super.postVisitDirectory(dir, exc);
             }
+
         });
         return this;
     }

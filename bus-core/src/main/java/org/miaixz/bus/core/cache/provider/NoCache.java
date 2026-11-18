@@ -138,6 +138,7 @@ public class NoCache<K, V> implements Cache<K, V> {
             public V next() {
                 throw new NoSuchElementException();
             }
+
         };
     }
 

@@ -475,6 +475,7 @@ public class TripletTable<L, M, R> implements Iterable<Triplet<L, M, R>>, Serial
                 index++;
                 return new Triplet<>(getLeft(index), getMiddle(index), getRight(index));
             }
+
         };
     }
 

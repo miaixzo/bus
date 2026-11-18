@@ -136,6 +136,7 @@ public class SyncFinisher implements Closeable {
                 public void work() {
                     runnable.run();
                 }
+
             });
         }
         return this;
@@ -159,6 +160,7 @@ public class SyncFinisher implements Closeable {
             public void work() {
                 runnable.run();
             }
+
         });
     }
 

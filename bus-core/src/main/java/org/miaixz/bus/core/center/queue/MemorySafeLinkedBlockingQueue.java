@@ -160,6 +160,7 @@ public class MemorySafeLinkedBlockingQueue<E> extends CheckedLinkedBlockingQueue
                 public void run() {
                     this.maxAvailable = RuntimeKit.getFreeMemory();
                 }
+
             }, 50); // Updates every 50 milliseconds
         }
 

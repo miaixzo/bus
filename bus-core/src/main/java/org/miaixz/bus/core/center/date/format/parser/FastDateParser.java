@@ -81,6 +81,7 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
         int modify(final FastDateParser parser, final int iValue) {
             return iValue < 100 ? parser.adjustYear(iValue) : iValue;
         }
+
     };
 
     /**
@@ -97,6 +98,7 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
         int modify(final FastDateParser parser, final int iValue) {
             return iValue - 1;
         }
+
     };
 
     /**
@@ -138,6 +140,7 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
         int modify(final FastDateParser parser, final int iValue) {
             return iValue != 7 ? iValue + 1 : Calendar.SUNDAY;
         }
+
     };
 
     /**
@@ -164,6 +167,7 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
         int modify(final FastDateParser parser, final int iValue) {
             return iValue == 24 ? 0 : iValue;
         }
+
     };
 
     /**
@@ -180,6 +184,7 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
         int modify(final FastDateParser parser, final int iValue) {
             return iValue == 12 ? 0 : iValue;
         }
+
     };
 
     /**

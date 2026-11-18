@@ -242,6 +242,7 @@ public class ListServiceLoader<S> extends AbstractServiceLoader<S> {
             public S next() {
                 return getService(nameIter.next());
             }
+
         };
     }
 

@@ -65,6 +65,7 @@ public class FormatBuilder extends Format implements PositionDateParser, FormatP
         protected FormatBuilder createInstance(final String pattern, final TimeZone timeZone, final Locale locale) {
             return new FormatBuilder(pattern, timeZone, locale);
         }
+
     };
 
     /**

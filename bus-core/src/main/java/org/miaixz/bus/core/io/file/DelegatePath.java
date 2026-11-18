@@ -431,6 +431,7 @@ public class DelegatePath extends SimpleWrapper<Path> implements Path, Resource 
                 }
                 return new DelegatePath(itr.next());
             }
+
         };
     }
 

@@ -118,6 +118,7 @@ public class EasyStream<T> extends EnhancedWrappedStream<T, EasyStream<T>> {
             public EasyStream<T> build() {
                 return new EasyStream<>(streamBuilder.build());
             }
+
         };
     }
 

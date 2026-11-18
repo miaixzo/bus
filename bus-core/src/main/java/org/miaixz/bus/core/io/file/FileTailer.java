@@ -231,6 +231,7 @@ public class FileTailer implements Serializable {
                     stop();
                     throw new InternalException("{} has been deleted", filePath);
                 }
+
             });
             fileWatchMonitor.start();
         }

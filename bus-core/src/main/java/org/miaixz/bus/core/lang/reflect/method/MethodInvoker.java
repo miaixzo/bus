@@ -110,6 +110,7 @@ public class MethodInvoker implements Invoker {
      *     default String quack() {
      *         return "Quack";
      *     }
+     *
      * }
      *
      * Duck duck = (Duck) Proxy
@@ -141,6 +142,7 @@ public class MethodInvoker implements Invoker {
      *     default String quack() {
      *         return "Quack";
      *     }
+     *
      * }
      *
      * Duck duck = (Duck) Proxy

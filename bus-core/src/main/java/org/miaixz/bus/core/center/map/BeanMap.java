@@ -253,6 +253,7 @@ public class BeanMap implements Map<String, Object> {
                     public Object next() {
                         return descriptors.next().getValue(bean, false);
                     }
+
                 };
             }
 
@@ -276,6 +277,7 @@ public class BeanMap implements Map<String, Object> {
             public boolean contains(final Object value) {
                 return BeanMap.this.containsValue(value);
             }
+
         });
     }
 
@@ -350,8 +352,10 @@ public class BeanMap implements Map<String, Object> {
                             public Object setValue(final Object value) {
                                 return BeanMap.this.put(name, value);
                             }
+
                         };
                     }
+
                 };
             }
 
@@ -364,6 +368,7 @@ public class BeanMap implements Map<String, Object> {
             public int size() {
                 return BeanMap.this.size();
             }
+
         });
     }
 

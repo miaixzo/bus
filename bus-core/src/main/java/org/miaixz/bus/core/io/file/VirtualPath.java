@@ -401,6 +401,7 @@ public class VirtualPath implements Path {
                 }
                 return new VirtualPath(parts.get(index++), index == parts.size() ? content : null);
             }
+
         };
     }
 

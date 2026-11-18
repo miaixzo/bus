@@ -611,6 +611,7 @@ public class LinkedDeque<E extends Linked<E>> extends AbstractCollection<E> impl
             E computeNext() {
                 return cursor.getNext();
             }
+
         };
     }
 
@@ -634,6 +635,7 @@ public class LinkedDeque<E extends Linked<E>> extends AbstractCollection<E> impl
             E computeNext() {
                 return cursor.getPrevious();
             }
+
         };
     }
 

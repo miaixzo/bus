@@ -194,6 +194,7 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
             public String toString() {
                 return Buffer.this + ".outputStream()";
             }
+
         };
     }
 
@@ -323,6 +324,7 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
             public String toString() {
                 return Buffer.this + ".inputStream()";
             }
+
         };
     }
 

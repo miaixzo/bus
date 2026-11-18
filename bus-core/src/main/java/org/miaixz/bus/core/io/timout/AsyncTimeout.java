@@ -341,6 +341,7 @@ public class AsyncTimeout extends Timeout {
             public String toString() {
                 return "AsyncTimeout.sink(" + sink + Symbol.PARENTHESE_RIGHT;
             }
+
         };
     }
 
@@ -412,6 +413,7 @@ public class AsyncTimeout extends Timeout {
             public String toString() {
                 return "AsyncTimeout.source(" + source + Symbol.PARENTHESE_RIGHT;
             }
+
         };
     }
 
