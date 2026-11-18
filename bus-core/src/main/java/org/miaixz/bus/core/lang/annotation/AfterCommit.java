@@ -17,22 +17,22 @@
  ~                                                                           ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.spring.jdbc;
+package org.miaixz.bus.core.lang.annotation;
 
 import java.lang.annotation.*;
 
-import org.springframework.transaction.event.TransactionPhase;
-import org.springframework.transaction.event.TransactionalEventListener;
-
 /**
- * Delivers an application event only after its publishing transaction commits.
+ * Declares an application event listener that runs only after its publishing transaction commits.
+ * <p>
+ * Events published outside a transaction or in a transaction that rolls back are ignored. The listener accepts one
+ * event or payload parameter. Runtime integrations discover the declaration and schedule its invocation; this
+ * annotation has no dependency on a transaction implementation.
  *
  * @author Kimi Liu
  */
 @Target({ ElementType.METHOD, ElementType.ANNOTATION_TYPE })
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-@TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
 public @interface AfterCommit {
 
 }

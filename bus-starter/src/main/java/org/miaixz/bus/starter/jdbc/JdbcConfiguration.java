@@ -249,6 +249,18 @@ public class JdbcConfiguration {
     }
 
     /**
+     * Discovers Core commit listeners and registers their Spring transaction adapters and AOT hints.
+     *
+     * @return commit listener registration infrastructure
+     */
+    @Bean
+    @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
+    @ConditionalOnMissingBean(AfterCommitListenerProcessor.class)
+    public static AfterCommitListenerProcessor busAfterCommitListenerProcessor() {
+        return new AfterCommitListenerProcessor();
+    }
+
+    /**
      * Registers the standard proxy infrastructure while preserving the host's proxy preference.
      *
      * @author Kimi Liu
