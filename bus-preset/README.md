@@ -12,7 +12,7 @@ Bus Preset packages GraalVM Native Image configuration for the third-party libra
 
 Bus integration modules that need these settings already depend on `bus-preset`. The `bus-all` JAR embeds the same resources. Applications using either entry point receive the configuration with their Bus dependencies.
 
-To add the resource JAR directly, import [`bus-bom`](../bus-bom/pom.xml) and declare this dependency. Without the BOM, set its version to the Bus version used by your application.
+To add the preset JAR directly, import [`bus-bom`](../bus-bom/pom.xml) and declare this dependency. Without the BOM, set its version to the Bus version used by your application.
 
 ```xml
 <dependency>
@@ -27,11 +27,13 @@ Keep the upstream reachability metadata repository enabled in Native Build Tools
 
 | Configuration | Owner |
 | --- | --- |
-| Supplemental third-party reflection, proxies, JNI, resource declarations and initialization settings | `bus-preset`, under the owning library's Maven coordinate |
+| Supplemental third-party reflection, proxies, JNI, resource declarations and initialization settings (except BC bootstrap) | `bus-preset`, under the owning library's Maven coordinate |
 | Bus types and methods, Bus SPI files, auto-configuration lists and JDK registrations used by Bus | The Bus component that uses them |
 | Application types, enums and proxy combinations involving application interfaces | The application |
 
 A Bus method registration stays with its declaring component even when its signature contains third-party parameter types. Shared `Object` and `Enum` reflection registrations live in [`bus-core`](../bus-core/). Office-specific AWT, font and ImageIO configuration lives in [`bus-office`](../bus-office/). [`bus-opencv`](../bus-opencv/) ships its own JNI bindings and native library resources as an independent artifact.
+
+Bouncy Castle provider registration and initialization belong to `bus-crypto`. Its existing `Holder` initializes at build time so JCA/JCE can capture the provider. `bus-preset` retains only passive BC reflection metadata and does not force BC into applications that omit it.
 
 ## Find a library's configuration
 
@@ -51,7 +53,7 @@ META-INF/native-image/
 | `metadata-version` | Directory containing configuration shared by the release line | `4.2.0.Final` |
 | `tested-versions` | Library versions validated against that configuration | `4.2.0.Final`, `4.2.17.Final` |
 
-The baseline uses the official release name. Netty retains `.Final`, and Bouncy Castle uses `1.85`. [`Netty index`](src/main/resources/META-INF/native-image/io.netty/netty-common/index.json) · [`Bouncy Castle index`](src/main/resources/META-INF/native-image/org.bouncycastle/bcprov-jdk18on/index.json)
+The baseline uses the official release name. Netty retains `.Final`, and Bouncy Castle uses `1.87`. [`Netty index`](src/main/resources/META-INF/native-image/io.netty/netty-common/index.json) · [`Bouncy Castle index`](src/main/resources/META-INF/native-image/org.bouncycastle/bcprov-jdk18on/index.json)
 
 ## Maintain an entry
 

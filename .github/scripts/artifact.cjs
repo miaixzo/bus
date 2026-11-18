@@ -300,7 +300,7 @@ for (const module of modules) {
     // Collect JSON rows for semantic aggregate checks: shading may merge source
     // documents while preserving every required registration.
     const source = path.join(root, module, 'src/main/resources/META-INF/native-image');
-    for (const f of walk(source)) {
+    for (const f of walk(source).filter(f => path.basename(f) !== '.DS_Store')) {
         const name = 'META-INF/native-image/' + path.relative(source, f).split(path.sep).join('/'), actual = zip.data(name);
         if (!actual || hash(actual) !== hash(fs.readFileSync(f)))
             errors.push(module + ': component native metadata differs: ' + name);
@@ -429,6 +429,10 @@ for (const module of aggregatedModules)
             for (const type of match[2].split(','))
                 if (!exportedProps.some(p => p.includes(type)))
                     errors.push('bus-all lost initialization ' + type);
+        for (const match of text.matchAll(/--features=([^\s]+)/g))
+            for (const feature of match[1].split(','))
+                if (!exportedProps.some(p => p.includes(feature)))
+                    errors.push('bus-all lost native feature ' + feature);
         for (const option of text.matchAll(/(?:^|\s)(-H:[^\s]+)/g))
             if (!exportedProps.some(p => p.includes(option[1])))
                 errors.push('bus-all lost native option ' + option[1]);

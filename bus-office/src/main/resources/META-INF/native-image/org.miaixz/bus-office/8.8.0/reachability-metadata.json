@@ -115,6 +115,42 @@
       ]
     },
     {
+      "type": "com.sun.org.apache.xalan.internal.xsltc.trax.TransformerFactoryImpl",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ],
+      "condition": {
+        "typeReached": "org.apache.poi.ooxml.POIXMLDocumentPart"
+      }
+    },
+    {
+      "type": "com.sun.org.apache.xerces.internal.jaxp.DocumentBuilderFactoryImpl",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ],
+      "condition": {
+        "typeReached": "org.apache.poi.ooxml.POIXMLDocumentPart"
+      }
+    },
+    {
+      "type": "com.sun.org.apache.xerces.internal.jaxp.SAXParserFactoryImpl",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ],
+      "condition": {
+        "typeReached": "org.apache.poi.ooxml.POIXMLDocumentPart"
+      }
+    },
+    {
       "type": "java.awt.AlphaComposite",
       "jniAccessible": true,
       "fields": [
@@ -6628,6 +6664,42 @@
     {
       "module": "java.desktop",
       "glob": "sun/awt/resources/awt_en_CN.properties"
+    },
+    {
+      "glob": "META-INF/services/java.net.spi.InetAddressResolverProvider"
+    },
+    {
+      "glob": "META-INF/services/java.nio.charset.spi.CharsetProvider"
+    },
+    {
+      "glob": "META-INF/services/java.time.zone.ZoneRulesProvider"
+    },
+    {
+      "glob": "META-INF/services/java.util.spi.ResourceBundleControlProvider"
+    },
+    {
+      "glob": "META-INF/services/javax.xml.parsers.DocumentBuilderFactory"
+    },
+    {
+      "glob": "META-INF/services/javax.xml.parsers.SAXParserFactory"
+    },
+    {
+      "glob": "META-INF/services/javax.xml.transform.TransformerFactory"
+    },
+    {
+      "glob": "META-INF/services/javax.xml.xpath.XPathFactory"
+    },
+    {
+      "module": "java.xml",
+      "glob": "com/sun/org/apache/xml/internal/serializer/Encodings.properties"
+    },
+    {
+      "module": "java.xml",
+      "bundle": "com.sun.org.apache.xml.internal.serializer.XMLEntities"
+    },
+    {
+      "module": "java.xml",
+      "glob": "com/sun/org/apache/xml/internal/serializer/XMLEntities*.properties"
     }
   ]
 }

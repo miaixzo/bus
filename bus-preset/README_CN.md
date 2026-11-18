@@ -12,7 +12,7 @@ Bus Preset 集中打包 Bus 所用第三方库的 GraalVM Native Image 配置，
 
 需要这些配置的 Bus 集成模块已经依赖 `bus-preset`，`bus-all` 也内嵌了同一套资源。使用这些组件的应用会随依赖获得配置。
 
-如果需要直接引入资源 JAR，先导入 [`bus-bom`](../bus-bom/pom.xml)，再声明以下依赖。未使用 BOM 时，请将依赖版本设为应用所用的 Bus 版本。
+如果需要直接引入预设 JAR，先导入 [`bus-bom`](../bus-bom/pom.xml)，再声明以下依赖。未使用 BOM 时，请将依赖版本设为应用所用的 Bus 版本。
 
 ```xml
 <dependency>
@@ -27,11 +27,13 @@ Bus Preset 集中打包 Bus 所用第三方库的 GraalVM Native Image 配置，
 
 | 配置内容 | 维护位置 |
 | --- | --- |
-| 第三方反射、代理、JNI、资源和初始化的补充配置 | `bus-preset` 中对应第三方库的 Maven 坐标目录 |
+| 第三方反射、代理、JNI、资源和初始化的补充配置（BC 初始化除外） | `bus-preset` 中对应第三方库的 Maven 坐标目录 |
 | Bus 自有类型和方法、SPI、自动配置清单，以及组件使用的 JDK 注册 | 使用这些配置的 Bus 组件 |
 | 应用类型、枚举和包含应用接口的组合代理 | 应用本身 |
 
 Bus 方法的签名即使包含第三方参数类型，也随声明该方法的组件维护。通用 `Object` 和 `Enum` 反射注册位于 [`bus-core`](../bus-core/)，Office 所需的 AWT、字体和 ImageIO 配置位于 [`bus-office`](../bus-office/)。[`bus-opencv`](../bus-opencv/) 将自己的 JNI 绑定和本机库资源作为独立产物发布。
+
+BC 的 Provider 注册和初始化由 `bus-crypto` 负责。已有的 `Holder` 在构建期初始化，供 JCA/JCE 捕获 Provider；`bus-preset` 只保留被动的 BC 反射元数据，不强制未引入 BC 的应用加载它。
 
 ## 查找某个库的配置
 
@@ -51,7 +53,7 @@ META-INF/native-image/
 | `metadata-version` | 该版本线共用配置的目录名 | `4.2.0.Final` |
 | `tested-versions` | 已用这套配置验证过的依赖版本 | `4.2.0.Final`、`4.2.17.Final` |
 
-基线沿用官方发布名称。Netty 保留 `.Final` 后缀，Bouncy Castle 使用 `1.85`。[Netty 索引](src/main/resources/META-INF/native-image/io.netty/netty-common/index.json) · [Bouncy Castle 索引](src/main/resources/META-INF/native-image/org.bouncycastle/bcprov-jdk18on/index.json)
+基线沿用官方发布名称。Netty 保留 `.Final` 后缀，Bouncy Castle 使用 `1.87`。[Netty 索引](src/main/resources/META-INF/native-image/io.netty/netty-common/index.json) · [Bouncy Castle 索引](src/main/resources/META-INF/native-image/org.bouncycastle/bcprov-jdk18on/index.json)
 
 ## 新增或更新配置
 

@@ -88,6 +88,10 @@ Based on the OFDRW library, providing:
 - `poi-ooxml` (version 5.4.1) - for Excel and Word processing
 - `ofdrw-full` (version 2.3.7) - for OFD/PDF processing
 
+### Native Image
+
+Include `bus-preset` for the supplemental POI and XMLBeans metadata. The Office native configuration also includes legacy character sets used by POI. When assembling a POI-only native classpath, include Batik's SVG renderer dependencies: POI 6 registers `SVGImageRenderer` through Java SPI, and its constructor references Batik even when the application only processes spreadsheets. The native smoke checks cover XLSX, DOCX and PPTX round trips with lite schemas, plus XAdES schema parsing with full schemas; image rendering and encrypted documents require separate application checks.
+
 -----
 
 ## 📝 Usage Examples

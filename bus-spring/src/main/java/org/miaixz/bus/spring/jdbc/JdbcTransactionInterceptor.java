@@ -41,8 +41,8 @@ public final class JdbcTransactionInterceptor extends TransactionInterceptor {
      *
      * @param invocation intercepted method invocation
      * @return target method result, or {@code null} for a void method
-     * @throws Throwable if transaction processing or the target method fails; classified runtime infrastructure failures
-     *                   are translated, while other failures propagate unchanged
+     * @throws Throwable if transaction processing or the target method fails; classified runtime infrastructure
+     *                   failures are translated, while other failures propagate unchanged
      */
     @Override
     public Object invoke(MethodInvocation invocation) throws Throwable {

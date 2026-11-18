@@ -181,7 +181,8 @@ function walk(dir, module) {
             continue;
         }
         // Ordinary components may initialize their own types or JDK types.
-        // Third-party initialization belongs in bus-preset. Count files here,
+        // Third-party initialization belongs in bus-preset, except BC bootstrap
+        // owned by bus-crypto. Count files here,
         // rather than counting individual initialization arguments.
         if (e.name === 'native-image.properties') {
             if (module === 'bus-preset')
@@ -191,7 +192,8 @@ function walk(dir, module) {
             if (module !== 'bus-preset')
                 for (const match of text.matchAll(/--initialize-at-(?:build|run)-time=([^\s\\]+)/g))
                     for (const type of match[1].split(','))
-                        if (owner(type) !== module.slice(4) && !platform(type))
+                        if (owner(type) !== module.slice(4) && !platform(type)
+                                && !(module === 'bus-crypto' && /^org\.bouncycastle(?:\.|$)/.test(type)))
                             errors.push(`${ relative }: foreign initialization ${ type }`);
         }
 

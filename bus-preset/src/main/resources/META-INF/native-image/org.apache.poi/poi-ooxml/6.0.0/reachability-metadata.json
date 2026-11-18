@@ -16,7 +16,10 @@
           "name": "<init>",
           "parameterTypes": []
         }
-      ]
+      ],
+      "condition": {
+        "typeReached": "org.apache.batik.transcoder.Transcoder"
+      }
     },
     {
       "type": "org.apache.poi.xslf.usermodel.XSLFMetroShape",

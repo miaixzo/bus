@@ -2917,6 +2917,18 @@
           ]
         }
       ]
+    },
+    {
+      "type": "schemaorg_apache_xmlbeans.system.sXMLCONFIG.TypeSystemHolder"
+    },
+    {
+      "type": "schemaorg_apache_xmlbeans.system.sXMLLANG.TypeSystemHolder"
+    },
+    {
+      "type": "schemaorg_apache_xmlbeans.system.sXMLSCHEMA.TypeSystemHolder"
+    },
+    {
+      "type": "schemaorg_apache_xmlbeans.system.sXMLTOOLS.TypeSystemHolder"
     }
   ],
   "resources": [
@@ -2928,6 +2940,9 @@
     },
     {
       "glob": "org/apache/xmlbeans/metadata/**"
+    },
+    {
+      "bundle": "org.apache.xmlbeans.impl.regex.message"
     }
   ]
 }

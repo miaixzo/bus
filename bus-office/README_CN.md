@@ -86,6 +86,10 @@
 - `poi-ooxml`（版本 5.4.1） - 用于 Excel 和 Word 处理
 - `ofdrw-full`（版本 2.3.7） - 用于 OFD/PDF 处理
 
+### Native Image
+
+请引入 `bus-preset`，以使用 POI 和 XMLBeans 的补充元数据。Office 的原生配置还包含 POI 使用的传统字符集。单独组装 POI 原生构建的依赖时，需要包含 Batik SVG 渲染依赖：POI 6 通过 Java SPI 注册 `SVGImageRenderer`，即使应用只处理表格，其构造器仍会引用 Batik。原生冒烟检查覆盖 lite Schema 下的 XLSX、DOCX、PPTX 写入再读取，以及 full Schema 下的 XAdES 解析；图片渲染和加密文档仍需应用单独验证。
+
 -----
 
 ## 📝 使用示例

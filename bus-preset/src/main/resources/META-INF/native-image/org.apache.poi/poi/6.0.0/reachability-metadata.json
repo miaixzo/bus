@@ -108,6 +108,12 @@
           ]
         }
       ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.apache.poi.util.XMLHelper"
+      },
+      "type": "org.apache.xerces.util.SecurityManager"
     }
   ],
   "resources": [

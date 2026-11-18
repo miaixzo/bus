@@ -22,8 +22,6 @@ package org.miaixz.bus.crypto.nimble;
 import java.security.Provider;
 import java.security.Security;
 
-import org.miaixz.bus.core.lang.Assert;
-
 /**
  * Factory class for {@link org.bouncycastle.jce.provider.BouncyCastleProvider}. This class implements the
  * {@link BouncyCastleProvider} interface to create and provide instances of the Bouncy Castle security provider.
@@ -37,8 +35,12 @@ public class BouncyCastleServiceProvider implements BouncyCastleProvider {
      * Castle library is available when loaded via SPI.
      */
     public BouncyCastleServiceProvider() {
-        // Check if the BC library is introduced when loaded via SPI
-        Assert.notNull(org.bouncycastle.jce.provider.BouncyCastleProvider.class);
+        // Keep this optional lookup constant so Native Image can resolve it during analysis.
+        try {
+            Class.forName("org.bouncycastle.jce.provider.BouncyCastleProvider");
+        } catch (final ClassNotFoundException e) {
+            throw new IllegalStateException("Bouncy Castle is not available", e);
+        }
     }
 
     /**
@@ -48,12 +50,23 @@ public class BouncyCastleServiceProvider implements BouncyCastleProvider {
      */
     @Override
     public Provider create() {
-        Provider provider = Security.getProvider(org.bouncycastle.jce.provider.BouncyCastleProvider.PROVIDER_NAME);
+        Provider provider = Security.getProvider("BC");
         if (null == provider) {
-            provider = new org.bouncycastle.jce.provider.BouncyCastleProvider();
+            provider = ProviderFactory.create();
         }
 
         return provider;
+    }
+
+    /**
+     * Defers linkage to the optional BC library until a provider is requested.
+     */
+    private static class ProviderFactory {
+
+        private static Provider create() {
+            return new org.bouncycastle.jce.provider.BouncyCastleProvider();
+        }
+
     }
 
 }

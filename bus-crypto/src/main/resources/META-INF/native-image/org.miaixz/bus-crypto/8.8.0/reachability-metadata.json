@@ -3021,6 +3021,9 @@
     },
     {
       "type": "org.miaixz.bus.crypto.nimble.BouncyCastleServiceProvider",
+      "condition": {
+        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+      },
       "methods": [
         {
           "name": "<init>",
