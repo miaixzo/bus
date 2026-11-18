@@ -156,6 +156,7 @@ public final class ErrorPolicyCompiler {
             types = Set.copyOf(types);
             Objects.requireNonNull(mode, "mode");
         }
+
     }
 
     /**

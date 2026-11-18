@@ -2442,6 +2442,7 @@ public class GoogleRealmAdapter implements VendorAdapter {
                 case ROLE_ASSIGNMENTS -> null;
             };
         }
+
     }
 
     /**
@@ -2502,6 +2503,7 @@ public class GoogleRealmAdapter implements VendorAdapter {
             }
             return new CursorState(phase, ordered, Position.initial());
         }
+
     }
 
     /**
@@ -2635,6 +2637,7 @@ public class GoogleRealmAdapter implements VendorAdapter {
                 throw new ValidateException("Google top-level page cursor must not contain a parent identifier");
             }
         }
+
     }
 
     /**
@@ -2657,6 +2660,7 @@ public class GoogleRealmAdapter implements VendorAdapter {
             items = List.copyOf(Assert.notNull(items, "Google page items must not be null"));
             next = Position.optional(next, "Google next-page token");
         }
+
     }
 
     /**
@@ -2687,6 +2691,7 @@ public class GoogleRealmAdapter implements VendorAdapter {
             }
             path = requireText(path, "Google organization path");
         }
+
     }
 
     /**
@@ -2716,6 +2721,7 @@ public class GoogleRealmAdapter implements VendorAdapter {
             name = requireText(name, "Google user display name");
             organizationPath = requireText(organizationPath, "Google user organization path");
         }
+
     }
 
     /**
@@ -2740,6 +2746,7 @@ public class GoogleRealmAdapter implements VendorAdapter {
             email = requireText(email, "Google group email");
             name = requireText(name, "Google group display name");
         }
+
     }
 
     /**
@@ -2758,6 +2765,7 @@ public class GoogleRealmAdapter implements VendorAdapter {
         private Member {
             id = requireText(id, "Google group-member identifier");
         }
+
     }
 
     /**
@@ -2779,6 +2787,7 @@ public class GoogleRealmAdapter implements VendorAdapter {
             id = requireText(id, "Google role identifier");
             name = requireText(name, "Google role display name");
         }
+
     }
 
     /**
@@ -2800,6 +2809,7 @@ public class GoogleRealmAdapter implements VendorAdapter {
             userId = requireText(userId, "Google role-assignment user identifier");
             roleId = requireText(roleId, "Google role-assignment role identifier");
         }
+
     }
 
     /**
@@ -2833,6 +2843,7 @@ public class GoogleRealmAdapter implements VendorAdapter {
         public String toString() {
             return Builder.REDACTED_VALUE;
         }
+
     }
 
 }

@@ -75,7 +75,12 @@ public class Oracle extends AbstractDialect {
      */
     @Override
     public SqlTypeDescriptor resolveType(ColumnMeta column) {
-        return oracleType(column);
+        SqlTypeDescriptor type = oracleType(column);
+        if (column.javaType() == String.class && !Boolean.TRUE.equals(column.lob())
+                && (column.columnDefinition() == null || column.columnDefinition().isBlank())) {
+            type.nativeDefinition("VARCHAR2(" + type.length() + " CHAR)");
+        }
+        return type;
     }
 
     /**
@@ -100,6 +105,17 @@ public class Oracle extends AbstractDialect {
     @Override
     protected String modifyColumn(TableMeta table, ColumnMeta column) {
         return oracleModifyColumn(table, column);
+    }
+
+    /**
+     * Quotes DDL names while retaining Oracle's normal uppercase identifier semantics.
+     */
+    @Override
+    protected String identifier(String identifier) {
+        if (identifier.startsWith("\"") && identifier.endsWith("\"")) {
+            return identifier;
+        }
+        return "\"" + identifier.toUpperCase(java.util.Locale.ROOT).replace("\"", "\"\"") + "\"";
     }
 
     /**

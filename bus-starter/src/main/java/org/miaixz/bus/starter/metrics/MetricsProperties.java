@@ -167,6 +167,8 @@ public class MetricsProperties {
      *
      * @param enabled whether the scrape endpoint is enabled
      * @param path    absolute servlet mapping path
+     *
+     * @author Kimi Liu
      */
     public record Endpoint(@DefaultValue("false") boolean enabled, @DefaultValue("/metricz") String path) {
 
@@ -189,18 +191,23 @@ public class MetricsProperties {
         /**
          * Validates an explicitly configured endpoint path.
          *
+         * @param enabled whether the scrape endpoint is enabled
+         * @param path    absolute servlet mapping path
          * @throws IllegalArgumentException if the endpoint path is blank or not absolute
          */
         @ConstructorBinding
         public Endpoint {
             path = validPath(path == null ? "/metricz" : path, "bus.metrics.endpoint.path");
         }
+
     }
 
     /**
      * Spring Boot startup metric options.
      *
      * @param enabled whether startup metrics are enabled
+     *
+     * @author Kimi Liu
      */
     public record Startup(@DefaultValue("false") boolean enabled) {
 
@@ -213,11 +220,14 @@ public class MetricsProperties {
 
         /**
          * Selects the canonical constructor for nested property binding.
+         *
+         * @param enabled whether startup metrics are enabled
          */
         @ConstructorBinding
         public Startup {
             // No initialization required.
         }
+
     }
 
     /**
@@ -226,6 +236,8 @@ public class MetricsProperties {
      * @param defaultMax default maximum distinct values per guarded key
      * @param denyList   attribute keys that must always be denied
      * @param rules      explicit per-key cardinality rules
+     *
+     * @author Kimi Liu
      */
     public record Cardinality(@DefaultValue("100") int defaultMax, @DefaultValue({
             "user_id", "trace_id", "request_id" }) List<String> denyList, @DefaultValue List<CardinalityRule> rules) {
@@ -240,6 +252,9 @@ public class MetricsProperties {
         /**
          * Validates and copies cardinality settings.
          *
+         * @param defaultMax default maximum distinct values per guarded key
+         * @param denyList   attribute keys that must always be denied
+         * @param rules      explicit per-key cardinality rules
          * @throws IllegalArgumentException if the default maximum is not positive
          */
         @ConstructorBinding
@@ -276,6 +291,7 @@ public class MetricsProperties {
         public List<CardinalityRule> getRules() {
             return rules;
         }
+
     }
 
     /**
@@ -284,12 +300,17 @@ public class MetricsProperties {
      * @param tag    guarded attribute key
      * @param policy cardinality policy name
      * @param max    maximum distinct values
+     *
+     * @author Kimi Liu
      */
     public record CardinalityRule(String tag, String policy, int max) {
 
         /**
          * Validates the rule.
          *
+         * @param tag    guarded attribute key
+         * @param policy cardinality policy name
+         * @param max    maximum distinct values
          * @throws IllegalArgumentException if the tag is blank or the maximum is not positive
          */
         public CardinalityRule {
@@ -325,6 +346,7 @@ public class MetricsProperties {
         public int getMax() {
             return max;
         }
+
     }
 
     /**
@@ -337,6 +359,8 @@ public class MetricsProperties {
      * @param percentile    requested percentile as a ratio
      * @param target        target success ratio
      * @param windowMinutes evaluation window in minutes
+     *
+     * @author Kimi Liu
      */
     public record SloDefinition(String name, String metric, String type, long thresholdMs, double percentile,
             double target, int windowMinutes) {
@@ -344,12 +368,20 @@ public class MetricsProperties {
         /**
          * Validates ratios and time window.
          *
+         * @param name          objective name
+         * @param metric        source metric name
+         * @param type          objective type
+         * @param thresholdMs   latency threshold in milliseconds
+         * @param percentile    requested percentile as a ratio
+         * @param target        target success ratio
+         * @param windowMinutes evaluation window in minutes
          * @throws IllegalArgumentException if a ratio, threshold, or window is outside its supported bounds
          */
         public SloDefinition {
             if (percentile < 0 || percentile > 1 || target < 0 || target > 1 || thresholdMs <= 0 || windowMinutes <= 0)
                 throw new IllegalArgumentException("Invalid metrics SLO bounds");
         }
+
     }
 
     /**
@@ -357,6 +389,8 @@ public class MetricsProperties {
      *
      * @param enabled      whether periodic rate updates are enabled
      * @param tickInterval update interval
+     *
+     * @author Kimi Liu
      */
     public record RateWindow(@DefaultValue("true") boolean enabled, @DefaultValue("5s") Duration tickInterval) {
 
@@ -370,12 +404,15 @@ public class MetricsProperties {
         /**
          * Validates the interval.
          *
+         * @param enabled      whether periodic rate updates are enabled
+         * @param tickInterval update interval
          * @throws IllegalArgumentException if the tick interval is null, zero, or negative
          */
         @ConstructorBinding
         public RateWindow {
             requirePositive(tickInterval, "rate-window.tick-interval");
         }
+
     }
 
     /**
@@ -385,6 +422,8 @@ public class MetricsProperties {
      * @param interval  export interval
      * @param space     CacheX space name
      * @param serviceId service identifier, or blank to use the runtime default
+     *
+     * @author Kimi Liu
      */
     public record Cortex(@DefaultValue("false") boolean enabled, @DefaultValue("15s") Duration interval,
             @DefaultValue("default") String space, @DefaultValue("") String serviceId) {
@@ -399,12 +438,17 @@ public class MetricsProperties {
         /**
          * Validates the interval.
          *
+         * @param enabled   whether Cortex export is enabled
+         * @param interval  export interval
+         * @param space     CacheX space name
+         * @param serviceId service identifier, or blank to use the runtime default
          * @throws IllegalArgumentException if the export interval is null, zero, or negative
          */
         @ConstructorBinding
         public Cortex {
             requirePositive(interval, "cortex.interval");
         }
+
     }
 
     /**
@@ -420,6 +464,8 @@ public class MetricsProperties {
      * @param disk       disk options
      * @param filesystem filesystem options
      * @param network    network options
+     *
+     * @author Kimi Liu
      */
     public record Host(@DefaultValue("true") boolean enabled, @DefaultValue("false") boolean required,
             @DefaultValue("otel-1.44.0") String convention, @DefaultValue("1s") Duration cacheTtl,
@@ -436,6 +482,16 @@ public class MetricsProperties {
         /**
          * Validates and fills nested defaults.
          *
+         * @param enabled    whether host metrics are enabled
+         * @param required   whether missing host dependencies must fail startup
+         * @param convention semantic convention identifier
+         * @param cacheTtl   snapshot cache lifetime
+         * @param categories category switches
+         * @param cpu        CPU limits
+         * @param process    process options
+         * @param disk       disk options
+         * @param filesystem filesystem options
+         * @param network    network options
          * @throws IllegalArgumentException if the convention is unsupported or the cache TTL is outside its bounds
          */
         @ConstructorBinding
@@ -452,6 +508,7 @@ public class MetricsProperties {
             filesystem = filesystem == null ? new FileSystem() : filesystem;
             network = network == null ? new Network() : network;
         }
+
     }
 
     /**
@@ -466,6 +523,8 @@ public class MetricsProperties {
      * @param network    whether network metrics are enabled
      * @param process    whether process metrics are enabled
      * @param container  whether container metrics are enabled
+     *
+     * @author Kimi Liu
      */
     public record Categories(@DefaultValue("true") boolean general, @DefaultValue("true") boolean cpu,
             @DefaultValue("true") boolean memory, @DefaultValue("true") boolean paging,
@@ -482,17 +541,30 @@ public class MetricsProperties {
 
         /**
          * Selects the canonical constructor for nested property binding.
+         *
+         * @param general    whether general host metrics are enabled
+         * @param cpu        whether CPU metrics are enabled
+         * @param memory     whether memory metrics are enabled
+         * @param paging     whether paging metrics are enabled
+         * @param disk       whether disk metrics are enabled
+         * @param filesystem whether filesystem metrics are enabled
+         * @param network    whether network metrics are enabled
+         * @param process    whether process metrics are enabled
+         * @param container  whether container metrics are enabled
          */
         @ConstructorBinding
         public Categories {
             // No initialization required.
         }
+
     }
 
     /**
      * CPU resource limits.
      *
      * @param maxLogicalCpus maximum logical CPUs exported as distinct series
+     *
+     * @author Kimi Liu
      */
     public record Cpu(@DefaultValue("1024") int maxLogicalCpus) {
 
@@ -506,6 +578,7 @@ public class MetricsProperties {
         /**
          * Validates limits.
          *
+         * @param maxLogicalCpus maximum logical CPUs exported as distinct series
          * @throws IllegalArgumentException if the logical CPU limit is not positive
          */
         @ConstructorBinding
@@ -513,6 +586,7 @@ public class MetricsProperties {
             if (maxLogicalCpus <= 0)
                 throw new IllegalArgumentException("max-logical-cpus must be positive");
         }
+
     }
 
     /**
@@ -521,6 +595,8 @@ public class MetricsProperties {
      * @param currentOnly         whether collection is restricted to the current process
      * @param stateCounts         whether aggregate process state counts are enabled
      * @param stateCountsCacheTtl process state-count cache lifetime
+     *
+     * @author Kimi Liu
      */
     public record Process(@DefaultValue("true") boolean currentOnly, @DefaultValue("false") boolean stateCounts,
             @DefaultValue("10s") Duration stateCountsCacheTtl) {
@@ -535,6 +611,9 @@ public class MetricsProperties {
         /**
          * Validates supported shape.
          *
+         * @param currentOnly         whether collection is restricted to the current process
+         * @param stateCounts         whether aggregate process state counts are enabled
+         * @param stateCountsCacheTtl process state-count cache lifetime
          * @throws IllegalArgumentException if collection is not current-process-only or the state TTL is invalid
          */
         @ConstructorBinding
@@ -545,6 +624,7 @@ public class MetricsProperties {
                     stateCountsCacheTtl == null ? Duration.ofSeconds(10) : stateCountsCacheTtl,
                     "host.process.state-counts-cache-ttl");
         }
+
     }
 
     /**
@@ -552,6 +632,8 @@ public class MetricsProperties {
      *
      * @param includeVirtual whether virtual disks are included
      * @param maxDevices     maximum devices exported as distinct series
+     *
+     * @author Kimi Liu
      */
     public record Disk(@DefaultValue("false") boolean includeVirtual, @DefaultValue("128") int maxDevices) {
 
@@ -565,6 +647,8 @@ public class MetricsProperties {
         /**
          * Validates limits.
          *
+         * @param includeVirtual whether virtual disks are included
+         * @param maxDevices     maximum devices exported as distinct series
          * @throws IllegalArgumentException if the device limit is not positive
          */
         @ConstructorBinding
@@ -572,6 +656,7 @@ public class MetricsProperties {
             if (maxDevices <= 0)
                 throw new IllegalArgumentException("max-devices must be positive");
         }
+
     }
 
     /**
@@ -580,6 +665,8 @@ public class MetricsProperties {
      * @param localOnly      whether only local filesystems are included
      * @param mountpointMode mountpoint label privacy mode
      * @param maxFilesystems maximum filesystems exported as distinct series
+     *
+     * @author Kimi Liu
      */
     public record FileSystem(@DefaultValue("false") boolean localOnly, @DefaultValue("keep") String mountpointMode,
             @DefaultValue("256") int maxFilesystems) {
@@ -594,6 +681,9 @@ public class MetricsProperties {
         /**
          * Validates privacy mode and limits.
          *
+         * @param localOnly      whether only local filesystems are included
+         * @param mountpointMode mountpoint label privacy mode
+         * @param maxFilesystems maximum filesystems exported as distinct series
          * @throws IllegalArgumentException if the privacy mode is unsupported or the filesystem limit is not positive
          */
         @ConstructorBinding
@@ -605,6 +695,7 @@ public class MetricsProperties {
             if (maxFilesystems <= 0)
                 throw new IllegalArgumentException("max-filesystems must be positive");
         }
+
     }
 
     /**
@@ -614,6 +705,8 @@ public class MetricsProperties {
      * @param includeVirtual  whether virtual interfaces are included
      * @param connections     whether connection metrics are enabled
      * @param maxInterfaces   maximum interfaces exported as distinct series
+     *
+     * @author Kimi Liu
      */
     public record Network(@DefaultValue("false") boolean includeLoopback, @DefaultValue("true") boolean includeVirtual,
             @DefaultValue("true") boolean connections, @DefaultValue("128") int maxInterfaces) {
@@ -628,6 +721,10 @@ public class MetricsProperties {
         /**
          * Validates limits.
          *
+         * @param includeLoopback whether loopback interfaces are included
+         * @param includeVirtual  whether virtual interfaces are included
+         * @param connections     whether connection metrics are enabled
+         * @param maxInterfaces   maximum interfaces exported as distinct series
          * @throws IllegalArgumentException if the interface limit is not positive
          */
         @ConstructorBinding
@@ -635,6 +732,7 @@ public class MetricsProperties {
             if (maxInterfaces <= 0)
                 throw new IllegalArgumentException("max-interfaces must be positive");
         }
+
     }
 
 }

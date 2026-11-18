@@ -71,6 +71,7 @@ public enum Registry implements Complex {
         public Class<? extends AbstractProvider> getTargetClass() {
             return AliPayProvider.class;
         }
+
     },
     /**
      * JD Pay.
@@ -106,6 +107,7 @@ public enum Registry implements Complex {
         public Class<? extends AbstractProvider> getTargetClass() {
             return JdPayProvider.class;
         }
+
     },
     /**
      * Paypal.
@@ -141,6 +143,7 @@ public enum Registry implements Complex {
         public Class<? extends AbstractProvider> getTargetClass() {
             return PaypalProvider.class;
         }
+
     },
     /**
      * QQ Wallet.
@@ -177,6 +180,7 @@ public enum Registry implements Complex {
         public Class<? extends AbstractProvider> getTargetClass() {
             return TenpayProvider.class;
         }
+
     },
     /**
      * UnionPay Cloud QuickPass.
@@ -212,6 +216,7 @@ public enum Registry implements Complex {
         public Class<? extends AbstractProvider> getTargetClass() {
             return UnionPayProvider.class;
         }
+
     },
     /**
      * Wechat Pay.
@@ -299,6 +304,7 @@ public enum Registry implements Complex {
             }
 
         }
+
     };
 
     /**

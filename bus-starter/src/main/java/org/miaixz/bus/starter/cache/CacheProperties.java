@@ -121,6 +121,8 @@ public class CacheProperties extends Options {
      * @param url      service endpoint URL
      * @param username authentication username
      * @param password authentication password
+     *
+     * @author Kimi Liu
      */
     public record Collector(String key, String url, String username, String password) {
 
@@ -167,6 +169,7 @@ public class CacheProperties extends Options {
         public String toString() {
             return "Collector[key=" + key + ", url=" + url + ", username=***, password=***]";
         }
+
     }
 
 }

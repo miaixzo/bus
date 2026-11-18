@@ -2275,6 +2275,7 @@ public class AliyunRealmAdapter implements VendorAdapter {
                 case ROLE_TRUST -> null;
             };
         }
+
     }
 
     /**
@@ -2290,6 +2291,7 @@ public class AliyunRealmAdapter implements VendorAdapter {
          * @return stable RAM identifier
          */
         String id();
+
     }
 
     /**
@@ -2327,6 +2329,7 @@ public class AliyunRealmAdapter implements VendorAdapter {
                     : ordered.contains(Realm.Kind.GROUP) ? Phase.GROUPS : Phase.ROLES;
             return new CursorState(initial, ordered, Position.initial());
         }
+
     }
 
     /**
@@ -2421,6 +2424,7 @@ public class AliyunRealmAdapter implements VendorAdapter {
                 throw new ValidateException("Alibaba Cloud cursor position does not belong to its phase");
             }
         }
+
     }
 
     /**
@@ -2442,6 +2446,7 @@ public class AliyunRealmAdapter implements VendorAdapter {
             next = next.isPresent() ? Optional.of(requireText(next.getOrNull(), "Alibaba Cloud collection marker"))
                     : Optional.empty();
         }
+
     }
 
     /**
@@ -2466,6 +2471,7 @@ public class AliyunRealmAdapter implements VendorAdapter {
                 throw new ValidateException("Alibaba Cloud replay parent state is inconsistent");
             }
         }
+
     }
 
     /**
@@ -2486,6 +2492,7 @@ public class AliyunRealmAdapter implements VendorAdapter {
             name = requireText(name, "Alibaba Cloud RAM UserName");
             displayName = requireText(displayName, "Alibaba Cloud RAM User display name");
         }
+
     }
 
     /**
@@ -2504,6 +2511,7 @@ public class AliyunRealmAdapter implements VendorAdapter {
             id = requireText(id, "Alibaba Cloud RAM GroupId");
             name = requireText(name, "Alibaba Cloud RAM GroupName");
         }
+
     }
 
     /**
@@ -2522,6 +2530,7 @@ public class AliyunRealmAdapter implements VendorAdapter {
             id = requireText(id, "Alibaba Cloud RAM RoleId");
             name = requireText(name, "Alibaba Cloud RAM RoleName");
         }
+
     }
 
     /**
@@ -2544,6 +2553,7 @@ public class AliyunRealmAdapter implements VendorAdapter {
                 throw new ValidateException("Alibaba Cloud RAM absent Role must not expose principals");
             }
         }
+
     }
 
 }

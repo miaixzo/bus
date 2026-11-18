@@ -270,6 +270,7 @@ public final class ReactiveErrorHandler implements WebExceptionHandler {
         public HttpHeaders getHeaders() {
             return this.headers == null ? HttpHeaders.EMPTY : this.headers;
         }
+
     }
 
     /**
@@ -564,6 +565,7 @@ public final class ReactiveErrorHandler implements WebExceptionHandler {
                     this.failure,
                     () -> this.delegate.writeTo(exchange, writerContext));
         }
+
     }
 
 }

@@ -304,6 +304,8 @@ public class CachedBodyResponseWrapper extends HttpServletResponseWrapper {
 
     /**
      * Pass-through Servlet stream that mirrors writes into the bounded cache.
+     *
+     * @author Kimi Liu
      */
     private final class CachingServletOutputStream extends ServletOutputStream {
 
@@ -386,10 +388,13 @@ public class CachedBodyResponseWrapper extends HttpServletResponseWrapper {
         public void close() throws IOException {
             this.delegate.close();
         }
+
     }
 
     /**
      * Bounded byte sink used by the character encoder.
+     *
+     * @author Kimi Liu
      */
     private final class CacheOutputStream extends OutputStream {
 
@@ -421,10 +426,13 @@ public class CachedBodyResponseWrapper extends HttpServletResponseWrapper {
         public void write(byte[] bytes, int offset, int length) {
             cache(bytes, offset, length);
         }
+
     }
 
     /**
      * Pass-through character writer that mirrors complete writes into the encoder cache.
+     *
+     * @author Kimi Liu
      */
     private final class CachingWriter extends Writer {
 
@@ -490,6 +498,7 @@ public class CachedBodyResponseWrapper extends HttpServletResponseWrapper {
             if (!passthrough)
                 this.cache.close();
         }
+
     }
 
 }

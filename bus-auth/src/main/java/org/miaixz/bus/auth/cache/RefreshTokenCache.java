@@ -261,6 +261,7 @@ public class RefreshTokenCache extends AuthCache<RefreshTokenCache.Entry> {
             return new Entry(sourceId, clientId, subjectId, familyId, sequence, scope, audience, confirmation,
                     openIdBinding, status);
         }
+
     }
 
 }

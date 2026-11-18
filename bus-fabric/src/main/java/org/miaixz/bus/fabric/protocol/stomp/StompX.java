@@ -796,6 +796,7 @@ public class StompX {
                 public void failure(final Throwable cause) {
                     errorHandler.accept(cause);
                 }
+
             };
             return this;
         }

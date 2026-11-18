@@ -130,6 +130,7 @@ public record GradientOpacity(List<Point> points) {
                 throw new IllegalArgumentException("Factor must be in [0, 1]: " + factor);
             }
         }
+
     }
 
 }

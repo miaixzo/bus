@@ -346,3 +346,11 @@ Spring、Servlet 和持久性依赖项保持静态 模块要求。
 
 Bus包含且不运行任何测试。上下文、Bean 服务、Web、模块路径、生命周期、元数据、AOT 和本机映像 测试保存在兄弟 Abarth
 存储库中。Bus构建必须明确跳过测试。
+
+## 事务与数据库异常边界
+
+事务声明元数据由 Bus Core 提供：`org.miaixz.bus.core.lang.annotation.Transactional`、`Transactional.Propagation` 和 `Transactional.Isolation`。`org.miaixz.bus.spring.jdbc` 提供不可变的 `Transactions` 操作、`TransactionScope` 和 `@AfterCommit`。Starter 将它们连接到现有事务管理器与标准代理机制，不另外创建事务管理器。声明式事务沿用方法、类和继承查找规则，并支持回滚及不回滚的异常类型。
+
+`transactions.propagation(Propagation.REQUIRES_NEW).isolation(Isolation.READ_COMMITTED)` 返回独立的配置实例。`execute` 在提交或回滚完成后返回；回调收到的 scope 只能在当前线程和回调生命周期中使用。保存点通过 `try (var point = scope.savepoint())` 创建，`point.rollback()` 恢复该保存点，离开代码块时释放。声明式事务可通过 `Transactions.current()` 获取当前 scope。`@AfterCommit` 只在发布事件的事务成功提交后执行。
+
+Mapper Starter 在默认 SqlSessionTemplate 和显式工厂创建的标准 Mapper 会话边界统一转换异常：唯一键冲突为 `DuplicateException`，瞬时数据库失败为通用 `RetryableException`，其他数据库或事务错误为 `MapperException`。保留原始原因，不自动重试业务操作。宿主提供的会话子类和自定义异常转换器仍由宿主负责。数据操作继续通过 Mapper，事务 API 不提供执行 SQL 的旁路。

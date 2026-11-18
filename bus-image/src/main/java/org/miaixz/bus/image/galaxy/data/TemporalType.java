@@ -54,6 +54,7 @@ enum TemporalType {
         public String format(TimeZone tz, Date date, DatePrecision precision) {
             return Format.formatDA(tz, date);
         }
+
     },
     /**
      * The dt value.
@@ -73,6 +74,7 @@ enum TemporalType {
         public String format(TimeZone tz, Date date, DatePrecision precision) {
             return Format.formatDT(tz, date, precision);
         }
+
     },
     /**
      * The tm value.
@@ -93,6 +95,7 @@ enum TemporalType {
         public String format(TimeZone tz, Date date, DatePrecision precision) {
             return Format.formatTM(tz, date, precision);
         }
+
     };
 
     /**

@@ -86,6 +86,7 @@ public abstract class AbstractPayloadConverter implements PayloadConverter {
             public <T> T fromBytes(byte[] bytes, Class<T> valueClass, Type valueType) {
                 return provider.read(bytes, valueType == null ? valueClass : valueType);
             }
+
         };
     }
 

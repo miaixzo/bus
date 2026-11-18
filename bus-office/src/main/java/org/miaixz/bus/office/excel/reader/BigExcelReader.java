@@ -456,6 +456,7 @@ public class BigExcelReader implements AutoCloseable {
                         listener,
                         currentSheetHolder[0]);
             }
+
         };
 
         final ExcelSaxReader<?> saxReader = ExcelSaxKit

@@ -412,6 +412,7 @@ public class Http2Connection implements AutoCloseable {
             public void failed(final RuntimeException failure) {
                 connectionFailure.compareAndSet(null, streamFailure(failure));
             }
+
         });
         this.writerHandle = new AtomicReference<>();
         this.hpackWriter = new HpackCodec();

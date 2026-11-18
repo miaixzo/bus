@@ -121,6 +121,7 @@ public class WmiKit {
             public int getCIMType(T property) {
                 return Wbemcli.CIM_EMPTY;
             }
+
         };
     }
 

@@ -114,6 +114,7 @@ public record PolicySnapshot(List<Rule> rules, long version) {
             types = Set.copyOf(types);
             java.util.Objects.requireNonNull(mode, "mode");
         }
+
     }
 
 }

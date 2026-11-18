@@ -219,6 +219,7 @@ public interface IPHlpAPI extends com.sun.jna.platform.win32.IPHlpAPI {
         public MIB_IPFORWARD_ROW2(Pointer p) {
             super(p);
         }
+
     }
 
 }

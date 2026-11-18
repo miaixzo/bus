@@ -1736,6 +1736,7 @@ public class GitLabRealmAdapter implements VendorAdapter {
                 case ALL_MEMBERS -> null;
             };
         }
+
     }
 
     /**
@@ -1772,6 +1773,7 @@ public class GitLabRealmAdapter implements VendorAdapter {
             final Phase initial = ordered.contains(Realm.Kind.ORGANIZATION) ? Phase.ROOT : Phase.DIRECT_MEMBERS;
             return new CursorState(initial, ordered, Position.initial());
         }
+
     }
 
     /**
@@ -1840,6 +1842,7 @@ public class GitLabRealmAdapter implements VendorAdapter {
                 throw new ValidateException("GitLab cursor position does not belong to its phase");
             }
         }
+
     }
 
     /**
@@ -1861,6 +1864,7 @@ public class GitLabRealmAdapter implements VendorAdapter {
                 throw new ValidateException("GitLab collection next page must not be negative");
             }
         }
+
     }
 
     /**
@@ -1885,6 +1889,7 @@ public class GitLabRealmAdapter implements VendorAdapter {
                 throw new ValidateException("GitLab replay parent state is inconsistent");
             }
         }
+
     }
 
     /**
@@ -1907,6 +1912,7 @@ public class GitLabRealmAdapter implements VendorAdapter {
             name = requireText(name, "GitLab user display name");
             state = Assert.notNull(state, "GitLab user state must not be null");
         }
+
     }
 
     /**
@@ -1929,6 +1935,7 @@ public class GitLabRealmAdapter implements VendorAdapter {
             name = requireText(name, "GitLab group name");
             parentId = Assert.notNull(parentId, "GitLab group parent container must not be null");
         }
+
     }
 
     /**
@@ -1949,6 +1956,7 @@ public class GitLabRealmAdapter implements VendorAdapter {
                 throw new ValidateException("GitLab member access level must not be negative");
             }
         }
+
     }
 
 }

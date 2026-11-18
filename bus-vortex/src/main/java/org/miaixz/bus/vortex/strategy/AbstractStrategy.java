@@ -395,6 +395,7 @@ public abstract class AbstractStrategy implements Strategy {
                 public HttpHeaders getHeaders() {
                     return headers;
                 }
+
             };
             return exchange.mutate().request(requestDecorator).build();
         }

@@ -212,6 +212,7 @@ public final class MetricFamilyRegistry {
             this.descriptor = descriptor;
             this.key = key;
         }
+
     }
 
     /**
@@ -288,6 +289,7 @@ public final class MetricFamilyRegistry {
                 releaser.run();
             }
         }
+
     }
 
 }

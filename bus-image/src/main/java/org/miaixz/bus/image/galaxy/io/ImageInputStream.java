@@ -712,6 +712,7 @@ public class ImageInputStream extends FilterInputStream implements ImageInputHan
             @Override
             public void endDataset(ImageInputStream dis) {
             }
+
         };
     }
 

@@ -154,6 +154,7 @@ public class LoadAverage {
                     }
                 }
             }
+
         };
         loadAvgThread.setDaemon(true);
         loadAvgThread.start();

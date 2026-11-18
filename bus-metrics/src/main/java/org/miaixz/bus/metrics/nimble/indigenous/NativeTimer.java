@@ -496,6 +496,7 @@ public class NativeTimer implements Timer {
             generation = Long.MIN_VALUE;
             digest = new TDigest();
         }
+
     }
 
 }

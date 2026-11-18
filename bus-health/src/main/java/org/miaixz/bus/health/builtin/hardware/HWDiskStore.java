@@ -230,6 +230,7 @@ public interface HWDiskStore {
         public String nameOf(String entry) {
             return matches(entry) ? entry.substring(prefix.length()) : Normal.EMPTY;
         }
+
     }
 
 }

@@ -279,6 +279,7 @@ final class HttpConnectionLease {
             }
             release();
         }
+
     }
 
     /**
@@ -340,6 +341,7 @@ final class HttpConnectionLease {
             }
             release();
         }
+
     }
 
 }

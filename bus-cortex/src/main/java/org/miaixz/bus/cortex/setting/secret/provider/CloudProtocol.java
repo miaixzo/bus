@@ -174,6 +174,7 @@ final class CloudProtocol {
                     @Override
                     public void close() {
                     }
+
                 };
                 byte[] bytes = Payload.source(borrowed, response.body().length())
                         .bytes(Math.min(Normal.BYTES_PER_MB, response.body().materializeMaxBytes()));

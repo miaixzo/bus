@@ -61,6 +61,8 @@ public class JsonProperties {
 
     /**
      * Supported JSON provider selections.
+     *
+     * @author Kimi Liu
      */
     public enum Provider {
 
@@ -89,6 +91,7 @@ public class JsonProperties {
         public String key() {
             return StringKit.toLowerCase(name());
         }
+
     }
 
 }

@@ -89,6 +89,19 @@ public class ColumnAnnotationBuilder implements ColumnSchemaBuilder {
             List<ColumnMeta> columnList = columns.getOrNull();
             for (ColumnMeta columnMeta : columnList) {
                 processAnnotations(columnMeta, fieldMeta);
+                for (Class<?> owner = tableMeta.entityClass(); owner != null; owner = owner.getSuperclass()) {
+                    boolean overridden = false;
+                    for (AttributeOverride override : owner.getDeclaredAnnotationsByType(AttributeOverride.class)) {
+                        if (override.name().equals(fieldMeta.getName())) {
+                            processColumn(columnMeta, override.column());
+                            overridden = true;
+                            break;
+                        }
+                    }
+                    if (overridden) {
+                        break;
+                    }
+                }
                 EntityClassBuilder.setColumnMeta(tableMeta.entityClass(), columnMeta);
             }
         }
@@ -110,22 +123,7 @@ public class ColumnAnnotationBuilder implements ColumnSchemaBuilder {
 
         // Process the column annotation.
         if (fieldMeta.isAnnotationPresent(Column.class)) {
-            Column column = fieldMeta.getAnnotation(Column.class);
-            if (!column.name().isEmpty()) {
-                columnMeta.column(column.name());
-            }
-            columnMeta.insertable(column.insertable()).updatable(column.updatable()).nullable(column.nullable())
-                    .length(column.length()).precision(column.precision()).scale(column.scale())
-                    .unique(column.unique());
-            if (column.scale() != 0) {
-                columnMeta.numericScale(String.valueOf(column.scale()));
-            }
-            if (!column.columnDefinition().isBlank()) {
-                columnMeta.columnDefinition(column.columnDefinition());
-            }
-            if (!column.comment().isBlank()) {
-                columnMeta.comment(column.comment());
-            }
+            processColumn(columnMeta, fieldMeta.getAnnotation(Column.class));
         }
 
         // Process the basic annotation.
@@ -165,6 +163,24 @@ public class ColumnAnnotationBuilder implements ColumnSchemaBuilder {
                 columnMeta.typeHandler(converter);
             }
         }
+    }
+
+    /**
+     * Applies field or entity-local column mapping without changing the inherited Java property.
+     *
+     * @param columnMeta the column metadata
+     * @param column     the effective column mapping
+     */
+    protected void processColumn(ColumnMeta columnMeta, Column column) {
+        if (!column.name().isEmpty()) {
+            columnMeta.column(column.name());
+        }
+        columnMeta.insertable(column.insertable()).updatable(column.updatable()).nullable(column.nullable())
+                .length(column.length()).precision(column.precision()).scale(column.scale()).unique(column.unique());
+        if (column.scale() != 0) {
+            columnMeta.numericScale(String.valueOf(column.scale()));
+        }
+        columnMeta.columnDefinition(column.columnDefinition()).comment(column.comment());
     }
 
     /**

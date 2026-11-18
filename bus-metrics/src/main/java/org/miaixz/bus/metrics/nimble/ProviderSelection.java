@@ -169,6 +169,7 @@ public final class ProviderSelection {
                         + "; expected native, micrometer, opentelemetry, prometheus or auto", exception);
             }
         }
+
     }
 
     /**
@@ -235,6 +236,7 @@ public final class ProviderSelection {
             }
             return new Candidate(type, external, false, reason, Optional.empty());
         }
+
     }
 
 }

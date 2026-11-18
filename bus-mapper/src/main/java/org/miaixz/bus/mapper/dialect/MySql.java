@@ -89,6 +89,20 @@ public class MySql extends AbstractDialect {
     }
 
     /**
+     * Quotes DDL identifiers so mapped columns such as {@code schema} remain legal in MySQL.
+     *
+     * @param identifier the mapped identifier
+     * @return the MySQL quoted identifier
+     */
+    @Override
+    protected String identifier(String identifier) {
+        if (identifier.startsWith("`") && identifier.endsWith("`")) {
+            return identifier;
+        }
+        return "`" + identifier.replace("`", "``") + "`";
+    }
+
+    /**
      * Builds the DDL used to set a MySQL table comment.
      *
      * @param table the mapper table metadata

@@ -1550,6 +1550,7 @@ public class GitLabApiClient implements AutoCloseable {
             @Override
             public void checkServerTrusted(X509Certificate[] chain, String authType, SSLEngine engine) {
             }
+
         } };
 
         // Ignore differences between given hostname and certificate hostname

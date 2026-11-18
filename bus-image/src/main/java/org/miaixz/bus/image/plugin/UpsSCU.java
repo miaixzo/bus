@@ -82,6 +82,7 @@ public class UpsSCU {
         protected void onDimseRQ(Association as, PresentationContext pc, Dimse dimse, Attributes cmd, Attributes data) {
             throw new UnsupportedOperationException();
         }
+
     };
 
     /**
@@ -117,6 +118,7 @@ public class UpsSCU {
                 public void onDimseRSP(Association as, Attributes cmd, Attributes data) {
                     // C-FIND response handling logic goes here.
                 }
+
             };
         }
 
@@ -128,6 +130,7 @@ public class UpsSCU {
                 public void onDimseRSP(Association as, Attributes cmd, Attributes data) {
                     super.onDimseRSP(as, cmd, data);
                 }
+
             };
         }
 
@@ -139,6 +142,7 @@ public class UpsSCU {
                 public void onDimseRSP(Association as, Attributes cmd, Attributes data) {
                     super.onDimseRSP(as, cmd, data);
                 }
+
             };
         }
 
@@ -150,6 +154,7 @@ public class UpsSCU {
                 public void onDimseRSP(Association as, Attributes cmd, Attributes data) {
                     super.onDimseRSP(as, cmd, data);
                 }
+
             };
         }
 
@@ -161,8 +166,10 @@ public class UpsSCU {
                 public void onDimseRSP(Association as, Attributes cmd, Attributes data) {
                     super.onDimseRSP(as, cmd, data);
                 }
+
             };
         }
+
     };
 
     /**

@@ -56,6 +56,7 @@ import org.miaixz.bus.validate.magic.annotation.Valid;
  *         // If userDTO validation fails, this method will not be executed; an exception will be thrown directly.
  *         return userService.register(userDTO);
  *     }
+ *
  * }
  * }</pre>
  *

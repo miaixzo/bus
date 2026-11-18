@@ -2481,6 +2481,7 @@ public class DingTalkRealmAdapter implements VendorAdapter {
         private int code() {
             return code;
         }
+
     }
 
     /**
@@ -2538,6 +2539,7 @@ public class DingTalkRealmAdapter implements VendorAdapter {
                     : ordered.contains(Realm.Kind.USER) ? Phase.USERS : Phase.ROLES;
             return new CursorState(phase, ordered, Position.initial(phase));
         }
+
     }
 
     /**
@@ -2705,6 +2707,7 @@ public class DingTalkRealmAdapter implements VendorAdapter {
                 }
             }
         }
+
     }
 
     /**
@@ -2732,6 +2735,7 @@ public class DingTalkRealmAdapter implements VendorAdapter {
             items = List.copyOf(copy);
             next = Position.optionalText(next, "DingTalk wire numeric offset");
         }
+
     }
 
     /**
@@ -2758,6 +2762,7 @@ public class DingTalkRealmAdapter implements VendorAdapter {
             }
             fingerprint = Position.optionalText(fingerprint, "DingTalk replay fingerprint");
         }
+
     }
 
     /**
@@ -2869,6 +2874,7 @@ public class DingTalkRealmAdapter implements VendorAdapter {
             }
             return Outcome.succeeded(Optional.empty());
         }
+
     }
 
     /**
@@ -2931,6 +2937,7 @@ public class DingTalkRealmAdapter implements VendorAdapter {
         private String parentId() {
             return parentId;
         }
+
     }
 
     /**
@@ -2958,6 +2965,7 @@ public class DingTalkRealmAdapter implements VendorAdapter {
                 throw new ValidateException("DingTalk department must not be its own parent");
             }
         }
+
     }
 
     /**
@@ -3001,6 +3009,7 @@ public class DingTalkRealmAdapter implements VendorAdapter {
                 throw new ValidateException("DingTalk user must not manage itself");
             }
         }
+
     }
 
     /**
@@ -3022,6 +3031,7 @@ public class DingTalkRealmAdapter implements VendorAdapter {
             id = requireText(id, "DingTalk role identifier");
             name = requireText(name, "DingTalk role name");
         }
+
     }
 
     /**
@@ -3040,6 +3050,7 @@ public class DingTalkRealmAdapter implements VendorAdapter {
         private RoleMember {
             id = requireText(id, "DingTalk role member identifier");
         }
+
     }
 
     /**
@@ -3073,6 +3084,7 @@ public class DingTalkRealmAdapter implements VendorAdapter {
         public String toString() {
             return Builder.REDACTED_VALUE;
         }
+
     }
 
 }

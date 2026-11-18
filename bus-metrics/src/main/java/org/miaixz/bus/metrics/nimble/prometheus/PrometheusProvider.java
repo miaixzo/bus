@@ -227,6 +227,7 @@ public class PrometheusProvider implements Provider {
             public String contentType() {
                 return Builder.PROMETHEUS_CONTENT_TYPE;
             }
+
         };
         this.capabilities = new ProviderCapabilities(true, Optional.of(scrape), Optional.empty());
         this.scheduler = Executors.newSingleThreadScheduledExecutor(task -> {
@@ -461,6 +462,7 @@ public class PrometheusProvider implements Provider {
                 public long count() {
                     return collector.labelValues(labelValues(finalTags)).getLongValue();
                 }
+
             };
         });
     }
@@ -632,6 +634,7 @@ public class PrometheusProvider implements Provider {
                 public TimerSnapshot snapshot() {
                     return mirror.snapshot();
                 }
+
             };
         });
     }
@@ -703,6 +706,7 @@ public class PrometheusProvider implements Provider {
                 public TimerSnapshot snapshot() {
                     return mirror.snapshot();
                 }
+
             };
         });
     }
@@ -939,6 +943,7 @@ public class PrometheusProvider implements Provider {
         private void tick() {
             rates.tick();
         }
+
     }
 
     /**
@@ -991,6 +996,7 @@ public class PrometheusProvider implements Provider {
                     });
             return builder.build();
         }
+
     }
 
     /**
@@ -1091,6 +1097,7 @@ public class PrometheusProvider implements Provider {
                 lease.close();
             }
         }
+
     }
 
     /**
@@ -1160,6 +1167,7 @@ public class PrometheusProvider implements Provider {
                 diagnostics.collectionError("prometheus", "invalid_point");
             }
         }
+
     }
 
 }

@@ -1733,6 +1733,7 @@ public class GitHubRealmAdapter implements VendorAdapter {
                 case TEAM_ORGANIZATIONS -> null;
             };
         }
+
     }
 
     /**
@@ -1770,6 +1771,7 @@ public class GitHubRealmAdapter implements VendorAdapter {
                     : ordered.contains(Realm.Kind.USER) ? Phase.TEAM_MEMBERS : Phase.TEAM_ORGANIZATIONS;
             return new CursorState(initial, ordered, Position.initial());
         }
+
     }
 
     /**
@@ -1837,6 +1839,7 @@ public class GitHubRealmAdapter implements VendorAdapter {
                 throw new ValidateException("GitHub cursor position does not belong to its phase");
             }
         }
+
     }
 
     /**
@@ -1858,6 +1861,7 @@ public class GitHubRealmAdapter implements VendorAdapter {
                 throw new ValidateException("GitHub collection next page must not be negative");
             }
         }
+
     }
 
     /**
@@ -1882,6 +1886,7 @@ public class GitHubRealmAdapter implements VendorAdapter {
                 throw new ValidateException("GitHub replay parent state is inconsistent");
             }
         }
+
     }
 
     /**
@@ -1902,6 +1907,7 @@ public class GitHubRealmAdapter implements VendorAdapter {
             login = requireText(login, "GitHub user login");
             displayName = requireText(displayName, "GitHub user display name");
         }
+
     }
 
     /**
@@ -1922,6 +1928,7 @@ public class GitHubRealmAdapter implements VendorAdapter {
             slug = requireText(slug, "GitHub Team slug");
             name = requireText(name, "GitHub Team name");
         }
+
     }
 
     /**
@@ -1940,6 +1947,7 @@ public class GitHubRealmAdapter implements VendorAdapter {
             id = requireText(id, "GitHub organization identifier");
             login = requireText(login, "GitHub organization login");
         }
+
     }
 
 }

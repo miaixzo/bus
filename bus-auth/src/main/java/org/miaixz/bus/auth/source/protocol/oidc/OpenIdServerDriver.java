@@ -295,6 +295,7 @@ public class OpenIdServerDriver implements ProtocolDriver<OpenIdServerOptions> {
                     return response instanceof OpenIdTokenResponse openId ? openIdEncoder.encode(request, openId)
                             : super.encode(request, response);
                 }
+
             };
             final TokenEndpoint endpoint = new TokenEndpoint(new TokenRequestDecoder(),
                     new OAuth2ClientAuthenticator(library.getTenant_id(), options.oauth2Options(), services),

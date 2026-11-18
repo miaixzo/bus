@@ -168,6 +168,7 @@ final class FreeBsdGraphicsCard extends AbstractGraphicsCard {
          */
         private PciDevice() {
         }
+
     }
 
 }

@@ -318,6 +318,7 @@ final class WindowsNetworkParams extends AbstractNetworkParams {
          * Route metric.
          */
         public long metric = -1L;
+
     }
 
 }

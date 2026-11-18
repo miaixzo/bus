@@ -303,6 +303,7 @@ public class Device {
                         new Device("Wii", "wii"),
                         new Device("Playstation", "playstation"),
                         new Device("Java", "java"))));
+
     }
 
 }

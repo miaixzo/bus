@@ -648,6 +648,7 @@ public class WebSocketServer implements Lifecycle {
                 runtime.remove(source);
                 transports.remove(transport);
             }
+
         };
     }
 
@@ -1547,6 +1548,7 @@ public class WebSocketServer implements Lifecycle {
                 public void failure(final WebSocketSession source, final Throwable cause) {
                     errorHandler.accept(cause);
                 }
+
             };
             return this;
         }

@@ -1398,6 +1398,7 @@ public class FigmaRealmAdapter implements VendorAdapter {
             }
             throw new ValidateException("Figma cursor phase is unknown");
         }
+
     }
 
     /**
@@ -1434,6 +1435,7 @@ public class FigmaRealmAdapter implements VendorAdapter {
             return new CursorState(ordered.contains(Realm.Kind.USER) ? Phase.USERS : Phase.GROUPS, ordered,
                     Position.initial());
         }
+
     }
 
     /**
@@ -1501,6 +1503,7 @@ public class FigmaRealmAdapter implements VendorAdapter {
                 throw new ValidateException("Figma cursor position does not belong to its phase");
             }
         }
+
     }
 
     /**
@@ -1522,6 +1525,7 @@ public class FigmaRealmAdapter implements VendorAdapter {
                 throw new ValidateException("Figma SCIM next index must not be negative");
             }
         }
+
     }
 
     /**
@@ -1545,6 +1549,7 @@ public class FigmaRealmAdapter implements VendorAdapter {
             displayName = requireText(displayName, "Figma user display name");
             title = Assert.notNull(title, "Figma user title container must not be null");
         }
+
     }
 
     /**
@@ -1565,6 +1570,7 @@ public class FigmaRealmAdapter implements VendorAdapter {
             displayName = requireText(displayName, "Figma group display name");
             members = List.copyOf(Assert.notNull(members, "Figma group members must not be null"));
         }
+
     }
 
 }

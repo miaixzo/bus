@@ -83,6 +83,8 @@ public class SensitiveProperties {
 
     /**
      * Supported symmetric algorithms.
+     *
+     * @author Kimi Liu
      */
     public enum Type {
         /**
@@ -97,6 +99,7 @@ public class SensitiveProperties {
          * Chinese SM4.
          */
         SM4
+
     }
 
     /**
@@ -104,6 +107,8 @@ public class SensitiveProperties {
      *
      * @param key  lookup key
      * @param type allowlisted encryption algorithm
+     *
+     * @author Kimi Liu
      */
     public record Encrypt(String key, Type type) {
 
@@ -132,6 +137,7 @@ public class SensitiveProperties {
         public String toString() {
             return "Encrypt[key=***, type=" + type + "]";
         }
+
     }
 
     /**
@@ -139,6 +145,8 @@ public class SensitiveProperties {
      *
      * @param key  lookup key
      * @param type allowlisted decryption algorithm
+     *
+     * @author Kimi Liu
      */
     public record Decrypt(String key, Type type) {
 
@@ -167,6 +175,7 @@ public class SensitiveProperties {
         public String toString() {
             return "Decrypt[key=***, type=" + type + "]";
         }
+
     }
 
 }

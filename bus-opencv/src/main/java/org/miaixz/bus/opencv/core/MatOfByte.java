@@ -202,4 +202,5 @@ public class MatOfByte extends Mat {
             ab[i] = a[i];
         return Arrays.asList(ab);
     }
+
 }

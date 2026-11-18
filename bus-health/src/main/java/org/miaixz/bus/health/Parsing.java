@@ -420,6 +420,7 @@ public class Parsing {
                     put("THz", 1_000_000_000_000L);
                     put("PHz", 1_000_000_000_000_000L);
                 }
+
             };
             double value = parseDoubleOrDefault(matcher.group(1), -1d);
             long multiplier = map.getOrDefault(matcher.group(3), -1L);

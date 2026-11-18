@@ -719,6 +719,7 @@ public record ColorMap(String id, String name, ColorMapType type, Set<String> mo
             return new ColorMap(id, name, type, modalities, defaultForModality, domain, resolvedBits, space,
                     interpolation, stops, outside, lighting, metadata, category, tags, hidden);
         }
+
     }
 
 }

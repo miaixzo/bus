@@ -78,6 +78,7 @@ public record NetworkSnapshot(List<InterfaceSnapshot> interfaces, List<Connectio
                 }
             }
         }
+
     }
 
     /**
@@ -118,6 +119,7 @@ public record NetworkSnapshot(List<InterfaceSnapshot> interfaces, List<Connectio
                 throw new IllegalArgumentException("Invalid network connection snapshot");
             }
         }
+
     }
 
 }

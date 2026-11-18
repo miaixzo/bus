@@ -78,6 +78,7 @@ module bus.starter {
     requires static org.mybatis.spring;
     requires static reactor.core;
     requires static reactor.netty.http;
+    requires static spring.aop;
     requires static spring.beans;
     requires static spring.boot;
     requires static spring.boot.autoconfigure;
@@ -88,6 +89,7 @@ module bus.starter {
     requires static spring.context;
     requires static spring.core;
     requires static spring.jdbc;
+    requires static spring.tx;
     requires static spring.web;
     requires static spring.webflux;
     requires static spring.webmvc;

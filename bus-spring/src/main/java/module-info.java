@@ -50,6 +50,7 @@ module bus.spring {
     requires static spring.context;
     requires static spring.core;
     requires static spring.jdbc;
+    requires static spring.tx;
     requires static spring.web;
     requires static spring.webmvc;
 

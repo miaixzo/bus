@@ -421,6 +421,7 @@ public class HttpBridge implements HttpStage {
                     && source.proxy().equals(candidate.proxy()) && sameTimeout(source.timeout(), candidate.timeout())
                     && candidate.tag() == null && sameHeaders(source.headers(), candidate.headers());
         }
+
     }
 
 }

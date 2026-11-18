@@ -2850,6 +2850,7 @@ public class MicrosoftRealmAdapter implements VendorAdapter {
                 default -> throw new ValidateException("Microsoft delta phase has no snapshot successor");
             };
         }
+
     }
 
     /**
@@ -2869,6 +2870,7 @@ public class MicrosoftRealmAdapter implements VendorAdapter {
          * @return immutable implementation-neutral resource
          */
         Realm.Resource map(T value, Instant observedAt);
+
     }
 
     /**
@@ -2986,6 +2988,7 @@ public class MicrosoftRealmAdapter implements VendorAdapter {
         private void validate() {
             validate(operation, phase, kinds, position);
         }
+
     }
 
     /**
@@ -3078,6 +3081,7 @@ public class MicrosoftRealmAdapter implements VendorAdapter {
             Assert.notNull(value, label + " container must not be null");
             return value.isPresent() ? Optional.of(requireText(value.getOrNull(), label)) : Optional.empty();
         }
+
     }
 
     /**
@@ -3100,6 +3104,7 @@ public class MicrosoftRealmAdapter implements VendorAdapter {
             items = List.copyOf(Assert.notNull(items, "Microsoft Graph page items must not be null"));
             next = Position.optional(next, "Microsoft Graph nextLink");
         }
+
     }
 
     /**
@@ -3121,6 +3126,7 @@ public class MicrosoftRealmAdapter implements VendorAdapter {
             id = requireText(id, "Microsoft organization identifier");
             name = requireText(name, "Microsoft organization display name");
         }
+
     }
 
     /**
@@ -3150,6 +3156,7 @@ public class MicrosoftRealmAdapter implements VendorAdapter {
             principalName = Position.optional(principalName, "Microsoft user principal name");
             mail = Position.optional(mail, "Microsoft user mail");
         }
+
     }
 
     /**
@@ -3178,6 +3185,7 @@ public class MicrosoftRealmAdapter implements VendorAdapter {
             name = requireText(name, "Microsoft group display name");
             mail = Position.optional(mail, "Microsoft group mail");
         }
+
     }
 
     /**
@@ -3199,6 +3207,7 @@ public class MicrosoftRealmAdapter implements VendorAdapter {
             id = requireText(id, "Microsoft role identifier");
             name = requireText(name, "Microsoft role display name");
         }
+
     }
 
     /**
@@ -3225,6 +3234,7 @@ public class MicrosoftRealmAdapter implements VendorAdapter {
             appId = requireText(appId, "Microsoft service-principal application identifier");
             name = requireText(name, "Microsoft service-principal display name");
         }
+
     }
 
     /**
@@ -3243,6 +3253,7 @@ public class MicrosoftRealmAdapter implements VendorAdapter {
         private Member {
             id = requireText(id, "Microsoft member identifier");
         }
+
     }
 
     /**
@@ -3270,6 +3281,7 @@ public class MicrosoftRealmAdapter implements VendorAdapter {
             resourceId = requireText(resourceId, "Microsoft assignment resource identifier");
             appRoleId = requireText(appRoleId, "Microsoft assignment application role identifier");
         }
+
     }
 
     /**
@@ -3303,6 +3315,7 @@ public class MicrosoftRealmAdapter implements VendorAdapter {
         public String toString() {
             return Builder.REDACTED_VALUE;
         }
+
     }
 
 }

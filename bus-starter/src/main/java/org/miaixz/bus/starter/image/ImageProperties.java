@@ -120,6 +120,8 @@ public class ImageProperties {
      * @param sopClasses    sop classes
      * @param sopClassesUID sop classes uid
      * @param sopClassesTCS sop classes tcs
+     *
+     * @author Kimi Liu
      */
     public record Node(String host, int port, String aeTitle, boolean negociation, String sopClasses,
             String sopClassesUID, String sopClassesTCS) {
@@ -184,6 +186,7 @@ public class ImageProperties {
         public String getSopClassesTCS() {
             return sopClassesTCS;
         }
+
     }
 
 }

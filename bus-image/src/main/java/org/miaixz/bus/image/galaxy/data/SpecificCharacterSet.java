@@ -561,6 +561,7 @@ public class SpecificCharacterSet {
             public String toText(String s) {
                 return s.replace(Symbol.C_BACKSLASH, Symbol.C_CNY);
             }
+
         },
 
         /**

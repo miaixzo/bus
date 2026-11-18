@@ -2424,6 +2424,7 @@ public class OktaRealmAdapter implements VendorAdapter {
                 case GROUP_ROLES -> null;
             };
         }
+
     }
 
     /**
@@ -2484,6 +2485,7 @@ public class OktaRealmAdapter implements VendorAdapter {
             }
             return new CursorState(phase, ordered, Position.initial());
         }
+
     }
 
     /**
@@ -2595,6 +2597,7 @@ public class OktaRealmAdapter implements VendorAdapter {
             items = List.copyOf(Assert.notNull(items, "Okta page items must not be null"));
             next = Position.optional(next, "Okta next-page URL");
         }
+
     }
 
     /**
@@ -2622,6 +2625,7 @@ public class OktaRealmAdapter implements VendorAdapter {
             displayName = requireText(displayName, "Okta user display name");
             state = Assert.notNull(state, "Okta user state must not be null");
         }
+
     }
 
     /**
@@ -2643,6 +2647,7 @@ public class OktaRealmAdapter implements VendorAdapter {
             id = requireText(id, "Okta group identifier");
             name = requireText(name, "Okta group display name");
         }
+
     }
 
     /**
@@ -2661,6 +2666,7 @@ public class OktaRealmAdapter implements VendorAdapter {
         private Member {
             id = requireText(id, "Okta group-member identifier");
         }
+
     }
 
     /**
@@ -2682,6 +2688,7 @@ public class OktaRealmAdapter implements VendorAdapter {
             id = requireText(id, "Okta role identifier");
             label = requireText(label, "Okta role display label");
         }
+
     }
 
     /**
@@ -2703,6 +2710,7 @@ public class OktaRealmAdapter implements VendorAdapter {
             assignmentId = requireText(assignmentId, "Okta role-assignment identifier");
             role = Assert.notNull(role, "Okta role-assignment role must not be null");
         }
+
     }
 
     /**
@@ -2736,6 +2744,7 @@ public class OktaRealmAdapter implements VendorAdapter {
         public String toString() {
             return Builder.REDACTED_VALUE;
         }
+
     }
 
 }

@@ -165,6 +165,7 @@ public class NativeProvider implements Provider {
             public String contentType() {
                 return Builder.PROMETHEUS_CONTENT_TYPE;
             }
+
         };
         SnapshotSupport snapshot = this::snapshot;
         this.capabilities = new ProviderCapabilities(true, Optional.of(scrape), Optional.of(snapshot));
@@ -635,6 +636,7 @@ public class NativeProvider implements Provider {
         private MetricFamilySnapshot snapshot() {
             return new MetricFamilySnapshot(descriptor, List.copyOf(points.values()));
         }
+
     }
 
     /**
@@ -673,6 +675,7 @@ public class NativeProvider implements Provider {
         public long count() {
             return delegate.count();
         }
+
     }
 
     /**
@@ -747,6 +750,7 @@ public class NativeProvider implements Provider {
         public TimerSnapshot snapshot() {
             return delegate.snapshot();
         }
+
     }
 
     /**
@@ -800,6 +804,7 @@ public class NativeProvider implements Provider {
         public TimerSnapshot snapshot() {
             return delegate.snapshot();
         }
+
     }
 
     /**
@@ -902,6 +907,7 @@ public class NativeProvider implements Provider {
                 familyLease.close();
             }
         }
+
     }
 
     /**
@@ -972,6 +978,7 @@ public class NativeProvider implements Provider {
                 diagnostics.collectionError("native", "invalid_point");
             }
         }
+
     }
 
 }

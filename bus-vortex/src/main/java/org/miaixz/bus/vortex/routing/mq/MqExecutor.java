@@ -170,6 +170,7 @@ public class MqExecutor extends Coordinator<String, ServerResponse> {
             public byte[] content() {
                 return payload.getBytes(Charset.UTF_8);
             }
+
         };
 
         String brokerUrl = assets.getHost() + Symbol.COLON + assets.getPort();

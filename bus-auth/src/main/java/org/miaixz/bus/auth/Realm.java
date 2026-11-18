@@ -375,6 +375,7 @@ public class Realm {
         public int code() {
             return code;
         }
+
     }
 
     /**
@@ -437,6 +438,7 @@ public class Realm {
         public int code() {
             return code;
         }
+
     }
 
     /**
@@ -484,6 +486,7 @@ public class Realm {
         public int code() {
             return code;
         }
+
     }
 
     /**
@@ -531,6 +534,7 @@ public class Realm {
         public int code() {
             return code;
         }
+
     }
 
     /**
@@ -583,6 +587,7 @@ public class Realm {
         public int code() {
             return code;
         }
+
     }
 
     /**
@@ -612,6 +617,7 @@ public class Realm {
             kind = Assert.notNull(kind, "Realm key kind must not be null");
             externalId = requireText(externalId, "Realm key external id");
         }
+
     }
 
     /**
@@ -639,6 +645,7 @@ public class Realm {
                 throw new ValidateException("Realm relation must not form a self-loop");
             }
         }
+
     }
 
     /**
@@ -673,6 +680,7 @@ public class Realm {
             attributes = object(attributes, "Realm resource attributes");
             observedAt = Assert.notNull(observedAt, "Realm resource observation time must not be null");
         }
+
     }
 
     /**
@@ -697,6 +705,7 @@ public class Realm {
             attributes = object(attributes, "Realm relation attributes");
             observedAt = Assert.notNull(observedAt, "Realm relation observation time must not be null");
         }
+
     }
 
     /**
@@ -728,6 +737,7 @@ public class Realm {
         public String toString() {
             return Builder.REDACTED_VALUE;
         }
+
     }
 
     /**
@@ -764,6 +774,7 @@ public class Realm {
             }
             limitations = Realm.limitations(limitations);
         }
+
     }
 
     /**
@@ -778,6 +789,7 @@ public class Realm {
          */
         public Describe {
         }
+
     }
 
     /**
@@ -802,6 +814,7 @@ public class Realm {
             limit = Realm.limit(limit, "Realm snapshot limit");
             cursor = optional(cursor, "Realm snapshot cursor");
         }
+
     }
 
     /**
@@ -833,6 +846,7 @@ public class Realm {
             limit = Realm.limit(limit, "Realm change limit");
             cursor = optional(cursor, "Realm change cursor");
         }
+
     }
 
     /**
@@ -851,6 +865,7 @@ public class Realm {
         public Retrieve {
             key = Assert.notNull(key, "Realm retrieve key must not be null");
         }
+
     }
 
     /**
@@ -881,6 +896,7 @@ public class Realm {
             }
             next = optional(next, "Realm page next cursor");
         }
+
     }
 
     /**
@@ -899,6 +915,7 @@ public class Realm {
         public Retrieved {
             resource = optional(resource, "Realm retrieved resource");
         }
+
     }
 
     /**
@@ -917,6 +934,7 @@ public class Realm {
         public ResourceUpsert {
             resource = Assert.notNull(resource, "Realm resource upsert must not be null");
         }
+
     }
 
     /**
@@ -938,6 +956,7 @@ public class Realm {
             key = Assert.notNull(key, "Realm resource delete key must not be null");
             observedAt = Assert.notNull(observedAt, "Realm resource delete observation time must not be null");
         }
+
     }
 
     /**
@@ -956,6 +975,7 @@ public class Realm {
         public RelationUpsert {
             relation = Assert.notNull(relation, "Realm relation upsert must not be null");
         }
+
     }
 
     /**
@@ -977,6 +997,7 @@ public class Realm {
             key = Assert.notNull(key, "Realm relation delete key must not be null");
             observedAt = Assert.notNull(observedAt, "Realm relation delete observation time must not be null");
         }
+
     }
 
     /**
@@ -1012,6 +1033,7 @@ public class Realm {
                 throw new ValidateException("An unfinished page cannot publish a completed checkpoint");
             }
         }
+
     }
 
 }

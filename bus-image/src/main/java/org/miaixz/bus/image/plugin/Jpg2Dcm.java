@@ -344,6 +344,7 @@ public class Jpg2Dcm {
             XPEGParser newParser(SeekableByteChannel channel) throws IOException {
                 return new JPEGParser(channel);
             }
+
         },
         /**
          * Represents MPEG video content.
@@ -354,6 +355,7 @@ public class Jpg2Dcm {
             XPEGParser newParser(SeekableByteChannel channel) throws IOException {
                 return new MPEG2Parser(channel);
             }
+
         },
         /**
          * Represents MP4 video content.
@@ -364,6 +366,7 @@ public class Jpg2Dcm {
             XPEGParser newParser(SeekableByteChannel channel) throws IOException {
                 return new MP4Parser(channel);
             }
+
         };
 
         /**

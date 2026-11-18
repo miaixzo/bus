@@ -122,6 +122,7 @@ public class ICCProfile {
             protected BufferedImage convertColor(BufferedImage bi) {
                 return isCS_sRGB(bi) ? bi : BufferedImages.convertColor(bi, CM_sRGB);
             }
+
         },
         /**
          * The no value.
@@ -132,6 +133,7 @@ public class ICCProfile {
             protected BufferedImage convertColor(BufferedImage bi) {
                 return isCS_sRGB(bi) ? bi : BufferedImages.replaceColorModel(bi, CM_sRGB);
             }
+
         },
         /**
          * The yes value.
@@ -143,6 +145,7 @@ public class ICCProfile {
                 ColorModel model = srgb.getColorModel() == null ? CM_sRGB : srgb.getColorModel();
                 return isCS_sRGB(bi) ? BufferedImages.replaceColorModel(bi, model) : bi;
             }
+
         },
         /**
          * Constant for the srgb value.

@@ -304,6 +304,7 @@ public class CGetForward implements AutoCloseable {
             }
 
         }
+
     };
 
     /**
@@ -760,6 +761,7 @@ public class CGetForward implements AutoCloseable {
                     }
                 }
             }
+
         };
 
         retrieve(keys, rspHandler);

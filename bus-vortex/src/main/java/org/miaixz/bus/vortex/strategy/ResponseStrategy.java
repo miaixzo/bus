@@ -193,6 +193,7 @@ public class ResponseStrategy extends AbstractStrategy {
                                     .doFinally(signalType -> bufferedBody.close());
                         });
             }
+
         };
     }
 
@@ -239,6 +240,7 @@ public class ResponseStrategy extends AbstractStrategy {
                 });
                 return super.writeWith(flux);
             }
+
         };
     }
 

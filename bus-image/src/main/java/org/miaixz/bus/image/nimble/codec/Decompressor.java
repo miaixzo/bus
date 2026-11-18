@@ -355,6 +355,7 @@ public class Decompressor {
             public int getEncodedLength(ImageEncodingOptions encOpts, boolean explicitVR, VR vr) {
                 return (length + 1) & ~1;
             }
+
         });
         if (samples > 1) {
             dataset.setString(Tag.PhotometricInterpretation, VR.CS, pmiAfterDecompression.toString());

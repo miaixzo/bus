@@ -1436,6 +1436,7 @@ public class Format extends java.text.Format {
                     UnaryOperatorX<String> splice) {
                 return attrs.getString(tag, index);
             }
+
         },
         /**
          * Converts the string value to uppercase.
@@ -1453,6 +1454,7 @@ public class Format extends java.text.Format {
                 String s = attrs.getString(tag, index);
                 return s != null ? StringKit.toUpperCase(s) : null;
             }
+
         },
         /**
          * Extracts a substring from the value.
@@ -1470,6 +1472,7 @@ public class Format extends java.text.Format {
                 String s = attrs.getString(tag, index);
                 return s != null ? slice.apply(s) : null;
             }
+
         },
         /**
          * Formats the value as a number.
@@ -1486,6 +1489,7 @@ public class Format extends java.text.Format {
                     UnaryOperatorX<String> splice) {
                 return attrs.getDouble(tag, index, 0.);
             }
+
         },
         /**
          * Adds a numeric offset to an integer value.
@@ -1502,6 +1506,7 @@ public class Format extends java.text.Format {
                     UnaryOperatorX<String> splice) {
                 return Integer.toString(attrs.getInt(tag, index, 0) + offset);
             }
+
         },
         /**
          * Formats the value as a date, with optional period offset.
@@ -1526,6 +1531,7 @@ public class Format extends java.text.Format {
                 cal.add(Calendar.DAY_OF_MONTH, dateOffset.getDays());
                 return cal.getTime();
             }
+
         },
         /**
          * Formats the value as a time, with optional duration offset.
@@ -1548,6 +1554,7 @@ public class Format extends java.text.Format {
                 cal.add(Calendar.SECOND, (int) timeOffset.getSeconds());
                 return cal.getTime();
             }
+
         },
         /**
          * Formats a numeric value using a choice pattern.
@@ -1564,6 +1571,7 @@ public class Format extends java.text.Format {
                     UnaryOperatorX<String> splice) {
                 return attrs.getDouble(tag, index, 0.);
             }
+
         },
         /**
          * Computes the hash code of the string value.
@@ -1581,6 +1589,7 @@ public class Format extends java.text.Format {
                 String s = attrs.getString(tag, index);
                 return s != null ? Tag.toHexString(s.hashCode()) : null;
             }
+
         },
         /**
          * Computes the MD5 hash of the string value.
@@ -1598,6 +1607,7 @@ public class Format extends java.text.Format {
                 String s = attrs.getString(tag, index);
                 return s != null ? getMD5String(s) : null;
             }
+
         },
         /**
          * URL-encodes the string value.
@@ -1615,6 +1625,7 @@ public class Format extends java.text.Format {
                 String s = attrs.getString(tag, index);
                 return s != null ? URLEncoder.encode(s, Charset.UTF_8) : null;
             }
+
         },
         /**
          * Generates a random integer and formats it as hex.
@@ -1631,6 +1642,7 @@ public class Format extends java.text.Format {
                     UnaryOperatorX<String> splice) {
                 return Tag.toHexString(ThreadLocalRandom.current().nextInt());
             }
+
         },
         /**
          * Generates a random UUID.
@@ -1647,6 +1659,7 @@ public class Format extends java.text.Format {
                     UnaryOperatorX<String> splice) {
                 return UUID.randomUUID();
             }
+
         },
         /**
          * Generates a new DICOM UID.
@@ -1663,6 +1676,7 @@ public class Format extends java.text.Format {
                     UnaryOperatorX<String> splice) {
                 return UID.createUID();
             }
+
         };
 
         /**

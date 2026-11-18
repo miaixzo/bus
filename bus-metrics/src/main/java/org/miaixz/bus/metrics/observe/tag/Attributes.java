@@ -194,6 +194,7 @@ public final class Attributes {
             descriptor = Objects.requireNonNull(descriptor, "Attribute descriptor must not be null");
             descriptor.validateValue(value);
         }
+
     }
 
     /**
@@ -242,6 +243,7 @@ public final class Attributes {
             }
             return new Attributes(Collections.unmodifiableList(new ArrayList<>(values.values())));
         }
+
     }
 
 }

@@ -153,6 +153,7 @@ public class AffixRewriteHandler extends ScopedProviderHandler<Object, AffixRule
                 public String getSuffix() {
                     return configuredSuffix;
                 }
+
             };
         }
         return AffixRuleConfig.builder().provider(resolvedProvider).prefixIgnore(prefixIgnoreTables)

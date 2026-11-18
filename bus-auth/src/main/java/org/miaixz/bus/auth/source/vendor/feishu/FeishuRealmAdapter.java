@@ -2280,6 +2280,7 @@ public class FeishuRealmAdapter implements VendorAdapter {
         private int code() {
             return code;
         }
+
     }
 
     /**
@@ -2332,6 +2333,7 @@ public class FeishuRealmAdapter implements VendorAdapter {
                     : ordered.contains(Realm.Kind.USER) ? Phase.USERS : Phase.GROUPS;
             return new CursorState(phase, ordered, Position.initial(phase));
         }
+
     }
 
     /**
@@ -2498,6 +2500,7 @@ public class FeishuRealmAdapter implements VendorAdapter {
                 }
             }
         }
+
     }
 
     /**
@@ -2525,6 +2528,7 @@ public class FeishuRealmAdapter implements VendorAdapter {
             items = List.copyOf(copy);
             next = Position.optionalText(next, "Feishu wire page token");
         }
+
     }
 
     /**
@@ -2551,6 +2555,7 @@ public class FeishuRealmAdapter implements VendorAdapter {
             }
             fingerprint = Position.optionalText(fingerprint, "Feishu replay fingerprint");
         }
+
     }
 
     /**
@@ -2662,6 +2667,7 @@ public class FeishuRealmAdapter implements VendorAdapter {
             }
             return Outcome.succeeded(Optional.empty());
         }
+
     }
 
     /**
@@ -2723,6 +2729,7 @@ public class FeishuRealmAdapter implements VendorAdapter {
         private String parentId() {
             return parentId;
         }
+
     }
 
     /**
@@ -2750,6 +2757,7 @@ public class FeishuRealmAdapter implements VendorAdapter {
                 throw new ValidateException("Feishu department must not be its own parent");
             }
         }
+
     }
 
     /**
@@ -2792,6 +2800,7 @@ public class FeishuRealmAdapter implements VendorAdapter {
                 throw new ValidateException("Feishu user must not manage itself");
             }
         }
+
     }
 
     /**
@@ -2813,6 +2822,7 @@ public class FeishuRealmAdapter implements VendorAdapter {
             id = requireText(id, "Feishu group identifier");
             name = requireText(name, "Feishu group name");
         }
+
     }
 
     /**
@@ -2831,6 +2841,7 @@ public class FeishuRealmAdapter implements VendorAdapter {
         private Member {
             id = requireText(id, "Feishu group member identifier");
         }
+
     }
 
     /**
@@ -2864,6 +2875,7 @@ public class FeishuRealmAdapter implements VendorAdapter {
         public String toString() {
             return Builder.REDACTED_VALUE;
         }
+
     }
 
 }

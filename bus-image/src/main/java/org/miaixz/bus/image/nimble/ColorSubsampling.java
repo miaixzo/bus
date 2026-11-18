@@ -45,6 +45,7 @@ public enum ColorSubsampling {
         public int indexOfBR(int x, int y, int w) {
             return (w * y * 2) + ((x >> 1) << 2) + 2;
         }
+
     },
     /**
      * The ybr xxx 420 value.
@@ -67,6 +68,7 @@ public enum ColorSubsampling {
         public int indexOfBR(int x, int y, int w) {
             return w * (y / 2) * 3 + ((x >> 1) << 2) + 2;
         }
+
     };
 
     /**

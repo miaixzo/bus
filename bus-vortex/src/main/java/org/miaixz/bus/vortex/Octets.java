@@ -494,6 +494,7 @@ public class Octets {
             }
             owned.forEach(AsyncByteBudget.Lease::close);
         }
+
     }
 
     /**
@@ -574,6 +575,7 @@ public class Octets {
             }
             return new BufferedBody(this.segments.toArray(byte[][]::new), this.length, reservation);
         }
+
     }
 
     /**
@@ -651,6 +653,7 @@ public class Octets {
         public void close() {
             this.body.close();
         }
+
     }
 
     /**
@@ -779,6 +782,7 @@ public class Octets {
                  */
             }
         }
+
     }
 
 }

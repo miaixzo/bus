@@ -196,6 +196,7 @@ public class JSONWriter implements ImageInputHandler {
                     writeAttribute(tag, vr, value, cs, attrs);
                     return true;
                 }
+
             }, false);
         } catch (Exception e) {
             throw new RuntimeException(e);

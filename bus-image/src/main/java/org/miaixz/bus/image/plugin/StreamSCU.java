@@ -137,6 +137,7 @@ public class StreamSCU {
         public void run() {
             close(false);
         }
+
     };
 
     /**
@@ -194,6 +195,7 @@ public class StreamSCU {
             }
             Builder.notifyProgession(state.getProgress(), cmd, ps, numberOfSuboperations);
         }
+
     };
 
     /**

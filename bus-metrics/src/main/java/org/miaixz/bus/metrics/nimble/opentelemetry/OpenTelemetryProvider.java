@@ -422,6 +422,7 @@ public class OpenTelemetryProvider implements Provider {
                 public synchronized long count() {
                     return total;
                 }
+
             };
         });
     }
@@ -591,6 +592,7 @@ public class OpenTelemetryProvider implements Provider {
                 public TimerSnapshot snapshot() {
                     return mirror.snapshot();
                 }
+
             };
         });
     }
@@ -655,6 +657,7 @@ public class OpenTelemetryProvider implements Provider {
                 public TimerSnapshot snapshot() {
                     return mirror.snapshot();
                 }
+
             };
         });
     }
@@ -875,6 +878,7 @@ public class OpenTelemetryProvider implements Provider {
         private void tick() {
             rates.tick();
         }
+
     }
 
     /**
@@ -998,6 +1002,7 @@ public class OpenTelemetryProvider implements Provider {
                 lease.close();
             }
         }
+
     }
 
     /**
@@ -1088,6 +1093,7 @@ public class OpenTelemetryProvider implements Provider {
                 return false;
             }
         }
+
     }
 
 }

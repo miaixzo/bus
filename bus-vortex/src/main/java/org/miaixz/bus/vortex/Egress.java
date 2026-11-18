@@ -471,6 +471,7 @@ public class Egress {
                     }
                     Logger.info(false, "Vortex", "MQ resources stopped: protocol=mq");
                 }
+
             };
         }
 
@@ -611,7 +612,9 @@ public class Egress {
                 this.provider = provider;
                 this.producer = producer;
             }
+
         }
+
     }
 
 }

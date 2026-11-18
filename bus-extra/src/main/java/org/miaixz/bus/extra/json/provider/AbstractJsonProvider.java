@@ -532,6 +532,7 @@ public abstract class AbstractJsonProvider implements JsonProvider {
         private InternalException invalid(final String message) {
             return new InternalException(message + " at character " + index);
         }
+
     }
 
 }

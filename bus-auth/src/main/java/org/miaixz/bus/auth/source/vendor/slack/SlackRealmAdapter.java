@@ -1388,6 +1388,7 @@ public class SlackRealmAdapter implements VendorAdapter {
             }
             throw new ValidateException("Slack cursor phase is unknown");
         }
+
     }
 
     /**
@@ -1424,6 +1425,7 @@ public class SlackRealmAdapter implements VendorAdapter {
             return new CursorState(ordered.contains(Realm.Kind.USER) ? Phase.USERS : Phase.GROUPS, ordered,
                     Position.initial());
         }
+
     }
 
     /**
@@ -1491,6 +1493,7 @@ public class SlackRealmAdapter implements VendorAdapter {
                 throw new ValidateException("Slack cursor position does not belong to its phase");
             }
         }
+
     }
 
     /**
@@ -1512,6 +1515,7 @@ public class SlackRealmAdapter implements VendorAdapter {
                 throw new ValidateException("Slack SCIM next index must not be negative");
             }
         }
+
     }
 
     /**
@@ -1533,6 +1537,7 @@ public class SlackRealmAdapter implements VendorAdapter {
             userName = requireText(userName, "Slack user name");
             displayName = requireText(displayName, "Slack user display name");
         }
+
     }
 
     /**
@@ -1553,6 +1558,7 @@ public class SlackRealmAdapter implements VendorAdapter {
             displayName = requireText(displayName, "Slack group display name");
             members = List.copyOf(Assert.notNull(members, "Slack group members must not be null"));
         }
+
     }
 
 }

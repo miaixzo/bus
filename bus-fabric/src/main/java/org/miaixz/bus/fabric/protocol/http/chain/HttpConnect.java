@@ -1573,6 +1573,7 @@ public class HttpConnect implements HttpStage, AutoCloseable {
                 raw.abort();
             }
         }
+
     }
 
     /**
@@ -1674,6 +1675,7 @@ public class HttpConnect implements HttpStage, AutoCloseable {
                 listener.changed(capacity(), draining);
             }
         }
+
     }
 
     /**
@@ -2473,6 +2475,7 @@ public class HttpConnect implements HttpStage, AutoCloseable {
                 throw new SocketException("Unable to close socket", e);
             }
         }
+
     }
 
     /**
@@ -2953,6 +2956,7 @@ public class HttpConnect implements HttpStage, AutoCloseable {
                     // The timeout has already won; channel-close failures are cleanup-only.
                 }
             }
+
         }
 
         /**
@@ -3035,6 +3039,7 @@ public class HttpConnect implements HttpStage, AutoCloseable {
             public void close() {
                 SocketConduit.this.close();
             }
+
         }
 
     }

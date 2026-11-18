@@ -788,6 +788,7 @@ public class SseX {
                 public void failure(final Throwable cause) {
                     errorHandler.accept(cause);
                 }
+
             };
             return this;
         }

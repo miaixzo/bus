@@ -225,6 +225,7 @@ final class HappyEyeballsConnector {
          * @return connection
          */
         Connection connect(InetAddress candidate, long deadline);
+
     }
 
     /**

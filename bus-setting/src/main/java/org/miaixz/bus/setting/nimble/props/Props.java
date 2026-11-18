@@ -404,6 +404,7 @@ public class Props extends Properties implements TypeGetter<CharSequence> {
                             resource.getUrl(),
                             size());
                 }
+
             });
             this.watchMonitor.start();
             Logger.info(false, "Setting", "Properties auto-load enabled: resourceUrl={}", this.resource.getUrl());

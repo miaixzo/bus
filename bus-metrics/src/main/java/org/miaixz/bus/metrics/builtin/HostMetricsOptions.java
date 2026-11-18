@@ -143,6 +143,7 @@ public record HostMetricsOptions(boolean required, String convention, Duration c
         public Cpu {
             positive(maxLogicalCpus, "Maximum logical CPU count");
         }
+
     }
 
     /**
@@ -161,6 +162,7 @@ public record HostMetricsOptions(boolean required, String convention, Duration c
                 throw new IllegalArgumentException("Only current-process metrics are supported");
             }
         }
+
     }
 
     /**
@@ -177,6 +179,7 @@ public record HostMetricsOptions(boolean required, String convention, Duration c
         public Disk {
             positive(maxDevices, "Maximum disk count");
         }
+
     }
 
     /**
@@ -198,6 +201,7 @@ public record HostMetricsOptions(boolean required, String convention, Duration c
             }
             positive(maxFileSystems, "Maximum filesystem count");
         }
+
     }
 
     /**
@@ -216,6 +220,7 @@ public record HostMetricsOptions(boolean required, String convention, Duration c
         public Network {
             positive(maxInterfaces, "Maximum network-interface count");
         }
+
     }
 
 }

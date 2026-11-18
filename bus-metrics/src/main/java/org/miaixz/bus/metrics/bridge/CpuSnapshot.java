@@ -72,6 +72,7 @@ public record CpuSnapshot(long physicalCount, long logicalCount, List<CpuTime> t
                 throw new IllegalArgumentException("Invalid CPU time");
             }
         }
+
     }
 
     /**
@@ -90,6 +91,7 @@ public record CpuSnapshot(long physicalCount, long logicalCount, List<CpuTime> t
                 throw new IllegalArgumentException("Invalid CPU frequency");
             }
         }
+
     }
 
 }

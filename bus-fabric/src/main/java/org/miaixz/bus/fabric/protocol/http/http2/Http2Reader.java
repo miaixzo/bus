@@ -558,6 +558,7 @@ public class Http2Reader implements AutoCloseable {
          * @return {@code true} when the payload was accepted
          */
         boolean accept(int streamId, int flags, Buffer source, int length);
+
     }
 
     /**

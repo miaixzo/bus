@@ -154,6 +154,7 @@ public class VettingStrategy extends AbstractStrategy {
             public HttpHeaders getHeaders() {
                 return headers;
             }
+
         };
         return exchange.mutate().request(requestDecorator).build();
     }

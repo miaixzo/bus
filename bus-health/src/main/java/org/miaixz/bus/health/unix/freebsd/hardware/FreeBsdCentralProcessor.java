@@ -217,6 +217,7 @@ final class FreeBsdCentralProcessor extends AbstractCentralProcessor {
         private TopologyGroup(int level) {
             this.level = level;
         }
+
     }
 
     /**

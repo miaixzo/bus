@@ -109,6 +109,7 @@ public class StgCmtSCU {
                 removeOutstandingResult(tuid);
             }
         }
+
     };
 
     /**
@@ -407,6 +408,7 @@ public class StgCmtSCU {
                     removeOutstandingResult(tuid);
                 super.onDimseRSP(as, cmd, data);
             }
+
         };
 
         as.naction(

@@ -308,6 +308,7 @@ public final class ServletErrorFilter implements Filter {
                     this.delegate.close();
                 }
             }
+
         }
 
         /**
@@ -346,7 +347,9 @@ public final class ServletErrorFilter implements Filter {
                     this.delegate.close();
                 }
             }
+
         }
+
     }
 
 }

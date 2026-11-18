@@ -161,5 +161,7 @@ public class ErrorsConfiguration {
             var policy = ErrorsConfiguration.policy(properties, ErrorsProperties.Target.MVC);
             return new RouteErrorResolver(policy == null ? null : RouteErrorPolicy.fromCompiled(policy));
         }
+
     }
+
 }

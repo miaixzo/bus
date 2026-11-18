@@ -397,6 +397,7 @@ public class AffixSqlRewriter {
             char close = quote == '[' ? ']' : quote;
             return quote + replacement.replace(String.valueOf(close), "" + close + close) + close;
         }
+
     }
 
     /**

@@ -142,6 +142,7 @@ public record MetricFamilyKey(Logical logical, Export export) {
         public Logical {
             attributes = List.copyOf(attributes);
         }
+
     }
 
     /**
@@ -162,6 +163,7 @@ public record MetricFamilyKey(Logical logical, Export export) {
         public Export {
             attributes = List.copyOf(attributes);
         }
+
     }
 
     /**

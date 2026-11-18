@@ -529,8 +529,10 @@ public class GsonProvider extends AbstractJsonProvider {
                 public T read(JsonReader input) throws IOException {
                     return delegate.read(input);
                 }
+
             };
         }
+
     }
 
 }

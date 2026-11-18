@@ -976,6 +976,7 @@ public class AioChannel implements Conduit {
             this.byteCount = byteCount;
             this.future = future ? new CompletableFuture<>() : null;
         }
+
     }
 
     /**
@@ -1061,6 +1062,7 @@ public class AioChannel implements Conduit {
         private boolean terminate() {
             return TERMINAL.compareAndSet(this, Normal._0, Normal._1);
         }
+
     }
 
     /**

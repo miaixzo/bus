@@ -440,6 +440,7 @@ public class ImageAdapter {
                     copyValue(data, dcm, Tag.SegmentedBluePaletteColorLookupTableData);
                     return dcm;
                 }
+
             };
         }
         return null;

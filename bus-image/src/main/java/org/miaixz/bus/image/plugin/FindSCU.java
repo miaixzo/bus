@@ -495,6 +495,7 @@ public class FindSCU implements AutoCloseable {
                     state.setStatus(status);
                 }
             }
+
         };
 
         query(keys, rspHandler);

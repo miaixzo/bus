@@ -622,6 +622,7 @@ public interface Conduit extends AutoCloseable {
             public void close() {
                 conduit.close();
             }
+
         };
     }
 
@@ -706,6 +707,7 @@ public interface Conduit extends AutoCloseable {
             public void close() {
                 conduit.close();
             }
+
         };
     }
 
@@ -773,6 +775,7 @@ public interface Conduit extends AutoCloseable {
             this.positions = positions;
             this.limits = limits;
         }
+
     }
 
 }

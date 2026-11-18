@@ -146,6 +146,8 @@ public class CachedBodyRequestWrapper extends HttpServletRequestWrapper {
 
     /**
      * In-memory Servlet stream over the cached body.
+     *
+     * @author Kimi Liu
      */
     private static final class CachedServletInputStream extends ServletInputStream {
 
@@ -225,6 +227,7 @@ public class CachedBodyRequestWrapper extends HttpServletRequestWrapper {
                 listener.onError(exception);
             }
         }
+
     }
 
 }

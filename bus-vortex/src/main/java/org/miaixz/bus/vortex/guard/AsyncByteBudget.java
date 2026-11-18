@@ -282,6 +282,7 @@ public class AsyncByteBudget implements AutoCloseable {
         private Waiter(long bytes) {
             this.bytes = bytes;
         }
+
     }
 
     /**
@@ -366,6 +367,7 @@ public class AsyncByteBudget implements AutoCloseable {
                 this.budget.release(releasedBytes);
             }
         }
+
     }
 
 }
