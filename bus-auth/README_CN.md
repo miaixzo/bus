@@ -227,7 +227,15 @@ switch (outcome) {
 ```
 
 `runtime.reload(context, timeout)` 每次都加载完整 Blueprint 候选。校验和编译全部完成后才会进行一次原子发布；任何失败都
-不会改变当前 Roster 和 Worker。Revision 必须严格递增，并作为框架 Cache 的 generation，防止重载后继续使用旧协议状态。
+不会改变当前 Roster 和 Worker。Revision 必须严格递增，并作为框架 Cache 的 epoch，防止重载后继续使用旧协议状态。
+
+`epoch` 表示非负的安全轮次，不是 Unix 时间戳。完整 Blueprint 的 `revision` 提供编译后的缓存 epoch，重载发布和修订号排序规则不变。
+刷新令牌记录使用 `sequence` 表示同一授权族内从零开始的轮换序号，推进 Source epoch 不会修改既有刷新记录的序号。
+
+为兼容既有一次性状态与凭证，缓存键仍保留 `:generation:` 固定文本。版本化载荷编解码应将原轮换字段映射到 `Entry.sequence()` 并保留原值；
+Axiom 保持票据 JSON 版本 1 和原加密绑定。`Entry.generation()` 访问器改为 `sequence()`，调用方需使用新版库重新编译。
+使用 JDK 原生对象缓存的部署应在协调升级前排空或迁移旧刷新记录；新版采用序列化代理并拒绝旧记录直读，避免缺失的 `sequence` 被静默还原为零。
+已有重放保护记录保留至原有效期结束。
 
 应通过 `try`/`finally` 或 try-with-resources 确定性管理 `RuntimeManager` 生命周期。`close()` 拒绝新的 Dispatch 和 Reload，
 并退役已编译 Worker，但不会关闭调用方拥有的 Executor、Cache、Loader、Store 或网络资源。最后一次成功提交的 Roster 仍然可以读取。

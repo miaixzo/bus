@@ -241,7 +241,20 @@ switch (outcome) {
 
 `runtime.reload(context, timeout)` always loads a complete Blueprint candidate. Validation and compilation finish before
 one atomic publication; any failure leaves the active Roster and workers unchanged. Revisions strictly increase and
-generation-scope framework caches so stale protocol state cannot be reused after reload.
+define the security epoch of framework caches so stale protocol state cannot be reused after reload.
+
+`epoch` is a non-negative security-state round, not a Unix timestamp. A complete Blueprint `revision` supplies the
+compiled cache epoch; reload publication and revision ordering are unchanged. Refresh-token entries instead expose
+`sequence`, the zero-based rotation order within their authorization family. Advancing a Source epoch does not reset
+or increment an existing refresh entry's sequence.
+
+The persisted cache namespace still spells this segment `:generation:` for compatibility with existing one-time
+state and opaque credentials. Integrations with a versioned payload codec must map their previous rotation field to
+`Entry.sequence()` without changing its value. Axiom retains its version-1 ticket JSON field and encrypted bindings.
+The `Entry.generation()` accessor is replaced by `sequence()`; downstream consumers must recompile against the updated
+library. JDK object caches must drain or migrate old direct refresh-entry streams before a coordinated upgrade: new
+entries use a serialization proxy and reject old direct streams instead of silently resetting their sequence to zero.
+Keep existing replay markers until their original TTL expires.
 
 Use `RuntimeManager` with deterministic lifecycle ownership, preferably in `try`/`finally` or try-with-resources.
 `close()` rejects new dispatch and reload operations and retires compiled workers, but does not close caller-owned

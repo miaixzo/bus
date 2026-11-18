@@ -91,10 +91,10 @@ public abstract class AuthCache<V> {
     }
 
     /**
-     * Creates one Source-generation-scoped typed view over a bus-cache backend.
+     * Creates one Source-epoch-scoped typed view over a bus-cache backend.
      * <p>
-     * The Source identifier is hashed before it enters the backend key. The generation must be the revision of the
-     * complete Roster snapshot from which the Source was compiled.
+     * The Source identifier is hashed before it enters the backend key. The epoch must be the revision of the complete
+     * Roster snapshot from which the Source was compiled.
      * </p>
      *
      * @param cache      shared bus-cache backend
@@ -102,31 +102,31 @@ public abstract class AuthCache<V> {
      * @param purpose    authentication-state purpose within the deployment
      * @param valueType  exact outer value class stored for this purpose
      * @param sourceId   exact Source identifier
-     * @param generation non-negative Source configuration generation
+     * @param epoch      non-negative Source configuration epoch
      * @param clock      shared runtime clock used to derive backend TTL
      */
     protected AuthCache(final CacheX<String, Object> cache, final String deployment, final String purpose,
-            final Class<V> valueType, final String sourceId, final long generation, final Clock clock) {
+            final Class<V> valueType, final String sourceId, final long epoch, final Clock clock) {
         this.cache = Assert.notNull(cache, "Authentication cache must not be null");
-        this.keyPrefix = keyPrefix(deployment, purpose, sourceId, generation);
+        this.keyPrefix = keyPrefix(deployment, purpose, sourceId, epoch);
         this.valueType = Assert.notNull(valueType, "Authentication cache value type must not be null");
         this.clock = Assert.notNull(clock, "Authentication cache clock must not be null");
     }
 
     /**
-     * Builds either the public purpose prefix or a Source-generation-isolated runtime prefix.
+     * Builds either the public purpose prefix or a Source-epoch-isolated runtime prefix.
      *
      * @param deployment deployment-unique cache scope
      * @param purpose    authentication-state purpose
      * @param sourceId   optional Source identifier for a runtime-scoped view
-     * @param generation Source configuration generation
+     * @param epoch      Source configuration epoch
      * @return validated authentication cache prefix
      */
     private static String keyPrefix(
             final String deployment,
             final String purpose,
             final String sourceId,
-            final long generation) {
+            final long epoch) {
         final String deploymentName = Assert
                 .notBlank(deployment, "Authentication cache deployment scope must not be blank");
         Assert.isFalse(
@@ -140,9 +140,10 @@ public abstract class AuthCache<V> {
             return deploymentName + ":auth:" + purposeName + ":";
         }
         final String source = Assert.notBlank(sourceId, "Authentication cache Source id must not be blank");
-        Assert.isTrue(generation >= 0L, "Authentication cache Source generation must not be negative");
+        Assert.isTrue(epoch >= 0L, "Authentication cache Source epoch must not be negative");
         final String sourceKey = Builder.sha256Hex(source);
-        return deploymentName + ":auth:source:" + sourceKey + ":generation:" + generation + ":" + purposeName + ":";
+        // Keep the persisted namespace spelling so an API rename cannot reopen one-time state or invalidate tokens.
+        return deploymentName + ":auth:source:" + sourceKey + ":generation:" + epoch + ":" + purposeName + ":";
     }
 
     /**

@@ -99,7 +99,7 @@ public class RuntimeServices {
     private final ResourceParser resourceParser;
 
     /**
-     * Shared bus-cache backend used to create immutable Source-generation-scoped views.
+     * Shared bus-cache backend used to create immutable Source-epoch-scoped views.
      */
     private final CacheX<String, Object> authenticationCache;
 
@@ -277,102 +277,102 @@ public class RuntimeServices {
     }
 
     /**
-     * Creates the callback-state cache bound to one compiled Source generation.
+     * Creates the callback-state cache bound to one compiled Source epoch.
      *
-     * @param sourceId   exact Source identifier
-     * @param generation non-negative Source configuration generation
-     * @return Source-generation-scoped callback-state cache
+     * @param sourceId exact Source identifier
+     * @param epoch    non-negative Source configuration epoch
+     * @return Source-epoch-scoped callback-state cache
      */
-    StateCache stateCache(final String sourceId, final long generation) {
-        return new StateCache(authenticationCache, cacheDeployment, sourceId, generation, FabricX.clock());
+    StateCache stateCache(final String sourceId, final long epoch) {
+        return new StateCache(authenticationCache, cacheDeployment, sourceId, epoch, FabricX.clock());
     }
 
     /**
-     * Creates the nonce cache bound to one compiled Source generation.
+     * Creates the nonce cache bound to one compiled Source epoch.
      *
-     * @param sourceId   exact Source identifier
-     * @param generation non-negative Source configuration generation
-     * @return Source-generation-scoped nonce cache
+     * @param sourceId exact Source identifier
+     * @param epoch    non-negative Source configuration epoch
+     * @return Source-epoch-scoped nonce cache
      */
-    NonceCache nonceCache(final String sourceId, final long generation) {
-        return new NonceCache(authenticationCache, cacheDeployment, sourceId, generation, FabricX.clock());
+    NonceCache nonceCache(final String sourceId, final long epoch) {
+        return new NonceCache(authenticationCache, cacheDeployment, sourceId, epoch, FabricX.clock());
     }
 
     /**
-     * Creates the authorization-code cache bound to one compiled Source generation.
+     * Creates the authorization-code cache bound to one compiled Source epoch.
      *
-     * @param sourceId   exact Source identifier
-     * @param generation non-negative Source configuration generation
-     * @return Source-generation-scoped authorization-code cache
+     * @param sourceId exact Source identifier
+     * @param epoch    non-negative Source configuration epoch
+     * @return Source-epoch-scoped authorization-code cache
      */
-    AuthorizationCodeCache authorizationCodeCache(final String sourceId, final long generation) {
-        return new AuthorizationCodeCache(authenticationCache, cacheDeployment, sourceId, generation, FabricX.clock());
+    AuthorizationCodeCache authorizationCodeCache(final String sourceId, final long epoch) {
+        return new AuthorizationCodeCache(authenticationCache, cacheDeployment, sourceId, epoch, FabricX.clock());
     }
 
     /**
-     * Creates the device-code cache bound to one compiled Source generation.
+     * Creates the device-code cache bound to one compiled Source epoch.
      *
-     * @param sourceId   exact Source identifier
-     * @param generation non-negative Source configuration generation
-     * @return Source-generation-scoped device-code cache
+     * @param sourceId exact Source identifier
+     * @param epoch    non-negative Source configuration epoch
+     * @return Source-epoch-scoped device-code cache
      */
-    DeviceCodeCache deviceCodeCache(final String sourceId, final long generation) {
-        return new DeviceCodeCache(authenticationCache, cacheDeployment, sourceId, generation, FabricX.clock());
+    DeviceCodeCache deviceCodeCache(final String sourceId, final long epoch) {
+        return new DeviceCodeCache(authenticationCache, cacheDeployment, sourceId, epoch, FabricX.clock());
     }
 
     /**
-     * Creates the authorization lifecycle cache bound to one compiled Source generation.
+     * Creates the authorization lifecycle cache bound to one compiled Source epoch.
      *
-     * @param sourceId   exact Source identifier
-     * @param generation non-negative Source configuration generation
-     * @return Source-generation-scoped authorization lifecycle cache
+     * @param sourceId exact Source identifier
+     * @param epoch    non-negative Source configuration epoch
+     * @return Source-epoch-scoped authorization lifecycle cache
      */
-    AuthorizationCache authorizationCache(final String sourceId, final long generation) {
-        return new AuthorizationCache(authenticationCache, cacheDeployment, sourceId, generation, FabricX.clock());
+    AuthorizationCache authorizationCache(final String sourceId, final long epoch) {
+        return new AuthorizationCache(authenticationCache, cacheDeployment, sourceId, epoch, FabricX.clock());
     }
 
     /**
-     * Creates the access-token cache bound to one compiled Source generation.
+     * Creates the access-token cache bound to one compiled Source epoch.
      *
-     * @param sourceId   exact Source identifier
-     * @param generation non-negative Source configuration generation
-     * @return Source-generation-scoped access-token cache
+     * @param sourceId exact Source identifier
+     * @param epoch    non-negative Source configuration epoch
+     * @return Source-epoch-scoped access-token cache
      */
-    AccessTokenCache accessTokenCache(final String sourceId, final long generation) {
-        return new AccessTokenCache(authenticationCache, cacheDeployment, sourceId, generation, FabricX.clock());
+    AccessTokenCache accessTokenCache(final String sourceId, final long epoch) {
+        return new AccessTokenCache(authenticationCache, cacheDeployment, sourceId, epoch, FabricX.clock());
     }
 
     /**
-     * Creates the refresh-token cache bound to one compiled Source generation.
+     * Creates the refresh-token cache bound to one compiled Source epoch.
      *
-     * @param sourceId   exact Source identifier
-     * @param generation non-negative Source configuration generation
-     * @return Source-generation-scoped refresh-token cache
+     * @param sourceId exact Source identifier
+     * @param epoch    non-negative Source configuration epoch
+     * @return Source-epoch-scoped refresh-token cache
      */
-    RefreshTokenCache refreshTokenCache(final String sourceId, final long generation) {
-        return new RefreshTokenCache(authenticationCache, cacheDeployment, sourceId, generation, FabricX.clock());
+    RefreshTokenCache refreshTokenCache(final String sourceId, final long epoch) {
+        return new RefreshTokenCache(authenticationCache, cacheDeployment, sourceId, epoch, FabricX.clock());
     }
 
     /**
-     * Creates the Session cache bound to one compiled Source generation.
+     * Creates the Session cache bound to one compiled Source epoch.
      *
-     * @param sourceId   exact Source identifier
-     * @param generation non-negative Source configuration generation
-     * @return Source-generation-scoped Session cache
+     * @param sourceId exact Source identifier
+     * @param epoch    non-negative Source configuration epoch
+     * @return Source-epoch-scoped Session cache
      */
-    SessionCache sessionCache(final String sourceId, final long generation) {
-        return new SessionCache(authenticationCache, cacheDeployment, sourceId, generation, FabricX.clock());
+    SessionCache sessionCache(final String sourceId, final long epoch) {
+        return new SessionCache(authenticationCache, cacheDeployment, sourceId, epoch, FabricX.clock());
     }
 
     /**
-     * Creates the issued ID Token binding cache bound to one compiled Source generation.
+     * Creates the issued ID Token binding cache bound to one compiled Source epoch.
      *
-     * @param sourceId   exact Source identifier
-     * @param generation non-negative Source configuration generation
-     * @return Source-generation-scoped ID Token binding cache
+     * @param sourceId exact Source identifier
+     * @param epoch    non-negative Source configuration epoch
+     * @return Source-epoch-scoped ID Token binding cache
      */
-    IdTokenCache idTokenCache(final String sourceId, final long generation) {
-        return new IdTokenCache(authenticationCache, cacheDeployment, sourceId, generation, FabricX.clock());
+    IdTokenCache idTokenCache(final String sourceId, final long epoch) {
+        return new IdTokenCache(authenticationCache, cacheDeployment, sourceId, epoch, FabricX.clock());
     }
 
     /**
@@ -409,7 +409,7 @@ public class RuntimeServices {
      * @param entry        exact Source Blueprint entry owning the scoped view
      * @param slots        exact project data ports required by one prepared Source
      * @param dependencies exact framework services required by the same prepared Source
-     * @param generation   security-state generation assigned by snapshot compilation
+     * @param epoch        security-state epoch assigned by snapshot compilation
      * @return capability-limited Source service view
      * @throws IllegalArgumentException if an argument is {@code null} or a required project port is unavailable
      */
@@ -417,15 +417,15 @@ public class RuntimeServices {
             final Blueprint.SourceEntry entry,
             final WorkerSlots slots,
             final SourceDriver.Dependencies dependencies,
-            final long generation) {
+            final long epoch) {
         final Blueprint.SourceEntry sourceEntry = Assert
                 .notNull(entry, "Scoped Source Blueprint entry must not be null");
         final WorkerSlots selected = Assert.notNull(slots, "Source Worker slots must not be null");
         final SourceDriver.Dependencies required = Assert
                 .notNull(dependencies, "Source framework dependencies must not be null");
         workers.require(selected);
-        Assert.isTrue(generation >= 0L, "Source security-state generation must not be negative");
-        return new ScopedSourceServices(this, sourceEntry, selected, required, generation);
+        Assert.isTrue(epoch >= 0L, "Source security-state epoch must not be negative");
+        return new ScopedSourceServices(this, sourceEntry, selected, required, epoch);
     }
 
 }

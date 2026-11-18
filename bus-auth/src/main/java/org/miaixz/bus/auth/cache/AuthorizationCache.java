@@ -57,17 +57,17 @@ public class AuthorizationCache extends AuthCache<AuthorizationCache.Entry> {
     }
 
     /**
-     * Creates a Source-generation-scoped authorization lifecycle cache view for compiled runtime use.
+     * Creates a Source-epoch-scoped authorization lifecycle cache view for compiled runtime use.
      *
      * @param cache      shared bus-cache backend
      * @param deployment deployment-unique cache scope
      * @param sourceId   exact Source identifier
-     * @param generation non-negative Source configuration generation
+     * @param epoch      non-negative Source configuration epoch
      * @param clock      shared runtime clock used to derive entry lifetimes
      */
     public AuthorizationCache(final CacheX<String, Object> cache, final String deployment, final String sourceId,
-            final long generation, final Clock clock) {
-        super(cache, deployment, PURPOSE, Entry.class, sourceId, generation, clock);
+            final long epoch, final Clock clock) {
+        super(cache, deployment, PURPOSE, Entry.class, sourceId, epoch, clock);
     }
 
     /**

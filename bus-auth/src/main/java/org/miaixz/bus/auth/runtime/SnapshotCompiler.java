@@ -44,8 +44,8 @@ import org.miaixz.bus.logger.Logger;
  * failure therefore exposes no partial container and leaves atomic publication to the reload service. Complete Library
  * resources are indexed first, followed by protocol-neutral Provider resources and executable Source resources. Each
  * Source receives its resolved owning Provider and Library. The complete snapshot revision is also bound to every
- * Source-scoped protocol-state cache as its generation. This class does not access committed Roster state or import
- * protocol or Vendor implementations.
+ * Source-scoped protocol-state cache as its epoch. This class does not access committed Roster state or import protocol
+ * or Vendor implementations.
  * </p>
  *
  * @author Kimi Liu
@@ -256,12 +256,12 @@ final class SnapshotCompiler {
     /**
      * Captures a wildcard driver and compiles from one exact preparation and its matching scoped services.
      *
-     * @param <O>        concrete Source options type
-     * @param driver     exact typed Source driver
-     * @param entry      Source Blueprint entry
-     * @param provider   resolved Provider
-     * @param library    resolved Library
-     * @param generation complete snapshot revision used as the Source security-state generation
+     * @param <O>      concrete Source options type
+     * @param driver   exact typed Source driver
+     * @param entry    Source Blueprint entry
+     * @param provider resolved Provider
+     * @param library  resolved Library
+     * @param epoch    complete snapshot revision used as the Source security-state epoch
      * @return compiled Source worker
      */
     private <O extends Options<?>> SourceWorker compile(
@@ -269,13 +269,15 @@ final class SnapshotCompiler {
             final Blueprint.SourceEntry entry,
             final Provider provider,
             final Library library,
-            final long generation) {
+            final long epoch) {
         final SourceDriver.Prepared<O> prepared = driver.prepare(entry, provider, library);
-        return Assert.notNull(
-                driver.compile(
-                        prepared,
-                        runtimeServices.scope(prepared.entry(), prepared.slots(), prepared.dependencies(), generation)),
-                "Source driver result must not be null");
+        return Assert
+                .notNull(
+                        driver.compile(
+                                prepared,
+                                runtimeServices
+                                        .scope(prepared.entry(), prepared.slots(), prepared.dependencies(), epoch)),
+                        "Source driver result must not be null");
     }
 
     /**
