@@ -248,13 +248,11 @@ compiled cache epoch; reload publication and revision ordering are unchanged. Re
 `sequence`, the zero-based rotation order within their authorization family. Advancing a Source epoch does not reset
 or increment an existing refresh entry's sequence.
 
-The persisted cache namespace still spells this segment `:generation:` for compatibility with existing one-time
-state and opaque credentials. Integrations with a versioned payload codec must map their previous rotation field to
-`Entry.sequence()` without changing its value. Axiom retains its version-1 ticket JSON field and encrypted bindings.
-The `Entry.generation()` accessor is replaced by `sequence()`; downstream consumers must recompile against the updated
-library. JDK object caches must drain or migrate old direct refresh-entry streams before a coordinated upgrade: new
-entries use a serialization proxy and reject old direct streams instead of silently resetting their sequence to zero.
-Keep existing replay markers until their original TTL expires.
+Source-scoped cache keys use `:epoch:` exclusively. Refresh-entry payloads expose `sequence` exclusively; there are
+no alternate field names, namespace readers, or format fallbacks. Downstream consumers must recompile against this
+API. Deploy all participating components together and require existing protocol credentials and pending interactions
+to be reissued. JDK object caches use the required current serialization form; direct record streams are rejected.
+Keep replay markers until their original TTL expires; changing a cache schema must not reopen a replay window.
 
 Use `RuntimeManager` with deterministic lifecycle ownership, preferably in `try`/`finally` or try-with-resources.
 `close()` rejects new dispatch and reload operations and retires compiled workers, but does not close caller-owned

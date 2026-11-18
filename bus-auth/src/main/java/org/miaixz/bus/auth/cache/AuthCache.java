@@ -142,8 +142,7 @@ public abstract class AuthCache<V> {
         final String source = Assert.notBlank(sourceId, "Authentication cache Source id must not be blank");
         Assert.isTrue(epoch >= 0L, "Authentication cache Source epoch must not be negative");
         final String sourceKey = Builder.sha256Hex(source);
-        // Keep the persisted namespace spelling so an API rename cannot reopen one-time state or invalidate tokens.
-        return deploymentName + ":auth:source:" + sourceKey + ":generation:" + epoch + ":" + purposeName + ":";
+        return deploymentName + ":auth:source:" + sourceKey + ":epoch:" + epoch + ":" + purposeName + ":";
     }
 
     /**

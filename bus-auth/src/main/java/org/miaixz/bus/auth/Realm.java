@@ -345,7 +345,12 @@ public class Realm {
         /**
          * Non-human application or service identity.
          */
-        SERVICE_ACCOUNT(5);
+        SERVICE_ACCOUNT(5),
+
+        /**
+         * Application registration, distinct from a tenant-local service identity.
+         */
+        APPLICATION(6);
 
         /**
          * Stable persisted code independent of enum declaration order.
@@ -807,7 +812,14 @@ public class Realm {
      * @param cursor opaque continuation position, or empty for the first page
      * @author Kimi Liu
      */
-    public record Changes(Set<Kind> kinds, int limit, Optional<Cursor> cursor) {
+    public record Changes(Set<Kind> kinds, int limit, Optional<Cursor> cursor, boolean includeRelations) {
+
+        /**
+         * Preserves existing callers which request the full supported relation projection.
+         */
+        public Changes(Set<Kind> kinds, int limit, Optional<Cursor> cursor) {
+            this(kinds, limit, cursor, true);
+        }
 
         /**
          * Validates and normalizes one Realm change request.
@@ -974,7 +986,14 @@ public class Realm {
      * @param next    opaque next position, or empty when complete
      * @author Kimi Liu
      */
-    public record ChangePage(List<Change> changes, Optional<Cursor> next) {
+    public record ChangePage(List<Change> changes, Optional<Cursor> next, Optional<Cursor> checkpoint) {
+
+        /**
+         * Preserves the finite-feed constructor used by other adapters.
+         */
+        public ChangePage(List<Change> changes, Optional<Cursor> next) {
+            this(changes, next, Optional.empty());
+        }
 
         /**
          * Validates, de-duplicates, and freezes one Realm change page.
@@ -988,6 +1007,10 @@ public class Realm {
                 throw new ValidateException("Realm change page contains too many changes");
             }
             next = optional(next, "Realm change page next cursor");
+            checkpoint = optional(checkpoint, "Realm change page checkpoint");
+            if (next.isPresent() && checkpoint.isPresent()) {
+                throw new ValidateException("An unfinished page cannot publish a completed checkpoint");
+            }
         }
     }
 

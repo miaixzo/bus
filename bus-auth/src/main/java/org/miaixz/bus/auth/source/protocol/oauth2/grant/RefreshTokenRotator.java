@@ -82,7 +82,7 @@ public class RefreshTokenRotator {
     private final AccessTokenIssuer issuer;
 
     /**
-     * Source-isolated opaque token generation and irreversible key derivation.
+     * Source-isolated opaque token creation and irreversible key derivation.
      */
     private final TokenMaterial tokenMaterial;
 

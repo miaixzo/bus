@@ -113,8 +113,7 @@ public class Assets extends Nature {
      * <li>{@code 3}: file download with separate admission and progress protection</li>
      * </ul>
      */
-    @Builder.Default
-    private Integer stream = 1;
+    private Integer stream;
 
     /**
      * HTTP request method (verb). {@code 1}=GET, {@code 2}=POST, {@code 3}=HEAD, {@code 4}=PUT, {@code 5}=PATCH,
@@ -149,16 +148,14 @@ public class Assets extends Nature {
     private Integer scope;
 
     /**
-     * Maximum number of automatic retry attempts for transient failures. Default: {@code 3}.
+     * Maximum number of automatic retry attempts for transient failures.
      */
-    @Builder.Default
-    private Integer retries = 3;
+    private Integer retries;
 
     /**
-     * Request timeout in seconds. Default: {@code 60}.
+     * Request timeout in seconds.
      */
-    @Builder.Default
-    private Integer timeout = 60;
+    private Integer timeout;
 
     /**
      * Per-minute request rate limit. {@code null} or {@code 0} disables rate limiting.

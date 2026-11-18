@@ -212,8 +212,7 @@ public class RefreshTokenCache extends AuthCache<RefreshTokenCache.Entry> {
         }
 
         /**
-         * Uses an explicit native serialization form so a renamed record component cannot silently default to zero.
-         * Axiom's versioned ticket JSON remains compatible independently of Java object serialization.
+         * Uses the required native serialization form for the current refresh-entry schema.
          *
          * @return stable native serialization proxy
          */
@@ -224,8 +223,7 @@ public class RefreshTokenCache extends AuthCache<RefreshTokenCache.Entry> {
         }
 
         /**
-         * Rejects direct legacy record streams, whose missing sequence would otherwise deserialize as zero. Native
-         * cache deployments must drain or migrate old refresh entries before upgrading.
+         * Rejects direct record streams that bypass the required serialization form and canonical validation.
          *
          * @return never returns normally
          * @throws InvalidObjectException if a direct record stream bypasses the serialization proxy

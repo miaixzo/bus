@@ -103,7 +103,7 @@ public class AccessTokenIssuer {
     private final Augmenter augmenter;
 
     /**
-     * Source-isolated opaque token generation and irreversible key derivation.
+     * Source-isolated opaque token creation and irreversible key derivation.
      */
     private final TokenMaterial tokenMaterial;
 

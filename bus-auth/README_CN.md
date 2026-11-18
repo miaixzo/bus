@@ -232,10 +232,9 @@ switch (outcome) {
 `epoch` 表示非负的安全轮次，不是 Unix 时间戳。完整 Blueprint 的 `revision` 提供编译后的缓存 epoch，重载发布和修订号排序规则不变。
 刷新令牌记录使用 `sequence` 表示同一授权族内从零开始的轮换序号，推进 Source epoch 不会修改既有刷新记录的序号。
 
-为兼容既有一次性状态与凭证，缓存键仍保留 `:generation:` 固定文本。版本化载荷编解码应将原轮换字段映射到 `Entry.sequence()` 并保留原值；
-Axiom 保持票据 JSON 版本 1 和原加密绑定。`Entry.generation()` 访问器改为 `sequence()`，调用方需使用新版库重新编译。
-使用 JDK 原生对象缓存的部署应在协调升级前排空或迁移旧刷新记录；新版采用序列化代理并拒绝旧记录直读，避免缺失的 `sequence` 被静默还原为零。
-已有重放保护记录保留至原有效期结束。
+Source 缓存键只使用 `:epoch:`，刷新记录载荷只使用 `sequence`，不提供字段别名、旧命名空间读取或格式回退。
+调用方需使用新版 API 重新编译，各组件协调发布，已有协议凭证和进行中的交互必须重新签发或发起。
+JDK 对象缓存只接受当前规定的序列化格式，并拒绝直接记录流。已有重放保护记录保留至原有效期结束，不能通过更换缓存格式重新开放重放窗口。
 
 应通过 `try`/`finally` 或 try-with-resources 确定性管理 `RuntimeManager` 生命周期。`close()` 拒绝新的 Dispatch 和 Reload，
 并退役已编译 Worker，但不会关闭调用方拥有的 Executor、Cache、Loader、Store 或网络资源。最后一次成功提交的 Roster 仍然可以读取。
