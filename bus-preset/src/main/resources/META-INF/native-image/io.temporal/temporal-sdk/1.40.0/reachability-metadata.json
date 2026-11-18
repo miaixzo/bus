@@ -142,13 +142,6 @@
       }
     },
     {
-      "type": {
-        "proxy": [
-          "io.temporal.client.schedules.ScheduleClient"
-        ]
-      }
-    },
-    {
       "type": "io.temporal.client.WorkflowClient",
       "fields": [
         {
@@ -3356,6 +3349,13 @@
       ]
     },
     {
+      "type": {
+        "proxy": [
+          "io.temporal.client.schedules.ScheduleClient"
+        ]
+      }
+    },
+    {
       "type": "io.temporal.common.converter.DataConverter",
       "methods": [
         {
@@ -3692,6 +3692,48 @@
           "name": "<init>",
           "parameterTypes": [
             "java.util.List"
+          ]
+        }
+      ]
+    },
+    {
+      "type": {
+        "proxy": [
+          "io.temporal.common.converter.PayloadConverter"
+        ]
+      },
+      "condition": {
+        "typeReached": "io.temporal.common.converter.PayloadConverter"
+      }
+    },
+    {
+      "type": "io.temporal.common.converter.PayloadConverter",
+      "condition": {
+        "typeReached": "io.temporal.common.converter.PayloadConverter"
+      },
+      "methods": [
+        {
+          "name": "fromData",
+          "parameterTypes": [
+            "io.temporal.api.common.v1.Payload",
+            "java.lang.Class",
+            "java.lang.reflect.Type"
+          ]
+        },
+        {
+          "name": "getEncodingType",
+          "parameterTypes": []
+        },
+        {
+          "name": "toData",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "withContext",
+          "parameterTypes": [
+            "io.temporal.payload.context.SerializationContext"
           ]
         }
       ]
@@ -6310,48 +6352,6 @@
         {
           "name": "toString",
           "parameterTypes": []
-        }
-      ]
-    },
-    {
-      "type": {
-        "proxy": [
-          "io.temporal.common.converter.PayloadConverter"
-        ]
-      },
-      "condition": {
-        "typeReached": "io.temporal.common.converter.PayloadConverter"
-      }
-    },
-    {
-      "type": "io.temporal.common.converter.PayloadConverter",
-      "condition": {
-        "typeReached": "io.temporal.common.converter.PayloadConverter"
-      },
-      "methods": [
-        {
-          "name": "fromData",
-          "parameterTypes": [
-            "io.temporal.api.common.v1.Payload",
-            "java.lang.Class",
-            "java.lang.reflect.Type"
-          ]
-        },
-        {
-          "name": "getEncodingType",
-          "parameterTypes": []
-        },
-        {
-          "name": "toData",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "withContext",
-          "parameterTypes": [
-            "io.temporal.payload.context.SerializationContext"
-          ]
         }
       ]
     }

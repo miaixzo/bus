@@ -39,6 +39,7 @@ public final class JdbcErrorTranslator {
      * Prevents instantiation of the shared persistence error translator.
      */
     private JdbcErrorTranslator() {
+        // No initialization required.
     }
 
     /**

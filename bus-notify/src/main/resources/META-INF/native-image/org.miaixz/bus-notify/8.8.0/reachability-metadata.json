@@ -31,69 +31,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.notify.cache.NotifyCache",
-      "fields": [
-        {
-          "name": "INSTANCE"
-        }
-      ],
-      "methods": [
-        {
-          "name": "clear",
-          "parameterTypes": []
-        },
-        {
-          "name": "containsKey",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "read",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "read",
-          "parameterTypes": [
-            "java.util.Collection"
-          ]
-        },
-        {
-          "name": "remove",
-          "parameterTypes": [
-            "java.lang.String[]"
-          ]
-        },
-        {
-          "name": "valueOf",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "values",
-          "parameterTypes": []
-        },
-        {
-          "name": "write",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.Object",
-            "long"
-          ]
-        },
-        {
-          "name": "write",
-          "parameterTypes": [
-            "java.util.Map",
-            "long"
-          ]
-        }
-      ]
-    },
-    {
       "type": "org.miaixz.bus.notify.Context",
       "fields": [
         {
@@ -237,6 +174,155 @@
         {
           "name": "self",
           "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.notify.Registry",
+      "fields": [
+        {
+          "name": "ALIYUN_EDM"
+        },
+        {
+          "name": "ALIYUN_SMS"
+        },
+        {
+          "name": "ALIYUN_VMS"
+        },
+        {
+          "name": "BAIDU_SMS"
+        },
+        {
+          "name": "CLOOPEN_SMS"
+        },
+        {
+          "name": "CTYUN_SMS"
+        },
+        {
+          "name": "DINGTALK"
+        },
+        {
+          "name": "EMAY_SMS"
+        },
+        {
+          "name": "GENERIC_EDM"
+        },
+        {
+          "name": "HUAWEI_SMS"
+        },
+        {
+          "name": "JDCLOUD_SMS"
+        },
+        {
+          "name": "JPUSH_SMS"
+        },
+        {
+          "name": "NETEASE_SMS"
+        },
+        {
+          "name": "QINIU_SMS"
+        },
+        {
+          "name": "TENCENT_SMS"
+        },
+        {
+          "name": "UNI_SMS"
+        },
+        {
+          "name": "UPYUN_SMS"
+        },
+        {
+          "name": "WECHAT_CP"
+        },
+        {
+          "name": "WECHAT_KF"
+        },
+        {
+          "name": "WECHAT_MINI"
+        },
+        {
+          "name": "WECHAT_MP"
+        },
+        {
+          "name": "YUNPIAN_SMS"
+        },
+        {
+          "name": "ZHUTONG_SMS"
+        }
+      ],
+      "methods": [
+        {
+          "name": "valueOf",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "values",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.notify.cache.NotifyCache",
+      "fields": [
+        {
+          "name": "INSTANCE"
+        }
+      ],
+      "methods": [
+        {
+          "name": "clear",
+          "parameterTypes": []
+        },
+        {
+          "name": "containsKey",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "read",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "read",
+          "parameterTypes": [
+            "java.util.Collection"
+          ]
+        },
+        {
+          "name": "remove",
+          "parameterTypes": [
+            "java.lang.String[]"
+          ]
+        },
+        {
+          "name": "valueOf",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "values",
+          "parameterTypes": []
+        },
+        {
+          "name": "write",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.Object",
+            "long"
+          ]
+        },
+        {
+          "name": "write",
+          "parameterTypes": [
+            "java.util.Map",
+            "long"
+          ]
         }
       ]
     },
@@ -2458,92 +2544,6 @@
             "java.lang.String",
             "java.lang.String"
           ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.notify.Registry",
-      "fields": [
-        {
-          "name": "ALIYUN_EDM"
-        },
-        {
-          "name": "ALIYUN_SMS"
-        },
-        {
-          "name": "ALIYUN_VMS"
-        },
-        {
-          "name": "BAIDU_SMS"
-        },
-        {
-          "name": "CLOOPEN_SMS"
-        },
-        {
-          "name": "CTYUN_SMS"
-        },
-        {
-          "name": "DINGTALK"
-        },
-        {
-          "name": "EMAY_SMS"
-        },
-        {
-          "name": "GENERIC_EDM"
-        },
-        {
-          "name": "HUAWEI_SMS"
-        },
-        {
-          "name": "JDCLOUD_SMS"
-        },
-        {
-          "name": "JPUSH_SMS"
-        },
-        {
-          "name": "NETEASE_SMS"
-        },
-        {
-          "name": "QINIU_SMS"
-        },
-        {
-          "name": "TENCENT_SMS"
-        },
-        {
-          "name": "UNI_SMS"
-        },
-        {
-          "name": "UPYUN_SMS"
-        },
-        {
-          "name": "WECHAT_CP"
-        },
-        {
-          "name": "WECHAT_KF"
-        },
-        {
-          "name": "WECHAT_MINI"
-        },
-        {
-          "name": "WECHAT_MP"
-        },
-        {
-          "name": "YUNPIAN_SMS"
-        },
-        {
-          "name": "ZHUTONG_SMS"
-        }
-      ],
-      "methods": [
-        {
-          "name": "valueOf",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "values",
-          "parameterTypes": []
         }
       ]
     }

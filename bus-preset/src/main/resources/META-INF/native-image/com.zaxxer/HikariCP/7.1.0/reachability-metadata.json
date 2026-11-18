@@ -10,14 +10,6 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.spring.jdbc.DataSourceFactory"
-      },
-      "type": "com.zaxxer.hikari.HikariDataSource",
-      "allDeclaredConstructors": true,
-      "allDeclaredMethods": true
-    },
-    {
-      "condition": {
         "typeReached": "com.zaxxer.hikari.util.PropertyElf"
       },
       "type": "com.zaxxer.hikari.HikariConfig",
@@ -227,6 +219,14 @@
           ]
         }
       ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.spring.jdbc.DataSourceFactory"
+      },
+      "type": "com.zaxxer.hikari.HikariDataSource",
+      "allDeclaredConstructors": true,
+      "allDeclaredMethods": true
     },
     {
       "condition": {

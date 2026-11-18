@@ -103,30 +103,6 @@
       "jniAccessible": true
     },
     {
-      "type": "org.miaixz.bus.opencv.core.Core$MinMaxLocResult",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        }
-      ],
-      "fields": [
-        {
-          "name": "maxLoc"
-        },
-        {
-          "name": "maxVal"
-        },
-        {
-          "name": "minLoc"
-        },
-        {
-          "name": "minVal"
-        }
-      ],
-      "jniAccessible": true
-    },
-    {
       "type": "org.miaixz.bus.opencv.core.Core",
       "methods": [
         {
@@ -4359,6 +4335,30 @@
       "jniAccessible": true
     },
     {
+      "type": "org.miaixz.bus.opencv.core.Core$MinMaxLocResult",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ],
+      "fields": [
+        {
+          "name": "maxLoc"
+        },
+        {
+          "name": "maxVal"
+        },
+        {
+          "name": "minLoc"
+        },
+        {
+          "name": "minVal"
+        }
+      ],
+      "jniAccessible": true
+    },
+    {
       "type": "org.miaixz.bus.opencv.core.CvException",
       "methods": [
         {
@@ -4841,503 +4841,6 @@
         },
         {
           "name": "size"
-        }
-      ],
-      "jniAccessible": true
-    },
-    {
-      "type": "org.miaixz.bus.opencv.core.Mat$Atable",
-      "methods": [
-        {
-          "name": "getV",
-          "parameterTypes": []
-        },
-        {
-          "name": "getV2c",
-          "parameterTypes": []
-        },
-        {
-          "name": "getV3c",
-          "parameterTypes": []
-        },
-        {
-          "name": "getV4c",
-          "parameterTypes": []
-        },
-        {
-          "name": "setV",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "setV2c",
-          "parameterTypes": [
-            "org.miaixz.bus.opencv.core.Mat$Tuple2"
-          ]
-        },
-        {
-          "name": "setV3c",
-          "parameterTypes": [
-            "org.miaixz.bus.opencv.core.Mat$Tuple3"
-          ]
-        },
-        {
-          "name": "setV4c",
-          "parameterTypes": [
-            "org.miaixz.bus.opencv.core.Mat$Tuple4"
-          ]
-        }
-      ],
-      "fields": [],
-      "jniAccessible": true
-    },
-    {
-      "type": "org.miaixz.bus.opencv.core.Mat$AtableBase",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "org.miaixz.bus.opencv.core.Mat",
-            "int",
-            "int"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "org.miaixz.bus.opencv.core.Mat",
-            "int[]"
-          ]
-        }
-      ],
-      "fields": [
-        {
-          "name": "indices"
-        },
-        {
-          "name": "mat"
-        }
-      ],
-      "jniAccessible": true
-    },
-    {
-      "type": "org.miaixz.bus.opencv.core.Mat$AtableByte",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "org.miaixz.bus.opencv.core.Mat",
-            "int",
-            "int"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "org.miaixz.bus.opencv.core.Mat",
-            "int[]"
-          ]
-        },
-        {
-          "name": "getV",
-          "parameterTypes": []
-        },
-        {
-          "name": "getV2c",
-          "parameterTypes": []
-        },
-        {
-          "name": "getV3c",
-          "parameterTypes": []
-        },
-        {
-          "name": "getV4c",
-          "parameterTypes": []
-        },
-        {
-          "name": "setV",
-          "parameterTypes": [
-            "java.lang.Byte"
-          ]
-        },
-        {
-          "name": "setV2c",
-          "parameterTypes": [
-            "org.miaixz.bus.opencv.core.Mat$Tuple2"
-          ]
-        },
-        {
-          "name": "setV3c",
-          "parameterTypes": [
-            "org.miaixz.bus.opencv.core.Mat$Tuple3"
-          ]
-        },
-        {
-          "name": "setV4c",
-          "parameterTypes": [
-            "org.miaixz.bus.opencv.core.Mat$Tuple4"
-          ]
-        }
-      ],
-      "fields": [],
-      "jniAccessible": true
-    },
-    {
-      "type": "org.miaixz.bus.opencv.core.Mat$AtableDouble",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "org.miaixz.bus.opencv.core.Mat",
-            "int",
-            "int"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "org.miaixz.bus.opencv.core.Mat",
-            "int[]"
-          ]
-        },
-        {
-          "name": "getV",
-          "parameterTypes": []
-        },
-        {
-          "name": "getV2c",
-          "parameterTypes": []
-        },
-        {
-          "name": "getV3c",
-          "parameterTypes": []
-        },
-        {
-          "name": "getV4c",
-          "parameterTypes": []
-        },
-        {
-          "name": "setV",
-          "parameterTypes": [
-            "java.lang.Double"
-          ]
-        },
-        {
-          "name": "setV2c",
-          "parameterTypes": [
-            "org.miaixz.bus.opencv.core.Mat$Tuple2"
-          ]
-        },
-        {
-          "name": "setV3c",
-          "parameterTypes": [
-            "org.miaixz.bus.opencv.core.Mat$Tuple3"
-          ]
-        },
-        {
-          "name": "setV4c",
-          "parameterTypes": [
-            "org.miaixz.bus.opencv.core.Mat$Tuple4"
-          ]
-        }
-      ],
-      "fields": [],
-      "jniAccessible": true
-    },
-    {
-      "type": "org.miaixz.bus.opencv.core.Mat$AtableFloat",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "org.miaixz.bus.opencv.core.Mat",
-            "int",
-            "int"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "org.miaixz.bus.opencv.core.Mat",
-            "int[]"
-          ]
-        },
-        {
-          "name": "getV",
-          "parameterTypes": []
-        },
-        {
-          "name": "getV2c",
-          "parameterTypes": []
-        },
-        {
-          "name": "getV3c",
-          "parameterTypes": []
-        },
-        {
-          "name": "getV4c",
-          "parameterTypes": []
-        },
-        {
-          "name": "setV",
-          "parameterTypes": [
-            "java.lang.Float"
-          ]
-        },
-        {
-          "name": "setV2c",
-          "parameterTypes": [
-            "org.miaixz.bus.opencv.core.Mat$Tuple2"
-          ]
-        },
-        {
-          "name": "setV3c",
-          "parameterTypes": [
-            "org.miaixz.bus.opencv.core.Mat$Tuple3"
-          ]
-        },
-        {
-          "name": "setV4c",
-          "parameterTypes": [
-            "org.miaixz.bus.opencv.core.Mat$Tuple4"
-          ]
-        }
-      ],
-      "fields": [],
-      "jniAccessible": true
-    },
-    {
-      "type": "org.miaixz.bus.opencv.core.Mat$AtableInteger",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "org.miaixz.bus.opencv.core.Mat",
-            "int",
-            "int"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "org.miaixz.bus.opencv.core.Mat",
-            "int[]"
-          ]
-        },
-        {
-          "name": "getV",
-          "parameterTypes": []
-        },
-        {
-          "name": "getV2c",
-          "parameterTypes": []
-        },
-        {
-          "name": "getV3c",
-          "parameterTypes": []
-        },
-        {
-          "name": "getV4c",
-          "parameterTypes": []
-        },
-        {
-          "name": "setV",
-          "parameterTypes": [
-            "java.lang.Integer"
-          ]
-        },
-        {
-          "name": "setV2c",
-          "parameterTypes": [
-            "org.miaixz.bus.opencv.core.Mat$Tuple2"
-          ]
-        },
-        {
-          "name": "setV3c",
-          "parameterTypes": [
-            "org.miaixz.bus.opencv.core.Mat$Tuple3"
-          ]
-        },
-        {
-          "name": "setV4c",
-          "parameterTypes": [
-            "org.miaixz.bus.opencv.core.Mat$Tuple4"
-          ]
-        }
-      ],
-      "fields": [],
-      "jniAccessible": true
-    },
-    {
-      "type": "org.miaixz.bus.opencv.core.Mat$AtableShort",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "org.miaixz.bus.opencv.core.Mat",
-            "int",
-            "int"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "org.miaixz.bus.opencv.core.Mat",
-            "int[]"
-          ]
-        },
-        {
-          "name": "getV",
-          "parameterTypes": []
-        },
-        {
-          "name": "getV2c",
-          "parameterTypes": []
-        },
-        {
-          "name": "getV3c",
-          "parameterTypes": []
-        },
-        {
-          "name": "getV4c",
-          "parameterTypes": []
-        },
-        {
-          "name": "setV",
-          "parameterTypes": [
-            "java.lang.Short"
-          ]
-        },
-        {
-          "name": "setV2c",
-          "parameterTypes": [
-            "org.miaixz.bus.opencv.core.Mat$Tuple2"
-          ]
-        },
-        {
-          "name": "setV3c",
-          "parameterTypes": [
-            "org.miaixz.bus.opencv.core.Mat$Tuple3"
-          ]
-        },
-        {
-          "name": "setV4c",
-          "parameterTypes": [
-            "org.miaixz.bus.opencv.core.Mat$Tuple4"
-          ]
-        }
-      ],
-      "fields": [],
-      "jniAccessible": true
-    },
-    {
-      "type": "org.miaixz.bus.opencv.core.Mat$Tuple2",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.Object",
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "get_0",
-          "parameterTypes": []
-        },
-        {
-          "name": "get_1",
-          "parameterTypes": []
-        }
-      ],
-      "fields": [
-        {
-          "name": "_0"
-        },
-        {
-          "name": "_1"
-        }
-      ],
-      "jniAccessible": true
-    },
-    {
-      "type": "org.miaixz.bus.opencv.core.Mat$Tuple3",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.Object",
-            "java.lang.Object",
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "get_0",
-          "parameterTypes": []
-        },
-        {
-          "name": "get_1",
-          "parameterTypes": []
-        },
-        {
-          "name": "get_2",
-          "parameterTypes": []
-        }
-      ],
-      "fields": [
-        {
-          "name": "_0"
-        },
-        {
-          "name": "_1"
-        },
-        {
-          "name": "_2"
-        }
-      ],
-      "jniAccessible": true
-    },
-    {
-      "type": "org.miaixz.bus.opencv.core.Mat$Tuple4",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.Object",
-            "java.lang.Object",
-            "java.lang.Object",
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "get_0",
-          "parameterTypes": []
-        },
-        {
-          "name": "get_1",
-          "parameterTypes": []
-        },
-        {
-          "name": "get_2",
-          "parameterTypes": []
-        },
-        {
-          "name": "get_3",
-          "parameterTypes": []
-        }
-      ],
-      "fields": [
-        {
-          "name": "_0"
-        },
-        {
-          "name": "_1"
-        },
-        {
-          "name": "_2"
-        },
-        {
-          "name": "_3"
         }
       ],
       "jniAccessible": true
@@ -6947,6 +6450,503 @@
         }
       ],
       "fields": [],
+      "jniAccessible": true
+    },
+    {
+      "type": "org.miaixz.bus.opencv.core.Mat$Atable",
+      "methods": [
+        {
+          "name": "getV",
+          "parameterTypes": []
+        },
+        {
+          "name": "getV2c",
+          "parameterTypes": []
+        },
+        {
+          "name": "getV3c",
+          "parameterTypes": []
+        },
+        {
+          "name": "getV4c",
+          "parameterTypes": []
+        },
+        {
+          "name": "setV",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "setV2c",
+          "parameterTypes": [
+            "org.miaixz.bus.opencv.core.Mat$Tuple2"
+          ]
+        },
+        {
+          "name": "setV3c",
+          "parameterTypes": [
+            "org.miaixz.bus.opencv.core.Mat$Tuple3"
+          ]
+        },
+        {
+          "name": "setV4c",
+          "parameterTypes": [
+            "org.miaixz.bus.opencv.core.Mat$Tuple4"
+          ]
+        }
+      ],
+      "fields": [],
+      "jniAccessible": true
+    },
+    {
+      "type": "org.miaixz.bus.opencv.core.Mat$AtableBase",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.opencv.core.Mat",
+            "int",
+            "int"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.opencv.core.Mat",
+            "int[]"
+          ]
+        }
+      ],
+      "fields": [
+        {
+          "name": "indices"
+        },
+        {
+          "name": "mat"
+        }
+      ],
+      "jniAccessible": true
+    },
+    {
+      "type": "org.miaixz.bus.opencv.core.Mat$AtableByte",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.opencv.core.Mat",
+            "int",
+            "int"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.opencv.core.Mat",
+            "int[]"
+          ]
+        },
+        {
+          "name": "getV",
+          "parameterTypes": []
+        },
+        {
+          "name": "getV2c",
+          "parameterTypes": []
+        },
+        {
+          "name": "getV3c",
+          "parameterTypes": []
+        },
+        {
+          "name": "getV4c",
+          "parameterTypes": []
+        },
+        {
+          "name": "setV",
+          "parameterTypes": [
+            "java.lang.Byte"
+          ]
+        },
+        {
+          "name": "setV2c",
+          "parameterTypes": [
+            "org.miaixz.bus.opencv.core.Mat$Tuple2"
+          ]
+        },
+        {
+          "name": "setV3c",
+          "parameterTypes": [
+            "org.miaixz.bus.opencv.core.Mat$Tuple3"
+          ]
+        },
+        {
+          "name": "setV4c",
+          "parameterTypes": [
+            "org.miaixz.bus.opencv.core.Mat$Tuple4"
+          ]
+        }
+      ],
+      "fields": [],
+      "jniAccessible": true
+    },
+    {
+      "type": "org.miaixz.bus.opencv.core.Mat$AtableDouble",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.opencv.core.Mat",
+            "int",
+            "int"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.opencv.core.Mat",
+            "int[]"
+          ]
+        },
+        {
+          "name": "getV",
+          "parameterTypes": []
+        },
+        {
+          "name": "getV2c",
+          "parameterTypes": []
+        },
+        {
+          "name": "getV3c",
+          "parameterTypes": []
+        },
+        {
+          "name": "getV4c",
+          "parameterTypes": []
+        },
+        {
+          "name": "setV",
+          "parameterTypes": [
+            "java.lang.Double"
+          ]
+        },
+        {
+          "name": "setV2c",
+          "parameterTypes": [
+            "org.miaixz.bus.opencv.core.Mat$Tuple2"
+          ]
+        },
+        {
+          "name": "setV3c",
+          "parameterTypes": [
+            "org.miaixz.bus.opencv.core.Mat$Tuple3"
+          ]
+        },
+        {
+          "name": "setV4c",
+          "parameterTypes": [
+            "org.miaixz.bus.opencv.core.Mat$Tuple4"
+          ]
+        }
+      ],
+      "fields": [],
+      "jniAccessible": true
+    },
+    {
+      "type": "org.miaixz.bus.opencv.core.Mat$AtableFloat",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.opencv.core.Mat",
+            "int",
+            "int"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.opencv.core.Mat",
+            "int[]"
+          ]
+        },
+        {
+          "name": "getV",
+          "parameterTypes": []
+        },
+        {
+          "name": "getV2c",
+          "parameterTypes": []
+        },
+        {
+          "name": "getV3c",
+          "parameterTypes": []
+        },
+        {
+          "name": "getV4c",
+          "parameterTypes": []
+        },
+        {
+          "name": "setV",
+          "parameterTypes": [
+            "java.lang.Float"
+          ]
+        },
+        {
+          "name": "setV2c",
+          "parameterTypes": [
+            "org.miaixz.bus.opencv.core.Mat$Tuple2"
+          ]
+        },
+        {
+          "name": "setV3c",
+          "parameterTypes": [
+            "org.miaixz.bus.opencv.core.Mat$Tuple3"
+          ]
+        },
+        {
+          "name": "setV4c",
+          "parameterTypes": [
+            "org.miaixz.bus.opencv.core.Mat$Tuple4"
+          ]
+        }
+      ],
+      "fields": [],
+      "jniAccessible": true
+    },
+    {
+      "type": "org.miaixz.bus.opencv.core.Mat$AtableInteger",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.opencv.core.Mat",
+            "int",
+            "int"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.opencv.core.Mat",
+            "int[]"
+          ]
+        },
+        {
+          "name": "getV",
+          "parameterTypes": []
+        },
+        {
+          "name": "getV2c",
+          "parameterTypes": []
+        },
+        {
+          "name": "getV3c",
+          "parameterTypes": []
+        },
+        {
+          "name": "getV4c",
+          "parameterTypes": []
+        },
+        {
+          "name": "setV",
+          "parameterTypes": [
+            "java.lang.Integer"
+          ]
+        },
+        {
+          "name": "setV2c",
+          "parameterTypes": [
+            "org.miaixz.bus.opencv.core.Mat$Tuple2"
+          ]
+        },
+        {
+          "name": "setV3c",
+          "parameterTypes": [
+            "org.miaixz.bus.opencv.core.Mat$Tuple3"
+          ]
+        },
+        {
+          "name": "setV4c",
+          "parameterTypes": [
+            "org.miaixz.bus.opencv.core.Mat$Tuple4"
+          ]
+        }
+      ],
+      "fields": [],
+      "jniAccessible": true
+    },
+    {
+      "type": "org.miaixz.bus.opencv.core.Mat$AtableShort",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.opencv.core.Mat",
+            "int",
+            "int"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.opencv.core.Mat",
+            "int[]"
+          ]
+        },
+        {
+          "name": "getV",
+          "parameterTypes": []
+        },
+        {
+          "name": "getV2c",
+          "parameterTypes": []
+        },
+        {
+          "name": "getV3c",
+          "parameterTypes": []
+        },
+        {
+          "name": "getV4c",
+          "parameterTypes": []
+        },
+        {
+          "name": "setV",
+          "parameterTypes": [
+            "java.lang.Short"
+          ]
+        },
+        {
+          "name": "setV2c",
+          "parameterTypes": [
+            "org.miaixz.bus.opencv.core.Mat$Tuple2"
+          ]
+        },
+        {
+          "name": "setV3c",
+          "parameterTypes": [
+            "org.miaixz.bus.opencv.core.Mat$Tuple3"
+          ]
+        },
+        {
+          "name": "setV4c",
+          "parameterTypes": [
+            "org.miaixz.bus.opencv.core.Mat$Tuple4"
+          ]
+        }
+      ],
+      "fields": [],
+      "jniAccessible": true
+    },
+    {
+      "type": "org.miaixz.bus.opencv.core.Mat$Tuple2",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.Object",
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "get_0",
+          "parameterTypes": []
+        },
+        {
+          "name": "get_1",
+          "parameterTypes": []
+        }
+      ],
+      "fields": [
+        {
+          "name": "_0"
+        },
+        {
+          "name": "_1"
+        }
+      ],
+      "jniAccessible": true
+    },
+    {
+      "type": "org.miaixz.bus.opencv.core.Mat$Tuple3",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.Object",
+            "java.lang.Object",
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "get_0",
+          "parameterTypes": []
+        },
+        {
+          "name": "get_1",
+          "parameterTypes": []
+        },
+        {
+          "name": "get_2",
+          "parameterTypes": []
+        }
+      ],
+      "fields": [
+        {
+          "name": "_0"
+        },
+        {
+          "name": "_1"
+        },
+        {
+          "name": "_2"
+        }
+      ],
+      "jniAccessible": true
+    },
+    {
+      "type": "org.miaixz.bus.opencv.core.Mat$Tuple4",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.Object",
+            "java.lang.Object",
+            "java.lang.Object",
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "get_0",
+          "parameterTypes": []
+        },
+        {
+          "name": "get_1",
+          "parameterTypes": []
+        },
+        {
+          "name": "get_2",
+          "parameterTypes": []
+        },
+        {
+          "name": "get_3",
+          "parameterTypes": []
+        }
+      ],
+      "fields": [
+        {
+          "name": "_0"
+        },
+        {
+          "name": "_1"
+        },
+        {
+          "name": "_2"
+        },
+        {
+          "name": "_3"
+        }
+      ],
       "jniAccessible": true
     },
     {

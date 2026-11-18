@@ -36,25 +36,92 @@
       ]
     },
     {
-      "type": {
-        "proxy": [
-          "io.temporal.serviceclient.CloudServiceStubs"
-        ]
-      }
-    },
-    {
-      "type": {
-        "proxy": [
-          "io.temporal.serviceclient.OperatorServiceStubs"
-        ]
-      }
-    },
-    {
-      "type": {
-        "proxy": [
-          "io.temporal.serviceclient.WorkflowServiceStubs"
-        ]
-      }
+      "type": "io.temporal.internal.WorkflowThreadMarker",
+      "fields": [
+        {
+          "name": "enableEnforcements"
+        },
+        {
+          "name": "isWorkflowThreadThreadLocal"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "enforceNonWorkflowThread",
+          "parameterTypes": []
+        },
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "getClass",
+          "parameterTypes": []
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "isWorkflowThread",
+          "parameterTypes": []
+        },
+        {
+          "name": "lambda$protectFromWorkflowThread$1",
+          "parameterTypes": [
+            "java.lang.Object",
+            "java.lang.Object",
+            "java.lang.reflect.Method",
+            "java.lang.Object[]"
+          ]
+        },
+        {
+          "name": "lambda$static$0",
+          "parameterTypes": []
+        },
+        {
+          "name": "notify",
+          "parameterTypes": []
+        },
+        {
+          "name": "notifyAll",
+          "parameterTypes": []
+        },
+        {
+          "name": "protectFromWorkflowThread",
+          "parameterTypes": [
+            "java.lang.Object",
+            "java.lang.Class"
+          ]
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "wait",
+          "parameterTypes": []
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long",
+            "int"
+          ]
+        }
+      ]
     },
     {
       "type": "io.temporal.internal.retryer.GrpcRetryer",
@@ -118,94 +185,6 @@
             "java.util.concurrent.ScheduledExecutorService",
             "java.util.function.Supplier",
             "io.temporal.internal.retryer.GrpcRetryer$GrpcRetryerOptions"
-          ]
-        },
-        {
-          "name": "toString",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long",
-            "int"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "io.temporal.internal.WorkflowThreadMarker",
-      "fields": [
-        {
-          "name": "enableEnforcements"
-        },
-        {
-          "name": "isWorkflowThreadThreadLocal"
-        }
-      ],
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "enforceNonWorkflowThread",
-          "parameterTypes": []
-        },
-        {
-          "name": "equals",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "getClass",
-          "parameterTypes": []
-        },
-        {
-          "name": "hashCode",
-          "parameterTypes": []
-        },
-        {
-          "name": "isWorkflowThread",
-          "parameterTypes": []
-        },
-        {
-          "name": "lambda$protectFromWorkflowThread$1",
-          "parameterTypes": [
-            "java.lang.Object",
-            "java.lang.Object",
-            "java.lang.reflect.Method",
-            "java.lang.Object[]"
-          ]
-        },
-        {
-          "name": "lambda$static$0",
-          "parameterTypes": []
-        },
-        {
-          "name": "notify",
-          "parameterTypes": []
-        },
-        {
-          "name": "notifyAll",
-          "parameterTypes": []
-        },
-        {
-          "name": "protectFromWorkflowThread",
-          "parameterTypes": [
-            "java.lang.Object",
-            "java.lang.Class"
           ]
         },
         {
@@ -453,6 +432,13 @@
       ]
     },
     {
+      "type": {
+        "proxy": [
+          "io.temporal.serviceclient.CloudServiceStubs"
+        ]
+      }
+    },
+    {
       "type": "io.temporal.serviceclient.CloudServiceStubs",
       "fields": [
         {
@@ -591,6 +577,13 @@
           ]
         }
       ]
+    },
+    {
+      "type": {
+        "proxy": [
+          "io.temporal.serviceclient.OperatorServiceStubs"
+        ]
+      }
     },
     {
       "type": "io.temporal.serviceclient.OperatorServiceStubs",
@@ -743,6 +736,60 @@
       ]
     },
     {
+      "type": "io.temporal.serviceclient.ServiceStubs",
+      "methods": [
+        {
+          "name": "awaitTermination",
+          "parameterTypes": [
+            "long",
+            "java.util.concurrent.TimeUnit"
+          ]
+        },
+        {
+          "name": "blockingStub",
+          "parameterTypes": []
+        },
+        {
+          "name": "connect",
+          "parameterTypes": [
+            "java.time.Duration"
+          ]
+        },
+        {
+          "name": "futureStub",
+          "parameterTypes": []
+        },
+        {
+          "name": "getRawChannel",
+          "parameterTypes": []
+        },
+        {
+          "name": "getServerCapabilities",
+          "parameterTypes": []
+        },
+        {
+          "name": "healthCheck",
+          "parameterTypes": []
+        },
+        {
+          "name": "isShutdown",
+          "parameterTypes": []
+        },
+        {
+          "name": "isTerminated",
+          "parameterTypes": []
+        },
+        {
+          "name": "shutdown",
+          "parameterTypes": []
+        },
+        {
+          "name": "shutdownNow",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
       "type": "io.temporal.serviceclient.ServiceStubsOptions$Builder",
       "methods": [
         {
@@ -764,6 +811,13 @@
           ]
         }
       ]
+    },
+    {
+      "type": {
+        "proxy": [
+          "io.temporal.serviceclient.WorkflowServiceStubs"
+        ]
+      }
     },
     {
       "type": "io.temporal.serviceclient.WorkflowServiceStubs",
@@ -1216,60 +1270,6 @@
       "methods": [
         {
           "name": "build",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
-      "type": "io.temporal.serviceclient.ServiceStubs",
-      "methods": [
-        {
-          "name": "awaitTermination",
-          "parameterTypes": [
-            "long",
-            "java.util.concurrent.TimeUnit"
-          ]
-        },
-        {
-          "name": "blockingStub",
-          "parameterTypes": []
-        },
-        {
-          "name": "connect",
-          "parameterTypes": [
-            "java.time.Duration"
-          ]
-        },
-        {
-          "name": "futureStub",
-          "parameterTypes": []
-        },
-        {
-          "name": "getRawChannel",
-          "parameterTypes": []
-        },
-        {
-          "name": "getServerCapabilities",
-          "parameterTypes": []
-        },
-        {
-          "name": "healthCheck",
-          "parameterTypes": []
-        },
-        {
-          "name": "isShutdown",
-          "parameterTypes": []
-        },
-        {
-          "name": "isTerminated",
-          "parameterTypes": []
-        },
-        {
-          "name": "shutdown",
-          "parameterTypes": []
-        },
-        {
-          "name": "shutdownNow",
           "parameterTypes": []
         }
       ]

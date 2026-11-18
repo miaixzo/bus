@@ -112,9 +112,6 @@
   ],
   "resources": [
     {
-      "glob": "font_metrics.properties"
-    },
-    {
       "glob": "META-INF/services/org.apache.poi.extractor.ExtractorProvider"
     },
     {
@@ -122,6 +119,9 @@
     },
     {
       "glob": "META-INF/services/org.apache.poi.ss.usermodel.WorkbookProvider"
+    },
+    {
+      "glob": "font_metrics.properties"
     },
     {
       "glob": "org/apache/poi/sl/draw/geom/presetShapeDefinitions.xml"

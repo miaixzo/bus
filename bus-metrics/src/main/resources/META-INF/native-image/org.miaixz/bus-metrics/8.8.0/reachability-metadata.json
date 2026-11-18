@@ -1,6 +1,112 @@
 {
   "reflection": [
     {
+      "type": "org.miaixz.bus.metrics.Builder",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.metrics.Factory",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "get",
+          "parameterTypes": []
+        },
+        {
+          "name": "of",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.metrics.Metrics",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "counter",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String[]"
+          ]
+        },
+        {
+          "name": "gauge",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.Object",
+            "java.util.function.ToDoubleFunction",
+            "java.lang.String[]"
+          ]
+        },
+        {
+          "name": "getProvider",
+          "parameterTypes": []
+        },
+        {
+          "name": "histogram",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String[]"
+          ]
+        },
+        {
+          "name": "llmTimer",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String[]"
+          ]
+        },
+        {
+          "name": "meter",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String[]"
+          ]
+        },
+        {
+          "name": "ratePair",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String[]"
+          ]
+        },
+        {
+          "name": "setProvider",
+          "parameterTypes": [
+            "org.miaixz.bus.metrics.Provider"
+          ]
+        },
+        {
+          "name": "slo",
+          "parameterTypes": []
+        },
+        {
+          "name": "tags",
+          "parameterTypes": [
+            "java.lang.String[]"
+          ]
+        },
+        {
+          "name": "timer",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String[]"
+          ]
+        }
+      ]
+    },
+    {
       "type": "org.miaixz.bus.metrics.bridge.CortexExporter",
       "methods": [
         {
@@ -109,15 +215,6 @@
             "long",
             "boolean"
           ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.metrics.Builder",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
         }
       ]
     },
@@ -355,23 +452,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.metrics.Factory",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "get",
-          "parameterTypes": []
-        },
-        {
-          "name": "of",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
       "type": "org.miaixz.bus.metrics.guard.CardinalityGuard",
       "methods": [
         {
@@ -585,82 +665,97 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.metrics.Metrics",
+      "type": "org.miaixz.bus.metrics.nimble.Timer$ViolationEvent",
       "methods": [
         {
           "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "org.miaixz.bus.metrics.observe.tag.Tag[]",
+            "double",
+            "long",
+            "long",
+            "java.time.Instant"
+          ]
+        },
+        {
+          "name": "actualMillis",
           "parameterTypes": []
         },
         {
-          "name": "counter",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String[]"
-          ]
-        },
-        {
-          "name": "gauge",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.Object",
-            "java.util.function.ToDoubleFunction",
-            "java.lang.String[]"
-          ]
-        },
-        {
-          "name": "getProvider",
+          "name": "actualNanos",
           "parameterTypes": []
         },
         {
-          "name": "histogram",
+          "name": "equals",
           "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String[]"
+            "java.lang.Object"
           ]
         },
         {
-          "name": "llmTimer",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String[]"
-          ]
+          "name": "hashCode",
+          "parameterTypes": []
         },
         {
-          "name": "meter",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String[]"
-          ]
+          "name": "metricName",
+          "parameterTypes": []
         },
         {
-          "name": "ratePair",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String[]"
-          ]
-        },
-        {
-          "name": "setProvider",
-          "parameterTypes": [
-            "org.miaixz.bus.metrics.Provider"
-          ]
-        },
-        {
-          "name": "slo",
+          "name": "percentile",
           "parameterTypes": []
         },
         {
           "name": "tags",
+          "parameterTypes": []
+        },
+        {
+          "name": "thresholdMillis",
+          "parameterTypes": []
+        },
+        {
+          "name": "thresholdNanos",
+          "parameterTypes": []
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "violatedAt",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.metrics.nimble.Timer$Window",
+      "fields": [
+        {
+          "name": "FIVE_MINUTES"
+        },
+        {
+          "name": "LIFETIME"
+        },
+        {
+          "name": "ONE_MINUTE"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
           "parameterTypes": [
-            "java.lang.String[]"
+            "java.lang.String",
+            "int"
           ]
         },
         {
-          "name": "timer",
+          "name": "valueOf",
           "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String[]"
+            "java.lang.String"
           ]
+        },
+        {
+          "name": "values",
+          "parameterTypes": []
         }
       ]
     },
@@ -1333,101 +1428,6 @@
         },
         {
           "name": "scrape",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.metrics.nimble.Timer$ViolationEvent",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "org.miaixz.bus.metrics.observe.tag.Tag[]",
-            "double",
-            "long",
-            "long",
-            "java.time.Instant"
-          ]
-        },
-        {
-          "name": "actualMillis",
-          "parameterTypes": []
-        },
-        {
-          "name": "actualNanos",
-          "parameterTypes": []
-        },
-        {
-          "name": "equals",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "hashCode",
-          "parameterTypes": []
-        },
-        {
-          "name": "metricName",
-          "parameterTypes": []
-        },
-        {
-          "name": "percentile",
-          "parameterTypes": []
-        },
-        {
-          "name": "tags",
-          "parameterTypes": []
-        },
-        {
-          "name": "thresholdMillis",
-          "parameterTypes": []
-        },
-        {
-          "name": "thresholdNanos",
-          "parameterTypes": []
-        },
-        {
-          "name": "toString",
-          "parameterTypes": []
-        },
-        {
-          "name": "violatedAt",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.metrics.nimble.Timer$Window",
-      "fields": [
-        {
-          "name": "FIVE_MINUTES"
-        },
-        {
-          "name": "LIFETIME"
-        },
-        {
-          "name": "ONE_MINUTE"
-        }
-      ],
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "int"
-          ]
-        },
-        {
-          "name": "valueOf",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "values",
           "parameterTypes": []
         }
       ]

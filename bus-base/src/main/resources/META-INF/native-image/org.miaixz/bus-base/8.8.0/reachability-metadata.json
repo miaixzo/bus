@@ -386,9 +386,6 @@
       "fields": [
         {
           "name": "mapper"
-        },
-        {
-          "name": "operatorProvider"
         }
       ]
     },

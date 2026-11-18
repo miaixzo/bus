@@ -13,6 +13,74 @@
       ]
     },
     {
+      "type": "org.apache.ibatis.annotations.DeleteProvider",
+      "methods": [
+        {
+          "name": "method",
+          "parameterTypes": []
+        },
+        {
+          "name": "type",
+          "parameterTypes": []
+        },
+        {
+          "name": "value",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.apache.ibatis.annotations.InsertProvider",
+      "methods": [
+        {
+          "name": "method",
+          "parameterTypes": []
+        },
+        {
+          "name": "type",
+          "parameterTypes": []
+        },
+        {
+          "name": "value",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.apache.ibatis.annotations.SelectProvider",
+      "methods": [
+        {
+          "name": "method",
+          "parameterTypes": []
+        },
+        {
+          "name": "type",
+          "parameterTypes": []
+        },
+        {
+          "name": "value",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.apache.ibatis.annotations.UpdateProvider",
+      "methods": [
+        {
+          "name": "method",
+          "parameterTypes": []
+        },
+        {
+          "name": "type",
+          "parameterTypes": []
+        },
+        {
+          "name": "value",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
       "condition": {
         "typeReached": "org.miaixz.bus.mapper.handler.MybatisInterceptor"
       },
@@ -56,6 +124,23 @@
           "org.apache.ibatis.executor.Executor"
         ]
       }
+    },
+    {
+      "type": "org.apache.ibatis.executor.Executor",
+      "methods": [
+        {
+          "name": "close",
+          "parameterTypes": [
+            "boolean"
+          ]
+        },
+        {
+          "name": "commit",
+          "parameterTypes": [
+            "boolean"
+          ]
+        }
+      ]
     },
     {
       "condition": {
@@ -163,6 +248,30 @@
       }
     },
     {
+      "type": "org.apache.ibatis.executor.statement.StatementHandler",
+      "methods": [
+        {
+          "name": "parameterize",
+          "parameterTypes": [
+            "java.sql.Statement"
+          ]
+        },
+        {
+          "name": "query",
+          "parameterTypes": [
+            "java.sql.Statement",
+            "org.apache.ibatis.session.ResultHandler"
+          ]
+        },
+        {
+          "name": "update",
+          "parameterTypes": [
+            "java.sql.Statement"
+          ]
+        }
+      ]
+    },
+    {
       "condition": {
         "typeReached": "org.miaixz.bus.mapper.Registry"
       },
@@ -208,10 +317,22 @@
       "condition": {
         "typeReached": "org.miaixz.bus.mapper.handler.AbstractSqlHandler"
       },
-      "type": "org.apache.ibatis.plugin.Plugin",
+      "type": "org.apache.ibatis.mapping.BoundSql",
       "fields": [
         {
-          "name": "target"
+          "name": "additionalParameters"
+        },
+        {
+          "name": "metaParameters"
+        },
+        {
+          "name": "parameterMappings"
+        },
+        {
+          "name": "parameterObject"
+        },
+        {
+          "name": "sql"
         }
       ]
     },
@@ -239,22 +360,10 @@
       "condition": {
         "typeReached": "org.miaixz.bus.mapper.handler.AbstractSqlHandler"
       },
-      "type": "org.apache.ibatis.mapping.BoundSql",
+      "type": "org.apache.ibatis.plugin.Plugin",
       "fields": [
         {
-          "name": "additionalParameters"
-        },
-        {
-          "name": "metaParameters"
-        },
-        {
-          "name": "parameterMappings"
-        },
-        {
-          "name": "parameterObject"
-        },
-        {
-          "name": "sql"
+          "name": "target"
         }
       ]
     },
@@ -280,115 +389,6 @@
             "org.apache.ibatis.parsing.XNode",
             "java.lang.Class",
             "org.apache.ibatis.reflection.ParamNameResolver"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.apache.ibatis.annotations.DeleteProvider",
-      "methods": [
-        {
-          "name": "method",
-          "parameterTypes": []
-        },
-        {
-          "name": "type",
-          "parameterTypes": []
-        },
-        {
-          "name": "value",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
-      "type": "org.apache.ibatis.annotations.InsertProvider",
-      "methods": [
-        {
-          "name": "method",
-          "parameterTypes": []
-        },
-        {
-          "name": "type",
-          "parameterTypes": []
-        },
-        {
-          "name": "value",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
-      "type": "org.apache.ibatis.annotations.SelectProvider",
-      "methods": [
-        {
-          "name": "method",
-          "parameterTypes": []
-        },
-        {
-          "name": "type",
-          "parameterTypes": []
-        },
-        {
-          "name": "value",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
-      "type": "org.apache.ibatis.annotations.UpdateProvider",
-      "methods": [
-        {
-          "name": "method",
-          "parameterTypes": []
-        },
-        {
-          "name": "type",
-          "parameterTypes": []
-        },
-        {
-          "name": "value",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
-      "type": "org.apache.ibatis.executor.Executor",
-      "methods": [
-        {
-          "name": "close",
-          "parameterTypes": [
-            "boolean"
-          ]
-        },
-        {
-          "name": "commit",
-          "parameterTypes": [
-            "boolean"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.apache.ibatis.executor.statement.StatementHandler",
-      "methods": [
-        {
-          "name": "parameterize",
-          "parameterTypes": [
-            "java.sql.Statement"
-          ]
-        },
-        {
-          "name": "query",
-          "parameterTypes": [
-            "java.sql.Statement",
-            "org.apache.ibatis.session.ResultHandler"
-          ]
-        },
-        {
-          "name": "update",
-          "parameterTypes": [
-            "java.sql.Statement"
           ]
         }
       ]

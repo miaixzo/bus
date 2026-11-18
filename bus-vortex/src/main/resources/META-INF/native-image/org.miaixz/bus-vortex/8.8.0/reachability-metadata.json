@@ -147,63 +147,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.vortex.cache.CacheManager",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "long",
-            "long"
-          ]
-        },
-        {
-          "name": "clear",
-          "parameterTypes": []
-        },
-        {
-          "name": "get",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "getL1Size",
-          "parameterTypes": []
-        },
-        {
-          "name": "getStats",
-          "parameterTypes": []
-        },
-        {
-          "name": "hitRate",
-          "parameterTypes": []
-        },
-        {
-          "name": "put",
-          "parameterTypes": [
-            "java.lang.Object",
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "remove",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "setPerformanceMonitor",
-          "parameterTypes": [
-            "org.miaixz.bus.vortex.Monitor"
-          ]
-        }
-      ]
-    },
-    {
       "type": "org.miaixz.bus.vortex.Channel",
       "fields": [
         {
@@ -320,6 +263,115 @@
     },
     {
       "type": "org.miaixz.bus.vortex.Filter"
+    },
+    {
+      "type": "org.miaixz.bus.vortex.Holder",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.vortex.Registry",
+      "methods": [
+        {
+          "name": "init",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.vortex.Vortex",
+      "fields": [
+        {
+          "name": "disposableServer"
+        },
+        {
+          "name": "httpServer"
+        },
+        {
+          "name": "running"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "reactor.netty.http.server.HttpServer"
+          ]
+        },
+        {
+          "name": "isRunning",
+          "parameterTypes": []
+        },
+        {
+          "name": "start",
+          "parameterTypes": []
+        },
+        {
+          "name": "stop",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.vortex.cache.CacheManager",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "long",
+            "long"
+          ]
+        },
+        {
+          "name": "clear",
+          "parameterTypes": []
+        },
+        {
+          "name": "get",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "getL1Size",
+          "parameterTypes": []
+        },
+        {
+          "name": "getStats",
+          "parameterTypes": []
+        },
+        {
+          "name": "hitRate",
+          "parameterTypes": []
+        },
+        {
+          "name": "put",
+          "parameterTypes": [
+            "java.lang.Object",
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "remove",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "setPerformanceMonitor",
+          "parameterTypes": [
+            "org.miaixz.bus.vortex.Monitor"
+          ]
+        }
+      ]
     },
     {
       "type": "org.miaixz.bus.vortex.filter.AbstractFilter",
@@ -552,15 +604,6 @@
         },
         {
           "name": "self",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.vortex.Holder",
-      "methods": [
-        {
-          "name": "<init>",
           "parameterTypes": []
         }
       ]
@@ -2683,15 +2726,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.vortex.Registry",
-      "methods": [
-        {
-          "name": "init",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
       "type": "org.miaixz.bus.vortex.registry.AbstractRegistry",
       "fields": [
         {
@@ -3090,6 +3124,39 @@
           "name": "<init>",
           "parameterTypes": [
             "org.miaixz.bus.vortex.routing.grpc.GrpcExecutor"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.vortex.routing.McpRouter",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.vortex.routing.mcp.McpExecutor"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.vortex.routing.MqRouter",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.vortex.routing.mq.MqExecutor"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.vortex.routing.RestRouter",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.vortex.routing.rest.RestExecutor"
           ]
         }
       ]
@@ -3742,17 +3809,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.vortex.routing.McpRouter",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "org.miaixz.bus.vortex.routing.mcp.McpExecutor"
-          ]
-        }
-      ]
-    },
-    {
       "type": "org.miaixz.bus.vortex.routing.mq.MqExecutor",
       "methods": [
         {
@@ -3762,33 +3818,11 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.vortex.routing.MqRouter",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "org.miaixz.bus.vortex.routing.mq.MqExecutor"
-          ]
-        }
-      ]
-    },
-    {
       "type": "org.miaixz.bus.vortex.routing.rest.RestExecutor",
       "methods": [
         {
           "name": "<init>",
           "parameterTypes": []
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.vortex.routing.RestRouter",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "org.miaixz.bus.vortex.routing.rest.RestExecutor"
-          ]
         }
       ]
     },
@@ -3933,40 +3967,6 @@
         },
         {
           "name": "toString",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.vortex.Vortex",
-      "fields": [
-        {
-          "name": "disposableServer"
-        },
-        {
-          "name": "httpServer"
-        },
-        {
-          "name": "running"
-        }
-      ],
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "reactor.netty.http.server.HttpServer"
-          ]
-        },
-        {
-          "name": "isRunning",
-          "parameterTypes": []
-        },
-        {
-          "name": "start",
-          "parameterTypes": []
-        },
-        {
-          "name": "stop",
           "parameterTypes": []
         }
       ]

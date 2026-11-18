@@ -70,6 +70,7 @@ public class AfterCommitListenerProcessor
      * Creates the commit listener infrastructure without initializing application beans.
      */
     public AfterCommitListenerProcessor() {
+        // No initialization required.
     }
 
     /**

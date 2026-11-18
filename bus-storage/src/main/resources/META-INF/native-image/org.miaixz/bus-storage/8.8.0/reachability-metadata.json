@@ -1,15 +1,6 @@
 {
   "reflection": [
     {
-      "type": "org.miaixz.bus.storage.magic.ErrorCode",
-      "methods": [
-        {
-          "parameterTypes": [],
-          "name": "<init>"
-        }
-      ]
-    },
-    {
       "type": "org.miaixz.bus.storage.Builder",
       "methods": [
         {
@@ -24,69 +15,6 @@
             "java.lang.String",
             "java.lang.String",
             "java.lang.String"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.storage.cache.StorageCache",
-      "fields": [
-        {
-          "name": "INSTANCE"
-        }
-      ],
-      "methods": [
-        {
-          "name": "clear",
-          "parameterTypes": []
-        },
-        {
-          "name": "containsKey",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "read",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "read",
-          "parameterTypes": [
-            "java.util.Collection"
-          ]
-        },
-        {
-          "name": "remove",
-          "parameterTypes": [
-            "java.lang.String[]"
-          ]
-        },
-        {
-          "name": "valueOf",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "values",
-          "parameterTypes": []
-        },
-        {
-          "name": "write",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.Object",
-            "long"
-          ]
-        },
-        {
-          "name": "write",
-          "parameterTypes": [
-            "java.util.Map",
-            "long"
           ]
         }
       ]
@@ -373,6 +301,221 @@
       ]
     },
     {
+      "type": "org.miaixz.bus.storage.Registry",
+      "fields": [
+        {
+          "name": "ALIYUN"
+        },
+        {
+          "name": "ALIYUN_INTL"
+        },
+        {
+          "name": "AMAZON"
+        },
+        {
+          "name": "AZURE"
+        },
+        {
+          "name": "BACKBLAZE_B2"
+        },
+        {
+          "name": "BAIDU"
+        },
+        {
+          "name": "BOX"
+        },
+        {
+          "name": "CLOUDFLARE_R2"
+        },
+        {
+          "name": "CONTABO"
+        },
+        {
+          "name": "DIGITALOCEAN"
+        },
+        {
+          "name": "DROPBOX"
+        },
+        {
+          "name": "EXOSCALE"
+        },
+        {
+          "name": "FILEBASE"
+        },
+        {
+          "name": "FTP"
+        },
+        {
+          "name": "GITLAB"
+        },
+        {
+          "name": "GOOGLE"
+        },
+        {
+          "name": "GOOGLE_DRIVE"
+        },
+        {
+          "name": "HUAWEI"
+        },
+        {
+          "name": "IBM"
+        },
+        {
+          "name": "ICLOUD"
+        },
+        {
+          "name": "JD"
+        },
+        {
+          "name": "KAKAO"
+        },
+        {
+          "name": "LINODE"
+        },
+        {
+          "name": "LOCAL"
+        },
+        {
+          "name": "MEGA"
+        },
+        {
+          "name": "MINIO"
+        },
+        {
+          "name": "NAVER"
+        },
+        {
+          "name": "NHN"
+        },
+        {
+          "name": "ORACLE"
+        },
+        {
+          "name": "OVHCLOUD"
+        },
+        {
+          "name": "QINIU"
+        },
+        {
+          "name": "S3"
+        },
+        {
+          "name": "SAKURA"
+        },
+        {
+          "name": "SCALEWAY"
+        },
+        {
+          "name": "SFTP"
+        },
+        {
+          "name": "SHAREPOINT"
+        },
+        {
+          "name": "SMB"
+        },
+        {
+          "name": "STORJ"
+        },
+        {
+          "name": "TENCENT"
+        },
+        {
+          "name": "TENCENT_INTL"
+        },
+        {
+          "name": "UPYUN"
+        },
+        {
+          "name": "VOLCENGINE"
+        },
+        {
+          "name": "VULTR"
+        },
+        {
+          "name": "WASABI"
+        },
+        {
+          "name": "WEBDAV"
+        }
+      ],
+      "methods": [
+        {
+          "name": "valueOf",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "values",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.storage.cache.StorageCache",
+      "fields": [
+        {
+          "name": "INSTANCE"
+        }
+      ],
+      "methods": [
+        {
+          "name": "clear",
+          "parameterTypes": []
+        },
+        {
+          "name": "containsKey",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "read",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "read",
+          "parameterTypes": [
+            "java.util.Collection"
+          ]
+        },
+        {
+          "name": "remove",
+          "parameterTypes": [
+            "java.lang.String[]"
+          ]
+        },
+        {
+          "name": "valueOf",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "values",
+          "parameterTypes": []
+        },
+        {
+          "name": "write",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.Object",
+            "long"
+          ]
+        },
+        {
+          "name": "write",
+          "parameterTypes": [
+            "java.util.Map",
+            "long"
+          ]
+        }
+      ]
+    },
+    {
       "type": "org.miaixz.bus.storage.magic.Blob",
       "fields": [
         {
@@ -649,6 +792,15 @@
         {
           "name": "self",
           "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.storage.magic.ErrorCode",
+      "methods": [
+        {
+          "parameterTypes": [],
+          "name": "<init>"
         }
       ]
     },
@@ -2374,158 +2526,6 @@
             "java.lang.String",
             "java.io.InputStream"
           ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.storage.Registry",
-      "fields": [
-        {
-          "name": "ALIYUN"
-        },
-        {
-          "name": "ALIYUN_INTL"
-        },
-        {
-          "name": "AMAZON"
-        },
-        {
-          "name": "AZURE"
-        },
-        {
-          "name": "BACKBLAZE_B2"
-        },
-        {
-          "name": "BAIDU"
-        },
-        {
-          "name": "BOX"
-        },
-        {
-          "name": "CLOUDFLARE_R2"
-        },
-        {
-          "name": "CONTABO"
-        },
-        {
-          "name": "DIGITALOCEAN"
-        },
-        {
-          "name": "DROPBOX"
-        },
-        {
-          "name": "EXOSCALE"
-        },
-        {
-          "name": "FILEBASE"
-        },
-        {
-          "name": "FTP"
-        },
-        {
-          "name": "GITLAB"
-        },
-        {
-          "name": "GOOGLE"
-        },
-        {
-          "name": "GOOGLE_DRIVE"
-        },
-        {
-          "name": "HUAWEI"
-        },
-        {
-          "name": "IBM"
-        },
-        {
-          "name": "ICLOUD"
-        },
-        {
-          "name": "JD"
-        },
-        {
-          "name": "KAKAO"
-        },
-        {
-          "name": "LINODE"
-        },
-        {
-          "name": "LOCAL"
-        },
-        {
-          "name": "MEGA"
-        },
-        {
-          "name": "MINIO"
-        },
-        {
-          "name": "NAVER"
-        },
-        {
-          "name": "NHN"
-        },
-        {
-          "name": "ORACLE"
-        },
-        {
-          "name": "OVHCLOUD"
-        },
-        {
-          "name": "QINIU"
-        },
-        {
-          "name": "S3"
-        },
-        {
-          "name": "SAKURA"
-        },
-        {
-          "name": "SCALEWAY"
-        },
-        {
-          "name": "SFTP"
-        },
-        {
-          "name": "SHAREPOINT"
-        },
-        {
-          "name": "SMB"
-        },
-        {
-          "name": "STORJ"
-        },
-        {
-          "name": "TENCENT"
-        },
-        {
-          "name": "TENCENT_INTL"
-        },
-        {
-          "name": "UPYUN"
-        },
-        {
-          "name": "VOLCENGINE"
-        },
-        {
-          "name": "VULTR"
-        },
-        {
-          "name": "WASABI"
-        },
-        {
-          "name": "WEBDAV"
-        }
-      ],
-      "methods": [
-        {
-          "name": "valueOf",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "values",
-          "parameterTypes": []
         }
       ]
     }
