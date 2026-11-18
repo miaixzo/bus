@@ -25,7 +25,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-dependencies</artifactId>
-        <version>4.1.1</version>
+        <version>4.1.2</version>
     </parent>
 
     <groupId>org.miaixz</groupId>
@@ -83,82 +83,82 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <logback.version>1.6.3</logback.version>
-        <elastic.version>9.5.1</elastic.version>
+        <logback.version>1.6.7</logback.version>
+        <elastic.version>9.5.6</elastic.version>
         <druid.version>1.2.28</druid.version>
         <sentinel.version>1.8.10</sentinel.version>
-        <fastjson.version>2.0.62</fastjson.version>
+        <fastjson.version>2.0.66</fastjson.version>
         <pinyin4j.version>2.5.1</pinyin4j.version>
         <hessian.version>4.0.66</hessian.version>
         <mmseg4j.version>1.10.0</mmseg4j.version>
         <houbb.version>0.4.0</houbb.version>
         <sardine.version>5.13</sardine.version>
-        <jsch.version>2.28.3</jsch.version>
+        <jsch.version>2.28.8</jsch.version>
         <jpinyin.version>1.1.8</jpinyin.version>
-        <gson.version>2.14.0</gson.version>
-        <guava.version>33.6.0-jre</guava.version>
+        <gson.version>2.15.0</gson.version>
+        <guava.version>33.8.0-jre</guava.version>
         <guice.version>7.0.0</guice.version>
         <zxing.version>3.5.4</zxing.version>
         <xmemcached.version>2.4.9</xmemcached.version>
-        <h2.version>2.4.240</h2.version>
+        <h2.version>2.5.252</h2.version>
         <hanlp.version>portable-1.8.6</hanlp.version>
-        <smbj.version>0.14.0</smbj.version>
-        <sshj.version>0.40.0</sshj.version>
+        <smbj.version>0.15.0</smbj.version>
+        <sshj.version>0.41.2</sshj.version>
         <jieba.version>1.0.2</jieba.version>
         <beetl.version>3.21.2.RELEASE</beetl.version>
         <mynlp.version>4.0.0</mynlp.version>
-        <mysql.version>9.7.0</mysql.version>
-        <rabbitmq.version>5.34.0</rabbitmq.version>
+        <mysql.version>26.10.0</mysql.version>
+        <rabbitmq.version>5.38.0</rabbitmq.version>
         <bopomofo4j.version>1.0.1</bopomofo4j.version>
-        <okhttp.version>5.4.0</okhttp.version>
+        <okhttp.version>5.5.1</okhttp.version>
         <emoji.java.version>5.1.1</emoji.java.version>
         <hikaricp.version>7.1.0</hikaricp.version>
         <commons.io.version>2.22.0</commons.io.version>
         <commons.logging.version>1.4.0</commons.logging.version>
         <net.version>3.13.0</net.version>
         <tiny.version>2.0.3.RELEASE</tiny.version>
-        <micrometer.version>1.17.0</micrometer.version>
-        <temporal.version>1.40.0</temporal.version>
+        <micrometer.version>1.17.2</micrometer.version>
+        <temporal.version>1.41.1</temporal.version>
         <jakarta.annotation.version>3.0.0</jakarta.annotation.version>
         <jakarta.persistence.version>3.2.0</jakarta.persistence.version>
         <jakarta.servlet.version>6.1.0</jakarta.servlet.version>
         <jna.version>5.19.1</jna.version>
         <ansj.version>5.1.6</ansj.version>
-        <activemq.version>6.2.6</activemq.version>
+        <activemq.version>6.4.0</activemq.version>
         <compress.version>1.28.0</compress.version>
         <curator.version>5.9.0</curator.version>
-        <dubbo.version>3.3.6</dubbo.version>
+        <dubbo.version>3.3.7</dubbo.version>
         <ftpserver.version>1.2.1</ftpserver.version>
-        <kafka.version>4.3.0</kafka.version>
-        <log4j.version>2.26.0</log4j.version>
-        <lucene.smartcn.version>8.11.4</lucene.smartcn.version>
-        <poi.version>5.5.1</poi.version>
-        <rocketmq.version>5.5.0</rocketmq.version>
+        <kafka.version>4.4.0</kafka.version>
+        <log4j2.version>2.26.1</log4j2.version>
+        <lucene.smartcn.version>10.6.0</lucene.smartcn.version>
+        <poi.version>6.0.0</poi.version>
+        <rocketmq.version>5.5.1</rocketmq.version>
         <word.version>1.3.1</word.version>
-        <bcpkix.version>1.85</bcpkix.version>
-        <javassist.version>3.31.0-GA</javassist.version>
+        <bcpkix.version>1.87</bcpkix.version>
+        <javassist.version>3.33.0-GA</javassist.version>
         <jcseg.version>2.6.3</jcseg.version>
         <mybatis.version>3.6.0</mybatis.version>
         <mybatis.spring.version>4.1.0</mybatis.spring.version>
-        <ofdrw.version>2.3.9</ofdrw.version>
-        <postgresql.version>42.7.11</postgresql.version>
+        <ofdrw.version>2.5.1</ofdrw.version>
+        <postgresql.version>42.7.14</postgresql.version>
         <lombok.version>1.18.48</lombok.version>
         <reflections.version>0.10.2</reflections.version>
-        <spring.boot.version>4.1.1</spring.boot.version>
-        <thymeleaf.version>3.1.5.RELEASE</thymeleaf.version>
-        <tinylog.version>2.7.0</tinylog.version>
-        <yaml.version>2.6</yaml.version>
-        <jedis.version>8.0.0</jedis.version>
-        <amazon.s3.version>2.57.8</amazon.s3.version>
+        <spring.boot.version>4.1.2</spring.boot.version>
+        <thymeleaf.version>3.1.7.RELEASE</thymeleaf.version>
+        <tinylog.version>2.8.1</tinylog.version>
+        <yaml.version>2.7</yaml.version>
+        <jedis.version>8.0.2</jedis.version>
+        <amazon.s3.version>2.59.3</amazon.s3.version>
         <maven.groom.version>${groom.version}</maven.groom.version>
-        <maven.spotless.version>3.10.4</maven.spotless.version>
+        <maven.spotless.version>3.11.0</maven.spotless.version>
         <maven.antrun.version>3.2.0</maven.antrun.version>
-        <maven.compiler.version>3.15.0</maven.compiler.version>
+        <maven.compiler.version>3.16.0</maven.compiler.version>
         <maven.gpg.version>3.2.8</maven.gpg.version>
         <maven.javadoc.version>3.12.0</maven.javadoc.version>
         <maven.plugin.version>3.16.0</maven.plugin.version>
-        <maven.versions.version>2.23.0</maven.versions.version>
-        <maven.native.version>1.1.18</maven.native.version>
+        <maven.versions.version>2.25.2</maven.versions.version>
+        <maven.native.version>1.1.19</maven.native.version>
         <maven.central.version>0.12.0</maven.central.version>
     </properties>
 
@@ -702,11 +702,11 @@
             <dependency>
                 <groupId>org.apache.logging.log4j</groupId>
                 <artifactId>log4j-core</artifactId>
-                <version>${log4j.version}</version>
+                <version>${log4j2.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.lucene</groupId>
-                <artifactId>lucene-analyzers-smartcn</artifactId>
+                <artifactId>lucene-analysis-smartcn</artifactId>
                 <version>${lucene.smartcn.version}</version>
             </dependency>
             <dependency>

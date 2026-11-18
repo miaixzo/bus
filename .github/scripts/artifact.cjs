@@ -390,7 +390,11 @@ for (const {module, section, row} of sourceRows) {
             'serialization',
             'jni'
         ].includes(section)) {
-        const candidates = (exported.get(section + ':' + key(row.type || row.name)) || []).filter(c => !c.condition || key(c.condition) === key(row.condition));
+        // Groom normalizes legacy serialization entries into reflection rows
+        // with serializable=true in unified reachability metadata.
+        const registrations = exported.get(section + ':' + key(row.type || row.name)) || [];
+        const normalized = section === 'serialization' ? (exported.get('reflection:' + key(row.type || row.name)) || []).filter(c => c.serializable === true) : [];
+        const candidates = [...registrations, ...normalized].filter(c => !c.condition || key(c.condition) === key(row.condition));
         if (!candidates.length) {
             errors.push('bus-all lost type ' + key(row.type || row.name));
             continue;

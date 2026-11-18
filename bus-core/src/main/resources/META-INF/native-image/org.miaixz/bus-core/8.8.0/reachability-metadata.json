@@ -411,7 +411,8 @@
             "java.lang.Integer"
           ]
         }
-      ]
+      ],
+      "serializable": true
     },
     {
       "type": "org.miaixz.bus.core.basic.entity.Audit$AuditBuilder",
@@ -661,7 +662,8 @@
             "java.lang.String"
           ]
         }
-      ]
+      ],
+      "serializable": true
     },
     {
       "type": "org.miaixz.bus.core.basic.entity.Authorize$AuthorizeBuilder",
@@ -738,7 +740,8 @@
             "java.lang.Object[]"
           ]
         }
-      ]
+      ],
+      "serializable": true
     },
     {
       "type": "org.miaixz.bus.core.basic.entity.Entity$EntityBuilder",
@@ -845,7 +848,8 @@
             "java.lang.Object"
           ]
         }
-      ]
+      ],
+      "serializable": true
     },
     {
       "type": "org.miaixz.bus.core.basic.entity.Message$MessageBuilder",
@@ -997,7 +1001,8 @@
             "java.lang.Integer"
           ]
         }
-      ]
+      ],
+      "serializable": true
     },
     {
       "type": "org.miaixz.bus.core.basic.entity.Query$QueryBuilder",
@@ -1104,7 +1109,8 @@
             "long"
           ]
         }
-      ]
+      ],
+      "serializable": true
     },
     {
       "type": "org.miaixz.bus.core.basic.entity.Result$ResultBuilder",
@@ -1162,7 +1168,8 @@
             "java.lang.String"
           ]
         }
-      ]
+      ],
+      "serializable": true
     },
     {
       "type": "org.miaixz.bus.core.basic.entity.Space$SpaceBuilder",
@@ -1214,7 +1221,8 @@
             "java.lang.String"
           ]
         }
-      ]
+      ],
+      "serializable": true
     },
     {
       "type": "org.miaixz.bus.core.basic.entity.Tenant$TenantBuilder",
@@ -1386,7 +1394,8 @@
             "java.lang.String"
           ]
         }
-      ]
+      ],
+      "serializable": true
     },
     {
       "type": "org.miaixz.bus.core.basic.entity.Tracer$TracerBuilder",
@@ -10397,8 +10406,7 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.core.lang.annotation.AfterCommit",
-      "reason": "Core commit-listener declaration inspected by runtime integrations."
+      "type": "org.miaixz.bus.core.lang.annotation.AfterCommit"
     },
     {
       "type": "org.miaixz.bus.core.lang.annotation.Async$MethodNameTransformer",
@@ -10434,7 +10442,6 @@
     },
     {
       "type": "org.miaixz.bus.core.lang.annotation.Transactional",
-      "reason": "Transaction annotation attribute inspection by runtime integrations.",
       "methods": [
         {
           "name": "transactionManager",
@@ -10468,7 +10475,6 @@
     },
     {
       "type": "org.miaixz.bus.core.lang.annotation.Transactional$Isolation",
-      "reason": "Enum constants used by the Core transaction annotation.",
       "methods": [
         {
           "name": "values",
@@ -10501,7 +10507,6 @@
     },
     {
       "type": "org.miaixz.bus.core.lang.annotation.Transactional$Propagation",
-      "reason": "Enum constants used by the Core transaction annotation.",
       "methods": [
         {
           "name": "values",
@@ -13407,7 +13412,6 @@
     },
     {
       "type": "org.miaixz.bus.core.lang.exception.RetryableException",
-      "reason": "Generic exception construction through Core reflection helpers.",
       "methods": [
         {
           "name": "<init>",
@@ -18422,35 +18426,6 @@
     },
     {
       "glob": "org/miaixz/bus/core/xyz"
-    }
-  ],
-  "serialization": [
-    {
-      "type": "org.miaixz.bus.core.basic.entity.Audit"
-    },
-    {
-      "type": "org.miaixz.bus.core.basic.entity.Authorize"
-    },
-    {
-      "type": "org.miaixz.bus.core.basic.entity.Entity"
-    },
-    {
-      "type": "org.miaixz.bus.core.basic.entity.Message"
-    },
-    {
-      "type": "org.miaixz.bus.core.basic.entity.Query"
-    },
-    {
-      "type": "org.miaixz.bus.core.basic.entity.Result"
-    },
-    {
-      "type": "org.miaixz.bus.core.basic.entity.Space"
-    },
-    {
-      "type": "org.miaixz.bus.core.basic.entity.Tenant"
-    },
-    {
-      "type": "org.miaixz.bus.core.basic.entity.Tracer"
     }
   ]
 }

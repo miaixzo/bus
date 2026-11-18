@@ -1,10 +1,11 @@
 [
   {
     "latest": true,
-    "metadata-version": "1.40.0",
+    "metadata-version": "1.41.0",
     "description": "Temporal Workflow Java SDK",
     "tested-versions": [
-      "1.40.0"
+      "1.41.0",
+      "1.41.1"
     ]
   }
 ]

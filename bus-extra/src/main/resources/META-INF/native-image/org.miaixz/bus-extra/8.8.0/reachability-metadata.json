@@ -4846,6 +4846,15 @@
       ]
     },
     {
+      "type": "org.miaixz.bus.extra.mq.provider.activemq.ActiveMQProvider",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
       "type": "org.miaixz.bus.extra.mq.provider.kafka.KafkaProvider",
       "methods": [
         {
@@ -4936,6 +4945,15 @@
       ]
     },
     {
+      "type": "org.miaixz.bus.extra.mq.provider.rabbitmq.RabbitMQProvider",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
       "type": "org.miaixz.bus.extra.mq.provider.rocketmq.RocketMQProducer",
       "methods": [
         {
@@ -4947,6 +4965,15 @@
           "parameterTypes": [
             "org.miaixz.bus.extra.mq.Message"
           ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.extra.mq.provider.rocketmq.RocketMQProvider",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
         }
       ]
     },
@@ -5036,6 +5063,24 @@
       ]
     },
     {
+      "type": "org.miaixz.bus.extra.nlp.provider.analysis.SmartcnProvider",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.extra.nlp.provider.ansj.AnsjProvider",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
       "type": "org.miaixz.bus.extra.nlp.provider.ansj.AnsjResult",
       "methods": [
         {
@@ -5076,6 +5121,10 @@
     {
       "type": "org.miaixz.bus.extra.nlp.provider.hanlp.HanLPProvider",
       "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
         {
           "name": "parse",
           "parameterTypes": [
@@ -5126,6 +5175,10 @@
       "type": "org.miaixz.bus.extra.nlp.provider.jcseg.JcsegProvider",
       "methods": [
         {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
           "name": "parse",
           "parameterTypes": [
             "java.lang.CharSequence"
@@ -5166,6 +5219,10 @@
     {
       "type": "org.miaixz.bus.extra.nlp.provider.jieba.JiebaProvider",
       "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
         {
           "name": "parse",
           "parameterTypes": [
@@ -5213,6 +5270,15 @@
       ]
     },
     {
+      "type": "org.miaixz.bus.extra.nlp.provider.mmseg.MmsegProvider",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
       "type": "org.miaixz.bus.extra.nlp.provider.mmseg.MmsegResult",
       "methods": [
         {
@@ -5245,6 +5311,10 @@
     {
       "type": "org.miaixz.bus.extra.nlp.provider.mynlp.MynlpProvider",
       "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
         {
           "name": "parse",
           "parameterTypes": [
@@ -5294,6 +5364,10 @@
     {
       "type": "org.miaixz.bus.extra.nlp.provider.word.WordProvider",
       "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
         {
           "name": "parse",
           "parameterTypes": [
@@ -5491,8 +5565,30 @@
       ]
     },
     {
+      "type": "org.miaixz.bus.extra.pinyin.provider.jpinyin.JPinyinProvider",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.extra.pinyin.provider.pinyin4j.Pinyin4JProvider",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
       "type": "org.miaixz.bus.extra.pinyin.provider.tinypinyin.TinyPinyinProvider",
       "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
         {
           "name": "getPinyin",
           "parameterTypes": [
@@ -6046,6 +6142,24 @@
       ]
     },
     {
+      "type": "org.miaixz.bus.extra.template.provider.beetl.BeetlProvider",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.extra.template.provider.freemarker.FreemarkerProvider",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
       "type": "org.miaixz.bus.extra.template.provider.freemarker.SimpleStringTemplateLoader",
       "methods": [
         {
@@ -6076,6 +6190,15 @@
             "java.lang.Object",
             "java.lang.String"
           ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.extra.template.provider.thymeleaf.ThymeleafProvider",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
         }
       ]
     }

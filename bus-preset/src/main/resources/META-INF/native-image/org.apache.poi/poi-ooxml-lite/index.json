@@ -1,17 +1,17 @@
 [
   {
     "latest": true,
-    "metadata-version": "5.5.0",
+    "metadata-version": "6.0.0",
     "source-code-url": "https://repo.maven.apache.org/maven2/org/apache/poi/poi-ooxml-lite/$version$/poi-ooxml-lite-$version$-sources.jar",
     "repository-url": "https://github.com/apache/poi",
     "documentation-url": "https://repo.maven.apache.org/maven2/org/apache/poi/poi-ooxml-lite/$version$/poi-ooxml-lite-$version$-javadoc.jar",
     "description": "Apache POI - Java API To Access Microsoft Format Files",
     "tested-versions": [
-      "5.5.0",
-      "5.5.1"
+      "6.0.0"
     ],
     "allowed-packages": [
-      "org.apache.poi.schemas"
+      "org.apache.poi.schemas",
+      "org.etsi.uri"
     ]
   }
 ]

@@ -7774,6 +7774,600 @@
       ]
     },
     {
+      "type": "org.etsi.uri.x01903.v13.impl.AllDataObjectsTimeStampDocumentImpl",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaType"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.etsi.uri.x01903.v13.impl.AnyDocumentImpl",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaType"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.etsi.uri.x01903.v13.impl.ArchiveTimeStampDocumentImpl",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaType"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.etsi.uri.x01903.v13.impl.AttrAuthoritiesCertValuesDocumentImpl",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaType"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.etsi.uri.x01903.v13.impl.AttributeCertificateRefsDocumentImpl",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaType"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.etsi.uri.x01903.v13.impl.AttributeRevocationRefsDocumentImpl",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaType"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.etsi.uri.x01903.v13.impl.AttributeRevocationValuesDocumentImpl",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaType"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.etsi.uri.x01903.v13.impl.CertificateValuesDocumentImpl",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaType"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.etsi.uri.x01903.v13.impl.CertifiedRolesListTypeImpl",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaType"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.etsi.uri.x01903.v13.impl.CommitmentTypeIndicationDocumentImpl",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaType"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.etsi.uri.x01903.v13.impl.CompleteCertificateRefsDocumentImpl",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaType"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.etsi.uri.x01903.v13.impl.CompleteRevocationRefsDocumentImpl",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaType"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.etsi.uri.x01903.v13.impl.CounterSignatureDocumentImpl",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaType"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.etsi.uri.x01903.v13.impl.CounterSignatureTypeImpl",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaType"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.etsi.uri.x01903.v13.impl.DataObjectFormatDocumentImpl",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaType"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.etsi.uri.x01903.v13.impl.DocumentationReferencesTypeImpl",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaType"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.etsi.uri.x01903.v13.impl.EncapsulatedPKIDataDocumentImpl",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaType"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.etsi.uri.x01903.v13.impl.IncludeDocumentImpl",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaType"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.etsi.uri.x01903.v13.impl.IncludeTypeImpl",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaType"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.etsi.uri.x01903.v13.impl.IndividualDataObjectsTimeStampDocumentImpl",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaType"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.etsi.uri.x01903.v13.impl.IntegerListTypeImpl",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaType"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.etsi.uri.x01903.v13.impl.NoticeReferenceTypeImpl",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaType"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.etsi.uri.x01903.v13.impl.ObjectIdentifierDocumentImpl",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaType"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.etsi.uri.x01903.v13.impl.OtherCertStatusRefsTypeImpl",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaType"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.etsi.uri.x01903.v13.impl.OtherCertStatusValuesTypeImpl",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaType"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.etsi.uri.x01903.v13.impl.OtherTimeStampDocumentImpl",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaType"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.etsi.uri.x01903.v13.impl.OtherTimeStampTypeImpl",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaType"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.etsi.uri.x01903.v13.impl.QualifierTypeImpl",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaType"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.etsi.uri.x01903.v13.impl.QualifyingPropertiesReferenceDocumentImpl",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaType"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.etsi.uri.x01903.v13.impl.QualifyingPropertiesReferenceTypeImpl",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaType"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.etsi.uri.x01903.v13.impl.ReferenceInfoDocumentImpl",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaType"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.etsi.uri.x01903.v13.impl.ReferenceInfoTypeImpl",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaType"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.etsi.uri.x01903.v13.impl.RefsOnlyTimeStampDocumentImpl",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaType"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.etsi.uri.x01903.v13.impl.RevocationValuesDocumentImpl",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaType"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.etsi.uri.x01903.v13.impl.SPURIDocumentImpl",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaType"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.etsi.uri.x01903.v13.impl.SPUserNoticeDocumentImpl",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaType"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.etsi.uri.x01903.v13.impl.SPUserNoticeTypeImpl",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaType"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.etsi.uri.x01903.v13.impl.SigAndRefsTimeStampDocumentImpl",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaType"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.etsi.uri.x01903.v13.impl.SignaturePolicyIdentifierDocumentImpl",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaType"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.etsi.uri.x01903.v13.impl.SignatureProductionPlaceDocumentImpl",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaType"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.etsi.uri.x01903.v13.impl.SignatureProductionPlaceTypeImpl",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaType"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.etsi.uri.x01903.v13.impl.SignatureTimeStampDocumentImpl",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaType"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.etsi.uri.x01903.v13.impl.SignedDataObjectPropertiesDocumentImpl",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaType"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.etsi.uri.x01903.v13.impl.SignedPropertiesDocumentImpl",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaType"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.etsi.uri.x01903.v13.impl.SignedSignaturePropertiesDocumentImpl",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaType"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.etsi.uri.x01903.v13.impl.SignerRoleDocumentImpl",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaType"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.etsi.uri.x01903.v13.impl.SigningCertificateDocumentImpl",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaType"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.etsi.uri.x01903.v13.impl.SigningTimeDocumentImpl",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaType"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.etsi.uri.x01903.v13.impl.UnsignedDataObjectPropertiesDocumentImpl",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaType"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.etsi.uri.x01903.v13.impl.UnsignedDataObjectPropertiesTypeImpl",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaType"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.etsi.uri.x01903.v13.impl.UnsignedPropertiesDocumentImpl",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaType"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.etsi.uri.x01903.v13.impl.UnsignedSignaturePropertiesDocumentImpl",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaType"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.etsi.uri.x01903.v13.impl.XAdESTimeStampDocumentImpl",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaType"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.etsi.uri.x01903.v14.impl.ArchiveTimeStampDocumentImpl",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaType"
+          ]
+        }
+      ]
+    },
+    {
       "type": "org.openxmlformats.schemas.drawingml.x2006.chart.STBuiltInUnit$Enum",
       "fields": [
         {
@@ -8355,42 +8949,6 @@
       ]
     },
     {
-      "type": "org.openxmlformats.schemas.drawingml.x2006.chart.impl.STDepthPercentUShortImpl",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "org.apache.xmlbeans.SchemaType"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "org.apache.xmlbeans.SchemaType",
-            "boolean"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.openxmlformats.schemas.drawingml.x2006.chart.impl.STDepthPercentWithSymbolImpl",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "org.apache.xmlbeans.SchemaType"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "org.apache.xmlbeans.SchemaType",
-            "boolean"
-          ]
-        }
-      ]
-    },
-    {
       "type": "org.openxmlformats.schemas.drawingml.x2006.chart.impl.STErrBarTypeImpl",
       "methods": [
         {
@@ -8446,42 +9004,6 @@
     },
     {
       "type": "org.openxmlformats.schemas.drawingml.x2006.chart.impl.STFirstSliceAngImpl",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "org.apache.xmlbeans.SchemaType"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "org.apache.xmlbeans.SchemaType",
-            "boolean"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.openxmlformats.schemas.drawingml.x2006.chart.impl.STHPercentUShortImpl",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "org.apache.xmlbeans.SchemaType"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "org.apache.xmlbeans.SchemaType",
-            "boolean"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.openxmlformats.schemas.drawingml.x2006.chart.impl.STHPercentWithSymbolImpl",
       "methods": [
         {
           "name": "<init>",
@@ -12583,9 +13105,6 @@
       ]
     },
     {
-      "type": "org.openxmlformats.schemas.drawingml.x2006.main.CTNonVisualDrawingProps[]"
-    },
-    {
       "type": "org.openxmlformats.schemas.drawingml.x2006.main.STAnimationBuildType$Enum",
       "fields": [
         {
@@ -14083,17 +14602,6 @@
       ]
     },
     {
-      "type": "org.openxmlformats.schemas.drawingml.x2006.main.impl.CTPath2DQuadBezierToImpl",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "org.apache.xmlbeans.SchemaType"
-          ]
-        }
-      ]
-    },
-    {
       "type": "org.openxmlformats.schemas.drawingml.x2006.main.impl.CTPatternFillPropertiesImpl",
       "methods": [
         {
@@ -14227,17 +14735,6 @@
     },
     {
       "type": "org.openxmlformats.schemas.drawingml.x2006.main.impl.CTSphereCoordsImpl",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "org.apache.xmlbeans.SchemaType"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.openxmlformats.schemas.drawingml.x2006.main.impl.CTSupplementalFontImpl",
       "methods": [
         {
           "name": "<init>",
@@ -17165,24 +17662,6 @@
     },
     {
       "type": "org.openxmlformats.schemas.officeDocument.x2006.sharedTypes.impl.STPositiveFixedPercentageImpl",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "org.apache.xmlbeans.SchemaType"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "org.apache.xmlbeans.SchemaType",
-            "boolean"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.openxmlformats.schemas.officeDocument.x2006.sharedTypes.impl.STPositivePercentageImpl",
       "methods": [
         {
           "name": "<init>",
@@ -24985,28 +25464,6 @@
       ]
     },
     {
-      "type": "org.openxmlformats.schemas.wordprocessingml.x2006.main.impl.CTCustomXmlCellImpl",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "org.apache.xmlbeans.SchemaType"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.openxmlformats.schemas.wordprocessingml.x2006.main.impl.CTCustomXmlRowImpl",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "org.apache.xmlbeans.SchemaType"
-          ]
-        }
-      ]
-    },
-    {
       "type": "org.openxmlformats.schemas.wordprocessingml.x2006.main.impl.CTDecimalNumberOrPrecentImpl",
       "methods": [
         {
@@ -27030,14 +27487,413 @@
           ]
         }
       ]
-    }
-  ],
-  "resources": [
-    {
-      "glob": "com/microsoft/schemas/**/*.xsb"
     },
     {
-      "glob": "org/openxmlformats/schemas/**/*.xsb"
+      "type": "org.w3.x2000.x09.xmldsig.impl.CanonicalizationMethodDocumentImpl",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaType"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.w3.x2000.x09.xmldsig.impl.CryptoBinaryImpl",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaType"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.w3.x2000.x09.xmldsig.impl.DSAKeyValueDocumentImpl",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaType"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.w3.x2000.x09.xmldsig.impl.DSAKeyValueTypeImpl",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaType"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.w3.x2000.x09.xmldsig.impl.DigestMethodDocumentImpl",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaType"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.w3.x2000.x09.xmldsig.impl.DigestValueDocumentImpl",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaType"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.w3.x2000.x09.xmldsig.impl.HMACOutputLengthTypeImpl",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaType"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.w3.x2000.x09.xmldsig.impl.KeyInfoDocumentImpl",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaType"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.w3.x2000.x09.xmldsig.impl.KeyInfoTypeImpl",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaType"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.w3.x2000.x09.xmldsig.impl.KeyNameDocumentImpl",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaType"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.w3.x2000.x09.xmldsig.impl.KeyValueDocumentImpl",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaType"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.w3.x2000.x09.xmldsig.impl.KeyValueTypeImpl",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaType"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.w3.x2000.x09.xmldsig.impl.ManifestDocumentImpl",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaType"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.w3.x2000.x09.xmldsig.impl.ManifestTypeImpl",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaType"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.w3.x2000.x09.xmldsig.impl.MgmtDataDocumentImpl",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaType"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.w3.x2000.x09.xmldsig.impl.ObjectDocumentImpl",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaType"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.w3.x2000.x09.xmldsig.impl.PGPDataDocumentImpl",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaType"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.w3.x2000.x09.xmldsig.impl.PGPDataTypeImpl",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaType"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.w3.x2000.x09.xmldsig.impl.RSAKeyValueDocumentImpl",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaType"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.w3.x2000.x09.xmldsig.impl.RSAKeyValueTypeImpl",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaType"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.w3.x2000.x09.xmldsig.impl.ReferenceDocumentImpl",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaType"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.w3.x2000.x09.xmldsig.impl.RetrievalMethodDocumentImpl",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaType"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.w3.x2000.x09.xmldsig.impl.RetrievalMethodTypeImpl",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaType"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.w3.x2000.x09.xmldsig.impl.SPKIDataDocumentImpl",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaType"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.w3.x2000.x09.xmldsig.impl.SPKIDataTypeImpl",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaType"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.w3.x2000.x09.xmldsig.impl.SignatureMethodDocumentImpl",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaType"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.w3.x2000.x09.xmldsig.impl.SignatureMethodTypeImpl",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaType"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.w3.x2000.x09.xmldsig.impl.SignaturePropertiesDocumentImpl",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaType"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.w3.x2000.x09.xmldsig.impl.SignaturePropertiesTypeImpl",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaType"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.w3.x2000.x09.xmldsig.impl.SignaturePropertyDocumentImpl",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaType"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.w3.x2000.x09.xmldsig.impl.SignaturePropertyTypeImpl",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaType"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.w3.x2000.x09.xmldsig.impl.SignatureValueDocumentImpl",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaType"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.w3.x2000.x09.xmldsig.impl.SignedInfoDocumentImpl",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaType"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.w3.x2000.x09.xmldsig.impl.TransformsDocumentImpl",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaType"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.w3.x2000.x09.xmldsig.impl.TransformsTypeImpl",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaType"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.w3.x2000.x09.xmldsig.impl.X509DataDocumentImpl",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaType"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.w3.x2000.x09.xmldsig.impl.X509DataTypeImpl",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.apache.xmlbeans.SchemaType"
+          ]
+        }
+      ]
     }
   ]
 }

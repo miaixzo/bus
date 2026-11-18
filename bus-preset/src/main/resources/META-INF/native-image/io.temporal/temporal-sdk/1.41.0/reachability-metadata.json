@@ -4494,7 +4494,7 @@
         {
           "name": "provideArgs",
           "parameterTypes": [
-            "java.util.Optional",
+            "io.temporal.internal.activity.ActivityInput",
             "io.temporal.common.converter.DataConverter"
           ]
         },
@@ -5001,20 +5001,6 @@
           "parameterTypes": []
         },
         {
-          "name": "lambda$shutdown$1",
-          "parameterTypes": [
-            "io.temporal.internal.worker.ShutdownManager",
-            "boolean",
-            "java.lang.Void"
-          ]
-        },
-        {
-          "name": "lambda$shutdown$2",
-          "parameterTypes": [
-            "java.lang.Throwable"
-          ]
-        },
-        {
           "name": "notify",
           "parameterTypes": []
         },
@@ -5250,30 +5236,6 @@
         {
           "name": "isTerminated",
           "parameterTypes": []
-        },
-        {
-          "name": "lambda$buildHeartbeatCallback$1",
-          "parameterTypes": [
-            "java.lang.Object",
-            "java.util.concurrent.atomic.AtomicReference",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "lambda$replayWorkflowExecution$2",
-          "parameterTypes": [
-            "io.temporal.worker.Worker",
-            "io.temporal.common.WorkflowExecutionHistory"
-          ]
-        },
-        {
-          "name": "lambda$replayWorkflowExecution$3",
-          "parameterTypes": [
-            "io.temporal.worker.WorkerPlugin",
-            "io.temporal.worker.WorkerPlugin$ReplayCallback",
-            "io.temporal.worker.Worker",
-            "io.temporal.common.WorkflowExecutionHistory"
-          ]
         },
         {
           "name": "notify",
@@ -6250,6 +6212,7 @@
             "io.temporal.worker.tuning.PollerBehavior",
             "io.temporal.worker.tuning.PollerBehavior",
             "boolean",
+            "boolean",
             "io.temporal.worker.PreferredVersionProvider",
             "boolean",
             "boolean",
@@ -6288,6 +6251,7 @@
             "io.temporal.worker.tuning.PollerBehavior",
             "io.temporal.worker.tuning.PollerBehavior",
             "io.temporal.worker.tuning.PollerBehavior",
+            "boolean",
             "boolean",
             "io.temporal.worker.PreferredVersionProvider",
             "boolean",

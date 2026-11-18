@@ -1067,7 +1067,8 @@
             "java.time.Duration",
             "java.time.Duration",
             "io.temporal.serviceclient.RpcRetryOptions",
-            "io.temporal.serviceclient.WorkflowServiceStubsPlugin[]"
+            "io.temporal.serviceclient.WorkflowServiceStubsPlugin[]",
+            "io.temporal.serviceclient.PayloadLimitsOptions"
           ]
         },
         {
@@ -1079,6 +1080,7 @@
             "java.time.Duration",
             "io.temporal.serviceclient.RpcRetryOptions",
             "io.temporal.serviceclient.WorkflowServiceStubsPlugin[]",
+            "io.temporal.serviceclient.PayloadLimitsOptions",
             "io.temporal.serviceclient.WorkflowServiceStubsOptions$1"
           ]
         },
@@ -1105,10 +1107,6 @@
           "parameterTypes": [
             "io.temporal.serviceclient.WorkflowServiceStubsOptions"
           ]
-        },
-        {
-          "name": "access$700",
-          "parameterTypes": []
         },
         {
           "name": "equals",

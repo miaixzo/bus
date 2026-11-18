@@ -1,0 +1,154 @@
+{
+  "reflection": [
+    {
+      "type": "org.springframework.jdbc.support.SQLErrorCodes",
+      "condition": {
+        "typeReached": "org.springframework.jdbc.support.SQLErrorCodesFactory"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "getBadSqlGrammarCodes",
+          "parameterTypes": []
+        },
+        {
+          "name": "getCannotAcquireLockCodes",
+          "parameterTypes": []
+        },
+        {
+          "name": "getCannotSerializeTransactionCodes",
+          "parameterTypes": []
+        },
+        {
+          "name": "getDataAccessResourceFailureCodes",
+          "parameterTypes": []
+        },
+        {
+          "name": "getDataIntegrityViolationCodes",
+          "parameterTypes": []
+        },
+        {
+          "name": "getDatabaseProductName",
+          "parameterTypes": []
+        },
+        {
+          "name": "getDatabaseProductNames",
+          "parameterTypes": []
+        },
+        {
+          "name": "getDeadlockLoserCodes",
+          "parameterTypes": []
+        },
+        {
+          "name": "getDuplicateKeyCodes",
+          "parameterTypes": []
+        },
+        {
+          "name": "getInvalidResultSetAccessCodes",
+          "parameterTypes": []
+        },
+        {
+          "name": "getPermissionDeniedCodes",
+          "parameterTypes": []
+        },
+        {
+          "name": "getTransientDataAccessResourceCodes",
+          "parameterTypes": []
+        },
+        {
+          "name": "isUseSqlStateForTranslation",
+          "parameterTypes": []
+        },
+        {
+          "name": "setBadSqlGrammarCodes",
+          "parameterTypes": [
+            "java.lang.String[]"
+          ]
+        },
+        {
+          "name": "setCannotAcquireLockCodes",
+          "parameterTypes": [
+            "java.lang.String[]"
+          ]
+        },
+        {
+          "name": "setCannotSerializeTransactionCodes",
+          "parameterTypes": [
+            "java.lang.String[]"
+          ]
+        },
+        {
+          "name": "setDataAccessResourceFailureCodes",
+          "parameterTypes": [
+            "java.lang.String[]"
+          ]
+        },
+        {
+          "name": "setDataIntegrityViolationCodes",
+          "parameterTypes": [
+            "java.lang.String[]"
+          ]
+        },
+        {
+          "name": "setDatabaseProductName",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setDatabaseProductNames",
+          "parameterTypes": [
+            "java.lang.String[]"
+          ]
+        },
+        {
+          "name": "setDeadlockLoserCodes",
+          "parameterTypes": [
+            "java.lang.String[]"
+          ]
+        },
+        {
+          "name": "setDuplicateKeyCodes",
+          "parameterTypes": [
+            "java.lang.String[]"
+          ]
+        },
+        {
+          "name": "setInvalidResultSetAccessCodes",
+          "parameterTypes": [
+            "java.lang.String[]"
+          ]
+        },
+        {
+          "name": "setPermissionDeniedCodes",
+          "parameterTypes": [
+            "java.lang.String[]"
+          ]
+        },
+        {
+          "name": "setTransientDataAccessResourceCodes",
+          "parameterTypes": [
+            "java.lang.String[]"
+          ]
+        },
+        {
+          "name": "setUseSqlStateForTranslation",
+          "parameterTypes": [
+            "boolean"
+          ]
+        }
+      ]
+    }
+  ],
+  "resources": [
+    {
+      "condition": {
+        "typeReached": "org.springframework.jdbc.support.SQLErrorCodesFactory"
+      },
+      "glob": "org/springframework/jdbc/support/sql-error-codes.xml"
+    }
+  ]
+}

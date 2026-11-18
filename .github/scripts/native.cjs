@@ -51,6 +51,7 @@ const modules = fs.readdirSync(root).filter(m => m.startsWith('bus-') && fs.exis
 // payload paths; indexes is checked after traversal; seen maps normalized rows
 // to every source location so duplicates can be checked across components.
 const errors = [], files = [], layouts = [], indexes = [], seen = new Map();
+const reflection = new Map(), resourceGlobs = new Map();
 const count = {
     reflection: 0,
     serialization: 0,
@@ -218,6 +219,11 @@ function walk(dir, module) {
             errors.push(`${ relative }: unexpected legacy metadata file`);
             continue;
         }
+        // Unified metadata represents serialization on reflection rows using
+        // serializable=true; a legacy top-level serialization array is invalid.
+        for (const section of Object.keys(doc))
+            if (!['comment', 'reflection', 'resources', 'foreign'].includes(section))
+                errors.push(`${ relative }: unsupported unified metadata section ${ section }`);
         // Require the component's own org.miaixz resource directory. Lattice
         // types are application-specific and must not leak into published Bus
         // metadata, including within signatures or conditions.
@@ -233,6 +239,16 @@ function walk(dir, module) {
                 continue;
             count[section] = (count[section] || 0) + rows.length;
             for (const row of rows) {
+                if (section === 'reflection' && typeof row.type === 'string') {
+                    const entries = reflection.get(row.type) || [];
+                    entries.push(row);
+                    reflection.set(row.type, entries);
+                }
+                if (section === 'resources' && typeof row.glob === 'string') {
+                    const globs = resourceGlobs.get(module) || [];
+                    globs.push(row.glob);
+                    resourceGlobs.set(module, globs);
+                }
                 // Duplicate keys include the section and entire normalized row.
                 // Rows with different conditions remain distinct registrations.
                 const key = `${ section }:${ stringify(row) }`, locations = seen.get(key) || [];
@@ -348,6 +364,30 @@ for (const module of modules.filter(m => ![
     if (!files.some(f => f.startsWith(module + '/')))
         errors.push(`${ module }: missing component metadata`);
 
+// Bus's custom SPI loaders read descriptors and instantiate providers through
+// ClassKit/ReflectKit, so Java ServiceLoader's native support alone is insufficient.
+let spiDescriptors = 0, spiProviders = 0;
+const matchesGlob = (name, glob) => new RegExp('^' + glob.replace(/[.+^${}()|[\]\\]/g, '\\$&').replace(/\*\*/g, '\0').replace(/\*/g, '[^/]*').replace(/\0/g, '.*') + '$').test(name);
+for (const module of modules) {
+    const dir = path.join(root, module, 'src/main/resources/META-INF/services');
+    if (!fs.existsSync(dir))
+        continue;
+    for (const service of fs.readdirSync(dir).filter(name => name.startsWith('org.miaixz.bus.'))) {
+        spiDescriptors++;
+        const resource = `META-INF/services/${ service }`;
+        if (!(resourceGlobs.get(module) || []).some(glob => matchesGlob(resource, glob)))
+            errors.push(`${ module }: missing SPI resource ${ resource }`);
+        const providers = fs.readFileSync(path.join(dir, service), 'utf8').split(/\r?\n/).map(line => line.split('#')[0].trim()).filter(Boolean);
+        for (const provider of providers) {
+            spiProviders++;
+            const entries = reflection.get(provider) || [];
+            const constructor = entries.some(row => row.allDeclaredConstructors || row.allPublicConstructors || (row.methods || []).some(method => method.name === '<init>' && Array.isArray(method.parameterTypes) && method.parameterTypes.length === 0));
+            if (!constructor)
+                errors.push(`${ module }: missing SPI constructor ${ provider }`);
+        }
+    }
+}
+
 // Emit all findings together. A failing status must also fail the CI process;
 // printing a JSON error alone would otherwise leave a successful exit status.
 console.log(JSON.stringify({
@@ -356,6 +396,8 @@ console.log(JSON.stringify({
     metadata_files: files.length,
     indexes: indexes.length,
     entries: count,
+    spi_descriptors: spiDescriptors,
+    spi_providers: spiProviders,
     intentional_shared_spi: intentional,
     errors
 }, null, 2));

@@ -5,7 +5,8 @@
     "description": "Fastjson is a JSON processor (JSON parser + JSON generator) written in Java",
     "tested-versions": [
       "2.0.0",
-      "2.0.62"
+      "2.0.62",
+      "2.0.66"
     ]
   }
 ]
