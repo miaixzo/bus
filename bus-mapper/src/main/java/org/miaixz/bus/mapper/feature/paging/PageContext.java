@@ -302,7 +302,7 @@ public class PageContext {
                 String property = orderParts[0];
 
                 Order order;
-                if (orderParts.length >= 2 && "DESC".equalsIgnoreCase(orderParts[1])) {
+                if (orderParts.length >= 2 && Order.DESC.equalsIgnoreCase(orderParts[1])) {
                     order = Order.descending(property);
                 } else {
                     order = Order.ascending(property);

@@ -634,7 +634,7 @@ public class LogicalProvider extends BasicProvider {
      * @return The equality operator (" = " or " IS ").
      */
     private static String choiceEqualsOperator(String value) {
-        if ("null".compareToIgnoreCase(value) == 0) {
+        if (Normal.NULL.compareToIgnoreCase(value) == 0) {
             return " IS ";
         }
         return " = ";
@@ -647,7 +647,7 @@ public class LogicalProvider extends BasicProvider {
      * @return The inequality operator (" != " or " IS NOT ").
      */
     private static String choiceNotEqualsOperator(String value) {
-        if ("null".compareToIgnoreCase(value) == 0) {
+        if (Normal.NULL.compareToIgnoreCase(value) == 0) {
             return " IS NOT ";
         }
         return " != ";

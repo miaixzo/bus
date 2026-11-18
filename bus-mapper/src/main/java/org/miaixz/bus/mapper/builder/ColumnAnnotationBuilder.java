@@ -177,9 +177,8 @@ public class ColumnAnnotationBuilder implements ColumnSchemaBuilder {
         }
         columnMeta.insertable(column.insertable()).updatable(column.updatable()).nullable(column.nullable())
                 .length(column.length()).precision(column.precision()).scale(column.scale()).unique(column.unique());
-        if (column.scale() != 0) {
-            columnMeta.numericScale(String.valueOf(column.scale()));
-        }
+        // A zero-scale override must discard a scale inherited from an earlier column mapping.
+        columnMeta.numericScale(column.scale() == 0 ? null : String.valueOf(column.scale()));
         columnMeta.columnDefinition(column.columnDefinition()).comment(column.comment());
     }
 

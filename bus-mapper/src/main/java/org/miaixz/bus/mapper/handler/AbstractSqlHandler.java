@@ -32,6 +32,7 @@ import org.apache.ibatis.reflection.DefaultReflectorFactory;
 import org.apache.ibatis.reflection.MetaObject;
 import org.apache.ibatis.reflection.SystemMetaObject;
 
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.FieldKit;
 import org.miaixz.bus.core.xyz.StringKit;
@@ -240,7 +241,7 @@ public abstract class AbstractSqlHandler {
      */
     protected String getDatasourceKey() {
         String key = datasourceKeyProvider == null ? null : datasourceKeyProvider.get();
-        return StringKit.isEmpty(key) ? "default" : key;
+        return StringKit.isEmpty(key) ? Normal.DEFAULT : key;
     }
 
     /**

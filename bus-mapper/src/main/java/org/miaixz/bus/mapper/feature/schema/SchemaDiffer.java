@@ -49,48 +49,17 @@ public class SchemaDiffer {
     private final SchemaConfig config;
 
     /**
+     * Facts that could not be established in the most recent diff call; cleared before each comparison.
+     */
+    private final List<String> unknowns = new ArrayList<>();
+
+    /**
      * Creates a schema differ without additional configuration.
      *
      * @param operations the schema behavior
      */
     public SchemaDiffer(SchemaBehavior operations) {
         this(operations, null);
-    }
-
-    /**
-     * Tests whether expected and actual SQL type names match.
-     *
-     * @param expected the expected SQL type descriptor
-     * @param actual   the actual SQL type descriptor
-     * @return {@code true} when the type names match
-     */
-    private static boolean sameType(SqlTypeDescriptor expected, SqlTypeDescriptor actual) {
-        if (expected == null || actual == null) {
-            return false;
-        }
-        return expected.normalizedTypeName().equals(actual.normalizedTypeName());
-    }
-
-    /**
-     * Tests whether expected and actual type lengths match.
-     *
-     * @param expected the expected SQL type descriptor
-     * @param actual   the actual SQL type descriptor
-     * @return {@code true} when lengths match
-     */
-    private static boolean sameLength(SqlTypeDescriptor expected, SqlTypeDescriptor actual) {
-        return equals(expected.length(), actual.length());
-    }
-
-    /**
-     * Tests whether expected and actual numeric precision and scale match.
-     *
-     * @param expected the expected SQL type descriptor
-     * @param actual   the actual SQL type descriptor
-     * @return {@code true} when precision and scale match
-     */
-    private static boolean sameDecimal(SqlTypeDescriptor expected, SqlTypeDescriptor actual) {
-        return equals(expected.precision(), actual.precision()) && equals(expected.scale(), actual.scale());
     }
 
     /**
@@ -171,10 +140,13 @@ public class SchemaDiffer {
      *
      * @param table    the entity table metadata
      * @param snapshot the database table snapshot
-     * @return the computed schema differences
+     * @return the actionable schema differences; consult unknowns() for facts that could not be compared
      */
     public List<SchemaDiff> diff(TableMeta table, TableSnapshot snapshot) {
+        unknowns.clear();
         List<SchemaDiff> diffs = new ArrayList<>();
+        if (snapshot != null)
+            unknowns.addAll(snapshot.issues());
         if (snapshot == null || !snapshot.exists()) {
             diffs.add(
                     SchemaDiff
@@ -245,7 +217,7 @@ public class SchemaDiffer {
      */
     private void diffCreatePrimaryKey(TableMeta table, List<SchemaDiff> diffs) {
         PrimaryKeyMeta primaryKey = table.primaryKey();
-        if (primaryKey != null) {
+        if (primaryKey != null && !operations.inlinePrimaryKey()) {
             diffs.add(
                     SchemaDiff
                             .of(
@@ -304,12 +276,12 @@ public class SchemaDiffer {
         Set<String> expected = new HashSet<>();
         Set<String> renamedActual = new HashSet<>();
         for (ColumnMeta column : table.columns()) {
-            expected.add(TableSnapshot.normalizeIdentifier(column.column()));
-            ColumnSnapshot actual = snapshot.column(column.column());
+            expected.add(snapshot.key(column.column()));
+            ColumnSnapshot actual = findColumn(snapshot, column.column());
             if (actual == null) {
                 ColumnSnapshot renameSource = renameSource(table, snapshot, column);
                 if (renameSource != null) {
-                    renamedActual.add(TableSnapshot.normalizeIdentifier(renameSource.name()));
+                    renamedActual.add(snapshot.actualKey(renameSource.name()));
                     diffs.add(
                             SchemaDiff.of(
                                     Behavior.RENAME_COLUMN,
@@ -347,7 +319,16 @@ public class SchemaDiffer {
             }
             SqlTypeDescriptor expectedType = operations.resolveType(column);
             SqlTypeDescriptor actualType = actual.type();
-            if (!sameType(expectedType, actualType)) {
+            SqlTypeDescriptor.Comparison typeResult = operations.compareType(expectedType, actualType);
+            SqlTypeDescriptor.Comparison lengthResult = typeResult == SqlTypeDescriptor.Comparison.SAME
+                    ? operations.compareLength(expectedType, actualType)
+                    : SqlTypeDescriptor.Comparison.UNKNOWN;
+            SqlTypeDescriptor.Comparison decimalResult = typeResult == SqlTypeDescriptor.Comparison.SAME
+                    ? operations.compareDecimal(expectedType, actualType)
+                    : SqlTypeDescriptor.Comparison.UNKNOWN;
+            if (typeResult == SqlTypeDescriptor.Comparison.UNKNOWN) {
+                unknowns.add("Unknown column type: " + table.tableName() + Symbol.DOT + column.column());
+            } else if (typeResult == SqlTypeDescriptor.Comparison.DIFFERENT) {
                 diffs.add(
                         SchemaDiff
                                 .of(
@@ -356,7 +337,9 @@ public class SchemaDiffer {
                                         table,
                                         "Column type differs: " + column.column())
                                 .columnMeta(column).actualColumn(actual));
-            } else if (!sameLength(expectedType, actualType)) {
+            } else if (lengthResult == SqlTypeDescriptor.Comparison.UNKNOWN) {
+                unknowns.add("Unknown column capacity: " + table.tableName() + Symbol.DOT + column.column());
+            } else if (lengthResult == SqlTypeDescriptor.Comparison.DIFFERENT) {
                 Risk risk = risk(expectedType.length(), actualType.length());
                 diffs.add(
                         SchemaDiff
@@ -366,7 +349,9 @@ public class SchemaDiffer {
                                         table,
                                         "Column length differs: " + column.column())
                                 .columnMeta(column).actualColumn(actual));
-            } else if (!sameDecimal(expectedType, actualType)) {
+            } else if (decimalResult == SqlTypeDescriptor.Comparison.UNKNOWN) {
+                unknowns.add("Unknown column precision: " + table.tableName() + Symbol.DOT + column.column());
+            } else if (decimalResult == SqlTypeDescriptor.Comparison.DIFFERENT) {
                 Risk risk = decimalRisk(expectedType, actualType);
                 diffs.add(
                         SchemaDiff
@@ -377,8 +362,14 @@ public class SchemaDiffer {
                                         "Column decimal differs: " + column.column())
                                 .columnMeta(column).actualColumn(actual));
             }
-            if (column.ddlNullable() != null && actual.nullable() != null
-                    && !column.ddlNullable().equals(actual.nullable())) {
+            Boolean expectedNullable = column.id() ? Boolean.FALSE : column.ddlNullable();
+            if (expectedNullable != null && actual.nullable() == null) {
+                unknowns.add("Unknown column nullable flag: " + table.tableName() + Symbol.DOT + column.column());
+            }
+            if (expectedNullable != null && actual.nullable() != null && typeResult == SqlTypeDescriptor.Comparison.SAME
+                    && lengthResult != SqlTypeDescriptor.Comparison.UNKNOWN
+                    && decimalResult != SqlTypeDescriptor.Comparison.UNKNOWN
+                    && !expectedNullable.equals(actual.nullable())) {
                 diffs.add(
                         SchemaDiff
                                 .of(
@@ -400,7 +391,7 @@ public class SchemaDiffer {
             }
         }
         for (ColumnSnapshot actual : snapshot.columns()) {
-            String actualName = TableSnapshot.normalizeIdentifier(actual.name());
+            String actualName = snapshot.actualKey(actual.name());
             if (!expected.contains(actualName) && !renamedActual.contains(actualName)) {
                 diffs.add(
                         SchemaDiff.of(
@@ -427,9 +418,8 @@ public class SchemaDiffer {
         for (Map.Entry<String, String> entry : config.renameMappings().entrySet()) {
             String source = sourceColumn(entry.getKey(), table);
             String target = entry.getValue();
-            if (source != null && target != null && TableSnapshot.normalizeIdentifier(target)
-                    .equals(TableSnapshot.normalizeIdentifier(column.column()))) {
-                return snapshot.column(source);
+            if (source != null && target != null && snapshot.key(target).equals(snapshot.key(column.column()))) {
+                return findColumn(snapshot, source);
             }
         }
         return null;
@@ -471,8 +461,12 @@ public class SchemaDiffer {
         List<IndexMeta> expected = expectedIndexes(table);
         Set<String> expectedNames = new HashSet<>();
         for (IndexMeta index : expected) {
-            expectedNames.add(TableSnapshot.normalizeIdentifier(index.name()));
-            IndexMeta actual = snapshot.index(index.name());
+            expectedNames.add(snapshot.key(index.name()));
+            IndexMeta actual = snapshot.indexes().stream()
+                    .filter(item -> operations.sameIdentifier(snapshot, item.name(), index.name())).findFirst()
+                    .orElse(null);
+            if (actual != null && snapshot.incompleteIndexes().contains(snapshot.actualKey(actual.name())))
+                continue;
             if (actual == null) {
                 diffs.add(
                         SchemaDiff.of(
@@ -480,7 +474,7 @@ public class SchemaDiffer {
                                 Risk.SAFE,
                                 table,
                                 "Index does not exist: " + index.name()).index(index));
-            } else if (!TableSnapshot.sameIndex(actual, index)) {
+            } else if (!snapshot.matchesIndex(actual, index)) {
                 diffs.add(
                         SchemaDiff.of(
                                 actual.unique() ? Behavior.DROP_UNIQUE : Behavior.DROP_INDEX,
@@ -496,10 +490,11 @@ public class SchemaDiffer {
             }
         }
         for (IndexMeta actual : snapshot.indexes()) {
-            if (primaryKeyIndex(table, actual)) {
+            if (snapshot.incompleteIndexes().contains(snapshot.actualKey(actual.name()))
+                    || primaryKeyIndex(table, actual)) {
                 continue;
             }
-            if (!expectedNames.contains(TableSnapshot.normalizeIdentifier(actual.name()))) {
+            if (!expectedNames.contains(snapshot.actualKey(actual.name()))) {
                 diffs.add(
                         SchemaDiff.of(
                                 actual.unique() ? Behavior.DROP_UNIQUE : Behavior.DROP_INDEX,
@@ -538,7 +533,8 @@ public class SchemaDiffer {
                             "Database primary key is not mapped: " + actual.name()).primaryKey(actual));
             return;
         }
-        if (expected != null && !TableSnapshot.samePrimaryKey(actual, expected)) {
+        if (expected != null
+                && !snapshot.matchesColumns(actual == null ? null : actual.columns(), expected.columns())) {
             diffs.add(
                     SchemaDiff.of(
                             Behavior.DROP_PRIMARY_KEY,
@@ -565,12 +561,10 @@ public class SchemaDiffer {
         List<ForeignKeyMeta> expected = table.foreignKeys();
         Set<String> expectedNames = new HashSet<>();
         for (ForeignKeyMeta foreignKey : expected) {
-            expectedNames.add(TableSnapshot.normalizeIdentifier(foreignKey.name()));
+            expectedNames.add(snapshot.key(foreignKey.name()));
             ForeignKeyMeta actual = snapshot.foreignKeys().stream()
-                    .filter(
-                            item -> TableSnapshot.normalizeIdentifier(item.name())
-                                    .equals(TableSnapshot.normalizeIdentifier(foreignKey.name())))
-                    .findFirst().orElse(null);
+                    .filter(item -> operations.sameIdentifier(snapshot, item.name(), foreignKey.name())).findFirst()
+                    .orElse(null);
             if (actual == null) {
                 diffs.add(
                         SchemaDiff.of(
@@ -578,7 +572,9 @@ public class SchemaDiffer {
                                 Risk.SAFE,
                                 table,
                                 "Foreign key does not exist: " + foreignKey.name()).foreignKey(foreignKey));
-            } else if (!TableSnapshot.sameForeignKey(actual, foreignKey)) {
+            } else if (!(snapshot.matchesTable(actual.referencedTable(), foreignKey.referencedTable())
+                    && snapshot.matchesColumns(actual.columns(), foreignKey.columns())
+                    && snapshot.matchesColumns(actual.referencedColumns(), foreignKey.referencedColumns()))) {
                 diffs.add(
                         SchemaDiff.of(
                                 Behavior.DROP_FOREIGN_KEY,
@@ -594,7 +590,7 @@ public class SchemaDiffer {
             }
         }
         for (ForeignKeyMeta actual : snapshot.foreignKeys()) {
-            if (!expectedNames.contains(TableSnapshot.normalizeIdentifier(actual.name()))) {
+            if (!expectedNames.contains(snapshot.actualKey(actual.name()))) {
                 diffs.add(
                         SchemaDiff.of(
                                 Behavior.DROP_FOREIGN_KEY,
@@ -649,6 +645,16 @@ public class SchemaDiffer {
     }
 
     /**
+     * Returns an immutable copy of the most recent comparison's incomplete-metadata diagnostics. An empty difference
+     * list alone does not establish consistency when this list is non-empty.
+     *
+     * @return the last comparison's unknown facts, detached from the mutable collector
+     */
+    public List<String> unknowns() {
+        return List.copyOf(unknowns);
+    }
+
+    /**
      * Adds an index definition when an equivalent definition is not already present.
      *
      * @param indexes the index collector
@@ -664,6 +670,18 @@ public class SchemaDiffer {
         if (!exists) {
             indexes.add(index);
         }
+    }
+
+    /**
+     * Finds a physical column through the dialect's identifier comparison extension.
+     *
+     * @param snapshot the observed columns and naming context
+     * @param name     the mapped column name
+     * @return the first matching column, or null when none matches
+     */
+    private ColumnSnapshot findColumn(TableSnapshot snapshot, String name) {
+        return snapshot.columns().stream().filter(column -> operations.sameIdentifier(snapshot, column.name(), name))
+                .findFirst().orElse(null);
     }
 
 }

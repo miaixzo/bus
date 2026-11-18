@@ -183,11 +183,11 @@ public class TenantHandler<T> extends ScopedProviderHandler<T, TenantConfig, Ten
         boolean enableSqlCache = Boolean.parseBoolean(
                 properties.getProperty(
                         datasourceTenantScope + Args.TENANT_ENABLE_SQL_CACHE,
-                        properties.getProperty(sharedTenantScope + Args.TENANT_ENABLE_SQL_CACHE, "true")));
+                        properties.getProperty(sharedTenantScope + Args.TENANT_ENABLE_SQL_CACHE, Normal.TRUE)));
         boolean required = Boolean.parseBoolean(
                 properties.getProperty(
                         datasourceTenantScope + Args.TENANT_REQUIRED,
-                        properties.getProperty(sharedTenantScope + Args.TENANT_REQUIRED, "false")));
+                        properties.getProperty(sharedTenantScope + Args.TENANT_REQUIRED, Normal.FALSE)));
 
         Logger.trace(
                 false,

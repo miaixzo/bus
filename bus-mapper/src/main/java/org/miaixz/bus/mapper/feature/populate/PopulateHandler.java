@@ -27,6 +27,7 @@ import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.mapping.SqlCommandType;
 
 import org.miaixz.bus.core.basic.entity.Audit;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.Created;
 import org.miaixz.bus.core.lang.annotation.Creator;
@@ -164,19 +165,19 @@ public class PopulateHandler<T> extends ScopedProviderHandler<T, PopulateConfig,
         boolean created = Boolean.parseBoolean(
                 properties.getProperty(
                         dsPrefix + Audit.FIELD_CREATED,
-                        properties.getProperty(sharedPrefix + Audit.FIELD_CREATED, "true")));
+                        properties.getProperty(sharedPrefix + Audit.FIELD_CREATED, Normal.TRUE)));
         boolean modified = Boolean.parseBoolean(
                 properties.getProperty(
                         dsPrefix + Audit.FIELD_MODIFIED,
-                        properties.getProperty(sharedPrefix + Audit.FIELD_MODIFIED, "true")));
+                        properties.getProperty(sharedPrefix + Audit.FIELD_MODIFIED, Normal.TRUE)));
         boolean creator = Boolean.parseBoolean(
                 properties.getProperty(
                         dsPrefix + Audit.FIELD_CREATOR,
-                        properties.getProperty(sharedPrefix + Audit.FIELD_CREATOR, "true")));
+                        properties.getProperty(sharedPrefix + Audit.FIELD_CREATOR, Normal.TRUE)));
         boolean modifier = Boolean.parseBoolean(
                 properties.getProperty(
                         dsPrefix + Audit.FIELD_MODIFIER,
-                        properties.getProperty(sharedPrefix + Audit.FIELD_MODIFIER, "true")));
+                        properties.getProperty(sharedPrefix + Audit.FIELD_MODIFIER, Normal.TRUE)));
 
         return PopulateConfig.builder().created(created).modified(modified).creator(creator).modifier(modifier)
                 .provider(provider).build();

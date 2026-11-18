@@ -66,11 +66,46 @@ public class SQLite extends AbstractDialect {
     @Override
     public EnumSet<Behavior> types() {
         EnumSet<Behavior> types = schemaTypes(getUpsertType());
-        types.remove(Behavior.CREATE_FOREIGN_KEY);
-        types.remove(Behavior.DROP_FOREIGN_KEY);
-        types.remove(Behavior.MODIFY_TABLE_COMMENT);
-        types.remove(Behavior.MODIFY_COLUMN_COMMENT);
+        types.removeAll(
+                EnumSet.of(
+                        Behavior.CREATE_FOREIGN_KEY,
+                        Behavior.DROP_FOREIGN_KEY,
+                        Behavior.MODIFY_TABLE_COMMENT,
+                        Behavior.MODIFY_COLUMN_COMMENT,
+                        Behavior.MODIFY_COLUMN_TYPE,
+                        Behavior.MODIFY_COLUMN_LENGTH,
+                        Behavior.MODIFY_COLUMN_DECIMAL,
+                        Behavior.MODIFY_COLUMN_NULLABLE,
+                        Behavior.CREATE_PRIMARY_KEY,
+                        Behavior.DROP_PRIMARY_KEY));
         return types;
+    }
+
+    /**
+     * Indicates that a new table's primary key is emitted inside CREATE TABLE, because SQLite cannot add it to an
+     * existing table with the generic ALTER TABLE operation.
+     *
+     * @return true so the differ omits a duplicate post-creation primary-key operation
+     */
+    @Override
+    public boolean inlinePrimaryKey() {
+        return true;
+    }
+
+    /**
+     * Builds the column definitions and appends the mapped primary key inside the new table definition. This supports
+     * table creation only; existing-table primary-key changes remain unsupported.
+     *
+     * @param table the mapped table and its ordered primary-key columns
+     * @return CREATE TABLE SQL containing the primary key when one is mapped
+     */
+    @Override
+    public String createTable(TableMeta table) {
+        String base = super.createTable(table);
+        if (table.primaryKey() == null)
+            return base;
+        return base.substring(0, base.length() - 1) + ", PRIMARY KEY (" + columnList(table.primaryKey().columns())
+                + "))";
     }
 
     /**

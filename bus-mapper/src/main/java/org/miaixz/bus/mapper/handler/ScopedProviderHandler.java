@@ -22,6 +22,7 @@ package org.miaixz.bus.mapper.handler;
 import java.io.Serial;
 import java.util.Properties;
 
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.mapper.Args;
@@ -167,7 +168,7 @@ public abstract class ScopedProviderHandler<T, C, P> extends ConditionHandler<T,
             value = properties.getProperty(Args.SHARED_KEY + suffix);
         }
         if (value == null) {
-            value = properties.getProperty("default" + suffix);
+            value = properties.getProperty(Normal.DEFAULT + suffix);
         }
         return value == null || Boolean.parseBoolean(value);
     }

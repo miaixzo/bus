@@ -28,8 +28,10 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 import javax.sql.DataSource;
 
@@ -44,6 +46,8 @@ import org.miaixz.bus.mapper.behavior.SchemaBehavior;
 import org.miaixz.bus.mapper.dialect.Dialect;
 import org.miaixz.bus.mapper.dialect.DialectRegistry;
 import org.miaixz.bus.mapper.feature.affix.AffixRuleConfig;
+import org.miaixz.bus.mapper.feature.schema.SchemaReport.Stage;
+import org.miaixz.bus.mapper.feature.schema.SchemaReport.Status;
 import org.miaixz.bus.mapper.parsing.*;
 
 /**
@@ -103,21 +107,34 @@ public class EntitySchemaInitializer {
         if (config == null || !config.enabled() || config.mode() == Schema.NONE) {
             return report;
         }
-        Dialect dialect = DialectRegistry.getDialect(dataSource);
-        SchemaBehavior operations = dialect;
         List<String> scriptSqls = new ArrayList<>();
         try (Connection connection = dataSource.getConnection()) {
+            Dialect dialect = DialectRegistry.getDialect(connection);
+            SchemaBehavior operations = dialect;
             List<AutoCloseable> locks = new ArrayList<>();
             List<SchemaPlan> plans = new ArrayList<>();
+            Throwable initializationFailure = null;
             try {
                 for (Class<?> entityClass : entityClasses) {
                     TableMeta table = null;
                     try {
                         if (excluded(entityClass, config)) {
+                            report.diagnose(
+                                    entityClass.getName(),
+                                    Normal.EMPTY,
+                                    Stage.READ,
+                                    Status.EXCLUDED,
+                                    "Entity excluded by configuration");
                             continue;
                         }
                         table = MapperFactory.of(entityClass);
                         if (excluded(table, config)) {
+                            report.diagnose(
+                                    table.tableName(),
+                                    Normal.EMPTY,
+                                    Stage.READ,
+                                    Status.EXCLUDED,
+                                    "Table excluded by configuration");
                             continue;
                         }
                         TableMeta source = table;
@@ -127,7 +144,11 @@ public class EntitySchemaInitializer {
                         }
                         // Scope metadata discovery and DDL to the same schema used by this connection.
                         if (table.schema() == null || table.schema().isBlank()) {
-                            table.schema(connection.getSchema());
+                            String schema = connection.getSchema();
+                            String quote = connection.getMetaData().getIdentifierQuoteString();
+                            table.schema(
+                                    schema == null || quote == null || quote.isBlank() ? schema
+                                            : quote + schema.replace(quote, quote + quote) + quote);
                         }
                         table.columns(new ColumnOrderResolver().resolve(table));
                         locks.add(SchemaInitializationLock.acquire(dataSource, table));
@@ -135,9 +156,19 @@ public class EntitySchemaInitializer {
                         TableSnapshot snapshot = operations.readTable(connection, table);
                         if (config.mode() == Schema.CREATE && snapshot.exists()) {
                             report.skippedSqls().add("Table already exists: " + table.tableName());
+                            report.diagnose(
+                                    table.tableName(),
+                                    Normal.EMPTY,
+                                    Stage.READ,
+                                    Status.NOT_CHECKED,
+                                    "CREATE mode leaves existing table unchecked");
                             continue;
                         }
-                        plans.add(new SchemaPlan(table, new SchemaDiffer(operations, config).diff(table, snapshot)));
+                        SchemaDiffer differ = new SchemaDiffer(operations, config);
+                        plans.add(new SchemaPlan(table, differ.diff(table, snapshot)));
+                        report.unknowns().addAll(differ.unknowns());
+                        for (String reason : differ.unknowns())
+                            report.diagnose(table.tableName(), Normal.EMPTY, Stage.READ, Status.UNKNOWN, reason);
                     } catch (SQLException e) {
                         String context = "entity=" + (entityClass == null ? null : entityClass.getName()) + ", table="
                                 + (table == null ? null : table.tableName());
@@ -152,8 +183,60 @@ public class EntitySchemaInitializer {
                     }
                 }
                 executePlans(connection, dialect, operations, config, report, scriptSqls, plans);
+                boolean applying = config.mode() != Schema.VALIDATE && config.mode() != Schema.SCRIPT
+                        && !config.dryRun();
+                if (applying) {
+                    report.unknowns().clear();
+                    for (SchemaPlan plan : plans) {
+                        SchemaDiffer differ = new SchemaDiffer(operations, config);
+                        List<SchemaDiff> remaining = differ
+                                .diff(plan.table(), operations.readTable(connection, plan.table()));
+                        report.unresolvedDiffs().addAll(remaining);
+                        report.unknowns().addAll(differ.unknowns());
+                        for (SchemaDiff diff : remaining)
+                            report.diagnose(
+                                    plan.table().tableName(),
+                                    diff.type().name(),
+                                    Stage.VERIFY,
+                                    Status.UNRESOLVED,
+                                    diff.message());
+                        for (String reason : differ.unknowns())
+                            report.diagnose(
+                                    plan.table().tableName(),
+                                    Normal.EMPTY,
+                                    Stage.VERIFY,
+                                    Status.UNKNOWN,
+                                    reason);
+                        if (remaining.isEmpty() && differ.unknowns().isEmpty())
+                            report.diagnose(
+                                    plan.table().tableName(),
+                                    Normal.EMPTY,
+                                    Stage.VERIFY,
+                                    Status.VALIDATED,
+                                    "Final structure matches entity metadata");
+                    }
+                } else {
+                    for (SchemaPlan plan : plans)
+                        report.unresolvedDiffs().addAll(plan.diffs());
+                }
+                report.verified(
+                        !plans.isEmpty() && report.unresolvedDiffs().isEmpty() && report.unknowns().isEmpty()
+                                && report.failedDiffs().isEmpty() && config.mode() != Schema.SCRIPT && !config.dryRun()
+                                && report.diagnostics().stream().noneMatch(
+                                        item -> item.status() == Status.NOT_CHECKED
+                                                || item.status() == Status.EXCLUDED));
+            } catch (SQLException | RuntimeException | Error failure) {
+                initializationFailure = failure;
+                throw failure;
             } finally {
-                closeLocks(locks);
+                try {
+                    closeLocks(locks);
+                } catch (SQLException releaseFailure) {
+                    if (initializationFailure != null)
+                        initializationFailure.addSuppressed(releaseFailure);
+                    else
+                        throw releaseFailure;
+                }
             }
         }
         writeScript(config, scriptSqls);
@@ -300,7 +383,8 @@ public class EntitySchemaInitializer {
     }
 
     /**
-     * Executes schema plans in dependency-safe phases.
+     * Prepares all permitted SQL before executing statements in schema-phase order. Blocked operations are tracked by
+     * dependency keys; script and dry-run modes collect the prepared statements without applying them.
      *
      * @param connection the active database connection
      * @param dialect    the active dialect
@@ -319,28 +403,102 @@ public class EntitySchemaInitializer {
             SchemaReport report,
             List<String> scriptSqls,
             List<SchemaPlan> plans) throws SQLException {
+        List<Prepared> prepared = new ArrayList<>();
+        Set<String> blocked = new HashSet<>();
         for (SchemaPhase phase : SchemaPhase.values()) {
             for (SchemaPlan plan : plans) {
                 for (SchemaDiff diff : plan.diffs()) {
-                    if (phase != SchemaPhase.of(diff.type())) {
+                    if (phase != SchemaPhase.of(diff.type()))
                         continue;
-                    }
-                    handleDiff(connection, dialect, operations, config, report, scriptSqls, diff);
+                    Prepared item = prepareDiff(connection, dialect, operations, config, report, diff);
+                    if (item != null)
+                        prepared.add(item);
+                    else if (diff.type() == Behavior.CREATE_TABLE)
+                        blocked.add(diff.tableMeta().tableName());
+                    else if (diff.type() == Behavior.ADD_COLUMN || diff.type() == Behavior.DROP_PRIMARY_KEY
+                            || diff.type() == Behavior.CREATE_PRIMARY_KEY || diff.index() != null)
+                        blocked.add(dependencyKey(diff));
                 }
+            }
+        }
+        for (Prepared item : prepared) {
+            SchemaDiff diff = item.diff();
+            String table = diff.tableMeta().tableName();
+            boolean dependent = blocked.contains(table) || blocked.contains(dependencyKey(diff));
+            if (diff.foreignKey() != null) {
+                dependent |= blocked.contains(diff.foreignKey().referencedTable());
+            }
+            if (diff.type() == Behavior.CREATE_INDEX || diff.type() == Behavior.CREATE_UNIQUE) {
+                for (String column : diff.index().columns())
+                    dependent |= blocked.contains(table + ".column." + column);
+            }
+            if (dependent) {
+                report.skippedSqls().add(diff.message());
+                report.diagnose(
+                        table,
+                        diff.type().name(),
+                        Stage.PREPARE,
+                        Status.DEPENDENCY_BLOCKED,
+                        "Required structure operation is blocked or failed");
+                continue;
+            }
+            scriptSqls.add(item.sql());
+            if (config.mode() == Schema.SCRIPT || config.dryRun()) {
+                report.skippedSqls().add(item.sql());
+                report.diagnose(
+                        table,
+                        diff.type().name(),
+                        Stage.PREPARE,
+                        Status.PROPOSED,
+                        "SQL generated without application");
+                continue;
+            }
+            try (Statement statement = connection.createStatement()) {
+                statement.execute(item.sql());
+                report.executedSqls().add(item.sql());
+                report.diagnose(
+                        table,
+                        diff.type().name(),
+                        Stage.EXECUTE,
+                        Status.APPLIED,
+                        "SQL executed; final structure is checked separately");
+            } catch (SQLException e) {
+                report.skippedSqls().add(item.sql());
+                report.failedDiffs().add(diff);
+                blocked.add(diff.type() == Behavior.CREATE_TABLE ? table : dependencyKey(diff));
+                report.diagnose(
+                        table,
+                        diff.type().name(),
+                        Stage.EXECUTE,
+                        Status.FAILED,
+                        "SQL execution failed: SQLState=" + e.getSQLState());
+                if (config.failFast() || !config.continueOnError())
+                    throw e;
             }
         }
     }
 
     /**
-     * Closes schema initialization locks in reverse acquisition order.
+     * Attempts to close every acquired lock in reverse order even when a preceding release raises SQLException. The
+     * first release failure is retained and later failures are attached as suppressed exceptions.
      *
      * @param locks the locks to close
      * @throws SQLException when lock release fails
      */
     private void closeLocks(List<AutoCloseable> locks) throws SQLException {
+        SQLException failure = null;
         for (int i = locks.size() - 1; i >= 0; i--) {
-            closeLock(locks.get(i));
+            try {
+                closeLock(locks.get(i));
+            } catch (SQLException e) {
+                if (failure == null)
+                    failure = e;
+                else
+                    failure.addSuppressed(e);
+            }
         }
+        if (failure != null)
+            throw failure;
     }
 
     /**
@@ -363,76 +521,95 @@ public class EntitySchemaInitializer {
     }
 
     /**
-     * Handles a single schema difference.
+     * Prepares one schema difference without executing structural SQL. Capabilities, permission switches, and data
+     * prerequisites are evaluated before SQL generation; non-applying or blocked operations receive diagnostics.
      *
      * @param connection the active database connection
      * @param dialect    the active dialect
      * @param operations the schema behavior
      * @param config     the schema configuration
      * @param report     the execution report
-     * @param scriptSqls the generated script SQL collector
      * @param diff       the schema difference
-     * @throws SQLException when DDL execution fails
+     * @return prepared SQL, or null when this difference is inspected, blocked, or unsupported
+     * @throws SQLException when preparation-time metadata or row-count checks fail
      */
-    private void handleDiff(
+    private Prepared prepareDiff(
             Connection connection,
             Dialect dialect,
             SchemaBehavior operations,
             SchemaConfig config,
             SchemaReport report,
-            List<String> scriptSqls,
             SchemaDiff diff) throws SQLException {
-        String sql;
-        TableMeta table = diff.tableMeta();
-        String entity = table == null || table.entityClass() == null ? null : table.entityClass().getName();
-        String tableName = table == null ? null : table.tableName();
-        String column = diff.columnMeta() != null ? diff.columnMeta().column()
-                : diff.actualColumn() == null ? null : diff.actualColumn().name();
-        String context = "entity=" + entity + ", table=" + tableName + ", column=" + column + ", operation="
-                + diff.type() + ", riskLevel=" + diff.riskLevel();
+        String table = diff.tableMeta().tableName();
         try {
-            if (config.mode() == Schema.VALIDATE) {
+            Status status = null;
+            if (config.mode() == Schema.VALIDATE)
+                status = Status.VALIDATED;
+            else if (!dialect.supports(diff.type()))
+                status = Status.UNSUPPORTED;
+            else if (!allowed(dialect, config, diff, connection)
+                    || diff.type() == Behavior.CREATE_TABLE && operations.inlinePrimaryKey()
+                            && diff.tableMeta().primaryKey() != null && !config.allowCreatePrimaryKey())
+                status = Status.CONFIGURATION_BLOCKED;
+            if (status != null) {
                 report.skippedSqls().add(diff.message());
-                return;
+                report.diagnose(table, diff.type().name(), Stage.PREPARE, status, diff.message());
+                return null;
             }
-            if (!allowed(dialect, config, diff, connection)) {
-                report.skippedSqls().add(diff.message());
-                return;
-            }
-            sql = sql(operations, diff);
+            String sql = sql(operations, diff);
             if (sql == null || sql.isBlank()) {
                 report.skippedSqls().add(diff.message());
-                return;
+                report.diagnose(
+                        table,
+                        diff.type().name(),
+                        Stage.PREPARE,
+                        Status.UNSUPPORTED,
+                        "DDL generator returned no SQL");
+                return null;
             }
-            if (config.printSql()) {
-                Logger.info(false, "Mapper", "Schema SQL generated: {}, sql={}", context, sql);
-            }
-        } catch (SQLException e) {
+            if (config.printSql())
+                Logger.info(
+                        false,
+                        "Mapper",
+                        "Schema SQL prepared: table={}, operation={}, sql={}",
+                        table,
+                        diff.type(),
+                        sql);
+            return new Prepared(diff, sql);
+        } catch (SQLException | RuntimeException e) {
             report.failedDiffs().add(diff);
-            Logger.error(false, "Mapper", e, "Schema SQL preparation failed: {}", context);
-            throw new SQLException("Schema SQL preparation failed: " + context, e.getSQLState(), e.getErrorCode(), e);
-        } catch (RuntimeException e) {
-            report.failedDiffs().add(diff);
-            Logger.error(false, "Mapper", e, "Schema SQL preparation failed: {}", context);
+            report.diagnose(table, diff.type().name(), Stage.PREPARE, Status.FAILED, "DDL preparation failed");
             throw e;
         }
-        scriptSqls.add(sql);
-        if (config.mode() == Schema.SCRIPT || config.dryRun()) {
-            report.skippedSqls().add(sql);
-            return;
-        }
-        try (Statement statement = connection.createStatement()) {
-            statement.execute(sql);
-            report.executedSqls().add(sql);
-        } catch (SQLException e) {
-            report.skippedSqls().add(sql);
-            report.failedDiffs().add(diff);
-            Logger.error(false, "Mapper", e, "Schema SQL execution failed: {}, sql={}", context, sql);
-            if (config.failFast() || !config.continueOnError()) {
-                throw new SQLException("Schema SQL execution failed: " + context + ", sql=" + sql, e.getSQLState(),
-                        e.getErrorCode(), e);
-            }
-        }
+    }
+
+    /**
+     * Builds the table-local key used to propagate a blocked or failed structural operation to dependent steps. Index
+     * and primary-key replacements share a key across their drop/create operations.
+     *
+     * @param diff the planned structural difference
+     * @return the table-qualified index, primary-key, column, or operation key
+     */
+    private String dependencyKey(SchemaDiff diff) {
+        String table = diff.tableMeta().tableName();
+        if (diff.index() != null)
+            return table + ".index." + diff.index().name();
+        if (diff.primaryKey() != null)
+            return table + ".primaryKey";
+        if (diff.columnMeta() != null)
+            return table + ".column." + diff.columnMeta().column();
+        if (diff.actualColumn() != null)
+            return table + ".column." + diff.actualColumn().name();
+        return table + Symbol.DOT + diff.type();
+    }
+
+    /**
+     * A permitted difference whose SQL was generated successfully during the preparation pass.
+     *
+     * @param diff the original schema difference and its object coordinates
+     * @param sql  the generated SQL retained for later execution or script output
+     */
+    private record Prepared(SchemaDiff diff, String sql) {
     }
 
     /**
@@ -468,7 +645,8 @@ public class EntitySchemaInitializer {
         if (config.mode() != Schema.UPDATE && config.mode() != Schema.SCRIPT) {
             return false;
         }
-        if (diff.type() == Behavior.ADD_COLUMN && Boolean.FALSE.equals(diff.columnMeta().ddlNullable())
+        if (diff.type() == Behavior.ADD_COLUMN
+                && (diff.columnMeta().id() || Boolean.FALSE.equals(diff.columnMeta().ddlNullable()))
                 && !hasDefault(diff.columnMeta()) && hasRows(connection, diff.tableMeta())) {
             return false;
         }

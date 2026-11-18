@@ -36,6 +36,7 @@ import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.ResultHandler;
 import org.apache.ibatis.session.RowBounds;
 
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.MapperException;
 import org.miaixz.bus.core.xyz.StringKit;
@@ -43,6 +44,7 @@ import org.miaixz.bus.errors.ComponentFailure;
 import org.miaixz.bus.errors.ErrorType;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.mapper.Args;
+import org.miaixz.bus.mapper.Order;
 import org.miaixz.bus.mapper.dialect.Dialect;
 import org.miaixz.bus.mapper.dialect.DialectRegistry;
 import org.miaixz.bus.mapper.feature.identifier.IdentifierValidator;
@@ -632,7 +634,7 @@ public class PageHandler<T> extends AbstractSqlHandler implements MapperHandler<
 
                 if (fieldAndDirection.length > 1) {
                     String direction = StringKit.toUpperCase(fieldAndDirection[1].trim());
-                    if ("DESC".equals(direction)) {
+                    if (Order.DESC.equals(direction)) {
                         sort = sort.and(Sort.by(field).descending());
                     } else {
                         sort = sort.and(Sort.by(field).ascending());
@@ -874,7 +876,7 @@ public class PageHandler<T> extends AbstractSqlHandler implements MapperHandler<
         if (properties == null) {
             return new PageSettings(true, reasonable, supportMethodsArguments, Map.copyOf(paramsMap));
         }
-        boolean enabled = Boolean.parseBoolean(find(Args.PROP_ENABLED, "true"));
+        boolean enabled = Boolean.parseBoolean(find(Args.PROP_ENABLED, Normal.TRUE));
         boolean currentReasonable = Boolean.parseBoolean(find(Args.PAGE_REASONABLE, String.valueOf(reasonable)));
         boolean currentSupport = Boolean
                 .parseBoolean(find(Args.PAGE_SUPPORT_METHOD_ARGUMENTS, String.valueOf(supportMethodsArguments)));
@@ -908,7 +910,7 @@ public class PageHandler<T> extends AbstractSqlHandler implements MapperHandler<
             value = properties.getProperty(Args.SHARED_KEY + suffix);
         }
         if (value == null) {
-            value = properties.getProperty("default" + suffix, fallback);
+            value = properties.getProperty(Normal.DEFAULT + suffix, fallback);
         }
         return value;
     }
