@@ -25,10 +25,10 @@ import java.util.Objects;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
 import org.miaixz.bus.core.lang.Charset;
-import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.cortex.Assets;
+import org.miaixz.bus.cortex.registry.ServiceRoutes;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.extra.mq.Message;
 import org.miaixz.bus.logger.Logger;
@@ -173,7 +173,7 @@ public class MqExecutor extends Coordinator<String, ServerResponse> {
 
         };
 
-        String brokerUrl = assets.getHost() + Symbol.COLON + assets.getPort();
+        String brokerUrl = ServiceRoutes.resolve(assets).getRawAuthority();
         return mq.send(brokerUrl, message)
                 .then(Mono.fromSupplier(() -> JsonKit.toJsonString(Map.of("status", "Request forwarded to MQ"))));
     }

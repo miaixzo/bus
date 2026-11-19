@@ -31,10 +31,10 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.core.xyz.UrlKit;
 import org.miaixz.bus.cortex.Assets;
+import org.miaixz.bus.cortex.registry.ServiceRoutes;
 import org.miaixz.bus.errors.transport.reactive.ReactiveErrorHandler;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.vortex.*;
@@ -202,8 +202,8 @@ public class GrpcExecutor extends Coordinator<String, ServerResponse> {
                     "Vortex",
                     "Invoking gRPC method via HTTP: protocol=grpc, {} on {}:{}",
                     fullMethodName,
-                    assets.getHost(),
-                    assets.getPort());
+                    ServiceRoutes.resolve(assets).getHost(),
+                    ServiceRoutes.resolve(assets).getPort());
 
             URI uri = UrlKit.toURI(buildGrpcUrl(assets, fullMethodName));
 
@@ -265,7 +265,7 @@ public class GrpcExecutor extends Coordinator<String, ServerResponse> {
      */
     private String buildGrpcUrl(Assets assets, String fullMethodName) {
         StringBuilder url = new StringBuilder();
-        url.append(Protocol.HTTP_PREFIX).append(assets.getHost()).append(Symbol.COLON).append(assets.getPort());
+        url.append(ServiceRoutes.resolve(assets).toASCIIString());
 
         if (StringKit.isNotEmpty(fullMethodName)) {
             url.append(Symbol.SLASH).append(fullMethodName);

@@ -73,6 +73,32 @@ public class Builder {
     public static final String AUDIT_PREFIX = "audit:v2" + Symbol.COLON;
 
     /**
+     * Runtime kind for application service listeners with independent registration leases.
+     */
+    public static final String INSTANCE_KIND_SERVICE = "SERVICE";
+
+    /**
+     * Runtime kind for configuration-client sessions, separate from service listener leases.
+     */
+    public static final String INSTANCE_KIND_CONFIGURATION = "CONFIGURATION";
+
+    /**
+     * Largest accepted service routing weight; zero disables traffic selection.
+     */
+    public static final int MAX_INSTANCE_WEIGHT = Normal._100 * Normal._100;
+
+    /**
+     * Wire version of application registry credentials.
+     */
+    public static final String REGISTRY_CREDENTIAL_VERSION = "v1";
+
+    /**
+     * Domain separation applied before signing an application's registry forwarding credential.
+     */
+    public static final String REGISTRY_FORWARD_CONTEXT = "registry" + Symbol.COLON + "forward" + Symbol.COLON
+            + REGISTRY_CREDENTIAL_VERSION + Symbol.COLON;
+
+    /**
      * Creates a new Builder.
      */
     public Builder() {

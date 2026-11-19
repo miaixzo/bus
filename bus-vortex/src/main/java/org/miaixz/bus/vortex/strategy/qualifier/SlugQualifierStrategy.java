@@ -22,6 +22,7 @@ package org.miaixz.bus.vortex.strategy.qualifier;
 import org.springframework.web.server.ServerWebExchange;
 
 import org.miaixz.bus.core.Order;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.cortex.Assets;
 import org.miaixz.bus.logger.Logger;
@@ -89,15 +90,15 @@ public class SlugQualifierStrategy extends QualifierStrategy {
             Logger.info(
                     true,
                     "Vortex",
-                    "Public slug asset resolved: clientIp={}, method={}, version={}, verb={}, policy={}, signing={}, host={}, port={}, path={}, url={}",
+                    "Public slug asset resolved: clientIp={}, method={}, version={}, verb={}, policy={}, signing={}, instances={}, scheme={}, path={}, url={}",
                     context.getX_request_ip(),
                     assets.getMethod(),
                     assets.getVersion(),
                     assets.getVerb(),
                     assets.getPolicy(),
                     assets.getSigning(),
-                    assets.getHost(),
-                    assets.getPort(),
+                    assets.getInstances() == null ? Normal._0 : assets.getInstances().size(),
+                    assets.getScheme(),
                     assets.getPath(),
                     assets.getUrl());
             return method(context, assets).then(SignatureVerifier.verifySlug(context, assets)).then(authorize(context))

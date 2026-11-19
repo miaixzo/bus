@@ -68,14 +68,10 @@ public class Assets extends Nature {
     private String icon;
 
     /**
-     * Hostname or IP address of the downstream service.
+     * Required upstream listener scheme for a system-maintained API, either http or https. This selects only matching
+     * service instances and never supplies an address, port or permission grant.
      */
-    private String host;
-
-    /**
-     * Network port of the downstream service.
-     */
-    private Integer port;
+    private String scheme;
 
     /**
      * Context path on the downstream service, prefixed when forwarding requests.
@@ -127,7 +123,7 @@ public class Assets extends Nature {
      * <li>{@code 0}: Public or authentication-bootstrap access without a user credential</li>
      * <li>{@code 1}: Credential authentication</li>
      * <li>{@code 2}: Credential authentication and permission validation</li>
-     * <li>{@code 3}: Credential authentication, permission validation, and license validation</li>
+     * <li>{@code 3}: Legacy credential and permission validation; License is handled by feature presentation</li>
      * </ul>
      */
     private Integer policy;
@@ -143,9 +139,9 @@ public class Assets extends Nature {
     private Integer signing;
 
     /**
-     * OAuth2 scope ID / permission level required to access this asset.
+     * Stable business action code required by this asset, such as read or remove.
      */
-    private Integer scope;
+    private String scope;
 
     /**
      * Maximum number of automatic retry attempts for transient failures.
@@ -224,6 +220,13 @@ public class Assets extends Nature {
      */
     @Transient
     private Map<String, String> labels;
+
+    /**
+     * Detached service instances attached by the authoritative runtime projection. Null is a non-runtime asset; an
+     * empty list explicitly means that no service instance can receive traffic. Never persisted as API data.
+     */
+    @Transient
+    private List<Instance> instances;
 
     /**
      * Constructs a new {@code Assets} instance.

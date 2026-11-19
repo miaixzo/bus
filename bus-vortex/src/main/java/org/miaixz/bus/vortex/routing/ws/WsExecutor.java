@@ -28,10 +28,9 @@ import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import org.springframework.web.reactive.socket.WebSocketSession;
 
-import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.xyz.UrlKit;
+import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.cortex.Assets;
+import org.miaixz.bus.cortex.registry.ServiceRoutes;
 import org.miaixz.bus.errors.ComponentFailure;
 import org.miaixz.bus.errors.ErrorType;
 import org.miaixz.bus.extra.json.JsonKit;
@@ -67,21 +66,6 @@ public class WsExecutor extends Coordinator<Object, ServerResponse> {
      * Reports failures whose ws-cleanup response or lifecycle is owned by this adapter.
      */
     private static final ComponentFailure FAILURES = new ComponentFailure("vortex", "ws-cleanup");
-
-    /**
-     * WebSocket scheme prefix.
-     */
-    private static final String WS_SCHEME = "ws" + Symbol.COLON + Symbol.FORWARDSLASH;
-
-    /**
-     * Secure WebSocket scheme prefix.
-     */
-    private static final String WSS_SCHEME = "wss" + Symbol.COLON + Symbol.FORWARDSLASH;
-
-    /**
-     * Pattern used to strip any WebSocket scheme prefix from configured hosts.
-     */
-    private static final String WS_SCHEME_PATTERN = "^(" + WS_SCHEME + Symbol.OR + WSS_SCHEME + Symbol.PARENTHESE_RIGHT;
 
     /**
      * A thread-safe map of active WebSocket sessions, keyed by session ID. This allows tracking and managing all active
@@ -132,58 +116,22 @@ public class WsExecutor extends Coordinator<Object, ServerResponse> {
     }
 
     /**
-     * Builds the upstream WebSocket URL from the asset configuration.
-     * <p>
-     * Constructs a WebSocket URL in the format: ws://host:port/path or wss://host:port/path for secure connections.
-     * <p>
-     * The protocol (ws/wss) is determined by:
-     * <ul>
-     * <li>If host starts with "wss://", uses wss://</li>
-     * <li>Otherwise, uses ws:// (plain WebSocket)</li>
-     * </ul>
+     * Preserves the selected listener's transport security while resolving its WebSocket target. HTTP becomes WS, HTTPS
+     * becomes WSS, and explicit WS/WSS protocol targets remain unchanged.
      *
-     * @param assets The asset configuration containing host, port, and path information.
-     * @return The complete upstream WebSocket URL.
+     * @param assets request-local asset bound to its selected Instance
+     * @return complete upstream WebSocket URL
+     * @throws IllegalArgumentException when the resolved target uses another transport
      */
     private String buildUpstreamUrl(Assets assets) {
-        StringBuilder urlBuilder = new StringBuilder();
-
-        boolean isSecure = false;
-
-        if (assets.getHost() != null && assets.getHost().startsWith(WSS_SCHEME)) {
-            isSecure = true;
-        }
-
-        urlBuilder.append(isSecure ? WSS_SCHEME : WS_SCHEME);
-
-        String host = assets.getHost();
-        if (host != null) {
-            host = host.replaceFirst(WS_SCHEME_PATTERN, Normal.EMPTY);
-            urlBuilder.append(host);
-        }
-
-        if (assets.getPort() != null && assets.getPort() > 0) {
-            boolean isDefaultPort = (isSecure && assets.getPort() == 443) || (!isSecure && assets.getPort() == 80);
-            if (!isDefaultPort) {
-                urlBuilder.append(Symbol.COLON).append(assets.getPort());
-            }
-        }
-
-        if (assets.getPath() != null && !assets.getPath().isEmpty()) {
-            if (!assets.getPath().startsWith(Symbol.SLASH)) {
-                urlBuilder.append(Symbol.SLASH);
-            }
-            urlBuilder.append(assets.getPath());
-        }
-
-        if (assets.getUrl() != null && !assets.getUrl().isEmpty()) {
-            if (!assets.getUrl().startsWith(Symbol.SLASH)) {
-                urlBuilder.append(Symbol.SLASH);
-            }
-            urlBuilder.append(assets.getUrl());
-        }
-
-        return UrlKit.normalize(urlBuilder.toString(), false);
+        String target = ServiceRoutes.endpoint(assets).toASCIIString();
+        if (target.startsWith(Protocol.HTTPS_PREFIX))
+            return Protocol.WSS_PREFIX + target.substring(Protocol.HTTPS_PREFIX.length());
+        if (target.startsWith(Protocol.HTTP_PREFIX))
+            return Protocol.WS_PREFIX + target.substring(Protocol.HTTP_PREFIX.length());
+        if (!target.startsWith(Protocol.WS_PREFIX) && !target.startsWith(Protocol.WSS_PREFIX))
+            throw new IllegalArgumentException("A WebSocket transport endpoint is required");
+        return target;
     }
 
     /**
@@ -200,7 +148,7 @@ public class WsExecutor extends Coordinator<Object, ServerResponse> {
         activeSessions.put(sessionId, session);
 
         SessionMetadata metadata = new SessionMetadata(sessionId, System.currentTimeMillis(),
-                assets.getHost() + Symbol.COLON + assets.getPort(), assets.getMethod());
+                ServiceRoutes.endpoint(assets).toASCIIString(), assets.getMethod());
 
         sessionMetadata.put(sessionId, metadata);
 

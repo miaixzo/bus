@@ -52,6 +52,7 @@ import org.miaixz.bus.core.xyz.UrlKit;
 import org.miaixz.bus.cortex.Assets;
 import org.miaixz.bus.cortex.Type;
 import org.miaixz.bus.cortex.registry.RegistryAssets;
+import org.miaixz.bus.cortex.registry.ServiceRoutes;
 import org.miaixz.bus.errors.ComponentFailure;
 import org.miaixz.bus.errors.ErrorType;
 import org.miaixz.bus.errors.transport.http.PublicHttpError;
@@ -325,10 +326,10 @@ public class McpExecutor extends Coordinator<ServerRequest, ServerResponse> {
      * @return The route base URL, or {@code null} when host configuration is missing.
      */
     private String buildRelativeRouteBaseUrl(Assets assets, Context context) {
-        if (context == null || StringKit.isBlank(assets.getHost())) {
+        if (context == null || assets.getInstances() == null) {
             return null;
         }
-        return joinPath(buildBaseUrl(context), assets.getUrl());
+        return joinPath(ServiceRoutes.resolve(context.getAssets()).toASCIIString(), assets.getUrl());
     }
 
     /**

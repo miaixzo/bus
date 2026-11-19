@@ -35,6 +35,7 @@ import org.miaixz.bus.core.basic.normal.Consts;
 import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.bean.copier.CopyOptions;
 import org.miaixz.bus.core.lang.EnumValue;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.xyz.BeanKit;
@@ -127,7 +128,7 @@ public class QualifierStrategy extends AbstractStrategy {
                 Logger.info(
                         true,
                         "Vortex",
-                        "Asset resolved: strategy=qualifier, clientIp={}, type={}, appId={}, method={}, version={}, verb={}, policy={}, signing={}, mode={}, host={}, port={}, path={}, url={}",
+                        "Asset resolved: strategy=qualifier, clientIp={}, type={}, appId={}, method={}, version={}, verb={}, policy={}, signing={}, mode={}, instances={}, scheme={}, path={}, url={}",
                         context.getX_request_ip(),
                         assets.getType(),
                         assets.getApp_id(),
@@ -137,24 +138,14 @@ public class QualifierStrategy extends AbstractStrategy {
                         assets.getPolicy(),
                         assets.getSigning(),
                         assets.getProtocol(),
-                        assets.getHost(),
-                        assets.getPort(),
+                        assets.getInstances() == null ? Normal._0 : assets.getInstances().size(),
+                        assets.getScheme(),
                         assets.getPath(),
                         assets.getUrl());
                 Mono<Void> validationMono = this.method(context, assets);
-                Mono<Void> authMono = !Consts.ZERO.equals(assets.getPolicy()) ? Mono.defer(() -> {
-                    if (Boolean.TRUE.equals(exchange.getAttribute(Context.JSON_ARRAY_BODY_ATTRIBUTE))) {
-                        // The array body is preserved. Query identity claims must never survive verification as
-                        // fallback values for absent principal attributes; routing coordinates stay unchanged.
-                        context.getParameters().keySet().removeIf(name -> {
-                            String key = StringKit.toLowerCase(name);
-                            return key.startsWith("x_user_") || key.startsWith("x_tenant_")
-                                    || key.startsWith("x_space_") || key.startsWith("x_role_")
-                                    || key.startsWith("x_duty_") || key.equals("x_raw_data");
-                        });
-                    }
-                    return this.authorize(context);
-                }) : Mono.empty();
+                Mono<Void> authMono = !Consts.ZERO.equals(assets.getPolicy())
+                        ? Mono.defer(() -> this.authorize(context))
+                        : Mono.empty();
                 return validationMono.then(authMono).then(finalizeParameters(exchange, context));
             }).then(
                     Mono.fromRunnable(

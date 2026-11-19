@@ -42,6 +42,7 @@ import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.core.xyz.UrlKit;
 import org.miaixz.bus.cortex.Assets;
+import org.miaixz.bus.cortex.registry.ServiceRoutes;
 import org.miaixz.bus.errors.transport.reactive.ReactiveErrorHandler;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.vortex.*;
@@ -197,17 +198,7 @@ public class SlugExecutor implements Executor<ServerRequest, ServerResponse> {
      * @return base URL
      */
     private String base(Assets assets) {
-        StringBuilder builder = new StringBuilder(StringKit.toStringOrEmpty(assets.getHost()));
-        if (assets.getPort() != null && assets.getPort() > 0) {
-            builder.append(Symbol.COLON).append(assets.getPort());
-        }
-        if (StringKit.isNotBlank(assets.getPath())) {
-            if (!assets.getPath().startsWith(Symbol.SLASH)) {
-                builder.append(Symbol.SLASH);
-            }
-            builder.append(assets.getPath());
-        }
-        return UrlKit.normalize(builder.toString(), false);
+        return ServiceRoutes.resolve(assets).toASCIIString();
     }
 
     /**

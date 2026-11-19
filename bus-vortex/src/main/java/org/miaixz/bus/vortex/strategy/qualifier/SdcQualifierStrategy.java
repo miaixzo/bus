@@ -103,8 +103,7 @@ public class SdcQualifierStrategy extends QualifierStrategy {
                 URI target = endpoint.get();
                 Assets assets = ApiAssets.builder().type(Type.API.key()).method(Args.SDC_PATH_PREFIX)
                         .version(Args.DEFAULT_VERSION).verb(context.getHttpMethod().verb()).protocol(Args.ROUTE_SDC)
-                        .policy(GuardPolicy.CREDENTIAL.code())
-                        .host(target.getScheme() + "://" + target.getRawAuthority()).url(target.toASCIIString())
+                        .policy(GuardPolicy.CREDENTIAL.code()).scheme(target.getScheme()).url(target.toASCIIString())
                         .stream(1).timeout(60).retries(0).build();
                 context.setAssets(assets);
                 exchange.getResponse().beforeCommit(() -> {

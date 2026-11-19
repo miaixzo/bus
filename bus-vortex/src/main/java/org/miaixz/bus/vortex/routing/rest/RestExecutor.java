@@ -47,6 +47,7 @@ import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.core.xyz.UrlKit;
 import org.miaixz.bus.cortex.Assets;
+import org.miaixz.bus.cortex.registry.ServiceRoutes;
 import org.miaixz.bus.errors.ComponentFailure;
 import org.miaixz.bus.errors.ErrorType;
 import org.miaixz.bus.errors.transport.reactive.ReactiveErrorHandler;
@@ -107,7 +108,7 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
         final String path = request.path();
         final String ip = context.getX_request_ip();
 
-        String baseUrl = buildBaseUrl(context);
+        String baseUrl = ServiceRoutes.resolve(context.getAssets()).toASCIIString();
         Logger.info(
                 true,
                 "Vortex",
@@ -474,12 +475,7 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
      * @param value parameter value
      */
     private void addQueryPair(List<String> parts, String key, String value) {
-        /*
-         * The raw authorization projection is gateway-internal evidence. Forwarding it in a GET URI both exposes
-         * internal claims to downstream applications and can exceed the request-line limit for broad administrator
-         * roles. Downstream services receive the bounded, verified identity fields separately.
-         */
-        if (Args.isForwardingControlParameter(key) || "x_raw_data".equalsIgnoreCase(key)) {
+        if (Args.isForwardingControlParameter(key)) {
             return;
         }
         parts.add(UrlKit.toQuery(Map.of(key, StringKit.toStringOrEmpty(value)), Charset.UTF_8));

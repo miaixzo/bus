@@ -19,9 +19,7 @@
 */
 package org.miaixz.bus.vortex.routing;
 
-import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.xyz.UrlKit;
-import org.miaixz.bus.cortex.Assets;
+import org.miaixz.bus.cortex.registry.ServiceRoutes;
 import org.miaixz.bus.vortex.Context;
 import org.miaixz.bus.vortex.Executor;
 import org.miaixz.bus.vortex.routing.grpc.GrpcExecutor;
@@ -29,7 +27,6 @@ import org.miaixz.bus.vortex.routing.mcp.McpExecutor;
 import org.miaixz.bus.vortex.routing.mq.MqExecutor;
 import org.miaixz.bus.vortex.routing.rest.RestExecutor;
 import org.miaixz.bus.vortex.routing.ws.WsExecutor;
-
 import reactor.core.publisher.Mono;
 
 /**
@@ -88,34 +85,7 @@ public abstract class Coordinator<I, O> implements Executor<I, O> {
      */
     @Override
     public Mono<String> build(Context context) {
-        return Mono.fromCallable(() -> buildBaseUrl(context));
-    }
-
-    /**
-     * Builds the base URL for the target service synchronously.
-     * <p>
-     * This is a synchronous version of {@link #build(Context)} that can be used when blocking is acceptable (e.g., the
-     * operation does not involve I/O and completes quickly).
-     * <p>
-     * This implementation builds a URL string from the assets configuration. Subclasses that need different build
-     * behavior should override this method.
-     *
-     * @param context The request context
-     * @return The base URL string
-     */
-    protected String buildBaseUrl(Context context) {
-        Assets assets = context.getAssets();
-        StringBuilder baseUrlBuilder = new StringBuilder(assets.getHost());
-        if (assets.getPort() != null && assets.getPort() > 0) {
-            baseUrlBuilder.append(Symbol.COLON).append(assets.getPort());
-        }
-        if (assets.getPath() != null && !assets.getPath().isEmpty()) {
-            if (!assets.getPath().startsWith(Symbol.SLASH)) {
-                baseUrlBuilder.append(Symbol.SLASH);
-            }
-            baseUrlBuilder.append(assets.getPath());
-        }
-        return UrlKit.normalize(baseUrlBuilder.toString(), false);
+        return Mono.fromCallable(() -> ServiceRoutes.resolve(context.getAssets()).toASCIIString());
     }
 
     /**
