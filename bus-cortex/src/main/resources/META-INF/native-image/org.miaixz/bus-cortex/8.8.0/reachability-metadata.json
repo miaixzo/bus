@@ -17519,7 +17519,7 @@
       ],
       "methods": [
         {
-          "name": "synchronization",
+          "name": "evaluate",
           "parameterTypes": [
             "org.miaixz.bus.cortex.Instance"
           ]
