@@ -22,7 +22,7 @@ package org.miaixz.bus.mapper;
 import java.util.regex.Pattern;
 
 /**
- * This class defines constants for MyBatis mapper configuration and SQL fragments.
+ * Shared constants for Mapper configuration, mapping conventions, and provider metadata.
  *
  * @author Kimi Liu
  */

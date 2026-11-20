@@ -69,6 +69,29 @@ public class Firebird extends AbstractDialect {
     }
 
     /**
+     * Reports the native column default removal supported by this dialect.
+     *
+     * @return true when an ALTER COLUMN DROP DEFAULT statement can be generated
+     */
+    @Override
+    protected boolean supportsStandardColumnDefault() {
+        return true;
+    }
+
+    /**
+     * Restores a named check constraint from a single catalogue definition in this dialect.
+     *
+     * @param table      physical table receiving the check
+     * @param name       actual constraint name
+     * @param definition complete CHECK clause from the database catalogue
+     * @return native DDL for the named constraint
+     */
+    @Override
+    public String restoreCheck(TableMeta table, String name, String definition) {
+        return standardRestoreCheck(table, name, definition);
+    }
+
+    /**
      * Resolves the SQL type descriptor used by this dialect for the supplied mapper column.
      *
      * @param column the mapper column metadata

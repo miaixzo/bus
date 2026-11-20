@@ -25,6 +25,7 @@ import java.util.List;
 
 import org.miaixz.bus.mapper.dialect.Dialect;
 import org.miaixz.bus.mapper.feature.schema.ColumnSnapshot;
+import org.miaixz.bus.mapper.feature.schema.SchemaDiff;
 import org.miaixz.bus.mapper.feature.schema.SqlTypeDescriptor;
 import org.miaixz.bus.mapper.feature.schema.TableSnapshot;
 import org.miaixz.bus.mapper.parsing.*;
@@ -43,6 +44,15 @@ public interface SchemaBehavior {
      */
     default boolean supportsPartialIndexes() {
         return false;
+    }
+
+    /**
+     * Identifies dialects that enforce a conditional unique index through a native filter or equivalent expression.
+     *
+     * @return whether the mapped integer-equality uniqueness rule is supported
+     */
+    default boolean supportsConditionalUniqueIndexes() {
+        return supportsPartialIndexes();
     }
 
     /**
@@ -153,6 +163,115 @@ public interface SchemaBehavior {
      */
     default String createTable(TableMeta table) {
         throw unsupportedSchema("CREATE_TABLE", table);
+    }
+
+    /**
+     * Builds SQL to create a namespace for an explicitly requested schema migration.
+     *
+     * @param schema unqualified destination namespace
+     * @return generated schema creation SQL
+     */
+    default String createSchema(String schema) {
+        throw unsupportedSchema("CREATE_SCHEMA", null);
+    }
+
+    /**
+     * Builds SQL to move a table into another namespace using the same physical table name.
+     *
+     * @param table  current table coordinate
+     * @param schema unqualified destination namespace
+     * @return generated table move SQL
+     */
+    default String moveTable(TableMeta table, String schema) {
+        throw unsupportedSchema("MOVE_TABLE", table);
+    }
+
+    /**
+     * Builds a transaction-scoped exclusive lock for an explicitly selected table migration.
+     *
+     * @param table physical table coordinate
+     * @return generated table lock SQL
+     */
+    default String lockTable(TableMeta table) {
+        throw unsupportedSchema("LOCK_TABLE", table);
+    }
+
+    /**
+     * Builds SQL to restore an existing table check constraint during schema maintenance.
+     *
+     * @param table      replacement table coordinate
+     * @param name       existing constraint name
+     * @param definition complete check definition obtained from trusted database metadata
+     * @return generated schema SQL
+     */
+    default String restoreCheck(TableMeta table, String name, String definition) {
+        throw unsupportedSchema("RESTORE_CHECK", table);
+    }
+
+    /**
+     * Builds the operation that removes a persisted column default.
+     *
+     * @param table  physical table coordinate
+     * @param column physical column name
+     * @return generated schema SQL
+     */
+    default String dropColumnDefault(TableMeta table, String column) {
+        throw unsupportedSchema("DROP_COLUMN_DEFAULT", table);
+    }
+
+    /**
+     * Resolves the structural operation to remove a persisted column default. Dialects with named default constraints
+     * use the connection to identify the exact associated constraint.
+     *
+     * @param connection active connection for catalogue inspection
+     * @param table      physical table coordinate
+     * @param column     physical column name
+     * @return dialect-generated SQL, or null when the default is already absent
+     * @throws SQLException when metadata inspection fails
+     */
+    default String dropColumnDefault(Connection connection, TableMeta table, String column) throws SQLException {
+        return dropColumnDefault(table, column);
+    }
+
+    /**
+     * Generates one database statement that reorders the physical columns without changing their definitions.
+     *
+     * @param connection active connection for catalogue inspection
+     * @param table      target table with its requested ordered column metadata
+     * @return the generated schema SQL
+     * @throws SQLException when current column definitions cannot be read
+     */
+    default String reorderColumns(Connection connection, TableMeta table) throws SQLException {
+        throw unsupportedSchema("REORDER_COLUMNS", table);
+    }
+
+    /**
+     * Prepares a selected maintenance operation using native schema syntax. A dialect may supply a checked replacement
+     * when it cannot modify the table directly.
+     *
+     * @param connection active database connection
+     * @param diff       explicitly selected maintenance operation and its physical coordinates
+     * @throws SQLException when catalogue inspection fails
+     */
+    default void prepareMaintenance(Connection connection, SchemaDiff diff) throws SQLException {
+        String sql = switch (diff.type()) {
+            case DROP_COLUMN_DEFAULT -> dropColumnDefault(connection, diff.tableMeta(), diff.actualColumn().name());
+            case REORDER_COLUMNS -> reorderColumns(connection, diff.tableMeta());
+            default -> throw unsupportedSchema(diff.type().name(), diff.tableMeta());
+        };
+        if (sql != null && !sql.isBlank()) {
+            diff.preparation(List.of(sql));
+        }
+    }
+
+    /**
+     * Determines whether the database column has an explicitly defined effective default.
+     *
+     * @param column observed column metadata
+     * @return whether the dialect can see a default expression
+     */
+    default boolean hasColumnDefault(ColumnSnapshot column) {
+        return column.defaultExpression() != null;
     }
 
     /**

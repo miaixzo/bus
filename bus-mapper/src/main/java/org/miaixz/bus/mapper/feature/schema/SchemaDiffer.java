@@ -160,6 +160,7 @@ public class SchemaDiffer {
         }
         diffTableComment(table, snapshot, diffs, false);
         diffColumns(table, snapshot, diffs);
+        diffColumnOrder(table, snapshot, diffs);
         diffPrimaryKey(table, snapshot, diffs);
         diffIndexes(table, snapshot, diffs);
         diffForeignKeys(table, snapshot, diffs);
@@ -266,6 +267,68 @@ public class SchemaDiffer {
     }
 
     /**
+     * Adds default removal for a column explicitly designated by the maintenance configuration.
+     *
+     * @param table  physical table mapping
+     * @param column expected column mapping
+     * @param actual observed physical column
+     * @param diffs  collected schema differences
+     */
+    private void diffColumnDefault(TableMeta table, ColumnMeta column, ColumnSnapshot actual, List<SchemaDiff> diffs) {
+        String coordinate = table.tableName() + Symbol.DOT + column.column();
+        String local = table.table() + Symbol.DOT + column.column();
+        if (config == null
+                || !config.dropColumnDefaults().contains(coordinate) && !config.dropColumnDefaults().contains(local)) {
+            return;
+        }
+        if (!actual.defaultKnown()) {
+            unknowns.add("Default metadata is unavailable for: " + coordinate);
+        } else if (actual.identity() || actual.generated()) {
+            unknowns.add("Default removal cannot be applied to an identity or generated column: " + coordinate);
+        } else if (operations.hasColumnDefault(actual)) {
+            diffs.add(
+                    SchemaDiff
+                            .of(
+                                    Behavior.DROP_COLUMN_DEFAULT,
+                                    Risk.DANGEROUS,
+                                    table,
+                                    "Column has a database default: " + coordinate)
+                            .columnMeta(column).actualColumn(actual));
+        }
+    }
+
+    /**
+     * Checks the ordered shape of a table explicitly selected for physical reordering.
+     *
+     * @param table    expected entity table metadata
+     * @param snapshot physical table snapshot
+     * @param diffs    collected schema differences
+     */
+    private void diffColumnOrder(TableMeta table, TableSnapshot snapshot, List<SchemaDiff> diffs) {
+        if (config == null || !config.reorderTables().contains(table.tableName())
+                && !config.reorderTables().contains(table.table())) {
+            return;
+        }
+        var actual = snapshot.columns().stream().map(ColumnSnapshot::name).toList();
+        var expected = table.columns().stream().map(ColumnMeta::column).toList();
+        if (snapshot.matchesColumns(actual, expected)) {
+            return;
+        }
+        var actualKeys = actual.stream().map(snapshot::actualKey).collect(java.util.stream.Collectors.toSet());
+        var expectedKeys = expected.stream().map(snapshot::key).collect(java.util.stream.Collectors.toSet());
+        if (actual.size() != expected.size() || !actualKeys.equals(expectedKeys)) {
+            unknowns.add("Physical reordering requires identical column coverage: " + table.tableName());
+            return;
+        }
+        diffs.add(
+                SchemaDiff.of(
+                        Behavior.REORDER_COLUMNS,
+                        Risk.DANGEROUS,
+                        table,
+                        "Physical column order differs: " + table.tableName()));
+    }
+
+    /**
      * Computes column differences.
      *
      * @param table    the entity table metadata
@@ -317,6 +380,7 @@ public class SchemaDiffer {
                 }
                 continue;
             }
+            diffColumnDefault(table, column, actual, diffs);
             SqlTypeDescriptor expectedType = operations.resolveType(column);
             SqlTypeDescriptor actualType = actual.type();
             SqlTypeDescriptor.Comparison typeResult = operations.compareType(expectedType, actualType);
@@ -630,8 +694,14 @@ public class SchemaDiffer {
     public List<IndexMeta> expectedIndexes(TableMeta table) {
         List<IndexMeta> indexes = new ArrayList<>();
         for (IndexMeta index : table.indexes()) {
-            if (index.predicate() == null || operations.supportsPartialIndexes()) {
+            boolean supported = index.unique() ? operations.supportsConditionalUniqueIndexes()
+                    : operations.supportsPartialIndexes();
+            if (index.predicate() == null || supported) {
                 addIndex(indexes, index);
+            } else {
+                unknowns.add(
+                        "Dialect cannot enforce the mapped index predicate: " + table.tableName() + Symbol.DOT
+                                + index.name());
             }
         }
         for (ColumnMeta column : table.columns()) {

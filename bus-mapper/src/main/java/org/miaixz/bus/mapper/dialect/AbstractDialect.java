@@ -67,6 +67,26 @@ public abstract class AbstractDialect implements Dialect {
     protected static final String COMMA_SPACE = Symbol.COMMA + Symbol.SPACE;
 
     /**
+     * SQL prefix that changes an existing table definition.
+     */
+    protected static final String ALTER_TABLE = "ALTER TABLE";
+
+    /**
+     * SQL clause that targets an existing column.
+     */
+    protected static final String ALTER_COLUMN = "ALTER COLUMN";
+
+    /**
+     * SQL clause that removes the default of an existing column.
+     */
+    protected static final String DROP_DEFAULT = "DROP DEFAULT";
+
+    /**
+     * SQL clause that creates a namespace when it is not already present.
+     */
+    protected static final String CREATE_SCHEMA_IF_ABSENT = "CREATE SCHEMA IF NOT EXISTS";
+
+    /**
      * JDBC table type used for table metadata lookup.
      */
     protected static final String TABLE_TYPE = "TABLE";
@@ -110,6 +130,36 @@ public abstract class AbstractDialect implements Dialect {
      * SQL Server Unicode string literal prefix.
      */
     protected static final String SQLSERVER_UNICODE_PREFIX = "N";
+
+    /**
+     * SQL clause that adds a named table constraint.
+     */
+    private static final String ADD_CONSTRAINT = "ADD CONSTRAINT";
+
+    /**
+     * SQL keyword identifying a database check constraint.
+     */
+    private static final String CHECK = "CHECK";
+
+    /**
+     * JDBC metadata label for a column default expression.
+     */
+    private static final String COLUMN_DEFAULT = "COLUMN_DEF";
+
+    /**
+     * JDBC metadata label for automatic identity generation on write.
+     */
+    private static final String AUTO_INCREMENT = "IS_AUTOINCREMENT";
+
+    /**
+     * JDBC metadata label for columns derived from a database expression.
+     */
+    private static final String GENERATED_COLUMN = "IS_GENERATEDCOLUMN";
+
+    /**
+     * Affirmative value used in JDBC column metadata flags.
+     */
+    private static final String METADATA_YES = "YES";
 
     /**
      * Human-readable database name.
@@ -218,10 +268,80 @@ public abstract class AbstractDialect implements Dialect {
                 Behavior.READ_INDEX_METADATA,
                 Behavior.READ_PRIMARY_KEY_METADATA,
                 Behavior.READ_FOREIGN_KEY_METADATA);
+        if (supportsStandardColumnDefault()) {
+            types.add(Behavior.DROP_COLUMN_DEFAULT);
+        }
         if (upsertType != null && upsertType != Behavior.NONE) {
             types.add(upsertType);
         }
         return types;
+    }
+
+    /**
+     * Indicates whether this dialect supports the standard column default removal syntax.
+     *
+     * @return whether the dialect can remove a default directly without rebuilding the table
+     */
+    protected boolean supportsStandardColumnDefault() {
+        return false;
+    }
+
+    /**
+     * Generates the standard SQL statement that removes a database default from a physical column.
+     *
+     * @param table  mapped table with its physical qualification
+     * @param column actual column name returned by database metadata
+     * @return schema SQL to remove the default
+     */
+    @Override
+    public String dropColumnDefault(TableMeta table, String column) {
+        if (!supportsStandardColumnDefault()) {
+            throw unsupportedSchema("DROP_COLUMN_DEFAULT", table);
+        }
+        return ALTER_TABLE + Symbol.SPACE + tableName(table) + Symbol.SPACE + ALTER_COLUMN + Symbol.SPACE
+                + quotePhysicalIdentifier(column, schemaQuote()) + Symbol.SPACE + DROP_DEFAULT;
+    }
+
+    /**
+     * Builds native DDL for a check constraint read from the same database's catalogue.
+     *
+     * @param table      physical table receiving the constraint
+     * @param name       actual constraint name
+     * @param definition trusted single CHECK expression from the catalogue
+     * @return the generated check constraint statement
+     */
+    protected String standardRestoreCheck(TableMeta table, String name, String definition) {
+        if (StringKit.isBlank(definition)
+                || !definition.strip().startsWith(CHECK + Symbol.SPACE + Symbol.PARENTHESE_LEFT)
+                || !definition.strip().endsWith(Symbol.PARENTHESE_RIGHT)
+                || definition.indexOf(Symbol.C_SEMICOLON) >= 0) {
+            throw new IllegalArgumentException("A single catalogue CHECK definition is required");
+        }
+        return ALTER_TABLE + Symbol.SPACE + tableName(table) + Symbol.SPACE + ADD_CONSTRAINT + Symbol.SPACE
+                + quotePhysicalIdentifier(name, schemaQuote()) + Symbol.SPACE + definition;
+    }
+
+    /**
+     * Supplies the identifier delimiter used by the dialect's physical maintenance SQL.
+     *
+     * @return native identifier delimiter
+     */
+    protected String schemaQuote() {
+        return Symbol.DOUBLE_QUOTES;
+    }
+
+    /**
+     * Delimits one physical identifier, escaping embedded occurrences of the native delimiter.
+     *
+     * @param name  identifier exactly as stored in the database
+     * @param quote native identifier delimiter
+     * @return a single escaped SQL identifier
+     */
+    protected static String quotePhysicalIdentifier(String name, String quote) {
+        if (StringKit.isBlank(name) || name.indexOf(0) >= 0) {
+            throw new IllegalArgumentException("A physical SQL identifier is required");
+        }
+        return quote + name.replace(quote, quote + quote) + quote;
     }
 
     /**
@@ -429,9 +549,16 @@ public abstract class AbstractDialect implements Dialect {
                 if (isDecimalType(typeName)) {
                     type.precision(size).scale(scale);
                 }
-                columns.add(
-                        new ColumnSnapshot().name(rs.getString("COLUMN_NAME")).comment(getString(rs, REMARKS_COLUMN))
-                                .type(type).nullable(nullableValue));
+                ColumnSnapshot snapshot = new ColumnSnapshot().name(rs.getString("COLUMN_NAME"))
+                        .comment(getString(rs, REMARKS_COLUMN)).type(type).nullable(nullableValue)
+                        .identity(METADATA_YES.equals(getString(rs, AUTO_INCREMENT)))
+                        .generated(METADATA_YES.equals(getString(rs, GENERATED_COLUMN)));
+                try {
+                    snapshot.defaultExpression(rs.getString(COLUMN_DEFAULT)).defaultKnown(true);
+                } catch (SQLException unavailable) {
+                    snapshot.defaultKnown(false);
+                }
+                columns.add(snapshot);
             }
         }
     }

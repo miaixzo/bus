@@ -598,6 +598,26 @@ public class MapperOptions {
         private boolean dryRun = true;
 
         /**
+         * Unqualified target catalog for this namespace's startup synchronization.
+         */
+        private String targetCatalog;
+
+        /**
+         * Unqualified target schema for this namespace's startup synchronization.
+         */
+        private String targetSchema;
+
+        /**
+         * Explicit physical table-and-column coordinates whose database defaults may be removed.
+         */
+        private Set<String> dropColumnDefaults = new HashSet<>();
+
+        /**
+         * Explicit physical table coordinates eligible for column reordering.
+         */
+        private Set<String> reorderTables = new HashSet<>();
+
+        /**
          * Whether generated schema SQL should be printed through mapper logging.
          */
         private boolean printSql = true;

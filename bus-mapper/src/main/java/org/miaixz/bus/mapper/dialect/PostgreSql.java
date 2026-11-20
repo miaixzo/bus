@@ -63,6 +63,105 @@ public class PostgreSql extends AbstractDialect {
     }
 
     /**
+     * Creates a PostgreSQL schema if it does not already exist.
+     *
+     * @param schema physical destination schema
+     * @return generated schema creation SQL
+     */
+    @Override
+    public String createSchema(String schema) {
+        return CREATE_SCHEMA_IF_ABSENT + Symbol.SPACE + migrationIdentifier(schema);
+    }
+
+    /**
+     * Moves a PostgreSQL table to another schema and keeps the same table name.
+     *
+     * @param table  physical table coordinate
+     * @param schema destination schema
+     * @return generated table transfer SQL
+     */
+    @Override
+    public String moveTable(TableMeta table, String schema) {
+        return "ALTER TABLE " + migrationTable(table) + " SET SCHEMA " + migrationIdentifier(schema);
+    }
+
+    /**
+     * Takes an exclusive PostgreSQL table lock for the current transaction.
+     *
+     * @param table physical table coordinate
+     * @return generated exclusive lock SQL
+     */
+    @Override
+    public String lockTable(TableMeta table) {
+        return "LOCK TABLE " + migrationTable(table) + " IN ACCESS EXCLUSIVE MODE";
+    }
+
+    /**
+     * Restores a PostgreSQL check constraint from its database catalogue definition.
+     *
+     * @param table      physical replacement table
+     * @param name       existing constraint name
+     * @param definition complete check definition read from the database
+     * @return generated constraint creation SQL
+     */
+    @Override
+    public String restoreCheck(TableMeta table, String name, String definition) {
+        if (definition == null || !definition.startsWith("CHECK (")) {
+            throw new IllegalArgumentException("A PostgreSQL check definition is required.");
+        }
+        return "ALTER TABLE " + migrationTable(table) + " ADD CONSTRAINT " + migrationIdentifier(name) + Symbol.SPACE
+                + definition;
+    }
+
+    /**
+     * Removes an explicit PostgreSQL column default while retaining the column and its values.
+     *
+     * @param table  physical table coordinate
+     * @param column actual column name returned by the catalogue
+     * @return generated default removal SQL
+     */
+    @Override
+    public String dropColumnDefault(TableMeta table, String column) {
+        return ALTER_TABLE + Symbol.SPACE + migrationTable(table) + Symbol.SPACE + ALTER_COLUMN + Symbol.SPACE
+                + migrationIdentifier(column) + Symbol.SPACE + DROP_DEFAULT;
+    }
+
+    /**
+     * Qualifies the table with its explicit schema in the current PostgreSQL database.
+     *
+     * @param table physical table coordinate used for a migration
+     * @return quoted schema and table names
+     */
+    private String migrationTable(TableMeta table) {
+        return (table.schema() == null ? Normal.EMPTY : migrationIdentifier(unquote(table.schema())) + Symbol.DOT)
+                + migrationIdentifier(unquote(table.table()));
+    }
+
+    /**
+     * Quotes one unqualified PostgreSQL identifier supplied by maintenance configuration.
+     *
+     * @param value unqualified identifier
+     * @return quoted identifier
+     */
+    private String migrationIdentifier(String value) {
+        if (StringKit.isBlank(value) || value.indexOf(0) >= 0) {
+            throw new IllegalArgumentException("A PostgreSQL migration identifier is required.");
+        }
+        return Symbol.DOUBLE_QUOTES + value.replace(Symbol.DOUBLE_QUOTES, Symbol.DOUBLE_QUOTES + Symbol.DOUBLE_QUOTES)
+                + Symbol.DOUBLE_QUOTES;
+    }
+
+    /**
+     * Reports PostgreSQL support for direct default removal during schema synchronization.
+     *
+     * @return true when native default removal is available
+     */
+    @Override
+    protected boolean supportsStandardColumnDefault() {
+        return true;
+    }
+
+    /**
      * Returns the UPSERT family used by PostgreSQL.
      *
      * @return {@link Behavior#INSERT_ON_CONFLICT}

@@ -142,14 +142,7 @@ public class EntitySchemaInitializer {
                         if (table == source) {
                             table = copyTable(source);
                         }
-                        // Scope metadata discovery and DDL to the same schema used by this connection.
-                        if (table.schema() == null || table.schema().isBlank()) {
-                            String schema = connection.getSchema();
-                            String quote = connection.getMetaData().getIdentifierQuoteString();
-                            table.schema(
-                                    schema == null || quote == null || quote.isBlank() ? schema
-                                            : quote + schema.replace(quote, quote + quote) + quote);
-                        }
+                        applyNamespace(connection, config, table);
                         table.columns(new ColumnOrderResolver().resolve(table));
                         locks.add(SchemaInitializationLock.acquire(dataSource, table));
                         locks.add(operations.acquireSchemaInitializationLock(connection, table));
@@ -241,6 +234,50 @@ public class EntitySchemaInitializer {
         }
         writeScript(config, scriptSqls);
         return report;
+    }
+
+    /**
+     * Applies explicit target namespace overrides to schema-local metadata.
+     *
+     * @param connection active JDBC connection
+     * @param config     initialization scope
+     * @param table      copied table metadata
+     * @throws SQLException when metadata cannot be read or the requested namespace is unsupported
+     */
+    private void applyNamespace(Connection connection, SchemaConfig config, TableMeta table) throws SQLException {
+        var metadata = connection.getMetaData();
+        if (StringKit.isNotBlank(config.targetCatalog())) {
+            if (!metadata.supportsCatalogsInTableDefinitions()) {
+                throw new SQLException("The database does not accept a target catalog in table definitions");
+            }
+            table.catalog(quotedNamespace(metadata.getIdentifierQuoteString(), config.targetCatalog()));
+        }
+        if (StringKit.isNotBlank(config.targetSchema())) {
+            if (!metadata.supportsSchemasInTableDefinitions()) {
+                throw new SQLException("The database does not accept a target schema in table definitions");
+            }
+            table.schema(quotedNamespace(metadata.getIdentifierQuoteString(), config.targetSchema()));
+        } else if (StringKit.isBlank(table.schema()) && metadata.supportsSchemasInTableDefinitions()) {
+            table.schema(quotedNamespace(metadata.getIdentifierQuoteString(), connection.getSchema()));
+        }
+    }
+
+    /**
+     * Quotes one physical namespace component using the JDBC driver's identifier delimiter.
+     *
+     * @param quote the driver-provided delimiter
+     * @param name  physical catalog or schema component
+     * @return quoted physical component or null for an unspecified namespace
+     * @throws SQLException when the namespace cannot be represented safely
+     */
+    private static String quotedNamespace(String quote, String name) throws SQLException {
+        if (StringKit.isBlank(name)) {
+            return null;
+        }
+        if (name.indexOf(0) >= 0 || StringKit.isBlank(quote) && !name.matches("[A-Za-z_][A-Za-z_0-9]*")) {
+            throw new SQLException("Invalid physical namespace");
+        }
+        return StringKit.isBlank(quote) ? name : quote + name.replace(quote, quote + quote) + quote;
     }
 
     /**
@@ -403,14 +440,14 @@ public class EntitySchemaInitializer {
             SchemaReport report,
             List<String> scriptSqls,
             List<SchemaPlan> plans) throws SQLException {
-        List<Prepared> prepared = new ArrayList<>();
+        List<SchemaDiff> prepared = new ArrayList<>();
         Set<String> blocked = new HashSet<>();
         for (SchemaPhase phase : SchemaPhase.values()) {
             for (SchemaPlan plan : plans) {
                 for (SchemaDiff diff : plan.diffs()) {
                     if (phase != SchemaPhase.of(diff.type()))
                         continue;
-                    Prepared item = prepareDiff(connection, dialect, operations, config, report, diff);
+                    SchemaDiff item = prepareDiff(connection, dialect, operations, config, report, diff);
                     if (item != null)
                         prepared.add(item);
                     else if (diff.type() == Behavior.CREATE_TABLE)
@@ -421,8 +458,7 @@ public class EntitySchemaInitializer {
                 }
             }
         }
-        for (Prepared item : prepared) {
-            SchemaDiff diff = item.diff();
+        for (SchemaDiff diff : prepared) {
             String table = diff.tableMeta().tableName();
             boolean dependent = blocked.contains(table) || blocked.contains(dependencyKey(diff));
             if (diff.foreignKey() != null) {
@@ -442,20 +478,26 @@ public class EntitySchemaInitializer {
                         "Required structure operation is blocked or failed");
                 continue;
             }
-            scriptSqls.add(item.sql());
+            if (diff.verification() == null) {
+                scriptSqls.addAll(diff.statements());
+            }
             if (config.mode() == Schema.SCRIPT || config.dryRun()) {
-                report.skippedSqls().add(item.sql());
+                report.skippedSqls().addAll(diff.statements());
                 report.diagnose(
                         table,
                         diff.type().name(),
                         Stage.PREPARE,
                         Status.PROPOSED,
-                        "SQL generated without application");
+                        diff.verification() == null ? "SQL generated without application"
+                                : "Validated rebuild preview; apply through managed schema synchronization");
                 continue;
             }
-            try (Statement statement = connection.createStatement()) {
-                statement.execute(item.sql());
-                report.executedSqls().add(item.sql());
+            try {
+                if (diff.verification() != null && diff.type() == Behavior.DROP_COLUMN_DEFAULT) {
+                    operations.prepareMaintenance(connection, diff);
+                }
+                executeDifference(connection, diff);
+                report.executedSqls().addAll(diff.statements());
                 report.diagnose(
                         table,
                         diff.type().name(),
@@ -463,7 +505,7 @@ public class EntitySchemaInitializer {
                         Status.APPLIED,
                         "SQL executed; final structure is checked separately");
             } catch (SQLException e) {
-                report.skippedSqls().add(item.sql());
+                report.skippedSqls().addAll(diff.statements());
                 report.failedDiffs().add(diff);
                 blocked.add(diff.type() == Behavior.CREATE_TABLE ? table : dependencyKey(diff));
                 report.diagnose(
@@ -533,7 +575,7 @@ public class EntitySchemaInitializer {
      * @return prepared SQL, or null when this difference is inspected, blocked, or unsupported
      * @throws SQLException when preparation-time metadata or row-count checks fail
      */
-    private Prepared prepareDiff(
+    private SchemaDiff prepareDiff(
             Connection connection,
             Dialect dialect,
             SchemaBehavior operations,
@@ -556,8 +598,15 @@ public class EntitySchemaInitializer {
                 report.diagnose(table, diff.type().name(), Stage.PREPARE, status, diff.message());
                 return null;
             }
-            String sql = sql(operations, diff);
-            if (sql == null || sql.isBlank()) {
+            if (diff.type() == Behavior.DROP_COLUMN_DEFAULT || diff.type() == Behavior.REORDER_COLUMNS) {
+                operations.prepareMaintenance(connection, diff);
+            } else {
+                String statement = sql(operations, diff);
+                if (StringKit.isNotBlank(statement)) {
+                    diff.preparation(List.of(statement));
+                }
+            }
+            if (diff.preparation().isEmpty()) {
                 report.skippedSqls().add(diff.message());
                 report.diagnose(
                         table,
@@ -574,8 +623,8 @@ public class EntitySchemaInitializer {
                         "Schema SQL prepared: table={}, operation={}, sql={}",
                         table,
                         diff.type(),
-                        sql);
-            return new Prepared(diff, sql);
+                        diff.statements());
+            return diff;
         } catch (SQLException | RuntimeException e) {
             report.failedDiffs().add(diff);
             report.diagnose(table, diff.type().name(), Stage.PREPARE, Status.FAILED, "DDL preparation failed");
@@ -601,15 +650,6 @@ public class EntitySchemaInitializer {
         if (diff.actualColumn() != null)
             return table + ".column." + diff.actualColumn().name();
         return table + Symbol.DOT + diff.type();
-    }
-
-    /**
-     * A permitted difference whose SQL was generated successfully during the preparation pass.
-     *
-     * @param diff the original schema difference and its object coordinates
-     * @param sql  the generated SQL retained for later execution or script output
-     */
-    private record Prepared(SchemaDiff diff, String sql) {
     }
 
     /**
@@ -672,6 +712,7 @@ public class EntitySchemaInitializer {
             case MODIFY_COLUMN_NULLABLE -> config.allowModifyNullable();
             case RENAME_COLUMN -> config.allowRenameColumn();
             case DROP_COLUMN -> config.allowDropColumn();
+            case DROP_COLUMN_DEFAULT, REORDER_COLUMNS -> true;
             case CREATE_INDEX -> config.allowCreateIndex();
             case DROP_INDEX -> config.allowDropIndex();
             case CREATE_UNIQUE -> config.allowCreateUnique();
@@ -692,11 +733,69 @@ public class EntitySchemaInitializer {
     }
 
     /**
+     * Executes a native change or publishes a checked replacement in an isolated transaction.
+     *
+     * @param connection active maintenance connection
+     * @param diff       prepared SQL and its optional pre-cutover row comparison
+     * @throws SQLException when structural SQL or row verification fails
+     */
+    private void executeDifference(Connection connection, SchemaDiff diff) throws SQLException {
+        if (diff.verification() == null) {
+            executeStatements(connection, diff.preparation());
+            return;
+        }
+        if (!connection.getAutoCommit()) {
+            throw new SQLException("A verified table replacement requires its own transaction");
+        }
+        connection.setAutoCommit(false);
+        try {
+            executeStatements(connection, diff.preparation());
+            try (var statement = connection.createStatement();
+                    var result = statement.executeQuery(diff.verification())) {
+                if (!result.next() || !result.getBoolean(1) || result.wasNull()) {
+                    throw new SQLException("Replacement data or metadata differs from the original table");
+                }
+            }
+            executeStatements(connection, diff.cutover());
+            connection.commit();
+        } catch (SQLException | RuntimeException failure) {
+            try {
+                connection.rollback();
+            } catch (SQLException rollbackFailure) {
+                failure.addSuppressed(rollbackFailure);
+                throw failure;
+            }
+            try {
+                connection.setAutoCommit(true);
+            } catch (SQLException resetFailure) {
+                failure.addSuppressed(resetFailure);
+            }
+            throw failure;
+        }
+        connection.setAutoCommit(true);
+    }
+
+    /**
+     * Executes ordered structural statements using the current transaction.
+     *
+     * @param connection active schema connection
+     * @param statements generated SQL in execution order
+     * @throws SQLException if a statement fails
+     */
+    private void executeStatements(Connection connection, List<String> statements) throws SQLException {
+        try (Statement statement = connection.createStatement()) {
+            for (String sql : statements) {
+                statement.execute(sql);
+            }
+        }
+    }
+
+    /**
      * Builds SQL for a schema difference.
      *
      * @param operations the schema behavior
      * @param diff       the schema difference
-     * @return the generated SQL, or {@code null}
+     * @return the generated SQL, or null
      */
     private String sql(SchemaBehavior operations, SchemaDiff diff) {
         return switch (diff.type()) {
@@ -842,6 +941,11 @@ public class EntitySchemaInitializer {
         TABLE,
 
         /**
+         * Reorders current physical columns before other changes can alter their definitions.
+         */
+        COLUMN_ORDER,
+
+        /**
          * Removes foreign keys before the referenced indexes or columns can change.
          */
         FOREIGN_KEY_REMOVAL,
@@ -880,6 +984,7 @@ public class EntitySchemaInitializer {
         private static SchemaPhase of(Behavior behavior) {
             return switch (behavior) {
                 case CREATE_TABLE -> TABLE;
+                case REORDER_COLUMNS -> COLUMN_ORDER;
                 case DROP_FOREIGN_KEY -> FOREIGN_KEY_REMOVAL;
                 case DROP_UNIQUE, DROP_INDEX -> INDEX_REMOVAL;
                 case CREATE_UNIQUE, CREATE_INDEX -> INDEX;

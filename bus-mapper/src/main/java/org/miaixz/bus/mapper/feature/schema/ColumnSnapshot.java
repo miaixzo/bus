@@ -54,6 +54,26 @@ public class ColumnSnapshot {
     private Boolean nullable;
 
     /**
+     * Default expression reported by the database, or null when no default is recorded.
+     */
+    private String defaultExpression;
+
+    /**
+     * Whether the driver returned the column default metadata, including an explicit null result.
+     */
+    private boolean defaultKnown;
+
+    /**
+     * Whether the database automatically generates identities for this column.
+     */
+    private boolean identity;
+
+    /**
+     * Whether the column value is derived from a generated expression.
+     */
+    private boolean generated;
+
+    /**
      * Constructs a new ColumnSnapshot instance.
      */
     public ColumnSnapshot() {

@@ -19,6 +19,9 @@
 */
 package org.miaixz.bus.mapper.feature.schema;
 
+import java.util.List;
+import java.util.stream.Stream;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -91,6 +94,30 @@ public class SchemaDiff {
      * Human-readable difference message.
      */
     private String message;
+
+    /**
+     * Native SQL or the statements that prepare a table replacement.
+     */
+    private List<String> preparation = List.of();
+
+    /**
+     * Read-only check that must return true before a transactional replacement is published.
+     */
+    private String verification;
+
+    /**
+     * Statements applied after the copied data and source metadata have been verified.
+     */
+    private List<String> cutover = List.of();
+
+    /**
+     * Lists all structural statements prepared for this difference.
+     *
+     * @return structural SQL in execution order
+     */
+    public List<String> statements() {
+        return Stream.concat(preparation.stream(), cutover.stream()).toList();
+    }
 
     /**
      * Constructs a new SchemaDiff instance.
