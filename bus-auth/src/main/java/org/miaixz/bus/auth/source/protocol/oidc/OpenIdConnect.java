@@ -83,6 +83,42 @@ public class OpenIdConnect {
     }
 
     /**
+     * Defines portable framework configuration keys, separate from protocol wire and discovery member names.
+     *
+     * @author Kimi Liu
+     */
+    public static class Options {
+
+        /**
+         * Configured OpenID Provider discovery document endpoint.
+         */
+        public static final String DISCOVERY_ENDPOINT = "discovery_endpoint";
+
+        /**
+         * Configured acceptable ID Token signing algorithms; distinct from provider discovery metadata.
+         */
+        public static final String ID_TOKEN_SIGNING_ALGORITHMS = "id_token_signing_algorithms";
+
+        /**
+         * Configured ID Token lifetime in seconds.
+         */
+        public static final String ID_TOKEN_LIFETIME = "id_token_lifetime";
+
+        /**
+         * Configured algorithm used by the issuer to sign ID Tokens.
+         */
+        public static final String ID_TOKEN_SIGNING_ALGORITHM = "id_token_signing_algorithm";
+
+        /**
+         * Creates a configuration key holder with no retained state.
+         */
+        public Options() {
+            // No initialization required.
+        }
+
+    }
+
+    /**
      * Defines OpenID Connect authentication and logout request parameter names.
      *
      * @author Kimi Liu
@@ -451,6 +487,27 @@ public class OpenIdConnect {
          * Creates an OpenID Connect response-mode constant holder.
          */
         public ResponseModes() {
+            // No initialization required.
+        }
+
+    }
+
+    /**
+     * Defines client registration metadata introduced by OpenID Connect specifications.
+     *
+     * @author Kimi Liu
+     */
+    public static class ClientMetadata {
+
+        /**
+         * Registered logout redirect URI array defined by OpenID Connect RP-Initiated Logout section 3.1.
+         */
+        public static final String POST_LOGOUT_REDIRECT_URIS = "post_logout_redirect_uris";
+
+        /**
+         * Creates an OpenID Connect client metadata constant holder with no retained state.
+         */
+        public ClientMetadata() {
             // No initialization required.
         }
 

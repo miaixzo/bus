@@ -61,6 +61,12 @@ public record GiteeOptions(Vendor.Id vendor, Vendor.Variant variant, String clie
     /**
      * Validates and freezes one Gitee registration without resolving its Client Secret.
      *
+     * @param vendor      exact Gitee platform identifier
+     * @param variant     exact default Gitee.com variant
+     * @param clientId    registered Gitee Client ID
+     * @param credential  external Client Secret reference
+     * @param redirectUri exact registered callback URI
+     * @param scopes      ordered Gitee OAuth scopes whose first value is {@code user_info}
      * @throws IllegalArgumentException if a required component, container, or scope is {@code null} or blank
      * @throws ValidateException        if routing, credential, callback, or scopes differ from the frozen manifest
      */

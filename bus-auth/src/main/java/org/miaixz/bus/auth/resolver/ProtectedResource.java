@@ -39,6 +39,11 @@ public record ProtectedResource(String id, List<String> audience, List<String> s
 
     /**
      * Validates and detaches one protected-resource metadata value.
+     *
+     * @param id         protected-resource identifier
+     * @param audience   accepted token audience values
+     * @param scopes     scopes exposed by the protected resource
+     * @param attributes detached protocol-specific metadata
      */
     public ProtectedResource {
         Assert.notBlank(id, "Protected-resource identifier must not be blank");

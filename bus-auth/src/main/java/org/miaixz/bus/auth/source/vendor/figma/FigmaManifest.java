@@ -152,6 +152,7 @@ public class FigmaManifest implements VendorManifest<FigmaOptions> {
      * Creates the stateless Figma manifest used by Vendor locator assembly.
      */
     public FigmaManifest() {
+        // No initialization required.
     }
 
     /**

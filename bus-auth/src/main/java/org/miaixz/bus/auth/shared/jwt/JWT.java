@@ -734,6 +734,14 @@ public class JWT {
 
         /**
          * Validates and freezes public common-claim requirements.
+         *
+         * @param issuer             exact required issuer
+         * @param audiences          non-empty allowed audience set
+         * @param clockSkew          non-negative accepted clock displacement
+         * @param subjectRequired    whether {@code sub} must be present
+         * @param expirationRequired whether {@code exp} must be present
+         * @param issuedAtRequired   whether {@code iat} must be present
+         * @param maximumAge         optional positive maximum age measured from {@code iat}
          */
         public Requirements {
             Assert.notBlank(issuer, "JWT required issuer must not be blank");

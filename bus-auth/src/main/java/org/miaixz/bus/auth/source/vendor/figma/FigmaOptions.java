@@ -62,6 +62,12 @@ public record FigmaOptions(Vendor.Id vendor, Vendor.Variant variant, String clie
     /**
      * Validates and freezes one Figma registration without resolving its external credential.
      *
+     * @param vendor      exact Figma platform identifier
+     * @param variant     exact default login or SCIM Variant
+     * @param clientId    OAuth Client ID or SCIM Tenant ID
+     * @param credential  external Client Secret or SCIM Token reference
+     * @param redirectUri exact OAuth callback or empty for SCIM
+     * @param scopes      ordered OAuth scopes or empty for SCIM
      * @throws IllegalArgumentException if a required component, container, or scope is {@code null} or blank
      * @throws ValidateException        if routing, credential, callback, or scopes differ from the frozen manifest
      */

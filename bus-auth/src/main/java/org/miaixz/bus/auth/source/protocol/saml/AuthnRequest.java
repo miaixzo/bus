@@ -69,6 +69,26 @@ public record AuthnRequest(String id, String version, Instant issueInstant, Opti
     /**
      * Validates protocol identity, URI, index, and mutually exclusive consumer-service addressing rules.
      *
+     * @param id                             required XML ID
+     * @param version                        required protocol version, fixed to {@code 2.0}
+     * @param issueInstant                   required issue instant
+     * @param destination                    optional destination URI
+     * @param consent                        optional consent URI
+     * @param issuer                         optional issuer child
+     * @param signature                      optional complete {@code ds:Signature} element bytes
+     * @param extensions                     ordered complete children of {@code samlp:Extensions}
+     * @param subject                        optional requested subject
+     * @param nameIdPolicy                   optional Name Identifier policy
+     * @param conditions                     optional requested assertion conditions
+     * @param requestedAuthnContext          optional requested authentication context
+     * @param scoping                        optional complete {@code samlp:Scoping} element bytes
+     * @param forceAuthn                     optional lexical-presence value of {@code ForceAuthn}
+     * @param passive                        optional lexical-presence value of {@code IsPassive}
+     * @param protocolBinding                optional requested response binding URI
+     * @param assertionConsumerServiceIndex  optional metadata endpoint index
+     * @param assertionConsumerServiceUrl    optional explicit assertion consumer URL
+     * @param attributeConsumingServiceIndex optional metadata attribute service index
+     * @param providerName                   optional human-readable requester name
      * @throws IllegalArgumentException if a component or optional container is {@code null}
      * @throws ValidateException        if a protocol invariant or URI/index constraint is invalid
      */

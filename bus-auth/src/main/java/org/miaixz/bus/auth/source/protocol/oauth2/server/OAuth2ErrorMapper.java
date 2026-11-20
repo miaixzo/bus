@@ -118,6 +118,7 @@ public class OAuth2ErrorMapper {
      * Creates a standard OAuth error mapper that serializes JSON errors through {@link JsonKit}.
      */
     public OAuth2ErrorMapper() {
+        // No initialization required.
     }
 
     /**

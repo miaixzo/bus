@@ -33,6 +33,9 @@ public record WeChatTargets(VendorTargets.Fixed member, VendorTargets.Fixed sens
 
     /**
      * Validates the immutable endpoint association.
+     *
+     * @param member    endpoint used to read the visible enterprise member profile
+     * @param sensitive endpoint used to exchange a user ticket for authorized sensitive member fields
      */
     public WeChatTargets {
         Assert.notNull(member, "WeChat member target must not be null");

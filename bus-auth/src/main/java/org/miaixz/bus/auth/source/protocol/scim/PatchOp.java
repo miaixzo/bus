@@ -36,6 +36,8 @@ public record PatchOp(List<String> schemas, List<PatchOperation> operations) imp
     /**
      * Enforces the PatchOp schema and non-empty operation sequence.
      *
+     * @param schemas    singleton standard PatchOp schema URI
+     * @param operations non-empty ordered patch operation sequence
      * @throws IllegalArgumentException if a required value, collection, or operation is {@code null}
      * @throws ValidateException        if the schema or operation sequence is invalid
      */

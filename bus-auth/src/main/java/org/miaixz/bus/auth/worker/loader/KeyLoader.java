@@ -62,6 +62,13 @@ public interface KeyLoader extends Loader<KeyLoader.Request, KeyLoader.Record> {
 
         /**
          * Validates one exact cryptographic key lookup request.
+         *
+         * @param source    exact Source Blueprint entry requesting the key
+         * @param issuer    expected key issuer
+         * @param keyId     optional exact key identifier
+         * @param use       expected protocol use
+         * @param algorithm expected registered algorithm
+         * @param at        required validity instant
          */
         public Request {
             Assert.notNull(source, "Key source must not be null");
@@ -92,6 +99,11 @@ public interface KeyLoader extends Loader<KeyLoader.Request, KeyLoader.Record> {
 
         /**
          * Validates one public-key-set listing criteria.
+         *
+         * @param source exact Source Blueprint entry requesting the keys
+         * @param issuer expected key issuer
+         * @param use    expected protocol use
+         * @param at     required validity instant
          */
         public Criteria {
             Assert.notNull(source, "Public key source must not be null");

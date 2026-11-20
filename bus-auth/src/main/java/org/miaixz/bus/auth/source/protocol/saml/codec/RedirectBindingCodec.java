@@ -698,6 +698,10 @@ public class RedirectBindingCodec {
 
         /**
          * Validates and normalizes the decoded binding result.
+         *
+         * @param document   securely decoded original SAML document
+         * @param relayState optional opaque RelayState
+         * @param signature  optional exact Redirect Binding signature evidence
          */
         public Decoded {
             Assert.notNull(document, "Decoded SAML document must not be null");
@@ -721,6 +725,10 @@ public class RedirectBindingCodec {
 
         /**
          * Takes defensive ownership of non-empty signature material.
+         *
+         * @param algorithm   standard XML Signature algorithm URI
+         * @param value       raw decoded signature bytes
+         * @param signedInput exact preserved ASCII input bytes
          */
         public Signature {
             Assert.notBlank(algorithm, "SAML Redirect signature algorithm must not be blank");
@@ -778,6 +786,11 @@ public class RedirectBindingCodec {
 
         /**
          * Validates non-null raw and decoded parameter values.
+         *
+         * @param rawName      exact percent-encoded parameter name
+         * @param rawValue     exact percent-encoded parameter value
+         * @param decodedName  strict UTF-8 decoded parameter name
+         * @param decodedValue strict UTF-8 decoded parameter value
          */
         private RawParameter {
             Assert.notNull(rawName, "SAML raw query name must not be null");

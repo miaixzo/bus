@@ -46,6 +46,8 @@ public record JwkSet(List<Jwk> keys, JsonValue.ObjectValue extensions) {
     /**
      * Validates and freezes the complete set without imposing meaning on key order.
      *
+     * @param keys       JWK values in wire order, which does not imply selection priority
+     * @param extensions top-level members other than the reserved {@code keys} member
      * @throws IllegalArgumentException if a component or key is {@code null}
      * @throws ValidateException        if extensions contain the reserved {@code keys} member
      */

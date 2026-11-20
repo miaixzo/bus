@@ -58,6 +58,12 @@ public record SlackOptions(Vendor.Id vendor, Vendor.Variant variant, String clie
     /**
      * Validates and freezes one Slack registration without resolving its external credential.
      *
+     * @param vendor      exact Slack platform identifier
+     * @param variant     exact default login or SCIM Variant
+     * @param clientId    OAuth application identifier or non-sensitive SCIM workspace/organization selector
+     * @param credential  external client-secret or SCIM administrator-token reference
+     * @param redirectUri exact login callback or empty for SCIM
+     * @param scopes      ordered login scopes or empty for SCIM
      * @throws IllegalArgumentException if a required component, container, or scope is {@code null} or blank
      * @throws ValidateException        if routing, credential, callback, scope syntax, uniqueness, identity coverage,
      *                                  or SCIM isolation fails

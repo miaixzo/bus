@@ -36,6 +36,9 @@ public record Status(StatusCode statusCode, Optional<StatusMessage> statusMessag
     /**
      * Validates and normalizes the optional status children.
      *
+     * @param statusCode    required top-level status code
+     * @param statusMessage optional human-readable protocol status message
+     * @param statusDetail  optional structured status detail extensions
      * @throws IllegalArgumentException if a component or optional container is {@code null}
      */
     public Status {

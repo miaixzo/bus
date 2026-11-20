@@ -57,6 +57,12 @@ public record OsChinaOptions(Vendor.Id vendor, Vendor.Variant variant, String cl
     /**
      * Validates and freezes one OSChina registration without resolving its client secret.
      *
+     * @param vendor      exact OSChina platform identifier
+     * @param variant     exact default OSChina variant
+     * @param clientId    public client identifier issued by OSChina
+     * @param credential  external client-secret reference
+     * @param redirectUri exact callback URI registered for the application
+     * @param scopes      ordered requested OAuth scopes, possibly empty
      * @throws IllegalArgumentException if a required component, container, or scope is {@code null} or blank
      * @throws ValidateException        if routing, credential type, callback, or scope uniqueness is invalid
      */

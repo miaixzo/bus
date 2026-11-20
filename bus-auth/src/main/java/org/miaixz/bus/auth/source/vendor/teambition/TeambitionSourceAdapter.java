@@ -780,6 +780,7 @@ public class TeambitionSourceAdapter implements VendorAdapter {
         /**
          * Validates one private Teambition token result.
          *
+         * @param accessToken sensitive access token
          * @throws IllegalArgumentException if the access token is blank
          */
         private Access {

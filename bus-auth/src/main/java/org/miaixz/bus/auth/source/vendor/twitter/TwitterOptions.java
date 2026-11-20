@@ -57,6 +57,12 @@ public record TwitterOptions(Vendor.Id vendor, Vendor.Variant variant, String cl
     /**
      * Validates and freezes one Twitter registration without resolving its Client Secret.
      *
+     * @param vendor      exact Twitter platform identifier
+     * @param variant     exact default Twitter.com variant
+     * @param clientId    registered Twitter OAuth App Client ID
+     * @param credential  external Client Secret reference
+     * @param redirectUri exact Authorization callback URL
+     * @param scopes      ordered X OAuth scopes beginning with {@code tweet.read} and {@code users.read}
      * @throws IllegalArgumentException if a required component, container, or scope is {@code null} or blank
      * @throws ValidateException        if routing, credential, callback, or scopes differ from the frozen manifest
      */

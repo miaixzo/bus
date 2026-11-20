@@ -40,6 +40,8 @@ public record BulkResponse(List<String> schemas, List<Operation> operations) {
     /**
      * Enforces the BulkResponse schema and immutable operation sequence.
      *
+     * @param schemas    singleton standard BulkResponse schema URI
+     * @param operations operation results in request processing order
      * @throws IllegalArgumentException if a collection or operation is {@code null}
      * @throws ValidateException        if the schema is not the standard BulkResponse schema
      */
@@ -124,6 +126,11 @@ public record BulkResponse(List<String> schemas, List<Operation> operations) {
         /**
          * Enforces method, URI, status, and standard error-object consistency.
          *
+         * @param method   original POST, PUT, PATCH, or DELETE method
+         * @param bulkId   original request-local POST identifier when supplied
+         * @param location absolute URI of the affected resource when supplied
+         * @param response standard SCIM Error object for an unsuccessful result
+         * @param status   three-digit decimal HTTP status code
          * @throws IllegalArgumentException if a required value or optional container is {@code null}
          * @throws ValidateException        if a method, location, status, or response combination is invalid
          */

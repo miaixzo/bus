@@ -65,6 +65,28 @@ public record User(Resource.Common common, String userName, Optional<Name> name,
     /**
      * Validates and freezes every core User component.
      *
+     * @param common            common resource attributes and declared schema extensions
+     * @param userName          required service-provider-unique user identifier
+     * @param name              optional structured person name
+     * @param displayName       optional display name
+     * @param nickName          optional casual name
+     * @param profileUrl        optional profile URL
+     * @param title             optional title
+     * @param userType          optional relationship-to-service type
+     * @param preferredLanguage optional preferred language tag
+     * @param locale            optional locale tag
+     * @param timezone          optional time-zone name
+     * @param active            optional administrative active flag
+     * @param password          inbound write-only password lease
+     * @param emails            email address values
+     * @param phoneNumbers      telephone values
+     * @param instantMessages   instant-messaging values
+     * @param photos            photo URI values
+     * @param addresses         postal address values
+     * @param groups            read-only group memberships
+     * @param entitlements      entitlement values
+     * @param roles             role values
+     * @param certificates      X.509 certificate values
      * @throws IllegalArgumentException if a component, container, or list item is {@code null}
      * @throws ValidateException        if the core User schema is absent
      */
@@ -237,6 +259,13 @@ public record User(Resource.Common common, String userName, Optional<Name> name,
 
         /**
          * Normalizes every optional name component.
+         *
+         * @param formatted       complete formatted name
+         * @param familyName      family name
+         * @param givenName       given name
+         * @param middleName      middle name
+         * @param honorificPrefix honorific prefix
+         * @param honorificSuffix honorific suffix
          */
         public Name {
             formatted = text(formatted, "SCIM formatted name");
@@ -262,6 +291,11 @@ public record User(Resource.Common common, String userName, Optional<Name> name,
 
         /**
          * Validates and normalizes one multi-valued item.
+         *
+         * @param value   required primary value
+         * @param display optional display value
+         * @param type    optional client-defined type token
+         * @param primary optional primary marker
          */
         public MultiValue {
             value = Assert.notBlank(value, "SCIM multi-valued item value must not be blank");
@@ -291,6 +325,15 @@ public record User(Resource.Common common, String userName, Optional<Name> name,
 
         /**
          * Normalizes every optional address component.
+         *
+         * @param formatted     complete formatted address
+         * @param streetAddress street address
+         * @param locality      locality or city
+         * @param region        region or state
+         * @param postalCode    postal code
+         * @param country       country name
+         * @param type          optional address type
+         * @param primary       optional primary marker
          */
         public Address {
             formatted = text(formatted, "SCIM formatted address");
@@ -319,6 +362,11 @@ public record User(Resource.Common common, String userName, Optional<Name> name,
 
         /**
          * Validates and normalizes one membership.
+         *
+         * @param value     referenced Group id
+         * @param reference optional absolute Group URI
+         * @param display   optional display value
+         * @param type      optional direct or indirect membership type
          */
         public Membership {
             value = Assert.notBlank(value, "SCIM User group id must not be blank");

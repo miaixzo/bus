@@ -40,6 +40,8 @@ public record IntrospectionRequest(String token, Optional<String> tokenTypeHint)
     /**
      * Creates and validates an immutable introspection request.
      *
+     * @param token         opaque token submitted for introspection
+     * @param tokenTypeHint optional registered token type hint
      * @throws IllegalArgumentException if the token or hint container is {@code null}, or token is empty
      * @throws ValidateException        if a present hint is empty or contains an invalid registration-name character
      */

@@ -49,6 +49,12 @@ public record ToutiaoOptions(Vendor.Id vendor, Vendor.Variant variant, String cl
     /**
      * Validates and freezes one Toutiao registration without resolving its secret.
      *
+     * @param vendor      exact Toutiao platform identifier
+     * @param variant     exact default Toutiao variant
+     * @param clientId    public {@code client_key} issued by Toutiao
+     * @param credential  external client-secret reference
+     * @param redirectUri exact callback URI registered for the application
+     * @param scopes      empty list because the historical Toutiao flow does not send a scope parameter
      * @throws IllegalArgumentException if a required component or container is {@code null} or blank
      * @throws ValidateException        if routing, credential, callback, or scope state is invalid
      */

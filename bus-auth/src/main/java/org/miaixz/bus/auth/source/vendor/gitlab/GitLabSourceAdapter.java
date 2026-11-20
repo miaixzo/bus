@@ -1071,6 +1071,12 @@ public class GitLabSourceAdapter implements VendorAdapter {
 
         /**
          * Validates one exact success or OAuth error branch.
+         *
+         * @param code             authorization code
+         * @param state            browser correlation value
+         * @param error            OAuth error
+         * @param errorDescription optional OAuth error description
+         * @param errorUri         optional OAuth error URI
          */
         private CallbackWire {
             Assert.notBlank(state, "GitLab callback state must not be blank");

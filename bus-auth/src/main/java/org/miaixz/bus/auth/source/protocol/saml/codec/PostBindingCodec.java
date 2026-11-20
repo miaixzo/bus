@@ -297,6 +297,8 @@ public class PostBindingCodec {
         /**
          * Validates the form destination and freezes its exact standard controls.
          *
+         * @param action trusted absolute HTTPS form destination
+         * @param fields immutable standard {@code SAMLResponse} and optional {@code RelayState} controls
          * @throws IllegalArgumentException if a required value is null or blank
          * @throws ValidateException        if the action is not a safe HTTPS URI or fields violate the response grammar
          */
@@ -350,6 +352,8 @@ public class PostBindingCodec {
         /**
          * Validates the decoded binding result and normalizes its optional container.
          *
+         * @param document   typed secure document retaining the original XML bytes
+         * @param relayState optional opaque RelayState
          * @throws IllegalArgumentException if a required component or container is {@code null}
          * @throws ValidateException        if RelayState exceeds the binding limit
          */

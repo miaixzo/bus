@@ -81,6 +81,9 @@ public interface SessionWorker {
 
         /**
          * Creates a validated Source-to-Session binding.
+         *
+         * @param sourceId exact Source identifier
+         * @param session  immutable framework Session state
          */
         public Binding {
             Assert.notBlank(sourceId, "Session worker Source id must not be blank");

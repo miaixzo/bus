@@ -181,6 +181,7 @@ public class MicrosoftManifest implements VendorManifest<MicrosoftOptions> {
      * Creates the stateless Microsoft manifest used by Vendor locator assembly.
      */
     public MicrosoftManifest() {
+        // No initialization required.
     }
 
     /**

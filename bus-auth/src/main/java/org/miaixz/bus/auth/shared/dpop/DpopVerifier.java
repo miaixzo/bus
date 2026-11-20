@@ -278,6 +278,12 @@ public class DpopVerifier {
         /**
          * Validates and freezes all receiving-request values.
          *
+         * @param method      receiving standard HTTP method
+         * @param uri         receiving absolute target URI
+         * @param accessToken optional presented access token requiring {@code ath}
+         * @param nonce       optional server-issued nonce required in the proof
+         * @param maximumAge  positive maximum proof age from {@code iat}
+         * @param critical    exact JOSE critical extensions processed by the caller
          * @throws IllegalArgumentException if a component or collection member is {@code null}
          * @throws ValidateException        if method, URI, token, nonce, or maximum age violates the verification
          *                                  profile

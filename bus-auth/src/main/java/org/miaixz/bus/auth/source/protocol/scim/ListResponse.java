@@ -41,6 +41,11 @@ public record ListResponse(List<String> schemas, long totalResults, Optional<Int
     /**
      * Enforces the ListResponse schema and RFC 7644 pagination invariants.
      *
+     * @param schemas      singleton standard ListResponse schema URI
+     * @param totalResults total number of results matching the operation before pagination
+     * @param startIndex   one-based index of the first returned result when supplied
+     * @param itemsPerPage number of resources returned on this page when supplied
+     * @param resources    ordered resources serialized under the case-sensitive {@code Resources} wire member
      * @throws IllegalArgumentException if a collection, optional container, or resource is {@code null}
      * @throws ValidateException        if a count, index, schema, or page cardinality is invalid
      */

@@ -48,6 +48,11 @@ public interface CertificateLoader extends Loader<CertificateLoader.Request, Cer
 
         /**
          * Validates one complete certificate lookup request.
+         *
+         * @param source exact Source Blueprint entry requesting the certificate
+         * @param issuer expected certificate issuer
+         * @param use    expected protocol use
+         * @param at     required validity instant
          */
         public Request {
             Assert.notNull(source, "Certificate source must not be null");

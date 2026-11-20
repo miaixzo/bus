@@ -60,6 +60,23 @@ public record ConsumerMetadata(String id, String name, Optional<String> applicat
 
     /**
      * Creates and freezes validated consumer metadata.
+     *
+     * @param id                         consumer identifier
+     * @param name                       display name
+     * @param applicationType            web or native application type
+     * @param redirectUris               ordered registered redirect URI values
+     * @param postLogoutRedirectUris     ordered registered post-logout redirect URI values
+     * @param grantTypes                 allowed authorization grant types
+     * @param responseTypes              allowed authorization response types
+     * @param scopes                     scopes the consumer may request
+     * @param authenticationMethods      registered client authentication methods
+     * @param clientAssertionKeyId       optional standard client assertion key identifier
+     * @param subjectType                public or pairwise subject type
+     * @param sectorIdentifier           optional pairwise sector identifier
+     * @param idTokenEncryptionKeyId     optional ID Token encryption key identifier
+     * @param idTokenEncryptionAlgorithm optional ID Token JWE key-management algorithm
+     * @param idTokenEncryptionMethod    optional ID Token JWE content-encryption method
+     * @param metadata                   detached non-core protocol metadata
      */
     public ConsumerMetadata {
         Assert.notBlank(id, "Consumer identifier must not be blank");

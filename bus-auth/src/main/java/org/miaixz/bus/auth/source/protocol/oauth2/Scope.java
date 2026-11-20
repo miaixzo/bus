@@ -42,6 +42,7 @@ public record Scope(List<String> values) {
     /**
      * Creates an immutable scope and validates every token against RFC 6749 Appendix A.4.
      *
+     * @param values ordered, unique scope tokens
      * @throws IllegalArgumentException if the list is {@code null}, empty, or contains {@code null}
      * @throws ValidateException        if a token is empty, duplicated, or contains a character outside
      *                                  {@code scope-token}

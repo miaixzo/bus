@@ -265,7 +265,14 @@ public class MicrosoftRealmAdapter implements VendorAdapter {
         }
     }
 
-    /** Maps a registration or service identity without exposing credential material. */
+    /**
+     * Maps a registration or service identity without exposing credential material.
+     *
+     * @param value   Graph directory-object change, including an optional removal marker
+     * @param kind    resource category represented by the directory object
+     * @param at      observation time assigned to the projected change
+     * @param changes destination list receiving the normalized resource upsert or deletion
+     */
     private static void directoryChanges(
             JsonValue.ObjectValue value,
             Realm.Kind kind,
@@ -278,12 +285,25 @@ public class MicrosoftRealmAdapter implements VendorAdapter {
         }
     }
 
-    /** Maps a distinct application registration. */
+    /**
+     * Maps a distinct application registration.
+     *
+     * @param value Graph application registration to project
+     * @param at    observation time assigned to the normalized resource
+     * @return normalized application registration without credential values
+     */
     private static Realm.Resource applicationResource(JsonValue.ObjectValue value, Instant at) {
         return directoryResource(value, Realm.Kind.APPLICATION, at);
     }
 
-    /** Selects public directory fields and strips credential values even from malformed upstream responses. */
+    /**
+     * Selects public directory fields and strips credential values even from malformed upstream responses.
+     *
+     * @param value Graph directory object to project without credential values
+     * @param kind  resource category and public-field projection to use
+     * @param at    observation time assigned to the normalized resource
+     * @return normalized directory resource containing only the selected public fields and safe credential metadata
+     */
     private static Realm.Resource directoryResource(JsonValue.ObjectValue value, Realm.Kind kind, Instant at) {
         Map<String, JsonValue> attributes = new LinkedHashMap<>();
         for (String field : select(kind).split(",")) {
@@ -2436,7 +2456,8 @@ public class MicrosoftRealmAdapter implements VendorAdapter {
     /**
      * Creates one initial Graph delta URL for the selected single-kind changes phase.
      *
-     * @param phase exact delta phase
+     * @param phase            exact delta phase
+     * @param includeRelations whether group delta requests also select membership changes
      * @return validated fixed Graph delta URL
      */
     private Url deltaUrl(final Phase phase, final boolean includeRelations) {
@@ -2751,7 +2772,13 @@ public class MicrosoftRealmAdapter implements VendorAdapter {
          * Reads the service-principal delta feed.
          */
         DELTA_SERVICE_ACCOUNTS(12, Realm.Operation.CHANGES, Realm.Kind.SERVICE_ACCOUNT),
+        /**
+         * Reads the application-registration snapshot.
+         */
         APPLICATIONS(13, Realm.Operation.SNAPSHOT, Realm.Kind.APPLICATION),
+        /**
+         * Reads the application-registration delta feed.
+         */
         DELTA_APPLICATIONS(14, Realm.Operation.CHANGES, Realm.Kind.APPLICATION);
 
         /**
@@ -3240,7 +3267,8 @@ public class MicrosoftRealmAdapter implements VendorAdapter {
     /**
      * Minimal stable Graph member projection.
      *
-     * @param id stable directory-object identifier
+     * @param id   stable directory-object identifier
+     * @param type Graph directory-object type discriminator, or empty when absent
      * @author Kimi Liu
      */
     private record Member(String id, String type) {
@@ -3248,7 +3276,8 @@ public class MicrosoftRealmAdapter implements VendorAdapter {
         /**
          * Validates one member projection.
          *
-         * @param id stable member identifier
+         * @param id   stable member identifier
+         * @param type Graph directory-object type discriminator, or empty when absent
          */
         private Member {
             id = requireText(id, "Microsoft member identifier");

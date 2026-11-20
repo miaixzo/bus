@@ -176,6 +176,13 @@ public interface Roster {
         /**
          * Creates an immutable safe Roster fault.
          *
+         * @param kind            optional kind of the Blueprint entry that failed
+         * @param id              optional resource identifier of the failing entry
+         * @param stage           snapshot processing stage that detected the issue
+         * @param standard        optional formal standard reference relevant to the issue
+         * @param field           optional safe Blueprint or standard field name
+         * @param error           shared Bus error code
+         * @param safeDescription non-sensitive diagnostic description
          * @throws IllegalArgumentException if a required value is missing or optional text is blank
          */
         public Fault {

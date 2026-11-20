@@ -41,6 +41,11 @@ public record ClientAuthentication(ConsumerMetadata consumer, Kind kind, Optiona
 
     /**
      * Creates and validates one request-scoped authentication result.
+     *
+     * @param consumer   immutable authenticated Consumer metadata
+     * @param kind       authentication result profile
+     * @param method     optional registered authentication method for a standard result
+     * @param federation optional verified federation facts for a federated JWT result
      */
     public ClientAuthentication {
         Assert.notNull(consumer, "Authenticated consumer must not be null");
@@ -135,6 +140,11 @@ public record ClientAuthentication(ConsumerMetadata consumer, Kind kind, Optiona
 
         /**
          * Freezes verified non-secret claims.
+         *
+         * @param issuer          verified external assertion issuer
+         * @param externalSubject verified external assertion subject
+         * @param subject         project Subject selected by the federation relation
+         * @param claims          detached verified assertion claims
          */
         public Federation {
             Assert.notBlank(issuer, "Federation issuer must not be blank");

@@ -1135,6 +1135,7 @@ public class QqSourceAdapter implements VendorAdapter {
         /**
          * Validates one private QQ access result.
          *
+         * @param accessToken sensitive access token
          * @throws IllegalArgumentException if the access token is blank
          */
         private Access {
@@ -1155,6 +1156,8 @@ public class QqSourceAdapter implements VendorAdapter {
         /**
          * Validates one private QQ identity-key result.
          *
+         * @param openId  required OpenID
+         * @param unionId optional UnionID or {@code null}
          * @throws IllegalArgumentException if OpenID is blank or a present UnionID is blank
          */
         private OpenIdentity {

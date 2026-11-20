@@ -132,6 +132,7 @@ public record OAuth2ErrorCode(String value) {
     /**
      * Validates the RFC 6749 Appendix A.7 {@code error} syntax without narrowing the extension space.
      *
+     * @param value case-sensitive OAuth error wire value
      * @throws IllegalArgumentException if the value is {@code null} or empty
      * @throws ValidateException        if the value contains a character outside {@code NQSCHAR}
      */

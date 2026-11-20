@@ -1686,6 +1686,10 @@ public abstract class WeChatAdapterSupport implements VendorAdapter {
         /**
          * Validates one complete success or failure branch.
          *
+         * @param code             authorization code for success
+         * @param state            mandatory browser correlation value
+         * @param error            platform error for failure
+         * @param errorDescription optional platform error description
          * @throws IllegalArgumentException if state is blank
          * @throws ValidateException        if members do not form one exact branch
          */
@@ -1726,6 +1730,12 @@ public abstract class WeChatAdapterSupport implements VendorAdapter {
         /**
          * Validates private access material without copying it into any public result.
          *
+         * @param token    sensitive access or provider token
+         * @param subject  token-bound OpenID for public WeChat flows, otherwise {@code null}
+         * @param code     consumed callback code for WeCom identity retrieval, otherwise {@code null}
+         * @param scope    optional granted WeChat scope, otherwise {@code null}
+         * @param unionId  optional token-bound UnionID, otherwise {@code null}
+         * @param snapshot Official Account snapshot-user marker
          * @throws IllegalArgumentException if the token is blank or a present optional string is blank
          */
         private PrivateAccess {

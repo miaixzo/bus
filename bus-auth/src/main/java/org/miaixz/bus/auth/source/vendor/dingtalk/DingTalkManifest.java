@@ -259,6 +259,7 @@ public class DingTalkManifest implements VendorManifest<DingTalkOptions> {
      * Creates the stateless DingTalk manifest used by Vendor module assembly.
      */
     public DingTalkManifest() {
+        // No initialization required.
     }
 
     /**

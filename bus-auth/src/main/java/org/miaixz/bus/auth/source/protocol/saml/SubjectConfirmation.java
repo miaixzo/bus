@@ -40,6 +40,9 @@ public record SubjectConfirmation(Optional<Subject.Identifier> identifier, Optio
     /**
      * Normalizes optional children and validates the required absolute method URI.
      *
+     * @param identifier optional BaseID, NameID, or EncryptedID confirmation identifier
+     * @param data       optional SubjectConfirmationData child
+     * @param method     required confirmation method URI
      * @throws IllegalArgumentException if a component or optional container is {@code null}
      * @throws ValidateException        if {@code method} is not an absolute URI
      */

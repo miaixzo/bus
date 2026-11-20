@@ -152,6 +152,7 @@ public class AliyunManifest implements VendorManifest<AliyunOptions> {
      * Creates the stateless Alibaba Cloud manifest used by Vendor locator assembly.
      */
     public AliyunManifest() {
+        // No initialization required.
     }
 
     /**

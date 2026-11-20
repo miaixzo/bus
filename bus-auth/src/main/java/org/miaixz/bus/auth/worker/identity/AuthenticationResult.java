@@ -44,6 +44,9 @@ public record AuthenticationResult(Subject subject, Identity identity, ClaimSet 
     /**
      * Creates an immutable completed authentication result.
      *
+     * @param subject  stable project Subject loaded by the project and accepted by the framework parser
+     * @param identity verified Source-scoped external identity
+     * @param claims   implementation-neutral claims and their provenance
      * @throws IllegalArgumentException if any component is {@code null}
      */
     public AuthenticationResult {

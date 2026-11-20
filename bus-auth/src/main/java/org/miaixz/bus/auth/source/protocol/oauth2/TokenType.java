@@ -54,6 +54,7 @@ public record TokenType(String value) {
     /**
      * Validates the extensible RFC 6749 access-token type-name grammar.
      *
+     * @param value original access-token type wire value
      * @throws IllegalArgumentException if the value is {@code null} or empty
      * @throws ValidateException        if the value contains a character outside the type-name grammar
      */

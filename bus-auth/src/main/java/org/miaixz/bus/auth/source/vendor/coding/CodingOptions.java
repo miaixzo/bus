@@ -55,6 +55,13 @@ public record CodingOptions(Vendor.Id vendor, Vendor.Variant variant, String cli
     /**
      * Validates and freezes one CODING registration without resolving its client secret.
      *
+     * @param vendor      exact CODING platform identifier
+     * @param variant     exact default variant
+     * @param clientId    registered CODING client identifier
+     * @param credential  external client-secret reference
+     * @param redirectUri exact registered callback URI
+     * @param scopes      ordered requested scopes, or empty to use the manifest default
+     * @param team        canonical single DNS label used by the constrained endpoint templates
      * @throws IllegalArgumentException if a required component, container, scope, or team is null or blank
      * @throws ValidateException        if routing, credential type, scope, or team syntax differs from the frozen
      *                                  profile

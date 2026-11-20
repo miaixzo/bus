@@ -132,6 +132,11 @@ public class IdTokenCache extends AuthCache<IdTokenCache.Entry> {
 
         /**
          * Validates and freezes non-secret logout facts.
+         *
+         * @param sourceId   Source that issued the token
+         * @param consumerId relying-party consumer identifier
+         * @param subject    issued wire subject
+         * @param sessionId  optional issued Session identifier
          */
         public Entry {
             Assert.notBlank(sourceId, "ID Token Source id must not be blank");

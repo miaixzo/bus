@@ -46,6 +46,12 @@ public record AfdianOptions(Vendor.Id vendor, Vendor.Variant variant, String cli
     /**
      * Validates and freezes one Afdian Source configuration.
      *
+     * @param vendor      exact Afdian routing identifier
+     * @param variant     exact Afdian flow variant
+     * @param clientId    public Afdian client identifier
+     * @param credential  external client-secret reference
+     * @param redirectUri exact registered callback URI
+     * @param scopes      ordered requested Afdian scopes
      * @throws IllegalArgumentException if a required component is null or blank
      * @throws ValidateException        if routing, credential type, or callback policy differs from the frozen manifest
      */

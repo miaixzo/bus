@@ -41,6 +41,9 @@ public record Conditions(Optional<Instant> notBefore, Optional<Instant> notOnOrA
     /**
      * Validates the optional interval and freezes ordered conditions.
      *
+     * @param notBefore    optional inclusive lower time bound
+     * @param notOnOrAfter optional exclusive upper time bound
+     * @param conditions   ordered standard or extension conditions
      * @throws IllegalArgumentException if a container or condition is {@code null}
      * @throws ValidateException        if the time interval is empty or inverted
      */
@@ -96,6 +99,8 @@ public record Conditions(Optional<Instant> notBefore, Optional<Instant> notOnOrA
 
         /**
          * Requires a non-null audience restriction.
+         *
+         * @param restriction audience restriction applied to the assertion
          */
         public Audience {
             Assert.notNull(restriction, "SAML AudienceRestriction must not be null");
@@ -123,6 +128,9 @@ public record Conditions(Optional<Instant> notBefore, Optional<Instant> notOnOrA
 
         /**
          * Validates count and absolute audience URIs.
+         *
+         * @param count     optional non-negative proxy count
+         * @param audiences ordered optional audience URIs
          */
         public ProxyRestriction {
             Assert.notNull(count, "SAML ProxyRestriction Count container must not be null");
@@ -150,6 +158,8 @@ public record Conditions(Optional<Instant> notBefore, Optional<Instant> notOnOrA
 
         /**
          * Takes ownership through non-empty defensive copying.
+         *
+         * @param xml complete secure namespace-aware condition element bytes
          */
         public Extension {
             final byte[] actual = Assert.notNull(xml, "SAML extension Condition XML must not be null");

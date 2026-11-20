@@ -79,6 +79,9 @@ public class PkceGenerator {
 
         /**
          * Validates generated pair components.
+         *
+         * @param verifier  sensitive generated verifier
+         * @param challenge S256 challenge bound to the verifier
          */
         public Pair {
             Assert.notNull(verifier, "Generated PKCE verifier must not be null");

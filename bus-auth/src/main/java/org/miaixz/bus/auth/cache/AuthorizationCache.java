@@ -165,6 +165,10 @@ public class AuthorizationCache extends AuthCache<AuthorizationCache.Entry> {
 
         /**
          * Validates the minimal authoritative authorization lifecycle state.
+         *
+         * @param sourceId owning authorization-server Source
+         * @param clientId authorized OAuth client
+         * @param status   current authorization lifecycle state
          */
         public Entry {
             Assert.notBlank(sourceId, "Authorization Source id must not be blank");

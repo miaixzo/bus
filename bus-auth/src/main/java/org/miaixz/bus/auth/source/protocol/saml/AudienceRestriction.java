@@ -37,6 +37,7 @@ public record AudienceRestriction(List<String> audiences) {
     /**
      * Requires a non-empty immutable list of absolute audience URIs.
      *
+     * @param audiences one or more audience URI values
      * @throws IllegalArgumentException if the list or an item is {@code null}
      * @throws ValidateException        if the list is empty or an audience is not an absolute URI
      */

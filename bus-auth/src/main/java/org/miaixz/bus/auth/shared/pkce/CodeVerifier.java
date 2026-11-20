@@ -34,6 +34,7 @@ public record CodeVerifier(String value) {
     /**
      * Validates the exact code_verifier grammar.
      *
+     * @param value 43 to 128 unreserved ASCII characters
      * @throws IllegalArgumentException if value is {@code null} or blank
      * @throws ValidateException        if length or character grammar is invalid
      */

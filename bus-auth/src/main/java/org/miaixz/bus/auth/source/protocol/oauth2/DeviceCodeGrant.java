@@ -40,6 +40,8 @@ public record DeviceCodeGrant(String deviceCode, Optional<String> clientId) impl
     /**
      * Creates and validates an immutable device-code grant.
      *
+     * @param deviceCode opaque device verification code
+     * @param clientId   optional identifier for a client not authenticated by the token endpoint
      * @throws IllegalArgumentException if the code or client identifier container is {@code null}, or code is empty
      * @throws ValidateException        if a present client identifier is empty or contains a character outside VSCHAR
      */

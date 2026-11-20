@@ -177,6 +177,7 @@ public class FeishuManifest implements VendorManifest<FeishuOptions> {
      * Creates the stateless Feishu manifest used by Vendor locator assembly.
      */
     public FeishuManifest() {
+        // No initialization required.
     }
 
     /**

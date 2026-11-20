@@ -1211,6 +1211,11 @@ public class AppleSourceAdapter implements VendorAdapter {
         /**
          * Verifies the already decoded callback branch invariants.
          *
+         * @param code    authorization code on the success branch
+         * @param state   mandatory browser correlation value
+         * @param idToken optional front-channel ID Token
+         * @param user    optional first-authorization user JSON
+         * @param error   registered OAuth error on the rejection branch
          * @throws ValidateException if state or branch members are inconsistent
          */
         private CallbackWire {

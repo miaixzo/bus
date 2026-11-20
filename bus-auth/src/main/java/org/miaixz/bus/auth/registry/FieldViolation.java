@@ -34,6 +34,10 @@ record FieldViolation(String field, Errors error, String description) {
 
     /**
      * Validates one complete field-level invariant violation.
+     *
+     * @param field       violated Blueprint field name
+     * @param error       stable validation error classification
+     * @param description safe human-readable violation description
      */
     FieldViolation {
         Assert.notBlank(field, "Field violation name must not be blank");

@@ -137,6 +137,7 @@ public record SearchRequest(DistinguishedName baseObject, Scope scope, DerefAlia
         /**
          * Validates and freezes every attribute description or standard selector.
          *
+         * @param values attribute descriptions or standard selector values in wire order
          * @throws IllegalArgumentException if the list is {@code null} or a selector is malformed
          */
         public AttributeSelection {

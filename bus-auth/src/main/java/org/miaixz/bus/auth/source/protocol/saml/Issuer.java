@@ -32,6 +32,7 @@ public record Issuer(NameID nameId) {
     /**
      * Requires a complete non-null issuer value.
      *
+     * @param nameId complete issuer NameID content and attributes
      * @throws IllegalArgumentException if {@code nameId} is {@code null}
      */
     public Issuer {

@@ -54,6 +54,18 @@ public record LogoutRequest(String id, String version, Instant issueInstant, Opt
     /**
      * Validates inherited request fields and freezes the identifier/session content.
      *
+     * @param id             required XML ID
+     * @param version        required protocol version, fixed to {@code 2.0}
+     * @param issueInstant   required issue instant
+     * @param destination    optional destination URI
+     * @param consent        optional consent URI
+     * @param issuer         optional issuer child
+     * @param signature      optional complete {@code ds:Signature} element bytes
+     * @param extensions     ordered complete protocol extension elements
+     * @param identifier     required BaseID, NameID, or EncryptedID choice
+     * @param sessionIndexes ordered optional session index values
+     * @param reason         optional logout-reason lexical value
+     * @param notOnOrAfter   optional request expiration
      * @throws IllegalArgumentException if a required component, item, or optional container is {@code null}
      * @throws ValidateException        if version, ID, URI, expiration, or retained XML is invalid
      */

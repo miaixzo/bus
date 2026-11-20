@@ -46,6 +46,9 @@ public interface ClaimLoader extends Loader<ClaimLoader.Request, ClaimLoader.Rec
 
         /**
          * Validates one complete claim-loading request.
+         *
+         * @param subject  stable framework subject
+         * @param identity verified completed external identity
          */
         public Request {
             Assert.notNull(subject, "Claim loading Subject must not be null");

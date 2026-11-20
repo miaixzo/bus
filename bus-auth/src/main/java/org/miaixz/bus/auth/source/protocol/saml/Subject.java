@@ -37,6 +37,8 @@ public record Subject(Optional<Identifier> identifier, List<SubjectConfirmation>
     /**
      * Enforces the schema choice requiring either an identifier or at least one confirmation.
      *
+     * @param identifier    optional BaseID, NameID, or EncryptedID choice
+     * @param confirmations ordered subject confirmations
      * @throws IllegalArgumentException if a container or item is {@code null}
      * @throws ValidateException        if both identifier and confirmations are absent
      */
@@ -87,6 +89,8 @@ public record Subject(Optional<Identifier> identifier, List<SubjectConfirmation>
 
         /**
          * Requires a non-null NameID.
+         *
+         * @param value NameID value
          */
         public NamedIdentifier {
             Assert.notNull(value, "SAML Subject NameID must not be null");
@@ -104,6 +108,8 @@ public record Subject(Optional<Identifier> identifier, List<SubjectConfirmation>
 
         /**
          * Takes ownership through non-empty defensive copying.
+         *
+         * @param xml complete secure namespace-aware BaseID element bytes
          */
         public BaseIdentifier {
             xml = Subject.xml(xml, "SAML Subject BaseID");
@@ -131,6 +137,8 @@ public record Subject(Optional<Identifier> identifier, List<SubjectConfirmation>
 
         /**
          * Takes ownership through non-empty defensive copying.
+         *
+         * @param xml complete secure namespace-aware EncryptedID element bytes
          */
         public EncryptedIdentifier {
             xml = Subject.xml(xml, "SAML Subject EncryptedID");

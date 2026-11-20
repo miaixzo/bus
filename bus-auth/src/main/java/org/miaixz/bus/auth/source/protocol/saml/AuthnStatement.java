@@ -42,6 +42,12 @@ public record AuthnStatement(Instant authnInstant, Optional<String> sessionIndex
     /**
      * Validates temporal and optional string constraints.
      *
+     * @param authnInstant           required authentication instant
+     * @param sessionIndex           optional session index
+     * @param sessionNotOnOrAfter    optional exclusive session expiration
+     * @param subjectLocalityAddress optional SubjectLocality Address
+     * @param subjectLocalityDnsName optional SubjectLocality DNSName
+     * @param authnContext           required authentication context
      * @throws IllegalArgumentException if a required component or optional container is {@code null}
      * @throws ValidateException        if the session expiration does not follow authentication
      */

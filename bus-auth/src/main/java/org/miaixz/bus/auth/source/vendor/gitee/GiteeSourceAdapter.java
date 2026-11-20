@@ -737,6 +737,10 @@ public class GiteeSourceAdapter implements VendorAdapter {
         /**
          * Validates the exact success or OAuth error branch.
          *
+         * @param code             authorization code for success
+         * @param state            mandatory browser correlation value
+         * @param error            OAuth error for failure
+         * @param errorDescription optional OAuth error description
          * @throws IllegalArgumentException if the state is blank
          * @throws ValidateException        if members do not form one exact branch
          */
@@ -772,6 +776,8 @@ public class GiteeSourceAdapter implements VendorAdapter {
         /**
          * Validates one private Gitee token success value.
          *
+         * @param accessToken sensitive access token
+         * @param expiresIn   positive access-token lifetime in seconds
          * @throws IllegalArgumentException if the token is blank
          * @throws ValidateException        if the lifetime is not positive
          */

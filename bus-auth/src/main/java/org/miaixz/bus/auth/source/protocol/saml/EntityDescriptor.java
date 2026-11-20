@@ -57,6 +57,18 @@ public record EntityDescriptor(String entityId, Optional<Instant> validUntil, Op
     /**
      * Validates metadata identity/lifetime/cardinality and takes deep immutable ownership of XML fragments.
      *
+     * @param entityId                    required entity identifier URI, limited to 1024 characters
+     * @param validUntil                  optional metadata expiration
+     * @param cacheDuration               optional XML Schema duration lexical value
+     * @param id                          optional XML ID
+     * @param signature                   optional complete {@code ds:Signature} element bytes
+     * @param extensions                  ordered complete children of {@code md:Extensions}
+     * @param identityProviders           ordered IdP SSO role descriptors
+     * @param serviceProviders            ordered SP SSO role descriptors
+     * @param organization                optional complete {@code md:Organization} element bytes
+     * @param contacts                    ordered complete {@code md:ContactPerson} element bytes
+     * @param additionalMetadataLocations ordered complete {@code md:AdditionalMetadataLocation} element bytes
+     * @param attributes                  ordered foreign attributes keyed by expanded QName
      * @throws IllegalArgumentException if a required component, item, key, value, or optional container is null
      * @throws ValidateException        if entity ID, duration, XML ID, role cardinality, or retained XML is invalid
      */

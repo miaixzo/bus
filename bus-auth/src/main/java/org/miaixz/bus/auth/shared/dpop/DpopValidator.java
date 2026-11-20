@@ -183,6 +183,10 @@ public class DpopValidator {
         /**
          * Validates replay isolation and token-confirmation values.
          *
+         * @param tenantId               owning tenant identifier
+         * @param protocol               formal protocol owning the DPoP operation
+         * @param authority              stable Provider or Source authority
+         * @param confirmationThumbprint optional access-token {@code cnf.jkt} value
          * @throws IllegalArgumentException if a component is {@code null} or a required string is blank
          */
         public Requirements {

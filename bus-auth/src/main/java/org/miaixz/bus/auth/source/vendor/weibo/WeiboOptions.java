@@ -70,6 +70,12 @@ public record WeiboOptions(Vendor.Id vendor, Vendor.Variant variant, String clie
     /**
      * Validates and freezes one Weibo registration without resolving App Secret material.
      *
+     * @param vendor      exact Weibo platform identifier
+     * @param variant     exact {@code default} variant
+     * @param clientId    Weibo App Key
+     * @param credential  external App Secret reference
+     * @param redirectUri exact registered browser callback
+     * @param scopes      ordered Weibo authorization scopes
      * @throws IllegalArgumentException if a required component, collection, or scope is {@code null} or blank
      * @throws ValidateException        if routing, credential type, callback, or scope violates the frozen manifest
      */

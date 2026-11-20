@@ -42,6 +42,10 @@ public record AuthnContext(Optional<String> classReference, Optional<byte[]> dec
     /**
      * Enforces the schema declaration choice and defensively owns declaration XML.
      *
+     * @param classReference            optional {@code AuthnContextClassRef} URI
+     * @param declaration               optional complete {@code AuthnContextDecl} element bytes
+     * @param declarationReference      optional {@code AuthnContextDeclRef} URI
+     * @param authenticatingAuthorities ordered authority URI values
      * @throws IllegalArgumentException if a component, item, or optional container is {@code null}
      * @throws ValidateException        if the CHOICE or a URI/XML value is invalid
      */

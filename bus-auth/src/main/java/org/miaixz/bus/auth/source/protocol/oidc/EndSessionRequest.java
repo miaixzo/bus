@@ -49,6 +49,12 @@ public record EndSessionRequest(Optional<String> idTokenHint, Optional<String> l
     /**
      * Creates and validates an immutable RP-Initiated Logout request.
      *
+     * @param idTokenHint           optional previously issued ID Token hint
+     * @param logoutHint            optional OpenID Provider logout hint
+     * @param clientId              optional relying-party client identifier
+     * @param postLogoutRedirectUri optional registered post-logout redirection URI
+     * @param state                 optional value returned unchanged during post-logout redirection
+     * @param uiLocales             ordered preferred BCP 47 user-interface locales
      * @throws IllegalArgumentException if an optional container or locale list is {@code null}
      * @throws ValidateException        if a present parameter, URI, or locale violates its wire syntax
      */

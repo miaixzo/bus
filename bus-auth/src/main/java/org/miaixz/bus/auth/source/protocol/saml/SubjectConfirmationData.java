@@ -49,6 +49,13 @@ public record SubjectConfirmationData(Optional<Instant> notBefore, Optional<Inst
     /**
      * Validates temporal/URI/NCName constraints and takes deep immutable ownership of XML content.
      *
+     * @param notBefore    optional lower time bound
+     * @param notOnOrAfter optional exclusive upper time bound
+     * @param recipient    optional recipient URI
+     * @param inResponseTo optional request NCName
+     * @param address      optional network address lexical value
+     * @param content      ordered secure serializations of mixed child nodes
+     * @param attributes   ordered foreign attributes keyed by expanded QName
      * @throws IllegalArgumentException if a component, item, key, or value is {@code null}
      * @throws ValidateException        if time bounds, URI, NCName, or XML content are invalid
      */

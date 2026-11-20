@@ -2306,6 +2306,10 @@ public class AliyunRealmAdapter implements VendorAdapter {
 
         /**
          * Validates one cursor state.
+         *
+         * @param phase    snapshot phase represented by this cursor
+         * @param kinds    requested kinds
+         * @param position recoverable position
          */
         private CursorState {
             phase = Assert.notNull(phase, "Alibaba Cloud cursor phase must not be null");
@@ -2344,6 +2348,10 @@ public class AliyunRealmAdapter implements VendorAdapter {
 
         /**
          * Validates one position.
+         *
+         * @param next           optional official page marker
+         * @param parentId       current replay group identifier
+         * @param relationOffset emitted relation offset for one Role
          */
         private Position {
             next = Assert.notNull(next, "Alibaba Cloud cursor marker container must not be null");
@@ -2439,6 +2447,9 @@ public class AliyunRealmAdapter implements VendorAdapter {
 
         /**
          * Freezes one page.
+         *
+         * @param items minimal items
+         * @param next  optional official continuation marker
          */
         private WirePage {
             items = List.copyOf(Assert.notNull(items, "Alibaba Cloud collection items must not be null"));
@@ -2462,6 +2473,10 @@ public class AliyunRealmAdapter implements VendorAdapter {
 
         /**
          * Freezes and validates one replay result.
+         *
+         * @param items  replayed parent projections
+         * @param index  selected index or negative at natural exhaustion
+         * @param parent selected projection or empty at natural exhaustion
          */
         private ParentPage {
             items = List.copyOf(Assert.notNull(items, "Alibaba Cloud replay parents must not be null"));
@@ -2486,6 +2501,10 @@ public class AliyunRealmAdapter implements VendorAdapter {
 
         /**
          * Validates one RAM User projection.
+         *
+         * @param id          stable UserId
+         * @param name        exact UserName
+         * @param displayName DisplayName with UserName fallback
          */
         private User {
             id = requireText(id, "Alibaba Cloud RAM UserId");
@@ -2506,6 +2525,9 @@ public class AliyunRealmAdapter implements VendorAdapter {
 
         /**
          * Validates one RAM Group projection.
+         *
+         * @param id   stable GroupId
+         * @param name exact GroupName
          */
         private Group {
             id = requireText(id, "Alibaba Cloud RAM GroupId");
@@ -2525,6 +2547,9 @@ public class AliyunRealmAdapter implements VendorAdapter {
 
         /**
          * Validates one RAM Role projection.
+         *
+         * @param id   stable RoleId
+         * @param name exact RoleName
          */
         private Role {
             id = requireText(id, "Alibaba Cloud RAM RoleId");
@@ -2544,6 +2569,9 @@ public class AliyunRealmAdapter implements VendorAdapter {
 
         /**
          * Freezes and validates one Role trust projection.
+         *
+         * @param role       Role projection or empty when retrieval reports EntityNotExist
+         * @param principals ordered unique Principal values
          */
         private RoleTrust {
             role = Assert.notNull(role, "Alibaba Cloud RAM Role container must not be null");

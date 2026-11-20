@@ -39,6 +39,9 @@ public record KeyDescriptor(Optional<Use> use, KeyInfo keyInfo, List<EncryptionM
     /**
      * Validates and freezes one Metadata key descriptor.
      *
+     * @param use               optional standard key use
+     * @param keyInfo           required complete {@code ds:KeyInfo} element
+     * @param encryptionMethods ordered complete {@code md:EncryptionMethod} elements
      * @throws IllegalArgumentException if a component, item, or optional container is {@code null}
      */
     public KeyDescriptor {
@@ -119,6 +122,7 @@ public record KeyDescriptor(Optional<Use> use, KeyInfo keyInfo, List<EncryptionM
         /**
          * Takes defensive ownership of the complete element.
          *
+         * @param xml detached complete element bytes
          * @throws IllegalArgumentException if {@code xml} is {@code null}
          * @throws ValidateException        if {@code xml} is empty
          */
@@ -149,6 +153,7 @@ public record KeyDescriptor(Optional<Use> use, KeyInfo keyInfo, List<EncryptionM
         /**
          * Takes defensive ownership of the complete element.
          *
+         * @param xml detached complete element bytes
          * @throws IllegalArgumentException if {@code xml} is {@code null}
          * @throws ValidateException        if {@code xml} is empty
          */

@@ -152,6 +152,7 @@ public class GitHubManifest implements VendorManifest<GitHubOptions> {
      * Creates the stateless GitHub manifest used by Vendor locator assembly.
      */
     public GitHubManifest() {
+        // No initialization required.
     }
 
     /**

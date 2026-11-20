@@ -63,6 +63,14 @@ public record GoogleOptions(Vendor.Id vendor, Vendor.Variant variant, String cli
     /**
      * Validates and freezes one Google login or Workspace registration without resolving credential material.
      *
+     * @param vendor         exact Google platform identifier
+     * @param variant        exact default login or Workspace enterprise Variant
+     * @param clientId       registered OAuth Client ID or Workspace service-account {@code client_email}
+     * @param credential     external Client Secret or Private Key reference selected by the Variant
+     * @param redirectUri    exact authorized login callback, empty for Workspace
+     * @param scopes         exact ordered OIDC or Admin SDK scope set selected by the Variant
+     * @param customer       exact Workspace customer identifier, empty for login
+     * @param delegatedAdmin exact delegated administrator identity, empty for login
      * @throws IllegalArgumentException if a required component, container, or scope is {@code null} or blank
      * @throws ValidateException        if routing, credential, callback, scopes, or Workspace delegation values differ
      *                                  from the frozen Variant contract

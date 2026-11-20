@@ -915,6 +915,14 @@ public class MeituanSourceAdapter implements VendorAdapter {
 
         /**
          * Retains callback values after transport and multiplicity validation.
+         *
+         * @param code             authorization code on the success branch
+         * @param error            OAuth error on the error branch
+         * @param errorDescription optional OAuth error description
+         * @param state            browser correlation state
+         * @param memberCount      exact number of received parameters
+         * @param knownMembers     whether every received name belongs to the callback contract
+         * @param blank            whether any received value is blank
          */
         private CallbackWire {
             // No initialization required.
@@ -935,6 +943,9 @@ public class MeituanSourceAdapter implements VendorAdapter {
         /**
          * Validates one complete private token success envelope.
          *
+         * @param accessToken  sensitive access token
+         * @param refreshToken sensitive refresh token
+         * @param expiresIn    positive access-token lifetime in seconds
          * @throws IllegalArgumentException if either token is blank
          * @throws ValidateException        if the lifetime is not positive
          */
@@ -972,6 +983,9 @@ public class MeituanSourceAdapter implements VendorAdapter {
         /**
          * Validates and freezes one private profile envelope.
          *
+         * @param openId   stable Meituan account identifier
+         * @param nickname display name
+         * @param avatar   optional avatar string
          * @throws IllegalArgumentException if identity text is blank or the optional container is {@code null}
          */
         private ProfileEnvelope {
@@ -1005,6 +1019,8 @@ public class MeituanSourceAdapter implements VendorAdapter {
         /**
          * Validates the corrected current error representation.
          *
+         * @param code    exact decimal-string platform code
+         * @param message non-blank platform diagnostic retained only during immediate classification
          * @throws IllegalArgumentException if code or message is blank
          * @throws ValidateException        if the code contains a non-decimal character
          */

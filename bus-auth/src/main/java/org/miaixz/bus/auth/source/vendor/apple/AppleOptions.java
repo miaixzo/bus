@@ -54,6 +54,14 @@ public record AppleOptions(Vendor.Id vendor, Vendor.Variant variant, String clie
     /**
      * Validates and freezes one Sign in with Apple registration without resolving its private key.
      *
+     * @param vendor      exact Apple platform identifier
+     * @param variant     exact default variant
+     * @param clientId    registered Apple Services identifier
+     * @param credential  external EC private-key reference
+     * @param redirectUri exact registered Sign in with Apple callback URI
+     * @param scopes      ordered requested name and email scopes, or empty to use defaults
+     * @param teamId      Apple Developer team identifier used as the client-secret JWT issuer
+     * @param keyId       Apple signing key identifier used in the client-secret protected header
      * @throws IllegalArgumentException if a required component, container, scope, or Apple identifier is null or blank
      * @throws ValidateException        if routing, credential type, scope vocabulary, or scope uniqueness differs from
      *                                  the frozen manifest

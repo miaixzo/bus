@@ -256,6 +256,11 @@ public class RefreshTokenCache extends AuthCache<RefreshTokenCache.Entry> {
         @Serial
         private static final long serialVersionUID = 1L;
 
+        /**
+         * Reconstructs a refresh-token entry through its canonical validation after deserialization.
+         *
+         * @return validated refresh-token entry replacing this serialized wire form
+         */
         @Serial
         private Object readResolve() {
             return new Entry(sourceId, clientId, subjectId, familyId, sequence, scope, audience, confirmation,

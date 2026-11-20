@@ -58,6 +58,23 @@ public record SpSsoDescriptor(Optional<String> id, Optional<Instant> validUntil,
     /**
      * Validates role cardinality and freezes all lists and XML values.
      *
+     * @param id                         optional role XML ID
+     * @param validUntil                 optional role expiration
+     * @param cacheDuration              optional XML Schema duration lexical value retained for MetadataCodec
+     *                                   validation
+     * @param protocolSupportEnumeration non-empty supported protocol namespace URI list
+     * @param errorUrl                   optional error-reporting URI
+     * @param signature                  optional complete role Signature element bytes
+     * @param extensions                 ordered role extension elements
+     * @param keys                       ordered key descriptors
+     * @param organization               optional complete Organization element bytes
+     * @param contacts                   ordered complete ContactPerson element bytes
+     * @param singleLogoutServices       ordered supported logout endpoints
+     * @param nameIdFormats              ordered supported NameID format URIs
+     * @param assertionConsumerServices  one or more indexed assertion consumer endpoints
+     * @param attributeConsumingServices ordered complete AttributeConsumingService element bytes
+     * @param authnRequestsSigned        optional lexical-presence signing declaration
+     * @param wantAssertionsSigned       optional lexical-presence assertion-signing requirement
      * @throws IllegalArgumentException if a component, item, or optional container is null
      * @throws ValidateException        if the descriptor cannot represent an executable SAML 2.0 SP role
      */

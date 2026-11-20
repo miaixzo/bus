@@ -56,6 +56,13 @@ public record QqOptions(Vendor.Id vendor, Vendor.Variant variant, String clientI
     /**
      * Validates and freezes one QQ registration without resolving secret material.
      *
+     * @param vendor        exact QQ platform identifier
+     * @param variant       exact {@code open} or {@code mini-program} variant
+     * @param clientId      registered App ID
+     * @param credential    external App Key or App Secret reference
+     * @param redirectUri   exact registered open-platform callback, empty for mini-program
+     * @param scopes        ordered open-platform scopes, empty for mini-program
+     * @param preferUnionId whether open-platform identity prefers a returned UnionID over OpenID
      * @throws IllegalArgumentException if a required component, container, or scope is {@code null} or blank
      * @throws ValidateException        if routing, credential, callback, scope, or variant-only fields are invalid
      */

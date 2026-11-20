@@ -1751,6 +1751,10 @@ public class GitLabRealmAdapter implements VendorAdapter {
 
         /**
          * Validates one cursor state.
+         *
+         * @param phase    snapshot phase represented by this cursor
+         * @param kinds    requested kinds
+         * @param position recoverable position
          */
         private CursorState {
             phase = Assert.notNull(phase, "GitLab cursor phase must not be null");
@@ -1788,6 +1792,10 @@ public class GitLabRealmAdapter implements VendorAdapter {
 
         /**
          * Validates one position.
+         *
+         * @param start          one-based descendant page
+         * @param parentId       current replay group identifier
+         * @param relationOffset one-based member page or zero
          */
         private Position {
             if (start <= 0 || relationOffset < 0) {
@@ -1857,6 +1865,9 @@ public class GitLabRealmAdapter implements VendorAdapter {
 
         /**
          * Freezes one page.
+         *
+         * @param items minimal items
+         * @param next  next page or zero
          */
         private WirePage {
             items = List.copyOf(Assert.notNull(items, "GitLab collection items must not be null"));
@@ -1880,6 +1891,11 @@ public class GitLabRealmAdapter implements VendorAdapter {
 
         /**
          * Freezes and validates one replay result.
+         *
+         * @param items  groups on the official replay page
+         * @param index  selected group index or negative at natural exhaustion
+         * @param next   following outer page or zero
+         * @param parent selected group or empty at natural exhaustion
          */
         private ParentPage {
             items = List.copyOf(Assert.notNull(items, "GitLab replay groups must not be null"));
@@ -1905,6 +1921,11 @@ public class GitLabRealmAdapter implements VendorAdapter {
 
         /**
          * Validates one user.
+         *
+         * @param id       stable identifier
+         * @param username login identifier
+         * @param name     display name
+         * @param state    normalized state
          */
         private User {
             id = requireText(id, "GitLab user identifier");
@@ -1928,6 +1949,11 @@ public class GitLabRealmAdapter implements VendorAdapter {
 
         /**
          * Validates one group.
+         *
+         * @param id       stable identifier
+         * @param fullPath stable full path
+         * @param name     display name
+         * @param parentId optional stable parent identifier
          */
         private Group {
             id = requireText(id, "GitLab group identifier");
@@ -1949,6 +1975,9 @@ public class GitLabRealmAdapter implements VendorAdapter {
 
         /**
          * Validates one membership.
+         *
+         * @param user        stable user projection
+         * @param accessLevel official access level
          */
         private Member {
             user = Assert.notNull(user, "GitLab member user must not be null");

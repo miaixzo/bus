@@ -36,6 +36,9 @@ public record SourceAggregate(ProtocolModule protocolModule, VendorModule vendor
 
     /**
      * Validates one complete Source aggregate.
+     *
+     * @param protocolModule immutable protocol module
+     * @param vendorModule   immutable Vendor module
      */
     public SourceAggregate {
         protocolModule = Assert.notNull(protocolModule, "Protocol module must not be null");

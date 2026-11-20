@@ -462,6 +462,12 @@ public class OAuth2ClientAuthenticator implements ClientAuthenticator<Request> {
 
         /**
          * Validates that evidence shape matches the selected authentication method.
+         *
+         * @param clientId  asserted client identifier
+         * @param secret    mutable client secret, or {@code null} for public clients
+         * @param assertion submitted compact client assertion, or {@code null} for non-JWT methods
+         * @param method    selected endpoint authentication method
+         * @param grantType requested token grant type
          */
         private Evidence {
             Assert.notBlank(clientId, "OAuth 2.x client identifier must not be blank");

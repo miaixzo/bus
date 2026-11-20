@@ -180,6 +180,7 @@ public class AuthorizationResponseDecoder implements Decoder<Callback.Inbound, A
         /**
          * Creates a successful decoded branch.
          *
+         * @param response standard success response
          * @throws IllegalArgumentException if response is {@code null}
          */
         public Success {
@@ -199,6 +200,7 @@ public class AuthorizationResponseDecoder implements Decoder<Callback.Inbound, A
         /**
          * Creates an erroneous decoded branch.
          *
+         * @param response standard error response
          * @throws IllegalArgumentException if response is {@code null}
          */
         public Error {

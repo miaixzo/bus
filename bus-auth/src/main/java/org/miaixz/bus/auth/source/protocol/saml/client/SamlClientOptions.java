@@ -84,6 +84,24 @@ public record SamlClientOptions(String entityId, String identityProviderEntityId
     /**
      * Normalizes optional values and enforces the fixed Redirect-request/Post-response security profile.
      *
+     * @param entityId                              service-provider SAML entityID
+     * @param identityProviderEntityId              exact trusted identity-provider SAML entityID
+     * @param identityProviderMetadataEndpoint      trusted identity-provider Metadata endpoint
+     * @param singleSignOnServiceEndpoint           identity-provider HTTP-Redirect SingleSignOnService endpoint
+     * @param singleLogoutServiceEndpoint           optional identity-provider HTTP-Redirect SingleLogoutService
+     *                                              endpoint
+     * @param assertionConsumerServiceUrl           service-provider HTTP-POST AssertionConsumerService location
+     * @param serviceProviderSingleLogoutServiceUrl optional service-provider SingleLogoutService location
+     * @param requestBinding                        binding used for service-provider initiated SAML requests
+     * @param signingKeyId                          external identifier of the service-provider signing key
+     * @param signatureAlgorithm                    XML Signature algorithm URI used for Redirect query signatures
+     * @param signAuthnRequests                     whether Authentication Requests must be signed
+     * @param signLogoutRequests                    whether Logout Requests must be signed
+     * @param wantAssertionsSigned                  whether every accepted assertion must carry a valid signature
+     * @param wantResponsesSigned                   whether every accepted SAML Response must carry a valid signature
+     * @param clockSkew                             maximum accepted clock difference at SAML time boundaries
+     * @param maximumAssertionAge                   maximum accepted age when a profile condition does not impose a
+     *                                              shorter interval
      * @throws IllegalArgumentException if a required component or optional container is {@code null}
      * @throws ValidateException        if a URI, endpoint, binding, or time limit violates the SAML Source scheme
      */

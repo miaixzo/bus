@@ -966,6 +966,12 @@ public class JdSourceAdapter implements VendorAdapter {
 
         /**
          * Validates the private token data retained for the immediately following profile call.
+         *
+         * @param accessToken  sensitive access token
+         * @param refreshToken sensitive refresh token
+         * @param expiresIn    positive lifetime in seconds
+         * @param scope        effective standard scope
+         * @param openId       canonical stable JD identity key
          */
         private PrivateToken {
             Assert.notBlank(accessToken, "JD access token must not be blank");
@@ -1003,6 +1009,11 @@ public class JdSourceAdapter implements VendorAdapter {
 
         /**
          * Retains callback values after transport and branch validation.
+         *
+         * @param code             authorization code on the success branch
+         * @param error            standard OAuth error on the error branch
+         * @param errorDescription optional provider error description
+         * @param state            mandatory browser correlation state
          */
         private CallbackWire {
             // No initialization required.

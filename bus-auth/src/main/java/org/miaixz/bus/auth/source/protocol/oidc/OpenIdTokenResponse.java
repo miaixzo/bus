@@ -43,6 +43,8 @@ public record OpenIdTokenResponse(TokenResponse tokenResponse, IdToken idToken) 
     /**
      * Validates the composed OAuth and OpenID Connect response components.
      *
+     * @param tokenResponse standard OAuth token response components
+     * @param idToken       issued OpenID Connect ID Token
      * @throws IllegalArgumentException if a component is {@code null}
      */
     public OpenIdTokenResponse {

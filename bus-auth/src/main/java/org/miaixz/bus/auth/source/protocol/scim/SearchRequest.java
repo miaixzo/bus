@@ -36,6 +36,8 @@ public record SearchRequest(List<String> schemas, SearchParameters parameters) {
     /**
      * Validates and freezes the standard POST search body.
      *
+     * @param schemas    singleton standard SearchRequest schema URI
+     * @param parameters common standard search parameters
      * @throws IllegalArgumentException if a component is {@code null}
      * @throws ValidateException        if schemas is not the singleton SearchRequest schema
      */

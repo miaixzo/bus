@@ -788,6 +788,7 @@ public class Realm {
          * Creates the stateless Realm description request.
          */
         public Describe {
+            // No initialization required.
         }
 
     }
@@ -820,15 +821,20 @@ public class Realm {
     /**
      * Requests one bounded page from a recoverable Realm change feed.
      *
-     * @param kinds  non-empty requested resource categories
-     * @param limit  maximum number of returned changes
-     * @param cursor opaque continuation position, or empty for the first page
+     * @param kinds            non-empty requested resource categories
+     * @param limit            maximum number of returned changes
+     * @param cursor           opaque continuation position, or empty for the first page
+     * @param includeRelations whether to include supported relation changes in the requested feed
      * @author Kimi Liu
      */
     public record Changes(Set<Kind> kinds, int limit, Optional<Cursor> cursor, boolean includeRelations) {
 
         /**
          * Preserves existing callers which request the full supported relation projection.
+         *
+         * @param kinds  non-empty requested resource categories
+         * @param limit  maximum number of returned changes
+         * @param cursor opaque continuation position, or empty for the first page
          */
         public Changes(Set<Kind> kinds, int limit, Optional<Cursor> cursor) {
             this(kinds, limit, cursor, true);
@@ -837,9 +843,10 @@ public class Realm {
         /**
          * Validates and normalizes one Realm change request.
          *
-         * @param kinds  non-empty requested resource categories
-         * @param limit  maximum number of returned changes
-         * @param cursor opaque continuation position
+         * @param kinds            non-empty requested resource categories
+         * @param limit            maximum number of returned changes
+         * @param cursor           opaque continuation position
+         * @param includeRelations whether to include supported relation changes in the requested feed
          */
         public Changes {
             kinds = enumSet(kinds, true, "Realm change resource kinds");
@@ -1003,14 +1010,18 @@ public class Realm {
     /**
      * Returns one normalized Realm change-feed page.
      *
-     * @param changes changes in stable output order
-     * @param next    opaque next position, or empty when complete
+     * @param changes    changes in stable output order
+     * @param next       opaque next position, or empty when complete
+     * @param checkpoint optional completed-feed checkpoint for resuming a later change request
      * @author Kimi Liu
      */
     public record ChangePage(List<Change> changes, Optional<Cursor> next, Optional<Cursor> checkpoint) {
 
         /**
          * Preserves the finite-feed constructor used by other adapters.
+         *
+         * @param changes changes in stable output order
+         * @param next    opaque next position, or empty when complete
          */
         public ChangePage(List<Change> changes, Optional<Cursor> next) {
             this(changes, next, Optional.empty());
@@ -1019,8 +1030,9 @@ public class Realm {
         /**
          * Validates, de-duplicates, and freezes one Realm change page.
          *
-         * @param changes changes in stable output order
-         * @param next    opaque next position
+         * @param changes    changes in stable output order
+         * @param next       opaque next position
+         * @param checkpoint optional completed-feed checkpoint for resuming a later change request
          */
         public ChangePage {
             changes = Realm.changes(changes);

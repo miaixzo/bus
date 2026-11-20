@@ -195,6 +195,14 @@ public class DpopIssuer {
         /**
          * Validates, detaches, and freezes all issue parameters before signing can occur.
          *
+         * @param method              standard HTTP wire method
+         * @param uri                 absolute request target; query and fragment are omitted from {@code htu}
+         * @param algorithm           asymmetric JWS algorithm
+         * @param publicKey           public JWK corresponding to the signing key
+         * @param accessToken         optional access token whose exact ASCII serialization is bound through {@code ath}
+         * @param nonce               optional authorization server nonce
+         * @param protectedExtensions non-conflicting protected JOSE extension members
+         * @param claimExtensions     non-conflicting DPoP claim extensions
          * @throws IllegalArgumentException if a component is {@code null}
          * @throws ValidateException        if the method, algorithm, key, secret text, URI, or extensions are invalid
          */

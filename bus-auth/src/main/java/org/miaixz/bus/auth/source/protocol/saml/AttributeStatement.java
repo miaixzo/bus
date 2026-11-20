@@ -35,6 +35,7 @@ public record AttributeStatement(List<AttributeContent> attributes) {
     /**
      * Requires and freezes at least one attribute choice entry.
      *
+     * @param attributes one or more plain or encrypted attributes
      * @throws IllegalArgumentException if the list or an item is {@code null}
      * @throws ValidateException        if the list is empty
      */
@@ -68,6 +69,8 @@ public record AttributeStatement(List<AttributeContent> attributes) {
 
         /**
          * Requires a non-null typed attribute.
+         *
+         * @param attribute typed attribute
          */
         public PlainAttribute {
             Assert.notNull(attribute, "SAML Attribute must not be null");
@@ -85,6 +88,8 @@ public record AttributeStatement(List<AttributeContent> attributes) {
 
         /**
          * Takes ownership through non-empty defensive copying.
+         *
+         * @param xml secure namespace-aware EncryptedAttribute element bytes
          */
         public EncryptedAttribute {
             final byte[] value = Assert.notNull(xml, "SAML EncryptedAttribute XML must not be null");

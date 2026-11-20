@@ -40,6 +40,9 @@ public record RequestedAuthnContext(List<ClassReference> classReferences,
     /**
      * Requires exactly one non-empty reference family and freezes all components.
      *
+     * @param classReferences       ordered typed {@code AuthnContextClassRef} values
+     * @param declarationReferences ordered typed {@code AuthnContextDeclRef} values
+     * @param comparison            optional standard comparison value
      * @throws IllegalArgumentException if a list, item, or optional container is {@code null}
      * @throws ValidateException        if both reference families are empty or both are populated
      */
@@ -143,6 +146,7 @@ public record RequestedAuthnContext(List<ClassReference> classReferences,
         /**
          * Validates one class reference.
          *
+         * @param value absolute reference URI
          * @throws IllegalArgumentException if {@code value} is {@code null}
          * @throws ValidateException        if {@code value} is not absolute
          */
@@ -163,6 +167,7 @@ public record RequestedAuthnContext(List<ClassReference> classReferences,
         /**
          * Validates one declaration reference.
          *
+         * @param value absolute reference URI
          * @throws IllegalArgumentException if {@code value} is {@code null}
          * @throws ValidateException        if {@code value} is not absolute
          */

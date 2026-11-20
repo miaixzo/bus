@@ -51,6 +51,14 @@ public record AuthorizationRequest(ResponseType responseType, String clientId, O
     /**
      * Creates and validates an immutable authorization request.
      *
+     * @param responseType        requested registered response type
+     * @param clientId            authorization server-issued client identifier
+     * @param redirectUri         optional absolute redirection endpoint URI
+     * @param scope               optional requested scope
+     * @param state               optional client correlation and CSRF-mitigation value
+     * @param codeChallenge       optional RFC 7636 proof-key challenge
+     * @param codeChallengeMethod optional RFC 7636 proof-key transformation method
+     * @param extensions          unknown extension parameters that do not duplicate registered components
      * @throws IllegalArgumentException if a required component or optional container is {@code null}
      * @throws ValidateException        if a component violates RFC 6749 or RFC 7636 wire syntax
      */

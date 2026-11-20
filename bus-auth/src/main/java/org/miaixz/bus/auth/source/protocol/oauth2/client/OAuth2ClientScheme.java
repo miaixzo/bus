@@ -147,8 +147,16 @@ public class OAuth2ClientScheme implements ProtocolScheme<OAuth2ClientOptions> {
                             false),
                     field(OAuth2.Metadata.ISSUER, "Expected issuer", Form.Type.URL, false),
                     field(OAuth2.Parameters.CLIENT_ID, "Client identifier", Form.Type.TEXT, true),
-                    field("redirect_uris", "Registered redirect URIs", Form.Type.MULTI_SELECT, false),
-                    field("token_endpoint_auth_method", "Client authentication method", Form.Type.SELECT, true),
+                    field(
+                            OAuth2.ClientMetadata.REDIRECT_URIS,
+                            "Registered redirect URIs",
+                            Form.Type.MULTI_SELECT,
+                            false),
+                    field(
+                            OAuth2.ClientMetadata.TOKEN_ENDPOINT_AUTH_METHOD,
+                            "Client authentication method",
+                            Form.Type.SELECT,
+                            true),
                     field(OAuth2.Parameters.CLIENT_SECRET, "Client secret reference", Form.Type.SECRET, false),
                     flag("pkce_required", "Require PKCE")))));
 
