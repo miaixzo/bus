@@ -1,13 +1,4 @@
 {
-  "comment": [
-    "org.miaixz.bus.mapper.behavior.SchemaBehavior: Reflective schema extension methods, enabled when a dialect implementation is reached.",
-    "org.miaixz.bus.mapper.feature.identifier.IdentifierValidator$MetadataRules: Reflective lookup of connection-scoped identifier comparison helpers.",
-    "org.miaixz.bus.mapper.feature.schema.SchemaReport$Diagnostic: Schema diagnostic record accessors, fields and canonical constructor for JSON binding.",
-    "org.miaixz.bus.mapper.feature.schema.SchemaReport$Stage: Enum constant access used when binding schema diagnostic stages.",
-    "org.miaixz.bus.mapper.feature.schema.SchemaReport$Status: Enum constant access used when binding schema diagnostic dispositions.",
-    "org.miaixz.bus.mapper.feature.schema.SqlTypeDescriptor$Comparison: Enum constant access for schema type comparison results.",
-    "org.miaixz.bus.mapper.feature.schema.SqlTypeDescriptor$LengthUnit: Enum constant access for type-descriptor capacity units."
-  ],
   "reflection": [
     {
       "type": "org.miaixz.bus.mapper.Args",

@@ -1,7 +1,4 @@
 {
-  "comment": [
-    "Resource bundle com.sun.org.apache.xml.internal.serializer.XMLEntities is supplied by module java.xml."
-  ],
   "reflection": [
     {
       "type": "java.lang.Boolean",
