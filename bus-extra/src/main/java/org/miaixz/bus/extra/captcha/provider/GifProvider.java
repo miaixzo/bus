@@ -175,11 +175,8 @@ public class GifProvider extends AbstractProvider {
     }
 
     /**
-     * Description inherited from parent class or interface.
-     * <p>
      * Creates an animated GIF CAPTCHA with multiple frames. Each frame displays one character of the code with
      * different transparency and color variations for visual appeal.
-     * </p>
      */
     @Override
     public void of() {
@@ -208,11 +205,8 @@ public class GifProvider extends AbstractProvider {
     }
 
     /**
-     * Description inherited from parent class or interface.
-     * <p>
      * This method is not used in the GIF provider as the image is created directly in the {@link #of()} method to
      * support animated frames.
-     * </p>
      *
      * @param code the CAPTCHA code (not used in GIF implementation)
      * @return {@code null} as GIF creation is handled in {@link #of()}
