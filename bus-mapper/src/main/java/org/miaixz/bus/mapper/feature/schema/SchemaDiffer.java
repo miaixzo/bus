@@ -494,7 +494,7 @@ public class SchemaDiffer {
                     || primaryKeyIndex(table, actual)) {
                 continue;
             }
-            if (!expectedNames.contains(snapshot.actualKey(actual.name()))) {
+            if (actual.predicate() == null && !expectedNames.contains(snapshot.actualKey(actual.name()))) {
                 diffs.add(
                         SchemaDiff.of(
                                 actual.unique() ? Behavior.DROP_UNIQUE : Behavior.DROP_INDEX,
@@ -630,7 +630,9 @@ public class SchemaDiffer {
     public List<IndexMeta> expectedIndexes(TableMeta table) {
         List<IndexMeta> indexes = new ArrayList<>();
         for (IndexMeta index : table.indexes()) {
-            addIndex(indexes, index);
+            if (index.predicate() == null || operations.supportsPartialIndexes()) {
+                addIndex(indexes, index);
+            }
         }
         for (ColumnMeta column : table.columns()) {
             if (Boolean.TRUE.equals(column.unique())) {
@@ -665,7 +667,7 @@ public class SchemaDiffer {
             return;
         }
         boolean exists = indexes.stream().anyMatch(
-                current -> current.unique() == index.unique()
+                current -> current.unique() == index.unique() && Objects.equals(current.predicate(), index.predicate())
                         && TableSnapshot.sameColumns(current.columns(), index.columns()));
         if (!exists) {
             indexes.add(index);

@@ -234,13 +234,30 @@ public class WadoRS {
     TrustManager[] trustManagers() {
         return new TrustManager[] { new X509TrustManager() {
 
+            /**
+             * Returns the empty issuer list used by this permissive trust manager.
+             *
+             * @return empty array of accepted issuers
+             */
             public X509Certificate[] getAcceptedIssuers() {
                 return new X509Certificate[0];
             }
 
+            /**
+             * Accepts the client certificate chain without validation.
+             *
+             * @param certs    client certificate chain supplied to this permissive trust manager
+             * @param authType client authentication algorithm
+             */
             public void checkClientTrusted(X509Certificate[] certs, String authType) {
             }
 
+            /**
+             * Accepts the server certificate chain without validation.
+             *
+             * @param certs    server certificate chain supplied to this permissive trust manager
+             * @param authType server authentication algorithm
+             */
             public void checkServerTrusted(X509Certificate[] certs, String authType) {
             }
 

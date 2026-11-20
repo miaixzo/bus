@@ -109,6 +109,14 @@ public class TableAnnotationBuilder implements TableSchemaBuilder {
                                         + "idx",
                         index.unique(),
                         columns);
+                String options = index.options().strip();
+                if (options.regionMatches(true, 0, "WHERE ", 0, "WHERE ".length())) {
+                    String predicate = IndexMeta.integerEquality(options.substring("WHERE ".length()));
+                    if (predicate == null) {
+                        throw new IllegalArgumentException("Unsupported partial index predicate: " + index.name());
+                    }
+                    definition.predicate(predicate);
+                }
                 tableMeta.addIndex(definition);
             }
             for (UniqueConstraint unique : table.uniqueConstraints()) {

@@ -814,6 +814,9 @@
         },
         {
           "name": "version"
+        },
+        {
+          "name": "isHump"
         }
       ],
       "methods": [

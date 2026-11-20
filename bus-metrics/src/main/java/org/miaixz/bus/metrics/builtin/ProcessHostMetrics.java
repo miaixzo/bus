@@ -93,7 +93,7 @@ public final class ProcessHostMetrics implements MetricBinder {
      *
      * @param name       metric name
      * @param kind       instrument kind
-     * @param numberKind numeric representation
+     * @param number     numeric representation
      * @param unit       metric unit
      * @param attributes ordered attribute schema
      * @return metric descriptor
@@ -237,10 +237,11 @@ public final class ProcessHostMetrics implements MetricBinder {
     /**
      * Registers an observable scalar derived from the current process.
      *
-     * @param group      transactional registration group
-     * @param provider   target provider
-     * @param descriptor metric descriptor
-     * @param value      value extractor
+     * @param group    transactional registration group
+     * @param provider target provider
+     * @param name     metric instrument name
+     * @param unit     measurement unit of the metric
+     * @param getter   function extracting the current process metric value
      */
     private void scalarLong(
             RegistrationGroup group,
@@ -258,11 +259,12 @@ public final class ProcessHostMetrics implements MetricBinder {
     /**
      * Registers an observable scalar that may be unavailable on the platform.
      *
-     * @param group      transactional registration group
-     * @param provider   target provider
-     * @param descriptor metric descriptor
-     * @param value      optional value extractor
-     * @param attributes series attributes
+     * @param group    transactional registration group
+     * @param provider target provider
+     * @param name     metric instrument name
+     * @param kind     instrument kind used by the metric descriptor
+     * @param unit     measurement unit of the metric
+     * @param getter   function extracting the current process metric value
      */
     private void optionalLong(
             RegistrationGroup group,

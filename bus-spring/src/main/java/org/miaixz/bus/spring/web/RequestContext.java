@@ -611,6 +611,7 @@ public class RequestContext {
          *
          * @param value numeric text
          * @return parsed number
+         * @throws NumberFormatException if the text is not a valid number for the requested numeric type
          */
 
         T parse(String value) throws NumberFormatException;

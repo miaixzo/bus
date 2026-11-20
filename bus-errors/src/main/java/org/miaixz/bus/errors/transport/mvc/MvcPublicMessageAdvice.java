@@ -48,6 +48,7 @@ public final class MvcPublicMessageAdvice implements ResponseBodyAdvice<Object> 
      * Creates the stateless legacy response adapter.
      */
     public MvcPublicMessageAdvice() {
+        // No initialization required.
     }
 
     /**

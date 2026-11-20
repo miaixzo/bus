@@ -40,6 +40,8 @@ public abstract class AbstractFirmware implements Firmware {
 
     /**
      * Multiple classes don't have these, set defaults here
+     *
+     * @return firmware name, or the configured unknown-value fallback
      */
     @Override
     public String getName() {

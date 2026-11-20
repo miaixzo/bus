@@ -402,7 +402,6 @@ public class MacInstalledApps {
      * @param xml     the xml
      * @param keyName the key name
      * @return the read string value result
-     * @throws Exception if the exception condition occurs
      */
     private static String readStringValue(String xml, String keyName) {
         int i = xml.indexOf("<key>" + keyName + "</key>");

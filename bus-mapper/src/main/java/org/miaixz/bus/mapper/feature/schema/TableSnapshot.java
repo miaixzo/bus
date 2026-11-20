@@ -22,6 +22,7 @@ package org.miaixz.bus.mapper.feature.schema;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 import lombok.Getter;
@@ -125,7 +126,8 @@ public class TableSnapshot {
             return false;
         }
         return normalizeIdentifier(actual.name()).equals(normalizeIdentifier(expected.name()))
-                && actual.unique() == expected.unique() && sameColumns(actual.columns(), expected.columns());
+                && actual.unique() == expected.unique() && Objects.equals(actual.predicate(), expected.predicate())
+                && sameColumns(actual.columns(), expected.columns());
     }
 
     /**
@@ -304,8 +306,8 @@ public class TableSnapshot {
     }
 
     /**
-     * Compares an index's name, uniqueness and ordered columns using this snapshot's naming rules. The caller must
-     * separately reject indexes listed as incomplete.
+     * Compares an index's name, uniqueness, predicate and ordered columns using this snapshot's naming rules. The
+     * caller must separately reject indexes listed as incomplete.
      *
      * @param actual   the observed index
      * @param expected the mapped index
@@ -313,7 +315,8 @@ public class TableSnapshot {
      */
     public boolean matchesIndex(IndexMeta actual, IndexMeta expected) {
         return actual != null && expected != null && matches(actual.name(), expected.name())
-                && actual.unique() == expected.unique() && matchesColumns(actual.columns(), expected.columns());
+                && actual.unique() == expected.unique() && Objects.equals(actual.predicate(), expected.predicate())
+                && matchesColumns(actual.columns(), expected.columns());
     }
 
     /**

@@ -118,7 +118,7 @@ public class LinuxCgroupInfo implements CgroupInfo {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Returns whether the current process is running in a containerized environment.
      *
      * @return {@code true} if the process appears containerized
      */
@@ -128,7 +128,7 @@ public class LinuxCgroupInfo implements CgroupInfo {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Returns the cgroup version being used.
      *
      * @return the detected cgroup version
      */
@@ -138,7 +138,7 @@ public class LinuxCgroupInfo implements CgroupInfo {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Returns the CPU quota for the cgroup in microseconds.
      *
      * @return the CPU quota in microseconds
      */
@@ -148,7 +148,7 @@ public class LinuxCgroupInfo implements CgroupInfo {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Returns the CPU period for the cgroup in microseconds.
      *
      * @return the CPU period in microseconds
      */
@@ -158,7 +158,7 @@ public class LinuxCgroupInfo implements CgroupInfo {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Returns the total CPU usage for the cgroup in nanoseconds.
      *
      * @return the CPU usage in nanoseconds
      */
@@ -174,7 +174,7 @@ public class LinuxCgroupInfo implements CgroupInfo {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Returns the memory limit for the cgroup in bytes.
      *
      * @return the memory limit in bytes
      */
@@ -184,7 +184,7 @@ public class LinuxCgroupInfo implements CgroupInfo {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Returns the current memory usage for the cgroup in bytes.
      *
      * @return the memory usage in bytes
      */
@@ -200,7 +200,7 @@ public class LinuxCgroupInfo implements CgroupInfo {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Returns the maximum number of PIDs allowed in the cgroup.
      *
      * @return the PID limit
      */
@@ -210,7 +210,7 @@ public class LinuxCgroupInfo implements CgroupInfo {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Returns the current number of PIDs in the cgroup.
      *
      * @return the current PID count
      */

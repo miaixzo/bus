@@ -105,6 +105,7 @@ public class Egress {
          * Utility entry point for the shared HTTP client.
          */
         private Http() {
+            // No initialization required.
         }
 
         /**
@@ -405,6 +406,7 @@ public class Egress {
          * Utility entry point for gRPC gateway requests.
          */
         private Grpc() {
+            // No initialization required.
         }
 
         /**

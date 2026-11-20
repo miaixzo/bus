@@ -42,7 +42,6 @@ import org.miaixz.bus.logger.Logger;
  * </ul>
  * The single-connection variant wraps the raw {@link Connection} in a no-close proxy so that try-with-resources blocks
  * do not terminate the underlying connection (and thus the in-memory database state).
- * </p>
  *
  * @author Kimi Liu
  */
@@ -82,7 +81,6 @@ class JdbcRunner {
      * <p>
      * Suitable for embedded / in-memory databases such as H2 and SQLite, where closing the connection would destroy all
      * in-memory data. The returned connection is wrapped in a no-op-close proxy.
-     * </p>
      *
      * @param driverClassName fully-qualified JDBC driver class name
      * @param url             JDBC URL
@@ -180,7 +178,6 @@ class JdbcRunner {
      * Column names are taken from {@link ResultSetMetaData#getColumnLabel(int)} and are returned in the case provided
      * by the JDBC driver (H2 uses upper-case; MySQL/PostgreSQL/SQLite use lower-case). Callers should access columns
      * accordingly.
-     * </p>
      *
      * @param sql    the parameterized SQL string
      * @param params positional bind parameters
@@ -223,7 +220,6 @@ class JdbcRunner {
      * <p>
      * The connection is wrapped via a dynamic proxy that turns {@code close()} into a no-op, so that try-with-resources
      * blocks do not terminate the underlying connection and thereby destroy the in-memory database state (H2, SQLite).
-     * </p>
      *
      * @author Kimi Liu
      */

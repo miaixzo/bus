@@ -81,6 +81,12 @@ public class CachedBodyFilter implements Filter, Ordered {
 
     /**
      * Wraps supported requests and responses with bounded repeatable-body access.
+     *
+     * @param request  incoming Servlet request
+     * @param response outgoing Servlet response
+     * @param chain    remaining filter chain
+     * @throws ServletException if downstream servlet or filter processing fails
+     * @throws IOException      if an underlying input or output operation fails
      */
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)

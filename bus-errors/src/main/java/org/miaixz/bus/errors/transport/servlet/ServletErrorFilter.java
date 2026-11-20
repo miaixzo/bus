@@ -50,6 +50,7 @@ public final class ServletErrorFilter implements Filter {
      * Creates the stateless error guard for Servlet dispatches.
      */
     public ServletErrorFilter() {
+        // No initialization required.
     }
 
     /**
@@ -260,24 +261,41 @@ public final class ServletErrorFilter implements Filter {
             /** Container's Servlet stream. */
             private final ServletOutputStream delegate;
 
-            /** Creates a guarded writer for the given container stream. */
+            /**
+             * Creates a guarded writer for the given container stream.
+             *
+             * @param delegate container output stream wrapped by the response guard
+             */
             private GuardedStream(ServletOutputStream delegate) {
                 this.delegate = delegate;
             }
 
-            /** Returns the container stream's nonblocking write readiness. */
+            /**
+             * Returns the container stream's nonblocking write readiness.
+             *
+             * @return whether the container stream is ready for a nonblocking write
+             */
             @Override
             public boolean isReady() {
                 return this.delegate.isReady();
             }
 
-            /** Registers a nonblocking callback with the container stream. */
+            /**
+             * Registers a nonblocking callback with the container stream.
+             *
+             * @param listener nonblocking write listener
+             */
             @Override
             public void setWriteListener(WriteListener listener) {
                 this.delegate.setWriteListener(listener);
             }
 
-            /** Writes one byte after checking the response. */
+            /**
+             * Writes one byte after checking the response.
+             *
+             * @param value the byte value
+             * @throws IOException if an underlying input or output operation fails
+             */
             @Override
             public void write(int value) throws IOException {
                 if (!rejectIfUnapproved()) {
@@ -285,7 +303,14 @@ public final class ServletErrorFilter implements Filter {
                 }
             }
 
-            /** Writes a byte range after checking the response. */
+            /**
+             * Writes a byte range after checking the response.
+             *
+             * @param bytes  the source bytes
+             * @param offset the starting offset in the byte array
+             * @param length the byte count
+             * @throws IOException if an underlying input or output operation fails
+             */
             @Override
             public void write(byte[] bytes, int offset, int length) throws IOException {
                 if (!rejectIfUnapproved()) {
@@ -293,7 +318,11 @@ public final class ServletErrorFilter implements Filter {
                 }
             }
 
-            /** Flushes only an allowed response. */
+            /**
+             * Flushes only an allowed response.
+             *
+             * @throws IOException if an underlying input or output operation fails
+             */
             @Override
             public void flush() throws IOException {
                 if (!rejectIfUnapproved()) {
@@ -301,7 +330,11 @@ public final class ServletErrorFilter implements Filter {
                 }
             }
 
-            /** Closes only an allowed response writer. */
+            /**
+             * Closes only an allowed response writer.
+             *
+             * @throws IOException if an underlying input or output operation fails
+             */
             @Override
             public void close() throws IOException {
                 if (!rejectIfUnapproved()) {
@@ -319,12 +352,23 @@ public final class ServletErrorFilter implements Filter {
             /** Container's character writer. */
             private final PrintWriter delegate;
 
-            /** Creates a guarded writer for the given container writer. */
+            /**
+             * Creates a guarded writer for the given container writer.
+             *
+             * @param delegate container writer wrapped by the response guard
+             */
             private GuardedWriter(PrintWriter delegate) {
                 this.delegate = delegate;
             }
 
-            /** Writes a character range after checking the response. */
+            /**
+             * Writes a character range after checking the response.
+             *
+             * @param chars  character array to write
+             * @param offset source offset
+             * @param length character count
+             * @throws IOException if an underlying input or output operation fails
+             */
             @Override
             public void write(char[] chars, int offset, int length) throws IOException {
                 if (!rejectIfUnapproved()) {
@@ -332,7 +376,11 @@ public final class ServletErrorFilter implements Filter {
                 }
             }
 
-            /** Flushes only an allowed response. */
+            /**
+             * Flushes only an allowed response.
+             *
+             * @throws IOException if an underlying input or output operation fails
+             */
             @Override
             public void flush() throws IOException {
                 if (!rejectIfUnapproved()) {
@@ -340,7 +388,11 @@ public final class ServletErrorFilter implements Filter {
                 }
             }
 
-            /** Closes only an allowed response writer. */
+            /**
+             * Closes only an allowed response writer.
+             *
+             * @throws IOException if an underlying input or output operation fails
+             */
             @Override
             public void close() throws IOException {
                 if (!rejectIfUnapproved()) {

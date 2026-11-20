@@ -458,6 +458,8 @@ public class TlsSocketChannel implements Conduit {
 
     /**
      * JSSE already performs trust and endpoint verification; only custom cleaning or pins need a second pass.
+     *
+     * @return whether custom certificate cleaning or certificate pins require an additional validation pass
      */
     private boolean requiresPolicyValidation() {
         return settings.certificate().chainCleaner() != null || !settings.certificate().pins().isEmpty();

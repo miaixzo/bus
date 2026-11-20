@@ -39,6 +39,14 @@ public record DiskSnapshot(String device, OptionalLong sizeBytes, OptionalLong r
 
     /**
      * Validates the device identity and optional values.
+     *
+     * @param device             stable device name
+     * @param sizeBytes          device size when available
+     * @param reads              cumulative read operations when available
+     * @param readBytes          cumulative bytes read when available
+     * @param writes             cumulative write operations when available
+     * @param writeBytes         cumulative bytes written when available
+     * @param transferTimeMillis cumulative transfer time when available
      */
     public DiskSnapshot {
         if (device == null || device.isBlank()) {

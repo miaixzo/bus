@@ -562,8 +562,8 @@ public abstract class AbstractDialect implements Dialect {
 
     /**
      * Reads index metadata for the supplied mapper table. Columns are ordered by JDBC ordinal position; definitions
-     * with filters, expression members, missing ordinals, or unknown uniqueness retain an empty column list so the
-     * table snapshot can diagnose incomplete information instead of automatically replacing those indexes.
+     * with unsupported filters, expression members, missing ordinals, or unknown uniqueness retain an empty column list
+     * so the table snapshot can diagnose incomplete information instead of automatically replacing those indexes.
      *
      * @param connection the JDBC connection used to read database metadata
      * @param table      the mapper table metadata
@@ -617,15 +617,18 @@ public abstract class AbstractDialect implements Dialect {
                 boolean missingOrdinal = rs.wasNull() || ordinal <= 0;
                 boolean nonUnique = rs.getBoolean("NON_UNIQUE");
                 boolean missingUniqueness = rs.wasNull();
-                indexes.computeIfAbsent(name, key -> new IndexMeta().name(key).unique(!nonUnique));
+                IndexMeta index = indexes.computeIfAbsent(name, key -> new IndexMeta().name(key).unique(!nonUnique));
                 String filter;
                 try {
                     filter = rs.getString("FILTER_CONDITION");
                 } catch (SQLException unsupported) {
                     filter = "unavailable";
                 }
+                boolean filtered = filter != null && !filter.isBlank();
+                String predicate = filtered && supportsPartialIndexes() ? IndexMeta.integerEquality(filter) : null;
+                index.predicate(predicate);
                 SortedMap<Integer, String> cols = ordered.computeIfAbsent(name, key -> new TreeMap<>());
-                if (column == null || missingOrdinal || missingUniqueness || filter != null && !filter.isBlank()
+                if (column == null || missingOrdinal || missingUniqueness || filtered && predicate == null
                         || cols.putIfAbsent(ordinal, column) != null)
                     incomplete.add(name);
             }
@@ -777,7 +780,27 @@ public abstract class AbstractDialect implements Dialect {
     @Override
     public String createIndex(TableMeta table, IndexMeta index) {
         return "CREATE INDEX " + identifier(index.name()) + " ON " + tableName(table) + " ("
-                + columnList(index.columns()) + Symbol.PARENTHESE_RIGHT;
+                + columnList(index.columns()) + Symbol.PARENTHESE_RIGHT + indexOptions(index);
+    }
+
+    /**
+     * Appends the supported dialect predicate to an index definition.
+     *
+     * @param index mapped index definition
+     * @return SQL clause for filtered indexes or an empty string for ordinary indexes
+     */
+    private String indexOptions(IndexMeta index) {
+        if (index.predicate() == null) {
+            return Normal.EMPTY;
+        }
+        if (!supportsPartialIndexes()) {
+            throw new UnsupportedOperationException("Partial index requires a supporting dialect: " + index.name());
+        }
+        String predicate = IndexMeta.integerEquality(index.predicate());
+        if (predicate == null) {
+            throw new IllegalArgumentException("Unsupported partial index predicate: " + index.name());
+        }
+        return " WHERE " + predicate;
     }
 
     /**
@@ -802,7 +825,7 @@ public abstract class AbstractDialect implements Dialect {
     @Override
     public String createUnique(TableMeta table, IndexMeta index) {
         return "CREATE UNIQUE INDEX " + identifier(index.name()) + " ON " + tableName(table) + " ("
-                + columnList(index.columns()) + Symbol.PARENTHESE_RIGHT;
+                + columnList(index.columns()) + Symbol.PARENTHESE_RIGHT + indexOptions(index);
     }
 
     /**

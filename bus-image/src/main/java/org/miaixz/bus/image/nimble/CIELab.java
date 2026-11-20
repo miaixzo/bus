@@ -35,6 +35,7 @@ public class CIELab {
      * Creates a color conversion helper instance for compatibility with existing callers.
      */
     public CIELab() {
+        // No initialization required.
     }
 
     /**

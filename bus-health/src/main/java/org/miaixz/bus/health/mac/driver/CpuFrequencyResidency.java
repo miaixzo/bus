@@ -60,6 +60,7 @@ public final class CpuFrequencyResidency {
      * Prevents instantiation.
      */
     private CpuFrequencyResidency() {
+        // No initialization required.
     }
 
     /**

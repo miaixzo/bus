@@ -156,6 +156,11 @@ public class StreamSCU {
             }
         }
 
+        /**
+         * Records the C-STORE response status and updates transfer progress.
+         *
+         * @param cmd C-STORE response command containing the DIMSE status
+         */
         private void onCStoreRSP(Attributes cmd) {
             int status = cmd.getInt(Tag.Status, -1);
             state.setStatus(status);

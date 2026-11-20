@@ -332,7 +332,7 @@ public class SignatureVerifier {
 
         String token = Http.Auth.bearerToken(context.getHeaders());
         if (StringKit.isNotBlank(token)) {
-            validateJwt(token);
+            validateBearer(token);
             return new KeyBinding(derive(Signing.Credential.TOKEN, token, method, timestamp),
                     Signing.Credential.TOKEN.key());
         }
@@ -351,7 +351,7 @@ public class SignatureVerifier {
      * Derives a fixed-size v1 HMAC key without constructing a credential-sized concatenated string.
      *
      * @param credentialType credential domain
-     * @param credential     raw Bearer JWT or API key
+     * @param credential     raw bearer token or API key
      * @param method         logical API method
      * @param timestamp      request timestamp
      * @return 32-byte SHA-256 key material
@@ -478,15 +478,19 @@ public class SignatureVerifier {
     }
 
     /**
-     * Validates the bounded canonical three-segment representation required for v1 Bearer JWTs.
+     * Validates a compact JWT or the 256-bit Base64URL bearer format issued by OAuth2. Authorization still requires the
+     * configured online verifier to accept the original bearer.
      *
-     * @param token raw Bearer JWT
+     * @param token raw bearer credential
      */
-    private static void validateJwt(String token) {
+    private static void validateBearer(String token) {
         if (!isAsciiWithin(token, Normal._8192)) {
             throw new ValidateException(ErrorCode._100109);
         }
         int first = token.indexOf(Symbol.DOT);
+        if (first < 0 && token.length() == Normal._43 && isBase64Url(token, 0, token.length())) {
+            return;
+        }
         int second = first < 0 ? -1 : token.indexOf(Symbol.DOT, first + 1);
         if (first <= 0 || second <= first + 1 || second >= token.length() - 1
                 || token.indexOf(Symbol.DOT, second + 1) >= 0 || !isBase64Url(token, 0, first)
@@ -496,9 +500,9 @@ public class SignatureVerifier {
     }
 
     /**
-     * Tests whether one compact JWT segment contains only unpadded Base64URL characters.
+     * Tests whether the credential segment contains only unpadded Base64URL characters.
      *
-     * @param value source JWT
+     * @param value source credential
      * @param start inclusive segment start
      * @param end   exclusive segment end
      * @return {@code true} when the segment is valid

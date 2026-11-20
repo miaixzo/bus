@@ -382,6 +382,7 @@ public final class ErrorBoundary {
          * Creates the independent diagnostic sink.
          */
         private SystemErrorLogSink() {
+            // No initialization required.
         }
 
         /**
@@ -489,6 +490,7 @@ public final class ErrorBoundary {
          * Creates independent claims for one operation.
          */
         private Operation() {
+            // No initialization required.
         }
 
         /**

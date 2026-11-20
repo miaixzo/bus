@@ -3394,6 +3394,9 @@
         },
         {
           "name": "version"
+        },
+        {
+          "name": "oTradeNum"
         }
       ],
       "methods": [
@@ -3559,6 +3562,9 @@
         },
         {
           "name": "version"
+        },
+        {
+          "name": "oTradeNum"
         }
       ],
       "methods": [
@@ -3827,6 +3833,9 @@
         },
         {
           "name": "version"
+        },
+        {
+          "name": "oTradeNum"
         }
       ],
       "methods": [

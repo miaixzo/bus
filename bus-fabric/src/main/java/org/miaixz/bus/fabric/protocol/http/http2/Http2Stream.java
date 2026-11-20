@@ -934,6 +934,8 @@ public class Http2Stream implements AutoCloseable {
     private final class StreamPayload implements Payload, Source {
 
         /**
+         * Reports that the streaming payload length is unknown.
+         *
          * @return unknown streaming length
          */
         @Override
@@ -942,6 +944,8 @@ public class Http2Stream implements AutoCloseable {
         }
 
         /**
+         * Returns the payload's source for a single consumption.
+         *
          * @return this source on the first invocation
          */
         @Override
@@ -956,6 +960,8 @@ public class Http2Stream implements AutoCloseable {
         }
 
         /**
+         * Reports that the streaming payload cannot be replayed.
+         *
          * @return false
          */
         @Override
@@ -1004,6 +1010,8 @@ public class Http2Stream implements AutoCloseable {
         }
 
         /**
+         * Returns the no-timeout policy of the stream source.
+         *
          * @return no per-source timeout
          */
         @Override
@@ -1031,6 +1039,7 @@ public class Http2Stream implements AutoCloseable {
          *
          * @param source    source buffer
          * @param byteCount byte count
+         * @throws IOException if an underlying input or output operation fails
          */
         @Override
         public void write(final Buffer source, final long byteCount) throws IOException {
@@ -1050,6 +1059,8 @@ public class Http2Stream implements AutoCloseable {
         }
 
         /**
+         * Returns the no-timeout policy of the inbound sink.
+         *
          * @return no per-sink timeout
          */
         @Override

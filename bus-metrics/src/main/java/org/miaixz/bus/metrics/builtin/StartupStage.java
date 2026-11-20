@@ -32,6 +32,9 @@ public record StartupStage(String name, long durationMillis) {
 
     /**
      * Validates one startup stage.
+     *
+     * @param name           stable stage name used as the metrics tag
+     * @param durationMillis stage duration in milliseconds
      */
     public StartupStage {
         Objects.requireNonNull(name, "name");

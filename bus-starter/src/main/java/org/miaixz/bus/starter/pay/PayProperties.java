@@ -81,6 +81,8 @@ public class PayProperties {
     }
 
     /**
+     * Returns a safe diagnostic representation of this configuration.
+     *
      * @return masked diagnostic representation
      */
     @Override

@@ -62,6 +62,7 @@ public final class ErrorLogPolicy {
      * Prevents construction of the stateless log policy.
      */
     private ErrorLogPolicy() {
+        // No initialization required.
     }
 
     /**

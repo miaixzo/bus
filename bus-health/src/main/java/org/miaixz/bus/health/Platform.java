@@ -623,6 +623,10 @@ public class Platform {
 
     /**
      * Returns whether a file exists in one of the supplied directories.
+     *
+     * @param fileName    library or file name to locate
+     * @param directories directories to inspect
+     * @return whether the file exists in at least one of the supplied directories
      */
     private static boolean isFilePresent(String fileName, List<String> directories) {
         for (String directory : directories) {
@@ -635,6 +639,10 @@ public class Platform {
 
     /**
      * Returns whether JNA mapped the request to an AIX archive that cannot be loaded without a member name.
+     *
+     * @param platform detected native platform
+     * @param fileName library or file name to locate
+     * @return whether the requested native library is an AIX archive requiring a member name
      */
     private static boolean isAixArchive(OS platform, String fileName) {
         return platform == OS.AIX && fileName.endsWith(".a");
@@ -642,6 +650,9 @@ public class Platform {
 
     /**
      * Adds non-empty entries from a native library path.
+     *
+     * @param directories directories to inspect
+     * @param path        search-path text whose entries are added to the directory set
      */
     private static void addPathEntries(List<String> directories, String path) {
         if (path != null) {

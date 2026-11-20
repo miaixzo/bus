@@ -1,4 +1,13 @@
 {
+  "comment": [
+    "org.miaixz.bus.mapper.behavior.SchemaBehavior: Reflective schema extension methods, enabled when a dialect implementation is reached.",
+    "org.miaixz.bus.mapper.feature.identifier.IdentifierValidator$MetadataRules: Reflective lookup of connection-scoped identifier comparison helpers.",
+    "org.miaixz.bus.mapper.feature.schema.SchemaReport$Diagnostic: Schema diagnostic record accessors, fields and canonical constructor for JSON binding.",
+    "org.miaixz.bus.mapper.feature.schema.SchemaReport$Stage: Enum constant access used when binding schema diagnostic stages.",
+    "org.miaixz.bus.mapper.feature.schema.SchemaReport$Status: Enum constant access used when binding schema diagnostic dispositions.",
+    "org.miaixz.bus.mapper.feature.schema.SqlTypeDescriptor$Comparison: Enum constant access for schema type comparison results.",
+    "org.miaixz.bus.mapper.feature.schema.SqlTypeDescriptor$LengthUnit: Enum constant access for type-descriptor capacity units."
+  ],
   "reflection": [
     {
       "type": "org.miaixz.bus.mapper.Args",
@@ -156,6 +165,9 @@
         },
         {
           "name": "MODIFY_COLUMN_COMMENT"
+        },
+        {
+          "name": "group"
         }
       ],
       "methods": [
@@ -1015,8 +1027,7 @@
       ],
       "condition": {
         "typeReached": "org.miaixz.bus.mapper.behavior.SchemaBehavior"
-      },
-      "reason": "Reflective schema extension methods, enabled when a dialect implementation is reached."
+      }
     },
     {
       "type": "org.miaixz.bus.mapper.binding.basic.ClassMapper$CachingEntityClass",
@@ -5052,8 +5063,7 @@
       ],
       "condition": {
         "typeReached": "org.miaixz.bus.mapper.feature.identifier.IdentifierValidator"
-      },
-      "reason": "Reflective lookup of connection-scoped identifier comparison helpers."
+      }
     },
     {
       "type": "org.miaixz.bus.mapper.feature.keygen.GenId$NULL",
@@ -6300,6 +6310,12 @@
         },
         {
           "name": "COMMENT"
+        },
+        {
+          "name": "FOREIGN_KEY_REMOVAL"
+        },
+        {
+          "name": "INDEX_REMOVAL"
         }
       ],
       "methods": [
@@ -7152,8 +7168,7 @@
       ],
       "condition": {
         "typeReached": "org.miaixz.bus.mapper.feature.schema.SchemaReport"
-      },
-      "reason": "Schema diagnostic record accessors, fields and canonical constructor for JSON binding."
+      }
     },
     {
       "type": "org.miaixz.bus.mapper.feature.schema.SchemaReport$Stage",
@@ -7185,8 +7200,7 @@
       ],
       "condition": {
         "typeReached": "org.miaixz.bus.mapper.feature.schema.SchemaReport"
-      },
-      "reason": "Enum constant access used when binding schema diagnostic stages."
+      }
     },
     {
       "type": "org.miaixz.bus.mapper.feature.schema.SchemaReport$Status",
@@ -7239,8 +7253,7 @@
       ],
       "condition": {
         "typeReached": "org.miaixz.bus.mapper.feature.schema.SchemaReport"
-      },
-      "reason": "Enum constant access used when binding schema diagnostic dispositions."
+      }
     },
     {
       "type": "org.miaixz.bus.mapper.feature.schema.SqlTypeDescriptor",
@@ -7409,8 +7422,7 @@
       ],
       "condition": {
         "typeReached": "org.miaixz.bus.mapper.feature.schema.SqlTypeDescriptor"
-      },
-      "reason": "Enum constant access for schema type comparison results."
+      }
     },
     {
       "type": "org.miaixz.bus.mapper.feature.schema.SqlTypeDescriptor$LengthUnit",
@@ -7439,8 +7451,7 @@
       ],
       "condition": {
         "typeReached": "org.miaixz.bus.mapper.feature.schema.SqlTypeDescriptor"
-      },
-      "reason": "Enum constant access for type-descriptor capacity units."
+      }
     },
     {
       "type": "org.miaixz.bus.mapper.feature.schema.TableSnapshot",
@@ -7908,6 +7919,9 @@
         },
         {
           "name": "affixSuffix"
+        },
+        {
+          "name": "required"
         }
       ],
       "methods": [
@@ -7999,6 +8013,16 @@
           "name": "removeAffixes",
           "parameterTypes": [
             "java.lang.String"
+          ]
+        },
+        {
+          "name": "isRequired",
+          "parameterTypes": []
+        },
+        {
+          "name": "setRequired",
+          "parameterTypes": [
+            "boolean"
           ]
         }
       ]
@@ -10416,6 +10440,9 @@
         },
         {
           "name": "scriptLocation"
+        },
+        {
+          "name": "allowModifyComment"
         }
       ],
       "methods": [
@@ -10752,6 +10779,16 @@
           "parameterTypes": [
             "java.lang.String"
           ]
+        },
+        {
+          "name": "isAllowModifyComment",
+          "parameterTypes": []
+        },
+        {
+          "name": "setAllowModifyComment",
+          "parameterTypes": [
+            "boolean"
+          ]
         }
       ]
     },
@@ -10769,6 +10806,15 @@
         },
         {
           "name": "ignoreMappers"
+        },
+        {
+          "name": "required"
+        },
+        {
+          "name": "mode"
+        },
+        {
+          "name": "enableSqlCache"
         }
       ],
       "methods": [
@@ -10814,6 +10860,36 @@
           "name": "setIgnoreMappers",
           "parameterTypes": [
             "java.lang.String"
+          ]
+        },
+        {
+          "name": "isRequired",
+          "parameterTypes": []
+        },
+        {
+          "name": "getMode",
+          "parameterTypes": []
+        },
+        {
+          "name": "isEnableSqlCache",
+          "parameterTypes": []
+        },
+        {
+          "name": "setRequired",
+          "parameterTypes": [
+            "boolean"
+          ]
+        },
+        {
+          "name": "setMode",
+          "parameterTypes": [
+            "org.miaixz.bus.mapper.Charter$Isolation"
+          ]
+        },
+        {
+          "name": "setEnableSqlCache",
+          "parameterTypes": [
+            "boolean"
           ]
         }
       ]

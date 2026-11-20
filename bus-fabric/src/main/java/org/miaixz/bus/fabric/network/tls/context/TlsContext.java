@@ -304,6 +304,11 @@ public class TlsContext {
 
     /**
      * Builds and reuses the host-specific parameter template copied by each newly created SSLSocket.
+     *
+     * @param host     peer host name used to prepare TLS parameters
+     * @param settings TLS policy and protocol settings to apply
+     * @param engine   negotiated engine configuration used to prepare the socket
+     * @return host-specific TLS parameter template for new sockets
      */
     private SSLParameters socketParameters(
             final String host,

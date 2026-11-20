@@ -603,6 +603,7 @@ public class DefaultWorkflowTransport implements WorkflowTransport {
      * @param target     target object
      * @param methodName method name
      * @return invocation result
+     * @throws ReflectiveOperationException if the required SDK method or field cannot be located or accessed
      */
     private Object invokeNoArgRequired(Object target, String methodName) throws ReflectiveOperationException {
         Method method = workflowServiceStubsType().getMethod(methodName);

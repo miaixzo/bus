@@ -988,7 +988,10 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Retrieves cgroup information for the current process.
+     * <p>
+     * Linux returns cgroup resource limits and usage metrics when available. Other platforms return a default instance
+     * where {@link CgroupInfo#isContainerized()} returns {@code false}.
      *
      * @return the Linux cgroup information
      */

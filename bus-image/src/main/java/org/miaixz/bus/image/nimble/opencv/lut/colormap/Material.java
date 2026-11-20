@@ -37,6 +37,9 @@ public record Material(float ambient, float diffuse, float specular) {
     /**
      * Validates all material coefficients.
      *
+     * @param ambient  ambient-light coefficient
+     * @param diffuse  diffuse-reflection coefficient
+     * @param specular specular-reflection coefficient
      * @throws IllegalArgumentException if a coefficient is outside {@code [0, 1]} or is NaN
      */
     public Material {

@@ -51,6 +51,7 @@ public final class ErrorObserver implements org.miaixz.bus.errors.spi.ErrorObser
      * Creates an observer for direct registration or standalone use.
      */
     public ErrorObserver() {
+        // No initialization required.
     }
 
     /**

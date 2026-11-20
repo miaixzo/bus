@@ -569,7 +569,9 @@ public class MacHWDiskStore extends AbstractHWDiskStore {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * The number of reads from the disk
+     *
+     * @return the reads
      */
     @Override
     public long getReads() {
@@ -577,7 +579,9 @@ public class MacHWDiskStore extends AbstractHWDiskStore {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * The number of bytes read from the disk
+     *
+     * @return the bytes read
      */
     @Override
     public long getReadBytes() {
@@ -585,7 +589,9 @@ public class MacHWDiskStore extends AbstractHWDiskStore {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * The number of writes to the disk
+     *
+     * @return the writes
      */
     @Override
     public long getWrites() {
@@ -593,7 +599,9 @@ public class MacHWDiskStore extends AbstractHWDiskStore {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * The number of bytes written to the disk
+     *
+     * @return the bytes written
      */
     @Override
     public long getWriteBytes() {
@@ -601,7 +609,10 @@ public class MacHWDiskStore extends AbstractHWDiskStore {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * The length of the disk queue (#I/O's in progress). Includes I/O requests that have been issued to the device
+     * driver but have not yet completed. Not supported on macOS.
+     *
+     * @return the current disk queue length
      */
     @Override
     public long getCurrentQueueLength() {
@@ -609,7 +620,9 @@ public class MacHWDiskStore extends AbstractHWDiskStore {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * The time spent reading or writing, in milliseconds.
+     *
+     * @return the transfer time
      */
     @Override
     public long getTransferTime() {
@@ -617,7 +630,9 @@ public class MacHWDiskStore extends AbstractHWDiskStore {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * The time this disk's statistics were updated.
+     *
+     * @return the timeStamp, in milliseconds since the epoch.
      */
     @Override
     public long getTimeStamp() {
@@ -625,7 +640,9 @@ public class MacHWDiskStore extends AbstractHWDiskStore {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * The partitions on this disk.
+     *
+     * @return an {@code UnmodifiableList} of the partitions on this drive.
      */
     @Override
     public List<HWPartition> getPartitions() {
@@ -643,7 +660,12 @@ public class MacHWDiskStore extends AbstractHWDiskStore {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Make a best effort to update all the statistics about the drive without needing to recreate the drive list. This
+     * method provides for more frequent periodic updates of individual drive statistics but may be less efficient to
+     * use if updating all drives. It will not detect if a removable drive has been removed and replaced by a different
+     * drive in between method calls.
+     *
+     * @return True if the update was (probably) successful, false if the disk was not found
      */
     @Override
     public synchronized boolean updateAttributes() {

@@ -39,6 +39,9 @@ public record MetricFamilyKey(Logical logical, Export export) {
 
     /**
      * Validates both identities.
+     *
+     * @param logical logical Bus identity, including instrumentation scope
+     * @param export  flattened backend identity after name and label normalization
      */
     public MetricFamilyKey {
         logical = Objects.requireNonNull(logical, "Logical family key must not be null");
@@ -138,6 +141,13 @@ public record MetricFamilyKey(Logical logical, Export export) {
 
         /**
          * Copies the attribute schema.
+         *
+         * @param scope      instrumentation scope
+         * @param name       metric name
+         * @param kind       instrument kind
+         * @param numberKind numeric channel
+         * @param unit       metric unit
+         * @param attributes ordered attribute schema
          */
         public Logical {
             attributes = List.copyOf(attributes);
@@ -159,6 +169,12 @@ public record MetricFamilyKey(Logical logical, Export export) {
 
         /**
          * Copies the attribute schema.
+         *
+         * @param name       normalized metric name
+         * @param kind       instrument kind
+         * @param numberKind numeric channel
+         * @param unit       metric unit
+         * @param attributes normalized ordered attribute schema
          */
         public Export {
             attributes = List.copyOf(attributes);

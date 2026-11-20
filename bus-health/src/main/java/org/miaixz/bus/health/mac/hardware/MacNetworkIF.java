@@ -155,7 +155,12 @@ public class MacNetworkIF extends AbstractNetworkIF {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * (Windows, macOS) The NDIS Interface Type. NDIS interface types are registered with the Internet Assigned Numbers
+     * Authority (IANA), which publishes a list of interface types periodically in the Assigned Numbers RFC, or in a
+     * derivative of it that is specific to Internet network management number assignments. (Linux) ARP Protocol
+     * hardware identifiers defined in {@code include/uapi/linux/if_arp.h}
+     *
+     * @return the ifType
      */
     @Override
     public int getIfType() {
@@ -163,7 +168,10 @@ public class MacNetworkIF extends AbstractNetworkIF {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Getter for the field <code>bytesRecv</code>.
+     *
+     * @return The Bytes Received. This value is set when the {@link NetworkIF} is instantiated and may not be up to
+     *         date. To update this value, execute the {@link #updateAttributes()} method
      */
     @Override
     public long getBytesRecv() {
@@ -171,7 +179,10 @@ public class MacNetworkIF extends AbstractNetworkIF {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Getter for the field <code>bytesSent</code>.
+     *
+     * @return The Bytes Sent. This value is set when the {@link NetworkIF} is instantiated and may not be up to date.
+     *         To update this value, execute the {@link #updateAttributes()} method
      */
     @Override
     public long getBytesSent() {
@@ -179,7 +190,10 @@ public class MacNetworkIF extends AbstractNetworkIF {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Getter for the field <code>packetsRecv</code>.
+     *
+     * @return The Packets Received. This value is set when the {@link NetworkIF} is instantiated and may not be up to
+     *         date. To update this value, execute the {@link #updateAttributes()} method
      */
     @Override
     public long getPacketsRecv() {
@@ -187,7 +201,10 @@ public class MacNetworkIF extends AbstractNetworkIF {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Getter for the field <code>packetsSent</code>.
+     *
+     * @return The Packets Sent. This value is set when the {@link NetworkIF} is instantiated and may not be up to date.
+     *         To update this value, execute the {@link #updateAttributes()} method
      */
     @Override
     public long getPacketsSent() {
@@ -195,7 +212,10 @@ public class MacNetworkIF extends AbstractNetworkIF {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Getter for the field <code>inErrors</code>.
+     *
+     * @return Input Errors. This value is set when the {@link NetworkIF} is instantiated and may not be up to date. To
+     *         update this value, execute the {@link #updateAttributes()} method
      */
     @Override
     public long getInErrors() {
@@ -203,7 +223,10 @@ public class MacNetworkIF extends AbstractNetworkIF {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Getter for the field <code>outErrors</code>.
+     *
+     * @return The Output Errors. This value is set when the {@link NetworkIF} is instantiated and may not be up to
+     *         date. To update this value, execute the {@link #updateAttributes()} method
      */
     @Override
     public long getOutErrors() {
@@ -211,7 +234,11 @@ public class MacNetworkIF extends AbstractNetworkIF {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Getter for the field <code>inDrops</code>.
+     *
+     * @return Incoming/Received dropped packets. On Windows, returns discarded incoming packets. This value is set when
+     *         the {@link NetworkIF} is instantiated and may not be up to date. To update this value, execute the
+     *         {@link #updateAttributes()} method
      */
     @Override
     public long getInDrops() {
@@ -219,7 +246,11 @@ public class MacNetworkIF extends AbstractNetworkIF {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Getter for the field <code>collisions</code>.
+     *
+     * @return Packet collisions. On Windows, returns discarded outgoing packets. This value is set when the
+     *         {@link NetworkIF} is instantiated and may not be up to date. To update this value, execute the
+     *         {@link #updateAttributes()} method
      */
     @Override
     public long getCollisions() {
@@ -227,7 +258,11 @@ public class MacNetworkIF extends AbstractNetworkIF {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Getter for the field <code>speed</code>.
+     *
+     * @return The speed of the network interface in bits per second. This value is set when the {@link NetworkIF} is
+     *         instantiated and may not be up to date. To update this value, execute the {@link #updateAttributes()}
+     *         method
      */
     @Override
     public long getSpeed() {
@@ -235,7 +270,9 @@ public class MacNetworkIF extends AbstractNetworkIF {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Getter for the field <code>timeStamp</code>.
+     *
+     * @return Returns the timeStamp.
      */
     @Override
     public long getTimeStamp() {
@@ -243,7 +280,10 @@ public class MacNetworkIF extends AbstractNetworkIF {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Updates interface network statistics on this interface. Statistics include packets and bytes sent and received,
+     * and interface speed.
+     *
+     * @return {@code true} if the update was successful, {@code false} otherwise.
      */
     @Override
     public synchronized boolean updateAttributes() {

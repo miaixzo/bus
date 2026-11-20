@@ -62,6 +62,7 @@ public class ErrorsConfiguration {
      * Creates the shared Bus error auto-configuration.
      */
     public ErrorsConfiguration() {
+        // No initialization required.
     }
 
     /**
@@ -105,6 +106,7 @@ public class ErrorsConfiguration {
          * Creates the Servlet-only configuration.
          */
         Mvc() {
+            // No initialization required.
         }
 
         /**

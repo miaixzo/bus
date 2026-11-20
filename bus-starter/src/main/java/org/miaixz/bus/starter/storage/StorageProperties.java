@@ -77,6 +77,8 @@ public class StorageProperties {
     }
 
     /**
+     * Returns a safe diagnostic representation of this configuration.
+     *
      * @return masked diagnostic representation
      */
     @Override

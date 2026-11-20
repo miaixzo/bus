@@ -215,6 +215,33 @@
         },
         {
           "name": "query"
+        },
+        {
+          "name": "parameters"
+        },
+        {
+          "name": "fileParts"
+        },
+        {
+          "name": "format"
+        },
+        {
+          "name": "channel"
+        },
+        {
+          "name": "bearer"
+        },
+        {
+          "name": "assets"
+        },
+        {
+          "name": "remainingPath"
+        },
+        {
+          "name": "timestamp"
+        },
+        {
+          "name": "httpMethod"
         }
       ],
       "methods": [
@@ -240,6 +267,90 @@
           "parameterTypes": [
             "java.util.Map"
           ]
+        },
+        {
+          "name": "getParameters",
+          "parameterTypes": []
+        },
+        {
+          "name": "setFileParts",
+          "parameterTypes": [
+            "java.util.Map"
+          ]
+        },
+        {
+          "name": "setFormat",
+          "parameterTypes": [
+            "org.miaixz.bus.vortex.Formats"
+          ]
+        },
+        {
+          "name": "setChannel",
+          "parameterTypes": [
+            "org.miaixz.bus.vortex.Channel"
+          ]
+        },
+        {
+          "name": "setBearer",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setAssets",
+          "parameterTypes": [
+            "org.miaixz.bus.cortex.Assets"
+          ]
+        },
+        {
+          "name": "setRemainingPath",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setTimestamp",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "setHttpMethod",
+          "parameterTypes": [
+            "org.miaixz.bus.core.net.Http$Method"
+          ]
+        },
+        {
+          "name": "getFileParts",
+          "parameterTypes": []
+        },
+        {
+          "name": "getFormat",
+          "parameterTypes": []
+        },
+        {
+          "name": "getChannel",
+          "parameterTypes": []
+        },
+        {
+          "name": "getBearer",
+          "parameterTypes": []
+        },
+        {
+          "name": "getAssets",
+          "parameterTypes": []
+        },
+        {
+          "name": "getRemainingPath",
+          "parameterTypes": []
+        },
+        {
+          "name": "getTimestamp",
+          "parameterTypes": []
+        },
+        {
+          "name": "getHttpMethod",
+          "parameterTypes": []
         }
       ]
     },

@@ -109,6 +109,7 @@ public class JSONWriter implements ImageInputHandler {
      * Converts this value to strings.
      *
      * @param map the map.
+     * @param <T> type of the input elements
      * @return the operation result.
      */
     private static <T> String[] toStrings(Map<String, T> map) {

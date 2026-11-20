@@ -218,6 +218,11 @@ public enum InterpolationSpace {
     /**
      * sRGB components in {@code [0, 1]} to CIE L*a*b* (D65), as {@code {L, a, b}} with L in {@code
      * [0, 100]}.
+     *
+     * @param r red sRGB component in the unit interval
+     * @param g green sRGB component in the unit interval
+     * @param b blue sRGB component in the unit interval
+     * @return CIE L*a*b* components in L, a and b order
      */
     public static double[] rgbToLab(double r, double g, double b) {
         double lr = inverseGamma(r);
@@ -235,6 +240,11 @@ public enum InterpolationSpace {
     /**
      * CIE L*a*b* (D65) to sRGB components in {@code [0, 1]}. An out-of-gamut color is shifted by its most negative
      * channel before gamma so its hue survives, then clamped.
+     *
+     * @param l CIE lightness component from zero to one hundred
+     * @param a CIE a* color component
+     * @param b blue sRGB component in the unit interval
+     * @return sRGB components in red, green and blue order, clamped to the unit interval
      */
     public static double[] labToRgb(double l, double a, double b) {
         double fy = (l + 16.0) / 116.0;
@@ -307,6 +317,11 @@ public enum InterpolationSpace {
 
     /**
      * Color at fraction {@code t} between {@code from} (0) and {@code to} (1), opaque.
+     *
+     * @param from starting opaque color
+     * @param to   ending opaque color
+     * @param t    interpolation fraction from zero to one
+     * @return interpolated opaque color
      */
     public Rgba mix(Rgba from, Rgba to, double t) {
         float f = (float) Math.max(0.0, Math.min(1.0, t));

@@ -851,7 +851,8 @@ public class DnsServer implements AutoCloseable, Lifecycle {
     /**
      * Authenticates a TSIG-signed query.
      *
-     * @param query decoded DNS query
+     * @param query   decoded DNS query
+     * @param current current TSIG record being checked
      * @return verified TSIG key, or {@code null} when the query is unsigned or invalid
      */
     private DnsTsigKey authenticatedTsig(final RuntimeIndex current, final DnsQuery query) {

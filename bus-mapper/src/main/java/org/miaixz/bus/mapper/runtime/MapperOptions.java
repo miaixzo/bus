@@ -111,8 +111,8 @@ public class MapperOptions {
     private String params;
 
     /**
-     * Enables pagination parameter rationalization. When enabled, if pageNum < 1, it will query page 1. If pageNum >
-     * total pages, it will query the last page.
+     * Enables pagination parameter rationalization. When enabled, if {@code pageNum < 1}, it will query page 1. If
+     * pageNum > total pages, it will query the last page.
      */
     private String reasonable;
 

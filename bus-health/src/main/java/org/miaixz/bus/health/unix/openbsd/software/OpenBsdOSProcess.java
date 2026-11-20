@@ -259,7 +259,7 @@ public class OpenBsdOSProcess extends AbstractOSProcess {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Makes a best effort attempt to obtain the current working directory for the process.
      *
      * @return the current working directory of the process
      */
@@ -269,7 +269,7 @@ public class OpenBsdOSProcess extends AbstractOSProcess {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Gets the name of the process, often the executable program.
      *
      * @return the process name
      */
@@ -279,7 +279,7 @@ public class OpenBsdOSProcess extends AbstractOSProcess {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Gets the full filesystem path of the executing process.
      *
      * @return the full path of the process executable
      */
@@ -289,7 +289,28 @@ public class OpenBsdOSProcess extends AbstractOSProcess {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Gets the process command line used to start the process, including arguments if available to be determined. This
+     * method generally returns the same information as {@link #getArguments()} in a more user-readable format, and is
+     * more robust to non-elevated access.
+     * <p>
+     * The format of this string is platform-dependent, may be truncated, and may require the end user to parse the
+     * result. Users should generally prefer {@link #getArguments()} which already parses the results, and use this
+     * method as a backup.
+     * </p>
+     * <p>
+     * On AIX and Solaris, the string may be truncated to 80 characters if there was insufficient permission to read the
+     * process memory.
+     * </p>
+     * <p>
+     * On Windows, attempts to retrieve the value from process memory, which requires that the process be owned by the
+     * same user as the executing process, or elevated permissions, and additionally requires the target process to have
+     * the same bitness (e.g., this will fail on a 32-bit process if queried by 64-bit and vice versa). If reading
+     * process memory fails, by default, performs a single WMI query for this process, with some latency. If this method
+     * will be frequently called for multiple processes, see the configuration file to enable a batch query mode
+     * leveraging {@link org.miaixz.bus.health.windows.driver.wmi.Win32ProcessCached#getCommandLine} to improve
+     * performance, or setting that parameter via {@link org.miaixz.bus.health.Builder#set(String, Object)} before
+     * instantiating any {@link org.miaixz.bus.health.builtin.software.OSProcess} object.
+     * </p>
      *
      * @return the command line used to start the process
      */
@@ -309,7 +330,9 @@ public class OpenBsdOSProcess extends AbstractOSProcess {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Makes a best effort attempt to get a list of the the command-line arguments of the process. Returns the same
+     * information as {@link #getCommandLine()} but parsed to a list. May require elevated permissions or same-user
+     * ownership.
      *
      * @return the list of arguments passed to the process
      */
@@ -358,7 +381,8 @@ public class OpenBsdOSProcess extends AbstractOSProcess {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Makes a best effort attempt to obtain the environment variables of the process. May require elevated permissions
+     * or same-user ownership.
      *
      * @return a map of environment variables for the process
      */
@@ -412,7 +436,7 @@ public class OpenBsdOSProcess extends AbstractOSProcess {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Gets the process state.
      *
      * @return the state of the process
      */
@@ -422,7 +446,7 @@ public class OpenBsdOSProcess extends AbstractOSProcess {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Gets the user name of the process owner.
      *
      * @return the user name who owns the process
      */
@@ -432,7 +456,7 @@ public class OpenBsdOSProcess extends AbstractOSProcess {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Gets the user id of the process owner.
      *
      * @return the user ID of the process owner
      */
@@ -442,7 +466,12 @@ public class OpenBsdOSProcess extends AbstractOSProcess {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Gets the group under which the process is executing.
+     * <p>
+     * On Windows systems, populating this value for processes other than the current user requires administrative
+     * privileges (and still may fail for some system processes) and can incur significant latency. When successful,
+     * returns a the default primary group with access to this process, corresponding to the SID in
+     * {@link #getGroupID()}.
      *
      * @return the group name that owns the process
      */
@@ -452,7 +481,12 @@ public class OpenBsdOSProcess extends AbstractOSProcess {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Gets the group id under which the process is executing.
+     * <p>
+     * On Windows systems, populating this value for processes other than the current user requires administrative
+     * privileges (and still may fail for some system processes) and can incur significant latency. When successful,
+     * returns the default primary group SID with access to this process, corresponding to the name in
+     * {@link #getGroup()}.
      *
      * @return the group ID of the process owner
      */
@@ -462,7 +496,9 @@ public class OpenBsdOSProcess extends AbstractOSProcess {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Gets the number of open file handles (or network connections) that belongs to the process.
+     * <p>
+     * On FreeBSD and Solaris, this value is only populated if information for a single process id is requested.
      *
      * @return the number of open file descriptors
      */
@@ -472,7 +508,7 @@ public class OpenBsdOSProcess extends AbstractOSProcess {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Gets the process ID of this process's parent.
      *
      * @return the parent process ID
      */
@@ -482,7 +518,8 @@ public class OpenBsdOSProcess extends AbstractOSProcess {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Gets the number of threads being executed by this process. More information is available using
+     * {@link #getThreadDetails()}.
      *
      * @return the number of threads in the process
      */
@@ -492,7 +529,17 @@ public class OpenBsdOSProcess extends AbstractOSProcess {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Gets the priority of this process.
+     * <p>
+     * For Linux and Unix, priority is a value in the range -20 to 19 (20 on some systems). The default priority is 0;
+     * lower priorities cause more favorable scheduling.
+     * <p>
+     * For Windows, priority values can range from 0 (lowest priority) to 31 (highest priority).
+     * <p>
+     * macOS has 128 priority levels, ranging from 0 (lowest priority) to 127 (highest priority). They are divided into
+     * several major bands: 0 through 51 are the normal levels; the default priority is 31. 52 through 79 are the
+     * highest priority regular threads; 80 through 95 are for kernel mode threads; and 96 through 127 correspond to
+     * real-time threads, which are treated differently than other threads by the scheduler.
      *
      * @return the process scheduling priority
      */
@@ -502,7 +549,8 @@ public class OpenBsdOSProcess extends AbstractOSProcess {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Gets the Virtual Memory Size (VSZ). Includes all memory that the process can access, including memory that is
+     * swapped out and memory that is from shared libraries.
      *
      * @return the virtual memory size in bytes
      */
@@ -512,7 +560,14 @@ public class OpenBsdOSProcess extends AbstractOSProcess {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Returns the total amount of physical memory (RAM) currently mapped to the process's address space. This value
+     * represents the Resident Set Size (RSS) and includes both private memory and memory shared with other processes
+     * (such as shared libraries). This aligns with the reporting behavior of standard command-line utilities like
+     * {@code ps} and {@code top}.
+     * <p>
+     * On Linux, returns the RSS value from {@code /proc/[pid]/stat}, which may be inaccurate because of a
+     * kernel-internal scalability optimization. If accurate values are required, read {@code /proc/[pid]/smaps} using
+     * {@link org.miaixz.bus.health.Builder#getKeyValueMapFromFile(String, String)}.
      *
      * @return the resident set size (RSS) in bytes
      */
@@ -522,7 +577,7 @@ public class OpenBsdOSProcess extends AbstractOSProcess {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Gets kernel/system (privileged) time used by the process.
      *
      * @return the kernel time in milliseconds
      */
@@ -532,7 +587,7 @@ public class OpenBsdOSProcess extends AbstractOSProcess {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Gets user time used by the process.
      *
      * @return the user time in milliseconds
      */
@@ -542,7 +597,7 @@ public class OpenBsdOSProcess extends AbstractOSProcess {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Gets up time / elapsed time since the process started.
      *
      * @return the process uptime in milliseconds
      */
@@ -552,7 +607,7 @@ public class OpenBsdOSProcess extends AbstractOSProcess {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Gets the process start time.
      *
      * @return the process start time in milliseconds
      */
@@ -562,7 +617,10 @@ public class OpenBsdOSProcess extends AbstractOSProcess {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Gets the bytes read by the process. This includes all I/O activity generated by the process to include file,
+     * network, and device I/Os.
+     * <p>
+     * On Solaris, includes both bytes read and written.
      *
      * @return the number of bytes read from disk
      */
@@ -572,7 +630,10 @@ public class OpenBsdOSProcess extends AbstractOSProcess {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Gets the bytes written by the process. This includes all I/O activity generated by the process to include file,
+     * network, and device I/Os.
+     * <p>
+     * On Solaris, all IO bytes are included read bytes so this value is 0.
      *
      * @return the number of bytes written to disk
      */
@@ -582,7 +643,16 @@ public class OpenBsdOSProcess extends AbstractOSProcess {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Gets the process affinity mask for this process.
+     * <p>
+     * On Windows systems with more than 64 processors, if the threads of the calling process are in a single processor
+     * group, returns the process affinity mask for that group (which may be zero if the specified process is running in
+     * a different group). If the calling process contains threads in multiple groups, returns zero.
+     * <p>
+     * Because macOS does not export interfaces that identify processors or control thread placement, explicit thread to
+     * processor binding is not supported and this method will return a bitmask of all logical processors.
+     * <p>
+     * If the Operating System fails to retrieve an affinity mask (e.g., the process has terminated), returns zero.
      *
      * @return the processor affinity mask
      */
@@ -609,7 +679,10 @@ public class OpenBsdOSProcess extends AbstractOSProcess {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Gets the soft limit for open file handles (or network connections) of the given process.
+     * <p>
+     * Retrieving the soft limit for processes other than the calling process is only supported on Linux, FreeBsd and
+     * Solaris.
      *
      * @return the soft limit of open files for the current process
      */
@@ -625,7 +698,10 @@ public class OpenBsdOSProcess extends AbstractOSProcess {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Gets the hard limit for open file handles (or network connections) that belong to the given process.
+     * <p>
+     * Retrieving the hard limit for processes other than the calling process is only supported on Linux, FreeBsd and
+     * Solaris.
      *
      * @return the hard limit of open files for the current process
      */
@@ -641,7 +717,7 @@ public class OpenBsdOSProcess extends AbstractOSProcess {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Attempts to get the bitness (32 or 64) of the process.
      *
      * @return the process bitness (32 or 64)
      */
@@ -651,7 +727,9 @@ public class OpenBsdOSProcess extends AbstractOSProcess {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Retrieves the threads of the process and their details.
+     * <p>
+     * The amount of returned information is operating-system dependent and may incur some latency.
      *
      * @return the list of thread details for the process
      */
@@ -670,7 +748,8 @@ public class OpenBsdOSProcess extends AbstractOSProcess {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Attempts to update process attributes. Returns false if the update fails, which will occur if the process no
+     * longer exists.
      *
      * @return {@code true} if the process attributes were successfully updated, {@code false} otherwise
      */
@@ -694,7 +773,12 @@ public class OpenBsdOSProcess extends AbstractOSProcess {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Gets the number of minor (soft) faults the process has made which have not required loading a memory page from
+     * disk. Sometimes called reclaims.
+     * <p>
+     * On Windows, this includes the total of major and minor faults.
+     * <p>
+     * Not available on AIX.
      *
      * @return the number of minor page faults
      */
@@ -704,7 +788,12 @@ public class OpenBsdOSProcess extends AbstractOSProcess {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Gets the number of major (hard) faults the process has made which have required loading a memory page from disk.
+     * <p>
+     * Windows does not distinguish major and minor faults at the process level, so this value returns 0 and major
+     * faults are included in {@link #getMinorFaults()}.
+     * <p>
+     * Not available on AIX.
      *
      * @return the number of major page faults
      */
@@ -714,7 +803,14 @@ public class OpenBsdOSProcess extends AbstractOSProcess {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * A snapshot of the context switches the process has done, equal to the sum of
+     * {@link #getVoluntaryContextSwitches()} and {@link #getInvoluntaryContextSwitches()} on platforms that provide the
+     * split.
+     * <p>
+     * On Windows, this may return a total from available counters while the split remains unavailable. On macOS for
+     * non-current processes, this may return the combined total from the kernel while the split remains unavailable.
+     * <p>
+     * Not available on AIX.
      *
      * @return the number of context switches
      */
@@ -724,7 +820,8 @@ public class OpenBsdOSProcess extends AbstractOSProcess {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * The number of voluntary context switches the process has made. A voluntary context switch occurs when a process
+     * gives up the CPU before its time slice expires.
      *
      * @return the number of voluntary context switches
      */
@@ -734,7 +831,8 @@ public class OpenBsdOSProcess extends AbstractOSProcess {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * The number of involuntary context switches the process has made. An involuntary context switch occurs when the
+     * scheduler preempts the process.
      *
      * @return the number of involuntary context switches
      */

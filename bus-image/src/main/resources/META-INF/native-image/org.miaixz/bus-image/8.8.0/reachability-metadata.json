@@ -4147,6 +4147,9 @@
         },
         {
           "name": "validateHostname"
+        },
+        {
+          "name": "description"
         }
       ],
       "methods": [
@@ -4282,6 +4285,10 @@
             "java.lang.String",
             "java.lang.Integer"
           ]
+        },
+        {
+          "name": "getDescription",
+          "parameterTypes": []
         }
       ]
     },
@@ -104439,6 +104446,24 @@
       "fields": [
         {
           "name": "description"
+        },
+        {
+          "name": "LINEAR"
+        },
+        {
+          "name": "LINEAR_EXACT"
+        },
+        {
+          "name": "SIGMOID"
+        },
+        {
+          "name": "SIGMOID_NORM"
+        },
+        {
+          "name": "LOG"
+        },
+        {
+          "name": "LOG_INV"
         }
       ],
       "methods": [
@@ -106618,6 +106643,27 @@
         },
         {
           "name": "specularPower"
+        },
+        {
+          "name": "MATTE"
+        },
+        {
+          "name": "SOFT_TISSUE"
+        },
+        {
+          "name": "SKIN"
+        },
+        {
+          "name": "VESSEL"
+        },
+        {
+          "name": "BONE"
+        },
+        {
+          "name": "GLASS"
+        },
+        {
+          "name": "METAL"
         }
       ],
       "methods": [

@@ -163,6 +163,8 @@ public class CacheProperties extends Options {
         }
 
         /**
+         * Returns a safe diagnostic representation of this configuration.
+         *
          * @return masked diagnostic text
          */
         @Override

@@ -158,6 +158,7 @@ public class GitLabFailure {
      *
      * @param content raw JSON response content
      * @return resolved message, or the original content when no known field exists
+     * @throws IOException if the GitLab response cannot be read as a supported JSON error representation
      */
     private static String resolveJsonMessage(String content) throws IOException {
         JsonNode json = JacksonJson.toJsonNode(content);

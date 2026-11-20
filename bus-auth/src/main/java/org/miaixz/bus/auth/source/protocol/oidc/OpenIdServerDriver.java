@@ -288,7 +288,12 @@ public class OpenIdServerDriver implements ProtocolDriver<OpenIdServerOptions> {
             final TokenResponseEncoder tokenEncoder = new TokenResponseEncoder() {
 
                 /**
-                 * {@inheritDoc}
+                 * Encodes OpenID Connect token responses with the OpenID encoder and delegates other token responses to
+                 * the OAuth encoder.
+                 *
+                 * @param request  originating token endpoint HTTP request
+                 * @param response standard successful token response
+                 * @return complete HTTP 200 JSON response
                  */
                 @Override
                 public Response encode(final Request request, final TokenEndpointResponse response) {

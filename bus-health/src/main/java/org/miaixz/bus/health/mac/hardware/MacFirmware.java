@@ -161,7 +161,9 @@ final class MacFirmware extends AbstractFirmware {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Get the firmware manufacturer.
+     *
+     * @return the manufacturer
      */
     @Override
     public String getManufacturer() {
@@ -169,7 +171,9 @@ final class MacFirmware extends AbstractFirmware {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Get the firmware name.
+     *
+     * @return the name
      */
     @Override
     public String getName() {
@@ -177,7 +181,9 @@ final class MacFirmware extends AbstractFirmware {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Get the firmware description.
+     *
+     * @return the description
      */
     @Override
     public String getDescription() {
@@ -185,7 +191,9 @@ final class MacFirmware extends AbstractFirmware {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Get the firmware version.
+     *
+     * @return the version
      */
     @Override
     public String getVersion() {
@@ -193,7 +201,9 @@ final class MacFirmware extends AbstractFirmware {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Get the firmware release date.
+     *
+     * @return The release date.
      */
     @Override
     public String getReleaseDate() {

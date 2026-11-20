@@ -333,6 +333,8 @@ public class ConnectionPool implements AutoCloseable {
 
     /**
      * Aborts one connection after its lease has become terminally non-reusable.
+     *
+     * @param connection connection whose pending acquisition is aborted
      */
     private static void abortOne(final Connection connection) {
         try {
@@ -1263,6 +1265,8 @@ public class ConnectionPool implements AutoCloseable {
 
     /**
      * Keeps negotiation and multiplex destinations strict; widens only after a destination is proven HTTP/1.
+     *
+     * @return maximum number of acquisitions admitted while the connection mode is being established
      */
     private int admissionWindow() {
         final PoolWaiters.Waiter head = waiters.peekFirst();
@@ -1389,6 +1393,9 @@ public class ConnectionPool implements AutoCloseable {
 
     /**
      * Returns true when queue depth or sustained wait proves that a negotiated H1 service needs expansion.
+     *
+     * @param destination destination whose queued acquisition pressure is inspected
+     * @return whether queue depth or sustained wait justifies an additional HTTP/1 connection
      */
     private boolean sustainedWait(final Destination destination) {
         if (!multiplexCapacity.http1Destinations.contains(destination)) {

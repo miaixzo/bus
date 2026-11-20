@@ -41,6 +41,7 @@ public final class ThrowableNormalizer {
      * Prevents construction of the stateless cause inspection utility.
      */
     private ThrowableNormalizer() {
+        // No initialization required.
     }
 
     /**

@@ -45,6 +45,17 @@ public record HostMetricsOptions(boolean required, String convention, Duration c
 
     /**
      * Validates and canonicalizes all options.
+     *
+     * @param required             whether collection failures must fail startup
+     * @param convention           locked semantic convention identifier
+     * @param cacheTtl             standard snapshot cache interval
+     * @param processStateCacheTtl process-state inventory cache interval
+     * @param categories           enabled host categories
+     * @param cpu                  CPU collection limits
+     * @param process              process collection options
+     * @param disk                 disk collection options
+     * @param fileSystem           filesystem collection options
+     * @param network              network collection options
      */
     public HostMetricsOptions {
         convention = normalized(convention);
@@ -139,6 +150,8 @@ public record HostMetricsOptions(boolean required, String convention, Duration c
 
         /**
          * Validates the resource limit.
+         *
+         * @param maxLogicalCpus maximum logical processors to expose
          */
         public Cpu {
             positive(maxLogicalCpus, "Maximum logical CPU count");
@@ -156,6 +169,9 @@ public record HostMetricsOptions(boolean required, String convention, Duration c
 
         /**
          * Rejects unsupported all-process collection.
+         *
+         * @param currentOnly whether collection is limited to the current process
+         * @param stateCounts whether system-wide process-state counts are enabled
          */
         public Process {
             if (!currentOnly) {
@@ -175,6 +191,9 @@ public record HostMetricsOptions(boolean required, String convention, Duration c
 
         /**
          * Validates the resource limit.
+         *
+         * @param includeVirtual whether virtual devices are included
+         * @param maxDevices     maximum devices to expose
          */
         public Disk {
             positive(maxDevices, "Maximum disk count");
@@ -193,6 +212,10 @@ public record HostMetricsOptions(boolean required, String convention, Duration c
 
         /**
          * Validates and canonicalizes filesystem options.
+         *
+         * @param localOnly      whether collection is limited to local filesystems
+         * @param mountpointMode mountpoint exposure policy
+         * @param maxFileSystems maximum filesystems to expose
          */
         public FileSystem {
             mountpointMode = mountpointMode == null ? "" : StringKit.toUpperCase(mountpointMode.trim());
@@ -216,6 +239,11 @@ public record HostMetricsOptions(boolean required, String convention, Duration c
 
         /**
          * Validates the resource limit.
+         *
+         * @param includeLoopback whether loopback interfaces are included
+         * @param includeVirtual  whether virtual interfaces are included
+         * @param connections     whether connection-state metrics are enabled
+         * @param maxInterfaces   maximum interfaces to expose
          */
         public Network {
             positive(maxInterfaces, "Maximum network-interface count");

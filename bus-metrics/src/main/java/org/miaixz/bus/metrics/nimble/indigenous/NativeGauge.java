@@ -56,6 +56,8 @@ public class NativeGauge<T> implements Gauge {
 
     /**
      * Returns the current gauge value, or {@link Double#NaN} if the state object has been GC'd.
+     *
+     * @return current gauge value, or {@link Double#NaN} if its state object has been garbage collected
      */
     @Override
     public double value() {

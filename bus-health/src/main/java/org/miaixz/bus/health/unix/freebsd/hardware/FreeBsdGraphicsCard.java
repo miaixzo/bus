@@ -131,7 +131,12 @@ final class FreeBsdGraphicsCard extends AbstractGraphicsCard {
         return Collections.unmodifiableList(cardList);
     }
 
-    /** Adds one parsed PCI device when it is a display controller. */
+    /**
+     * Adds one parsed PCI device when it is a display controller.
+     *
+     * @param cards  destination list receiving detected graphics cards
+     * @param device parsed PCI device properties
+     */
     private static void addIfDisplay(List<GraphicsCard> cards, PciDevice device) {
         if (device != null && device.display) {
             String vendor = device.vendorName.isEmpty() ? device.vendorId
@@ -167,6 +172,7 @@ final class FreeBsdGraphicsCard extends AbstractGraphicsCard {
          * Creates an empty PCI device record.
          */
         private PciDevice() {
+            // No initialization required.
         }
 
     }

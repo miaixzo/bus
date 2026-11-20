@@ -75,7 +75,7 @@ public enum PayApi implements Matcher {
 
     /**
      * Single item discount - apply for refund
-     * <a href="https://pay.weixin.qq.com/wiki/doc/api/danpin.php?chapter=9_103&index=3">Official documentation</a>
+     * <a href="https://pay.weixin.qq.com/wiki/doc/api/danpin.php?chapter=9_103&amp;index=3">Official documentation</a>
      */
     REFUND_V2("/secapi/pay/refundv2", "Single item discount - apply for refund"),
 

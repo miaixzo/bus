@@ -61,6 +61,13 @@ enum TemporalType {
      */
     DT {
 
+        /**
+         * Parses a DICOM date-time value into a temporal representation.
+         *
+         * @param s         DICOM date-time text to parse
+         * @param precision precision populated while parsing the date-time value
+         * @return parsed temporal value
+         */
         public Temporal parseTemporal(String s, DatePrecision precision) {
             return Format.parseTemporalDT(s, precision);
         }

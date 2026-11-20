@@ -57,6 +57,12 @@
         },
         {
           "name": "writeTimeout"
+        },
+        {
+          "name": "accessToken"
+        },
+        {
+          "name": "anonymous"
         }
       ],
       "methods": [
@@ -202,6 +208,26 @@
           "name": "setWriteTimeout",
           "parameterTypes": [
             "long"
+          ]
+        },
+        {
+          "name": "getAccessToken",
+          "parameterTypes": []
+        },
+        {
+          "name": "isAnonymous",
+          "parameterTypes": []
+        },
+        {
+          "name": "setAccessToken",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setAnonymous",
+          "parameterTypes": [
+            "boolean"
           ]
         }
       ]
@@ -556,6 +582,12 @@
         },
         {
           "name": "url"
+        },
+        {
+          "name": "bucket"
+        },
+        {
+          "name": "inputStream"
         }
       ],
       "methods": [
@@ -691,6 +723,26 @@
           "name": "setUrl",
           "parameterTypes": [
             "java.lang.String"
+          ]
+        },
+        {
+          "name": "getBucket",
+          "parameterTypes": []
+        },
+        {
+          "name": "getInputStream",
+          "parameterTypes": []
+        },
+        {
+          "name": "setBucket",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setInputStream",
+          "parameterTypes": [
+            "java.io.InputStream"
           ]
         }
       ]

@@ -50,6 +50,7 @@ public class ImageRendering {
      * Creates a rendering helper instance for compatibility with existing callers.
      */
     public ImageRendering() {
+        // No initialization required.
     }
 
     /**

@@ -548,6 +548,9 @@ public class Http2Connection implements AutoCloseable {
 
     /**
      * Discards an exact direct-reader payload after a rejected aggregate reservation.
+     *
+     * @param source source from which bytes are consumed
+     * @param length number of bytes to discard from the source
      */
     private static void discard(final Buffer source, final long length) {
         try {

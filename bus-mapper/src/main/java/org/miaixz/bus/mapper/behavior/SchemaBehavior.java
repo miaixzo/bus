@@ -37,6 +37,15 @@ import org.miaixz.bus.mapper.parsing.*;
 public interface SchemaBehavior {
 
     /**
+     * Identifies dialects that generate and introspect supported partial indexes.
+     *
+     * @return whether the supported index predicates are available
+     */
+    default boolean supportsPartialIndexes() {
+        return false;
+    }
+
+    /**
      * Tests whether a table exists.
      *
      * @param connection the active database connection

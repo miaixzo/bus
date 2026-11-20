@@ -313,6 +313,8 @@ public class MultipartInputStream extends FilterInputStream {
     /**
      * Executes the remaining operation.
      *
+     * @param ch1 first delimiter byte already inspected
+     * @param min minimum number of bytes required before matching the multipart delimiter
      * @return the operation result.
      */
     private int remaining(byte ch1, int min) {

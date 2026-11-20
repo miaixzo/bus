@@ -61,6 +61,9 @@ final class HappyEyeballsConnector {
 
     /**
      * Converts asynchronous wrapper failures to the protocol runtime exception.
+     *
+     * @param cause failure that may wrap the original cause
+     * @return protocol runtime exception with asynchronous wrapper failures unwrapped
      */
     private static RuntimeException unwrap(final Throwable cause) {
         Throwable current = cause;

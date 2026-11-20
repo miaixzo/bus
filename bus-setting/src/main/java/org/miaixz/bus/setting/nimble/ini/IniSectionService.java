@@ -160,6 +160,7 @@ public class IniSectionService extends AbstractElement implements IniSection {
     /**
      * get IniProperty list. will copy a new list.
      *
+     * @param listSupplier ini property list supplier
      * @return list.
      */
     @Override

@@ -282,6 +282,8 @@ public class NativeTimer implements Timer {
 
     /**
      * Returns the total number of recordings.
+     *
+     * @return number of recorded durations
      */
     @Override
     public long count() {
@@ -383,6 +385,8 @@ public class NativeTimer implements Timer {
 
     /**
      * Returns an atomic snapshot of histogram state for cross-instance aggregation.
+     *
+     * @return atomic snapshot of the timer histogram
      */
     @Override
     public TimerSnapshot snapshot() {

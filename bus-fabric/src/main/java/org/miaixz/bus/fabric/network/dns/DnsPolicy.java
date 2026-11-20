@@ -39,6 +39,8 @@ public record DnsPolicy(DnsResolver resolver) implements Policy {
 
     /**
      * Validates the resolver source.
+     *
+     * @param resolver resolver source whose cache is shared by its runtime-bound view
      */
     public DnsPolicy {
         resolver = Assert.notNull(resolver, () -> new ValidateException("DNS resolver must not be null"));

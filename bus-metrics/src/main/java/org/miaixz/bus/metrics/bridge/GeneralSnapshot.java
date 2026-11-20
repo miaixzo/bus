@@ -40,6 +40,9 @@ public record GeneralSnapshot(long uptimeSeconds, Map<String, Long> processCount
 
     /**
      * Validates and orders the snapshot.
+     *
+     * @param uptimeSeconds        system uptime in seconds
+     * @param processCountsByState process counts keyed by normalized state
      */
     public GeneralSnapshot {
         if (uptimeSeconds < 0) {

@@ -40,6 +40,9 @@ public record MetricFamilySnapshot(MetricDescriptor descriptor, List<MetricPoint
 
     /**
      * Validates and copies the family snapshot.
+     *
+     * @param descriptor family schema and metadata
+     * @param points     resource data points
      */
     public MetricFamilySnapshot {
         descriptor = Objects.requireNonNull(descriptor, "Metric descriptor must not be null");

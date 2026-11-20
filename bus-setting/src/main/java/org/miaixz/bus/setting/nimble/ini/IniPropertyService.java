@@ -166,6 +166,9 @@ public class IniPropertyService extends AbstractElement implements IniProperty {
     }
 
     /**
+     * Returns the property key.
+     *
+     * @return property key returned by {@link #key()}
      * @see #key()
      */
     @Override

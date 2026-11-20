@@ -173,7 +173,12 @@ final class FreeBsdCentralProcessor extends AbstractCentralProcessor {
         return processors;
     }
 
-    /** Parses CPU numbers from a topology specification line. */
+    /**
+     * Parses CPU numbers from a topology specification line.
+     *
+     * @param line CPU-topology specification line
+     * @return CPU numbers parsed from the topology specification
+     */
     private static List<Integer> parseCpuList(String line) {
         List<Integer> cpus = new ArrayList<>();
         int open = line.indexOf(Symbol.C_GT);
@@ -213,7 +218,11 @@ final class FreeBsdCentralProcessor extends AbstractCentralProcessor {
         /** Whether the group represents hardware threads of one core. */
         private boolean thread;
 
-        /** Creates a topology group. */
+        /**
+         * Creates a topology group.
+         *
+         * @param level nesting level of this CPU topology group
+         */
         private TopologyGroup(int level) {
             this.level = level;
         }

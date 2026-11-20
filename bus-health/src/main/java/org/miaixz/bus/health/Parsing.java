@@ -125,9 +125,9 @@ public class Parsing {
 
     /**
      * Pattern for Windows DeviceID vendor and product ID without requiring a trailing instance component. Matches both
-     * full PNPDeviceID strings (PCI\VEN_8086&DEV_56A0&...\instance) and bare MatchingDeviceId values
-     * (pci\ven_8086&dev_56a0&...) that lack the trailing backslash. Case-insensitive to handle both the uppercase
-     * PNPDeviceID format and the lowercase MatchingDeviceId registry values.
+     * full PNPDeviceID strings ({@code PCI\VEN_8086&DEV_56A0&...\instance}) and bare MatchingDeviceId values
+     * ({@code pci\ven_8086&dev_56a0&...}) that lack the trailing backslash. Case-insensitive to handle both the
+     * uppercase PNPDeviceID format and the lowercase MatchingDeviceId registry values.
      */
     private static final java.util.regex.Pattern VENDOR_PRODUCT_ID = java.util.regex.Pattern
             .compile("(?i).*(?:VID|VEN)_(\\p{XDigit}{4})&(?:PID|DEV)_(\\p{XDigit}{4}).*");

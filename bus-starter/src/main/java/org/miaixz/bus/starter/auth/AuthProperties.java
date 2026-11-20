@@ -124,6 +124,9 @@ public class AuthProperties {
 
         /**
          * Applies the compatibility policy when no explicit policy is configured.
+         *
+         * @param secret       exact non-empty String key material
+         * @param secretPolicy compatibility or strict input-length policy
          */
         public Jwt {
             secretPolicy = secretPolicy == null ? SecretPolicy.COMPATIBLE : secretPolicy;
@@ -156,6 +159,12 @@ public class AuthProperties {
 
         /**
          * Normalizes the optional scope collection without exposing or transforming secret material.
+         *
+         * @param enabled      whether this Vendor client is enabled
+         * @param clientId     public client identifier issued by the external platform
+         * @param clientSecret client secret supplied by the protected configuration source
+         * @param redirectUri  exact callback URI registered with the external platform
+         * @param scopes       ordered explicit scopes, or an empty list for manifest defaults
          */
         public Client {
             scopes = scopes == null ? List.of() : List.copyOf(scopes);

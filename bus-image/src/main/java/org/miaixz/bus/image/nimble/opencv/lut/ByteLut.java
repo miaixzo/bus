@@ -65,6 +65,7 @@ public record ByteLut(String name, byte[][] lutTable, ColorMap source) {
      *
      * @param name     the name.
      * @param lutTable the LUT table.
+     * @param source   the source color map.
      */
     public ByteLut {
         Objects.requireNonNull(name, "Name cannot be null");

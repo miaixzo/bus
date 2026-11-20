@@ -96,6 +96,8 @@ public class TempusProperties extends WorkflowBindingOptions {
     }
 
     /**
+     * Returns a safe diagnostic representation of this configuration.
+     *
      * @return masked diagnostic representation
      */
     @Override

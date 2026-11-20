@@ -40,6 +40,7 @@ public final class BsdRouteDump {
      * Prevents instantiation.
      */
     private BsdRouteDump() {
+        // No initialization required.
     }
 
     /**

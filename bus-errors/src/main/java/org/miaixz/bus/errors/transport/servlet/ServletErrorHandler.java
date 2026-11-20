@@ -57,6 +57,7 @@ public final class ServletErrorHandler {
      * Prevents construction of the stateless Servlet error utility.
      */
     private ServletErrorHandler() {
+        // No initialization required.
     }
 
     /**

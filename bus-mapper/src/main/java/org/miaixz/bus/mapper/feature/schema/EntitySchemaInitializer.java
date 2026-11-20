@@ -311,7 +311,7 @@ public class EntitySchemaInitializer {
         }
         for (IndexMeta index : indexes) {
             copies.add(
-                    new IndexMeta().name(index.name()).unique(index.unique())
+                    new IndexMeta().name(index.name()).unique(index.unique()).predicate(index.predicate())
                             .columns(index.columns() == null ? new ArrayList<>() : new ArrayList<>(index.columns())));
         }
         return copies;
@@ -842,6 +842,16 @@ public class EntitySchemaInitializer {
         TABLE,
 
         /**
+         * Removes foreign keys before the referenced indexes or columns can change.
+         */
+        FOREIGN_KEY_REMOVAL,
+
+        /**
+         * Removes indexes and unique constraints before column changes can remove them implicitly.
+         */
+        INDEX_REMOVAL,
+
+        /**
          * Column and primary key phase.
          */
         STRUCTURE,
@@ -870,8 +880,10 @@ public class EntitySchemaInitializer {
         private static SchemaPhase of(Behavior behavior) {
             return switch (behavior) {
                 case CREATE_TABLE -> TABLE;
-                case CREATE_UNIQUE, DROP_UNIQUE, CREATE_INDEX, DROP_INDEX -> INDEX;
-                case CREATE_FOREIGN_KEY, DROP_FOREIGN_KEY -> FOREIGN_KEY;
+                case DROP_FOREIGN_KEY -> FOREIGN_KEY_REMOVAL;
+                case DROP_UNIQUE, DROP_INDEX -> INDEX_REMOVAL;
+                case CREATE_UNIQUE, CREATE_INDEX -> INDEX;
+                case CREATE_FOREIGN_KEY -> FOREIGN_KEY;
                 case MODIFY_TABLE_COMMENT, MODIFY_COLUMN_COMMENT -> COMMENT;
                 default -> STRUCTURE;
             };

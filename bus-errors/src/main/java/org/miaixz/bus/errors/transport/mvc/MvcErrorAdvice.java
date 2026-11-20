@@ -86,6 +86,7 @@ public final class MvcErrorAdvice {
      * Prevents construction of the legacy MVC advice utility.
      */
     private MvcErrorAdvice() {
+        // No initialization required.
     }
 
     /**

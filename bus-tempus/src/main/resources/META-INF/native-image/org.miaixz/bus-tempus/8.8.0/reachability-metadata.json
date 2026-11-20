@@ -2511,6 +2511,9 @@
         },
         {
           "name": "namespace"
+        },
+        {
+          "name": "proxyEnabled"
         }
       ],
       "methods": [
@@ -2546,6 +2549,16 @@
           "name": "setNamespace",
           "parameterTypes": [
             "java.lang.String"
+          ]
+        },
+        {
+          "name": "isProxyEnabled",
+          "parameterTypes": []
+        },
+        {
+          "name": "setProxyEnabled",
+          "parameterTypes": [
+            "boolean"
           ]
         }
       ]

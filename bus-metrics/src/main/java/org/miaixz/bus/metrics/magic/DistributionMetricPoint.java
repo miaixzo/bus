@@ -39,6 +39,12 @@ public record DistributionMetricPoint(Attributes attributes, long count, double 
 
     /**
      * Validates and copies the distribution.
+     *
+     * @param attributes resource attributes
+     * @param count      observation count
+     * @param sum        sum of observed values
+     * @param max        maximum observed value
+     * @param buckets    cumulative histogram buckets in ascending bound order
      */
     public DistributionMetricPoint {
         attributes = Objects.requireNonNull(attributes, "Metric attributes must not be null");

@@ -88,6 +88,22 @@ public record ColorMap(String id, String name, ColorMapType type, Set<String> mo
     /**
      * Validates required properties, derives defaults, sorts stops, and makes collections immutable.
      *
+     * @param id                 stable identifier, independent of the display name; a slug of the name by default
+     * @param name               human-readable display name
+     * @param type               semantic map type
+     * @param modalities         DICOM modality codes the map is meant for; empty means all
+     * @param defaultForModality whether the map is picked when a series of one of its modalities opens
+     * @param domain             value axis and default range
+     * @param bits               index resolution of compiled tables, 8 to 16
+     * @param space              color space used for interpolation
+     * @param interpolation      interpolation strategy between stops
+     * @param stops              color, opacity, and material control points
+     * @param outside            colors used outside the stop range
+     * @param lighting           volume rendering settings, or null for 2D-only maps
+     * @param metadata           free-form provenance (DICOM palette UID, label, creator); empty by default
+     * @param category           menu section when modality is not the natural split, or null
+     * @param tags               keywords for search; empty by default
+     * @param hidden             kept out of menus, e.g. a palette that only a presentation state references
      * @throws NullPointerException     if a required property is null
      * @throws IllegalArgumentException if the identifier, bit depth, or stop list is invalid
      */
@@ -155,6 +171,10 @@ public record ColorMap(String id, String name, ColorMapType type, Set<String> mo
 
     /**
      * Sampled map from a {@code [3][n]} table in B, G, R order, the {@link ByteLut} layout.
+     *
+     * @param name display name of the color map
+     * @param bgr  three color-channel planes in blue, green and red order
+     * @return color map sampled from the supplied BGR channel planes
      */
     public static ColorMap fromBgrTable(String name, byte[][] bgr) {
         Objects.requireNonNull(bgr, "Table cannot be null");
@@ -177,6 +197,9 @@ public record ColorMap(String id, String name, ColorMapType type, Set<String> mo
 
     /**
      * The map a byte LUT was compiled from, else a sampled map of its table; a null table is the identity gray ramp.
+     *
+     * @param lut byte lookup table to recover or sample as a color map
+     * @return original color map if available, otherwise a map sampled from the byte table
      */
     public static ColorMap fromByteLut(ByteLut lut) {
         if (lut.source() != null) {
@@ -290,6 +313,9 @@ public record ColorMap(String id, String name, ColorMapType type, Set<String> mo
 
     /**
      * Color at a domain value; build a {@link #sampler()} once when sampling many values.
+     *
+     * @param value domain value to sample
+     * @return color at the supplied domain value
      */
     public Rgba sample(double value) {
         return sampler().sample(value);
@@ -298,6 +324,8 @@ public record ColorMap(String id, String name, ColorMapType type, Set<String> mo
     /**
      * Same map with the color curve mirrored around the domain center. The alpha curve stays where it is: reversing a
      * transfer map must not make air opaque. Reversing twice gives back an equal map.
+     *
+     * @return color map with its color curve reversed and its opacity curve preserved
      */
     public ColorMap reversed() {
         double pivot = domain.min() + domain.max();
@@ -321,6 +349,9 @@ public record ColorMap(String id, String name, ColorMapType type, Set<String> mo
 
     /**
      * Same map under another display name; the id is unchanged.
+     *
+     * @param newName replacement display name
+     * @return equivalent color map with the replacement display name
      */
     public ColorMap withName(String newName) {
         return toBuilder().name(newName).build();
@@ -463,6 +494,9 @@ public record ColorMap(String id, String name, ColorMapType type, Set<String> mo
 
         /**
          * Stable identifier; when unset, a slug of the name.
+         *
+         * @param value stable color-map identifier
+         * @return this builder
          */
         public Builder id(String value) {
             this.id = value;
@@ -581,6 +615,9 @@ public record ColorMap(String id, String name, ColorMapType type, Set<String> mo
 
         /**
          * Index resolution of compiled tables; defaults to 8 for relative domains, 16 otherwise.
+         *
+         * @param value compiled lookup-table index resolution
+         * @return this builder
          */
         public Builder bits(int value) {
             this.bits = value;
@@ -656,6 +693,9 @@ public record ColorMap(String id, String name, ColorMapType type, Set<String> mo
 
         /**
          * Replaces the stops collected so far.
+         *
+         * @param values replacement color stops
+         * @return this builder
          */
         public Builder stops(List<ColorStop> values) {
             this.stops.clear();
@@ -687,6 +727,10 @@ public record ColorMap(String id, String name, ColorMapType type, Set<String> mo
 
         /**
          * Sets one metadata entry; a null value removes it.
+         *
+         * @param key   metadata entry name
+         * @param value color-map setting to apply
+         * @return this builder
          */
         public Builder metadata(String key, String value) {
             if (value == null) {
@@ -699,6 +743,9 @@ public record ColorMap(String id, String name, ColorMapType type, Set<String> mo
 
         /**
          * Replaces all metadata.
+         *
+         * @param values replacement metadata entries
+         * @return this builder
          */
         public Builder metadata(Map<String, String> values) {
             this.metadata.clear();

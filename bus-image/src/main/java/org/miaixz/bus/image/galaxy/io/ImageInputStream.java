@@ -1541,6 +1541,8 @@ public class ImageInputStream extends FilterInputStream implements ImageInputHan
     }
 
     /**
+     * Skips the current DICOM attribute and logs the supplied warning context.
+     *
      * @param message    the message to use in the warning log message
      * @param methodName the name of the method that is skipping the attribute
      * @throws IOException potentially thrown when performing the 'skip' operation

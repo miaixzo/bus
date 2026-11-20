@@ -44,6 +44,13 @@ public record ProxySelection(ProxyPlan requested, ProxyPlan effective, Source so
 
     /**
      * Validates and snapshots a resolved selection.
+     *
+     * @param requested  original request-level policy before inheritance resolution
+     * @param effective  effective direct, explicit proxy, or system-selection policy
+     * @param source     configuration boundary that supplied {@code effective}
+     * @param target     logical destination used for selection and failure reporting
+     * @param candidates non-empty ordered physical route candidates
+     * @param selector   system selector used to create candidates, or {@code null} for fixed policies
      */
     public ProxySelection {
         requested = required(requested, "Requested proxy plan");

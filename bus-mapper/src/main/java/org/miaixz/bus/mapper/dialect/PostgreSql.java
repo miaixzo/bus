@@ -53,6 +53,16 @@ public class PostgreSql extends AbstractDialect {
     }
 
     /**
+     * Identifies dialects that generate and introspect supported partial indexes.
+     *
+     * @return whether the supported index predicates are available
+     */
+    @Override
+    public boolean supportsPartialIndexes() {
+        return true;
+    }
+
+    /**
      * Returns the UPSERT family used by PostgreSQL.
      *
      * @return {@link Behavior#INSERT_ON_CONFLICT}

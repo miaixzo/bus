@@ -265,7 +265,11 @@ public final class ReactiveErrorHandler implements WebExceptionHandler {
             this.headers = HttpHeaders.readOnlyHttpHeaders(safe);
         }
 
-        /** Returns only the approved upstream protocol hints. */
+        /**
+         * Returns only the approved upstream protocol hints.
+         *
+         * @return approved upstream HTTP protocol hints
+         */
         @Override
         public HttpHeaders getHeaders() {
             return this.headers == null ? HttpHeaders.EMPTY : this.headers;
@@ -513,6 +517,8 @@ public final class ReactiveErrorHandler implements WebExceptionHandler {
 
         /**
          * Returns the formatted response status.
+         *
+         * @return formatted response status
          */
         @Override
         public HttpStatusCode statusCode() {
@@ -521,6 +527,8 @@ public final class ReactiveErrorHandler implements WebExceptionHandler {
 
         /**
          * Returns the formatted response headers.
+         *
+         * @return formatted response headers
          */
         @Override
         public HttpHeaders headers() {
@@ -529,6 +537,8 @@ public final class ReactiveErrorHandler implements WebExceptionHandler {
 
         /**
          * Returns the formatted response cookies.
+         *
+         * @return formatted response cookies
          */
         @Override
         public MultiValueMap<String, ResponseCookie> cookies() {

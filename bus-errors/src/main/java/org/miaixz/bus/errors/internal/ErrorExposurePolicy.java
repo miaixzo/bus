@@ -38,6 +38,7 @@ public final class ErrorExposurePolicy {
      * Prevents construction of the stateless public projection utility.
      */
     private ErrorExposurePolicy() {
+        // No initialization required.
     }
 
     /**

@@ -68,6 +68,7 @@ public final class ErrorPolicyCompiler {
      * Prevents construction of the stateless policy compiler.
      */
     private ErrorPolicyCompiler() {
+        // No initialization required.
     }
 
     /**

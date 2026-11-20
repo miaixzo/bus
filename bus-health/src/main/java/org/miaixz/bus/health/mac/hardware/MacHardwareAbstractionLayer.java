@@ -45,7 +45,9 @@ public class MacHardwareAbstractionLayer extends AbstractHardwareAbstractionLaye
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Instantiates the platform-specific {@link ComputerSystem} object
+     *
+     * @return platform-specific {@link ComputerSystem} object
      */
     @Override
     public ComputerSystem createComputerSystem() {
@@ -53,7 +55,9 @@ public class MacHardwareAbstractionLayer extends AbstractHardwareAbstractionLaye
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Instantiates the platform-specific {@link GlobalMemory} object
+     *
+     * @return platform-specific {@link GlobalMemory} object
      */
     @Override
     public GlobalMemory createMemory() {
@@ -61,7 +65,9 @@ public class MacHardwareAbstractionLayer extends AbstractHardwareAbstractionLaye
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Instantiates the platform-specific {@link CentralProcessor} object
+     *
+     * @return platform-specific {@link CentralProcessor} object
      */
     @Override
     public CentralProcessor createProcessor() {
@@ -69,7 +75,9 @@ public class MacHardwareAbstractionLayer extends AbstractHardwareAbstractionLaye
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Instantiates the platform-specific {@link Sensors} object
+     *
+     * @return platform-specific {@link Sensors} object
      */
     @Override
     public Sensors createSensors() {
@@ -77,7 +85,9 @@ public class MacHardwareAbstractionLayer extends AbstractHardwareAbstractionLaye
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Instantiates a list of {@link PowerSource} objects, representing batteries, etc.
+     *
+     * @return A list of PowerSource objects or an empty list if none are present.
      */
     @Override
     public List<PowerSource> getPowerSources() {
@@ -85,7 +95,10 @@ public class MacHardwareAbstractionLayer extends AbstractHardwareAbstractionLaye
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Instantiates a list of {@link HWDiskStore} objects, representing physical hard disks or other similar storage
+     * devices.
+     *
+     * @return A list of HWDiskStore objects or an empty list if none are present.
      */
     @Override
     public List<HWDiskStore> getDiskStores() {
@@ -93,7 +106,14 @@ public class MacHardwareAbstractionLayer extends AbstractHardwareAbstractionLaye
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Instantiates a list of {@link LogicalVolumeGroup} objects, representing a storage pool or group of devices,
+     * partitions, volumes, or other implementation specific means of file storage.
+     * <p>
+     * If not yet implemented or if logical volume groups do not exist, returns an empty list.
+     * <p>
+     * Currently implemented for Linux (LVM2), macOS (Core Storage), and Windows (Storage Spaces).
+     *
+     * @return A list of {@link LogicalVolumeGroup} objects or an empty list if none are present.
      */
     @Override
     public List<LogicalVolumeGroup> getLogicalVolumeGroups() {
@@ -101,7 +121,9 @@ public class MacHardwareAbstractionLayer extends AbstractHardwareAbstractionLaye
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Instantiates the platform-specific display list.
+     *
+     * @return platform-specific display list
      */
     @Override
     protected List<Display> createDisplays() {
@@ -109,7 +131,10 @@ public class MacHardwareAbstractionLayer extends AbstractHardwareAbstractionLaye
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Gets a list {@link NetworkIF} objects, representing a network interface.
+     *
+     * @param includeLocalInterfaces whether to include local interfaces (loopback or no hardware address) in the result
+     * @return A list of {@link NetworkIF} objects representing the interfaces
      */
     @Override
     public List<NetworkIF> getNetworkIFs(boolean includeLocalInterfaces) {
@@ -117,7 +142,9 @@ public class MacHardwareAbstractionLayer extends AbstractHardwareAbstractionLaye
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Instantiates the platform-specific USB device tree.
+     *
+     * @return platform-specific USB device tree
      */
     @Override
     protected List<UsbDevice> createUsbDevices() {
@@ -125,7 +152,9 @@ public class MacHardwareAbstractionLayer extends AbstractHardwareAbstractionLaye
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Instantiates the platform-specific sound card list.
+     *
+     * @return platform-specific sound card list
      */
     @Override
     protected List<SoundCard> createSoundCards() {
@@ -143,7 +172,9 @@ public class MacHardwareAbstractionLayer extends AbstractHardwareAbstractionLaye
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Instantiates the platform-specific graphics card list.
+     *
+     * @return platform-specific graphics card list
      */
     @Override
     protected List<GraphicsCard> createGraphicsCards() {

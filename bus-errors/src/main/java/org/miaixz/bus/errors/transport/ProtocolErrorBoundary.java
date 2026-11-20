@@ -38,6 +38,7 @@ public final class ProtocolErrorBoundary {
      * Prevents construction of the stateless protocol boundary utility.
      */
     private ProtocolErrorBoundary() {
+        // No initialization required.
     }
 
     /**

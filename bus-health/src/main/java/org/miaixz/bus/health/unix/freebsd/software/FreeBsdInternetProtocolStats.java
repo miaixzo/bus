@@ -146,6 +146,8 @@ public class FreeBsdInternetProtocolStats extends AbstractInternetProtocolStats 
 
     /**
      * Queries IPv4 TCP statistics with a command fallback.
+     *
+     * @return IPv4 TCP statistics obtained from the available system source
      */
     private TcpStats queryTcpv4Stats() {
         long establishedCount = established.get().getLeft();
@@ -155,6 +157,8 @@ public class FreeBsdInternetProtocolStats extends AbstractInternetProtocolStats 
 
     /**
      * Queries IPv4 UDP statistics with a command fallback.
+     *
+     * @return IPv4 UDP statistics obtained from the available system source
      */
     private UdpStats queryUdpv4Stats() {
         UdpStats stats = parseUdpstat(querySysctl(UDPSTAT_SYSCTL));

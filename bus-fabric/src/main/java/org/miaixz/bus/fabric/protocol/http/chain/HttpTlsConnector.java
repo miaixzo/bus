@@ -86,6 +86,11 @@ final class HttpTlsConnector {
 
     /**
      * Waits for the Dispatcher-owned handshake future.
+     *
+     * @param future       pending asynchronous TLS handshake
+     * @param timeout      timeout governing the I/O operation
+     * @param cancellation cancellation signal for the handshake wait
+     * @return completed TLS handshake
      */
     private static TlsHandshake await(
             final CompletableFuture<TlsHandshake> future,
@@ -113,6 +118,9 @@ final class HttpTlsConnector {
 
     /**
      * Maps negotiated ALPN to the supported HTTP protocol.
+     *
+     * @param value ALPN protocol identifier returned by the TLS engine
+     * @return HTTP protocol selected by ALPN
      */
     private static Protocol protocol(final String value) {
         if (value == null || value.isBlank() || Protocol.HTTP_1_1.name.equalsIgnoreCase(value)) {

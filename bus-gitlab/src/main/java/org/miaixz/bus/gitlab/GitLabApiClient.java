@@ -360,7 +360,7 @@ public class GitLabApiClient implements AutoCloseable {
      * @param level             the logging level (SEVERE, WARNING, INFO, CONFIG, FINE, FINER, FINEST)
      * @param maxEntityLength   maximum number of entity bytes to be logged. When logging if the maxEntitySize is
      *                          reached, the entity logging will be truncated at maxEntitySize and "...more..." will be
-     *                          added at the end of the log entry. If maxEntitySize is <= 0, entity logging will be
+     *                          added at the end of the log entry. If {@code maxEntitySize <= 0}, entity logging will be
      *                          disabled
      * @param maskedHeaderNames a list of header names that should have the values masked
      */
@@ -445,7 +445,9 @@ public class GitLabApiClient implements AutoCloseable {
     }
 
     /**
-     * Set the ID of the user to sudo as.
+     * Returns the identifier of the user selected for impersonation.
+     *
+     * @return identifier of the user to impersonate, or null when impersonation is disabled
      */
     Long getSudoAsId() {
         return (sudoAsId);

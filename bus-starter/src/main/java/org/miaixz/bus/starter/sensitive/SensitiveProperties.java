@@ -74,6 +74,8 @@ public class SensitiveProperties {
     }
 
     /**
+     * Returns a safe diagnostic representation of this configuration.
+     *
      * @return masked diagnostic representation
      */
     @Override
@@ -131,6 +133,8 @@ public class SensitiveProperties {
         }
 
         /**
+         * Returns a safe diagnostic representation of this configuration.
+         *
          * @return masked representation
          */
         @Override
@@ -169,6 +173,8 @@ public class SensitiveProperties {
         }
 
         /**
+         * Returns a safe diagnostic representation of this configuration.
+         *
          * @return masked representation
          */
         @Override
