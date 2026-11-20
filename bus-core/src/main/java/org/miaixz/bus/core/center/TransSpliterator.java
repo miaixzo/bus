@@ -57,10 +57,11 @@ public class TransSpliterator<F, T> implements Spliterator<T> {
     }
 
     /**
-     * Description inherited from parent class or interface.
-     * <p>
      * Advances the spliterator and consumes the next element after applying the transformation function. The provided
      * action is performed on the transformed element.
+     *
+     * @param action The action to perform
+     * @return {@code false} if no remaining elements existed upon entry to this method, else {@code true}.
      */
     @Override
     public boolean tryAdvance(final Consumer<? super T> action) {
@@ -68,10 +69,10 @@ public class TransSpliterator<F, T> implements Spliterator<T> {
     }
 
     /**
-     * Description inherited from parent class or interface.
-     * <p>
      * Applies the transformation function to each remaining element and then performs the given action on each
      * transformed element.
+     *
+     * @param action The action to perform
      */
     @Override
     public void forEachRemaining(final Consumer<? super T> action) {
@@ -79,10 +80,10 @@ public class TransSpliterator<F, T> implements Spliterator<T> {
     }
 
     /**
-     * Description inherited from parent class or interface.
-     * <p>
      * If the underlying spliterator can be partitioned, this method returns a new {@code TransSpliterator} covering a
      * portion of the elements. The new spliterator shares the same transformation function.
+     *
+     * @return transformed split of the source spliterator, or null when the source cannot split
      */
     @Override
     public Spliterator<T> trySplit() {
@@ -91,10 +92,10 @@ public class TransSpliterator<F, T> implements Spliterator<T> {
     }
 
     /**
-     * Description inherited from parent class or interface.
-     * <p>
      * Returns an estimate of the number of elements that would be encountered by a traversal, which is delegated to the
      * underlying source spliterator.
+     *
+     * @return the estimated number of elements, or {@link Long#MAX_VALUE} if infinite
      */
     @Override
     public long estimateSize() {
@@ -102,12 +103,12 @@ public class TransSpliterator<F, T> implements Spliterator<T> {
     }
 
     /**
-     * Description inherited from parent class or interface.
-     * <p>
      * Returns the characteristics of this spliterator, which are derived from the source spliterator. This
      * implementation removes characteristics such as {@code DISTINCT}, {@code NONNULL}, and {@code SORTED} because the
      * transformation function is not guaranteed to preserve these properties. For example, a function might map
      * distinct elements to the same value or produce nulls from a non-null source.
+     *
+     * @return a set of characteristics
      */
     @Override
     public int characteristics() {

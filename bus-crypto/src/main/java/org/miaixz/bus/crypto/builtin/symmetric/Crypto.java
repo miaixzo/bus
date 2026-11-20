@@ -383,10 +383,10 @@ public class Crypto implements Encryptor, Decryptor, Serializable {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Encrypts the given byte array.
      *
-     * @param data Description inherited from parent class or interface.
-     * @return Description inherited from parent class or interface.
+     * @param data The byte array to be encrypted.
+     * @return The encrypted content as a byte array.
      */
     @Override
     public byte[] encrypt(final byte[] data) {
@@ -414,12 +414,13 @@ public class Crypto implements Encryptor, Decryptor, Serializable {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Encrypts data from an input stream and writes it to an output stream. This method is suitable for large amounts
+     * of data. The option to close streams after operation is provided.
      *
-     * @param data    Description inherited from parent class or interface.
-     * @param out     Description inherited from parent class or interface.
-     * @param isClose Description inherited from parent class or interface.
-     * @throws InternalException Description inherited from parent class or interface.
+     * @param data    The input stream containing the data to be encrypted.
+     * @param out     The output stream to write the encrypted data to (e.g., a file or network stream).
+     * @param isClose Whether to close the input and output streams after the operation.
+     * @throws InternalException if an I/O error occurs during encryption.
      */
     @Override
     public void encrypt(final InputStream data, final OutputStream out, final boolean isClose)
@@ -473,10 +474,10 @@ public class Crypto implements Encryptor, Decryptor, Serializable {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Decrypts the given byte array.
      *
-     * @param bytes Description inherited from parent class or interface.
-     * @return Description inherited from parent class or interface.
+     * @param bytes The byte array to be decrypted.
+     * @return The decrypted byte array.
      */
     @Override
     public byte[] decrypt(final byte[] bytes) {
@@ -506,12 +507,13 @@ public class Crypto implements Encryptor, Decryptor, Serializable {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Decrypts data from an input stream and writes it to an output stream. This method is designed for large amounts
+     * of data and does not close the streams upon completion.
      *
-     * @param data    Description inherited from parent class or interface.
-     * @param out     Description inherited from parent class or interface.
-     * @param isClose Description inherited from parent class or interface.
-     * @throws InternalException Description inherited from parent class or interface.
+     * @param data    The input stream containing the encrypted data.
+     * @param out     The output stream to write the decrypted data to, which can be a file or a network location.
+     * @param isClose Whether to close both the input and output streams after the operation.
+     * @throws InternalException if an I/O error occurs.
      */
     @Override
     public void decrypt(final InputStream data, final OutputStream out, final boolean isClose)

@@ -16,12 +16,6 @@
           "name": "icon"
         },
         {
-          "name": "host"
-        },
-        {
-          "name": "port"
-        },
-        {
           "name": "path"
         },
         {
@@ -92,6 +86,12 @@
         },
         {
           "name": "labels"
+        },
+        {
+          "name": "scheme"
+        },
+        {
+          "name": "instances"
         }
       ],
       "methods": [
@@ -162,14 +162,6 @@
         },
         {
           "name": "getIcon",
-          "parameterTypes": []
-        },
-        {
-          "name": "getHost",
-          "parameterTypes": []
-        },
-        {
-          "name": "getPort",
           "parameterTypes": []
         },
         {
@@ -287,18 +279,6 @@
           ]
         },
         {
-          "name": "setHost",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setPort",
-          "parameterTypes": [
-            "java.lang.Integer"
-          ]
-        },
-        {
           "name": "setPath",
           "parameterTypes": [
             "java.lang.String"
@@ -349,7 +329,7 @@
         {
           "name": "setScope",
           "parameterTypes": [
-            "java.lang.Integer"
+            "java.lang.String"
           ]
         },
         {
@@ -445,6 +425,26 @@
           "parameterTypes": [
             "org.miaixz.bus.cortex.Assets$AssetsBuilder"
           ]
+        },
+        {
+          "name": "getScheme",
+          "parameterTypes": []
+        },
+        {
+          "name": "setScheme",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getInstances",
+          "parameterTypes": []
+        },
+        {
+          "name": "setInstances",
+          "parameterTypes": [
+            "java.util.List"
+          ]
         }
       ]
     },
@@ -459,12 +459,6 @@
         },
         {
           "name": "icon"
-        },
-        {
-          "name": "host"
-        },
-        {
-          "name": "port"
         },
         {
           "name": "path"
@@ -531,6 +525,21 @@
         },
         {
           "name": "labels"
+        },
+        {
+          "name": "scheme"
+        },
+        {
+          "name": "stream"
+        },
+        {
+          "name": "retries"
+        },
+        {
+          "name": "timeout"
+        },
+        {
+          "name": "instances"
         }
       ],
       "methods": [
@@ -550,18 +559,6 @@
           "name": "icon",
           "parameterTypes": [
             "java.lang.String"
-          ]
-        },
-        {
-          "name": "host",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "port",
-          "parameterTypes": [
-            "java.lang.Integer"
           ]
         },
         {
@@ -615,7 +612,7 @@
         {
           "name": "scope",
           "parameterTypes": [
-            "java.lang.Integer"
+            "java.lang.String"
           ]
         },
         {
@@ -723,6 +720,18 @@
         {
           "name": "<init>",
           "parameterTypes": []
+        },
+        {
+          "name": "scheme",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "instances",
+          "parameterTypes": [
+            "java.util.List"
+          ]
         }
       ]
     },
@@ -1284,6 +1293,15 @@
         },
         {
           "name": "metadata"
+        },
+        {
+          "name": "kind"
+        },
+        {
+          "name": "scheme"
+        },
+        {
+          "name": "path"
         }
       ],
       "methods": [
@@ -1446,6 +1464,36 @@
           "parameterTypes": [
             "org.miaixz.bus.cortex.Instance$InstanceBuilder"
           ]
+        },
+        {
+          "name": "getKind",
+          "parameterTypes": []
+        },
+        {
+          "name": "getScheme",
+          "parameterTypes": []
+        },
+        {
+          "name": "getPath",
+          "parameterTypes": []
+        },
+        {
+          "name": "setKind",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setScheme",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setPath",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
         }
       ]
     },
@@ -1481,6 +1529,15 @@
         },
         {
           "name": "metadata"
+        },
+        {
+          "name": "kind"
+        },
+        {
+          "name": "scheme"
+        },
+        {
+          "name": "path"
         }
       ],
       "methods": [
@@ -1559,6 +1616,24 @@
         {
           "name": "<init>",
           "parameterTypes": []
+        },
+        {
+          "name": "kind",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "scheme",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "path",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
         }
       ]
     },
@@ -9397,6 +9472,9 @@
         },
         {
           "name": "assets"
+        },
+        {
+          "name": "applications"
         }
       ],
       "methods": [
@@ -9503,6 +9581,16 @@
         {
           "name": "<init>",
           "parameterTypes": []
+        },
+        {
+          "name": "getApplications",
+          "parameterTypes": []
+        },
+        {
+          "name": "setApplications",
+          "parameterTypes": [
+            "java.util.Map"
+          ]
         }
       ]
     },

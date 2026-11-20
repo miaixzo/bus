@@ -92,6 +92,7 @@ public abstract class AbstractMetroHash<R extends AbstractMetroHash<R>> implemen
     /**
      * Apply method.
      *
+     * @param input The {@link ByteBuffer} containing the data to be hashed.
      * @return the R value
      */
     @Override

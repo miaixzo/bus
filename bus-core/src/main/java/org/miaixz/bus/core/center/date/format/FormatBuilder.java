@@ -59,6 +59,9 @@ public class FormatBuilder extends Format implements PositionDateParser, FormatP
         /**
          * Createinstance method.
          *
+         * @param pattern  The non-null date format, compatible with {@link java.text.SimpleDateFormat} format.
+         * @param timeZone The time zone; defaults to the current time zone if {@code null}.
+         * @param locale   The locale; defaults to the current locale if {@code null}.
          * @return the FormatBuilder value
          */
         @Override

@@ -52,6 +52,10 @@ public class ZipFileResource implements ZipResource {
 
     /**
      * Read method.
+     *
+     * @param consumer    The {@link ZipEntry} processor.
+     * @param maxSizeDiff The maximum size difference multiplier for ZipBomb check. A value of -1 indicates no ZipBomb
+     *                    check.
      */
     @Override
     public void read(final ConsumerX<ZipEntry> consumer, final int maxSizeDiff) {
@@ -90,6 +94,8 @@ public class ZipFileResource implements ZipResource {
 
     /**
      * Close method.
+     *
+     * @throws IOException if an underlying input or output operation fails
      */
     @Override
     public void close() throws IOException {

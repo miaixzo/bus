@@ -130,7 +130,6 @@ public class SyncFinisher implements Closeable {
                 /**
                  * Work method.
                  *
-                 * @return the void value
                  */
                 @Override
                 public void work() {
@@ -154,7 +153,6 @@ public class SyncFinisher implements Closeable {
             /**
              * Work method.
              *
-             * @return the void value
              */
             @Override
             public void work() {

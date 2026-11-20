@@ -118,7 +118,7 @@ public class RecyclableBatchThreadPoolExecutor {
              * Returns the value to which the specified key is mapped, or null if this cache contains no mapping for the
              * key.
              *
-             * @param key the key whose associated value is to be returned
+             * @param index index of the reusable batch slot
              * @return the value associated with the key, or null if no mapping
              */
             @Override

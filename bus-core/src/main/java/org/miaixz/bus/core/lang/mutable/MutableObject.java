@@ -80,6 +80,8 @@ public class MutableObject<T> implements Mutable<T>, Serializable {
 
     /**
      * Set method.
+     *
+     * @param value The new value.
      */
     @Override
     public void set(final T value) {

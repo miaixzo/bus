@@ -95,6 +95,8 @@ public class MutableFloat extends Number implements Comparable<MutableFloat>, Mu
 
     /**
      * Set method.
+     *
+     * @param value replacement value
      */
     @Override
     public void set(final Number value) {

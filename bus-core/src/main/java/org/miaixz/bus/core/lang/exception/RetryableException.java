@@ -30,9 +30,6 @@ import org.miaixz.bus.core.basic.normal.Errors;
  */
 public class RetryableException extends UncheckedException {
 
-    /**
-     * Serialization version used to preserve compatibility of this exception type.
-     */
     @Serial
     private static final long serialVersionUID = 2536802151502L;
 

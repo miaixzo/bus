@@ -89,10 +89,10 @@ public class VirtualPath implements Path {
     }
 
     /**
-     * Description inherited from parent class or interface.
-     * <p>
      * Virtual paths do not support file system operations, so this method throws an
      * {@link UnsupportedOperationException}.
+     *
+     * @return no value because this operation always raises UnsupportedOperationException
      */
     @Override
     public FileSystem getFileSystem() {
@@ -100,9 +100,9 @@ public class VirtualPath implements Path {
     }
 
     /**
-     * Description inherited from parent class or interface.
-     * <p>
      * Virtual paths are always considered relative, so this method always returns {@code false}.
+     *
+     * @return false because virtual paths are relative
      */
     @Override
     public boolean isAbsolute() {
@@ -110,9 +110,9 @@ public class VirtualPath implements Path {
     }
 
     /**
-     * Description inherited from parent class or interface.
-     * <p>
      * Virtual paths do not have a root component, so this method returns {@code null}.
+     *
+     * @return null because virtual paths have no root component
      */
     @Override
     public Path getRoot() {
@@ -120,7 +120,9 @@ public class VirtualPath implements Path {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Returns the final name element of this virtual path.
+     *
+     * @return last virtual-path name element
      */
     @Override
     public Path getFileName() {
@@ -132,7 +134,9 @@ public class VirtualPath implements Path {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Returns the parent of this virtual path, or null when it has no parent.
+     *
+     * @return parent virtual path, or null if there is no parent
      */
     @Override
     public Path getParent() {
@@ -144,7 +148,9 @@ public class VirtualPath implements Path {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Returns the number of name elements in this virtual path.
+     *
+     * @return number of name elements
      */
     @Override
     public int getNameCount() {
@@ -158,7 +164,10 @@ public class VirtualPath implements Path {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Returns the virtual path representing the selected name element.
+     *
+     * @param index The index of the element.
+     * @return virtual path for the requested name element
      */
     @Override
     public Path getName(final int index) {
@@ -173,7 +182,11 @@ public class VirtualPath implements Path {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Returns the selected contiguous range of virtual-path name elements.
+     *
+     * @param beginIndex The index of the first element, inclusive.
+     * @param endIndex   The index of the last element, exclusive.
+     * @return virtual path containing the requested name range
      */
     @Override
     public Path subpath(final int beginIndex, final int endIndex) {
@@ -195,7 +208,10 @@ public class VirtualPath implements Path {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Tests whether this virtual path begins with the supplied path.
+     *
+     * @param other path or value to compare or resolve against this virtual path
+     * @return whether this path begins with the supplied path
      */
     @Override
     public boolean startsWith(final Path other) {
@@ -206,7 +222,10 @@ public class VirtualPath implements Path {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Tests whether this virtual path begins with the supplied path.
+     *
+     * @param other path or value to compare or resolve against this virtual path
+     * @return whether this path begins with the supplied path
      */
     @Override
     public boolean startsWith(final String other) {
@@ -214,7 +233,10 @@ public class VirtualPath implements Path {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Tests whether this virtual path ends with the supplied path.
+     *
+     * @param other path or value to compare or resolve against this virtual path
+     * @return whether this path ends with the supplied path
      */
     @Override
     public boolean endsWith(final Path other) {
@@ -225,7 +247,10 @@ public class VirtualPath implements Path {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Tests whether this virtual path ends with the supplied path.
+     *
+     * @param other path or value to compare or resolve against this virtual path
+     * @return whether this path ends with the supplied path
      */
     @Override
     public boolean endsWith(final String other) {
@@ -233,7 +258,9 @@ public class VirtualPath implements Path {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Returns this path with redundant name elements normalized.
+     *
+     * @return normalized virtual path
      */
     @Override
     public Path normalize() {
@@ -241,7 +268,10 @@ public class VirtualPath implements Path {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Resolves another path against this virtual path.
+     *
+     * @param other path or value to compare or resolve against this virtual path
+     * @return resolved virtual path
      */
     @Override
     public Path resolve(final Path other) {
@@ -256,7 +286,10 @@ public class VirtualPath implements Path {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Resolves another path against this virtual path.
+     *
+     * @param other path or value to compare or resolve against this virtual path
+     * @return resolved virtual path
      */
     @Override
     public Path resolve(final String other) {
@@ -268,7 +301,10 @@ public class VirtualPath implements Path {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Resolves another path against the parent of this virtual path.
+     *
+     * @param other path or value to compare or resolve against this virtual path
+     * @return resolved sibling virtual path
      */
     @Override
     public Path resolveSibling(final Path other) {
@@ -280,7 +316,10 @@ public class VirtualPath implements Path {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Resolves another path against the parent of this virtual path.
+     *
+     * @param other path or value to compare or resolve against this virtual path
+     * @return resolved sibling virtual path
      */
     @Override
     public Path resolveSibling(final String other) {
@@ -292,7 +331,10 @@ public class VirtualPath implements Path {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Returns the relative path from this virtual path to another path.
+     *
+     * @param other path or value to compare or resolve against this virtual path
+     * @return relative path to the supplied path
      */
     @Override
     public Path relativize(final Path other) {
@@ -309,9 +351,9 @@ public class VirtualPath implements Path {
     }
 
     /**
-     * Description inherited from parent class or interface.
-     * <p>
      * Virtual paths do not support URI conversion, so this method throws an {@link UnsupportedOperationException}.
+     *
+     * @return no value because virtual paths do not support URI conversion
      */
     @Override
     public URI toUri() {
@@ -319,9 +361,9 @@ public class VirtualPath implements Path {
     }
 
     /**
-     * Description inherited from parent class or interface.
-     * <p>
      * For a virtual path, this returns the path itself.
+     *
+     * @return this virtual path
      */
     @Override
     public Path toAbsolutePath() {
@@ -329,9 +371,10 @@ public class VirtualPath implements Path {
     }
 
     /**
-     * Description inherited from parent class or interface.
-     * <p>
      * For a virtual path, this returns the path itself.
+     *
+     * @param options Options indicating how symbolic links are handled.
+     * @return this virtual path without accessing a filesystem
      */
     @Override
     public Path toRealPath(final LinkOption... options) {
@@ -339,7 +382,10 @@ public class VirtualPath implements Path {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Rejects conversion because this virtual path has no backing file.
+     *
+     * @return no value because virtual paths cannot be converted to files
+     * @throws UnsupportedOperationException always, because a virtual path has no backing file
      */
     @Override
     public File toFile() {
@@ -347,9 +393,13 @@ public class VirtualPath implements Path {
     }
 
     /**
-     * Description inherited from parent class or interface.
-     * <p>
      * Virtual paths do not support watch services, so this method throws an {@link UnsupportedOperationException}.
+     *
+     * @param watcher   The watch service to which this path is to be registered.
+     * @param events    The events for which the path should be watched.
+     * @param modifiers Modifiers to the watch event.
+     * @return no value because virtual paths do not support watch registration
+     * @throws IOException If an I/O error occurs.
      */
     @Override
     public WatchKey register(
@@ -360,9 +410,12 @@ public class VirtualPath implements Path {
     }
 
     /**
-     * Description inherited from parent class or interface.
-     * <p>
      * Virtual paths do not support watch services, so this method throws an {@link UnsupportedOperationException}.
+     *
+     * @param watcher The watch service to which this path is to be registered.
+     * @param events  The events for which the path should be watched.
+     * @return no value because virtual paths do not support watch registration
+     * @throws IOException If an I/O error occurs.
      */
     @Override
     public WatchKey register(final WatchService watcher, final WatchEvent.Kind<?>... events) throws IOException {
@@ -370,13 +423,21 @@ public class VirtualPath implements Path {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Returns the virtual path name elements in traversal order.
+     *
+     * @return iterator over the virtual-path name elements
      */
     @Override
     public Iterator<Path> iterator() {
         return new Iterator<>() {
 
+            /**
+             * Individual name elements of the virtual path.
+             */
             private final List<String> parts = CharsBacker.splitTrim(path, Symbol.SLASH);
+            /**
+             * Index of the next path element to return.
+             */
             private int index = 0;
 
             /**
@@ -406,7 +467,10 @@ public class VirtualPath implements Path {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Compares the stored path text with another virtual path.
+     *
+     * @param other path or value to compare or resolve against this virtual path
+     * @return lexicographic ordering of the stored path strings
      */
     @Override
     public int compareTo(final Path other) {
@@ -417,7 +481,10 @@ public class VirtualPath implements Path {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Tests whether another virtual path contains the same path text.
+     *
+     * @param other path or value to compare or resolve against this virtual path
+     * @return whether both values are virtual paths containing the same path text
      */
     @Override
     public boolean equals(final Object other) {
@@ -431,7 +498,9 @@ public class VirtualPath implements Path {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Returns the hash code of the stored path text.
+     *
+     * @return hash code of the stored path text
      */
     @Override
     public int hashCode() {
@@ -439,7 +508,9 @@ public class VirtualPath implements Path {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Returns the stored path text.
+     *
+     * @return stored path text
      */
     @Override
     public String toString() {

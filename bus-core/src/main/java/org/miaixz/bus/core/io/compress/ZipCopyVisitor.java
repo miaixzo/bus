@@ -65,7 +65,10 @@ public class ZipCopyVisitor extends SimpleFileVisitor<Path> {
     /**
      * Previsitdirectory method.
      *
+     * @param dir   The directory to visit.
+     * @param attrs The basic file attributes of the directory.
      * @return the FileVisitResult value
+     * @throws IOException if an underlying input or output operation fails
      */
     @Override
     public FileVisitResult preVisitDirectory(final Path dir, final BasicFileAttributes attrs) throws IOException {
@@ -90,7 +93,10 @@ public class ZipCopyVisitor extends SimpleFileVisitor<Path> {
     /**
      * Visitfile method.
      *
+     * @param file  The file to visit.
+     * @param attrs The basic file attributes of the file.
      * @return the FileVisitResult value
+     * @throws IOException if an underlying input or output operation fails
      */
     @Override
     public FileVisitResult visitFile(final Path file, final BasicFileAttributes attrs) throws IOException {

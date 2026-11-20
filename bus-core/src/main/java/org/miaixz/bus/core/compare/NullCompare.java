@@ -64,6 +64,8 @@ public class NullCompare<T> implements Comparator<T>, Serializable {
     /**
      * Compare method.
      *
+     * @param a first value to compare
+     * @param b blue sRGB component in the unit interval
      * @return the int value
      */
     @Override
@@ -83,6 +85,7 @@ public class NullCompare<T> implements Comparator<T>, Serializable {
     /**
      * Thencomparing method.
      *
+     * @param other comparator used when this comparator considers both values equal
      * @return the Comparator&lt;T&gt; value
      */
     @Override

@@ -254,7 +254,10 @@ public class WatchServiceWrapper extends SimpleWrapper<WatchService> implements 
             /**
              * Postvisitdirectory method.
              *
+             * @param dir The directory that was visited.
+             * @param exc failure raised while visiting the directory, or null on success
              * @return the FileVisitResult value
+             * @throws IOException if an underlying input or output operation fails
              */
             @Override
             public FileVisitResult postVisitDirectory(final Path dir, final IOException exc) throws IOException {

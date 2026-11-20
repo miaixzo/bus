@@ -133,9 +133,9 @@ public class ByteSelector extends AbstractList<ByteString> implements RandomAcce
      * <li>prefixIndex: The result index for the current position, or -1 if the current position itself is not a
      * result.</li>
      * <li>A sorted list of selectChoiceCount bytes to match against the input string.</li>
-     * <li>A heterogeneous list of selectChoiceCount result indices (>= 0) or offsets (< 0) to the next node. Elements
-     * in this list correspond to elements in the previous list. Offsets are negative and must be multiplied by -1
-     * before use.</li>
+     * <li>A heterogeneous list of selectChoiceCount result indices ({@code >= 0}) or offsets ({@code < 0}) to the next
+     * node. Elements in this list correspond to elements in the previous list. Offsets are negative and must be
+     * multiplied by -1 before use.</li>
      * </ul>
      * SCAN nodes are encoded as:
      * <ul>
@@ -144,8 +144,8 @@ public class ByteSelector extends AbstractList<ByteString> implements RandomAcce
      * <li>prefixIndex: The result index for the current position, or -1 if the current position itself is not a
      * result.</li>
      * <li>A list of scanByteCount bytes to match.</li>
-     * <li>nextStep: The result index (>= 0) or offset (< 0) to the next node. Offsets are negative and must be
-     * multiplied by -1 before use.</li>
+     * <li>nextStep: The result index ({@code >= 0}) or offset ({@code < 0}) to the next node. Offsets are negative and
+     * must be multiplied by -1 before use.</li>
      * </ul>
      * This structure is used to improve locality and performance when selecting from a candidate list.
      *

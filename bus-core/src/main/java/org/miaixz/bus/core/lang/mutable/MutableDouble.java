@@ -95,6 +95,8 @@ public class MutableDouble extends Number implements Comparable<MutableDouble>, 
 
     /**
      * Set method.
+     *
+     * @param value replacement value
      */
     @Override
     public void set(final Number value) {

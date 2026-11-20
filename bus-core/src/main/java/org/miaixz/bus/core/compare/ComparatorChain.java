@@ -282,6 +282,7 @@ public class ComparatorChain<E> implements Chain<Comparator<E>, ComparatorChain<
     /**
      * Addchain method.
      *
+     * @param element comparator or replacer to append to the chain
      * @return the ComparatorChain&lt;E&gt; value
      */
     @Override

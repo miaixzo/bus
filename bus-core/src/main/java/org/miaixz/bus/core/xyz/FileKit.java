@@ -1988,6 +1988,7 @@ public class FileKit extends PathResolve {
      * @param charset  The character set.
      * @param isAppend If `true`, appends to the file.
      * @return A `BufferedWriter`.
+     * @throws InternalException if the destination file cannot be opened or written
      */
     public static BufferedWriter getWriter(
             final String path,
@@ -2003,6 +2004,7 @@ public class FileKit extends PathResolve {
      * @param charset  The character set.
      * @param isAppend If `true`, appends to the file.
      * @return A `BufferedWriter`.
+     * @throws InternalException if the destination file cannot be opened or written
      */
     public static BufferedWriter getWriter(
             final File file,
@@ -2018,6 +2020,7 @@ public class FileKit extends PathResolve {
      * @param charset  The character set.
      * @param isAppend If `true`, appends to the file.
      * @return A `PrintWriter`.
+     * @throws InternalException if the destination file cannot be opened or written
      */
     public static PrintWriter getPrintWriter(
             final String path,
@@ -2033,6 +2036,7 @@ public class FileKit extends PathResolve {
      * @param charset  The character set.
      * @param isAppend If `true`, appends to the file.
      * @return A `PrintWriter`.
+     * @throws InternalException if the destination file cannot be opened or written
      */
     public static PrintWriter getPrintWriter(
             final File file,
@@ -2056,6 +2060,7 @@ public class FileKit extends PathResolve {
      * @param content The content to write.
      * @param path    The file path.
      * @return The written file.
+     * @throws InternalException if the destination file cannot be opened or written
      */
     public static File writeUtf8String(final String content, final String path) throws InternalException {
         return writeString(content, path, Charset.UTF_8);
@@ -2067,6 +2072,7 @@ public class FileKit extends PathResolve {
      * @param content The content to write.
      * @param file    The file.
      * @return The written file.
+     * @throws InternalException if the destination file cannot be opened or written
      */
     public static File writeUtf8String(final String content, final File file) throws InternalException {
         return writeString(content, file, Charset.UTF_8);
@@ -2079,6 +2085,7 @@ public class FileKit extends PathResolve {
      * @param path    The file path.
      * @param charset The character set.
      * @return The written file.
+     * @throws InternalException if the destination file cannot be opened or written
      */
     public static File writeString(final String content, final String path, final java.nio.charset.Charset charset)
             throws InternalException {
@@ -2092,6 +2099,7 @@ public class FileKit extends PathResolve {
      * @param file    The file.
      * @param charset The character set.
      * @return The written file.
+     * @throws InternalException if the destination file cannot be opened or written
      */
     public static File writeString(final String content, final File file, final java.nio.charset.Charset charset)
             throws InternalException {
@@ -2104,6 +2112,7 @@ public class FileKit extends PathResolve {
      * @param content The content to append.
      * @param path    The file path.
      * @return The written file.
+     * @throws InternalException if the destination file cannot be opened or written
      */
     public static File appendUtf8String(final String content, final String path) throws InternalException {
         return appendString(content, path, Charset.UTF_8);
@@ -2116,6 +2125,7 @@ public class FileKit extends PathResolve {
      * @param path    The file path.
      * @param charset The character set.
      * @return The written file.
+     * @throws InternalException if the destination file cannot be opened or written
      */
     public static File appendString(final String content, final String path, final java.nio.charset.Charset charset)
             throws InternalException {
@@ -2128,6 +2138,7 @@ public class FileKit extends PathResolve {
      * @param content The content to append.
      * @param file    The file.
      * @return The written file.
+     * @throws InternalException if the destination file cannot be opened or written
      */
     public static File appendUtf8String(final String content, final File file) throws InternalException {
         return appendString(content, file, Charset.UTF_8);
@@ -2140,6 +2151,7 @@ public class FileKit extends PathResolve {
      * @param file    The file.
      * @param charset The character set.
      * @return The written file.
+     * @throws InternalException if the destination file cannot be opened or written
      */
     public static File appendString(final String content, final File file, final java.nio.charset.Charset charset)
             throws InternalException {
@@ -2153,6 +2165,7 @@ public class FileKit extends PathResolve {
      * @param list The collection of lines.
      * @param path The file path.
      * @return The written file.
+     * @throws InternalException if the destination file cannot be opened or written
      */
     public static <T> File writeUtf8Lines(final Collection<T> list, final String path) throws InternalException {
         return writeLines(list, path, Charset.UTF_8);
@@ -2165,6 +2178,7 @@ public class FileKit extends PathResolve {
      * @param list The collection of lines.
      * @param file The file.
      * @return The written file.
+     * @throws InternalException if the destination file cannot be opened or written
      */
     public static <T> File writeUtf8Lines(final Collection<T> list, final File file) throws InternalException {
         return writeLines(list, file, Charset.UTF_8);
@@ -2178,6 +2192,7 @@ public class FileKit extends PathResolve {
      * @param path    The file path.
      * @param charset The character set.
      * @return The written file.
+     * @throws InternalException if the destination file cannot be opened or written
      */
     public static <T> File writeLines(
             final Collection<T> list,
@@ -2194,6 +2209,7 @@ public class FileKit extends PathResolve {
      * @param file    The file.
      * @param charset The character set.
      * @return The written file.
+     * @throws InternalException if the destination file cannot be opened or written
      */
     public static <T> File writeLines(final Collection<T> list, final File file, final java.nio.charset.Charset charset)
             throws InternalException {
@@ -2207,6 +2223,7 @@ public class FileKit extends PathResolve {
      * @param list The collection of lines.
      * @param file The file.
      * @return The written file.
+     * @throws InternalException if the destination file cannot be opened or written
      */
     public static <T> File appendUtf8Lines(final Collection<T> list, final File file) throws InternalException {
         return appendLines(list, file, Charset.UTF_8);
@@ -2219,6 +2236,7 @@ public class FileKit extends PathResolve {
      * @param list The collection of lines.
      * @param path The file path.
      * @return The written file.
+     * @throws InternalException if the destination file cannot be opened or written
      */
     public static <T> File appendUtf8Lines(final Collection<T> list, final String path) throws InternalException {
         return appendLines(list, path, Charset.UTF_8);
@@ -2232,6 +2250,7 @@ public class FileKit extends PathResolve {
      * @param path    The file path.
      * @param charset The character set.
      * @return The written file.
+     * @throws InternalException if the destination file cannot be opened or written
      */
     public static <T> File appendLines(
             final Collection<T> list,
@@ -2248,6 +2267,7 @@ public class FileKit extends PathResolve {
      * @param file    The file.
      * @param charset The character set.
      * @return The written file.
+     * @throws InternalException if the destination file cannot be opened or written
      */
     public static <T> File appendLines(
             final Collection<T> list,
@@ -2265,6 +2285,7 @@ public class FileKit extends PathResolve {
      * @param charset  The character set.
      * @param isAppend If `true`, appends to the file.
      * @return The written file.
+     * @throws InternalException if the destination file cannot be opened or written
      */
     public static <T> File writeLines(
             final Collection<T> list,
@@ -2283,6 +2304,7 @@ public class FileKit extends PathResolve {
      * @param charset  The character set.
      * @param isAppend If `true`, appends to the file.
      * @return The written file.
+     * @throws InternalException if the destination file cannot be opened or written
      */
     public static <T> File writeLines(
             final Collection<T> list,
@@ -2302,6 +2324,7 @@ public class FileKit extends PathResolve {
      * @param isAppend            If `true`, appends to the file.
      * @param appendLineSeparator If `true`, adds a line separator at the end.
      * @return The written file.
+     * @throws InternalException if the destination file cannot be opened or written
      */
     public static <T> File writeLines(
             final Collection<T> list,
@@ -2320,6 +2343,7 @@ public class FileKit extends PathResolve {
      * @param kvSeparator The separator between key and value.
      * @param isAppend    If `true`, appends to the file.
      * @return The written file.
+     * @throws InternalException if the destination file cannot be opened or written
      */
     public static File writeUtf8Map(
             final Map<?, ?> map,
@@ -2338,6 +2362,7 @@ public class FileKit extends PathResolve {
      * @param kvSeparator The separator between key and value.
      * @param isAppend    If `true`, appends to the file.
      * @return The written file.
+     * @throws InternalException if the destination file cannot be opened or written
      */
     public static File writeMap(
             final Map<?, ?> map,
@@ -2354,6 +2379,7 @@ public class FileKit extends PathResolve {
      * @param data The byte array.
      * @param path The file path.
      * @return The written file.
+     * @throws InternalException if the destination file cannot be opened or written
      */
     public static File writeBytes(final byte[] data, final String path) throws InternalException {
         return writeBytes(data, touch(path));
@@ -2365,6 +2391,7 @@ public class FileKit extends PathResolve {
      * @param data The byte array.
      * @param dest The destination file.
      * @return The written file.
+     * @throws InternalException if the destination file cannot be opened or written
      */
     public static File writeBytes(final byte[] data, final File dest) throws InternalException {
         return writeBytes(data, dest, 0, data.length, false);

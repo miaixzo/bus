@@ -35,6 +35,7 @@ import org.miaixz.bus.core.bean.desc.BeanDescFactory;
 import org.miaixz.bus.core.bean.desc.PropDesc;
 import org.miaixz.bus.core.bean.path.BeanPath;
 import org.miaixz.bus.core.center.function.ConsumerX;
+import org.miaixz.bus.core.center.function.FunctionX;
 import org.miaixz.bus.core.center.function.PredicateX;
 import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.center.function.UnaryOperatorX;
@@ -394,6 +395,38 @@ public class BeanKit {
 
         // If properties to copy are specified, do not ignore null values
         return beanToMap(bean, new LinkedHashMap<>(mapSize, 1), false, editor);
+    }
+
+    /**
+     * Projects explicitly selected bean properties using getter references instead of string property names.
+     * <p>
+     * Properties retain the supplied order and null values. Only selected getters are invoked; unrelated properties,
+     * including credentials and lazy associations, are never inspected. At least one getter is required so calls to the
+     * existing no-selection overload remain unambiguous. Renaming or removing a getter makes its callers fail
+     * compilation instead of silently omitting a field.
+     * </p>
+     *
+     * @param bean       source bean, or null
+     * @param property   first unbound getter reference, such as {@code User::getId}
+     * @param properties remaining unbound getter references
+     * @param <T>        source bean type
+     * @return ordered mutable property projection, or null when the bean is null
+     * @throws IllegalArgumentException if a reference does not identify a bean getter
+     */
+    @SafeVarargs
+    public static <T> Map<String, Object> beanToMap(
+            final T bean,
+            final FunctionX<T, ?> property,
+            final FunctionX<T, ?>... properties) {
+        if (bean == null) {
+            return null;
+        }
+        final Map<String, Object> result = new LinkedHashMap<>(properties.length + 1);
+        result.put(LambdaKit.getFieldName(property), property.apply(bean));
+        for (final FunctionX<T, ?> getter : properties) {
+            result.put(LambdaKit.getFieldName(getter), getter.apply(bean));
+        }
+        return result;
     }
 
     /**

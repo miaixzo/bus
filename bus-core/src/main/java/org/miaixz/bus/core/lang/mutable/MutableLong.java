@@ -95,6 +95,8 @@ public class MutableLong extends Number implements Comparable<MutableLong>, Muta
 
     /**
      * Set method.
+     *
+     * @param value replacement value
      */
     @Override
     public void set(final Number value) {

@@ -193,6 +193,9 @@ public class MapServiceLoader<S> extends AbstractServiceLoader<S> {
     public Iterator<S> iterator() {
         return new Iterator<>() {
 
+            /**
+             * Iterator over the configured service provider names.
+             */
             private final Iterator<String> nameIter = serviceProperties.stringPropertyNames().iterator();
 
             /**

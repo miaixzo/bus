@@ -44,9 +44,9 @@ public class BouncyCastleServiceProvider implements BouncyCastleProvider {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Creates and returns a {@link java.security.Provider} instance, typically a Bouncy Castle provider.
      *
-     * @return Description inherited from parent class or interface.
+     * @return A {@link java.security.Provider} instance.
      */
     @Override
     public Provider create() {
@@ -63,6 +63,11 @@ public class BouncyCastleServiceProvider implements BouncyCastleProvider {
      */
     private static class ProviderFactory {
 
+        /**
+         * Creates the optional Bouncy Castle security provider.
+         *
+         * @return new Bouncy Castle provider
+         */
         private static Provider create() {
             return new org.bouncycastle.jce.provider.BouncyCastleProvider();
         }

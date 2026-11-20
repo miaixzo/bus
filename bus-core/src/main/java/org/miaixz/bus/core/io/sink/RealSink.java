@@ -483,7 +483,8 @@ public class RealSink implements BufferSink {
             /**
              * Write method.
              *
-             * @return the void value
+             * @param b The byte to write.
+             * @throws IOException if an underlying input or output operation fails
              */
             @Override
             public void write(int b) throws IOException {
@@ -496,7 +497,10 @@ public class RealSink implements BufferSink {
             /**
              * Write method.
              *
-             * @return the void value
+             * @param data      The byte array containing the data to write. Must not be {@code null}.
+             * @param offset    The starting offset in the byte array.
+             * @param byteCount The number of bytes to write.
+             * @throws IOException if an underlying input or output operation fails
              */
             @Override
             public void write(byte[] data, int offset, int byteCount) throws IOException {
@@ -509,7 +513,7 @@ public class RealSink implements BufferSink {
             /**
              * Flush method.
              *
-             * @return the void value
+             * @throws IOException if an underlying input or output operation fails
              */
             @Override
             public void flush() throws IOException {
@@ -521,7 +525,6 @@ public class RealSink implements BufferSink {
             /**
              * Close method.
              *
-             * @return the void value
              */
             @Override
             public void close() {

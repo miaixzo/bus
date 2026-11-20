@@ -63,6 +63,8 @@ public class ExplorerCompare implements Comparator<CharSequence> {
     /**
      * Compare method.
      *
+     * @param str1 first string to compare
+     * @param str2 second string to compare
      * @return the int value
      */
     @Override

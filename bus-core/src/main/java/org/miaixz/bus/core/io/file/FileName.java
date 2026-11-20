@@ -359,6 +359,7 @@ public class FileName {
      * used method for path normalization.
      *
      * @param pathList The list of path segments (strings).
+     * @param prefix   path prefix to resolve before the remaining elements
      * @return The resolved list of path segments, with "." and ".." handled.
      */
     private static List<String> resolePathElements(final List<String> pathList, final String prefix) {

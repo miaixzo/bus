@@ -47,6 +47,8 @@ public class NoCache<K, V> implements Cache<K, V> {
     }
 
     /**
+     * Returns the capacity of this disabled cache.
+     *
      * @return Always returns {@code 0}.
      */
     @Override
@@ -55,6 +57,8 @@ public class NoCache<K, V> implements Cache<K, V> {
     }
 
     /**
+     * Returns the timeout of this disabled cache.
+     *
      * @return Always returns {@code 0}.
      */
     @Override
@@ -64,6 +68,9 @@ public class NoCache<K, V> implements Cache<K, V> {
 
     /**
      * This is a no-op; the object is not cached.
+     *
+     * @param key    The key.
+     * @param object The object to be cached.
      */
     @Override
     public void put(final K key, final V object) {
@@ -72,6 +79,10 @@ public class NoCache<K, V> implements Cache<K, V> {
 
     /**
      * This is a no-op; the object is not cached.
+     *
+     * @param key     The key.
+     * @param object  The object to be cached.
+     * @param timeout The timeout for the object in milliseconds.
      */
     @Override
     public void put(final K key, final V object, final long timeout) {
@@ -79,6 +90,9 @@ public class NoCache<K, V> implements Cache<K, V> {
     }
 
     /**
+     * Reports that this cache never contains a key.
+     *
+     * @param key The parameter name in the Bean object.
      * @return Always returns {@code false}.
      */
     @Override
@@ -87,6 +101,9 @@ public class NoCache<K, V> implements Cache<K, V> {
     }
 
     /**
+     * Returns no cached value because this cache stores no entries.
+     *
+     * @param key The key.
      * @return Always returns {@code null}.
      */
     @Override
@@ -95,6 +112,10 @@ public class NoCache<K, V> implements Cache<K, V> {
     }
 
     /**
+     * Returns no cached value because this cache stores no entries.
+     *
+     * @param key                The key.
+     * @param isUpdateLastAccess Whether to update the last access time, effectively resetting the timeout.
      * @return Always returns {@code null}.
      */
     @Override
@@ -105,6 +126,10 @@ public class NoCache<K, V> implements Cache<K, V> {
     /**
      * Invokes the supplier to generate a value but does not cache it.
      *
+     * @param key                The key.
+     * @param isUpdateLastAccess Whether to update the last access time.
+     * @param timeout            A custom timeout for the new object if it is generated.
+     * @param supplier           A callback to generate the object if it's not in the cache.
      * @return The value from the supplier, or {@code null} if the supplier is null.
      */
     @Override
@@ -113,6 +138,8 @@ public class NoCache<K, V> implements Cache<K, V> {
     }
 
     /**
+     * Returns an iterator with no cached values.
+     *
      * @return An empty iterator.
      */
     @Override
@@ -143,6 +170,8 @@ public class NoCache<K, V> implements Cache<K, V> {
     }
 
     /**
+     * Returns no cache-entry iterator because this cache stores no entries.
+     *
      * @return Always returns {@code null}.
      */
     @Override
@@ -151,6 +180,8 @@ public class NoCache<K, V> implements Cache<K, V> {
     }
 
     /**
+     * Reports that there are no entries to prune.
+     *
      * @return Always returns {@code 0}.
      */
     @Override
@@ -159,6 +190,8 @@ public class NoCache<K, V> implements Cache<K, V> {
     }
 
     /**
+     * Reports that a cache with no stored entries is never full.
+     *
      * @return Always returns {@code false}.
      */
     @Override
@@ -168,6 +201,8 @@ public class NoCache<K, V> implements Cache<K, V> {
 
     /**
      * This is a no-op.
+     *
+     * @param key The key of the object to remove.
      */
     @Override
     public void remove(final K key) {
@@ -183,6 +218,8 @@ public class NoCache<K, V> implements Cache<K, V> {
     }
 
     /**
+     * Returns the number of entries retained by this disabled cache.
+     *
      * @return Always returns {@code 0}.
      */
     @Override
@@ -191,6 +228,8 @@ public class NoCache<K, V> implements Cache<K, V> {
     }
 
     /**
+     * Reports that this disabled cache is always empty.
+     *
      * @return Always returns {@code true}.
      */
     @Override

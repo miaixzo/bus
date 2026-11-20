@@ -146,9 +146,9 @@ public class LimitedInputStream extends FilterInputStream {
     }
 
     /**
-     * Checks if the read operation has exceeded the defined limit. If the end of the stream is reached (data < 0) and
-     * there was still a limit remaining (limit > 0), and {@code throwWhenReachLimit} is {@code true}, an
-     * {@link IOException} is thrown.
+     * Checks if the read operation has exceeded the defined limit. If the end of the stream is reached
+     * ({@code data < 0}) and there was still a limit remaining (limit > 0), and {@code throwWhenReachLimit} is
+     * {@code true}, an {@link IOException} is thrown.
      *
      * @param data The result of the last read operation (number of bytes read, or -1 for end of stream).
      * @throws IOException If the read limit is exceeded and configured to throw an exception.

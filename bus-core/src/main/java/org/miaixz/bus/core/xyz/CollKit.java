@@ -1714,11 +1714,15 @@ public class CollKit extends CollectionStream {
     public static <T> List<List<T>> groupByFunc(final Collection<T> collection, final FunctionX<T, ?> getter) {
         return group(collection, new Hash32<>() {
 
+            /**
+             * Distinct getter results used to assign stable grouping indices.
+             */
             private final List<Object> hashValList = new ArrayList<>();
 
             /**
              * Hash32 method.
              *
+             * @param t The object for which to compute the hash.
              * @return the int value
              */
             @Override

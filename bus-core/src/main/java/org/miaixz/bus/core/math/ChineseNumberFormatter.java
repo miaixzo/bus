@@ -384,7 +384,7 @@ public class ChineseNumberFormatter {
     /**
      * Converts an integer between 0 and 9999 to its Chinese numeral string representation.
      *
-     * @param amountPart The numeric part to convert (must be < 10000).
+     * @param amountPart The numeric part to convert (must be {@code < 10000}).
      * @return The converted Chinese numeral string.
      */
     private String thousandToChinese(final int amountPart) {

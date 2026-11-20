@@ -179,6 +179,8 @@ public class PathResolve {
             /**
              * Visitfile method.
              *
+             * @param path  The path to the file being visited.
+             * @param attrs The basic file attributes of the file.
              * @return the FileVisitResult value
              */
             @Override

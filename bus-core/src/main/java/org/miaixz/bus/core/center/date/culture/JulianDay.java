@@ -109,6 +109,7 @@ public class JulianDay extends Loops {
     /**
      * Returns the next element in the iteration.
      *
+     * @param n The number of units to advance.
      * @return the next element
      */
     @Override

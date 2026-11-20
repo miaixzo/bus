@@ -156,6 +156,8 @@ public class MapTree<T> extends LinkedHashMap<String, Object> implements Node<T>
 
     /**
      * Gets the unique identifier of this node.
+     *
+     * @return identifier of this tree node
      */
     @Override
     public T getId() {
@@ -176,6 +178,8 @@ public class MapTree<T> extends LinkedHashMap<String, Object> implements Node<T>
 
     /**
      * Gets the identifier of this node's parent.
+     *
+     * @return identifier of the parent node
      */
     @Override
     public T getParentId() {
@@ -196,6 +200,8 @@ public class MapTree<T> extends LinkedHashMap<String, Object> implements Node<T>
 
     /**
      * Gets the name of this node.
+     *
+     * @return name of this tree node
      */
     @Override
     public CharSequence getName() {
@@ -216,6 +222,8 @@ public class MapTree<T> extends LinkedHashMap<String, Object> implements Node<T>
 
     /**
      * Gets the weight of this node used for sorting.
+     *
+     * @return weight used to order this node among its peers
      */
     @Override
     public Comparable<?> getWeight() {
@@ -392,6 +400,8 @@ public class MapTree<T> extends LinkedHashMap<String, Object> implements Node<T>
 
     /**
      * Returns a string representation of this tree node.
+     *
+     * @return string representation of this tree node
      */
     @Override
     public String toString() {

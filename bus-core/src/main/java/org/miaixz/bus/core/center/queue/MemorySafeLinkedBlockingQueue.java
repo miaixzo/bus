@@ -139,6 +139,9 @@ public class MemorySafeLinkedBlockingQueue<E> extends CheckedLinkedBlockingQueue
         FreeMemoryCalculator() {
             super(new SimpleScheduler.Job<>() {
 
+                /**
+                 * Most recent free-memory estimate published by the scheduled job.
+                 */
                 private volatile long maxAvailable = RuntimeKit.getFreeMemory();
 
                 /**
@@ -153,8 +156,6 @@ public class MemorySafeLinkedBlockingQueue<E> extends CheckedLinkedBlockingQueue
 
                 /**
                  * Run method.
-                 *
-                 * @return the void value
                  */
                 @Override
                 public void run() {

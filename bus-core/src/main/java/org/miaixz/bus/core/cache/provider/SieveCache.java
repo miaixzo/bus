@@ -203,6 +203,8 @@ public class SieveCache<K, V> extends LockedCache<K, V> {
      * Prunes the cache. Priorities: 1. Remove expired objects. 2. If capacity is still exceeded, perform SIEVE
      * eviction: scan from {@code hand} (initially tail). Evict nodes where {@code visited} is false. If {@code visited}
      * is true, flip it to false and continue scanning.
+     *
+     * @return number of cache entries removed by expiration and SIEVE eviction
      */
     @Override
     protected int pruneCache() {

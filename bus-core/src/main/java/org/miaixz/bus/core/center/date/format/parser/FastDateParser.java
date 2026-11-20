@@ -75,6 +75,8 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
         /**
          * Modify method.
          *
+         * @param parser The parser.
+         * @param iValue The parsed number.
          * @return the int value
          */
         @Override
@@ -92,6 +94,8 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
         /**
          * Modify method.
          *
+         * @param parser The parser.
+         * @param iValue The parsed number.
          * @return the int value
          */
         @Override
@@ -134,6 +138,8 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
         /**
          * Modify method.
          *
+         * @param parser The parser.
+         * @param iValue The parsed number.
          * @return the int value
          */
         @Override
@@ -161,6 +167,8 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
         /**
          * Modify method.
          *
+         * @param parser The parser.
+         * @param iValue The parsed number.
          * @return the int value
          */
         @Override
@@ -178,6 +186,8 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
         /**
          * Modify method.
          *
+         * @param parser The parser.
+         * @param iValue The parsed number.
          * @return the int value
          */
         @Override

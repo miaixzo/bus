@@ -181,6 +181,7 @@ public class MurmurHash implements Hash32<byte[]>, Hash64<byte[]>, Hash128<byte[
     /**
      * Encode method.
      *
+     * @param bytes The byte array to be encoded.
      * @return the Number value
      */
     @Override

@@ -1310,6 +1310,7 @@ public class PrimitiveArray extends ArrayValidator {
      * @param array The source array.
      * @param index The index to remove.
      * @return The new array.
+     * @throws IllegalArgumentException if the supplied array arguments are invalid for the removal operation
      */
     public static int[] remove(final int[] array, final int index) throws IllegalArgumentException {
         return (int[]) remove((Object) array, index);
@@ -1321,6 +1322,7 @@ public class PrimitiveArray extends ArrayValidator {
      * @param array The source array.
      * @param index The index to remove.
      * @return The new array.
+     * @throws IllegalArgumentException if the supplied array arguments are invalid for the removal operation
      */
     public static short[] remove(final short[] array, final int index) throws IllegalArgumentException {
         return (short[]) remove((Object) array, index);
@@ -1332,6 +1334,7 @@ public class PrimitiveArray extends ArrayValidator {
      * @param array The source array.
      * @param index The index to remove.
      * @return The new array.
+     * @throws IllegalArgumentException if the supplied array arguments are invalid for the removal operation
      */
     public static char[] remove(final char[] array, final int index) throws IllegalArgumentException {
         return (char[]) remove((Object) array, index);
@@ -1343,6 +1346,7 @@ public class PrimitiveArray extends ArrayValidator {
      * @param array The source array.
      * @param index The index to remove.
      * @return The new array.
+     * @throws IllegalArgumentException if the supplied array arguments are invalid for the removal operation
      */
     public static byte[] remove(final byte[] array, final int index) throws IllegalArgumentException {
         return (byte[]) remove((Object) array, index);
@@ -1354,6 +1358,7 @@ public class PrimitiveArray extends ArrayValidator {
      * @param array The source array.
      * @param index The index to remove.
      * @return The new array.
+     * @throws IllegalArgumentException if the supplied array arguments are invalid for the removal operation
      */
     public static double[] remove(final double[] array, final int index) throws IllegalArgumentException {
         return (double[]) remove((Object) array, index);
@@ -1365,6 +1370,7 @@ public class PrimitiveArray extends ArrayValidator {
      * @param array The source array.
      * @param index The index to remove.
      * @return The new array.
+     * @throws IllegalArgumentException if the supplied array arguments are invalid for the removal operation
      */
     public static float[] remove(final float[] array, final int index) throws IllegalArgumentException {
         return (float[]) remove((Object) array, index);
@@ -1376,6 +1382,7 @@ public class PrimitiveArray extends ArrayValidator {
      * @param array The source array.
      * @param index The index to remove.
      * @return The new array.
+     * @throws IllegalArgumentException if the supplied array arguments are invalid for the removal operation
      */
     public static boolean[] remove(final boolean[] array, final int index) throws IllegalArgumentException {
         return (boolean[]) remove((Object) array, index);
@@ -1425,6 +1432,7 @@ public class PrimitiveArray extends ArrayValidator {
      * @param array   The source array.
      * @param element The element to remove.
      * @return The new array.
+     * @throws IllegalArgumentException if the supplied array arguments are invalid for the removal operation
      */
     public static int[] removeEle(final int[] array, final int element) throws IllegalArgumentException {
         return remove(array, indexOf(array, element));
@@ -1436,6 +1444,7 @@ public class PrimitiveArray extends ArrayValidator {
      * @param array   The source array.
      * @param element The element to remove.
      * @return The new array.
+     * @throws IllegalArgumentException if the supplied array arguments are invalid for the removal operation
      */
     public static short[] removeEle(final short[] array, final short element) throws IllegalArgumentException {
         return remove(array, indexOf(array, element));
@@ -1447,6 +1456,7 @@ public class PrimitiveArray extends ArrayValidator {
      * @param array   The source array.
      * @param element The element to remove.
      * @return The new array.
+     * @throws IllegalArgumentException if the supplied array arguments are invalid for the removal operation
      */
     public static char[] removeEle(final char[] array, final char element) throws IllegalArgumentException {
         return remove(array, indexOf(array, element));
@@ -1458,6 +1468,7 @@ public class PrimitiveArray extends ArrayValidator {
      * @param array   The source array.
      * @param element The element to remove.
      * @return The new array.
+     * @throws IllegalArgumentException if the supplied array arguments are invalid for the removal operation
      */
     public static byte[] removeEle(final byte[] array, final byte element) throws IllegalArgumentException {
         return remove(array, indexOf(array, element));
@@ -1469,6 +1480,7 @@ public class PrimitiveArray extends ArrayValidator {
      * @param array   The source array.
      * @param element The element to remove.
      * @return The new array.
+     * @throws IllegalArgumentException if the supplied array arguments are invalid for the removal operation
      */
     public static double[] removeEle(final double[] array, final double element) throws IllegalArgumentException {
         return remove(array, indexOf(array, element));
@@ -1480,6 +1492,7 @@ public class PrimitiveArray extends ArrayValidator {
      * @param array   The source array.
      * @param element The element to remove.
      * @return The new array.
+     * @throws IllegalArgumentException if the supplied array arguments are invalid for the removal operation
      */
     public static float[] removeEle(final float[] array, final float element) throws IllegalArgumentException {
         return remove(array, indexOf(array, element));
@@ -1491,6 +1504,7 @@ public class PrimitiveArray extends ArrayValidator {
      * @param array   The source array.
      * @param element The element to remove.
      * @return The new array.
+     * @throws IllegalArgumentException if the supplied array arguments are invalid for the removal operation
      */
     public static boolean[] removeEle(final boolean[] array, final boolean element) throws IllegalArgumentException {
         return remove(array, indexOf(array, element));

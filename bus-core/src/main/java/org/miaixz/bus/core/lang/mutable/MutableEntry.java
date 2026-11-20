@@ -123,6 +123,8 @@ public class MutableEntry<K, V> extends AbstractEntry<K, V> implements Mutable<M
 
     /**
      * Set method.
+     *
+     * @param pair pair supplying the replacement key and value
      */
     @Override
     public void set(final Map.Entry<K, V> pair) {

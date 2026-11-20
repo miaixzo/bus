@@ -63,6 +63,9 @@ public class MapConverter extends ConverterWithRoot implements MatcherConverter,
     /**
      * Match method.
      *
+     * @param targetType The target type.
+     * @param rawType    The raw class of the target type.
+     * @param value      The value to be converted.
      * @return the boolean value
      */
     @Override
@@ -73,7 +76,10 @@ public class MapConverter extends ConverterWithRoot implements MatcherConverter,
     /**
      * Convert method.
      *
+     * @param targetType The target type to convert to.
+     * @param value      The value to convert.
      * @return the Object value
+     * @throws ConvertException if the value cannot be converted to the requested target type
      */
     @Override
     public Object convert(Type targetType, final Object value) throws ConvertException {
@@ -127,6 +133,8 @@ public class MapConverter extends ConverterWithRoot implements MatcherConverter,
      *
      * @param srcMap    the source Map
      * @param targetMap the target Map
+     * @param keyType   target map key type
+     * @param valueType target map value type
      */
     private void convertMapToMap(
             final Type keyType,

@@ -19,6 +19,10 @@
 */
 package org.miaixz.bus.cortex.magic;
 
+import java.util.Comparator;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.center.date.Chrono;
 import org.miaixz.bus.core.lang.Symbol;
@@ -27,10 +31,6 @@ import org.miaixz.bus.core.xyz.DateKit;
 import org.miaixz.bus.cortex.Builder;
 import org.miaixz.bus.cortex.magic.identity.CortexIdentity;
 import org.miaixz.bus.extra.json.JsonKit;
-
-import java.util.Comparator;
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 /**
  * Structured audit logger backed by CacheX.

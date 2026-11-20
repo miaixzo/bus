@@ -66,9 +66,10 @@ public class CheckedLinkedBlockingQueue<E> extends LinkedBlockingQueue<E> {
     }
 
     /**
-     * Associates the specified value with the specified key in this cache.
+     * Enqueues the element only when it passes the configured checker.
      *
      * @param e the element to add
+     * @throws InterruptedException if the current thread is interrupted while waiting for queue capacity
      */
     @Override
     public void put(final E e) throws InterruptedException {
@@ -78,9 +79,13 @@ public class CheckedLinkedBlockingQueue<E> extends LinkedBlockingQueue<E> {
     }
 
     /**
-     * Offer method.
+     * Offers the element only when it passes the configured checker.
      *
+     * @param e       element to enqueue
+     * @param timeout maximum time to wait
+     * @param unit    measurement unit of the metric
      * @return the boolean value
+     * @throws InterruptedException if the current thread is interrupted while waiting for queue capacity
      */
     @Override
     public boolean offer(final E e, final long timeout, final TimeUnit unit) throws InterruptedException {
@@ -88,8 +93,9 @@ public class CheckedLinkedBlockingQueue<E> extends LinkedBlockingQueue<E> {
     }
 
     /**
-     * Offer method.
+     * Offers the element only when it passes the configured checker.
      *
+     * @param e the element
      * @return the boolean value
      */
     @Override

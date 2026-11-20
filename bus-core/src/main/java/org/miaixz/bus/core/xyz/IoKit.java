@@ -1661,7 +1661,12 @@ public class IoKit {
         return new AsyncTimeout() {
 
             /**
-             * Description inherited from parent class or interface.
+             * Returns an {@link IOException} to indicate a timeout. By default, this method returns an
+             * {@link InterruptedIOException}. If {@code cause} is non-null, it is set as the cause of the returned
+             * exception.
+             *
+             * @param cause The original {@link IOException} that led to the timeout, or {@code null}.
+             * @return An {@link InterruptedIOException} representing the timeout.
              */
             @Override
             protected IOException newTimeoutException(IOException cause) {
@@ -1673,7 +1678,9 @@ public class IoKit {
             }
 
             /**
-             * Description inherited from parent class or interface.
+             * Called by the watchdog thread when the time between {@link #enter()} and {@link #exit()} exceeds the
+             * timeout. Subclasses should override this method to implement custom timeout handling, such as
+             * interrupting the current operation.
              */
             @Override
             protected void timedOut() {

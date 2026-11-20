@@ -141,6 +141,8 @@ public class ClassPathResource extends UrlResource {
     /**
      * Initializes the URL of the resource based on the given resource path. Throws {@link NotFoundException} if the
      * resource does not exist.
+     *
+     * @throws NotFoundException if the requested class-path resource cannot be located
      */
     private void initUrl() throws NotFoundException {
         if (null != this.clazz) {

@@ -42,12 +42,12 @@ import java.util.*;
 public class LinkedDeque<E extends Linked<E>> extends AbstractCollection<E> implements Deque<E> {
 
     /**
-     * Pointer to first node. Invariant: (first == null && last == null) || (first.prev == null)
+     * Pointer to first node. Invariant: {@code (first == null && last == null) || (first.prev == null)}
      */
     E first;
 
     /**
-     * Pointer to last node. Invariant: (first == null && last == null) || (last.next == null)
+     * Pointer to last node. Invariant: {@code (first == null && last == null) || (last.next == null)}
      */
     E last;
 
@@ -94,6 +94,8 @@ public class LinkedDeque<E extends Linked<E>> extends AbstractCollection<E> impl
 
     /**
      * Unlinks the non-null first element.
+     *
+     * @return element removed from the front of the deque
      */
     E unlinkFirst() {
         final E f = first;
@@ -111,6 +113,8 @@ public class LinkedDeque<E extends Linked<E>> extends AbstractCollection<E> impl
 
     /**
      * Unlinks the non-null last element.
+     *
+     * @return element removed from the end of the deque
      */
     E unlinkLast() {
         final E l = last;
@@ -127,6 +131,8 @@ public class LinkedDeque<E extends Linked<E>> extends AbstractCollection<E> impl
 
     /**
      * Unlinks the non-null element.
+     *
+     * @param e node to unlink from the deque
      */
     void unlink(final E e) {
         final E prev = e.getPrevious();
@@ -148,8 +154,6 @@ public class LinkedDeque<E extends Linked<E>> extends AbstractCollection<E> impl
     }
 
     /**
-     * Description inherited from parent class or interface.
-     * <p>
      * Returns {@code true} if this deque contains no elements.
      *
      * @return {@code true} if this deque contains no elements
@@ -171,9 +175,9 @@ public class LinkedDeque<E extends Linked<E>> extends AbstractCollection<E> impl
     }
 
     /**
-     * Description inherited from parent class or interface.
-     * <p>
      * Beware that, unlike in most collections, this method is <em>NOT</em> a constant-time operation.
+     *
+     * @return The number of properties.
      */
     @Override
     public int size() {
@@ -185,8 +189,6 @@ public class LinkedDeque<E extends Linked<E>> extends AbstractCollection<E> impl
     }
 
     /**
-     * Description inherited from parent class or interface.
-     * <p>
      * Removes all of the elements from this deque. The deque will be empty after this call returns.
      */
     @Override
@@ -201,8 +203,6 @@ public class LinkedDeque<E extends Linked<E>> extends AbstractCollection<E> impl
     }
 
     /**
-     * Description inherited from parent class or interface.
-     * <p>
      * Returns {@code true} if this deque contains the specified element.
      *
      * @param o the element to check for presence
@@ -248,8 +248,6 @@ public class LinkedDeque<E extends Linked<E>> extends AbstractCollection<E> impl
     }
 
     /**
-     * Description inherited from parent class or interface.
-     * <p>
      * Retrieves, but does not remove, the head of the queue represented by this deque (in other words, the first
      * element of this deque), or returns {@code null} if this deque is empty.
      *
@@ -261,8 +259,6 @@ public class LinkedDeque<E extends Linked<E>> extends AbstractCollection<E> impl
     }
 
     /**
-     * Description inherited from parent class or interface.
-     * <p>
      * Retrieves, but does not remove, the first element of this deque, or returns {@code null} if this deque is empty.
      *
      * @return the first element of this deque, or {@code null} if this deque is empty
@@ -273,8 +269,6 @@ public class LinkedDeque<E extends Linked<E>> extends AbstractCollection<E> impl
     }
 
     /**
-     * Description inherited from parent class or interface.
-     * <p>
      * Retrieves, but does not remove, the last element of this deque, or returns {@code null} if this deque is empty.
      *
      * @return the last element of this deque, or {@code null} if this deque is empty
@@ -285,8 +279,6 @@ public class LinkedDeque<E extends Linked<E>> extends AbstractCollection<E> impl
     }
 
     /**
-     * Description inherited from parent class or interface.
-     * <p>
      * Retrieves, but does not remove, the first element of this deque. This method differs from {@link #peekFirst} only
      * in that it throws an exception if this deque is empty.
      *
@@ -300,8 +292,6 @@ public class LinkedDeque<E extends Linked<E>> extends AbstractCollection<E> impl
     }
 
     /**
-     * Description inherited from parent class or interface.
-     * <p>
      * Retrieves, but does not remove, the last element of this deque. This method differs from {@link #peekLast} only
      * in that it throws an exception if this deque is empty.
      *
@@ -315,8 +305,6 @@ public class LinkedDeque<E extends Linked<E>> extends AbstractCollection<E> impl
     }
 
     /**
-     * Description inherited from parent class or interface.
-     * <p>
      * Retrieves, but does not remove, the head of the queue represented by this deque.
      *
      * @return the head of the queue
@@ -328,8 +316,6 @@ public class LinkedDeque<E extends Linked<E>> extends AbstractCollection<E> impl
     }
 
     /**
-     * Description inherited from parent class or interface.
-     * <p>
      * Adds the specified element as the tail (last element) of this deque.
      *
      * @param e the element to add
@@ -341,8 +327,6 @@ public class LinkedDeque<E extends Linked<E>> extends AbstractCollection<E> impl
     }
 
     /**
-     * Description inherited from parent class or interface.
-     * <p>
      * Inserts the specified element at the front of this deque.
      *
      * @param e the element to insert
@@ -358,8 +342,6 @@ public class LinkedDeque<E extends Linked<E>> extends AbstractCollection<E> impl
     }
 
     /**
-     * Description inherited from parent class or interface.
-     * <p>
      * Inserts the specified element at the end of this deque.
      *
      * @param e the element to insert
@@ -375,8 +357,6 @@ public class LinkedDeque<E extends Linked<E>> extends AbstractCollection<E> impl
     }
 
     /**
-     * Description inherited from parent class or interface.
-     * <p>
      * Adds the specified element as the tail (last element) of this deque.
      *
      * @param e the element to add
@@ -389,8 +369,6 @@ public class LinkedDeque<E extends Linked<E>> extends AbstractCollection<E> impl
     }
 
     /**
-     * Description inherited from parent class or interface.
-     * <p>
      * Inserts the specified element at the front of this deque.
      *
      * @param e the element to insert
@@ -404,8 +382,6 @@ public class LinkedDeque<E extends Linked<E>> extends AbstractCollection<E> impl
     }
 
     /**
-     * Description inherited from parent class or interface.
-     * <p>
      * Inserts the specified element at the end of this deque.
      *
      * @param e the element to insert
@@ -419,8 +395,6 @@ public class LinkedDeque<E extends Linked<E>> extends AbstractCollection<E> impl
     }
 
     /**
-     * Description inherited from parent class or interface.
-     * <p>
      * Retrieves and removes the head of the queue represented by this deque (in other words, the first element of this
      * deque), or returns {@code null} if this deque is empty.
      *
@@ -432,8 +406,6 @@ public class LinkedDeque<E extends Linked<E>> extends AbstractCollection<E> impl
     }
 
     /**
-     * Description inherited from parent class or interface.
-     * <p>
      * Retrieves and removes the first element of this deque, or returns {@code null} if this deque is empty.
      *
      * @return the first element of this deque, or {@code null} if this deque is empty
@@ -444,8 +416,6 @@ public class LinkedDeque<E extends Linked<E>> extends AbstractCollection<E> impl
     }
 
     /**
-     * Description inherited from parent class or interface.
-     * <p>
      * Retrieves and removes the last element of this deque, or returns {@code null} if this deque is empty.
      *
      * @return the last element of this deque, or {@code null} if this deque is empty
@@ -456,8 +426,6 @@ public class LinkedDeque<E extends Linked<E>> extends AbstractCollection<E> impl
     }
 
     /**
-     * Description inherited from parent class or interface.
-     * <p>
      * Retrieves and removes the head of the queue represented by this deque.
      *
      * @return the head of the queue
@@ -469,8 +437,6 @@ public class LinkedDeque<E extends Linked<E>> extends AbstractCollection<E> impl
     }
 
     /**
-     * Description inherited from parent class or interface.
-     * <p>
      * Removes the first occurrence of the specified element from this deque.
      *
      * @param o the element to remove
@@ -496,8 +462,6 @@ public class LinkedDeque<E extends Linked<E>> extends AbstractCollection<E> impl
     }
 
     /**
-     * Description inherited from parent class or interface.
-     * <p>
      * Retrieves and removes the first element of this deque.
      *
      * @return the first element of this deque
@@ -510,8 +474,6 @@ public class LinkedDeque<E extends Linked<E>> extends AbstractCollection<E> impl
     }
 
     /**
-     * Description inherited from parent class or interface.
-     * <p>
      * Removes the first occurrence of the specified element from this deque.
      *
      * @param o the element to remove
@@ -523,8 +485,6 @@ public class LinkedDeque<E extends Linked<E>> extends AbstractCollection<E> impl
     }
 
     /**
-     * Description inherited from parent class or interface.
-     * <p>
      * Retrieves and removes the last element of this deque.
      *
      * @return the last element of this deque
@@ -537,8 +497,6 @@ public class LinkedDeque<E extends Linked<E>> extends AbstractCollection<E> impl
     }
 
     /**
-     * Description inherited from parent class or interface.
-     * <p>
      * Removes the last occurrence of the specified element from this deque.
      *
      * @param o the element to remove
@@ -550,8 +508,6 @@ public class LinkedDeque<E extends Linked<E>> extends AbstractCollection<E> impl
     }
 
     /**
-     * Description inherited from parent class or interface.
-     * <p>
      * Removes all of this deque's elements that are also contained in the specified collection.
      *
      * @param c the collection containing elements to remove
@@ -567,8 +523,6 @@ public class LinkedDeque<E extends Linked<E>> extends AbstractCollection<E> impl
     }
 
     /**
-     * Description inherited from parent class or interface.
-     * <p>
      * Pushes an element onto the stack represented by this deque (in other words, at the head of this deque).
      *
      * @param e the element to push
@@ -579,8 +533,6 @@ public class LinkedDeque<E extends Linked<E>> extends AbstractCollection<E> impl
     }
 
     /**
-     * Description inherited from parent class or interface.
-     * <p>
      * Pops an element from the stack represented by this deque (in other words, removes and returns the first element
      * of this deque).
      *
@@ -592,8 +544,6 @@ public class LinkedDeque<E extends Linked<E>> extends AbstractCollection<E> impl
     }
 
     /**
-     * Description inherited from parent class or interface.
-     * <p>
      * Returns an iterator over the elements in this deque in proper sequence.
      *
      * @return an iterator over the elements in this deque in proper sequence
@@ -616,8 +566,6 @@ public class LinkedDeque<E extends Linked<E>> extends AbstractCollection<E> impl
     }
 
     /**
-     * Description inherited from parent class or interface.
-     * <p>
      * Returns an iterator over the elements in this deque in reverse sequential order.
      *
      * @return an iterator over the elements in this deque in reverse order
@@ -665,8 +613,6 @@ public class LinkedDeque<E extends Linked<E>> extends AbstractCollection<E> impl
         }
 
         /**
-         * Description inherited from parent class or interface.
-         * <p>
          * Returns {@code true} if the iteration has more elements.
          *
          * @return {@code true} if the iteration has more elements
@@ -677,8 +623,6 @@ public class LinkedDeque<E extends Linked<E>> extends AbstractCollection<E> impl
         }
 
         /**
-         * Description inherited from parent class or interface.
-         * <p>
          * Returns the next element in the iteration.
          *
          * @return the next element
@@ -695,8 +639,6 @@ public class LinkedDeque<E extends Linked<E>> extends AbstractCollection<E> impl
         }
 
         /**
-         * Description inherited from parent class or interface.
-         * <p>
          * This operation is not supported.
          *
          * @throws UnsupportedOperationException always
@@ -708,6 +650,8 @@ public class LinkedDeque<E extends Linked<E>> extends AbstractCollection<E> impl
 
         /**
          * Retrieves the next element to traverse to or {@code null} if there are no more elements.
+         *
+         * @return next element to traverse, or null when traversal is complete
          */
         abstract E computeNext();
 

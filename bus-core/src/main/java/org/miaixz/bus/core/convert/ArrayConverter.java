@@ -69,6 +69,8 @@ public class ArrayConverter extends AbstractConverter implements MatcherConverte
     /**
      * Convertinternal method.
      *
+     * @param targetClass The target class to convert to.
+     * @param value       The non-null value to be converted.
      * @return the Object value
      */
     @Override

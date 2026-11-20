@@ -36,6 +36,10 @@ public record TlsHandshake(String protocol, String cipher, CertificateChain peer
 
     /**
      * Creates handshake metadata.
+     *
+     * @param protocol negotiated protocol
+     * @param cipher   negotiated cipher
+     * @param peer     peer certificate chain
      */
     public TlsHandshake {
         protocol = validateToken(protocol, "TLS protocol");

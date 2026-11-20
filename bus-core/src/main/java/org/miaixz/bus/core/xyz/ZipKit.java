@@ -1043,6 +1043,7 @@ public class ZipKit {
      *
      * @param zipFile  The destination zip file.
      * @param srcFiles The source files.
+     * @throws InternalException if the destination archive is inside one of the source directories
      */
     private static void validateFiles(final File zipFile, final File... srcFiles) throws InternalException {
         if (zipFile.isDirectory()) {
