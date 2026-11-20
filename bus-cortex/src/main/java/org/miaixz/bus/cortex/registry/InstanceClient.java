@@ -51,9 +51,13 @@ public final class InstanceClient {
     private final String endpoint, code, credential;
 
     /**
-     * Process-owned address and transport deadline.
+     * Process-owned instance address and registration metadata.
      */
     private final Instance process;
+
+    /**
+     * Transport deadline applied to each instance registration or lease renewal request.
+     */
     private final Duration timeout;
 
     /**

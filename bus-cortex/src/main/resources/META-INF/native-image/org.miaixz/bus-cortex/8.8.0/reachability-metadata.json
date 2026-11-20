@@ -3517,7 +3517,7 @@
           "name": "type"
         },
         {
-          "name": "watchId"
+          "name": "watch_id"
         },
         {
           "name": "vector"
@@ -3532,19 +3532,19 @@
           "name": "updated"
         },
         {
-          "name": "eventType"
+          "name": "event"
         },
         {
           "name": "source"
         },
         {
-          "name": "errorMessage"
+          "name": "error"
         },
         {
           "name": "summary"
         },
         {
-          "name": "previousSequence"
+          "name": "previous"
         },
         {
           "name": "snapshot"
@@ -3582,7 +3582,7 @@
           "parameterTypes": []
         },
         {
-          "name": "getWatchId",
+          "name": "getWatch_id",
           "parameterTypes": []
         },
         {
@@ -3602,7 +3602,7 @@
           "parameterTypes": []
         },
         {
-          "name": "getEventType",
+          "name": "getEvent",
           "parameterTypes": []
         },
         {
@@ -3610,7 +3610,7 @@
           "parameterTypes": []
         },
         {
-          "name": "getErrorMessage",
+          "name": "getError",
           "parameterTypes": []
         },
         {
@@ -3618,7 +3618,7 @@
           "parameterTypes": []
         },
         {
-          "name": "getPreviousSequence",
+          "name": "getPrevious",
           "parameterTypes": []
         },
         {
@@ -3646,7 +3646,7 @@
           ]
         },
         {
-          "name": "setWatchId",
+          "name": "setWatch_id",
           "parameterTypes": [
             "java.lang.String"
           ]
@@ -3676,7 +3676,7 @@
           ]
         },
         {
-          "name": "setEventType",
+          "name": "setEvent",
           "parameterTypes": [
             "java.lang.String"
           ]
@@ -3688,7 +3688,7 @@
           ]
         },
         {
-          "name": "setErrorMessage",
+          "name": "setError",
           "parameterTypes": [
             "java.lang.String"
           ]
@@ -3700,7 +3700,7 @@
           ]
         },
         {
-          "name": "setPreviousSequence",
+          "name": "setPrevious",
           "parameterTypes": [
             "long"
           ]
@@ -3745,7 +3745,7 @@
           "name": "type"
         },
         {
-          "name": "watchId"
+          "name": "watch_id"
         },
         {
           "name": "vector"
@@ -3769,19 +3769,19 @@
           "name": "updated$value"
         },
         {
-          "name": "eventType"
+          "name": "event"
         },
         {
           "name": "source"
         },
         {
-          "name": "errorMessage"
+          "name": "error"
         },
         {
           "name": "summary"
         },
         {
-          "name": "previousSequence"
+          "name": "previous"
         },
         {
           "name": "snapshot"
@@ -3807,7 +3807,7 @@
           ]
         },
         {
-          "name": "watchId",
+          "name": "watch_id",
           "parameterTypes": [
             "java.lang.String"
           ]
@@ -3837,7 +3837,7 @@
           ]
         },
         {
-          "name": "eventType",
+          "name": "event",
           "parameterTypes": [
             "java.lang.String"
           ]
@@ -3849,7 +3849,7 @@
           ]
         },
         {
-          "name": "errorMessage",
+          "name": "error",
           "parameterTypes": [
             "java.lang.String"
           ]
@@ -3861,7 +3861,7 @@
           ]
         },
         {
-          "name": "previousSequence",
+          "name": "previous",
           "parameterTypes": [
             "long"
           ]
@@ -17414,10 +17414,10 @@
           "name": "session"
         },
         {
-          "name": "generation"
+          "name": "counter"
         },
         {
-          "name": "acknowledged"
+          "name": "received"
         },
         {
           "name": "error"
@@ -17461,11 +17461,11 @@
           "parameterTypes": []
         },
         {
-          "name": "getGeneration",
+          "name": "getCounter",
           "parameterTypes": []
         },
         {
-          "name": "getAcknowledged",
+          "name": "getReceived",
           "parameterTypes": []
         },
         {
@@ -17511,13 +17511,13 @@
           ]
         },
         {
-          "name": "setGeneration",
+          "name": "setCounter",
           "parameterTypes": [
             "java.lang.Long"
           ]
         },
         {
-          "name": "setAcknowledged",
+          "name": "setReceived",
           "parameterTypes": [
             "java.lang.Long"
           ]
@@ -17586,13 +17586,13 @@
           ]
         },
         {
-          "name": "generation",
+          "name": "counter",
           "parameterTypes": [
             "java.lang.Long"
           ]
         },
         {
-          "name": "acknowledged",
+          "name": "received",
           "parameterTypes": [
             "java.lang.Long"
           ]

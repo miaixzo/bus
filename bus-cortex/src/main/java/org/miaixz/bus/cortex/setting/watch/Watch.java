@@ -63,32 +63,32 @@ public class Watch extends Tenant {
     private String target_id;
 
     /**
-     * Runtime session captured when the watch was established.
-     */
-    private String session;
-
-    /**
-     * Current selected target generation.
-     */
-    private Long generation;
-
-    /**
-     * Database timestamp of the latest acknowledgement.
-     */
-    private Long acknowledged;
-
-    /**
      * Latest redacted application error.
      */
     private String error;
 
     /**
-     * Highest generation with committed fetch evidence.
+     * Runtime session captured when the watch was established.
+     */
+    private String session;
+
+    /**
+     * Current selected target generation counter.
+     */
+    private Long counter;
+
+    /**
+     * Server receipt time of the latest application acknowledgement, in epoch milliseconds.
+     */
+    private Long received;
+
+    /**
+     * Highest target counter with committed fetch evidence.
      */
     private Long fetched;
 
     /**
-     * Highest successfully applied generation.
+     * Highest successfully applied target counter.
      */
     private Long applied;
 
@@ -109,15 +109,15 @@ public class Watch extends Tenant {
     public Status.Apply synchronization(Instance instance) {
         if (instance == null || getTenant_id() == null || !getTenant_id().equals(instance.getTenant_id())
                 || instance_id == null || !instance_id.equals(instance.getId()) || session == null
-                || !session.equals(instance.healthView().getSession()) || generation == null || generation < 1
+                || !session.equals(instance.healthView().getSession()) || counter == null || counter < 1
                 || target_id == null || target_id.isBlank()) {
             return Status.Apply.UNKNOWN;
         }
         if (error != null && !error.isBlank()) {
             return Status.Apply.FAILED;
         }
-        return generation.equals(applied) && generation.equals(fetched) && target_id.equals(applied_id)
-                && acknowledged != null && acknowledged > 0 ? Status.Apply.APPLIED : Status.Apply.PENDING;
+        return counter.equals(applied) && counter.equals(fetched) && target_id.equals(applied_id) && received != null
+                && received > 0 ? Status.Apply.APPLIED : Status.Apply.PENDING;
     }
 
 }

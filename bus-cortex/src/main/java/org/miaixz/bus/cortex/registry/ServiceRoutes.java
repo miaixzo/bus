@@ -24,6 +24,7 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
+import java.util.regex.Pattern;
 
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
@@ -41,6 +42,12 @@ import org.miaixz.bus.cortex.Instance;
  * @author Kimi Liu
  */
 public final class ServiceRoutes {
+
+    /**
+     * Matches a named path placeholder, such as the code in a registered public slug route.
+     */
+    private static final Pattern PATH_VARIABLE = Pattern
+            .compile(Pattern.quote(Symbol.BRACE_LEFT) + "[A-Za-z][A-Za-z0-9_]*" + Pattern.quote(Symbol.BRACE_RIGHT));
 
     /**
      * Prevents construction of the runtime projection utility.
@@ -132,10 +139,7 @@ public final class ServiceRoutes {
         if (!eligible(definition, instance, now))
             throw new IllegalArgumentException("Service instance is not eligible for this API");
         validate(instance);
-        URI operation = URI.create(Objects.requireNonNull(definition.getUrl(), "API path required"));
-        if (operation.isAbsolute() || operation.getRawAuthority() != null
-                || !definition.getUrl().startsWith(Symbol.SLASH))
-            throw new IllegalArgumentException("API operation must be an application-relative path");
+        validateOperation(definition.getUrl());
         Assets route = BeanKit.toBean(definition, Assets.class);
         route.setInstances(List.of(BeanKit.toBean(instance, Instance.class)));
         return route;
@@ -191,6 +195,29 @@ public final class ServiceRoutes {
         if (!asset.getUrl().startsWith(Symbol.SLASH) || operation.getRawAuthority() != null)
             throw new IllegalArgumentException("An application-relative operation path is required");
         return URI.create(resolve(asset).toASCIIString() + asset.getUrl());
+    }
+
+    /**
+     * Validates an application-relative operation path before a router renders any named path placeholders. Concrete
+     * endpoint construction still requires a fully rendered URI.
+     *
+     * @param path stored operation path or path template
+     * @throws IllegalArgumentException when the operation is malformed or supplies an upstream authority
+     */
+    public static void validateOperation(String path) {
+        if (path == null || !path.startsWith(Symbol.SLASH) || path.startsWith(Symbol.FORWARDSLASH))
+            throw new IllegalArgumentException("API operation must be an application-relative path");
+        int suffix = path.length();
+        int query = path.indexOf(Symbol.C_QUESTION_MARK);
+        int fragment = path.indexOf(Symbol.C_HASH);
+        if (query >= 0)
+            suffix = query;
+        if (fragment >= 0)
+            suffix = Math.min(suffix, fragment);
+        String rendered = PATH_VARIABLE.matcher(path.substring(0, suffix)).replaceAll("value");
+        URI operation = URI.create(rendered + path.substring(suffix));
+        if (operation.isAbsolute() || operation.getRawAuthority() != null)
+            throw new IllegalArgumentException("API operation must be an application-relative path");
     }
 
     /**

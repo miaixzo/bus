@@ -19,17 +19,18 @@
 */
 package org.miaixz.bus.cortex.magic;
 
-import java.util.Comparator;
-import java.util.LinkedHashMap;
-import java.util.Map;
-
 import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.center.date.Chrono;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.xyz.BeanKit;
 import org.miaixz.bus.core.xyz.DateKit;
 import org.miaixz.bus.cortex.Builder;
 import org.miaixz.bus.cortex.magic.identity.CortexIdentity;
 import org.miaixz.bus.extra.json.JsonKit;
+
+import java.util.Comparator;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * Structured audit logger backed by CacheX.
@@ -37,6 +38,20 @@ import org.miaixz.bus.extra.json.JsonKit;
  * @author Kimi Liu
  */
 public class AuditLogger {
+
+    /**
+     * Fixed audit envelope; event-specific details remain an explicitly dynamic document.
+     *
+     * @param op       operation identity
+     * @param id       affected resource identity
+     * @param operator verified operator
+     * @param ts       event timestamp
+     * @param details  optional event-specific attributes
+     * @author Kimi Liu
+     */
+    public record Entry(String op, String id, String operator, long ts, Map<String, Object> details) {
+        // No initialization required.
+    }
 
     /**
      * Shared cache used to persist audit log entries.
@@ -77,15 +92,9 @@ public class AuditLogger {
         long now = DateKit.current();
         String key = auditPrefix(tenantId, operation, id) + Symbol.COLON + now + Symbol.COLON
                 + Long.toHexString(System.nanoTime());
-        Map<String, Object> payload = new LinkedHashMap<>();
-        payload.put("op", operation);
-        payload.put("id", id);
-        payload.put("operator", operator);
-        payload.put("ts", now);
-        if (details != null && !details.isEmpty()) {
-            payload.put("details", new LinkedHashMap<>(details));
-        }
-        cacheX.write(key, JsonKit.toJsonString(payload), Chrono.WEEK.getMillis());
+        Entry entry = new Entry(operation, id, operator, now,
+                details == null || details.isEmpty() ? null : new LinkedHashMap<>(details));
+        cacheX.write(key, JsonKit.toJsonString(BeanKit.beanToMap(entry, false, true)), Chrono.WEEK.getMillis());
     }
 
     /**
