@@ -247,7 +247,8 @@ public class McpExecutor extends Coordinator<ServerRequest, ServerResponse> {
                     path);
         }
 
-        return isStreaming ? executeStreaming(bodySpec, context, request.exchange(), delivery, ip, method, path)
+        return isStreaming
+                ? executeStreaming(bodySpec, context, request.exchange(), delivery, targetUri, ip, method, path)
                 : executeBuffering(bodySpec, context, ip, method, path);
     }
 
@@ -425,6 +426,7 @@ public class McpExecutor extends Coordinator<ServerRequest, ServerResponse> {
      * @param context  qualified MCP request context used for endpoint rewriting
      * @param exchange active gateway exchange for per-frame error correlation
      * @param delivery realtime-stream or download delivery mode
+     * @param target   actual downstream URI used for this request
      * @param ip       The client IP for logging.
      * @param method   The HTTP method for logging.
      * @param path     The request path for logging.
@@ -435,6 +437,7 @@ public class McpExecutor extends Coordinator<ServerRequest, ServerResponse> {
             Context context,
             ServerWebExchange exchange,
             Delivery delivery,
+            URI target,
             String ip,
             String method,
             String path) {
@@ -497,6 +500,7 @@ public class McpExecutor extends Coordinator<ServerRequest, ServerResponse> {
                             bodyFlux,
                             context,
                             responseEntity.getHeaders(),
+                            target,
                             ip,
                             method,
                             path).doOnDiscard(PooledDataBuffer.class, Octets::release);
@@ -700,6 +704,7 @@ public class McpExecutor extends Coordinator<ServerRequest, ServerResponse> {
      * @param bodyFlux response body from downstream
      * @param context  current request context
      * @param headers  downstream response headers
+     * @param target   actual downstream SSE URI
      * @param ip       client IP for logging
      * @param method   HTTP method for logging
      * @param path     inbound request path for logging
@@ -709,6 +714,7 @@ public class McpExecutor extends Coordinator<ServerRequest, ServerResponse> {
             Flux<DataBuffer> bodyFlux,
             Context context,
             HttpHeaders headers,
+            URI target,
             String ip,
             String method,
             String path) {
@@ -717,7 +723,7 @@ public class McpExecutor extends Coordinator<ServerRequest, ServerResponse> {
                 || !MediaType.TEXT_EVENT_STREAM.isCompatibleWith(headers.getContentType())) {
             return bodyFlux;
         }
-        String downstreamPrefix = downstreamMessagesPrefix(context.getAssets());
+        String downstreamPrefix = downstreamMessagesPrefix(target);
         String gatewayPrefix = gatewayMessagesPrefix(context.getAssets());
         if (StringKit.isBlank(downstreamPrefix) || StringKit.isBlank(gatewayPrefix)
                 || downstreamPrefix.equals(gatewayPrefix)) {
@@ -770,13 +776,13 @@ public class McpExecutor extends Coordinator<ServerRequest, ServerResponse> {
     /**
      * Builds the downstream messages endpoint prefix that may be emitted in legacy MCP SSE endpoint events.
      *
-     * @param assets current MCP route asset
+     * @param target actual downstream SSE URI
      * @return downstream messages prefix, such as {@code /mcp/messages}
      */
-    private String downstreamMessagesPrefix(Assets assets) {
-        String servicePath = trimSlashes(assets.getPath());
-        return StringKit.isBlank(servicePath) ? Symbol.SLASH + "messages"
-                : Symbol.SLASH + servicePath + Symbol.SLASH + "messages";
+    private String downstreamMessagesPrefix(URI target) {
+        String path = target.getRawPath();
+        return path.endsWith(Symbol.SLASH + "sse") ? target.resolve("messages").getRawPath()
+                : joinPath(path, "messages");
     }
 
     /**
@@ -795,27 +801,6 @@ public class McpExecutor extends Coordinator<ServerRequest, ServerResponse> {
             return routePrefix.substring(0, routePrefix.length() - sseSuffix.length()) + Symbol.SLASH + "messages";
         }
         return routePrefix;
-    }
-
-    /**
-     * Removes leading and trailing slashes from a path fragment.
-     *
-     * @param value path fragment
-     * @return normalized path fragment
-     */
-    private String trimSlashes(String value) {
-        if (StringKit.isBlank(value)) {
-            return Normal.EMPTY;
-        }
-        int start = 0;
-        int end = value.length();
-        while (start < end && value.charAt(start) == Symbol.C_SLASH) {
-            start++;
-        }
-        while (end > start && value.charAt(end - 1) == Symbol.C_SLASH) {
-            end--;
-        }
-        return value.substring(start, end);
     }
 
     /**

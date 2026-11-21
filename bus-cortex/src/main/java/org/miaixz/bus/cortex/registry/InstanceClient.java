@@ -25,6 +25,7 @@ import java.util.Base64;
 import java.util.Map;
 
 import org.miaixz.bus.core.basic.normal.ErrorCode;
+import org.miaixz.bus.cortex.guard.token.TrustToken;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
@@ -66,7 +67,7 @@ public final class InstanceClient {
     private Instance acknowledged;
 
     /**
-     * Creates an explicitly configured service client without registering APIs or deriving local route defaults.
+     * Creates a service client and normalizes the effective port for registration and lease acknowledgements.
      *
      * @param endpoint   exact instance registration endpoint
      * @param code       application directory code
@@ -79,6 +80,7 @@ public final class InstanceClient {
         this.endpoint = endpoint;
         this.code = code;
         this.process = BeanKit.toBean(process, Instance.class);
+        this.process.setPort(ServiceRoutes.address(process).getPort());
         this.timeout = timeout;
         byte[] key = Base64.getUrlDecoder().decode(encodedKey);
         try {
@@ -132,21 +134,26 @@ public final class InstanceClient {
      * @return acknowledged process
      */
     private Instance exchange(String url, Instance instance) {
-        try (Context context = Context.create();
-                var response = Fabric.http(context).post(url).header(Http.Auth.API_KEY_HEADER, credential)
-                        .json(JsonKit.toJsonString(Map.of("code", code, "instance", instance))).timeout(timeout)
-                        .execute()) {
-            Object decoded = JsonKit.toJavaValue(JsonKit.readValue(response.text().getBytes(Charset.UTF_8)));
-            if (!response.successful() || !(decoded instanceof Map<?, ?> body)
-                    || !ErrorCode._SUCCESS.getKey().equals(String.valueOf(body.get("code")))
-                    || !(body.get("data") instanceof Map<?, ?> data) || !code.equals(data.get("code"))
-                    || !(data.get("instance") instanceof Map<?, ?>))
-                throw new IllegalStateException("Service registry rejected announcement");
-            Instance result = JsonKit.toPojo(JsonKit.toJsonString(data.get("instance")), Instance.class);
-            if (result.getId() == null || result.getApp_id() == null || !result.getApp_id().equals(data.get("app_id"))
-                    || !process.getHost().equals(result.getHost()) || !process.getPort().equals(result.getPort()))
-                throw new IllegalStateException("Service registry acknowledgement identity mismatch");
-            return result;
+        try (Context context = Context.create()) {
+            var request = Fabric.http(context).post(url).header(Http.Auth.API_KEY_HEADER, credential);
+            final String token = TrustToken.registry();
+            if (token != null) {
+                request.header(Http.Auth.SERVICE_TOKEN_HEADER, token);
+            }
+            try (var response = request.json(JsonKit.toJsonString(Map.of("code", code, "instance", instance)))
+                    .timeout(timeout).execute()) {
+                Object decoded = JsonKit.toJavaValue(JsonKit.readValue(response.text().getBytes(Charset.UTF_8)));
+                if (!response.successful() || !(decoded instanceof Map<?, ?> body)
+                        || !ErrorCode._SUCCESS.getKey().equals(String.valueOf(body.get("code")))
+                        || !(body.get("data") instanceof Map<?, ?> data) || !code.equals(data.get("code"))
+                        || !(data.get("instance") instanceof Map<?, ?>))
+                    throw new IllegalStateException("Service registry rejected announcement");
+                Instance result = JsonKit.toPojo(JsonKit.toJsonString(data.get("instance")), Instance.class);
+                if (result.getId() == null || result.getApp_id() == null || !result.getApp_id().equals(data.get("app_id"))
+                        || !process.getHost().equals(result.getHost()) || !process.getPort().equals(result.getPort()))
+                    throw new IllegalStateException("Service registry acknowledgement identity mismatch");
+                return result;
+            }
         } catch (Exception failure) {
             throw new IllegalStateException("Service registry announcement failed", failure);
         }

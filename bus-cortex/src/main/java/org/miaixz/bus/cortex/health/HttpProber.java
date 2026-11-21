@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.cortex.health;
 
+import java.net.URI;
+
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.net.Http;
@@ -68,9 +70,7 @@ public class HttpProber implements Prober {
     public boolean supports(Instance instance) {
         return instance != null && instance.getHost() != null
                 && (Builder.INSTANCE_KIND_SERVICE.equals(instance.getKind())
-                        ? Protocol.HTTP.name.equals(instance.getScheme())
-                                || Protocol.HTTPS.name.equals(instance.getScheme())
-                        : !Protocol.TCP.name.equalsIgnoreCase(instance.healthView().getScheme()));
+                        || !Protocol.TCP.name.equalsIgnoreCase(instance.healthView().getScheme()));
     }
 
     /**
@@ -90,16 +90,18 @@ public class HttpProber implements Prober {
         boolean service = Builder.INSTANCE_KIND_SERVICE.equals(instance.getKind());
         if (service)
             ServiceRoutes.validate(instance);
-        String scheme = service ? instance.getScheme()
-                : health.getScheme() != null ? health.getScheme() : Protocol.HTTP.name;
-        String host = instance.getHost();
+        URI address = service ? ServiceRoutes.address(instance) : null;
+        String scheme = health.getScheme() != null ? health.getScheme() : Protocol.HTTP.name;
+        String host = service ? address.getHost() : instance.getHost();
         if (host.contains(Symbol.COLON) && !host.startsWith(Symbol.BRACKET_LEFT))
             host = Symbol.BRACKET_LEFT + host + Symbol.BRACKET_RIGHT;
-        int port = instance.getPort() != null ? instance.getPort() : Port._80.getPort();
-        String context = service && instance.getPath() != null ? instance.getPath() : Normal.EMPTY;
+        int port = service ? address.getPort() : instance.getPort() != null ? instance.getPort() : Port._80.getPort();
+        String context = service ? address.getRawPath() : Normal.EMPTY;
         String path = health.getPath() != null ? health.getPath()
                 : (context + Http.Path.HEALTH).replaceAll(Symbol.SLASH + Symbol.PLUS, Symbol.SLASH);
-        String url = scheme + Symbol.COLON + Symbol.FORWARDSLASH + host + Symbol.COLON + port + path;
+        String origin = service ? ServiceRoutes.origin(address)
+                : scheme + Symbol.COLON + Symbol.FORWARDSLASH + host + Symbol.COLON + port;
+        String url = origin + path;
         long start = DateKit.current();
         Logger.debug(
                 true,

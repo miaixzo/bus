@@ -20,6 +20,7 @@
 package org.miaixz.bus.vortex;
 
 import java.io.Serial;
+import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -28,6 +29,7 @@ import lombok.Getter;
 import org.springframework.http.codec.multipart.Part;
 
 import org.miaixz.bus.core.basic.entity.Tracer;
+import org.miaixz.bus.core.center.function.FunctionX;
 import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.cortex.Assets;
 import org.miaixz.bus.vortex.filter.PrimaryFilter;
@@ -114,6 +116,20 @@ public class Context extends Tracer {
      * configuration for the selected route.
      */
     private Assets assets;
+
+    /**
+     * Signs the selected downstream URI using the one-request authorization returned by the trusted provider.
+     */
+    private transient FunctionX<URI, String> forwardProof;
+
+    /**
+     * Installs the signer after successful authentication for the current protected REST call.
+     *
+     * @param signer signer bound to this request's verified authorization
+     */
+    public void setForwardProof(FunctionX<URI, String> signer) {
+        this.forwardProof = signer;
+    }
 
     /**
      * The remaining request path produced by route resolution. Prefix-routed protocols can use this value for

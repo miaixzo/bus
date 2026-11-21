@@ -90,7 +90,7 @@ public class SlugQualifierStrategy extends QualifierStrategy {
             Logger.info(
                     true,
                     "Vortex",
-                    "Public slug asset resolved: clientIp={}, method={}, version={}, verb={}, policy={}, signing={}, instances={}, scheme={}, path={}, url={}",
+                    "Public slug asset resolved: clientIp={}, method={}, version={}, verb={}, policy={}, signing={}, instances={}, url={}",
                     context.getX_request_ip(),
                     assets.getMethod(),
                     assets.getVersion(),
@@ -98,8 +98,6 @@ public class SlugQualifierStrategy extends QualifierStrategy {
                     assets.getPolicy(),
                     assets.getSigning(),
                     assets.getInstances() == null ? Normal._0 : assets.getInstances().size(),
-                    assets.getScheme(),
-                    assets.getPath(),
                     assets.getUrl());
             return method(context, assets).then(SignatureVerifier.verifySlug(context, assets)).then(authorize(context))
                     .then(finalizeParameters(exchange, context)).then(chain.apply(exchange));

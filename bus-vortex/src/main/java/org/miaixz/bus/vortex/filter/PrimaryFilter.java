@@ -37,6 +37,7 @@ import org.miaixz.bus.errors.transport.http.RouteFailure;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.vortex.Context;
 import org.miaixz.bus.vortex.Strategy;
+import org.miaixz.bus.vortex.guard.AnchorVerifier;
 import org.miaixz.bus.vortex.handler.ErrorsHandler;
 import org.miaixz.bus.vortex.magic.ErrorCode;
 import org.miaixz.bus.vortex.strategy.StrategyFactory;
@@ -90,6 +91,11 @@ public class PrimaryFilter extends AbstractFilter {
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
         String path = exchange.getRequest().getPath().value();
+        if (AnchorVerifier.installed() && path.startsWith(AnchorVerifier.CONTROL_PATH) && !AnchorVerifier
+                .verify(exchange.getRequest().getHeaders().getFirst(Http.Auth.SERVICE_TOKEN_HEADER))) {
+            exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
+            return exchange.getResponse().setComplete();
+        }
         Logger.info(true, "Vortex", "Request received: clientIp=N/A, path={}", path);
         Logger.debug(true, "Vortex", "Request header snapshot: clientIp=N/A, path={}", path);
         Logger.debug(

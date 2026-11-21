@@ -68,18 +68,7 @@ public class Assets extends Nature {
     private String icon;
 
     /**
-     * Required upstream listener scheme for a system-maintained API, either http or https. This selects only matching
-     * service instances and never supplies an address, port or permission grant.
-     */
-    private String scheme;
-
-    /**
-     * Context path on the downstream service, prefixed when forwarding requests.
-     */
-    private String path;
-
-    /**
-     * Actual access address of the target application endpoint.
+     * API path relative to the registered service base URL, or an absolute URL for a standalone protocol route.
      */
     private String url;
 

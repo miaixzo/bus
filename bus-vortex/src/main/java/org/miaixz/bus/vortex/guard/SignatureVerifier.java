@@ -21,7 +21,6 @@ package org.miaixz.bus.vortex.guard;
 
 import java.security.MessageDigest;
 import java.util.*;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.springframework.core.io.buffer.DataBuffer;
@@ -30,6 +29,7 @@ import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpRequestDecorator;
 import org.springframework.web.server.ServerWebExchange;
 
+import org.miaixz.bus.core.center.function.FunctionX;
 import org.miaixz.bus.core.codec.binary.Base64;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
@@ -121,6 +121,29 @@ public class SignatureVerifier {
     }
 
     /**
+     * Signs an authorized GET at the final downstream request boundary.
+     *
+     * @param permit compact authorization issued for this request
+     * @param secret base64url one-request key received only over the private verification connection
+     * @param path   exact downstream raw path
+     * @param query  exact downstream raw query, or null if absent
+     * @return base64url proof for the complete GET target
+     */
+    public static String forwardProof(String permit, String secret, String path, String query) {
+        var encoding = java.util.Base64.getUrlEncoder().withoutPadding();
+        byte[] key = java.util.Base64.getUrlDecoder().decode(secret);
+        try {
+            if (key.length != Normal._32)
+                throw new IllegalArgumentException("Invalid request signing key");
+            byte[] value = JsonKit.toJsonString(Arrays.asList(Http.Method.GET.value(), path, query, permit))
+                    .getBytes(Charset.UTF_8);
+            return encoding.encodeToString(Builder.hmacSha256(key).digest(value));
+        } finally {
+            Arrays.fill(key, (byte) Normal._0);
+        }
+    }
+
+    /**
      * Verifies the legacy parameter signature used by public Slug routes.
      *
      * @param context current request context
@@ -174,7 +197,7 @@ public class SignatureVerifier {
             ServerWebExchange exchange,
             Context context,
             Assets assets,
-            Function<ServerWebExchange, Mono<Void>> continuation) {
+            FunctionX<ServerWebExchange, Mono<Void>> continuation) {
         Objects.requireNonNull(continuation, "Continuation cannot be null");
         return verifyMcpExchange(exchange, context, assets).flatMap(
                 validatedExchange -> Mono.defer(() -> continuation.apply(validatedExchange))
@@ -246,9 +269,9 @@ public class SignatureVerifier {
      * @param body    cached request bytes, or an empty array
      */
     private static void verifyMcpRequest(ServerHttpRequest request, Context context, Assets assets, byte[] body) {
-        String timestamp = request.getHeaders().getFirst(Args.X_TIMESTAMP);
-        String nonce = request.getHeaders().getFirst(Args.X_NONCE);
-        String signature = request.getHeaders().getFirst(Args.X_SIGN);
+        String timestamp = request.getHeaders().getFirst(Http.Auth.TIMESTAMP_HEADER);
+        String nonce = request.getHeaders().getFirst(Http.Auth.NONCE_HEADER);
+        String signature = request.getHeaders().getFirst(Http.Auth.SIGNATURE_HEADER);
         if (StringKit.isBlank(timestamp) || StringKit.isBlank(nonce) || StringKit.isBlank(signature)) {
             throw new SignatureException(ErrorCode._100109);
         }

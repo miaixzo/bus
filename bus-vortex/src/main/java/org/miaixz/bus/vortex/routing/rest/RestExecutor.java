@@ -152,6 +152,9 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
                     headers.add(name, value);
                 }
             });
+            headers.remove(Http.Auth.FORWARD_PROOF_HEADER);
+            if (context.getForwardProof() != null)
+                headers.set(Http.Auth.FORWARD_PROOF_HEADER, context.getForwardProof().apply(targetUri));
             headers.clearContentHeaders();
         });
         Logger.debug(

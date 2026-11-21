@@ -128,7 +128,7 @@ public class QualifierStrategy extends AbstractStrategy {
                 Logger.info(
                         true,
                         "Vortex",
-                        "Asset resolved: strategy=qualifier, clientIp={}, type={}, appId={}, method={}, version={}, verb={}, policy={}, signing={}, mode={}, instances={}, scheme={}, path={}, url={}",
+                        "Asset resolved: strategy=qualifier, clientIp={}, type={}, appId={}, method={}, version={}, verb={}, policy={}, signing={}, mode={}, instances={}, url={}",
                         context.getX_request_ip(),
                         assets.getType(),
                         assets.getApp_id(),
@@ -139,8 +139,6 @@ public class QualifierStrategy extends AbstractStrategy {
                         assets.getSigning(),
                         assets.getProtocol(),
                         assets.getInstances() == null ? Normal._0 : assets.getInstances().size(),
-                        assets.getScheme(),
-                        assets.getPath(),
                         assets.getUrl());
                 Mono<Void> validationMono = this.method(context, assets);
                 Mono<Void> authMono = !Consts.ZERO.equals(assets.getPolicy())

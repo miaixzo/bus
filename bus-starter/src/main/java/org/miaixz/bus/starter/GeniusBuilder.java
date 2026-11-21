@@ -27,6 +27,11 @@ package org.miaixz.bus.starter;
 public class GeniusBuilder {
 
     /**
+     * Configuration prefix for anchor.
+     */
+    public static final String ANCHOR = "bus.anchor";
+
+    /**
      * Configuration prefix for auth.
      */
     public static final String AUTH = "bus.auth";

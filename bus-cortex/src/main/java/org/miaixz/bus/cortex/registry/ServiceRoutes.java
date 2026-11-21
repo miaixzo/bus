@@ -28,7 +28,9 @@ import java.util.regex.Pattern;
 
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.net.Port;
 import org.miaixz.bus.core.net.Protocol;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.core.xyz.BeanKit;
 import org.miaixz.bus.core.xyz.DateKit;
 import org.miaixz.bus.cortex.Assets;
@@ -66,7 +68,6 @@ public final class ServiceRoutes {
      * @return detached runtime projection preserving the API ID, scope, method, version and verb
      */
     public static Assets project(Assets definition, Collection<? extends Instance> instances, long now) {
-        requireScheme(definition);
         Assets result = BeanKit.toBean(definition, Assets.class);
         long revision = Objects.requireNonNull(definition.getModified(), "API modification time required");
         for (Instance instance : instances) {
@@ -101,30 +102,16 @@ public final class ServiceRoutes {
     }
 
     /**
-     * Validates the maintained API listener requirement without choosing a transport fallback.
-     *
-     * @param definition authoritative API definition
-     * @return the exact configured listener scheme
-     * @throws IllegalArgumentException if the required scheme is absent or unsupported
-     */
-    public static String requireScheme(Assets definition) {
-        String scheme = definition == null ? null : definition.getScheme();
-        if (!Protocol.HTTP.name.equals(scheme) && !Protocol.HTTPS.name.equals(scheme))
-            throw new IllegalArgumentException("An explicit API listener scheme is required");
-        return scheme;
-    }
-
-    /**
-     * Requires exact application and protocol ownership in addition to a current ready service lease.
+     * Checks whether a currently leased service address belongs to the application that owns the API.
      *
      * @param definition maintained API contract
      * @param instance   proposed runtime listener
      * @param now        server evaluation time
-     * @return whether this listener may serve this API without protocol downgrade
+     * @return whether the listener may serve this API
      */
     public static boolean eligible(Assets definition, Instance instance, long now) {
-        return requireScheme(definition).equals(instance == null ? null : instance.getScheme())
-                && Objects.equals(definition.getApp_id(), instance.getApp_id()) && eligible(instance, now);
+        return definition != null && eligible(instance, now)
+                && Objects.equals(definition.getApp_id(), instance.getApp_id());
     }
 
     /**
@@ -166,17 +153,9 @@ public final class ServiceRoutes {
         Instance instance = asset.getInstances().getFirst();
         if (!eligible(asset, instance, DateKit.current()))
             throw new IllegalStateException("Selected service instance is no longer eligible");
-        validate(instance);
-        String host = instance.getHost().contains(Symbol.COLON)
-                ? Symbol.BRACKET_LEFT + instance.getHost() + Symbol.BRACKET_RIGHT
-                : instance.getHost();
-        String context = instance.getPath() == null ? Normal.EMPTY : instance.getPath();
-        String logical = asset.getPath() == null ? Normal.EMPTY : asset.getPath();
-        String path = (context + Symbol.SLASH + logical).replaceAll(Symbol.SLASH + Symbol.PLUS, Symbol.SLASH)
-                .replaceAll(Symbol.SLASH + Symbol.DOLLAR, Normal.EMPTY);
-        return URI.create(
-                instance.getScheme() + Symbol.COLON + Symbol.FORWARDSLASH + host + Symbol.COLON + instance.getPort()
-                        + path);
+        URI address = address(instance);
+        String path = address.getRawPath().replaceAll(Symbol.SLASH + Symbol.DOLLAR, Normal.EMPTY);
+        return URI.create(origin(address) + path);
     }
 
     /**
@@ -221,32 +200,100 @@ public final class ServiceRoutes {
     }
 
     /**
-     * Validates the independently reported HTTP service address without accepting embedded credentials or a second URL.
+     * Resolves the service base URL from the instance's announced scheme, host, port and deployment context.
+     *
+     * @param instance announced runtime instance
+     * @return validated HTTP or HTTPS listener URL
+     * @throws IllegalArgumentException if the announcement lacks a usable address
+     */
+    public static URI address(Instance instance) {
+        if (instance == null || instance.getHost() == null)
+            throw new IllegalArgumentException("A complete service instance address is required");
+        String scheme = instance.getScheme();
+        String host = instance.getHost();
+        if ((!Protocol.HTTP.name.equals(scheme) && !Protocol.HTTPS.name.equals(scheme))
+                || host.isBlank() || host.contains(Symbol.SLASH) || host.contains(Symbol.AT)
+                || host.contains(Symbol.QUESTION_MARK) || host.contains(Symbol.HASH))
+            throw new IllegalArgumentException("Invalid service instance host or scheme");
+        int port = instance.getPort() == null ? defaultPort(scheme) : instance.getPort();
+        if (port < Normal._1 || port > Normal._65535)
+            throw new IllegalArgumentException("Invalid service instance port");
+        String path = instance.getPath() == null ? Normal.EMPTY : instance.getPath();
+        URI context = URI.create(path);
+        if ((!path.isEmpty() && !path.startsWith(Symbol.SLASH)) || path.startsWith(Symbol.FORWARDSLASH)
+                || context.getRawQuery() != null || context.getRawFragment() != null
+                || context.getPath().contains(Symbol.DOUBLE_DOT))
+            throw new IllegalArgumentException("Invalid service context path");
+        String authority = host.contains(Symbol.COLON) && !host.startsWith(Symbol.BRACKET_LEFT)
+                ? Symbol.BRACKET_LEFT + host + Symbol.BRACKET_RIGHT
+                : host;
+        URI address = URI.create(scheme + Symbol.COLON + Symbol.FORWARDSLASH + authority
+                + Symbol.COLON + port + path);
+        if (address.getHost() == null || address.getRawUserInfo() != null || address.getPort() != port)
+            throw new IllegalArgumentException("Invalid service instance host");
+        return address;
+    }
+
+    /**
+     * Resolves a complete registration URL into the existing instance coordinates. Explicit fields may be repeated
+     * when they agree with the URL.
+     *
+     * @param url      absolute HTTP or HTTPS URL supplied by the service
+     * @param instance announcement carrying the service metadata and optional coordinates
+     * @throws IllegalArgumentException when the URL or repeated coordinates are invalid
+     */
+    public static void coordinates(String url, Instance instance) {
+        URI announced = URI.create(url);
+        String scheme = StringKit.toLowerCase(announced.getScheme());
+        String host = announced.getHost();
+        String path = announced.getRawPath();
+        if ((!Protocol.HTTP.name.equals(scheme) && !Protocol.HTTPS.name.equals(scheme))
+                || host == null || announced.getRawUserInfo() != null || announced.getRawQuery() != null
+                || announced.getRawFragment() != null || announced.getRawAuthority().endsWith(Symbol.COLON))
+            throw new IllegalArgumentException("An absolute HTTP or HTTPS registration URL is required");
+        int port = announced.getPort() == Normal.__1 ? defaultPort(scheme) : announced.getPort();
+        if (instance.getScheme() != null && !scheme.equals(instance.getScheme())
+                || instance.getHost() != null && !host.equalsIgnoreCase(instance.getHost())
+                || instance.getPort() != null && instance.getPort() != port
+                || instance.getPath() != null && !path.equals(instance.getPath()))
+            throw new IllegalArgumentException("Registration coordinates do not match the supplied URL");
+        instance.setScheme(scheme);
+        instance.setHost(host);
+        instance.setPort(port);
+        instance.setPath(path);
+        address(instance);
+    }
+
+    /**
+     * Returns the standard port for an already validated HTTP or HTTPS scheme.
+     *
+     * @param scheme registered URL scheme
+     * @return HTTP port 80 or HTTPS port 443
+     */
+    private static int defaultPort(String scheme) {
+        return Protocol.HTTPS.name.equals(scheme) ? Port._443.getPort() : Port._80.getPort();
+    }
+
+    /**
+     * Returns the connection origin of a validated service address.
+     *
+     * @param address validated HTTP or HTTPS address
+     * @return scheme and authority without the deployment context
+     */
+    public static String origin(URI address) {
+        return address.getScheme() + Symbol.COLON + Symbol.FORWARDSLASH + address.getRawAuthority();
+    }
+
+    /**
+     * Validates the independently reported listener address and weight.
      *
      * @param instance proposed service announcement
      */
     public static void validate(Instance instance) {
-        if (instance == null || instance.getScheme() == null
-                || !List.of(Protocol.HTTP.name, Protocol.HTTPS.name).contains(instance.getScheme())
-                || instance.getHost() == null || instance.getHost().isBlank()
-                || instance.getHost().contains(Symbol.SLASH) || instance.getHost().contains(Symbol.AT)
-                || instance.getHost().contains(Symbol.QUESTION_MARK) || instance.getHost().contains(Symbol.HASH)
-                || instance.getPort() == null || instance.getPort() < Normal._1 || instance.getPort() > Normal._65535
-                || instance.getWeight() == null || instance.getWeight() < Normal._0
+        address(instance);
+        if (instance.getWeight() == null || instance.getWeight() < Normal._0
                 || instance.getWeight() > Builder.MAX_INSTANCE_WEIGHT)
-            throw new IllegalArgumentException("A complete service instance address is required");
-        String path = instance.getPath();
-        if (path != null && (!path.isEmpty() && !path.startsWith(Symbol.SLASH) || path.startsWith(Symbol.FORWARDSLASH)
-                || path.contains(Symbol.QUESTION_MARK) || path.contains(Symbol.HASH)
-                || path.contains(Symbol.DOUBLE_DOT)))
-            throw new IllegalArgumentException("Invalid service context path");
-        String host = instance.getHost().contains(Symbol.COLON)
-                ? Symbol.BRACKET_LEFT + instance.getHost() + Symbol.BRACKET_RIGHT
-                : instance.getHost();
-        URI uri = URI.create(
-                instance.getScheme() + Symbol.COLON + Symbol.FORWARDSLASH + host + Symbol.COLON + instance.getPort());
-        if (uri.getHost() == null || uri.getUserInfo() != null)
-            throw new IllegalArgumentException("Invalid service instance host");
+            throw new IllegalArgumentException("Invalid service instance weight");
     }
 
 }

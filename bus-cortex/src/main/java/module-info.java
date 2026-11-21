@@ -32,11 +32,12 @@
 module bus.cortex {
 
     requires transitive bus.cache;
+    requires bus.auth;
     requires bus.core;
     requires bus.crypto;
     requires bus.errors;
     requires bus.extra;
-    requires transitive bus.fabric;
+    requires bus.fabric;
     requires bus.logger;
 
     requires static jakarta.persistence;

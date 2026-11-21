@@ -65,13 +65,11 @@ module bus.starter {
     requires static curator.framework;
     requires static dubbo;
     requires static elasticsearch.java;
-    requires static elasticsearch.rest5.client;
     requires static io.netty.transport;
     requires static jakarta.annotation;
     requires static jakarta.persistence;
     requires static jakarta.servlet;
     requires static lombok;
-    requires static org.apache.httpcomponents.client5.httpclient5;
     requires static org.aspectj.weaver;
     requires static org.mongodb.driver.core;
     requires static org.mybatis;
@@ -95,6 +93,7 @@ module bus.starter {
     requires static spring.webmvc;
 
     exports org.miaixz.bus.starter;
+    exports org.miaixz.bus.starter.anchor;
     exports org.miaixz.bus.starter.annotation;
     exports org.miaixz.bus.starter.auth;
     exports org.miaixz.bus.starter.cache;
@@ -131,6 +130,7 @@ module bus.starter {
     exports org.miaixz.bus.starter.wrapper.routing;
     exports org.miaixz.bus.starter.zookeeper;
 
+    opens org.miaixz.bus.starter.anchor to spring.beans, spring.boot, spring.context, spring.core;
     opens org.miaixz.bus.starter to spring.beans, spring.boot, spring.context, spring.core;
     opens org.miaixz.bus.starter.auth to spring.beans, spring.boot, spring.context, spring.core;
     opens org.miaixz.bus.starter.cache to spring.beans, spring.boot, spring.context, spring.core;

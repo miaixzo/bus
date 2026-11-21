@@ -296,13 +296,18 @@ public class VortexConfiguration {
      * This transformer processes proxy headers (X-Forwarded-For, X-Forwarded-Proto, Forwarded) to correctly identify
      * the original client IP address, protocol, and host when the application is behind a reverse proxy (e.g., Nginx,
      * HAProxy, AWS ELB).
+     * <p>
+     * Since Spring Framework 7.1 the header naming must be chosen explicitly, so {@code false} selects the
+     * {@code X-Forwarded-*} family (the Spring Boot default) instead of the RFC 7239 {@code Forwarded} header. The
+     * {@code X-Forwarded-Prefix} header is intentionally not applied, as Vortex strips proxy headers and normalizes
+     * them into the request context before routing.
      *
      * @return A new {@link ForwardedHeaderTransformer} instance.
      */
     @Bean
     @ConditionalOnMissingBean(ForwardedHeaderTransformer.class)
     public ForwardedHeaderTransformer forwardedHeaderTransformer() {
-        return new ForwardedHeaderTransformer();
+        return new ForwardedHeaderTransformer(false);
     }
 
     /**

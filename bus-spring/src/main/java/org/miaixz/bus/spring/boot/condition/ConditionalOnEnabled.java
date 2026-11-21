@@ -62,6 +62,14 @@ public @interface ConditionalOnEnabled {
     String name() default Normal.ENABLED;
 
     /**
+     * Returns the annotation member that must be {@code true}. An empty value keeps presence-only semantics, and an
+     * explicit {@code false} disables the feature even when the secondary property is true.
+     *
+     * @return required member name
+     */
+    String member() default "";
+
+    /**
      * Returns whether a missing secondary property activates the feature when the explicit annotation is absent.
      *
      * @return {@code true} when a missing property should match

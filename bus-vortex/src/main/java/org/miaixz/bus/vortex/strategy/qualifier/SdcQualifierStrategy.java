@@ -21,7 +21,6 @@ package org.miaixz.bus.vortex.strategy.qualifier;
 
 import java.net.URI;
 import java.util.Objects;
-import java.util.function.Function;
 import java.util.function.Supplier;
 
 import org.springframework.http.CacheControl;
@@ -30,6 +29,7 @@ import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.server.ServerWebExchange;
 
 import org.miaixz.bus.core.Order;
+import org.miaixz.bus.core.center.function.FunctionX;
 import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.cortex.Assets;
 import org.miaixz.bus.cortex.Type;
@@ -60,7 +60,7 @@ public class SdcQualifierStrategy extends QualifierStrategy {
     /**
      * Exchanges an application credential for the credential accepted by the upstream.
      */
-    private final Function<String, String> authenticator;
+    private final FunctionX<String, String> authenticator;
 
     /**
      * Creates the SDC qualification stage.
@@ -71,7 +71,7 @@ public class SdcQualifierStrategy extends QualifierStrategy {
      * @param authenticator application credential verifier and upstream credential issuer
      */
     public SdcQualifierStrategy(AuthorizeProvider provider, AssetsRegistry registry, Supplier<URI> endpoint,
-            Function<String, String> authenticator) {
+            FunctionX<String, String> authenticator) {
         super(provider, registry);
         this.endpoint = Objects.requireNonNull(endpoint);
         this.authenticator = Objects.requireNonNull(authenticator);
@@ -103,8 +103,8 @@ public class SdcQualifierStrategy extends QualifierStrategy {
                 URI target = endpoint.get();
                 Assets assets = ApiAssets.builder().type(Type.API.key()).method(Args.SDC_PATH_PREFIX)
                         .version(Args.DEFAULT_VERSION).verb(context.getHttpMethod().verb()).protocol(Args.ROUTE_SDC)
-                        .policy(GuardPolicy.CREDENTIAL.code()).scheme(target.getScheme()).url(target.toASCIIString())
-                        .stream(1).timeout(60).retries(0).build();
+                        .policy(GuardPolicy.CREDENTIAL.code()).url(target.toASCIIString()).stream(1).timeout(60)
+                        .retries(0).build();
                 context.setAssets(assets);
                 exchange.getResponse().beforeCommit(() -> {
                     exchange.getResponse().getHeaders().setCacheControl(CacheControl.noStore());

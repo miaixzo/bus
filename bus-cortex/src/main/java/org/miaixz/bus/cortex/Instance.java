@@ -62,7 +62,7 @@ public class Instance extends Tenant {
     private String kind;
 
     /**
-     * Downstream transport scheme, such as http or https, maintained by the running service.
+     * HTTP or HTTPS scheme advertised by a service instance.
      */
     private String scheme;
 

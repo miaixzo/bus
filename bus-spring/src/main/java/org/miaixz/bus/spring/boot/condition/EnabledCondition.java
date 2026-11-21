@@ -28,6 +28,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionOutcome;
 import org.springframework.boot.autoconfigure.condition.SpringBootCondition;
 import org.springframework.context.annotation.ConditionContext;
 import org.springframework.core.type.AnnotatedTypeMetadata;
+import org.springframework.core.type.AnnotationMetadata;
 
 import org.miaixz.bus.core.lang.Symbol;
 
@@ -46,21 +47,35 @@ public class EnabledCondition extends SpringBootCondition {
     }
 
     /**
-     * Returns whether a registered application source directly or transitively declares the enable annotation.
+     * Resolves the explicit enable state declared by the application source.
      *
      * @param registry       current Bean definition registry
      * @param annotationName fully qualified enable annotation name
-     * @return {@code true} when the annotation is present
+     * @param member         required annotation member, empty for presence-only checks
+     * @return {@code TRUE} when declared and enabled, {@code FALSE} when declared and disabled, {@code null} when absent
      */
-    private static boolean hasAnnotation(BeanDefinitionRegistry registry, String annotationName) {
+    private static Boolean declared(BeanDefinitionRegistry registry, String annotationName, String member) {
+        boolean found = false;
         for (String beanName : registry.getBeanDefinitionNames()) {
-            if (registry.getBeanDefinition(beanName) instanceof AnnotatedBeanDefinition definition
-                    && (definition.getMetadata().hasAnnotation(annotationName)
-                            || definition.getMetadata().hasMetaAnnotation(annotationName))) {
-                return true;
+            if (!(registry.getBeanDefinition(beanName) instanceof AnnotatedBeanDefinition definition)) {
+                continue;
+            }
+            AnnotationMetadata source = definition.getMetadata();
+            if (member == null || member.isEmpty()) {
+                if (source.hasAnnotation(annotationName) || source.hasMetaAnnotation(annotationName)) {
+                    return Boolean.TRUE;
+                }
+                continue;
+            }
+            Map<String, Object> values = source.getAnnotationAttributes(annotationName, true);
+            if (values != null) {
+                found = true;
+                if (Boolean.TRUE.equals(values.get(member))) {
+                    return Boolean.TRUE;
+                }
             }
         }
-        return false;
+        return found ? Boolean.FALSE : null;
     }
 
     /**
@@ -78,10 +93,16 @@ public class EnabledCondition extends SpringBootCondition {
         }
 
         String annotationName = (String) attributes.get("annotation");
-        if (hasAnnotation(context.getRegistry(), annotationName)) {
+        String member = (String) attributes.get("member");
+        Boolean state = declared(context.getRegistry(), annotationName, member);
+        if (Boolean.TRUE.equals(state)) {
             return ConditionOutcome.match(
                     ConditionMessage.forCondition(ConditionalOnEnabled.class).found("explicit enable annotation")
                             .items(annotationName));
+        }
+        if (Boolean.FALSE.equals(state)) {
+            return ConditionOutcome.noMatch(ConditionMessage.forCondition(ConditionalOnEnabled.class)
+                    .found("the enable annotation disabled this feature").items(annotationName));
         }
 
         String prefix = (String) attributes.get("prefix");

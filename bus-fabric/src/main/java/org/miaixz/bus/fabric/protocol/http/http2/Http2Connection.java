@@ -20,12 +20,15 @@
 package org.miaixz.bus.fabric.protocol.http.http2;
 
 import java.io.IOException;
+import java.nio.channels.AsynchronousCloseException;
+import java.nio.channels.ClosedChannelException;
 import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
@@ -46,6 +49,7 @@ import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.core.xyz.ThreadKit;
 import org.miaixz.bus.fabric.Builder;
 import org.miaixz.bus.fabric.Headers;
+import org.miaixz.bus.fabric.Options;
 import org.miaixz.bus.fabric.network.Connection;
 import org.miaixz.bus.fabric.runtime.Activity;
 import org.miaixz.bus.fabric.runtime.dispatch.DispatchHandle;
@@ -233,6 +237,21 @@ public class Http2Connection implements AutoCloseable {
      * Last observed PING ACK payload.
      */
     private final AtomicLong lastPingPayload;
+
+    /**
+     * Payload of the in-flight keepalive PING, or zero when no PING is pending.
+     */
+    private final AtomicLong pendingPing;
+
+    /**
+     * Keepalive PING interval, zero when disabled.
+     */
+    private final Duration pingInterval;
+
+    /**
+     * Keepalive PING acknowledgement timeout.
+     */
+    private final Duration pingTimeout;
 
     /**
      * Last safely ignored ALTSVC metadata.
@@ -445,6 +464,7 @@ public class Http2Connection implements AutoCloseable {
         this.shutdown = new AtomicBoolean();
         this.goAwayLastStreamId = new AtomicInteger(Integer.MAX_VALUE);
         this.lastPingPayload = new AtomicLong();
+        this.pendingPing = new AtomicLong();
         this.lastAlternateService = new AtomicReference<>();
         this.pushObserver = pushObserver == null ? PushObserver.canceling() : pushObserver;
         this.dispatcher = require(dispatcher, "Dispatcher");
@@ -461,7 +481,15 @@ public class Http2Connection implements AutoCloseable {
         }
         this.maxQueuedInboundBytes = maxQueuedInboundBytes;
         this.maxConcurrentStreams.set(localStreamLimit);
+        final Options pingOptions = connection.destination() == null ? Options.empty()
+                : connection.destination().options();
+        final Duration interval = pingOptions == null ? null : pingOptions.get(Builder.HTTP2_PING_INTERVAL);
+        final Duration timeout = pingOptions == null ? null : pingOptions.get(Builder.HTTP2_PING_TIMEOUT);
+        this.pingInterval = interval == null || interval.isNegative() ? Duration.ZERO : interval;
+        this.pingTimeout = timeout == null || timeout.isZero() || timeout.isNegative() ? Duration.ofSeconds(10)
+                : timeout;
         publishCapacity(false);
+        schedulePing();
         if (Logger.isInfoEnabled()) {
             Logger.info(
                     true,
@@ -481,6 +509,44 @@ public class Http2Connection implements AutoCloseable {
      */
     public static Http2Connection create(final Connection connection) {
         return new Http2Connection(connection);
+    }
+
+    /**
+     * Schedules the next keepalive PING when the connection is open and keepalive is enabled.
+     */
+    private void schedulePing() {
+        if (this.pingInterval.isZero() || this.pingInterval.isNegative() || shutdown.get() || !opened()) {
+            return;
+        }
+        final String key = "http2:ping:" + System.identityHashCode(this);
+        this.dispatcher.schedule(key, this.pingInterval, Activity.of(key, this::sendPing));
+    }
+
+    /**
+     * Sends one keepalive PING and schedules an acknowledgement deadline.
+     */
+    private void sendPing() {
+        if (shutdown.get() || !opened()) {
+            return;
+        }
+        final long payload = ThreadLocalRandom.current().nextLong();
+        this.pendingPing.set(payload);
+        try {
+            ping(payload);
+        } catch (final RuntimeException failure) {
+            return;
+        }
+        final String key = "http2:ping-timeout:" + System.identityHashCode(this);
+        this.dispatcher.schedule(key, this.pingTimeout, Activity.of(key, () -> {
+            if (shutdown.get() || !opened()) {
+                return;
+            }
+            if (this.pendingPing.get() == payload) {
+                closeAfterReaderFailure(new SocketException("HTTP/2 keepalive PING timed out"));
+            } else {
+                schedulePing();
+            }
+        }));
     }
 
     /**
@@ -1615,6 +1681,18 @@ public class Http2Connection implements AutoCloseable {
     }
 
     /**
+     * Returns whether this connection is shutting down after a local or peer GOAWAY.
+     * <p>
+     * Connection pools use this to evict a session before it is handed to another request.
+     * </p>
+     *
+     * @return {@code true} when the connection must not be reused
+     */
+    public boolean isShuttingDown() {
+        return shutdown.get();
+    }
+
+    /**
      * Returns last GOAWAY stream id.
      *
      * @return last stream id
@@ -1735,25 +1813,51 @@ public class Http2Connection implements AutoCloseable {
                 }
             }
         } catch (final RuntimeException e) {
+            final boolean expected = shutdown.get() || expectedReaderFailure(e);
             if (!state.get().terminal()) {
-                if (Logger.isErrorEnabled()) {
-                    Logger.error(
-                            false,
-                            "Fabric",
-                            e,
-                            "HTTP/2 reader failed: exception={}",
-                            e.getClass().getSimpleName());
-                }
-                if (e instanceof ProtocolException) {
-                    try {
-                        goAway(Normal._0, Normal._1, ByteString.encodeUtf8(e.getMessage()));
-                    } catch (final RuntimeException ignored) {
-                        // The original protocol failure remains authoritative.
+                if (expected) {
+                    if (Logger.isDebugEnabled()) {
+                        Logger.debug(
+                                false,
+                                "Fabric",
+                                "HTTP/2 reader stopped: exception={}",
+                                e.getClass().getSimpleName());
+                    }
+                } else {
+                    if (Logger.isErrorEnabled()) {
+                        Logger.error(
+                                false,
+                                "Fabric",
+                                e,
+                                "HTTP/2 reader failed: exception={}",
+                                e.getClass().getSimpleName());
+                    }
+                    if (e instanceof ProtocolException) {
+                        try {
+                            goAway(Normal._0, Normal._1, ByteString.encodeUtf8(e.getMessage()));
+                        } catch (final RuntimeException ignored) {
+                            // The original protocol failure remains authoritative.
+                        }
                     }
                 }
-                closeAfterReaderFailure(e);
+                closeAfterReaderFailure(e, expected);
             }
         }
+    }
+
+    /**
+     * Classifies reader failures caused by connection shutdown rather than by a protocol or transport defect.
+     *
+     * @param failure reader failure
+     * @return {@code true} when the failure is expected during close or abort
+     */
+    private static boolean expectedReaderFailure(final Throwable failure) {
+        for (Throwable cause = failure; cause != null; cause = cause.getCause()) {
+            if (cause instanceof AsynchronousCloseException || cause instanceof ClosedChannelException) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -1869,6 +1973,7 @@ public class Http2Connection implements AutoCloseable {
     private void dispatchPing(final Http2Frame frame) {
         if (frame.ack()) {
             lastPingPayload.set(frame.pingPayload());
+            pendingPing.compareAndSet(frame.pingPayload(), Normal.LONG_ZERO);
             return;
         }
         writeFrame(Http2Frame.ping(frame.pingPayload(), true));
@@ -2196,11 +2301,25 @@ public class Http2Connection implements AutoCloseable {
      * @param cause failure cause
      */
     private void closeAfterReaderFailure(final RuntimeException cause) {
+        closeAfterReaderFailure(cause, false);
+    }
+
+    /**
+     * Fails the connection after a reader or writer failure, keeping expected shutdown paths quiet.
+     *
+     * @param cause    failure
+     * @param expected {@code true} when the failure is part of a normal close or abort
+     */
+    private void closeAfterReaderFailure(final RuntimeException cause, final boolean expected) {
         final RuntimeException failure = streamFailure(cause);
         if (!state.compareAndSet(State.RUNNING, State.CLOSING)) {
             return;
         }
-        if (Logger.isWarnEnabled()) {
+        if (expected || shutdown.get()) {
+            if (Logger.isDebugEnabled()) {
+                Logger.debug(false, "Fabric", "HTTP/2 connection closed: activeStreams={}", streams.entrySet().size());
+            }
+        } else if (Logger.isWarnEnabled()) {
             Logger.warn(
                     false,
                     "Fabric",

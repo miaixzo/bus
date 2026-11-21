@@ -40,6 +40,7 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.xyz.UrlKit;
+import org.miaixz.bus.cortex.guard.token.TrustToken;
 import org.miaixz.bus.errors.transport.reactive.ReactiveErrorHandler;
 import org.miaixz.bus.vortex.*;
 
@@ -115,6 +116,10 @@ public class SdcExecutor implements Executor<ServerRequest, ServerResponse> {
                         Objects.requireNonNull(
                                 context.getHeaders().get(Http.Auth.API_KEY_HEADER),
                                 "SDC forwarding credential is missing"));
+                String serviceToken = TrustToken.registry();
+                if (serviceToken != null) {
+                    headers.set(Http.Auth.SERVICE_TOKEN_HEADER, serviceToken);
+                }
             });
             if (context.getHttpMethod() == Http.Method.POST) {
                 request.headers().contentType().ifPresent(downstream::contentType);

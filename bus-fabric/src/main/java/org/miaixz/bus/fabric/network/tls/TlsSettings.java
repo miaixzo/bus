@@ -132,6 +132,23 @@ public class TlsSettings {
     }
 
     /**
+     * Creates a builder pre-populated with this settings value.
+     * <p>
+     * The copy preserves versions, ciphers, trust policy, verification, ALPN identifiers and TLS extension
+     * configuration, so callers can change one aspect (for example ALPN for HTTP/2) without rebuilding the whole
+     * security policy.
+     * </p>
+     *
+     * @return a mutable builder initialized from this settings value
+     */
+    public Builder toBuilder() {
+        final Builder builder = new Builder().versions(versions).clientAuth(clientAuth).verifyHostname(verifyHostname)
+                .certificate(certificate).applicationProtocols(applicationProtocols)
+                .supportsTlsExtensions(tlsExtensions);
+        return ciphers.isEmpty() ? builder.allEnabledCipherSuites() : builder.ciphers(ciphers);
+    }
+
+    /**
      * Returns default cipher suites from the current JDK TLS engine.
      *
      * @return immutable snapshot of cipher suites enabled by a default JDK TLS engine

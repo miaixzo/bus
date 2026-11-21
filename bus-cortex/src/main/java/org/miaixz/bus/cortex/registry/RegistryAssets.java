@@ -201,9 +201,7 @@ public class RegistryAssets {
         target.setModified(source.getModified());
         target.setName(source.getName());
         target.setIcon(source.getIcon());
-        target.setScheme(source.getScheme());
         target.setInstances(source.getInstances());
-        target.setPath(source.getPath());
         target.setUrl(source.getUrl());
         target.setMethod(source.getMethod());
         target.setProtocol(source.getProtocol());

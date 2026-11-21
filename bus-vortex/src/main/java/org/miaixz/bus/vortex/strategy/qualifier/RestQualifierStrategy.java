@@ -28,6 +28,7 @@ import org.miaixz.bus.cortex.Assets;
 import org.miaixz.bus.cortex.Keying;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.vortex.Context;
+import org.miaixz.bus.vortex.guard.AnchorGuard;
 import org.miaixz.bus.vortex.guard.SignatureVerifier;
 import org.miaixz.bus.vortex.magic.ErrorCode;
 import org.miaixz.bus.vortex.provider.AuthorizeProvider;
@@ -90,10 +91,11 @@ public class RestQualifierStrategy extends QualifierStrategy {
             })).flatMap(match -> {
                 Assets assets = match.assets();
                 context.setAssets(assets);
+                AnchorGuard.apply(context, assets.getApp_id(), assets.getUrl());
                 Logger.info(
                         true,
                         "Vortex",
-                        "REST asset resolved: strategy=rest-qualifier, clientIp={}, type={}, appId={}, method={}, version={}, verb={}, policy={}, signing={}, mode={}, instances={}, scheme={}, path={}, url={}",
+                        "REST asset resolved: strategy=rest-qualifier, clientIp={}, type={}, appId={}, method={}, version={}, verb={}, policy={}, signing={}, mode={}, instances={}, url={}",
                         context.getX_request_ip(),
                         assets.getType(),
                         assets.getApp_id(),
@@ -104,8 +106,6 @@ public class RestQualifierStrategy extends QualifierStrategy {
                         assets.getSigning(),
                         assets.getProtocol(),
                         assets.getInstances() == null ? Normal._0 : assets.getInstances().size(),
-                        assets.getScheme(),
-                        assets.getPath(),
                         assets.getUrl());
                 Mono<Void> validationMono = this.method(context, assets)
                         .then(SignatureVerifier.verifyRest(context, assets));

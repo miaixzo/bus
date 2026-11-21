@@ -10,6 +10,93 @@
       ]
     },
     {
+      "type": "org.miaixz.bus.starter.anchor.AnchorConfiguration",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.starter.anchor.AnchorConfiguration$Inbound",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.starter.anchor.AnchorConfiguration$Outbound",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.starter.anchor.AnchorProperties",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.starter.anchor.AnchorProperties$Inbound",
+            "org.miaixz.bus.starter.anchor.AnchorProperties$Outbound",
+            "java.lang.String",
+            "long"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.starter.anchor.AnchorProperties$Inbound",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "boolean",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "int"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.starter.anchor.AnchorProperties$Outbound",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "boolean",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "int",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.starter.anchor.ServiceAnchorFilter",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.starter.anchor.AnchorProperties",
+            "org.miaixz.bus.starter.anchor.AnchorKeys"
+          ]
+        }
+      ]
+    },
+    {
       "type": "org.miaixz.bus.starter.auth.AuthConfiguration",
       "methods": [
         {

@@ -249,6 +249,16 @@ public class Builder {
             + Symbol.CRLF + Symbol.CRLF;
 
     /**
+     * HTTP/2 keepalive PING interval. A zero or negative duration disables keepalive PINGs.
+     */
+    public static final Options.Key<Duration> HTTP2_PING_INTERVAL = Options.key("http2.pingInterval", Duration.class);
+
+    /**
+     * HTTP/2 keepalive PING acknowledgement timeout.
+     */
+    public static final Options.Key<Duration> HTTP2_PING_TIMEOUT = Options.key("http2.pingTimeout", Duration.class);
+
+    /**
      * HTTP/2 receive-window threshold that triggers a WINDOW_UPDATE frame.
      */
     public static final long HTTP2_CONNECTION_WINDOW_UPDATE_THRESHOLD = Http.Setting.DEFAULT_INITIAL_WINDOW_SIZE

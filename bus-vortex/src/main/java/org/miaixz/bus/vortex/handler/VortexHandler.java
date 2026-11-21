@@ -42,7 +42,6 @@ import org.miaixz.bus.vortex.magic.ErrorCode;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import reactor.util.annotation.NonNull;
 
 /**
  * Request handling entry class, responsible for routing requests and asynchronously invoking multiple interceptor
@@ -110,7 +109,6 @@ public class VortexHandler {
      * @param request the client's {@link ServerRequest} containing full request information
      * @return {@link Mono<ServerResponse>} the response from the target service, returned reactively
      */
-    @NonNull
     public Mono<ServerResponse> handle(ServerRequest request) {
         return Mono.deferContextual(contextView -> {
             String method = request.method().name();

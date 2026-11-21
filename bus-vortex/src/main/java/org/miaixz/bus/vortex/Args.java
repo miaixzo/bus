@@ -89,21 +89,6 @@ public class Args {
     public static final String X_REMOTE_CHANNEL = "x_remote_channel";
 
     /**
-     * Signature timestamp header name.
-     */
-    public static final String X_TIMESTAMP = "X-Timestamp";
-
-    /**
-     * Signature nonce header name.
-     */
-    public static final String X_NONCE = "X-Nonce";
-
-    /**
-     * Signature value header name.
-     */
-    public static final String X_SIGN = "X-Sign";
-
-    /**
      * MCP protocol-version header name.
      */
     public static final String MCP_PROTOCOL_VERSION = "MCP-Protocol-Version";

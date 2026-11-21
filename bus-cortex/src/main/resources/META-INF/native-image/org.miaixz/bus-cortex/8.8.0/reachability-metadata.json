@@ -16,9 +16,6 @@
           "name": "icon"
         },
         {
-          "name": "path"
-        },
-        {
           "name": "url"
         },
         {
@@ -86,9 +83,6 @@
         },
         {
           "name": "labels"
-        },
-        {
-          "name": "scheme"
         },
         {
           "name": "instances"
@@ -162,10 +156,6 @@
         },
         {
           "name": "getIcon",
-          "parameterTypes": []
-        },
-        {
-          "name": "getPath",
           "parameterTypes": []
         },
         {
@@ -274,12 +264,6 @@
         },
         {
           "name": "setIcon",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setPath",
           "parameterTypes": [
             "java.lang.String"
           ]
@@ -427,16 +411,6 @@
           ]
         },
         {
-          "name": "getScheme",
-          "parameterTypes": []
-        },
-        {
-          "name": "setScheme",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
           "name": "getInstances",
           "parameterTypes": []
         },
@@ -459,9 +433,6 @@
         },
         {
           "name": "icon"
-        },
-        {
-          "name": "path"
         },
         {
           "name": "url"
@@ -527,9 +498,6 @@
           "name": "labels"
         },
         {
-          "name": "scheme"
-        },
-        {
           "name": "stream"
         },
         {
@@ -557,12 +525,6 @@
         },
         {
           "name": "icon",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "path",
           "parameterTypes": [
             "java.lang.String"
           ]
@@ -720,12 +682,6 @@
         {
           "name": "<init>",
           "parameterTypes": []
-        },
-        {
-          "name": "scheme",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
         },
         {
           "name": "instances",
