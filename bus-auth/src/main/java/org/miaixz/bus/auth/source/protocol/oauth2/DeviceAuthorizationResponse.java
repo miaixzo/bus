@@ -48,6 +48,12 @@ public record DeviceAuthorizationResponse(String deviceCode, String userCode, St
     /**
      * Creates and validates an immutable device authorization response.
      *
+     * @param deviceCode              opaque device verification code used at the token endpoint
+     * @param userCode                end-user code displayed by the device
+     * @param verificationUri         end-user verification endpoint URI
+     * @param verificationUriComplete optional verification URI containing the user code
+     * @param expiresIn               lifetime of the device and user codes in seconds
+     * @param interval                optional minimum polling interval in seconds
      * @throws IllegalArgumentException if a required value or optional container is {@code null}
      * @throws ValidateException        if a code is empty, a URI is invalid, or a duration is not positive
      */

@@ -46,6 +46,13 @@ public record TokenExchangeResponse(String accessToken, String issuedTokenType, 
     /**
      * Validates RFC 8693 response components and isolates extensions.
      *
+     * @param accessToken     issued token value carried in {@code access_token}
+     * @param issuedTokenType absolute URI identifying the semantic type of the issued token
+     * @param tokenType       access-token usage type, including {@code N_A} for a non-access token
+     * @param expiresIn       optional lifetime in seconds
+     * @param scope           optional effective scope
+     * @param refreshToken    optional refresh token
+     * @param extensions      additional token exchange response members
      * @throws IllegalArgumentException if a component or container is {@code null}
      * @throws ValidateException        if token, URI, lifetime, or extension semantics are invalid
      */

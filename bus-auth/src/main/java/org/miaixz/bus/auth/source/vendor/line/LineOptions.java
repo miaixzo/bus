@@ -56,6 +56,12 @@ public record LineOptions(Vendor.Id vendor, Vendor.Variant variant, String clien
     /**
      * Validates and freezes one LINE Login registration without resolving its channel secret.
      *
+     * @param vendor      exact LINE platform identifier
+     * @param variant     exact default LINE variant
+     * @param clientId    registered LINE channel identifier
+     * @param credential  external channel-secret reference
+     * @param redirectUri exact registered HTTPS callback URI
+     * @param scopes      ordered scopes containing both {@code profile} and {@code openid}
      * @throws IllegalArgumentException if a required component, container, or scope is {@code null} or blank
      * @throws ValidateException        if routing, credential type, callback, or scopes differ from the frozen manifest
      */

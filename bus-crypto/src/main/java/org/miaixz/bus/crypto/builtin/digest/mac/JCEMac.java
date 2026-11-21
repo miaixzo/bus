@@ -107,9 +107,9 @@ public class JCEMac extends SimpleWrapper<javax.crypto.Mac> implements Mac {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Updates the MAC with the entire contents of the given byte array.
      *
-     * @param in Description inherited from parent class or interface.
+     * @param in input bytes used to update the MAC
      */
     @Override
     public void update(final byte[] in) {
@@ -117,11 +117,11 @@ public class JCEMac extends SimpleWrapper<javax.crypto.Mac> implements Mac {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Updates the MAC with the specified portion of the given byte array.
      *
-     * @param in    Description inherited from parent class or interface.
-     * @param inOff Description inherited from parent class or interface.
-     * @param len   Description inherited from parent class or interface.
+     * @param in    input bytes used to update the MAC
+     * @param inOff inclusive starting offset in the input array
+     * @param len   number of bytes to process
      */
     @Override
     public void update(final byte[] in, final int inOff, final int len) {
@@ -129,9 +129,9 @@ public class JCEMac extends SimpleWrapper<javax.crypto.Mac> implements Mac {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Completes the MAC calculation and returns the result. The MAC is reset after this operation.
      *
-     * @return Description inherited from parent class or interface.
+     * @return The calculated MAC value as a byte array.
      */
     @Override
     public byte[] doFinal() {
@@ -139,7 +139,7 @@ public class JCEMac extends SimpleWrapper<javax.crypto.Mac> implements Mac {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Resets the MAC to its initial state, discarding all processed data.
      */
     @Override
     public void reset() {
@@ -147,9 +147,9 @@ public class JCEMac extends SimpleWrapper<javax.crypto.Mac> implements Mac {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Retrieves the length of the MAC in bytes.
      *
-     * @return Description inherited from parent class or interface.
+     * @return The MAC length in bytes.
      */
     @Override
     public int getMacLength() {
@@ -157,9 +157,9 @@ public class JCEMac extends SimpleWrapper<javax.crypto.Mac> implements Mac {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Retrieves the name of the MAC algorithm.
      *
-     * @return Description inherited from parent class or interface.
+     * @return The algorithm name.
      */
     @Override
     public String getAlgorithm() {

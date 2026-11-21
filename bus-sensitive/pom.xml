@@ -88,10 +88,6 @@
             <groupId>org.miaixz</groupId>
             <artifactId>bus-extra</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.miaixz</groupId>
-            <artifactId>bus-logger</artifactId>
-        </dependency>
 
         <dependency>
             <groupId>org.projectlombok</groupId>

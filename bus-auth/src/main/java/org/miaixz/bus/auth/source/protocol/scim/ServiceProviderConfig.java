@@ -51,6 +51,16 @@ public record ServiceProviderConfig(List<String> schemas, Optional<String> docum
     /**
      * Enforces the discovery schema, absolute documentation URI, and unique authentication mechanism types.
      *
+     * @param schemas               singleton standard ServiceProviderConfig schema URI
+     * @param documentationUri      absolute service-provider documentation URI when published
+     * @param patch                 PATCH feature declaration
+     * @param bulk                  Bulk feature declaration and limits
+     * @param filter                filter feature declaration and result limit
+     * @param changePassword        password-change feature declaration
+     * @param sort                  sorting feature declaration
+     * @param etag                  entity-tag feature declaration
+     * @param authenticationSchemes supported authentication schemes
+     * @param meta                  service-provider-maintained discovery resource metadata
      * @throws IllegalArgumentException if a required value, container, or mechanism is {@code null}
      * @throws ValidateException        if a URI, schema, or duplicate authentication type is invalid
      */
@@ -128,6 +138,9 @@ public record ServiceProviderConfig(List<String> schemas, Optional<String> docum
         /**
          * Requires positive limits for enabled Bulk and zero limits when Bulk is disabled.
          *
+         * @param supported      whether Bulk is supported
+         * @param maxOperations  maximum operations accepted in one request, or zero when unsupported
+         * @param maxPayloadSize maximum request payload octets, or zero when unsupported
          * @throws ValidateException if the limits do not match the support flag
          */
         public Bulk {
@@ -150,6 +163,8 @@ public record ServiceProviderConfig(List<String> schemas, Optional<String> docum
         /**
          * Requires a positive limit for enabled filtering and zero when filtering is disabled.
          *
+         * @param supported  whether filtering is supported
+         * @param maxResults maximum results returned for a filtered query, or zero when unsupported
          * @throws ValidateException if the limit does not match the support flag
          */
         public FilterSupport {
@@ -177,6 +192,11 @@ public record ServiceProviderConfig(List<String> schemas, Optional<String> docum
         /**
          * Validates required text and optional absolute URIs.
          *
+         * @param type             authentication scheme type
+         * @param name             human-readable authentication scheme name
+         * @param description      human-readable authentication scheme description
+         * @param specUri          absolute governing specification URI when supplied
+         * @param documentationUri absolute implementation documentation URI when supplied
          * @throws IllegalArgumentException if a required value or optional container is {@code null}
          * @throws ValidateException        if an optional URI is invalid
          */

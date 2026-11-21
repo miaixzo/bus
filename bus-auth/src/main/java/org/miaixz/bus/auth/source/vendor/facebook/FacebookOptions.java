@@ -56,6 +56,12 @@ public record FacebookOptions(Vendor.Id vendor, Vendor.Variant variant, String c
     /**
      * Validates and freezes one Facebook Login registration without resolving its app secret.
      *
+     * @param vendor      exact Facebook platform identifier
+     * @param variant     exact default Facebook Login variant
+     * @param clientId    registered Meta app identifier
+     * @param credential  external app-secret reference
+     * @param redirectUri exact Valid OAuth Redirect URI
+     * @param scopes      ordered requested permissions, or empty to use manifest defaults
      * @throws IllegalArgumentException if a required component, container, or scope is {@code null} or blank
      * @throws ValidateException        if routing, credential, callback, scope vocabulary, uniqueness, or identity
      *                                  coverage differs from the frozen manifest

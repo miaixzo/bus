@@ -23,7 +23,6 @@ import org.springframework.web.server.ServerWebExchange;
 
 import org.miaixz.bus.core.Order;
 import org.miaixz.bus.core.basic.normal.Consts;
-import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.cortex.Assets;
 import org.miaixz.bus.cortex.Keying;
@@ -101,7 +100,7 @@ public class McpQualifierStrategy extends QualifierStrategy {
                         method,
                         version,
                         verb);
-                return Mono.error(new ValidateException(ErrorCode._100800));
+                return Mono.error(routeMiss(exchange, requestRoute, ErrorCode._100800));
             })).flatMap(match -> {
                 Assets assets = match.assets();
                 context.setAssets(assets);

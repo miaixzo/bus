@@ -65,6 +65,7 @@ public interface Value {
         public byte[] toBytes(VR vr, boolean bigEndian) {
             return new byte[] {};
         }
+
     };
 
     /**

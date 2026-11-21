@@ -215,6 +215,8 @@ public class CorsProperties {
     }
 
     /**
+     * Returns a safe diagnostic representation of this configuration.
+     *
      * @return safe diagnostic text
      */
     @Override

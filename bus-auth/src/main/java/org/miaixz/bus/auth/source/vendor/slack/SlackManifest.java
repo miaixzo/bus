@@ -206,6 +206,7 @@ public class SlackManifest implements VendorManifest<SlackOptions> {
      * Creates the stateless Slack manifest used by Vendor locator assembly.
      */
     public SlackManifest() {
+        // No initialization required.
     }
 
     /**

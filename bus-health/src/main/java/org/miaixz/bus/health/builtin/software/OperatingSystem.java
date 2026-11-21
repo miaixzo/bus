@@ -82,9 +82,9 @@ public interface OperatingSystem {
     /**
      * Gets currently running processes. No order is guaranteed.
      *
-     * @return A list of {@link OSProcess} objects for the specified number (or all) of currently running processes,
-     *         sorted as specified. The list may contain null elements or processes with a state of
-     *         {@link OSProcess.State#INVALID} if a process terminates during iteration.
+     * @return A list of {@link org.miaixz.bus.health.builtin.software.OSProcess} objects for the specified number (or
+     *         all) of currently running processes, sorted as specified. The list may contain null elements or processes
+     *         with a state of {@link OSProcess.State#INVALID} if a process terminates during iteration.
      */
     default List<OSProcess> getProcesses() {
         return getProcesses(null, null, 0);
@@ -98,7 +98,8 @@ public interface OperatingSystem {
      * @param sort   An optional {@link Comparator} specifying the sorting order. Some common comparators are available
      *               in {@link ProcessSorting}. May be {@code null} for no sorting.
      * @param limit  Max number of results to return, or 0 to return all results
-     * @return A list of {@link OSProcess} objects, optionally filtered, sorted, and limited to the specified number.
+     * @return A list of {@link org.miaixz.bus.health.builtin.software.OSProcess} objects, optionally filtered, sorted,
+     *         and limited to the specified number.
      *         <p>
      *         The list may contain processes with a state of {@link OSProcess.State#INVALID} if a process terminates
      *         during iteration.
@@ -110,7 +111,8 @@ public interface OperatingSystem {
      * performance vs. iterating individual processes.
      *
      * @param pids A collection of process IDs
-     * @return A list of {@link OSProcess} objects for the specified process ids if it is running
+     * @return A list of {@link org.miaixz.bus.health.builtin.software.OSProcess} objects for the specified process ids
+     *         if it is running
      */
     default List<OSProcess> getProcesses(Collection<Integer> pids) {
         return pids.stream().map(this::getProcess).filter(Objects::nonNull).filter(ProcessFiltering.VALID_PROCESS)
@@ -121,7 +123,8 @@ public interface OperatingSystem {
      * Gets information on a currently running process.
      *
      * @param pid A process ID
-     * @return An {@link OSProcess} object for the specified process id if it is running; null otherwise
+     * @return An {@link org.miaixz.bus.health.builtin.software.OSProcess} object for the specified process id if it is
+     *         running; null otherwise
      */
     OSProcess getProcess(int pid);
 
@@ -135,8 +138,9 @@ public interface OperatingSystem {
      * @param sort      An optional {@link Comparator} specifying the sorting order. Some common comparators are
      *                  available in {@link ProcessSorting}. May be {@code null} for no sorting.
      * @param limit     Max number of results to return, or 0 to return all results
-     * @return A list of {@link OSProcess} objects representing the currently running child processes of the provided
-     *         PID, optionally filtered, sorted, and limited to the specified number.
+     * @return A list of {@link org.miaixz.bus.health.builtin.software.OSProcess} objects representing the currently
+     *         running child processes of the provided PID, optionally filtered, sorted, and limited to the specified
+     *         number.
      *         <p>
      *         The list may contain processes with a state of {@link OSProcess.State#INVALID} if a process terminates
      *         during iteration.
@@ -157,8 +161,9 @@ public interface OperatingSystem {
      * @param sort      An optional {@link Comparator} specifying the sorting order. Some common comparators are
      *                  available in {@link ProcessSorting}. May be {@code null} for no sorting.
      * @param limit     Max number of results to return, or 0 to return all results
-     * @return A list of {@link OSProcess} objects representing the currently running descendant processes of the
-     *         provided PID, optionally filtered, sorted, and limited to the specified number.
+     * @return A list of {@link org.miaixz.bus.health.builtin.software.OSProcess} objects representing the currently
+     *         running descendant processes of the provided PID, optionally filtered, sorted, and limited to the
+     *         specified number.
      *         <p>
      *         The list may contain processes with a state of {@link OSProcess.State#INVALID} if a process terminates
      *         during iteration.

@@ -58,6 +58,9 @@ public interface BindingResolver {
 
         /**
          * Validates one stable typed project binding key.
+         *
+         * @param name stable binding name
+         * @param type exact binding contract
          */
         public Key {
             Assert.notBlank(name, "Binding key name must not be blank");

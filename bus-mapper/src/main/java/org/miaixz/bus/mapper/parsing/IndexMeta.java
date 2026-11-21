@@ -22,6 +22,7 @@ package org.miaixz.bus.mapper.parsing;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -38,6 +39,12 @@ import lombok.experimental.Accessors;
 public class IndexMeta {
 
     /**
+     * Equality grammar shared by the entity annotation and PostgreSQL's index predicate metadata.
+     */
+    private static final Pattern INTEGER_EQUALITY = Pattern.compile(
+            "(?:\\(([a-z_][a-z_0-9]*)\\s*=\\s*(-?(?:0|[1-9][0-9]*))\\)|([a-z_][a-z_0-9]*)\\s*=\\s*(-?(?:0|[1-9][0-9]*)))");
+
+    /**
      * Index name.
      */
     private String name;
@@ -46,6 +53,11 @@ public class IndexMeta {
      * Whether the index is unique.
      */
     private boolean unique;
+
+    /**
+     * Canonical PostgreSQL index predicate, or null for an unfiltered index.
+     */
+    private String predicate;
 
     /**
      * Index column names.
@@ -57,6 +69,21 @@ public class IndexMeta {
      */
     public IndexMeta() {
         // No initialization required.
+    }
+
+    /**
+     * Parses a partial index predicate consisting of a column and an integral equality value.
+     *
+     * @param filter SQL predicate from entity options or JDBC metadata
+     * @return canonical predicate, or null for an unsupported expression
+     */
+    public static String integerEquality(String filter) {
+        var match = INTEGER_EQUALITY.matcher(filter.strip());
+        if (!match.matches()) {
+            return null;
+        }
+        return match.group(1) == null ? match.group(3) + " = " + match.group(4)
+                : match.group(1) + " = " + match.group(2);
     }
 
     /**

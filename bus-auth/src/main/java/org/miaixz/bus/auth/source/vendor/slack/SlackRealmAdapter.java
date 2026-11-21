@@ -1388,6 +1388,7 @@ public class SlackRealmAdapter implements VendorAdapter {
             }
             throw new ValidateException("Slack cursor phase is unknown");
         }
+
     }
 
     /**
@@ -1402,6 +1403,10 @@ public class SlackRealmAdapter implements VendorAdapter {
 
         /**
          * Validates one cursor state.
+         *
+         * @param phase    snapshot phase represented by this cursor
+         * @param kinds    requested kinds
+         * @param position recoverable position
          */
         private CursorState {
             phase = Assert.notNull(phase, "Slack cursor phase must not be null");
@@ -1424,6 +1429,7 @@ public class SlackRealmAdapter implements VendorAdapter {
             return new CursorState(ordered.contains(Realm.Kind.USER) ? Phase.USERS : Phase.GROUPS, ordered,
                     Position.initial());
         }
+
     }
 
     /**
@@ -1438,6 +1444,10 @@ public class SlackRealmAdapter implements VendorAdapter {
 
         /**
          * Validates one position.
+         *
+         * @param start          one-based official start index
+         * @param parentId       current replay group identifier
+         * @param relationOffset next embedded member index
          */
         private Position {
             if (start <= 0 || relationOffset < 0) {
@@ -1491,6 +1501,7 @@ public class SlackRealmAdapter implements VendorAdapter {
                 throw new ValidateException("Slack cursor position does not belong to its phase");
             }
         }
+
     }
 
     /**
@@ -1505,6 +1516,9 @@ public class SlackRealmAdapter implements VendorAdapter {
 
         /**
          * Freezes one page.
+         *
+         * @param items minimal items
+         * @param next  next start index or zero
          */
         private ScimPage {
             items = List.copyOf(Assert.notNull(items, "Slack SCIM items must not be null"));
@@ -1512,6 +1526,7 @@ public class SlackRealmAdapter implements VendorAdapter {
                 throw new ValidateException("Slack SCIM next index must not be negative");
             }
         }
+
     }
 
     /**
@@ -1527,12 +1542,18 @@ public class SlackRealmAdapter implements VendorAdapter {
 
         /**
          * Validates one user.
+         *
+         * @param id          stable identifier
+         * @param userName    login identifier
+         * @param displayName display name
+         * @param active      active flag
          */
         private User {
             id = requireText(id, "Slack user identifier");
             userName = requireText(userName, "Slack user name");
             displayName = requireText(displayName, "Slack user display name");
         }
+
     }
 
     /**
@@ -1547,12 +1568,17 @@ public class SlackRealmAdapter implements VendorAdapter {
 
         /**
          * Validates one group.
+         *
+         * @param id          stable identifier
+         * @param displayName display name
+         * @param members     embedded stable user identifiers
          */
         private Group {
             id = requireText(id, "Slack group identifier");
             displayName = requireText(displayName, "Slack group display name");
             members = List.copyOf(Assert.notNull(members, "Slack group members must not be null"));
         }
+
     }
 
 }

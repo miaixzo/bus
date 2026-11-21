@@ -112,6 +112,15 @@ public interface ConsentService {
 
         /**
          * Validates and freezes the consent interaction context shown to the subject.
+         *
+         * @param sourceId    exact configured Source owning the authorization server
+         * @param providerId  exact Provider owning the Source
+         * @param subject     stable subject reference considering the grant
+         * @param clientId    validated registered client identifier
+         * @param clientName  non-sensitive display name
+         * @param redirectUri validated redirect URI lexical value
+         * @param scopes      non-empty requested OAuth scope-token set
+         * @param resources   ordered requested resource indicators
          */
         public Request {
             Assert.notBlank(sourceId, "Consent request Source id must not be blank");
@@ -143,6 +152,10 @@ public interface ConsentService {
 
         /**
          * Validates that the decision grants only a subset of requested scopes and that denial grants none.
+         *
+         * @param request       immutable authorization context presented for decision
+         * @param status        explicit approval or denial
+         * @param grantedScopes exact approved scope subset, empty for denial
          */
         public Decision {
             Assert.notNull(request, "Consent decision request must not be null");
@@ -200,6 +213,15 @@ public interface ConsentService {
 
         /**
          * Validates and freezes one durable consent snapshot and its validity interval.
+         *
+         * @param sourceId   exact configured Source owning the authorization server
+         * @param providerId exact Provider owning the Source
+         * @param subject    stable subject reference that granted authorization
+         * @param clientId   exact registered client identifier
+         * @param scopes     non-empty granted OAuth scope-token set
+         * @param resources  ordered authorized resource indicators
+         * @param grantedAt  instant at which authorization was granted
+         * @param expiresAt  optional exclusive expiration instant
          */
         public Snapshot {
             Assert.notBlank(sourceId, "Consent Source id must not be blank");
@@ -267,6 +289,9 @@ public interface ConsentService {
         /**
          * Validates that only an approved decision with a coherent validity interval can be recorded.
          *
+         * @param decision  approved bounded consent decision
+         * @param grantedAt instant at which the grant was made
+         * @param expiresAt optional exclusive expiration instant
          * @throws IllegalArgumentException if a component is {@code null}
          * @throws ValidateException        if the decision is denied or expiration is not later than grant time
          */

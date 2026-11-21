@@ -1733,6 +1733,7 @@ public class GitHubRealmAdapter implements VendorAdapter {
                 case TEAM_ORGANIZATIONS -> null;
             };
         }
+
     }
 
     /**
@@ -1747,6 +1748,10 @@ public class GitHubRealmAdapter implements VendorAdapter {
 
         /**
          * Validates one cursor state.
+         *
+         * @param phase    snapshot phase represented by this cursor
+         * @param kinds    requested kinds
+         * @param position recoverable position
          */
         private CursorState {
             phase = Assert.notNull(phase, "GitHub cursor phase must not be null");
@@ -1770,6 +1775,7 @@ public class GitHubRealmAdapter implements VendorAdapter {
                     : ordered.contains(Realm.Kind.USER) ? Phase.TEAM_MEMBERS : Phase.TEAM_ORGANIZATIONS;
             return new CursorState(initial, ordered, Position.initial());
         }
+
     }
 
     /**
@@ -1784,6 +1790,10 @@ public class GitHubRealmAdapter implements VendorAdapter {
 
         /**
          * Validates one position.
+         *
+         * @param start          one-based official Team page
+         * @param parentId       current replay Team identifier
+         * @param relationOffset one-based dependent collection page or zero
          */
         private Position {
             if (start <= 0 || relationOffset < 0) {
@@ -1837,6 +1847,7 @@ public class GitHubRealmAdapter implements VendorAdapter {
                 throw new ValidateException("GitHub cursor position does not belong to its phase");
             }
         }
+
     }
 
     /**
@@ -1851,6 +1862,9 @@ public class GitHubRealmAdapter implements VendorAdapter {
 
         /**
          * Freezes one page.
+         *
+         * @param items minimal items
+         * @param next  next page or zero
          */
         private WirePage {
             items = List.copyOf(Assert.notNull(items, "GitHub collection items must not be null"));
@@ -1858,6 +1872,7 @@ public class GitHubRealmAdapter implements VendorAdapter {
                 throw new ValidateException("GitHub collection next page must not be negative");
             }
         }
+
     }
 
     /**
@@ -1873,6 +1888,11 @@ public class GitHubRealmAdapter implements VendorAdapter {
 
         /**
          * Freezes and validates one replay result.
+         *
+         * @param items  Teams on the official outer page
+         * @param index  selected Team index or negative at natural exhaustion
+         * @param next   following outer page or zero
+         * @param parent selected Team or empty at natural exhaustion
          */
         private ParentPage {
             items = List.copyOf(Assert.notNull(items, "GitHub replay Teams must not be null"));
@@ -1882,6 +1902,7 @@ public class GitHubRealmAdapter implements VendorAdapter {
                 throw new ValidateException("GitHub replay parent state is inconsistent");
             }
         }
+
     }
 
     /**
@@ -1896,12 +1917,17 @@ public class GitHubRealmAdapter implements VendorAdapter {
 
         /**
          * Validates one user.
+         *
+         * @param id          stable identifier
+         * @param login       login identifier
+         * @param displayName display name
          */
         private User {
             id = requireText(id, "GitHub user identifier");
             login = requireText(login, "GitHub user login");
             displayName = requireText(displayName, "GitHub user display name");
         }
+
     }
 
     /**
@@ -1916,12 +1942,17 @@ public class GitHubRealmAdapter implements VendorAdapter {
 
         /**
          * Validates one group.
+         *
+         * @param id   stable identifier
+         * @param slug stable Team slug
+         * @param name display name
          */
         private Group {
             id = requireText(id, "GitHub group identifier");
             slug = requireText(slug, "GitHub Team slug");
             name = requireText(name, "GitHub Team name");
         }
+
     }
 
     /**
@@ -1935,11 +1966,15 @@ public class GitHubRealmAdapter implements VendorAdapter {
 
         /**
          * Validates one organization.
+         *
+         * @param id    stable numeric identifier
+         * @param login stable organization login
          */
         private Organization {
             id = requireText(id, "GitHub organization identifier");
             login = requireText(login, "GitHub organization login");
         }
+
     }
 
 }

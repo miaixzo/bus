@@ -135,6 +135,7 @@ public abstract class StoredValue {
          * Prevents construction of the cache holder.
          */
         private RampCache() {
+            // No initialization required.
         }
 
     }

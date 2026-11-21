@@ -153,6 +153,7 @@ public class AffixRewriteHandler extends ScopedProviderHandler<Object, AffixRule
                 public String getSuffix() {
                     return configuredSuffix;
                 }
+
             };
         }
         return AffixRuleConfig.builder().provider(resolvedProvider).prefixIgnore(prefixIgnoreTables)
@@ -277,7 +278,9 @@ public class AffixRewriteHandler extends ScopedProviderHandler<Object, AffixRule
         return Boolean.parseBoolean(
                 properties.getProperty(
                         datasourceEnabledKey,
-                        properties.getProperty(sharedEnabledKey, properties.getProperty(defaultEnabledKey, "true"))));
+                        properties.getProperty(
+                                sharedEnabledKey,
+                                properties.getProperty(defaultEnabledKey, Normal.TRUE))));
     }
 
     /**

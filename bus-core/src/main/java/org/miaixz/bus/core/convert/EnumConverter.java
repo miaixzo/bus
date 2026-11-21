@@ -148,6 +148,9 @@ public class EnumConverter extends AbstractConverter implements MatcherConverter
     /**
      * Match method.
      *
+     * @param targetType The target type.
+     * @param rawType    The raw class of the target type.
+     * @param value      The value to be converted.
      * @return the boolean value
      */
     @Override
@@ -158,6 +161,8 @@ public class EnumConverter extends AbstractConverter implements MatcherConverter
     /**
      * Convertinternal method.
      *
+     * @param targetClass The target class to convert to.
+     * @param value       The non-null value to be converted.
      * @return the Object value
      */
     @Override

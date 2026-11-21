@@ -216,6 +216,8 @@ final class HttpConnectionLease {
 
         /**
          * Returns the owning lease state.
+         *
+         * @return lease owning the response payload
          */
         private HttpConnectionLease owner() {
             return HttpConnectionLease.this;
@@ -279,6 +281,7 @@ final class HttpConnectionLease {
             }
             release();
         }
+
     }
 
     /**
@@ -340,6 +343,7 @@ final class HttpConnectionLease {
             }
             release();
         }
+
     }
 
 }

@@ -117,6 +117,9 @@ final class OptionsBindings {
 
         /**
          * Validates one exact platform-variant key.
+         *
+         * @param vendor  exact platform identifier
+         * @param variant exact platform variant identifier
          */
         Key {
             vendor = Assert.notNull(vendor, "Vendor Options key platform must not be null");
@@ -137,6 +140,10 @@ final class OptionsBindings {
 
         /**
          * Validates one immutable Options factory binding.
+         *
+         * @param manifest immutable owning platform manifest
+         * @param variant  exact immutable platform variant
+         * @param factory  exact immutable Options factory
          */
         Binding {
             manifest = Assert.notNull(manifest, "Vendor Options binding manifest must not be null");

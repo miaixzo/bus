@@ -67,6 +67,13 @@ public record MicrosoftOptions(Vendor.Id vendor, Vendor.Variant variant, String 
     /**
      * Validates and freezes one Microsoft Source configuration without resolving its Client Secret.
      *
+     * @param vendor      exact Microsoft platform identifier
+     * @param variant     selected login or enterprise cloud variant
+     * @param clientId    registered Application (client) ID
+     * @param credential  external Client Secret reference
+     * @param redirectUri exact registered login callback, empty for enterprise
+     * @param scopes      delegated login scopes or the sole enterprise application scope
+     * @param tenant      Microsoft tenant GUID, verified domain, or login-only audience alias
      * @throws IllegalArgumentException if a required component, container, or scope is {@code null} or blank
      * @throws ValidateException        if routing, identifiers, credential type, callback, scopes, or tenant are
      *                                  invalid

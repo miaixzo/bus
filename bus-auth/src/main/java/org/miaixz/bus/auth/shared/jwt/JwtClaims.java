@@ -541,6 +541,14 @@ public class JwtClaims {
         /**
          * Validates and freezes all registered claim components.
          *
+         * @param issuer        optional issuer StringOrURI
+         * @param subject       optional subject StringOrURI
+         * @param audiences     ordered audience StringOrURI values
+         * @param audienceArray whether a present audience uses the JSON array form
+         * @param expiration    optional expiration NumericDate
+         * @param notBefore     optional not-before NumericDate
+         * @param issuedAt      optional issued-at NumericDate
+         * @param jwtId         optional JWT identifier
          * @throws IllegalArgumentException if a component container is {@code null}
          * @throws ValidateException        if StringOrURI, audience, or wire-shape semantics are invalid
          */
@@ -588,6 +596,9 @@ public class JwtClaims {
 
         /**
          * Freezes the decoded audience values.
+         *
+         * @param values ordered audience values
+         * @param array  whether the original claim used an array
          */
         private Audience {
             Assert.notNull(values, "Decoded JWT audience values must not be null");
@@ -607,6 +618,9 @@ public class JwtClaims {
 
         /**
          * Validates the completed decode result.
+         *
+         * @param registered decoded RFC 7519 claims
+         * @param extensions decoded unregistered claims
          */
         private Decoded {
             Assert.notNull(registered, "Decoded JWT registered claims must not be null");

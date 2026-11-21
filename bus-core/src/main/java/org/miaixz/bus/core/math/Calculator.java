@@ -59,7 +59,6 @@ public class Calculator {
      * <li>46 '.': Priority 0</li>
      * <li>47 '/': Priority 2</li>
      * </ul>
-     * </p>
      */
     private final int[] operatPriority = new int[] { 0, 3, 2, 1, -1, 1, 0, 2 };
 
@@ -85,7 +84,6 @@ public class Calculator {
      * <p>
      * For example, it converts {@code -2+-1*(-3E-2)-(-1)} to {@code ~2+~1*(~3E~2)-(~1)}, where '~' represents a unary
      * minus to distinguish it from the binary subtraction operator.
-     * </p>
      *
      * @param expression The expression to transform.
      * @return The transformed string.
@@ -182,7 +180,6 @@ public class Calculator {
      * Calculates the result of the given expression.
      * <p>
      * Example: {@code 5+12*(3+5)/7}
-     * </p>
      *
      * @param expression The expression to calculate.
      * @return The result of the calculation.

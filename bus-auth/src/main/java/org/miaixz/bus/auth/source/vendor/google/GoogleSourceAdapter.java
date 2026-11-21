@@ -1485,6 +1485,12 @@ public class GoogleSourceAdapter implements VendorAdapter {
 
         /**
          * Validates one exact success or OAuth error branch and the trusted Google issuer.
+         *
+         * @param code             authorization code
+         * @param state            browser correlation value
+         * @param issuer           authorization response issuer
+         * @param error            OAuth error
+         * @param errorDescription optional OAuth error description
          */
         private CallbackWire {
             Assert.notBlank(state, "Google callback state must not be blank");

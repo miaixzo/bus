@@ -53,6 +53,7 @@ public enum State {
         public void closeSocketDelayed(Association as) {
             // NO OP
         }
+
     },
     /**
      * The sta2 value.
@@ -68,6 +69,7 @@ public enum State {
         public void write(Association as, AAbort aa) {
             as.doCloseSocket();
         }
+
     },
     /**
      * The sta3 value.
@@ -91,6 +93,7 @@ public enum State {
         public void onAAssociateRJ(Association as, AAssociateRJ rj) {
             as.handle(rj);
         }
+
     },
     /**
      * The sta6 value.
@@ -116,6 +119,7 @@ public enum State {
         public void writePDataTF(Association as) throws IOException {
             as.doWritePDataTF();
         }
+
     },
     /**
      * The sta7 value.
@@ -136,6 +140,7 @@ public enum State {
         public void onPDataTF(Association as) throws IOException {
             as.handlePDataTF();
         }
+
     },
     /**
      * The sta8 value.
@@ -146,6 +151,7 @@ public enum State {
         public void writePDataTF(Association as) throws IOException {
             as.doWritePDataTF();
         }
+
     },
     /**
      * The sta9 value.
@@ -160,6 +166,7 @@ public enum State {
         public void onAReleaseRP(Association as) {
             as.handleAReleaseRPCollision();
         }
+
     },
     /**
      * The sta11 value.
@@ -170,6 +177,7 @@ public enum State {
         public void onAReleaseRP(Association as) {
             as.handleAReleaseRP();
         }
+
     },
     /**
      * The sta12 value.
@@ -204,6 +212,7 @@ public enum State {
         public void closeSocketDelayed(Association as) {
             // NO OP
         }
+
     };
 
     /**

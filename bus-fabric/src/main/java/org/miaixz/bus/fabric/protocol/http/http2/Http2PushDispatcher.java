@@ -62,6 +62,9 @@ final class Http2PushDispatcher {
 
     /**
      * Registers one pushed stream.
+     *
+     * @param streamId HTTP/2 pushed-stream identifier
+     * @return whether this pushed-stream identifier was newly registered
      */
     boolean add(final int streamId) {
         return streams.add(streamId);
@@ -69,6 +72,9 @@ final class Http2PushDispatcher {
 
     /**
      * Removes one pushed stream.
+     *
+     * @param streamId positive HTTP/2 stream identifier
+     * @return whether the pushed-stream identifier was registered before removal
      */
     boolean remove(final int streamId) {
         return streams.remove(streamId);
@@ -76,6 +82,9 @@ final class Http2PushDispatcher {
 
     /**
      * Returns whether an identifier belongs to push.
+     *
+     * @param streamId HTTP/2 pushed-stream identifier
+     * @return whether the identifier belongs to a registered pushed stream
      */
     boolean contains(final int streamId) {
         return streams.contains(streamId);
@@ -90,6 +99,10 @@ final class Http2PushDispatcher {
 
     /**
      * Dispatches PUSH_PROMISE request metadata.
+     *
+     * @param streamId HTTP/2 pushed-stream identifier
+     * @param headers  HTTP/2 header block to deliver
+     * @return future containing the push observer's cancellation decision
      */
     CompletableFuture<Boolean> request(final int streamId, final List<Http2Header> headers) {
         return dispatcher.supply("http2:push-request:" + streamId, () -> observer.onRequest(streamId, headers));
@@ -97,6 +110,11 @@ final class Http2PushDispatcher {
 
     /**
      * Dispatches pushed response headers.
+     *
+     * @param streamId  stream id
+     * @param headers   header fields to encode in the frame
+     * @param endStream end stream flag
+     * @return future containing the push observer's cancellation decision
      */
     CompletableFuture<Boolean> headers(final int streamId, final List<Http2Header> headers, final boolean endStream) {
         return dispatcher
@@ -105,6 +123,11 @@ final class Http2PushDispatcher {
 
     /**
      * Dispatches pushed DATA.
+     *
+     * @param streamId  stream id
+     * @param data      pushed DATA payload to deliver
+     * @param endStream end stream flag
+     * @return future containing the push observer's cancellation decision
      */
     CompletableFuture<Boolean> data(final int streamId, final ByteString data, final boolean endStream) {
         return dispatcher.supply("http2:push-data:" + streamId, () -> observer.onData(streamId, data, endStream));
@@ -112,6 +135,10 @@ final class Http2PushDispatcher {
 
     /**
      * Dispatches pushed RST_STREAM notification.
+     *
+     * @param streamId  HTTP/2 pushed-stream identifier
+     * @param errorCode HTTP/2 reset error code
+     * @return future completing after the reset notification is delivered
      */
     CompletableFuture<Void> reset(final int streamId, final int errorCode) {
         return dispatcher.run("http2:push-reset:" + streamId, () -> observer.onReset(streamId, errorCode));
@@ -119,6 +146,10 @@ final class Http2PushDispatcher {
 
     /**
      * Dispatches ALTSVC notification without blocking the frame reader.
+     *
+     * @param streamId stream id, 0 for connection scoped ALTSVC
+     * @param service  alternate-service announcement to deliver
+     * @return future completing after the alternate-service notification is delivered
      */
     CompletableFuture<Void> alternateService(final int streamId, final Http2AlternateService service) {
         return dispatcher

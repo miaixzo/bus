@@ -243,7 +243,7 @@ public class HandlerRegistry {
                 + current.getHandlers(Handler.QUERY).size() + ", updateHandlers="
                 + current.getHandlers(Handler.UPDATE).size() + ", prepareHandlers="
                 + current.getHandlers(Handler.PREPARE).size() + ", getBoundSqlHandlers="
-                + current.getHandlers(Handler.GET_BOUND_SQL).size() + '}';
+                + current.getHandlers(Handler.GET_BOUND_SQL).size() + Symbol.C_BRACE_RIGHT;
     }
 
     /**

@@ -61,7 +61,10 @@ public class SpecialConverter extends ConverterWithRoot implements Serializable 
     /**
      * Finds a matching converter from the specified set
      *
-     * @param type the type
+     * @param type         the type
+     * @param converterSet candidate converters to examine
+     * @param rawType      raw runtime class of the value being converted
+     * @param value        source value to convert
      * @return the converter
      */
     private static Converter getConverterFromSet(
@@ -119,7 +122,10 @@ public class SpecialConverter extends ConverterWithRoot implements Serializable 
     /**
      * Convert method.
      *
+     * @param targetType The target type to convert to.
+     * @param value      The value to convert.
      * @return the Object value
+     * @throws ConvertException if the value cannot be converted to the requested target type
      */
     @Override
     public Object convert(final Type targetType, final Object value) throws ConvertException {

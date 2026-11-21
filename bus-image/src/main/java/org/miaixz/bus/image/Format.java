@@ -106,7 +106,7 @@ public class Format extends java.text.Format {
             .toFormatter();
 
     /**
-     * Parser for DICOM DateTime (DT) strings. Handles "YYYYMMDDHHMMSS.FFFFFF&ZZXX".
+     * Parser for DICOM DateTime (DT) strings. Handles {@code YYYYMMDDHHMMSS.FFFFFF&ZZXX}.
      */
     private static final DateTimeFormatter DT_PARSER = new DateTimeFormatterBuilder().appendValue(YEAR, 4)
             .optionalStart().appendValue(MONTH_OF_YEAR, 2).optionalStart().appendValue(DAY_OF_MONTH, 2).optionalStart()
@@ -116,7 +116,7 @@ public class Format extends java.text.Format {
             .appendOffset("+HHMM", "+0000").toFormatter();
 
     /**
-     * Formatter for DICOM DateTime (DT) strings to "YYYYMMDDHHMMSS.FFFFFF&ZZXX".
+     * Formatter for DICOM DateTime (DT) strings to {@code YYYYMMDDHHMMSS.FFFFFF&ZZXX}.
      */
     private static final DateTimeFormatter DT_FORMATTER = new DateTimeFormatterBuilder().appendValue(YEAR, 4)
             .appendValue(MONTH_OF_YEAR, 2).appendValue(DAY_OF_MONTH, 2).appendValue(HOUR_OF_DAY, 2)
@@ -297,6 +297,11 @@ public class Format extends java.text.Format {
 
     /**
      * Formats a Calendar into a TM string.
+     *
+     * @param cal        calendar supplying or receiving the date-time fields
+     * @param toAppendTo destination for the formatted date-time text
+     * @param lastField  last calendar field included in the formatted value
+     * @return destination containing the formatted DICOM time
      */
     private static StringBuilder formatTM(Calendar cal, StringBuilder toAppendTo, int lastField) {
         appendXX(cal.get(Calendar.HOUR_OF_DAY), toAppendTo);
@@ -357,6 +362,10 @@ public class Format extends java.text.Format {
 
     /**
      * Appends a timezone offset in milliseconds to a StringBuilder in "+HHMM" format.
+     *
+     * @param offset time-zone offset in milliseconds
+     * @param sb     destination for the formatted offset
+     * @return destination containing the signed hours-and-minutes offset
      */
     private static StringBuilder appendZZZZZ(int offset, StringBuilder sb) {
         if (offset < 0) {
@@ -396,6 +405,11 @@ public class Format extends java.text.Format {
 
     /**
      * Formats a Calendar into a DT string up to a specified precision.
+     *
+     * @param cal        calendar supplying or receiving the date-time fields
+     * @param toAppendTo destination for the formatted date-time text
+     * @param lastField  last calendar field included in the formatted value
+     * @return destination containing the formatted DICOM date-time
      */
     private static StringBuilder formatDT(Calendar cal, StringBuilder toAppendTo, int lastField) {
         appendXXXX(cal.get(Calendar.YEAR), toAppendTo);
@@ -413,6 +427,9 @@ public class Format extends java.text.Format {
 
     /**
      * Appends a four-digit integer to a StringBuilder, padding with leading zeros.
+     *
+     * @param i          calendar component value to format
+     * @param toAppendTo destination for the formatted date-time text
      */
     private static void appendXXXX(int i, StringBuilder toAppendTo) {
         if (i < 1000)
@@ -422,6 +439,9 @@ public class Format extends java.text.Format {
 
     /**
      * Appends a three-digit integer to a StringBuilder, padding with leading zeros.
+     *
+     * @param i          calendar component value to format
+     * @param toAppendTo destination for the formatted date-time text
      */
     private static void appendXXX(int i, StringBuilder toAppendTo) {
         if (i < 100)
@@ -431,6 +451,9 @@ public class Format extends java.text.Format {
 
     /**
      * Appends a two-digit integer to a StringBuilder, padding with a leading zero.
+     *
+     * @param i          calendar component value to format
+     * @param toAppendTo destination for the formatted date-time text
      */
     private static void appendXX(int i, StringBuilder toAppendTo) {
         if (i < 10)
@@ -583,6 +606,9 @@ public class Format extends java.text.Format {
 
     /**
      * Truncates the timezone part from a date-time string.
+     *
+     * @param s DICOM date-time or offset text to parse
+     * @return date-time text with its trailing time-zone suffix removed
      */
     private static String truncateTimeZone(String s) {
         int length = s.length();
@@ -597,6 +623,12 @@ public class Format extends java.text.Format {
 
     /**
      * Parses a TM string into a Calendar.
+     *
+     * @param cal       calendar supplying or receiving the date-time fields
+     * @param s         DICOM date-time or offset text to parse
+     * @param ceil      whether to advance to the end of the parsed precision
+     * @param precision date-time precision populated during parsing
+     * @return date represented by the parsed time and requested precision
      */
     private static Date parseTM(Calendar cal, String s, boolean ceil, DatePrecision precision) {
         int length = s.length();
@@ -647,6 +679,10 @@ public class Format extends java.text.Format {
 
     /**
      * Parses a single character into a digit.
+     *
+     * @param s     DICOM date-time or offset text to parse
+     * @param index worker index in the recyclable batch
+     * @return numeric value of the character at the requested position
      */
     private static int parseDigit(String s, int index) {
         int d = s.charAt(index) - Symbol.C_ZERO;
@@ -789,6 +825,9 @@ public class Format extends java.text.Format {
 
     /**
      * Converts a timezone offset string (+HHMM) into a GMT-based TimeZone ID ("GMT+HH:MM").
+     *
+     * @param s DICOM date-time or offset text to parse
+     * @return GMT-based time-zone identifier corresponding to the DICOM offset
      */
     private static String tzid(String s) {
         int length = s.length();
@@ -993,6 +1032,9 @@ public class Format extends java.text.Format {
 
     /**
      * Gets the month from a temporal accessor, defaulting to 1 if not present.
+     *
+     * @param temporal temporal value whose fields are inspected
+     * @return month of the temporal value, or one if the month is unavailable
      */
     private static int getMonth(TemporalAccessor temporal) {
         return temporal.isSupported(MONTH_OF_YEAR) ? temporal.get(MONTH_OF_YEAR) : 1;
@@ -1052,6 +1094,9 @@ public class Format extends java.text.Format {
 
     /**
      * Calculates nanoseconds to add to a time string to get to the end of its precision.
+     *
+     * @param tm DICOM time text whose precision is inspected
+     * @return nanoseconds needed to reach the end of the represented time precision
      */
     private static long nanosToAdd(String tm) {
         int length = tm.length();
@@ -1066,6 +1111,9 @@ public class Format extends java.text.Format {
 
     /**
      * Calculates nanoseconds to add based on the length of the time part.
+     *
+     * @param length number of characters in the represented date or time component
+     * @return nanoseconds needed to reach the end of the represented time precision
      */
     private static long nanosToAdd(int length) {
         return switch (length) {
@@ -1084,6 +1132,9 @@ public class Format extends java.text.Format {
 
     /**
      * Returns the appropriate ChronoUnit (YEARS, MONTHS, DAYS) based on the length of a partial DA string.
+     *
+     * @param length number of characters in the represented date or time component
+     * @return calendar unit represented by the partial DICOM date length
      */
     private static ChronoUnit yearsMonthsDays(int length) {
         return switch (length) {
@@ -1096,6 +1147,9 @@ public class Format extends java.text.Format {
 
     /**
      * Returns the length of a DT string, excluding the timezone part.
+     *
+     * @param value date-time text to inspect or truncate
+     * @return length of the date-time text before its time-zone suffix
      */
     private static int lengthWithoutZone(String value) {
         int index = indexOfZone(value);
@@ -1104,6 +1158,9 @@ public class Format extends java.text.Format {
 
     /**
      * Finds the starting index of the timezone part in a DT string.
+     *
+     * @param value date-time text to inspect or truncate
+     * @return index of the time-zone suffix, or -1 when no suffix is present
      */
     private static int indexOfZone(String value) {
         int index = value.length() - 5;
@@ -1112,6 +1169,9 @@ public class Format extends java.text.Format {
 
     /**
      * Checks if a character is a '+' or '-' sign.
+     *
+     * @param ch character to test
+     * @return whether the character is a plus or minus sign
      */
     private static boolean isSign(char ch) {
         return ch == Symbol.C_PLUS || ch == Symbol.C_MINUS;
@@ -1119,6 +1179,12 @@ public class Format extends java.text.Format {
 
     /**
      * Truncates a string to a max length.
+     *
+     * @param value       date-time text to inspect or truncate
+     * @param length      number of characters in the represented date or time component
+     * @param maxLength   maximum number of characters to retain
+     * @param fractionPos position at which a fractional time component begins
+     * @return text truncated to the permitted component boundary
      */
     private static String truncate(String value, int length, int maxLength, int fractionPos) {
         return value.substring(0, adjustMaxLength(Math.min(length, maxLength), fractionPos));
@@ -1126,6 +1192,10 @@ public class Format extends java.text.Format {
 
     /**
      * Adjusts max length for time values to avoid cutting in the middle of a component.
+     *
+     * @param maxLength   maximum number of characters to retain
+     * @param fractionPos position at which a fractional time component begins
+     * @return maximum length adjusted to avoid splitting a time component
      */
     private static int adjustMaxLength(int maxLength, int fractionPos) {
         return maxLength < fractionPos ? maxLength & ~1 : maxLength;
@@ -1436,6 +1506,7 @@ public class Format extends java.text.Format {
                     UnaryOperatorX<String> splice) {
                 return attrs.getString(tag, index);
             }
+
         },
         /**
          * Converts the string value to uppercase.
@@ -1453,6 +1524,7 @@ public class Format extends java.text.Format {
                 String s = attrs.getString(tag, index);
                 return s != null ? StringKit.toUpperCase(s) : null;
             }
+
         },
         /**
          * Extracts a substring from the value.
@@ -1470,6 +1542,7 @@ public class Format extends java.text.Format {
                 String s = attrs.getString(tag, index);
                 return s != null ? slice.apply(s) : null;
             }
+
         },
         /**
          * Formats the value as a number.
@@ -1486,6 +1559,7 @@ public class Format extends java.text.Format {
                     UnaryOperatorX<String> splice) {
                 return attrs.getDouble(tag, index, 0.);
             }
+
         },
         /**
          * Adds a numeric offset to an integer value.
@@ -1502,6 +1576,7 @@ public class Format extends java.text.Format {
                     UnaryOperatorX<String> splice) {
                 return Integer.toString(attrs.getInt(tag, index, 0) + offset);
             }
+
         },
         /**
          * Formats the value as a date, with optional period offset.
@@ -1526,6 +1601,7 @@ public class Format extends java.text.Format {
                 cal.add(Calendar.DAY_OF_MONTH, dateOffset.getDays());
                 return cal.getTime();
             }
+
         },
         /**
          * Formats the value as a time, with optional duration offset.
@@ -1548,6 +1624,7 @@ public class Format extends java.text.Format {
                 cal.add(Calendar.SECOND, (int) timeOffset.getSeconds());
                 return cal.getTime();
             }
+
         },
         /**
          * Formats a numeric value using a choice pattern.
@@ -1564,6 +1641,7 @@ public class Format extends java.text.Format {
                     UnaryOperatorX<String> splice) {
                 return attrs.getDouble(tag, index, 0.);
             }
+
         },
         /**
          * Computes the hash code of the string value.
@@ -1581,6 +1659,7 @@ public class Format extends java.text.Format {
                 String s = attrs.getString(tag, index);
                 return s != null ? Tag.toHexString(s.hashCode()) : null;
             }
+
         },
         /**
          * Computes the MD5 hash of the string value.
@@ -1598,6 +1677,7 @@ public class Format extends java.text.Format {
                 String s = attrs.getString(tag, index);
                 return s != null ? getMD5String(s) : null;
             }
+
         },
         /**
          * URL-encodes the string value.
@@ -1615,6 +1695,7 @@ public class Format extends java.text.Format {
                 String s = attrs.getString(tag, index);
                 return s != null ? URLEncoder.encode(s, Charset.UTF_8) : null;
             }
+
         },
         /**
          * Generates a random integer and formats it as hex.
@@ -1631,6 +1712,7 @@ public class Format extends java.text.Format {
                     UnaryOperatorX<String> splice) {
                 return Tag.toHexString(ThreadLocalRandom.current().nextInt());
             }
+
         },
         /**
          * Generates a random UUID.
@@ -1647,6 +1729,7 @@ public class Format extends java.text.Format {
                     UnaryOperatorX<String> splice) {
                 return UUID.randomUUID();
             }
+
         },
         /**
          * Generates a new DICOM UID.
@@ -1663,6 +1746,7 @@ public class Format extends java.text.Format {
                     UnaryOperatorX<String> splice) {
                 return UID.createUID();
             }
+
         };
 
         /**

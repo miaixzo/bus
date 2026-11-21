@@ -102,12 +102,12 @@ public class SamlServerScheme implements ProtocolScheme<SamlServerOptions> {
      */
     private static final Form FORM = new Form(List.of(
             new Form.Section("saml-identity-provider", "SAML 2.0 Identity Provider", List.of(
-                    field("entity_id", "Identity provider entity ID", Form.Type.URL, true),
+                    field(Saml.Options.ENTITY_ID, "Identity provider entity ID", Form.Type.URL, true),
                     field("single_sign_on_service_url", "Single Sign-On Service URL", Form.Type.URL, true),
                     field(Saml.Parameters.SINGLE_LOGOUT_SERVICE_URL, "Single Logout Service URL", Form.Type.URL, false),
-                    field("metadata_url", "Metadata URL", Form.Type.URL, true),
+                    field(Saml.Options.METADATA_URL, "Metadata URL", Form.Type.URL, true),
                     field("signing_key_id", "Signing key identifier", Form.Type.SECRET, true),
-                    field("signature_algorithm", "XML Signature algorithm", Form.Type.SELECT, true),
+                    field(Saml.Options.SIGNATURE_ALGORITHM, "XML Signature algorithm", Form.Type.SELECT, true),
                     field("assertions_signed", "Sign assertions", Form.Type.BOOLEAN, true),
                     field("responses_signed", "Sign responses", Form.Type.BOOLEAN, true)))));
 

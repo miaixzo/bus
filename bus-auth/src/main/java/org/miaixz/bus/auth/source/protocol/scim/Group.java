@@ -39,6 +39,9 @@ public record Group(Resource.Common common, String displayName, List<Member> mem
     /**
      * Validates the Group schema, display name, and typed memberships.
      *
+     * @param common      common SCIM resource attributes and extensions
+     * @param displayName human-readable group name
+     * @param members     ordered direct User or Group memberships
      * @throws IllegalArgumentException if a required value, container, or member is {@code null}
      * @throws ValidateException        if the Group schema is absent
      */
@@ -146,6 +149,10 @@ public record Group(Resource.Common common, String displayName, List<Member> mem
         /**
          * Validates and normalizes one immutable membership value.
          *
+         * @param value     identifier of the referenced member resource
+         * @param reference absolute URI of the referenced member resource when available
+         * @param type      constrained referenced resource type when present
+         * @param display   human-readable member display value when available
          * @throws IllegalArgumentException if a required value or optional container is {@code null}
          * @throws ValidateException        if the reference is not absolute or type is not User or Group
          */

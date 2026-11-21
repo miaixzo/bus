@@ -777,6 +777,7 @@ public class WindowsHWDiskStore extends AbstractHWDiskStore {
          * @return The properties, or {@code null} when unavailable.
          */
         StorageProperties resolve(String name);
+
     }
 
     /**
@@ -834,6 +835,7 @@ public class WindowsHWDiskStore extends AbstractHWDiskStore {
         private Boolean getIncursSeekPenalty() {
             return incursSeekPenalty;
         }
+
     }
 
     /**

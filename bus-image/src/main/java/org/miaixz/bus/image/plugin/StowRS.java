@@ -1071,6 +1071,7 @@ public class StowRS {
              */
             public void checkServerTrusted(X509Certificate[] certs, String authType) {
             }
+
         } };
     }
 
@@ -1589,6 +1590,7 @@ public class StowRS {
             void parse(SeekableByteChannel channel) throws IOException {
                 setParser(new JPEGParser(channel));
             }
+
         },
         /**
          * The mpeg value.
@@ -1599,6 +1601,7 @@ public class StowRS {
             void parse(SeekableByteChannel channel) throws IOException {
                 setParser(new MPEG2Parser(channel));
             }
+
         },
         /**
          * The mp4 value.
@@ -1609,6 +1612,7 @@ public class StowRS {
             void parse(SeekableByteChannel channel) throws IOException {
                 setParser(new MP4Parser(channel));
             }
+
         };
 
         /**

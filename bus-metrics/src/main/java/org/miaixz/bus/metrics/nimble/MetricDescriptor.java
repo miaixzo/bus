@@ -42,6 +42,14 @@ public record MetricDescriptor(String scope, String name, InstrumentKind kind, N
 
     /**
      * Validates and canonicalizes a descriptor.
+     *
+     * @param scope       instrumentation scope
+     * @param name        metric name
+     * @param kind        instrument kind
+     * @param numberKind  numeric channel
+     * @param unit        unit, or an empty string when unspecified
+     * @param description human-readable description, or an empty string
+     * @param attributes  ordered attribute schema
      */
     public MetricDescriptor {
         scope = scope == null || scope.isBlank() ? Builder.OTEL_SCOPE : scope.trim();

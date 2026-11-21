@@ -39,6 +39,11 @@ public record FederationMetadata(String consumerId, String issuer, String extern
 
     /**
      * Validates the relation without executing its trust decision.
+     *
+     * @param consumerId      Consumer that accepts the federated assertion
+     * @param issuer          trusted external issuer URI
+     * @param externalSubject stable external subject identifier
+     * @param subject         mapped project Subject key
      */
     public FederationMetadata {
         Assert.notBlank(consumerId, "Federation consumer identifier must not be blank");

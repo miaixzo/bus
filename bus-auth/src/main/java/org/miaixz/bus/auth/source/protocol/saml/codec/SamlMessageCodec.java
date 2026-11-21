@@ -461,6 +461,9 @@ public class SamlMessageCodec {
         /**
          * Takes immutable ownership of the original XML and identifier index.
          *
+         * @param message typed standard SAML message
+         * @param xml     complete original XML bytes
+         * @param ids     immutable document-wide XML ID values
          * @throws IllegalArgumentException if a component or ID is {@code null}
          * @throws ValidateException        if XML is empty or an ID is blank
          */

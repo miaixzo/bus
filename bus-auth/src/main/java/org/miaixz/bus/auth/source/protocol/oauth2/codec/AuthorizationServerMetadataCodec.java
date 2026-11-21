@@ -56,6 +56,7 @@ public class AuthorizationServerMetadataCodec {
      * Creates a strict RFC 8414 metadata codec that processes JSON through {@link JsonKit}.
      */
     public AuthorizationServerMetadataCodec() {
+        // No initialization required.
     }
 
     /**

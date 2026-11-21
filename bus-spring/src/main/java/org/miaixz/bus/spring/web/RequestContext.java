@@ -600,6 +600,8 @@ public class RequestContext {
      * Parses a numeric request value.
      *
      * @param <T> result type
+     *
+     * @author Kimi Liu
      */
     @FunctionalInterface
     private interface Parser<T extends Number> {
@@ -609,9 +611,11 @@ public class RequestContext {
          *
          * @param value numeric text
          * @return parsed number
+         * @throws NumberFormatException if the text is not a valid number for the requested numeric type
          */
 
         T parse(String value) throws NumberFormatException;
+
     }
 
 }

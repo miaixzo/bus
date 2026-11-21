@@ -120,7 +120,8 @@ public class OpenTelemetryProvider implements Provider {
     private final ConcurrentHashMap<String, Histogram> activeHistograms = new ConcurrentHashMap<>();
 
     /**
-     * Legacy meters indexed by canonical series key.
+     * Returns a snapshot of the provider-owned legacy rate meters.
+     *
      */
     private final ConcurrentHashMap<String, MeterAdapter> meters = new ConcurrentHashMap<>();
 
@@ -130,7 +131,8 @@ public class OpenTelemetryProvider implements Provider {
     private final ConcurrentHashMap<String, RatePair> ratePairs = new ConcurrentHashMap<>();
 
     /**
-     * Shared LLM timers indexed by canonical series key.
+     * Returns a snapshot of the provider-owned LLM timers.
+     *
      */
     private final ConcurrentHashMap<String, LlmTimer> llmTimers = new ConcurrentHashMap<>();
 
@@ -402,6 +404,9 @@ public class OpenTelemetryProvider implements Provider {
                     .setUnit(descriptor.unit()).build();
             return new Counter() {
 
+                /**
+                 * Cumulative count mirrored locally for this counter handle.
+                 */
                 private long total;
 
                 @Override
@@ -422,6 +427,7 @@ public class OpenTelemetryProvider implements Provider {
                 public synchronized long count() {
                     return total;
                 }
+
             };
         });
     }
@@ -465,6 +471,7 @@ public class OpenTelemetryProvider implements Provider {
      * @param stateObj object whose state is sampled on each OTel collection cycle
      * @param fn       function to extract a double value from the state object
      * @param tags     optional tags
+     * @param <T>      state object type sampled by the gauge
      * @return a Gauge that also caches the last observed value for local reads
      */
     @Override
@@ -591,6 +598,7 @@ public class OpenTelemetryProvider implements Provider {
                 public TimerSnapshot snapshot() {
                     return mirror.snapshot();
                 }
+
             };
         });
     }
@@ -655,6 +663,7 @@ public class OpenTelemetryProvider implements Provider {
                 public TimerSnapshot snapshot() {
                     return mirror.snapshot();
                 }
+
             };
         });
     }
@@ -745,7 +754,9 @@ public class OpenTelemetryProvider implements Provider {
     }
 
     /**
-     * Returns the provider-owned legacy meters.
+     * Returns a snapshot of the provider-owned counters.
+     *
+     * @return snapshot of the provider-owned counters
      */
     @Override
     public Iterable<Counter> counters() {
@@ -753,7 +764,9 @@ public class OpenTelemetryProvider implements Provider {
     }
 
     /**
-     * Returns an empty iterable; OTel registry enumeration is not supported.
+     * Returns a snapshot of the provider-owned legacy rate meters.
+     *
+     * @return snapshot of the provider-owned rate meters
      */
     @Override
     public Iterable<org.miaixz.bus.metrics.nimble.Meter> meters() {
@@ -761,7 +774,9 @@ public class OpenTelemetryProvider implements Provider {
     }
 
     /**
-     * Returns the provider-owned LLM timers.
+     * Returns a snapshot of the provider-owned gauges.
+     *
+     * @return snapshot of the provider-owned gauges
      */
     @Override
     public Iterable<Gauge> gauges() {
@@ -769,7 +784,9 @@ public class OpenTelemetryProvider implements Provider {
     }
 
     /**
-     * Returns an empty iterable; OTel registry enumeration is not supported.
+     * Returns a snapshot of the provider-owned timers.
+     *
+     * @return snapshot of the provider-owned timers
      */
     @Override
     public Iterable<Timer> timers() {
@@ -777,7 +794,9 @@ public class OpenTelemetryProvider implements Provider {
     }
 
     /**
-     * Returns an empty iterable; OTel registry enumeration is not supported.
+     * Returns a snapshot of the provider-owned histograms.
+     *
+     * @return snapshot of the provider-owned histograms
      */
     @Override
     public Iterable<Histogram> histograms() {
@@ -785,7 +804,9 @@ public class OpenTelemetryProvider implements Provider {
     }
 
     /**
-     * Returns an empty iterable; OTel registry enumeration is not supported.
+     * Returns a snapshot of the provider-owned LLM timers.
+     *
+     * @return snapshot of the provider-owned LLM timers
      */
     @Override
     public Iterable<LlmTimer> llmTimers() {
@@ -875,6 +896,7 @@ public class OpenTelemetryProvider implements Provider {
         private void tick() {
             rates.tick();
         }
+
     }
 
     /**
@@ -998,6 +1020,7 @@ public class OpenTelemetryProvider implements Provider {
                 lease.close();
             }
         }
+
     }
 
     /**
@@ -1088,6 +1111,7 @@ public class OpenTelemetryProvider implements Provider {
                 return false;
             }
         }
+
     }
 
 }

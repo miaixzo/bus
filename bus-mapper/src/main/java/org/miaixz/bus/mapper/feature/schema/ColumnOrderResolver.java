@@ -23,6 +23,7 @@ import java.lang.reflect.Field;
 import java.util.*;
 
 import org.miaixz.bus.core.basic.entity.Audit;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.FieldKit;
 import org.miaixz.bus.mapper.annotation.ColumnOrder;
 import org.miaixz.bus.mapper.parsing.ColumnMeta;
@@ -56,7 +57,10 @@ public class ColumnOrderResolver {
         Map<String, ColumnMeta> columns = new LinkedHashMap<>();
         for (ColumnMeta column : table.columns()) {
             if (columns.putIfAbsent(column.property(), column) != null) {
-                throw invalid(table, table.entityClass(), "ambiguous mapped property '" + column.property() + "'");
+                throw invalid(
+                        table,
+                        table.entityClass(),
+                        "ambiguous mapped property '" + column.property() + Symbol.SINGLE_QUOTE);
             }
         }
         List<Class<?>> hierarchy = new ArrayList<>();
@@ -173,7 +177,7 @@ public class ColumnOrderResolver {
                 throw invalid(table, source, "property names must not be blank");
             }
             if (!mentioned.add(name)) {
-                throw invalid(table, source, "duplicate property '" + name + "'");
+                throw invalid(table, source, "duplicate property '" + name + Symbol.SINGLE_QUOTE);
             }
         }
     }

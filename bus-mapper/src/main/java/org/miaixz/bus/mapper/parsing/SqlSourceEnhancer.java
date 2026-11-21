@@ -60,6 +60,7 @@ public interface SqlSourceEnhancer {
             }
             return sqlSource;
         }
+
     };
 
     /**

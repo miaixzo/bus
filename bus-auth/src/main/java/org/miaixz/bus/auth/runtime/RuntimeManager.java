@@ -126,7 +126,7 @@ public class RuntimeManager implements Lifecycle, AutoCloseable {
      * Loads, validates, compiles, and atomically publishes one complete external Blueprint snapshot.
      * <p>
      * Reload is an explicit security boundary, not a passive Roster refresh. On a successful commit, the strictly
-     * increasing snapshot revision becomes the cache generation of every compiled Source. New invocations can no longer
+     * increasing snapshot revision becomes the cache epoch of every compiled Source. New invocations can no longer
      * redeem or validate authorization codes, device codes, access tokens, refresh tokens, framework protocol sessions,
      * callback states, nonces, authorization lifecycle entries, or ID Token logout bindings created by an older
      * revision. Old backend entries are left unreachable until their existing TTL expires; reload never performs a
@@ -134,9 +134,9 @@ public class RuntimeManager implements Lifecycle, AutoCloseable {
      * </p>
      * <p>
      * Failed loading, validation, compilation, timeout, lifecycle, or concurrent-commit attempts leave both the active
-     * runtime and its generation unchanged. Replay markers deliberately remain shared across revisions until their TTL
+     * runtime and its epoch unchanged. Replay markers deliberately remain shared across revisions until their TTL
      * expires, so reload cannot reopen a replay window. Project-owned web or business sessions are not bulk-deleted;
-     * only framework protocol Session state is generation-bound.
+     * only framework protocol Session state is epoch-bound.
      * </p>
      *
      * @param context immutable non-secret invocation context

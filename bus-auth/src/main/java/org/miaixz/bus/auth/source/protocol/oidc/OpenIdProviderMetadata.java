@@ -79,6 +79,27 @@ public record OpenIdProviderMetadata(AuthorizationServerMetadata authorizationSe
     /**
      * Creates and validates immutable OpenID Provider Metadata.
      *
+     * @param authorizationServerMetadata          composed OAuth authorization server metadata
+     * @param userInfoEndpoint                     optional UserInfo endpoint URL
+     * @param acrValuesSupported                   supported Authentication Context Class References
+     * @param subjectTypesSupported                supported subject identifier types
+     * @param idTokenSigningAlgValuesSupported     supported ID Token JWS algorithms
+     * @param idTokenEncryptionAlgValuesSupported  supported ID Token JWE key-management algorithms
+     * @param idTokenEncryptionEncValuesSupported  supported ID Token JWE content-encryption algorithms
+     * @param userInfoSigningAlgValuesSupported    supported signed UserInfo JWS algorithms
+     * @param userInfoEncryptionAlgValuesSupported supported UserInfo JWE key-management algorithms
+     * @param userInfoEncryptionEncValuesSupported supported UserInfo JWE content-encryption algorithms
+     * @param displayValuesSupported               supported Authentication Request display values
+     * @param claimTypesSupported                  supported OpenID Connect Claim Types
+     * @param claimsSupported                      claim names that the OpenID Provider can supply
+     * @param claimsLocalesSupported               supported BCP 47 Claim language tags
+     * @param claimsParameterSupported             optional claims-request-parameter support indicator
+     * @param requestParameterSupported            optional Request Object by-value support indicator
+     * @param requestUriParameterSupported         optional Request Object by-reference support indicator
+     * @param requireRequestUriRegistration        optional pre-registration requirement for request URI values
+     * @param endSessionEndpoint                   optional RP-Initiated Logout endpoint URL
+     * @param extensions                           unknown metadata members that do not duplicate typed or excluded
+     *                                             members
      * @throws IllegalArgumentException if a required component, optional container, list, or list item is null
      * @throws ValidateException        if a URL, required capability, locale, duplicate item, or extension member is
      *                                  invalid

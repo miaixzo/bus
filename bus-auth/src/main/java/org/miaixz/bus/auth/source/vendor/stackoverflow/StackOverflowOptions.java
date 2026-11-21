@@ -53,6 +53,14 @@ public record StackOverflowOptions(Vendor.Id vendor, Vendor.Variant variant, Str
     /**
      * Validates and freezes one Stack Overflow registration without resolving its secret.
      *
+     * @param vendor      exact Stack Overflow platform identifier
+     * @param variant     exact default Stack Overflow variant
+     * @param clientId    public client identifier issued by Stack Overflow
+     * @param credential  external client-secret reference
+     * @param redirectUri exact callback URI registered for the application
+     * @param scopes      ordered requested Stack Overflow scopes, or empty to use the manifest default
+     * @param key         public Stack Apps API key required with an access token
+     * @param siteId      Stack Exchange API site identifier used by the identity request
      * @throws IllegalArgumentException if a required component, container, scope, or site is {@code null} or blank
      * @throws ValidateException        if routing, credential, callback, scope vocabulary, uniqueness, or site is
      *                                  invalid

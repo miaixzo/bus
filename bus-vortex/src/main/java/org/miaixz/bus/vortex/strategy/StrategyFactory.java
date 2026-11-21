@@ -80,9 +80,18 @@ public class StrategyFactory {
         chain.sort(AnnotationAwareOrderComparator.INSTANCE);
         Logger.debug(true, "Vortex", "Strategy beans sorted by order: strategies={}", getStrategyNames(chain));
 
+        List<Strategy> sdcStrategies = chain.stream()
+                .filter(strategy -> Integer.valueOf(Args.ROUTE_SDC).equals(strategy.protocol())).toList();
+        boolean sdcReady = sdcStrategies.stream().anyMatch(RequestStrategy.class::isInstance)
+                && sdcStrategies.stream().anyMatch(VettingStrategy.class::isInstance)
+                && sdcStrategies.stream().anyMatch(QualifierStrategy.class::isInstance)
+                && chain.stream().anyMatch(LimiterStrategy.class::isInstance)
+                && chain.stream().anyMatch(ResponseStrategy.class::isInstance);
         this.chainSpecs = List.of(
                 new ChainSpec(Args.REST_PATH_PREFIX, Args::isRestRequest, this::isRestStrategy),
                 new ChainSpec(Args.CST_PATH_PREFIX, Args::isCstRequest, this::isCstStrategy),
+                new ChainSpec(Args.SDC_PATH_PREFIX, Args::isSdcRequest,
+                        strategy -> sdcReady && (sdcStrategies.contains(strategy) || isSharedStrategy(strategy))),
                 new ChainSpec(Args.MCP_PATH_PREFIX, Args::isMcpRequest, this::isMcpStrategy),
                 new ChainSpec(Args.MQ_PATH_PREFIX, Args::isMqRequest, this::isMqStrategy),
                 new ChainSpec(Args.GRPC_PATH_PREFIX, Args::isGrpcRequest, this::isGrpcStrategy),
@@ -274,13 +283,13 @@ public class StrategyFactory {
         Map<Integer, List<Strategy>> builtChains = new LinkedHashMap<>();
         for (Strategy strategy : strategies) {
             Integer protocol = strategy.protocol();
-            if (protocol == null) {
+            if (protocol == null || protocol == Args.ROUTE_SDC) {
                 continue;
             }
             builtChains.computeIfAbsent(protocol, key -> new ArrayList<>()).add(strategy);
         }
 
-        List<Strategy> shared = strategies.stream().filter(this::isDynamicSharedStrategy).toList();
+        List<Strategy> shared = strategies.stream().filter(this::isSharedStrategy).toList();
         Map<Integer, List<Strategy>> immutableChains = new LinkedHashMap<>();
         for (Map.Entry<Integer, List<Strategy>> entry : builtChains.entrySet()) {
             List<Strategy> routeChain = new ArrayList<>(entry.getValue());
@@ -302,12 +311,12 @@ public class StrategyFactory {
     }
 
     /**
-     * Returns whether a strategy is shared by dynamic protocol chains.
+     * Returns whether a strategy is shared by protocol chains.
      *
      * @param strategy candidate strategy
-     * @return {@code true} when the strategy can be appended to dynamic chains
+     * @return {@code true} when the strategy is shared
      */
-    private boolean isDynamicSharedStrategy(Strategy strategy) {
+    private boolean isSharedStrategy(Strategy strategy) {
         return strategy instanceof LimiterStrategy || strategy instanceof ResponseStrategy;
     }
 
@@ -321,7 +330,7 @@ public class StrategyFactory {
         final String ipTag = "N/A";
         for (Map.Entry<Integer, List<Strategy>> entry : this.dynamicChains.entrySet()) {
             List<Strategy> routeChain = entry.getValue();
-            boolean matched = routeChain.stream().filter(strategy -> !isDynamicSharedStrategy(strategy))
+            boolean matched = routeChain.stream().filter(strategy -> !isSharedStrategy(strategy))
                     .anyMatch(strategy -> strategy.supports(exchange));
             if (!matched) {
                 continue;

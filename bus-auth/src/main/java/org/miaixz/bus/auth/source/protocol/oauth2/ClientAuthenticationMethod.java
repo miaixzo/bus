@@ -75,6 +75,7 @@ public record ClientAuthenticationMethod(String value) {
     /**
      * Validates an extensible OAuth client-authentication method registration name.
      *
+     * @param value case-sensitive registered method wire value
      * @throws IllegalArgumentException if the value is {@code null} or empty
      * @throws ValidateException        if the value contains a character outside the OAuth registration-name grammar
      */

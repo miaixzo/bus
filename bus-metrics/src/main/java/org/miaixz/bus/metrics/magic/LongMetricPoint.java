@@ -34,6 +34,9 @@ public record LongMetricPoint(Attributes attributes, long value) implements Metr
 
     /**
      * Validates the point.
+     *
+     * @param attributes resource attributes
+     * @param value      observed value
      */
     public LongMetricPoint {
         attributes = Objects.requireNonNull(attributes, "Metric attributes must not be null");

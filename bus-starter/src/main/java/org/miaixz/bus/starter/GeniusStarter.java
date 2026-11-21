@@ -44,7 +44,9 @@ import org.miaixz.bus.spring.context.task.ContextTaskDecorator;
  */
 @Order(Ordered.HIGHEST_PRECEDENCE)
 @Configuration(proxyBeanMethods = false)
-@ComponentScan(value = "org.miaixz.**", excludeFilters = @ComponentScan.Filter(type = FilterType.REGEX, pattern = "org\\.miaixz\\.bus\\.starter(?:\\..*)?"))
+@ComponentScan(value = "org.miaixz.**", excludeFilters = {
+        @ComponentScan.Filter(type = FilterType.REGEX, pattern = "org\\.miaixz\\.bus\\.starter(?:\\..*)?"),
+        @ComponentScan.Filter(type = FilterType.REGEX, pattern = "org\\.miaixz\\.bus\\.spring\\.web\\.advice\\.AuthorizeRequestBodyAdvice") })
 public class GeniusStarter {
 
     /**

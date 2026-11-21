@@ -37,6 +37,13 @@ public record HostMetricCapabilities(PagingFaultShape pagingFaults, boolean cont
 
     /**
      * Validates the capability set.
+     *
+     * @param pagingFaults        supported paging-fault shape
+     * @param contextSwitchTypes  whether voluntary and involuntary counts are distinct
+     * @param unixFileDescriptors whether Unix file-descriptor counts are available
+     * @param windowsHandles      whether Windows handle counts are available
+     * @param networkConnections  whether connection inventory is available
+     * @param container           whether container inventory is available
      */
     public HostMetricCapabilities {
         pagingFaults = Objects.requireNonNull(pagingFaults, "Paging fault shape must not be null");

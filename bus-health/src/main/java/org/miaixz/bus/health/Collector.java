@@ -28,8 +28,10 @@ import java.net.SocketException;
 import java.util.*;
 
 import org.miaixz.bus.core.lang.Keys;
+import org.miaixz.bus.core.xyz.BeanKit;
 import org.miaixz.bus.core.xyz.CollKit;
 import org.miaixz.bus.core.xyz.DateKit;
+import org.miaixz.bus.core.xyz.LambdaKit;
 import org.miaixz.bus.core.xyz.NetKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.core.xyz.ThreadKit;
@@ -46,6 +48,42 @@ import org.miaixz.bus.health.builtin.software.OperatingSystem;
  * @author Kimi Liu
  */
 public class Collector {
+
+    /**
+     * Process response retaining the established public names independently of the operating-system model.
+     *
+     * @param name   process display name
+     * @param pid    operating-system process identity
+     * @param cpu    cumulative CPU usage
+     * @param memory resident memory, absent from the compact process list
+     * @param state  process state, absent from the compact process list
+     * @author Kimi Liu
+     */
+    public record ProcessSummary(String name, int pid, double cpu, Long memory, String state) {
+
+    }
+
+    /**
+     * Network address names retained by the health contract when hardware getter capitalization differs.
+     *
+     * @param mtu      interface maximum transmission unit
+     * @param ipv4addr interface IPv4 addresses
+     * @param ipv6addr interface IPv6 addresses
+     * @author Kimi Liu
+     */
+    public record NetworkAddresses(long mtu, String[] ipv4addr, String[] ipv6addr) {
+
+    }
+
+    /**
+     * Video memory projection retaining the established capitalized response member.
+     *
+     * @param VRam video memory capacity in bytes
+     * @author Kimi Liu
+     */
+    public record VideoMemory(long VRam) {
+
+    }
 
     /**
      * Creates a new Collector instance.
@@ -215,10 +253,11 @@ public class Collector {
                 .getProcesses(null, OperatingSystem.ProcessSorting.CPU_DESC, limitNumber);
         List<Map<String, Object>> processMapList = new ArrayList<>();
         for (OSProcess process : processList) {
-            Map<String, Object> processMap = new HashMap<>(5);
-            processMap.put("name", process.getName());
-            processMap.put("pid", process.getProcessID());
-            processMap.put(TID.CPU, Formats.round(process.getProcessCpuLoadCumulative()));
+            Map<String, Object> processMap = BeanKit.beanToMap(
+                    new ProcessSummary(process.getName(), process.getProcessID(),
+                            Formats.round(process.getProcessCpuLoadCumulative()), null, null),
+                    false,
+                    true);
             processMapList.add(processMap);
         }
         map.put(type, processMapList);
@@ -234,20 +273,34 @@ public class Collector {
         HardwareAbstractionLayer hardware = getHardware();
         Map<String, Object> hardwareMap = new HashMap<>();
         hardwareMap.put(TID.MEMORY, memoryDetails(hardware.getMemory()));
-        hardwareMap.put("sensors", sensorDetails(hardware.getSensors()));
         hardwareMap.put(
-                "logicalVolumeGroups",
+                LambdaKit.getFieldName(HardwareAbstractionLayer::getSensors),
+                sensorDetails(hardware.getSensors()));
+        hardwareMap.put(
+                LambdaKit.getFieldName(HardwareAbstractionLayer::getLogicalVolumeGroups),
                 hardware.getLogicalVolumeGroups().stream().map(Collector::volumeGroupDetails).toList());
-        hardwareMap.put("soundCards", hardware.getSoundCards().stream().map(Collector::soundCardDetails).toList());
         hardwareMap.put(
-                "bluetoothDevices",
+                LambdaKit.getFieldName(HardwareAbstractionLayer::getSoundCards),
+                hardware.getSoundCards().stream().map(Collector::soundCardDetails).toList());
+        hardwareMap.put(
+                LambdaKit.getFieldName(HardwareAbstractionLayer::getBluetoothDevices),
                 hardware.getBluetoothDevices().stream().map(Collector::bluetoothDetails).toList());
-        hardwareMap.put("graphicsCards", hardware.getGraphicsCards().stream().map(Collector::graphicsDetails).toList());
-        hardwareMap.put("displays", hardware.getDisplays().stream().map(Collector::displayDetails).toList());
-        hardwareMap.put("diskStores", hardware.getDiskStores().stream().map(Collector::diskDetails).toList());
-        hardwareMap
-                .put("powerSources", hardware.getPowerSources().stream().map(Collector::powerSourceDetails).toList());
-        hardwareMap.put("networkIFs", hardware.getNetworkIFs().stream().map(Collector::networkDetails).toList());
+        hardwareMap.put(
+                LambdaKit.getFieldName(HardwareAbstractionLayer::getGraphicsCards),
+                hardware.getGraphicsCards().stream().map(Collector::graphicsDetails).toList());
+        hardwareMap.put(
+                LambdaKit.getFieldName(HardwareAbstractionLayer::getDisplays),
+                hardware.getDisplays().stream().map(Collector::displayDetails).toList());
+        hardwareMap.put(
+                LambdaKit.getFieldName(HardwareAbstractionLayer::getDiskStores),
+                hardware.getDiskStores().stream().map(Collector::diskDetails).toList());
+        hardwareMap.put(
+                LambdaKit.getFieldName(HardwareAbstractionLayer::getPowerSources),
+                hardware.getPowerSources().stream().map(Collector::powerSourceDetails).toList());
+        hardwareMap.put(
+                LambdaKit.<HardwareAbstractionLayer, List<NetworkIF>>getFieldName(
+                        HardwareAbstractionLayer::getNetworkIFs),
+                hardware.getNetworkIFs().stream().map(Collector::networkDetails).toList());
         map.put(type, hardwareMap);
     }
 
@@ -258,13 +311,13 @@ public class Collector {
      * @return the hardware detail values for the health response
      */
     private static Map<String, Object> memoryDetails(GlobalMemory value) {
-        Map<String, Object> details = new LinkedHashMap<>();
-        details.put("total", value.getTotal());
-        details.put("available", value.getAvailable());
-        details.put("pageSize", value.getPageSize());
-        details.put("virtualMemory", virtualMemoryDetails(value.getVirtualMemory()));
+        Map<String, Object> details = BeanKit
+                .beanToMap(value, GlobalMemory::getTotal, GlobalMemory::getAvailable, GlobalMemory::getPageSize);
         details.put(
-                "physicalMemory",
+                LambdaKit.getFieldName(GlobalMemory::getVirtualMemory),
+                virtualMemoryDetails(value.getVirtualMemory()));
+        details.put(
+                LambdaKit.getFieldName(GlobalMemory::getPhysicalMemory),
                 value.getPhysicalMemory().stream().map(Collector::physicalMemoryDetails).toList());
         return details;
     }
@@ -276,13 +329,14 @@ public class Collector {
      * @return the hardware detail values for the health response
      */
     private static Map<String, Object> virtualMemoryDetails(VirtualMemory value) {
-        Map<String, Object> details = new LinkedHashMap<>();
-        details.put("swapTotal", value.getSwapTotal());
-        details.put("swapUsed", value.getSwapUsed());
-        details.put("virtualMax", value.getVirtualMax());
-        details.put("virtualInUse", value.getVirtualInUse());
-        details.put("swapPagesIn", value.getSwapPagesIn());
-        details.put("swapPagesOut", value.getSwapPagesOut());
+        Map<String, Object> details = BeanKit.beanToMap(
+                value,
+                VirtualMemory::getSwapTotal,
+                VirtualMemory::getSwapUsed,
+                VirtualMemory::getVirtualMax,
+                VirtualMemory::getVirtualInUse,
+                VirtualMemory::getSwapPagesIn,
+                VirtualMemory::getSwapPagesOut);
         return details;
     }
 
@@ -293,14 +347,15 @@ public class Collector {
      * @return the hardware detail values for the health response
      */
     private static Map<String, Object> physicalMemoryDetails(PhysicalMemory value) {
-        Map<String, Object> details = new LinkedHashMap<>();
-        details.put("bankLabel", value.getBankLabel());
-        details.put("capacity", value.getCapacity());
-        details.put("clockSpeed", value.getClockSpeed());
-        details.put("manufacturer", value.getManufacturer());
-        details.put("memoryType", value.getMemoryType());
-        details.put("partNumber", value.getPartNumber());
-        details.put("serialNumber", value.getSerialNumber());
+        Map<String, Object> details = BeanKit.beanToMap(
+                value,
+                PhysicalMemory::getBankLabel,
+                PhysicalMemory::getCapacity,
+                PhysicalMemory::getClockSpeed,
+                PhysicalMemory::getManufacturer,
+                PhysicalMemory::getMemoryType,
+                PhysicalMemory::getPartNumber,
+                PhysicalMemory::getSerialNumber);
         return details;
     }
 
@@ -311,10 +366,9 @@ public class Collector {
      * @return the hardware detail values for the health response
      */
     private static Map<String, Object> sensorDetails(Sensors value) {
-        Map<String, Object> details = new LinkedHashMap<>();
-        details.put("cpuTemperature", finiteMeasurement(value.getCpuTemperature()));
-        details.put("fanSpeeds", value.getFanSpeeds());
-        details.put("cpuVoltage", finiteMeasurement(value.getCpuVoltage()));
+        Map<String, Object> details = BeanKit.beanToMap(value, Sensors::getFanSpeeds);
+        details.put(LambdaKit.getFieldName(Sensors::getCpuTemperature), finiteMeasurement(value.getCpuTemperature()));
+        details.put(LambdaKit.getFieldName(Sensors::getCpuVoltage), finiteMeasurement(value.getCpuVoltage()));
         return details;
     }
 
@@ -325,10 +379,11 @@ public class Collector {
      * @return the hardware detail values for the health response
      */
     private static Map<String, Object> volumeGroupDetails(LogicalVolumeGroup value) {
-        Map<String, Object> details = new LinkedHashMap<>();
-        details.put("name", value.getName());
-        details.put("physicalVolumes", value.getPhysicalVolumes());
-        details.put("logicalVolumes", value.getLogicalVolumes());
+        Map<String, Object> details = BeanKit.beanToMap(
+                value,
+                LogicalVolumeGroup::getName,
+                LogicalVolumeGroup::getPhysicalVolumes,
+                LogicalVolumeGroup::getLogicalVolumes);
         return details;
     }
 
@@ -339,10 +394,8 @@ public class Collector {
      * @return the hardware detail values for the health response
      */
     private static Map<String, Object> soundCardDetails(SoundCard value) {
-        Map<String, Object> details = new LinkedHashMap<>();
-        details.put("name", value.getName());
-        details.put("codec", value.getCodec());
-        details.put("driverVersion", value.getDriverVersion());
+        Map<String, Object> details = BeanKit
+                .beanToMap(value, SoundCard::getName, SoundCard::getCodec, SoundCard::getDriverVersion);
         return details;
     }
 
@@ -353,14 +406,15 @@ public class Collector {
      * @return the hardware detail values for the health response
      */
     private static Map<String, Object> bluetoothDetails(BluetoothDevice value) {
-        Map<String, Object> details = new LinkedHashMap<>();
-        details.put("name", value.getName());
-        details.put("address", value.getAddress());
-        details.put("majorDeviceClass", value.getMajorDeviceClass());
-        details.put("connected", value.isConnected());
-        details.put("paired", value.isPaired());
-        details.put("batteryLevel", value.getBatteryLevel());
-        details.put("adapterName", value.getAdapterName());
+        Map<String, Object> details = BeanKit.beanToMap(
+                value,
+                BluetoothDevice::getName,
+                BluetoothDevice::getAddress,
+                BluetoothDevice::getMajorDeviceClass,
+                BluetoothDevice::isConnected,
+                BluetoothDevice::isPaired,
+                BluetoothDevice::getBatteryLevel,
+                BluetoothDevice::getAdapterName);
         return details;
     }
 
@@ -371,12 +425,13 @@ public class Collector {
      * @return the hardware detail values for the health response
      */
     private static Map<String, Object> graphicsDetails(GraphicsCard value) {
-        Map<String, Object> details = new LinkedHashMap<>();
-        details.put("name", value.getName());
-        details.put("deviceId", value.getDeviceId());
-        details.put("vendor", value.getVendor());
-        details.put("versionInfo", value.getVersionInfo());
-        details.put("VRam", value.getVRam());
+        Map<String, Object> details = BeanKit.beanToMap(
+                value,
+                GraphicsCard::getName,
+                GraphicsCard::getDeviceId,
+                GraphicsCard::getVendor,
+                GraphicsCard::getVersionInfo);
+        details.putAll(BeanKit.beanToMap(new VideoMemory(value.getVRam())));
         return details;
     }
 
@@ -389,7 +444,7 @@ public class Collector {
     private static Map<String, Object> displayDetails(Display value) {
         DisplayInfo info = value.getDisplayInfo();
         Map<String, Object> details = new LinkedHashMap<>();
-        details.put("displayInfo", info == null ? null : displayInfoDetails(info));
+        details.put(LambdaKit.getFieldName(Display::getDisplayInfo), info == null ? null : displayInfoDetails(info));
         return details;
     }
 
@@ -400,21 +455,22 @@ public class Collector {
      * @return the hardware detail values for the health response
      */
     private static Map<String, Object> displayInfoDetails(DisplayInfo value) {
-        Map<String, Object> details = new LinkedHashMap<>();
-        details.put("edid", value.getEdid());
-        details.put("edidSynthetic", value.isEdidSynthetic());
-        details.put("manufacturerID", value.getManufacturerID());
-        details.put("productID", value.getProductID());
-        details.put("serialNo", value.getSerialNo());
-        details.put("week", value.getWeek());
-        details.put("year", value.getYear());
-        details.put("version", value.getVersion());
-        details.put("digital", value.isDigital());
-        details.put("hcm", value.getHcm());
-        details.put("vcm", value.getVcm());
-        details.put("preferredResolution", value.getPreferredResolution());
-        details.put("model", value.getModel());
-        details.put("productSerialNumber", value.getProductSerialNumber());
+        Map<String, Object> details = BeanKit.beanToMap(
+                value,
+                DisplayInfo::getEdid,
+                DisplayInfo::isEdidSynthetic,
+                DisplayInfo::getManufacturerID,
+                DisplayInfo::getProductID,
+                DisplayInfo::getSerialNo,
+                DisplayInfo::getWeek,
+                DisplayInfo::getYear,
+                DisplayInfo::getVersion,
+                DisplayInfo::isDigital,
+                DisplayInfo::getHcm,
+                DisplayInfo::getVcm,
+                DisplayInfo::getPreferredResolution,
+                DisplayInfo::getModel,
+                DisplayInfo::getProductSerialNumber);
         return details;
     }
 
@@ -425,19 +481,22 @@ public class Collector {
      * @return the hardware detail values for the health response
      */
     private static Map<String, Object> diskDetails(HWDiskStore value) {
-        Map<String, Object> details = new LinkedHashMap<>();
-        details.put("name", value.getName());
-        details.put("model", value.getModel());
-        details.put("serial", value.getSerial());
-        details.put("size", value.getSize());
-        details.put("reads", value.getReads());
-        details.put("readBytes", value.getReadBytes());
-        details.put("writes", value.getWrites());
-        details.put("writeBytes", value.getWriteBytes());
-        details.put("currentQueueLength", value.getCurrentQueueLength());
-        details.put("transferTime", value.getTransferTime());
-        details.put("timeStamp", value.getTimeStamp());
-        details.put("partitions", value.getPartitions().stream().map(Collector::partitionDetails).toList());
+        Map<String, Object> details = BeanKit.beanToMap(
+                value,
+                HWDiskStore::getName,
+                HWDiskStore::getModel,
+                HWDiskStore::getSerial,
+                HWDiskStore::getSize,
+                HWDiskStore::getReads,
+                HWDiskStore::getReadBytes,
+                HWDiskStore::getWrites,
+                HWDiskStore::getWriteBytes,
+                HWDiskStore::getCurrentQueueLength,
+                HWDiskStore::getTransferTime,
+                HWDiskStore::getTimeStamp);
+        details.put(
+                LambdaKit.getFieldName(HWDiskStore::getPartitions),
+                value.getPartitions().stream().map(Collector::partitionDetails).toList());
         return details;
     }
 
@@ -448,16 +507,17 @@ public class Collector {
      * @return the hardware detail values for the health response
      */
     private static Map<String, Object> partitionDetails(HWPartition value) {
-        Map<String, Object> details = new LinkedHashMap<>();
-        details.put("identification", value.getIdentification());
-        details.put("name", value.getName());
-        details.put("type", value.getType());
-        details.put("uuid", value.getUuid());
-        details.put("label", value.getLabel());
-        details.put("size", value.getSize());
-        details.put("major", value.getMajor());
-        details.put("minor", value.getMinor());
-        details.put("mountPoint", value.getMountPoint());
+        Map<String, Object> details = BeanKit.beanToMap(
+                value,
+                HWPartition::getIdentification,
+                HWPartition::getName,
+                HWPartition::getType,
+                HWPartition::getUuid,
+                HWPartition::getLabel,
+                HWPartition::getSize,
+                HWPartition::getMajor,
+                HWPartition::getMinor,
+                HWPartition::getMountPoint);
         return details;
     }
 
@@ -468,28 +528,41 @@ public class Collector {
      * @return the hardware detail values for the health response
      */
     private static Map<String, Object> powerSourceDetails(PowerSource value) {
-        Map<String, Object> details = new LinkedHashMap<>();
-        details.put("name", value.getName());
-        details.put("deviceName", value.getDeviceName());
-        details.put("powerOnLine", value.isPowerOnLine());
-        details.put("charging", value.isCharging());
-        details.put("discharging", value.isDischarging());
-        details.put("currentCapacity", value.getCurrentCapacity());
-        details.put("maxCapacity", value.getMaxCapacity());
-        details.put("designCapacity", value.getDesignCapacity());
-        details.put("cycleCount", value.getCycleCount());
-        details.put("chemistry", value.getChemistry());
-        details.put("serialNumber", value.getSerialNumber());
-        details.put("manufacturer", value.getManufacturer());
-        details.put("remainingCapacityPercent", finiteMeasurement(value.getRemainingCapacityPercent()));
-        details.put("timeRemainingEstimated", finiteMeasurement(value.getTimeRemainingEstimated()));
-        details.put("timeRemainingInstant", finiteMeasurement(value.getTimeRemainingInstant()));
-        details.put("amperage", finiteMeasurement(value.getAmperage()));
-        details.put("powerUsageRate", finiteMeasurement(value.getPowerUsageRate()));
-        details.put("voltage", finiteMeasurement(value.getVoltage()));
-        details.put("temperature", finiteMeasurement(value.getTemperature()));
-        details.put("capacityUnits", Objects.toString(value.getCapacityUnits(), null));
-        details.put("manufactureDate", Objects.toString(value.getManufactureDate(), null));
+        Map<String, Object> details = BeanKit.beanToMap(
+                value,
+                PowerSource::getName,
+                PowerSource::getDeviceName,
+                PowerSource::isPowerOnLine,
+                PowerSource::isCharging,
+                PowerSource::isDischarging,
+                PowerSource::getCurrentCapacity,
+                PowerSource::getMaxCapacity,
+                PowerSource::getDesignCapacity,
+                PowerSource::getCycleCount,
+                PowerSource::getChemistry,
+                PowerSource::getSerialNumber,
+                PowerSource::getManufacturer);
+        details.put(
+                LambdaKit.getFieldName(PowerSource::getRemainingCapacityPercent),
+                finiteMeasurement(value.getRemainingCapacityPercent()));
+        details.put(
+                LambdaKit.getFieldName(PowerSource::getTimeRemainingEstimated),
+                finiteMeasurement(value.getTimeRemainingEstimated()));
+        details.put(
+                LambdaKit.getFieldName(PowerSource::getTimeRemainingInstant),
+                finiteMeasurement(value.getTimeRemainingInstant()));
+        details.put(LambdaKit.getFieldName(PowerSource::getAmperage), finiteMeasurement(value.getAmperage()));
+        details.put(
+                LambdaKit.getFieldName(PowerSource::getPowerUsageRate),
+                finiteMeasurement(value.getPowerUsageRate()));
+        details.put(LambdaKit.getFieldName(PowerSource::getVoltage), finiteMeasurement(value.getVoltage()));
+        details.put(LambdaKit.getFieldName(PowerSource::getTemperature), finiteMeasurement(value.getTemperature()));
+        details.put(
+                LambdaKit.getFieldName(PowerSource::getCapacityUnits),
+                Objects.toString(value.getCapacityUnits(), null));
+        details.put(
+                LambdaKit.getFieldName(PowerSource::getManufactureDate),
+                Objects.toString(value.getManufactureDate(), null));
         return details;
     }
 
@@ -500,27 +573,27 @@ public class Collector {
      * @return the hardware detail values for the health response
      */
     private static Map<String, Object> networkDetails(NetworkIF value) {
-        Map<String, Object> details = new LinkedHashMap<>();
-        details.put("name", value.getName());
-        details.put("index", value.getIndex());
-        details.put("displayName", value.getDisplayName());
-        details.put("mtu", value.getMTU());
-        details.put("macaddr", value.getMacaddr());
-        details.put("ipv4addr", value.getIPv4addr());
-        details.put("subnetMasks", value.getSubnetMasks());
-        details.put("ipv6addr", value.getIPv6addr());
-        details.put("prefixLengths", value.getPrefixLengths());
-        details.put("bytesRecv", value.getBytesRecv());
-        details.put("bytesSent", value.getBytesSent());
-        details.put("packetsRecv", value.getPacketsRecv());
-        details.put("packetsSent", value.getPacketsSent());
-        details.put("inErrors", value.getInErrors());
-        details.put("outErrors", value.getOutErrors());
-        details.put("inDrops", value.getInDrops());
-        details.put("collisions", value.getCollisions());
-        details.put("speed", value.getSpeed());
-        details.put("timeStamp", value.getTimeStamp());
-        details.put("knownVmMacAddr", value.isKnownVmMacAddr());
+        Map<String, Object> details = BeanKit.beanToMap(
+                value,
+                NetworkIF::getName,
+                NetworkIF::getIndex,
+                NetworkIF::getDisplayName,
+                NetworkIF::getMacaddr,
+                NetworkIF::getSubnetMasks,
+                NetworkIF::getPrefixLengths,
+                NetworkIF::getBytesRecv,
+                NetworkIF::getBytesSent,
+                NetworkIF::getPacketsRecv,
+                NetworkIF::getPacketsSent,
+                NetworkIF::getInErrors,
+                NetworkIF::getOutErrors,
+                NetworkIF::getInDrops,
+                NetworkIF::getCollisions,
+                NetworkIF::getSpeed,
+                NetworkIF::getTimeStamp,
+                NetworkIF::isKnownVmMacAddr);
+        details.putAll(
+                BeanKit.beanToMap(new NetworkAddresses(value.getMTU(), value.getIPv4addr(), value.getIPv6addr())));
         return details;
     }
 
@@ -642,13 +715,10 @@ public class Collector {
         if (process == null) {
             return new HashMap<>();
         }
-        Map<String, Object> processMap = new HashMap<>(5);
-        processMap.put("name", process.getName());
-        processMap.put("pid", process.getProcessID());
-        processMap.put(TID.CPU, Formats.round(process.getProcessCpuLoadCumulative()));
-        processMap.put(TID.MEMORY, process.getResidentMemory());
-        processMap.put("state", process.getState().toString());
-        return processMap;
+        return BeanKit.beanToMap(
+                new ProcessSummary(process.getName(), process.getProcessID(),
+                        Formats.round(process.getProcessCpuLoadCumulative()), process.getResidentMemory(),
+                        process.getState().toString()));
     }
 
     /**

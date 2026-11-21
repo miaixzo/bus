@@ -111,7 +111,8 @@ public class MicrosoftManifest implements VendorManifest<MicrosoftOptions> {
                     Realm.Kind.ORGANIZATION,
                     Realm.Kind.GROUP,
                     Realm.Kind.ROLE,
-                    Realm.Kind.SERVICE_ACCOUNT),
+                    Realm.Kind.SERVICE_ACCOUNT,
+                    Realm.Kind.APPLICATION),
             Set.of(
                     Realm.RelationKind.MEMBER,
                     Realm.RelationKind.MANAGER,
@@ -180,6 +181,7 @@ public class MicrosoftManifest implements VendorManifest<MicrosoftOptions> {
      * Creates the stateless Microsoft manifest used by Vendor locator assembly.
      */
     public MicrosoftManifest() {
+        // No initialization required.
     }
 
     /**
@@ -273,6 +275,9 @@ public class MicrosoftManifest implements VendorManifest<MicrosoftOptions> {
         targets.put(
                 Builder.REALM_SERVICE_ACCOUNTS,
                 fixed(graph + "/v1.0/servicePrincipals", Http.Method.GET, Endpoint.Authentication.BEARER));
+        targets.put(
+                Builder.REALM_APPLICATIONS,
+                fixed(graph + "/v1.0/applications", Http.Method.GET, Endpoint.Authentication.BEARER));
         targets.put(Builder.REALM_CHANGES, fixed(graph + "/v1.0", Http.Method.GET, Endpoint.Authentication.BEARER));
         return targets;
     }

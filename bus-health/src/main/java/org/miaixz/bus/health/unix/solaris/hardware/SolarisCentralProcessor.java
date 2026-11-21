@@ -48,6 +48,12 @@ import org.miaixz.bus.health.unix.solaris.software.SolarisOperatingSystem;
 final class SolarisCentralProcessor extends AbstractCentralProcessor {
 
     /**
+     * Matches cache properties printed by {@code prtpicl}; SPARC uses decimal values and x86 uses hexadecimal values.
+     */
+    private static final java.util.regex.Pattern PICL_CACHE_PROPERTY = java.util.regex.Pattern
+            .compile("\\s*:l(\\d)-([id]?)cache-(size|line-size|associativity)\\s+(0x\\p{XDigit}+|\\d+)\\s*");
+
+    /**
      * The KSTAT_SYSTEM_CPU constant.
      */
     private static final String KSTAT_SYSTEM_CPU = "kstat:/system/cpu/";
@@ -157,6 +163,68 @@ final class SolarisCentralProcessor extends AbstractCentralProcessor {
             }
         }
         return numaNodeMap;
+    }
+
+    /**
+     * Parses distinct processor caches from {@code prtpicl -v -c cpu} output.
+     *
+     * @param prtpicl the command output
+     * @return the processor caches ordered by level and type
+     */
+    static List<CentralProcessor.ProcessorCache> parsePiclCaches(List<String> prtpicl) {
+        Set<CentralProcessor.ProcessorCache> caches = new HashSet<>();
+        Map<String, long[]> nodeCaches = new HashMap<>();
+        for (String line : prtpicl) {
+            Matcher matcher = PICL_CACHE_PROPERTY.matcher(line);
+            if (matcher.matches()) {
+                long[] values = nodeCaches.computeIfAbsent(
+                        matcher.group(Normal._1) + matcher.group(Normal._2),
+                        key -> new long[Normal._3]);
+                long value = Parsing.parseLastLong(matcher.group(Normal._4), Normal._0);
+                switch (matcher.group(Normal._3)) {
+                    case "size":
+                        values[Normal._0] = value;
+                        break;
+
+                    case "line-size":
+                        values[Normal._1] = value;
+                        break;
+
+                    default:
+                        values[Normal._2] = value;
+                        break;
+                }
+            } else if (!line.trim().startsWith(Symbol.COLON)) {
+                addPiclCaches(nodeCaches, caches);
+            }
+        }
+        addPiclCaches(nodeCaches, caches);
+        return orderedProcCaches(caches);
+    }
+
+    /**
+     * Converts one CPU node's cache properties into processor cache entries.
+     *
+     * @param nodeCaches the cache properties keyed by level and type
+     * @param caches     the destination cache set
+     */
+    private static void addPiclCaches(Map<String, long[]> nodeCaches, Set<CentralProcessor.ProcessorCache> caches) {
+        for (Map.Entry<String, long[]> entry : nodeCaches.entrySet()) {
+            long[] values = entry.getValue();
+            if (values[Normal._0] > Normal._0) {
+                String key = entry.getKey();
+                CentralProcessor.ProcessorCache.Type type = CentralProcessor.ProcessorCache.Type.UNIFIED;
+                if (key.endsWith("i")) {
+                    type = CentralProcessor.ProcessorCache.Type.INSTRUCTION;
+                } else if (key.endsWith("d")) {
+                    type = CentralProcessor.ProcessorCache.Type.DATA;
+                }
+                caches.add(
+                        new CentralProcessor.ProcessorCache(key.charAt(Normal._0) - Symbol.C_ZERO,
+                                (int) values[Normal._2], (int) values[Normal._1], values[Normal._0], type));
+            }
+        }
+        nodeCaches.clear();
     }
 
     /**
@@ -366,6 +434,8 @@ final class SolarisCentralProcessor extends AbstractCentralProcessor {
         if (logProcs.isEmpty()) {
             logProcs.add(new CentralProcessor.LogicalProcessor(0, 0, 0));
         }
+        List<CentralProcessor.ProcessorCache> caches = parsePiclCaches(
+                Executor.runNative("/usr/sbin/prtpicl -v -c cpu"));
         Map<Integer, String> dmesg = new HashMap<>();
         // Jan 9 14:04:28 solaris unix: [ID 950921 kern.info] cpu0: Intel(r) Celeron(r)
         // CPU J3455 @ 1.50GHz
@@ -380,10 +450,10 @@ final class SolarisCentralProcessor extends AbstractCentralProcessor {
             }
         }
         if (dmesg.isEmpty()) {
-            return new Tuple(logProcs, null, null, Collections.emptyList());
+            return new Tuple(logProcs, null, caches, Collections.emptyList());
         }
         List<String> featureFlags = Executor.runNative("isainfo -x");
-        return new Tuple(logProcs, createProcListFromDmesg(logProcs, dmesg), null, featureFlags);
+        return new Tuple(logProcs, createProcListFromDmesg(logProcs, dmesg), caches, featureFlags);
     }
 
     /**

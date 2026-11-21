@@ -35,6 +35,7 @@ module bus.mapper {
     requires java.sql;
 
     requires bus.core;
+    requires bus.errors;
     requires bus.logger;
 
     requires static jakarta.persistence;

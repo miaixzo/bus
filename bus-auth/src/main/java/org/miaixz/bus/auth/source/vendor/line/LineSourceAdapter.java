@@ -1583,6 +1583,14 @@ public class LineSourceAdapter implements VendorAdapter {
 
         /**
          * Retains callback values after transport and multiplicity validation.
+         *
+         * @param code             authorization code on the success branch
+         * @param error            registered callback error on the error branch
+         * @param errorDescription optional callback error description
+         * @param state            browser correlation state
+         * @param memberCount      exact number of received parameters
+         * @param knownMembers     whether every received name belongs to the callback contract
+         * @param blank            whether any received value is blank
          */
         private CallbackWire {
             // No initialization required.

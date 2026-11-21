@@ -675,6 +675,9 @@ public class BaiduSourceAdapter implements VendorAdapter {
         /**
          * Verifies the exact success or access-denied branch.
          *
+         * @param code  authorization code on the success branch
+         * @param state mandatory browser correlation value
+         * @param error access-denied value on the rejection branch
          * @throws IllegalArgumentException if state is blank
          * @throws ValidateException        if the branch is inconsistent
          */
@@ -699,6 +702,8 @@ public class BaiduSourceAdapter implements VendorAdapter {
         /**
          * Validates one decoded private profile value.
          *
+         * @param openId     stable Baidu subject
+         * @param attributes validated optional Baidu profile attributes
          * @throws IllegalArgumentException if a component is absent or the subject is blank
          */
         private Profile {
@@ -761,6 +766,8 @@ public class BaiduSourceAdapter implements VendorAdapter {
         /**
          * Validates one private Baidu token success value.
          *
+         * @param accessToken sensitive access token
+         * @param expiresIn   positive access-token lifetime
          * @throws IllegalArgumentException if either token is blank
          * @throws ValidateException        if the lifetime is not positive
          */

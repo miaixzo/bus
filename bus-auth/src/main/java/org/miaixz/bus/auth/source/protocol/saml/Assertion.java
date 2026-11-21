@@ -47,6 +47,15 @@ public record Assertion(String version, String id, Instant issueInstant, Issuer 
     /**
      * Validates assertion identity and freezes optional XML and statement content.
      *
+     * @param version      required assertion version, fixed to {@code 2.0}
+     * @param id           required assertion XML ID
+     * @param issueInstant required assertion issue instant
+     * @param issuer       required assertion issuer
+     * @param signature    optional complete {@code ds:Signature} element bytes
+     * @param subject      optional assertion subject
+     * @param conditions   optional assertion conditions
+     * @param advice       optional complete {@code saml:Advice} element bytes
+     * @param statements   ordered statement choice entries
      * @throws IllegalArgumentException if a required component, item, or optional container is {@code null}
      * @throws ValidateException        if the version, ID, or retained XML element is invalid
      */
@@ -150,6 +159,8 @@ public record Assertion(String version, String id, Instant issueInstant, Issuer 
 
         /**
          * Requires a non-null authentication statement.
+         *
+         * @param statement authentication statement
          */
         public AuthenticationStatement {
             Assert.notNull(statement, "SAML AuthnStatement must not be null");
@@ -167,6 +178,8 @@ public record Assertion(String version, String id, Instant issueInstant, Issuer 
 
         /**
          * Requires a non-null attribute statement.
+         *
+         * @param statement attribute statement
          */
         public AttributesStatement {
             Assert.notNull(statement, "SAML AttributeStatement must not be null");
@@ -185,6 +198,7 @@ public record Assertion(String version, String id, Instant issueInstant, Issuer 
         /**
          * Deep-copies the retained statement element.
          *
+         * @param xml complete secure namespace-aware statement element bytes
          * @throws IllegalArgumentException if {@code xml} is {@code null}
          * @throws ValidateException        if {@code xml} is empty
          */

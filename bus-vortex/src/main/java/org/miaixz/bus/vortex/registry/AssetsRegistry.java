@@ -19,14 +19,20 @@
 */
 package org.miaixz.bus.vortex.registry;
 
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Predicate;
 
+import org.springframework.http.HttpMethod;
+
+import org.miaixz.bus.core.basic.normal.Consts;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.cortex.Assets;
 import org.miaixz.bus.cortex.Keying;
@@ -328,6 +334,70 @@ public class AssetsRegistry extends AbstractRegistry<Assets> {
     }
 
     /**
+     * Resolves alternate methods for an unambiguously visible public route. A credential-protected or signed route, or
+     * an alias pointing to a different application, never contributes to Allow.
+     *
+     * @param request same route coordinates as the original failed lookup
+     * @return supported methods for one route identity, or an empty set if no such identity can be proved
+     */
+    public Set<HttpMethod> publicMethods(Keying.RegistrySpec request) {
+        return publicMethods(request, asset -> true);
+    }
+
+    /**
+     * Collects visible methods after applying a protocol owner's path predicate.
+     *
+     * @param request exact request coordinates used for lookup
+     * @param accepts verifies that the selected asset actually owns this protocol path
+     * @return alternate methods for one visible route
+     */
+    public Set<HttpMethod> publicMethods(Keying.RegistrySpec request, Predicate<Assets> accepts) {
+        Set<HttpMethod> methods = new LinkedHashSet<>();
+        Keying.RegistrySpec owner = null;
+        Integer protocol = null;
+        for (Http.Method method : Http.Method.values()) {
+            if (method == Http.Method.ALL || method == Http.Method.NONE || method == Http.Method.BEFORE
+                    || method == Http.Method.AFTER || Objects.equals(method.verb(), request.verbPart())) {
+                continue;
+            }
+            var alternate = Keying.RegistrySpec.route(
+                    null,
+                    request.typePart(),
+                    request.appIdPart(),
+                    request.methodPart(),
+                    request.versionPart(),
+                    method.verb());
+            RouteMatch match = get(alternate);
+            if (match == null) {
+                continue;
+            }
+            Assets asset = match.assets();
+            var candidate = Keying.RegistrySpec.route(asset);
+            if ((request.appIdPart() != null && !Objects.equals(request.appIdPart(), candidate.appIdPart()))
+                    || (request.typePart() != null && request.typePart() != candidate.typePart())
+                    || !Objects.equals(request.versionPart(), candidate.versionPart())
+                    || !Objects.equals(method.verb(), candidate.verbPart()) || !Consts.ZERO.equals(asset.getPolicy())
+                    || !Objects.equals(Signing.NONE.code(), asset.getSigning()) || !accepts.test(asset)) {
+                continue;
+            }
+            var scope = Keying.RegistrySpec.route(
+                    null,
+                    candidate.typePart(),
+                    candidate.appIdPart(),
+                    candidate.methodPart(),
+                    candidate.versionPart(),
+                    null);
+            if (owner != null && (!owner.equals(scope) || !Objects.equals(protocol, asset.getProtocol()))) {
+                return Set.of();
+            }
+            owner = scope;
+            protocol = asset.getProtocol();
+            methods.add(HttpMethod.valueOf(method.value()));
+        }
+        return methods;
+    }
+
+    /**
      * Resolves one route by the ordered exact route-key chain.
      *
      * @param spec runtime route dimensions
@@ -529,7 +599,7 @@ public class AssetsRegistry extends AbstractRegistry<Assets> {
      */
     private boolean isMcp(Assets asset) {
         return asset != null && Type.MCP.is(RegistryAssets.typeOf(asset))
-                && Integer.valueOf(Args.PROTOCOL_MCP).equals(asset.getProtocol());
+                && Integer.valueOf(Args.ROUTE_MCP).equals(asset.getProtocol());
     }
 
     /**
@@ -539,7 +609,7 @@ public class AssetsRegistry extends AbstractRegistry<Assets> {
      * @return {@code true} when the asset uses the LLM protocol
      */
     private boolean isLlm(Assets asset) {
-        return asset != null && Integer.valueOf(Args.PROTOCOL_LLM).equals(asset.getProtocol());
+        return asset != null && Integer.valueOf(Args.ROUTE_LLM).equals(asset.getProtocol());
     }
 
     /**

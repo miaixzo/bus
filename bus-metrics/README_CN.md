@@ -54,8 +54,7 @@ double rolling = latency.percentile(0.95, TimeUnit.MILLISECONDS, Timer.Window.ON
 ```
 
 `NativeTimer.rotate1m()`、`rotate5m()` 作为显式清空滚动视图的兼容入口保留。
-`BucketWindow`、`NativeRatePair`、`NativeLlmTimer`、`CardinalityViolation` 和
-`org.miaixz.bus.metrics.observe.Test` 均继续保留。
+`BucketWindow`、`NativeRatePair`、`NativeLlmTimer` 和 `CardinalityViolation` 均继续保留。
 
 ## 基数控制
 

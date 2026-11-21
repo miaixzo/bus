@@ -68,6 +68,21 @@ public record IdTokenClaims(String issuer, String subject, List<String> audience
     /**
      * Creates and validates an immutable OpenID Connect ID Token Claims Set.
      *
+     * @param issuer                     case-sensitive OpenID Provider issuer identifier mapped from {@code iss}
+     * @param subject                    locally unique subject identifier mapped from {@code sub}
+     * @param audience                   ordered non-empty audience values mapped from {@code aud}
+     * @param expiration                 expiration instant mapped from the {@code exp} NumericDate
+     * @param issuedAt                   issuance instant mapped from the {@code iat} NumericDate
+     * @param authenticatedAt            optional authentication instant mapped from {@code auth_time}
+     * @param nonce                      optional replay-binding value copied from the Authentication Request
+     * @param authenticationContextClass optional Authentication Context Class Reference mapped from {@code acr}
+     * @param authenticationMethods      ordered Authentication Methods References mapped from {@code amr}
+     * @param authorizedParty            optional authorized party mapped from {@code azp}
+     * @param accessTokenHash            optional access-token hash mapped from {@code at_hash}
+     * @param codeHash                   optional authorization-code hash mapped from {@code c_hash}
+     * @param stateHash                  optional state hash mapped from {@code s_hash}
+     * @param sessionId                  optional OpenID Provider session identifier mapped from {@code sid}
+     * @param extensions                 additional ID Token claims that do not duplicate registered components
      * @throws IllegalArgumentException if a required value or container is {@code null}
      * @throws ValidateException        if an issuer, StringOrURI, list, hash, or extension claim violates OIDC syntax
      */

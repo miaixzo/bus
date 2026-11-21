@@ -20,7 +20,10 @@
 package org.miaixz.bus.fabric.network.tls;
 
 import java.io.IOException;
+import java.net.SocketTimeoutException;
 import java.nio.ByteBuffer;
+import java.nio.channels.AsynchronousCloseException;
+import java.nio.channels.ClosedChannelException;
 import java.time.Duration;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.CompletableFuture;
@@ -1266,6 +1269,30 @@ public class TlsChannel implements Conduit, Lifecycle {
     }
 
     /**
+     * Classifies a plaintext read failure.
+     * <p>
+     * A closed or aborted connection is not a read timeout. Distinguishing the two keeps shutdown paths from surfacing
+     * misleading {@code TLS read timed out} errors while preserving the timeout message for real socket timeouts.
+     * </p>
+     *
+     * @param timeoutMessage message to retain for a genuine read timeout
+     * @param failure        read failure
+     * @return failure message
+     */
+    private static String readFailure(final String timeoutMessage, final Throwable failure) {
+        boolean timeout = false;
+        for (Throwable cause = failure; cause != null; cause = cause.getCause()) {
+            if (cause instanceof AsynchronousCloseException || cause instanceof ClosedChannelException) {
+                return "TLS read failed: connection closed";
+            }
+            if (cause instanceof SocketTimeoutException) {
+                timeout = true;
+            }
+        }
+        return timeout ? timeoutMessage : "TLS read failed";
+    }
+
+    /**
      * Reads encrypted bytes while retaining any unconsumed prefix.
      * <p>
      * The selected timeout is copied to the encrypted conduit immediately before the physical read. A non-null duration
@@ -1293,7 +1320,7 @@ public class TlsChannel implements Conduit, Lifecycle {
             }
             read = conduit.readSynchronously(encryptedInput);
         } catch (final IOException e) {
-            throw new SocketException(message, e);
+            throw new SocketException(readFailure(message, e), e);
         }
         if (read > Normal._0) {
             if (read > writable) {

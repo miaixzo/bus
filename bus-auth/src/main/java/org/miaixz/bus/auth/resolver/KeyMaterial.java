@@ -39,6 +39,12 @@ public record KeyMaterial(String keyId, String algorithm, Key key, Instant notBe
 
     /**
      * Validates one exact key and its positive validity interval.
+     *
+     * @param keyId     stable key identifier
+     * @param algorithm declared cryptographic algorithm
+     * @param key       parsed JCA key material
+     * @param notBefore first instant at which the key is valid
+     * @param notAfter  exclusive upper validity boundary
      */
     public KeyMaterial {
         Assert.notBlank(keyId, "Key identifier must not be blank");

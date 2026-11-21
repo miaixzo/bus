@@ -130,12 +130,12 @@ public class SyncFinisher implements Closeable {
                 /**
                  * Work method.
                  *
-                 * @return the void value
                  */
                 @Override
                 public void work() {
                     runnable.run();
                 }
+
             });
         }
         return this;
@@ -153,12 +153,12 @@ public class SyncFinisher implements Closeable {
             /**
              * Work method.
              *
-             * @return the void value
              */
             @Override
             public void work() {
                 runnable.run();
             }
+
         });
     }
 

@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.starter.wrapper;
 
+import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -26,6 +27,7 @@ import org.springframework.context.annotation.Import;
 import org.miaixz.bus.spring.boot.condition.ConditionalOnEnabled;
 import org.miaixz.bus.starter.GeniusBuilder;
 import org.miaixz.bus.starter.annotation.EnableWrapper;
+import org.miaixz.bus.starter.errors.ErrorsConfiguration;
 import org.miaixz.bus.starter.wrapper.advice.ResponseAdviceConfiguration;
 import org.miaixz.bus.starter.wrapper.binding.RequestBindingConfiguration;
 import org.miaixz.bus.starter.wrapper.body.BodyCacheConfiguration;
@@ -33,7 +35,7 @@ import org.miaixz.bus.starter.wrapper.converter.MessageConverterConfiguration;
 import org.miaixz.bus.starter.wrapper.routing.RoutePrefixConfiguration;
 
 /**
- * Root configuration that composes the five independent wrapper capabilities.
+ * Root configuration that composes the independent wrapper capabilities.
  *
  * @author Kimi Liu
  */
@@ -41,6 +43,7 @@ import org.miaixz.bus.starter.wrapper.routing.RoutePrefixConfiguration;
 @EnableConfigurationProperties(WrapperProperties.class)
 @Import({ BodyCacheConfiguration.class, RequestBindingConfiguration.class, MessageConverterConfiguration.class,
         ResponseAdviceConfiguration.class, RoutePrefixConfiguration.class })
+@ImportAutoConfiguration(ErrorsConfiguration.class)
 @ConditionalOnEnabled(annotation = EnableWrapper.class, prefix = GeniusBuilder.WRAPPER)
 public class WrapperConfiguration {
 

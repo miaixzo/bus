@@ -263,6 +263,7 @@ public class ErrorBudget {
          * Total observations in this generation.
          */
         private long total;
+
     }
 
     /**

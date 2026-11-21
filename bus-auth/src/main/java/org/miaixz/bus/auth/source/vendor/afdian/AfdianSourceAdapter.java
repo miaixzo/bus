@@ -194,6 +194,8 @@ public class AfdianSourceAdapter implements VendorAdapter {
     }
 
     /**
+     * Returns the exact runtime capability manifest for the selected Afdian variant.
+     *
      * @return exact Afdian runtime manifest
      */
     @Override

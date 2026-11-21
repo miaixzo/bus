@@ -137,6 +137,11 @@ public class PrivateTag {
     public static final int StudyModifiedDateTime = 0x7777002D;
 
     /**
+     * (7777,xx2E) VR=DT VM=1 Logical Study ID
+     */
+    public static final int LogicalStudyID = 0x7777002E;
+
+    /**
      * (7777,xx30) VR=DT VM=1 Series Receive Date Time
      */
     public static final int SeriesReceiveDateTime = 0x77770030;

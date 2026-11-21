@@ -85,6 +85,8 @@ public class MutableBoolean implements Comparable<MutableBoolean>, Mutable<Boole
 
     /**
      * Set method.
+     *
+     * @param value replacement value
      */
     @Override
     public void set(final Boolean value) {

@@ -230,6 +230,8 @@ final class AdapterBindings {
 
         /**
          * Validates one factory invocation binding.
+         *
+         * @param invoker factory invocation boundary
          */
         Binding {
             Assert.notNull(invoker, "Vendor binding invoker must not be null");
@@ -248,6 +250,9 @@ final class AdapterBindings {
 
         /**
          * Validates one exact Vendor platform variant key.
+         *
+         * @param vendor  Vendor platform identifier
+         * @param variant platform-specific variant identifier
          */
         Key {
             Assert.notNull(vendor, "Vendor adapter key platform must not be null");

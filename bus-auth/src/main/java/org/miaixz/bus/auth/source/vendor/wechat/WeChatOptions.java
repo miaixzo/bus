@@ -94,6 +94,16 @@ public record WeChatOptions(Vendor.Id vendor, Vendor.Variant variant, String cli
     /**
      * Validates and freezes one WeChat registration without resolving credential material.
      *
+     * @param vendor      exact WeChat platform identifier
+     * @param variant     selected WeChat product or login flow
+     * @param clientId    App ID or Corp ID registered for the selected flow
+     * @param credential  external App Secret, Corp Secret, or provider-secret reference
+     * @param redirectUri exact registered browser callback, empty for Mini Program and enterprise
+     * @param scopes      ordered login scopes, empty for Mini Program and enterprise
+     * @param loginType   WeCom QR {@code login_type}, empty for every other variant
+     * @param agentId     WeCom {@code agentid}, empty when the selected flow does not use it
+     * @param language    WeCom QR {@code lang}, empty for every other variant
+     * @param userType    service-provider QR {@code usertype}, empty for every other variant
      * @throws IllegalArgumentException if a required component or collection member is {@code null} or blank
      * @throws ValidateException        if routing, credential, callback, scope, or variant selector values are invalid
      */

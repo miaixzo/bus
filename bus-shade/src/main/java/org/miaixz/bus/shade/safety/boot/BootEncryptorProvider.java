@@ -65,6 +65,16 @@ public class BootEncryptorProvider extends EntryEncryptorProvider<JarArchiveEntr
         map.put(
                 "org.springframework.boot.loader.PropertiesLauncher",
                 "org.miaixz.bus.shade.safety.boot.BootPropertiesLauncher");
+        // Spring Boot 3.2+ moved the launchers to the org.springframework.boot.loader.launch package.
+        map.put(
+                "org.springframework.boot.loader.launch.JarLauncher",
+                "org.miaixz.bus.shade.safety.boot.BootJarLauncher");
+        map.put(
+                "org.springframework.boot.loader.launch.WarLauncher",
+                "org.miaixz.bus.shade.safety.boot.BootWarLauncher");
+        map.put(
+                "org.springframework.boot.loader.launch.PropertiesLauncher",
+                "org.miaixz.bus.shade.safety.boot.BootPropertiesLauncher");
     }
 
     /**
@@ -207,9 +217,10 @@ public class BootEncryptorProvider extends EntryEncryptorProvider<JarArchiveEntr
                     manifest = new Manifest(nis);
                     Attributes attributes = manifest.getMainAttributes();
                     String mainClass = attributes.getValue("Main-Class");
-                    if (null != mainClass) {
+                    String targetClass = (null == mainClass ? null : map.get(mainClass));
+                    if (null != targetClass) {
                         attributes.putValue("Boot-Main-Class", mainClass);
-                        attributes.putValue("Main-Class", map.get(mainClass));
+                        attributes.putValue("Main-Class", targetClass);
                     }
                     if ((mode & Builder.FLAG_DANGER) == Builder.FLAG_DANGER) {
                         Builder.retainKey(key, attributes);
@@ -236,6 +247,16 @@ public class BootEncryptorProvider extends EntryEncryptorProvider<JarArchiveEntr
                 }
                 // Handle BOOT-INF/lib/** entries (nested JARs)
                 else if (entry.getName().startsWith(Builder.BOOT_INF_LIB)) {
+                    BootJarArchiveEntry bootJarArchiveEntry = new BootJarArchiveEntry(entry);
+                    if (!on(bootJarArchiveEntry)) {
+                        JarArchiveEntry plain = new JarArchiveEntry(entry.getName());
+                        plain.setTime(entry.getTime());
+                        zos.putArchiveEntry(plain);
+                        Builder.transfer(nis, zos);
+                        zos.closeArchiveEntry();
+                        continue;
+                    }
+                    indexes.add(entry.getName());
                     ByteArrayOutputStream bos = new ByteArrayOutputStream();
                     CheckedOutputStream cos = new CheckedOutputStream(bos, new CRC32());
                     xJarEncryptor.encrypt(key, nis, cos);

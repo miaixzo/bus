@@ -111,6 +111,8 @@ public class ZipReplacer implements Closeable {
 
     /**
      * Close method.
+     *
+     * @throws IOException if an underlying input or output operation fails
      */
     @Override
     public void close() throws IOException {

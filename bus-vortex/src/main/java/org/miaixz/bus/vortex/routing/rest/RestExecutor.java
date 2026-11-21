@@ -47,6 +47,10 @@ import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.core.xyz.UrlKit;
 import org.miaixz.bus.cortex.Assets;
+import org.miaixz.bus.cortex.registry.ServiceRoutes;
+import org.miaixz.bus.errors.ComponentFailure;
+import org.miaixz.bus.errors.ErrorType;
+import org.miaixz.bus.errors.transport.reactive.ReactiveErrorHandler;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.vortex.*;
@@ -61,7 +65,8 @@ import reactor.core.publisher.Mono;
  * <p>
  * This executor encapsulates all the logic for using Spring's {@link WebClient} to act as a reverse proxy. It builds
  * the downstream request based on the provided {@link Assets} and {@link Context}, sends it, and then transforms the
- * downstream response back into a {@link ServerResponse} for the original client.
+ * successful downstream response back into a {@link ServerResponse} for the original client. Upstream HTTP errors such
+ * as 415 are handled by {@code bus-errors} with the verified status and approved response headers.
  * <p>
  * The route asset explicitly selects bounded atomic relay, realtime streaming or protected file download. Atomic
  * responses retain a bounded logical-byte lease through the network write; streaming modes preserve downstream
@@ -73,6 +78,11 @@ import reactor.core.publisher.Mono;
  * @author Kimi Liu
  */
 public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
+
+    /**
+     * Reports failures whose rest-request response or lifecycle is owned by this adapter.
+     */
+    private static final ComponentFailure FAILURES = new ComponentFailure("vortex", "rest-request");
 
     /**
      * Default constructor.
@@ -98,7 +108,7 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
         final String path = request.path();
         final String ip = context.getX_request_ip();
 
-        String baseUrl = buildBaseUrl(context);
+        String baseUrl = ServiceRoutes.resolve(context.getAssets()).toASCIIString();
         Logger.info(
                 true,
                 "Vortex",
@@ -123,7 +133,7 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
                 path,
                 targetUri);
 
-        WebClient.RequestBodySpec bodySpec = Egress
+        WebClient.RequestBodySpec bodySpec = Egress.Http
                 .request(HttpMethod.valueOf(context.getHttpMethod().value()), targetUri);
         Logger.info(
                 true,
@@ -142,6 +152,9 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
                     headers.add(name, value);
                 }
             });
+            headers.remove(Http.Auth.FORWARD_PROOF_HEADER);
+            if (context.getForwardProof() != null)
+                headers.set(Http.Auth.FORWARD_PROOF_HEADER, context.getForwardProof().apply(targetUri));
             headers.clearContentHeaders();
         });
         Logger.debug(
@@ -235,7 +248,7 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
                     ip,
                     method,
                     path);
-            return executeStreaming(bodySpec, assets, targetUri, delivery, ip, method, path);
+            return executeStreaming(bodySpec, assets, targetUri, delivery, ip, method, path, context.getX_request_id());
         } else {
             Logger.info(
                     true,
@@ -244,7 +257,7 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
                     ip,
                     method,
                     path);
-            return executeBuffering(bodySpec, assets, targetUri, ip, method, path);
+            return executeBuffering(bodySpec, assets, targetUri, ip, method, path, context.getX_request_id());
         }
     }
 
@@ -465,10 +478,7 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
      * @param value parameter value
      */
     private void addQueryPair(List<String> parts, String key, String value) {
-        // The raw authorization projection is gateway-internal evidence. Forwarding it in a GET URI both exposes
-        // internal claims to downstream applications and can exceed the request-line limit for broad administrator
-        // roles. Downstream services receive the bounded, verified identity fields separately.
-        if (Args.isForwardingControlParameter(key) || "x_raw_data".equalsIgnoreCase(key)) {
+        if (Args.isForwardingControlParameter(key)) {
             return;
         }
         parts.add(UrlKit.toQuery(Map.of(key, StringKit.toStringOrEmpty(value)), Charset.UTF_8));
@@ -530,6 +540,7 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
      * @param ip        client IP for logging
      * @param method    incoming HTTP method
      * @param path      incoming request path
+     * @param requestId server-generated identifier for cancellation diagnostics
      * @return proxied streaming response
      */
     private Mono<ServerResponse> executeStreaming(
@@ -539,11 +550,14 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
             Delivery delivery,
             String ip,
             String method,
-            String path) {
+            String path,
+            String requestId) {
         HttpMethod httpMethod = HttpMethod.valueOf(method);
         Mono<ResponseEntity<Flux<DataBuffer>>> response = bodySpec.retrieve()
-                .onStatus(status -> true, clientResponse -> Mono.empty()).toEntityFlux(DataBuffer.class);
-        return Egress.guard(response, 0, Egress.retryAttempts(assets, httpMethod), "rest-streaming", method, targetUri)
+                .onStatus(status -> status.isError(), ReactiveErrorHandler::upstreamFailure)
+                .toEntityFlux(DataBuffer.class);
+        return Egress.Http
+                .guard(response, 0, Egress.Http.retryAttempts(assets, httpMethod), "rest-streaming", method, targetUri)
                 .flatMap(responseEntity -> buildStreamingResponse(responseEntity, delivery, ip, method, path))
                 .doOnSubscribe(
                         subscription -> Logger.info(
@@ -562,24 +576,7 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
                                 method,
                                 path,
                                 serverResponse.statusCode()))
-                .doOnError(
-                        error -> Logger.error(
-                                false,
-                                "Vortex",
-                                "Request FAILED (Streaming): protocol=http, clientIp={}, method={}, path={}, event=HTTP_ROUTER_ERROR, {}",
-                                ip,
-                                method,
-                                path,
-                                error.getMessage(),
-                                error))
-                .doOnCancel(
-                        () -> Logger.warn(
-                                false,
-                                "Vortex",
-                                "Request was cancelled by client (Streaming).: protocol=http, clientIp={}, method={}, path={}, event=HTTP_ROUTER_CANCEL",
-                                ip,
-                                method,
-                                path));
+                .doOnCancel(() -> FAILURES.failed(ErrorType.CANCELLED, 0, null, requestId));
     }
 
     /**
@@ -597,6 +594,7 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
      * @param ip        the client IP for logging
      * @param method    the incoming request method for logging
      * @param path      the incoming request path for logging
+     * @param requestId server-generated identifier for cancellation diagnostics
      * @return a buffered {@link ServerResponse}
      */
     private Mono<ServerResponse> executeBuffering(
@@ -605,11 +603,14 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
             URI targetUri,
             String ip,
             String method,
-            String path) {
+            String path,
+            String requestId) {
         HttpMethod httpMethod = HttpMethod.valueOf(method);
         Mono<ResponseEntity<Flux<DataBuffer>>> response = bodySpec.retrieve()
-                .onStatus(status -> true, clientResponse -> Mono.empty()).toEntityFlux(DataBuffer.class);
-        return Egress.guard(response, 0, Egress.retryAttempts(assets, httpMethod), "rest-atomic", method, targetUri)
+                .onStatus(status -> status.isError(), ReactiveErrorHandler::upstreamFailure)
+                .toEntityFlux(DataBuffer.class);
+        return Egress.Http
+                .guard(response, 0, Egress.Http.retryAttempts(assets, httpMethod), "rest-atomic", method, targetUri)
                 .flatMap(responseEntity -> {
                     Logger.info(
                             false,
@@ -639,24 +640,7 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
                                 method,
                                 path,
                                 serverResponse.statusCode()))
-                .doOnError(
-                        error -> Logger.error(
-                                false,
-                                "Vortex",
-                                "Request FAILED (Buffering): protocol=http, clientIp={}, method={}, path={}, event=HTTP_ROUTER_ERROR, {}",
-                                ip,
-                                method,
-                                path,
-                                error.getMessage(),
-                                error))
-                .doOnCancel(
-                        () -> Logger.warn(
-                                false,
-                                "Vortex",
-                                "Request was cancelled by client (Buffering).: protocol=http, clientIp={}, method={}, path={}, event=HTTP_ROUTER_CANCEL",
-                                ip,
-                                method,
-                                path));
+                .doOnCancel(() -> FAILURES.failed(ErrorType.CANCELLED, 0, null, requestId));
     }
 
     /**

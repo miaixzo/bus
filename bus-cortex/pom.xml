@@ -82,11 +82,7 @@
     <dependencies>
         <dependency>
             <groupId>org.miaixz</groupId>
-            <artifactId>bus-cache</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.miaixz</groupId>
-            <artifactId>bus-fabric</artifactId>
+            <artifactId>bus-auth</artifactId>
         </dependency>
         <dependency>
             <groupId>org.miaixz</groupId>

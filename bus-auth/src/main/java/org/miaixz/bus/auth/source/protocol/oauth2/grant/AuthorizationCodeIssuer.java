@@ -1107,6 +1107,8 @@ public class AuthorizationCodeIssuer {
         /**
          * Validates the internal routing result without repeating client registration policy.
          *
+         * @param response    standard successful authorization response
+         * @param redirectUri exact validated redirect URI
          * @throws IllegalArgumentException if a component is {@code null} or blank
          * @throws ValidateException        if the redirect target is not an absolute fragment-free URI
          */

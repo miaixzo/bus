@@ -57,6 +57,7 @@ public enum StringValueType implements ValueType {
         protected SpecificCharacterSet cs(SpecificCharacterSet cs) {
             return cs;
         }
+
     },
 
     /**
@@ -84,6 +85,7 @@ public enum StringValueType implements ValueType {
         protected Object toMultiValue(String s) {
             return s;
         }
+
     },
 
     /**
@@ -101,6 +103,7 @@ public enum StringValueType implements ValueType {
         protected Object toMultiValue(String s) {
             return s;
         }
+
     },
 
     /**
@@ -133,6 +136,7 @@ public enum StringValueType implements ValueType {
         protected SpecificCharacterSet cs(SpecificCharacterSet cs) {
             return cs;
         }
+
     },
 
     /**
@@ -228,6 +232,7 @@ public enum StringValueType implements ValueType {
                 val = toStrings((double[]) val);
             return super.prompt(val, bigEndian, cs, maxChars, sb);
         }
+
     },
 
     /**
@@ -318,6 +323,7 @@ public enum StringValueType implements ValueType {
                 val = toStrings((long[]) val);
             return super.prompt(val, bigEndian, cs, maxChars, sb);
         }
+
     };
 
     /**

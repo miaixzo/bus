@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.cortex.guard;
 
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.xyz.EnumKit;
 
 /**
@@ -39,22 +40,22 @@ public enum GuardPolicy {
     /**
      * Public or authentication-bootstrap access. No user credential is required.
      */
-    ANONYMOUS(0, false, false, false, false),
+    ANONYMOUS(Normal._0, false, false, false, false),
 
     /**
      * Credential authentication only. Token is preferred, API key is used as fallback.
      */
-    CREDENTIAL(1, true, true, false, false),
+    CREDENTIAL(Normal._1, true, true, false, false),
 
     /**
      * Credential authentication plus permission validation.
      */
-    CREDENTIAL_PERMISSION(2, true, true, true, false),
+    CREDENTIAL_PERMISSION(Normal._2, true, true, true, false),
 
     /**
-     * Credential authentication plus permission and license validation.
+     * Legacy code retaining credential and permission validation.
      */
-    CREDENTIAL_PERMISSION_LICENSE(3, true, true, true, true);
+    CREDENTIAL_PERMISSION_LICENSE(Normal._3, true, true, true, false);
 
     /**
      * Stable numeric code persisted in asset definitions.

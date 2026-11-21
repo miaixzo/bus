@@ -759,6 +759,7 @@ public class MapKit extends MapGets {
             public T setValue(final T value) {
                 throw new UnsupportedOperationException("Unsupported setValue method !");
             }
+
         });
     }
 

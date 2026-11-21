@@ -23,11 +23,12 @@ import org.springframework.web.server.ServerWebExchange;
 
 import org.miaixz.bus.core.Order;
 import org.miaixz.bus.core.basic.normal.Consts;
-import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.cortex.Assets;
 import org.miaixz.bus.cortex.Keying;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.vortex.Context;
+import org.miaixz.bus.vortex.guard.AnchorGuard;
 import org.miaixz.bus.vortex.guard.SignatureVerifier;
 import org.miaixz.bus.vortex.magic.ErrorCode;
 import org.miaixz.bus.vortex.provider.AuthorizeProvider;
@@ -86,14 +87,15 @@ public class RestQualifierStrategy extends QualifierStrategy {
                         method,
                         version,
                         verb);
-                return Mono.error(new ValidateException(ErrorCode._100103));
+                return Mono.error(routeMiss(exchange, requestRoute, ErrorCode._100103));
             })).flatMap(match -> {
                 Assets assets = match.assets();
                 context.setAssets(assets);
+                AnchorGuard.apply(context, assets.getApp_id(), assets.getUrl());
                 Logger.info(
                         true,
                         "Vortex",
-                        "REST asset resolved: strategy=rest-qualifier, clientIp={}, type={}, appId={}, method={}, version={}, verb={}, policy={}, signing={}, mode={}, host={}, port={}, path={}, url={}",
+                        "REST asset resolved: strategy=rest-qualifier, clientIp={}, type={}, appId={}, method={}, version={}, verb={}, policy={}, signing={}, mode={}, instances={}, url={}",
                         context.getX_request_ip(),
                         assets.getType(),
                         assets.getApp_id(),
@@ -103,9 +105,7 @@ public class RestQualifierStrategy extends QualifierStrategy {
                         assets.getPolicy(),
                         assets.getSigning(),
                         assets.getProtocol(),
-                        assets.getHost(),
-                        assets.getPort(),
-                        assets.getPath(),
+                        assets.getInstances() == null ? Normal._0 : assets.getInstances().size(),
                         assets.getUrl());
                 Mono<Void> validationMono = this.method(context, assets)
                         .then(SignatureVerifier.verifyRest(context, assets));

@@ -53,6 +53,11 @@ public class SysPath {
     public static final String CPU = SYS + "devices/system/cpu/";
 
     /**
+     * The CPUs assigned to an Intel hybrid processor's performance-core PMU.
+     */
+    public static final String HYBRID_PERFORMANCE_CPUS = SYS + "devices/cpu_core/cpus";
+
+    /**
      * The DMI_ID constant.
      */
     public static final String DMI_ID = SYS + "devices/virtual/dmi/id/";
@@ -63,9 +68,14 @@ public class SysPath {
     public static final String NET = SYS + "class/net/";
 
     /**
+     * The device-tree root directory.
+     */
+    public static final String DEVICETREE = SYS + "firmware/devicetree/base/";
+
+    /**
      * The MODEL constant.
      */
-    public static final String MODEL = SYS + "firmware/devicetree/base/model";
+    public static final String MODEL = DEVICETREE + "model";
 
     /**
      * The POWER_SUPPLY constant.

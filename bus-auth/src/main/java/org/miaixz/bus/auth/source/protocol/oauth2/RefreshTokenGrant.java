@@ -39,6 +39,8 @@ public record RefreshTokenGrant(String refreshToken, Optional<Scope> scope) impl
     /**
      * Creates and validates an immutable refresh-token grant.
      *
+     * @param refreshToken refresh token previously issued to the client
+     * @param scope        optional requested scope that cannot exceed the original grant
      * @throws IllegalArgumentException if the token or scope container is {@code null}, or the token is empty
      * @throws ValidateException        if the token contains a character outside RFC 6749 {@code VSCHAR}
      */

@@ -271,6 +271,8 @@ final class MapperOptionsResolver {
                 case "enabled" -> schemaOptions.setEnabled(Boolean.parseBoolean(value));
                 case "mode" -> schemaOptions.setMode(Schema.valueOf(StringKit.toUpperCase(value.trim())));
                 case "dryrun" -> schemaOptions.setDryRun(Boolean.parseBoolean(value));
+                case "targetcatalog" -> schemaOptions.setTargetCatalog(StringKit.trim(value));
+                case "targetschema" -> schemaOptions.setTargetSchema(StringKit.trim(value));
                 case "printsql" -> schemaOptions.setPrintSql(Boolean.parseBoolean(value));
                 case "failfast" -> schemaOptions.setFailFast(Boolean.parseBoolean(value));
                 case "continueonerror" -> schemaOptions.setContinueOnError(Boolean.parseBoolean(value));
@@ -305,6 +307,8 @@ final class MapperOptionsResolver {
             schemaOptions.setEntityPackages(entityPackages.toArray(Normal.EMPTY_STRING_ARRAY));
         }
         applySet(properties, schemaOptions::setIncludeTables, "includeTables", "include-tables");
+        applySet(properties, schemaOptions::setDropColumnDefaults, "dropColumnDefaults", "drop-column-defaults");
+        applySet(properties, schemaOptions::setReorderTables, "reorderTables", "reorder-tables");
         applySet(properties, schemaOptions::setExcludeTables, "excludeTables", "exclude-tables");
         applySet(properties, schemaOptions::setIncludeEntities, "includeEntities", "include-entities");
         applySet(properties, schemaOptions::setExcludeEntities, "excludeEntities", "exclude-entities");
@@ -329,6 +333,10 @@ final class MapperOptionsResolver {
         copy.setEnabled(source.isEnabled());
         copy.setMode(source.getMode());
         copy.setDryRun(source.isDryRun());
+        copy.setTargetCatalog(source.getTargetCatalog());
+        copy.setTargetSchema(source.getTargetSchema());
+        copy.setDropColumnDefaults(new LinkedHashSet<>(source.getDropColumnDefaults()));
+        copy.setReorderTables(new LinkedHashSet<>(source.getReorderTables()));
         copy.setPrintSql(source.isPrintSql());
         copy.setFailFast(source.isFailFast());
         copy.setContinueOnError(source.isContinueOnError());

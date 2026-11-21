@@ -53,6 +53,7 @@ public class JwkSetCodec {
      * Creates a strict JWK Set resource codec that processes JSON through {@link JsonKit}.
      */
     public JwkSetCodec() {
+        // No initialization required.
     }
 
     /**

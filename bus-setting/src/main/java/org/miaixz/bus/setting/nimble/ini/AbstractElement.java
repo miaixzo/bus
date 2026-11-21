@@ -55,7 +55,7 @@ public abstract class AbstractElement implements IniElement {
     private IniComment comment;
 
     /**
-     * Creates an element without an associated comment.
+     * Creates an INI element while retaining its source text, location and associated comment.
      *
      * @param value         parsed element value
      * @param originalValue original source value
@@ -69,7 +69,12 @@ public abstract class AbstractElement implements IniElement {
     }
 
     /**
-     * maybe have comment
+     * Creates an INI element while retaining its source text, location and associated comment.
+     *
+     * @param value         parsed element value
+     * @param originalValue original source text retained for round-trip output
+     * @param lineNumber    line number of the element in the source document
+     * @param comment       comment associated with the element
      */
     AbstractElement(String value, String originalValue, int lineNumber, IniComment comment) {
         this.value = value;

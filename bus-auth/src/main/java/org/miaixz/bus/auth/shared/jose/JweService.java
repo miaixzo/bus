@@ -857,6 +857,11 @@ public class JweService {
         /**
          * Defensively copies the encryption request.
          *
+         * @param plaintext         exact plaintext octets
+         * @param protectedHeader   integrity-protected Header members
+         * @param unprotectedHeader shared unprotected Header members
+         * @param aad               decoded external additional authenticated data
+         * @param recipients        non-empty recipient inputs in requested wire order
          * @throws IllegalArgumentException if a component or recipient is {@code null}
          * @throws ValidateException        if no recipient is supplied
          */
@@ -909,6 +914,9 @@ public class JweService {
 
         /**
          * Validates and detaches the per-recipient Header.
+         *
+         * @param header per-recipient unprotected Header members
+         * @param key    explicit recipient public or symmetric key
          */
         public EncryptionRecipient {
             Assert.notNull(header, "JWE recipient Header must not be null");
@@ -929,6 +937,9 @@ public class JweService {
 
         /**
          * Validates and detaches recipient wire values.
+         *
+         * @param header       per-recipient unprotected Header members
+         * @param encryptedKey decoded encrypted_key bytes, empty for direct key management
          */
         public Recipient {
             Assert.notNull(header, "JWE recipient Header must not be null");
@@ -969,6 +980,14 @@ public class JweService {
         /**
          * Validates and defensively copies all JWE wire components.
          *
+         * @param protectedHeader      parsed protected Header members
+         * @param encodedProtected     original protected Header Base64URL representation
+         * @param unprotectedHeader    shared unprotected Header members
+         * @param aad                  decoded external AAD bytes
+         * @param initializationVector decoded initialization vector
+         * @param ciphertext           decoded ciphertext
+         * @param tag                  decoded authentication tag
+         * @param recipients           non-empty recipients in wire order
          * @throws IllegalArgumentException if a component or recipient is {@code null}
          * @throws ValidateException        if recipients, IV, or tag are empty
          */

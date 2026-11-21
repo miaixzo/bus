@@ -29,8 +29,7 @@ import org.miaixz.bus.starter.elastic.ElasticConfiguration;
  * Enables Elasticsearch client support.
  * <p>
  * This annotation imports the {@link ElasticConfiguration}, which sets up the necessary beans for interacting with an
- * Elasticsearch cluster, including the low-level
- * {@link co.elastic.clients.transport.rest5_client.low_level.Rest5Client} and the modern
+ * Elasticsearch cluster, including the {@link co.elastic.clients.transport.ElasticsearchTransport} and the modern
  * {@link co.elastic.clients.elasticsearch.ElasticsearchClient}.
  *
  * @author Kimi Liu

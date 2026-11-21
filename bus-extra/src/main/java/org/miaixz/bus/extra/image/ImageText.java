@@ -187,8 +187,10 @@ public class ImageText implements Serializable {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Compares text, color, font, position and opacity with another image-text value.
      *
+     * @param o value to compare with this image-text value
+     * @return whether the text and rendering properties are equal
      */
     @Override
     public boolean equals(final Object o) {
@@ -205,8 +207,9 @@ public class ImageText implements Serializable {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Returns a hash of the text and rendering properties.
      *
+     * @return hash code of the text and rendering properties
      */
     @Override
     public int hashCode() {
@@ -214,8 +217,9 @@ public class ImageText implements Serializable {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Returns a diagnostic description of the text and rendering properties.
      *
+     * @return diagnostic text containing this value and its rendering properties
      */
     @Override
     public String toString() {

@@ -53,6 +53,7 @@ public interface Registry {
                 registry.customize(entity, ms, context);
             }
         }
+
     };
 
     /**

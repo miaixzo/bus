@@ -81,6 +81,8 @@ public class SpringContext implements ApplicationListener<ContextClosedEvent>, A
 
     /**
      * Releases the reference only when the closing event belongs to the owned context.
+     *
+     * @param event application event to process
      */
     @Override
     public void onApplicationEvent(ContextClosedEvent event) {

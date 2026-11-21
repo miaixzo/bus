@@ -63,6 +63,20 @@ public record OAuth2ClientOptions(Optional<Endpoint> authorizationEndpoint, Opti
 
     /**
      * Normalizes optional containers and enforces transport, registration, credential, and security invariants.
+     *
+     * @param authorizationEndpoint               optional browser authorization endpoint
+     * @param tokenEndpoint                       optional token endpoint shared by all supported grants
+     * @param introspectionEndpoint               optional RFC 7662 introspection endpoint
+     * @param revocationEndpoint                  optional RFC 7009 revocation endpoint
+     * @param deviceAuthorizationEndpoint         optional RFC 8628 device authorization endpoint
+     * @param authorizationServerMetadataEndpoint optional RFC 8414 metadata endpoint
+     * @param expectedIssuer                      optional trusted authorization server issuer
+     * @param clientId                            authorization server-issued client identifier
+     * @param redirectUris                        exact registered redirect URI values
+     * @param clientAuthenticationMethod          selected endpoint client authentication method
+     * @param clientCredential                    optional external client-secret reference
+     * @param pkceRequired                        whether every browser authorization request must use explicit PKCE
+     * @param dpopRequired                        whether issued access tokens must be sender-constrained with DPoP
      */
     public OAuth2ClientOptions {
         authorizationEndpoint = normalize(authorizationEndpoint, "authorization endpoint");

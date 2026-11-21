@@ -1,6 +1,83 @@
 {
   "reflection": [
     {
+      "type": "java.io.FilterOutputStream",
+      "condition": {
+        "typeReached": "jakarta.ws.rs.client.ClientRequestFilter"
+      },
+      "methods": [
+        {
+          "name": "close",
+          "parameterTypes": []
+        },
+        {
+          "name": "flush",
+          "parameterTypes": []
+        },
+        {
+          "name": "write",
+          "parameterTypes": [
+            "byte[]",
+            "int",
+            "int"
+          ]
+        },
+        {
+          "name": "write",
+          "parameterTypes": [
+            "byte[]"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "java.io.OutputStream",
+      "condition": {
+        "typeReached": "jakarta.ws.rs.client.ClientRequestFilter"
+      },
+      "methods": [
+        {
+          "name": "nullOutputStream",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.gitlab.AbstractApi",
+      "methods": [
+        {
+          "name": "getGroupIdOrPath",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "getLabelIdOrName",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "getNamespaceIdOrPath",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "getProjectIdOrPath",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "getUserIdOrUsername",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        }
+      ]
+    },
+    {
       "type": "org.miaixz.bus.gitlab.GitLabApi$1Oauth2Api",
       "methods": [
         {
@@ -159,6 +236,136 @@
           "parameterTypes": [
             "java.util.List"
           ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.gitlab.PagerSpliterator",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.gitlab.Pager"
+          ]
+        },
+        {
+          "name": "characteristics",
+          "parameterTypes": []
+        },
+        {
+          "name": "estimateSize",
+          "parameterTypes": []
+        },
+        {
+          "name": "tryAdvance",
+          "parameterTypes": [
+            "java.util.function.Consumer"
+          ]
+        },
+        {
+          "name": "trySplit",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.gitlab.PipelineApi$1CreatePipelineForm",
+      "fields": [
+        {
+          "name": "ref"
+        },
+        {
+          "name": "variables"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.gitlab.PipelineApi",
+            "java.lang.String",
+            "java.util.List"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.gitlab.ProjectLicense",
+      "fields": [
+        {
+          "name": "htmlUrl"
+        },
+        {
+          "name": "key"
+        },
+        {
+          "name": "name"
+        },
+        {
+          "name": "nickname"
+        },
+        {
+          "name": "sourceUrl"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "getHtmlUrl",
+          "parameterTypes": []
+        },
+        {
+          "name": "getKey",
+          "parameterTypes": []
+        },
+        {
+          "name": "getName",
+          "parameterTypes": []
+        },
+        {
+          "name": "getNickname",
+          "parameterTypes": []
+        },
+        {
+          "name": "getSourceUrl",
+          "parameterTypes": []
+        },
+        {
+          "name": "setHtmlUrl",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setKey",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setName",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setNickname",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setSourceUrl",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
         }
       ]
     },
@@ -13462,6 +13669,35 @@
       ]
     },
     {
+      "type": "org.miaixz.bus.gitlab.models.Constants",
+      "fields": [
+        {
+          "name": "NEXT_PAGE_HEADER"
+        },
+        {
+          "name": "PAGE_HEADER"
+        },
+        {
+          "name": "PAGE_PARAM"
+        },
+        {
+          "name": "PER_PAGE"
+        },
+        {
+          "name": "PER_PAGE_PARAM"
+        },
+        {
+          "name": "PREV_PAGE_HEADER"
+        },
+        {
+          "name": "TOTAL_HEADER"
+        },
+        {
+          "name": "TOTAL_PAGES_HEADER"
+        }
+      ]
+    },
+    {
       "type": "org.miaixz.bus.gitlab.models.Constants$ActionType",
       "fields": [
         {
@@ -14019,6 +14255,68 @@
       ]
     },
     {
+      "type": "org.miaixz.bus.gitlab.models.Constants$DeployTokenScope",
+      "fields": [
+        {
+          "name": "enumCodec"
+        },
+        {
+          "name": "READ_PACKAGE_REGISTRY"
+        },
+        {
+          "name": "READ_REGISTRY"
+        },
+        {
+          "name": "READ_REPOSITORY"
+        },
+        {
+          "name": "READ_VIRTUAL_REGISTRY"
+        },
+        {
+          "name": "WRITE_PACKAGE_REGISTRY"
+        },
+        {
+          "name": "WRITE_REGISTRY"
+        },
+        {
+          "name": "WRITE_VIRTUAL_REGISTRY"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "int"
+          ]
+        },
+        {
+          "name": "forValue",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "toValue",
+          "parameterTypes": []
+        },
+        {
+          "name": "valueOf",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "values",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
       "type": "org.miaixz.bus.gitlab.models.Constants$DeploymentOrderBy",
       "fields": [
         {
@@ -14094,68 +14392,6 @@
         },
         {
           "name": "SUCCESS"
-        }
-      ],
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "int"
-          ]
-        },
-        {
-          "name": "forValue",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "toString",
-          "parameterTypes": []
-        },
-        {
-          "name": "toValue",
-          "parameterTypes": []
-        },
-        {
-          "name": "valueOf",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "values",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.gitlab.models.Constants$DeployTokenScope",
-      "fields": [
-        {
-          "name": "enumCodec"
-        },
-        {
-          "name": "READ_PACKAGE_REGISTRY"
-        },
-        {
-          "name": "READ_REGISTRY"
-        },
-        {
-          "name": "READ_REPOSITORY"
-        },
-        {
-          "name": "READ_VIRTUAL_REGISTRY"
-        },
-        {
-          "name": "WRITE_PACKAGE_REGISTRY"
-        },
-        {
-          "name": "WRITE_REGISTRY"
-        },
-        {
-          "name": "WRITE_VIRTUAL_REGISTRY"
         }
       ],
       "methods": [
@@ -16281,60 +16517,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.gitlab.models.CreatedChildEpic",
-      "fields": [
-        {
-          "name": "hasChildren"
-        },
-        {
-          "name": "hasIssues"
-        },
-        {
-          "name": "relationUrl"
-        }
-      ],
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "getHasChildren",
-          "parameterTypes": []
-        },
-        {
-          "name": "getHasIssues",
-          "parameterTypes": []
-        },
-        {
-          "name": "getRelationUrl",
-          "parameterTypes": []
-        },
-        {
-          "name": "setHasChildren",
-          "parameterTypes": [
-            "java.lang.Boolean"
-          ]
-        },
-        {
-          "name": "setHasIssues",
-          "parameterTypes": [
-            "java.lang.Boolean"
-          ]
-        },
-        {
-          "name": "setRelationUrl",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "toString",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
       "type": "org.miaixz.bus.gitlab.models.CreateRunnerParams",
       "methods": [
         {
@@ -16472,6 +16654,60 @@
       ]
     },
     {
+      "type": "org.miaixz.bus.gitlab.models.CreatedChildEpic",
+      "fields": [
+        {
+          "name": "hasChildren"
+        },
+        {
+          "name": "hasIssues"
+        },
+        {
+          "name": "relationUrl"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "getHasChildren",
+          "parameterTypes": []
+        },
+        {
+          "name": "getHasIssues",
+          "parameterTypes": []
+        },
+        {
+          "name": "getRelationUrl",
+          "parameterTypes": []
+        },
+        {
+          "name": "setHasChildren",
+          "parameterTypes": [
+            "java.lang.Boolean"
+          ]
+        },
+        {
+          "name": "setHasIssues",
+          "parameterTypes": [
+            "java.lang.Boolean"
+          ]
+        },
+        {
+          "name": "setRelationUrl",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
       "type": "org.miaixz.bus.gitlab.models.CustomAttribute",
       "fields": [
         {
@@ -16517,6 +16753,179 @@
           "parameterTypes": [
             "java.lang.String"
           ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.gitlab.models.DeployKey",
+      "fields": [
+        {
+          "name": "canPush"
+        },
+        {
+          "name": "createdAt"
+        },
+        {
+          "name": "id"
+        },
+        {
+          "name": "key"
+        },
+        {
+          "name": "title"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "getCanPush",
+          "parameterTypes": []
+        },
+        {
+          "name": "getCreatedAt",
+          "parameterTypes": []
+        },
+        {
+          "name": "getId",
+          "parameterTypes": []
+        },
+        {
+          "name": "getKey",
+          "parameterTypes": []
+        },
+        {
+          "name": "getTitle",
+          "parameterTypes": []
+        },
+        {
+          "name": "setCanPush",
+          "parameterTypes": [
+            "java.lang.Boolean"
+          ]
+        },
+        {
+          "name": "setCreatedAt",
+          "parameterTypes": [
+            "java.util.Date"
+          ]
+        },
+        {
+          "name": "setId",
+          "parameterTypes": [
+            "java.lang.Long"
+          ]
+        },
+        {
+          "name": "setKey",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setTitle",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.gitlab.models.DeployToken",
+      "fields": [
+        {
+          "name": "expiresAt"
+        },
+        {
+          "name": "id"
+        },
+        {
+          "name": "name"
+        },
+        {
+          "name": "scopes"
+        },
+        {
+          "name": "token"
+        },
+        {
+          "name": "username"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "getExpiresAt",
+          "parameterTypes": []
+        },
+        {
+          "name": "getId",
+          "parameterTypes": []
+        },
+        {
+          "name": "getName",
+          "parameterTypes": []
+        },
+        {
+          "name": "getScopes",
+          "parameterTypes": []
+        },
+        {
+          "name": "getToken",
+          "parameterTypes": []
+        },
+        {
+          "name": "getUsername",
+          "parameterTypes": []
+        },
+        {
+          "name": "setExpiresAt",
+          "parameterTypes": [
+            "java.util.Date"
+          ]
+        },
+        {
+          "name": "setId",
+          "parameterTypes": [
+            "java.lang.Long"
+          ]
+        },
+        {
+          "name": "setName",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setScopes",
+          "parameterTypes": [
+            "java.util.List"
+          ]
+        },
+        {
+          "name": "setToken",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setUsername",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
         }
       ]
     },
@@ -16759,86 +17168,6 @@
         },
         {
           "name": "setWebUrl",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "toString",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.gitlab.models.DeployKey",
-      "fields": [
-        {
-          "name": "canPush"
-        },
-        {
-          "name": "createdAt"
-        },
-        {
-          "name": "id"
-        },
-        {
-          "name": "key"
-        },
-        {
-          "name": "title"
-        }
-      ],
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "getCanPush",
-          "parameterTypes": []
-        },
-        {
-          "name": "getCreatedAt",
-          "parameterTypes": []
-        },
-        {
-          "name": "getId",
-          "parameterTypes": []
-        },
-        {
-          "name": "getKey",
-          "parameterTypes": []
-        },
-        {
-          "name": "getTitle",
-          "parameterTypes": []
-        },
-        {
-          "name": "setCanPush",
-          "parameterTypes": [
-            "java.lang.Boolean"
-          ]
-        },
-        {
-          "name": "setCreatedAt",
-          "parameterTypes": [
-            "java.util.Date"
-          ]
-        },
-        {
-          "name": "setId",
-          "parameterTypes": [
-            "java.lang.Long"
-          ]
-        },
-        {
-          "name": "setKey",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setTitle",
           "parameterTypes": [
             "java.lang.String"
           ]
@@ -17127,99 +17456,6 @@
           "parameterTypes": [
             "java.util.Date"
           ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.gitlab.models.DeployToken",
-      "fields": [
-        {
-          "name": "expiresAt"
-        },
-        {
-          "name": "id"
-        },
-        {
-          "name": "name"
-        },
-        {
-          "name": "scopes"
-        },
-        {
-          "name": "token"
-        },
-        {
-          "name": "username"
-        }
-      ],
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "getExpiresAt",
-          "parameterTypes": []
-        },
-        {
-          "name": "getId",
-          "parameterTypes": []
-        },
-        {
-          "name": "getName",
-          "parameterTypes": []
-        },
-        {
-          "name": "getScopes",
-          "parameterTypes": []
-        },
-        {
-          "name": "getToken",
-          "parameterTypes": []
-        },
-        {
-          "name": "getUsername",
-          "parameterTypes": []
-        },
-        {
-          "name": "setExpiresAt",
-          "parameterTypes": [
-            "java.util.Date"
-          ]
-        },
-        {
-          "name": "setId",
-          "parameterTypes": [
-            "java.lang.Long"
-          ]
-        },
-        {
-          "name": "setName",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setScopes",
-          "parameterTypes": [
-            "java.util.List"
-          ]
-        },
-        {
-          "name": "setToken",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setUsername",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "toString",
-          "parameterTypes": []
         }
       ]
     },
@@ -24932,6 +25168,56 @@
       ]
     },
     {
+      "type": "org.miaixz.bus.gitlab.models.LinkType",
+      "fields": [
+        {
+          "name": "BLOCKS"
+        },
+        {
+          "name": "enumCodec"
+        },
+        {
+          "name": "IS_BLOCKED_BY"
+        },
+        {
+          "name": "RELATES_TO"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "int"
+          ]
+        },
+        {
+          "name": "forValue",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "toValue",
+          "parameterTypes": []
+        },
+        {
+          "name": "valueOf",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "values",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
       "type": "org.miaixz.bus.gitlab.models.LinkedIssue",
       "fields": [
         {
@@ -24994,56 +25280,6 @@
         },
         {
           "name": "toString",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.gitlab.models.LinkType",
-      "fields": [
-        {
-          "name": "BLOCKS"
-        },
-        {
-          "name": "enumCodec"
-        },
-        {
-          "name": "IS_BLOCKED_BY"
-        },
-        {
-          "name": "RELATES_TO"
-        }
-      ],
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "int"
-          ]
-        },
-        {
-          "name": "forValue",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "toString",
-          "parameterTypes": []
-        },
-        {
-          "name": "toValue",
-          "parameterTypes": []
-        },
-        {
-          "name": "valueOf",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "values",
           "parameterTypes": []
         }
       ]
@@ -40625,136 +40861,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.gitlab.PagerSpliterator",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "org.miaixz.bus.gitlab.Pager"
-          ]
-        },
-        {
-          "name": "characteristics",
-          "parameterTypes": []
-        },
-        {
-          "name": "estimateSize",
-          "parameterTypes": []
-        },
-        {
-          "name": "tryAdvance",
-          "parameterTypes": [
-            "java.util.function.Consumer"
-          ]
-        },
-        {
-          "name": "trySplit",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.gitlab.PipelineApi$1CreatePipelineForm",
-      "fields": [
-        {
-          "name": "ref"
-        },
-        {
-          "name": "variables"
-        }
-      ],
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "org.miaixz.bus.gitlab.PipelineApi",
-            "java.lang.String",
-            "java.util.List"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.gitlab.ProjectLicense",
-      "fields": [
-        {
-          "name": "htmlUrl"
-        },
-        {
-          "name": "key"
-        },
-        {
-          "name": "name"
-        },
-        {
-          "name": "nickname"
-        },
-        {
-          "name": "sourceUrl"
-        }
-      ],
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "getHtmlUrl",
-          "parameterTypes": []
-        },
-        {
-          "name": "getKey",
-          "parameterTypes": []
-        },
-        {
-          "name": "getName",
-          "parameterTypes": []
-        },
-        {
-          "name": "getNickname",
-          "parameterTypes": []
-        },
-        {
-          "name": "getSourceUrl",
-          "parameterTypes": []
-        },
-        {
-          "name": "setHtmlUrl",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setKey",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setName",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setNickname",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setSourceUrl",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "toString",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
       "type": "org.miaixz.bus.gitlab.services.BugzillaService",
       "methods": [
         {
@@ -42768,6 +42874,9 @@
     },
     {
       "type": "org.miaixz.bus.gitlab.support.JacksonJson$JacksonJsonInstanceHolder",
+      "condition": {
+        "typeReached": "jakarta.ws.rs.ext.ContextResolver"
+      },
       "fields": [
         {
           "name": "JACKSON_JSON"
@@ -43241,112 +43350,6 @@
             "int",
             "int"
           ]
-        }
-      ]
-    },
-    {
-      "type": "java.io.FilterOutputStream",
-      "condition": {
-        "typeReached": "jakarta.ws.rs.client.ClientRequestFilter"
-      },
-      "methods": [
-        {
-          "name": "close",
-          "parameterTypes": []
-        },
-        {
-          "name": "flush",
-          "parameterTypes": []
-        },
-        {
-          "name": "write",
-          "parameterTypes": [
-            "byte[]",
-            "int",
-            "int"
-          ]
-        },
-        {
-          "name": "write",
-          "parameterTypes": [
-            "byte[]"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "java.io.OutputStream",
-      "condition": {
-        "typeReached": "jakarta.ws.rs.client.ClientRequestFilter"
-      },
-      "methods": [
-        {
-          "name": "nullOutputStream",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.gitlab.AbstractApi",
-      "methods": [
-        {
-          "name": "getGroupIdOrPath",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "getLabelIdOrName",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "getNamespaceIdOrPath",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "getProjectIdOrPath",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "getUserIdOrUsername",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.gitlab.models.Constants",
-      "fields": [
-        {
-          "name": "NEXT_PAGE_HEADER"
-        },
-        {
-          "name": "PAGE_HEADER"
-        },
-        {
-          "name": "PAGE_PARAM"
-        },
-        {
-          "name": "PER_PAGE"
-        },
-        {
-          "name": "PER_PAGE_PARAM"
-        },
-        {
-          "name": "PREV_PAGE_HEADER"
-        },
-        {
-          "name": "TOTAL_HEADER"
-        },
-        {
-          "name": "TOTAL_PAGES_HEADER"
         }
       ]
     }

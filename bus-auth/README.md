@@ -241,7 +241,18 @@ switch (outcome) {
 
 `runtime.reload(context, timeout)` always loads a complete Blueprint candidate. Validation and compilation finish before
 one atomic publication; any failure leaves the active Roster and workers unchanged. Revisions strictly increase and
-generation-scope framework caches so stale protocol state cannot be reused after reload.
+define the security epoch of framework caches so stale protocol state cannot be reused after reload.
+
+`epoch` is a non-negative security-state round, not a Unix timestamp. A complete Blueprint `revision` supplies the
+compiled cache epoch; reload publication and revision ordering are unchanged. Refresh-token entries instead expose
+`sequence`, the zero-based rotation order within their authorization family. Advancing a Source epoch does not reset
+or increment an existing refresh entry's sequence.
+
+Source-scoped cache keys use `:epoch:` exclusively. Refresh-entry payloads expose `sequence` exclusively; there are
+no alternate field names, namespace readers, or format fallbacks. Downstream consumers must recompile against this
+API. Deploy all participating components together and require existing protocol credentials and pending interactions
+to be reissued. JDK object caches use the required current serialization form; direct record streams are rejected.
+Keep replay markers until their original TTL expires; changing a cache schema must not reopen a replay window.
 
 Use `RuntimeManager` with deterministic lifecycle ownership, preferably in `try`/`finally` or try-with-resources.
 `close()` rejects new dispatch and reload operations and retires compiled workers, but does not close caller-owned

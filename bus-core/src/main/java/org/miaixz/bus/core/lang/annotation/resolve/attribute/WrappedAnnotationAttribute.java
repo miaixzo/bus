@@ -113,6 +113,7 @@ public interface WrappedAnnotationAttribute extends AnnotationAttribute {
      * Returns the annotation of the specified type on the attribute.
      *
      * @param annotationType The annotation type
+     * @param <T>            annotation type to retrieve
      * @return The annotation object, or {@code null} if not present
      */
     @Override

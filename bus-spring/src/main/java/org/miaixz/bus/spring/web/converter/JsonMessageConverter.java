@@ -125,6 +125,8 @@ public class JsonMessageConverter implements MessageConverterRegistrar {
     /**
      * Spring generic HTTP converter that delegates JSON byte encoding and decoding exclusively to a
      * {@link JsonProvider}.
+     *
+     * @author Kimi Liu
      */
     static final class ProviderHttpMessageConverter extends AbstractGenericHttpMessageConverter<Object> {
 
@@ -210,6 +212,7 @@ public class JsonMessageConverter implements MessageConverterRegistrar {
                 throw new HttpMessageNotWritableException("JSON serialization failed", e);
             }
         }
+
     }
 
 }

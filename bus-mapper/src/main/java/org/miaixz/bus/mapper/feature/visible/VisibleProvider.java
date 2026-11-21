@@ -100,6 +100,7 @@ import org.miaixz.bus.mapper.provider.MapperProvider;
  *             return VisibleProvider.column(tableAlias, "user_id") + " = " + userId;
  *         }
  *     }
+ *
  * }
  * }</pre>
  *
@@ -125,6 +126,7 @@ import org.miaixz.bus.mapper.provider.MapperProvider;
  *         }
  *         return VisibleProvider.column(tableAlias, "user_id") + " = " + currentUser.getId();
  *     }
+ *
  * }
  * }</pre>
  *

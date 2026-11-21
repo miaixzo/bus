@@ -1282,7 +1282,8 @@ public class SecondEntity extends Audit {
 规则在现有 `ColumnOrderResolver` 中集中处理，不提供公共属性后置开关。
 排序仅作用于 schema 初始化的新建表元数据副本，不修改缓存中的 CRUD 映射，
 不改变联合主键、索引或外键内部顺序。直接调用方言 `createTable` 时使用调用方传入的列顺序。
-已有表不会因列顺序差异触发迁移；后续新增列不保证插到公共属性之前。
+默认情况下，已有表的列顺序差异不会触发迁移，后续新增列不保证插到公共属性之前。
+需要重排已有表时，按下方配置示例显式指定目标表，并使用支持列重排的方言。
 `dryRun`、脚本和实际执行使用相同排序规则。
 
 必要离线验证使用 Lattice 的实际 `Assets` 映射、`dp_` 前缀及 `dp_infra_assets` 表名，
@@ -1313,6 +1314,20 @@ BUS_MAPPER_POSTGRES_PASSWORD='your-password' mvn -B -ntp -f bus-mapper/pom.xml \
 `org.miaixz.bus.mapper.dialect` 下的对应方言类，例如 MySQL DDL 位于 `MySql`，PostgreSQL DDL 位于
 `PostgreSql`，H2 DDL 位于 `H2`。
 
+MySQL 8.4 InnoDB 使用原生 ALTER 操作重排列，应在维护窗口执行。SQLite 在事务中重建普通表，并在切换前比较数据、
+校验原表定义和依赖对象。遇到外键、外部依赖或无法保全的表结构时，SQLite 会中止重建。需要完整性校验的结构变更由启动同步执行。
+
+| 方言 | 结构维护能力 |
+| --- | --- |
+| PostgreSQL | 支持 schema 迁移和约束操作，默认值清理和条件唯一索引已通过实库验证 |
+| MySQL 8.4 InnoDB | 列重排、默认值清理和单列条件唯一索引已通过实库验证 |
+| SQLite | 普通表事务重建、列重排、默认值清理和条件唯一索引已通过实库验证 |
+| H2、HSQLDB | 默认值清理已通过实库验证 |
+| SQL Server、SQL Server 2012 | 已实现按名称清理默认约束及读取筛选索引，待实库验证 |
+| Db2、达梦、Firebird | 已实现原生默认值清理和检查约束 DDL，待实库验证 |
+
+方言无法等价实现实体声明的条件索引时，启动同步会在结构报告中说明原因。各方言仍按声明的能力提供常规结构操作。
+
 本方案不使用 Flyway，不使用 Liquibase，也不创建迁移记录表。
 
 -----
@@ -1320,56 +1335,75 @@ BUS_MAPPER_POSTGRES_PASSWORD='your-password' mvn -B -ntp -f bus-mapper/pom.xml \
 ## 🔧 配置示例
 
 ```yaml
-mapper:
-  # Global configuration, effective for all databases
-  # Tenant Isolation
-  tenant:
-    column: tenant_id
-    ignore: sys_tenant,sys_config,sys_dict
+bus:
+  mapper:
+    # 全局配置，适用于所有数据库
+    # 租户隔离
+    tenant:
+      column: tenant_id
+      ignore: sys_tenant,sys_config,sys_dict
 
-  # SQL Auditing
-  audit:
-    enabled: true
-    slow-sql-threshold: 500
-    log-parameters: true
-    print-console: true
+    # SQL 审计
+    audit:
+      enabled: true
+      slow-sql-threshold: 500
+      log-parameters: true
+      print-console: true
 
-  # Data Population
-  populate:
-    created: true
-    modified: true
-    creator: true
-    modifier: true
+    # 字段自动填充
+    populate:
+      created: true
+      modified: true
+      creator: true
+      modifier: true
 
-  # Data Visibility
-  visible:
-    enabled: true
-    ignore: sys_admin_table
+    # 数据可见范围
+    visible:
+      enabled: true
+      ignore: sys_admin_table
 
-  # Affix Rules
-  affix:
-    enabled: true
-    prefix:
-      value: prod_
-      ignore: sys_log,sys_config
-    suffix:
-      value: _archive
-      ignore: sys_log
+    # 启动时预检结构。确认备份和预检报告后，再在维护窗口执行。
+    schema:
+      enabled: true
+      mode: UPDATE
+      dry-run: true
+      # 按实体映射的表名匹配，匹配时尚未应用下面的表名前后缀。
+      include-tables: [infra_lookup]
+      # 按当前 JDBC 驱动支持的命名空间选择，不支持的项保持省略。
+      # target-schema: public
+      # target-catalog: example
+      # 危险操作仅放行默认值清理和列重排。
+      allow-dangerous: true
+      dangerous-whitelist: [DROP_COLUMN_DEFAULT, REORDER_COLUMNS]
+      # 使用应用前后缀后的物理表名。清理默认值还需指定物理列名。
+      reorder-tables: [prod_infra_lookup_archive]
+      drop-column-defaults: [prod_infra_lookup_archive.status]
+      # 清理前确认应用会提供必填列的值。标识列和生成列需另外处理。
 
-  # Per-Database Configuration (overrides global)
-  configurationProperties:
-    com_miaixz:
-      affix:
-        prefix:
-          value: dp_
+    # 表名前后缀
+    affix:
+      enabled: true
+      prefix:
+        value: prod_
+        ignore: sys_log,sys_config
+      suffix:
+        value: _archive
+        ignore: sys_log
+
+    # 按数据库配置（覆盖全局配置）
+    configurationProperties:
+      com_miaixz:
+        affix:
+          prefix:
+            value: dp_
+            ignore: tenant,assets,license
+          suffix:
+            value: _archive
+            ignore: tenant,assets
+        tenant:
+          column: tenant_id
           ignore: tenant,assets,license
-        suffix:
-          value: _archive
-          ignore: tenant,assets
-      tenant:
-        column: tenant_id
-        ignore: tenant,assets,license
-    # ......
+      # ......
 ```
 
 -----

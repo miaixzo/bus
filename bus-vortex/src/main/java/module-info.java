@@ -35,6 +35,7 @@ module bus.vortex {
     requires bus.core;
     requires bus.cortex;
     requires bus.crypto;
+    requires bus.errors;
     requires bus.extra;
     requires bus.logger;
 
@@ -69,6 +70,7 @@ module bus.vortex {
     exports org.miaixz.bus.vortex.routing.mcp;
     exports org.miaixz.bus.vortex.routing.mq;
     exports org.miaixz.bus.vortex.routing.rest;
+    exports org.miaixz.bus.vortex.routing.sdc;
     exports org.miaixz.bus.vortex.routing.slug;
     exports org.miaixz.bus.vortex.routing.ws;
     exports org.miaixz.bus.vortex.strategy;

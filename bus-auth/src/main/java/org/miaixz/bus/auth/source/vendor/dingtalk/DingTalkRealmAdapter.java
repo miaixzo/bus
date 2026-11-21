@@ -214,7 +214,10 @@ public class DingTalkRealmAdapter implements VendorAdapter {
      * @return immutable user resource
      */
     private static Realm.Resource userResource(final User user, final Instant observedAt) {
-        return new Realm.Resource(new Realm.Key(Realm.Kind.USER, user.id()), Map.of("userid", user.id()), user.name(),
+        final Map<String, String> identifiers = new LinkedHashMap<>();
+        identifiers.put("userid", user.id());
+        user.mail().ifPresent(mail -> identifiers.put("mail", mail));
+        return new Realm.Resource(new Realm.Key(Realm.Kind.USER, user.id()), identifiers, user.name(),
                 user.active() ? Realm.State.ACTIVE : Realm.State.INACTIVE, EMPTY_ATTRIBUTES, observedAt);
     }
 
@@ -500,7 +503,8 @@ public class DingTalkRealmAdapter implements VendorAdapter {
             departmentIds.add(identifier(department, "DingTalk user department identifier"));
         }
         return new User(requiredString(value, "userid"), requiredString(value, "name"),
-                requiredBoolean(value, "active"), departmentIds, optionalText(value, "manager_userid"));
+                requiredBoolean(value, "active"), departmentIds, optionalText(value, "manager_userid"),
+                optionalText(value, "org_email").or(() -> optionalText(value, "email")));
     }
 
     /**
@@ -2481,6 +2485,7 @@ public class DingTalkRealmAdapter implements VendorAdapter {
         private int code() {
             return code;
         }
+
     }
 
     /**
@@ -2538,6 +2543,7 @@ public class DingTalkRealmAdapter implements VendorAdapter {
                     : ordered.contains(Realm.Kind.USER) ? Phase.USERS : Phase.ROLES;
             return new CursorState(phase, ordered, Position.initial(phase));
         }
+
     }
 
     /**
@@ -2705,6 +2711,7 @@ public class DingTalkRealmAdapter implements VendorAdapter {
                 }
             }
         }
+
     }
 
     /**
@@ -2732,6 +2739,7 @@ public class DingTalkRealmAdapter implements VendorAdapter {
             items = List.copyOf(copy);
             next = Position.optionalText(next, "DingTalk wire numeric offset");
         }
+
     }
 
     /**
@@ -2758,6 +2766,7 @@ public class DingTalkRealmAdapter implements VendorAdapter {
             }
             fingerprint = Position.optionalText(fingerprint, "DingTalk replay fingerprint");
         }
+
     }
 
     /**
@@ -2869,6 +2878,7 @@ public class DingTalkRealmAdapter implements VendorAdapter {
             }
             return Outcome.succeeded(Optional.empty());
         }
+
     }
 
     /**
@@ -2931,6 +2941,7 @@ public class DingTalkRealmAdapter implements VendorAdapter {
         private String parentId() {
             return parentId;
         }
+
     }
 
     /**
@@ -2958,6 +2969,7 @@ public class DingTalkRealmAdapter implements VendorAdapter {
                 throw new ValidateException("DingTalk department must not be its own parent");
             }
         }
+
     }
 
     /**
@@ -2967,11 +2979,12 @@ public class DingTalkRealmAdapter implements VendorAdapter {
      * @param name          exact user display name
      * @param active        official activation state
      * @param departmentIds stable department identifiers in canonical order
+     * @param mail          optional provider-supplied email, preferring the enterprise mailbox
      * @param managerId     stable manager user identifier, or empty
      * @author Kimi Liu
      */
-    private record User(String id, String name, boolean active, List<String> departmentIds,
-            Optional<String> managerId) {
+    private record User(String id, String name, boolean active, List<String> departmentIds, Optional<String> managerId,
+            Optional<String> mail) {
 
         /**
          * Validates and normalizes one minimal user projection.
@@ -2980,6 +2993,7 @@ public class DingTalkRealmAdapter implements VendorAdapter {
          * @param name          exact display name
          * @param active        official activation state
          * @param departmentIds stable department identifiers
+         * @param mail          optional provider-supplied email, preferring the enterprise mailbox
          * @param managerId     stable manager identifier
          */
         private User {
@@ -2997,10 +3011,12 @@ public class DingTalkRealmAdapter implements VendorAdapter {
             ordered.sort(String::compareTo);
             departmentIds = List.copyOf(ordered);
             managerId = Position.optionalText(managerId, "DingTalk user manager identifier");
+            mail = Position.optionalText(mail, "DingTalk user mail");
             if (managerId.isPresent() && id.equals(managerId.getOrNull())) {
                 throw new ValidateException("DingTalk user must not manage itself");
             }
         }
+
     }
 
     /**
@@ -3022,6 +3038,7 @@ public class DingTalkRealmAdapter implements VendorAdapter {
             id = requireText(id, "DingTalk role identifier");
             name = requireText(name, "DingTalk role name");
         }
+
     }
 
     /**
@@ -3040,6 +3057,7 @@ public class DingTalkRealmAdapter implements VendorAdapter {
         private RoleMember {
             id = requireText(id, "DingTalk role member identifier");
         }
+
     }
 
     /**
@@ -3073,6 +3091,7 @@ public class DingTalkRealmAdapter implements VendorAdapter {
         public String toString() {
             return Builder.REDACTED_VALUE;
         }
+
     }
 
 }

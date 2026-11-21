@@ -172,6 +172,7 @@ public interface Payload {
                     public void close() {
                         closed = true;
                     }
+
                 };
             }
 
@@ -247,6 +248,7 @@ public interface Payload {
             public boolean repeatable() {
                 return true;
             }
+
         };
     }
 
@@ -364,6 +366,7 @@ public interface Payload {
             public boolean repeatable() {
                 return false;
             }
+
         };
     }
 

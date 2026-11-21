@@ -958,6 +958,8 @@ public class DouyinSourceAdapter implements VendorAdapter {
         /**
          * Validates one decoded callback value.
          *
+         * @param code  authorization code
+         * @param state mandatory browser correlation value
          * @throws IllegalArgumentException if either value is blank
          */
         private CallbackWire {
@@ -979,6 +981,8 @@ public class DouyinSourceAdapter implements VendorAdapter {
         /**
          * Validates one private open-platform access result.
          *
+         * @param accessToken sensitive access token
+         * @param openId      application-scoped open identifier required by the profile endpoint
          * @throws IllegalArgumentException if a value is blank
          */
         private Access {

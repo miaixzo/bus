@@ -527,6 +527,7 @@ public class IntrospectionCodec {
         /**
          * Creates a successful decoded branch.
          *
+         * @param response RFC 7662 introspection response
          * @throws IllegalArgumentException if response is {@code null}
          */
         public Success {
@@ -547,6 +548,8 @@ public class IntrospectionCodec {
         /**
          * Creates an erroneous decoded branch.
          *
+         * @param response standard OAuth error response
+         * @param status   original HTTP 4xx or 5xx status
          * @throws IllegalArgumentException if response is {@code null}
          * @throws ValidateException        if status is not HTTP 4xx or 5xx
          */

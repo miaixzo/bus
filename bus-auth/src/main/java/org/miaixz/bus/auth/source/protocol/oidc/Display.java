@@ -54,6 +54,7 @@ public record Display(String value) {
     /**
      * Validates the extensible display registration-name grammar.
      *
+     * @param value exact case-sensitive display wire value
      * @throws IllegalArgumentException if value is {@code null} or empty
      * @throws ValidateException        if a character is outside the OAuth registration-name grammar
      */

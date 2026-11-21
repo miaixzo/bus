@@ -81,7 +81,10 @@ public class PairConverter extends ConverterWithRoot implements Serializable {
     /**
      * Convert method.
      *
+     * @param targetType The target type to convert to.
+     * @param value      The value to convert.
      * @return the Object value
+     * @throws ConvertException if the value cannot be converted to the requested target type
      */
     @Override
     public Object convert(Type targetType, final Object value) throws ConvertException {

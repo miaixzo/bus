@@ -84,6 +84,7 @@ public class ConditionProvider extends BasicProvider {
                         + CONDITION_PARAMETER_WHERE
                         + ifTest("condition.endSql != null and condition.endSql != ''", () -> "${condition.endSql}");
             }
+
         });
     }
 
@@ -108,6 +109,7 @@ public class ConditionProvider extends BasicProvider {
                         + CONDITION_PARAMETER_WHERE
                         + ifTest("condition.endSql != null and condition.endSql != ''", () -> "${condition.endSql}");
             }
+
         });
     }
 
@@ -138,6 +140,7 @@ public class ConditionProvider extends BasicProvider {
                         + CONDITION_PARAMETER_WHERE
                         + ifTest("condition.endSql != null and condition.endSql != ''", () -> "${condition.endSql}");
             }
+
         });
     }
 
@@ -161,6 +164,7 @@ public class ConditionProvider extends BasicProvider {
                         + ifTest("orderByClause == null", () -> entity.orderByColumn().orElse(Normal.EMPTY))
                         + ifTest("endSql != null and endSql != ''", () -> "${endSql}");
             }
+
         });
     }
 
@@ -184,6 +188,7 @@ public class ConditionProvider extends BasicProvider {
                         + ") FROM " + entity.tableName() + ifParameterNotNull(() -> CONDITION_ROOT_WHERE)
                         + ifTest("endSql != null and endSql != ''", () -> "${endSql}");
             }
+
         });
     }
 

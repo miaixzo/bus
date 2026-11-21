@@ -205,10 +205,10 @@ public class TEA implements Encryptor, Decryptor, Serializable {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Encrypts the given byte array.
      *
-     * @param data Description inherited from parent class or interface.
-     * @return Description inherited from parent class or interface.
+     * @param data The byte array to be encrypted.
+     * @return The encrypted content as a byte array.
      */
     @Override
     public byte[] encrypt(final byte[] data) {
@@ -219,11 +219,12 @@ public class TEA implements Encryptor, Decryptor, Serializable {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Encrypts data from an input stream and writes it to an output stream. This method is suitable for large amounts
+     * of data. The option to close streams after operation is provided.
      *
-     * @param data    Description inherited from parent class or interface.
-     * @param out     Description inherited from parent class or interface.
-     * @param isClose Description inherited from parent class or interface.
+     * @param data    input stream containing the source bytes
+     * @param out     output stream receiving the transformed bytes
+     * @param isClose whether the stream helper closes the output stream after writing
      */
     @Override
     public void encrypt(final InputStream data, final OutputStream out, final boolean isClose) {
@@ -231,10 +232,10 @@ public class TEA implements Encryptor, Decryptor, Serializable {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Decrypts the given byte array.
      *
-     * @param data Description inherited from parent class or interface.
-     * @return Description inherited from parent class or interface.
+     * @param data The byte array to be decrypted.
+     * @return The decrypted byte array.
      */
     @Override
     public byte[] decrypt(final byte[] data) {
@@ -245,11 +246,12 @@ public class TEA implements Encryptor, Decryptor, Serializable {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Decrypts data from an input stream and writes it to an output stream. This method is designed for large amounts
+     * of data and does not close the streams upon completion.
      *
-     * @param data    Description inherited from parent class or interface.
-     * @param out     Description inherited from parent class or interface.
-     * @param isClose Description inherited from parent class or interface.
+     * @param data    input stream containing the source bytes
+     * @param out     output stream receiving the transformed bytes
+     * @param isClose whether the stream helper closes the output stream after writing
      */
     @Override
     public void decrypt(final InputStream data, final OutputStream out, final boolean isClose) {

@@ -260,6 +260,7 @@ public class MppsSCU {
                     }
                     super.onDimseRSP(as, cmd, data);
                 }
+
             };
         }
 
@@ -268,6 +269,7 @@ public class MppsSCU {
 
             return new DimseRSPHandler(as.nextMessageID());
         }
+
     };
 
     /**

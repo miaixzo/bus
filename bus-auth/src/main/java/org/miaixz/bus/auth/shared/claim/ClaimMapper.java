@@ -171,6 +171,9 @@ public class ClaimMapper {
         /**
          * Detaches and freezes input collections and implementation-neutral JSON values.
          *
+         * @param attributes complete verified Subject attribute object
+         * @param evidence   verified authentication evidence
+         * @param mappings   ordered explicit mapping rules
          * @throws IllegalArgumentException if a component or collection entry is {@code null}
          */
         public Request {
@@ -210,6 +213,9 @@ public class ClaimMapper {
 
         /**
          * Validates and freezes result components.
+         *
+         * @param claims successfully mapped unique claims
+         * @param issues missing or conflict issues
          */
         public Result {
             Assert.notNull(claims, "Claim mapping result must not be null");
@@ -230,6 +236,10 @@ public class ClaimMapper {
 
         /**
          * Validates safe issue fields.
+         *
+         * @param kind            deterministic issue category
+         * @param targetName      affected target claim name
+         * @param safeDescription non-sensitive description
          */
         public Issue {
             Assert.notNull(kind, "Claim mapping issue kind must not be null");

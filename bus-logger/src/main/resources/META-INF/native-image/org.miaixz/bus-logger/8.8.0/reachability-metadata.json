@@ -426,6 +426,48 @@
       ]
     },
     {
+      "type": "org.miaixz.bus.logger.Provider",
+      "methods": [
+        {
+          "name": "get",
+          "parameterTypes": []
+        },
+        {
+          "name": "get",
+          "parameterTypes": [
+            "java.lang.Class"
+          ]
+        },
+        {
+          "name": "get",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.logger.Registry",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "get",
+          "parameterTypes": [
+            "java.lang.Class"
+          ]
+        },
+        {
+          "name": "get",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
       "type": "org.miaixz.bus.logger.magic.AbstractFactory",
       "fields": [
         {
@@ -1350,56 +1392,14 @@
           ]
         }
       ]
-    },
-    {
-      "type": "org.miaixz.bus.logger.Provider",
-      "methods": [
-        {
-          "name": "get",
-          "parameterTypes": []
-        },
-        {
-          "name": "get",
-          "parameterTypes": [
-            "java.lang.Class"
-          ]
-        },
-        {
-          "name": "get",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.logger.Registry",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "get",
-          "parameterTypes": [
-            "java.lang.Class"
-          ]
-        },
-        {
-          "name": "get",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        }
-      ]
     }
   ],
   "resources": [
     {
-      "glob": "logging.properties"
+      "glob": "META-INF/services/org.miaixz.bus.logger.Factory"
     },
     {
-      "glob": "META-INF/services/org.miaixz.bus.logger.Factory"
+      "glob": "logging.properties"
     }
   ]
 }

@@ -95,6 +95,8 @@ public class MutableShort extends Number implements Comparable<MutableShort>, Mu
 
     /**
      * Set method.
+     *
+     * @param value replacement value
      */
     @Override
     public void set(final Number value) {

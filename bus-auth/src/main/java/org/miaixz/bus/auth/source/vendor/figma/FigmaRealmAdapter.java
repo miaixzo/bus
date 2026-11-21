@@ -1398,6 +1398,7 @@ public class FigmaRealmAdapter implements VendorAdapter {
             }
             throw new ValidateException("Figma cursor phase is unknown");
         }
+
     }
 
     /**
@@ -1412,6 +1413,10 @@ public class FigmaRealmAdapter implements VendorAdapter {
 
         /**
          * Validates one cursor state.
+         *
+         * @param phase    snapshot phase represented by this cursor
+         * @param kinds    requested kinds
+         * @param position recoverable position
          */
         private CursorState {
             phase = Assert.notNull(phase, "Figma cursor phase must not be null");
@@ -1434,6 +1439,7 @@ public class FigmaRealmAdapter implements VendorAdapter {
             return new CursorState(ordered.contains(Realm.Kind.USER) ? Phase.USERS : Phase.GROUPS, ordered,
                     Position.initial());
         }
+
     }
 
     /**
@@ -1448,6 +1454,10 @@ public class FigmaRealmAdapter implements VendorAdapter {
 
         /**
          * Validates one position.
+         *
+         * @param start          one-based official start index
+         * @param parentId       current replay group identifier
+         * @param relationOffset next embedded member index
          */
         private Position {
             if (start <= 0 || relationOffset < 0) {
@@ -1501,6 +1511,7 @@ public class FigmaRealmAdapter implements VendorAdapter {
                 throw new ValidateException("Figma cursor position does not belong to its phase");
             }
         }
+
     }
 
     /**
@@ -1515,6 +1526,9 @@ public class FigmaRealmAdapter implements VendorAdapter {
 
         /**
          * Freezes one page.
+         *
+         * @param items minimal items
+         * @param next  next start index or zero
          */
         private ScimPage {
             items = List.copyOf(Assert.notNull(items, "Figma SCIM items must not be null"));
@@ -1522,6 +1536,7 @@ public class FigmaRealmAdapter implements VendorAdapter {
                 throw new ValidateException("Figma SCIM next index must not be negative");
             }
         }
+
     }
 
     /**
@@ -1538,6 +1553,12 @@ public class FigmaRealmAdapter implements VendorAdapter {
 
         /**
          * Validates one user.
+         *
+         * @param id          stable identifier
+         * @param userName    login identifier
+         * @param displayName display name
+         * @param active      active flag
+         * @param title       optional organization title
          */
         private User {
             id = requireText(id, "Figma user identifier");
@@ -1545,6 +1566,7 @@ public class FigmaRealmAdapter implements VendorAdapter {
             displayName = requireText(displayName, "Figma user display name");
             title = Assert.notNull(title, "Figma user title container must not be null");
         }
+
     }
 
     /**
@@ -1559,12 +1581,17 @@ public class FigmaRealmAdapter implements VendorAdapter {
 
         /**
          * Validates one group.
+         *
+         * @param id          stable identifier
+         * @param displayName display name
+         * @param members     embedded stable user identifiers
          */
         private Group {
             id = requireText(id, "Figma group identifier");
             displayName = requireText(displayName, "Figma group display name");
             members = List.copyOf(Assert.notNull(members, "Figma group members must not be null"));
         }
+
     }
 
 }

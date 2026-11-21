@@ -43,7 +43,8 @@
  * throw directly rather than returning a partial success report.
  */
 'use strict';
-const fs = require('node:fs'), path = require('node:path'), crypto = require('node:crypto'), zlib = require('node:zlib');
+const fs = require('node:fs'), path = require('node:path'), crypto = require('node:crypto'),
+    zlib = require('node:zlib');
 
 // Resolve paths independently of the current directory and use VERSION as the
 // artifact version. Names and timestamps alone do not establish build freshness.
@@ -127,7 +128,8 @@ class Zip {
             throw Error('Invalid ZIP ' + file);
         // EOCD fields hold the entry count, directory offset and byte length.
         // Sentinel counts/offsets require a ZIP64 reader instead of this parser.
-        const n = tail.readUInt16LE(end + 10), offset = tail.readUInt32LE(end + 16), length = tail.readUInt32LE(end + 12);
+        const n = tail.readUInt16LE(end + 10), offset = tail.readUInt32LE(end + 16),
+            length = tail.readUInt32LE(end + 12);
         if (n === 65535 || offset === 0xffffffff)
             throw Error('ZIP64 archive requires a ZIP64-aware verifier: ' + file);
 
@@ -139,7 +141,8 @@ class Zip {
         for (let i = 0; i < n; i++) {
             if (central.readUInt32LE(at) !== 0x02014b50)
                 throw Error('Invalid ZIP directory');
-            const nl = central.readUInt16LE(at + 28), el = central.readUInt16LE(at + 30), cl = central.readUInt16LE(at + 32), name = central.subarray(at + 46, at + 46 + nl).toString('utf8');
+            const nl = central.readUInt16LE(at + 28), el = central.readUInt16LE(at + 30),
+                cl = central.readUInt16LE(at + 32), name = central.subarray(at + 46, at + 46 + nl).toString('utf8');
             // Duplicate paths may hide overwritten classes/resources. Record
             // the error even though the map retains the final matching record.
             if (this.entries.has(name))
@@ -192,7 +195,8 @@ class Zip {
         const e = this.entries.get(name);
         if (!e)
             return null;
-        const h = this.read(e.offset, 30), data = this.read(e.offset + 30 + h.readUInt16LE(26) + h.readUInt16LE(28), e.compressed);
+        const h = this.read(e.offset, 30),
+            data = this.read(e.offset + 30 + h.readUInt16LE(26) + h.readUInt16LE(28), e.compressed);
         return e.method === 0 ? data : e.method === 8 ? zlib.inflateRawSync(data) : (() => {
             throw Error('Unsupported ZIP compression');
         })();
@@ -220,35 +224,37 @@ class Zip {
 function walk(dir) {
     if (!fs.existsSync(dir))
         return [];
-    return fs.readdirSync(dir, { withFileTypes: true }).sort((a, b) => a.name.localeCompare(b.name)).flatMap(e => e.isDirectory() ? walk(path.join(dir, e.name)) : [path.join(dir, e.name)]);
+    return fs.readdirSync(dir, {withFileTypes: true}).sort((a, b) => a.name.localeCompare(b.name)).flatMap(e => e.isDirectory() ? walk(path.join(dir, e.name)) : [path.join(dir, e.name)]);
 }
 
-// Keep both aggregate readers open across module comparisons. The explicit Bus
-// artifact references in bus-all's POM determine aggregate coverage; standalone
-// JNI components must not be assumed to be included automatically.
-const allFile = path.join(root, 'bus-all/target', `bus-all-${ version }.jar`), all = new Zip(allFile);
-const allSources = new Zip(path.join(root, 'bus-all/target', `bus-all-${ version }-sources.jar`));
-const direct = new Set([...fs.readFileSync(path.join(root, 'bus-all/pom.xml'), 'utf8').matchAll(/<artifactId>(bus-[^<]+)<\/artifactId>/g)].map(m => m[1]).filter(m => ![
-    'bus-parent',
-    'bus-all'
+// bus-all packages the Bus components, including transitive dependencies.
+// bus-opencv is shipped separately alongside the aggregate.
+const allFile = path.join(root, 'bus-all/target', `bus-all-${version}.jar`), all = new Zip(allFile);
+const allSources = new Zip(path.join(root, 'bus-all/target', `bus-all-${version}-sources.jar`));
+const aggregatedModules = new Set(modules.filter(m => ![
+    'bus-all',
+    'bus-bom',
+    'bus-opencv',
+    'bus-parent'
 ].includes(m)));
 
 // These counters describe comparisons, not a new compilation. Report the
 // observed class major version together with the fixed Java 21 ceiling.
-let compiledClasses = 0, aggregatedClasses = 0, metadataFiles = 0, maxClassMajor = 0, sourceFiles = 0, aggregatedSourceFiles = 0;
+let compiledClasses = 0, aggregatedClasses = 0, metadataFiles = 0, maxClassMajor = 0, sourceFiles = 0,
+    aggregatedSourceFiles = 0;
 
 // Verify each component independently before checking its aggregate coverage.
 // Parent/BOM modules publish POMs and are validated separately below.
 for (const module of modules) {
     if ([
-            'bus-bom',
-            'bus-parent'
-        ].includes(module))
+        'bus-bom',
+        'bus-parent'
+    ].includes(module))
         continue;
-    const file = path.join(root, module, 'target', `${ module }-${ version }.jar`), zip = new Zip(file);
+    const file = path.join(root, module, 'target', `${module}-${version}.jar`), zip = new Zip(file);
     // Whole-file hashes catch installed copies from a different build even
     // when their Maven versions and filenames match current target artifacts.
-    const installed = path.join(process.env.HOME, '.m2/repository/org/miaixz', module, version, `${ module }-${ version }.jar`);
+    const installed = path.join(process.env.HOME, '.m2/repository/org/miaixz', module, version, `${module}-${version}.jar`);
     const bytes = fs.readFileSync(file);
     if (!fs.existsSync(installed) || hash(bytes) !== hash(fs.readFileSync(installed)))
         errors.push(module + ': installed JAR differs from this build');
@@ -256,15 +262,16 @@ for (const module of modules) {
     // Every current Java file must match its component source JAR entry. For
     // included modules, bus-all's source JAR must match too; module-info.java
     // is deliberately exempt from the aggregate-source requirement.
-    const sourceJar = new Zip(path.join(root, module, 'target', `${ module }-${ version }-sources.jar`));
+    const sourceJar = new Zip(path.join(root, module, 'target', `${module}-${version}-sources.jar`));
     const javaRoot = path.join(root, module, 'src/main/java');
     if (module !== 'bus-all')
         for (const source of walk(javaRoot).filter(f => f.endsWith('.java'))) {
-            const name = path.relative(javaRoot, source).split(path.sep).join('/'), expected = hash(fs.readFileSync(source)), actual = sourceJar.data(name);
+            const name = path.relative(javaRoot, source).split(path.sep).join('/'),
+                expected = hash(fs.readFileSync(source)), actual = sourceJar.data(name);
             if (!actual || hash(actual) !== expected)
                 errors.push(module + ': source JAR differs: ' + name);
             sourceFiles++;
-            if (direct.has(module) && path.basename(name) !== 'module-info.java') {
+            if (aggregatedModules.has(module) && path.basename(name) !== 'module-info.java') {
                 const entry = allSources.data(name);
                 if (!entry || hash(entry) !== expected)
                     errors.push(module + ': bus-all source JAR differs: ' + name);
@@ -279,7 +286,8 @@ for (const module of modules) {
     let classes = 0;
     const prefix = path.join(root, module, 'target/classes') + path.sep;
     for (const cls of walk(prefix).filter(f => f.endsWith('.class') && path.basename(f) !== 'module-info.class')) {
-        const name = path.relative(prefix, cls).split(path.sep).join('/'), raw = fs.readFileSync(cls), expected = hash(raw), actual = zip.data(name);
+        const name = path.relative(prefix, cls).split(path.sep).join('/'), raw = fs.readFileSync(cls),
+            expected = hash(raw), actual = zip.data(name);
         maxClassMajor = Math.max(maxClassMajor, raw.readUInt16BE(6));
         if (raw.readUInt16BE(6) > 65)
             errors.push(module + ': class exceeds Java 21 bytecode: ' + name);
@@ -287,7 +295,7 @@ for (const module of modules) {
             errors.push(module + ': component JAR class differs: ' + name);
         classes++;
         compiledClasses++;
-        if (direct.has(module)) {
+        if (aggregatedModules.has(module)) {
             const data = all.data(name);
             if (!data || hash(data) !== expected)
                 errors.push(module + ': bus-all class differs: ' + name);
@@ -299,8 +307,9 @@ for (const module of modules) {
     // Collect JSON rows for semantic aggregate checks: shading may merge source
     // documents while preserving every required registration.
     const source = path.join(root, module, 'src/main/resources/META-INF/native-image');
-    for (const f of walk(source)) {
-        const name = 'META-INF/native-image/' + path.relative(source, f).split(path.sep).join('/'), actual = zip.data(name);
+    for (const f of walk(source).filter(f => path.basename(f) !== '.DS_Store')) {
+        const name = 'META-INF/native-image/' + path.relative(source, f).split(path.sep).join('/'),
+            actual = zip.data(name);
         if (!actual || hash(actual) !== hash(fs.readFileSync(f)))
             errors.push(module + ': component native metadata differs: ' + name);
         metadataFiles++;
@@ -322,7 +331,7 @@ for (const module of modules) {
         module,
         sha256: hash(bytes),
         classes,
-        aggregated: direct.has(module),
+        aggregated: aggregatedModules.has(module),
         bytes: bytes.length
     });
     zip.close();
@@ -346,10 +355,10 @@ for (const name of all.entries.keys()) {
         if (Array.isArray(rows))
             for (const row of rows) {
                 if ([
-                        'reflection',
-                        'serialization',
-                        'jni'
-                    ].includes(section)) {
+                    'reflection',
+                    'serialization',
+                    'jni'
+                ].includes(section)) {
                     const k = section + ':' + key(row.type || row.name), xs = exported.get(k) || [];
                     xs.push(row);
                     exported.set(k, xs);
@@ -382,14 +391,18 @@ function sameMember(a, b) {
 // Resource sections require an exact normalized row, including conditions;
 // coverage by a broader glob is not inferred by this verifier.
 for (const {module, section, row} of sourceRows) {
-    if (!direct.has(module))
+    if (!aggregatedModules.has(module))
         continue;
     if ([
-            'reflection',
-            'serialization',
-            'jni'
-        ].includes(section)) {
-        const candidates = (exported.get(section + ':' + key(row.type || row.name)) || []).filter(c => !c.condition || key(c.condition) === key(row.condition));
+        'reflection',
+        'serialization',
+        'jni'
+    ].includes(section)) {
+        // Groom normalizes legacy serialization entries into reflection rows
+        // with serializable=true in unified reachability metadata.
+        const registrations = exported.get(section + ':' + key(row.type || row.name)) || [];
+        const normalized = section === 'serialization' ? (exported.get('reflection:' + key(row.type || row.name)) || []).filter(c => c.serializable === true) : [];
+        const candidates = [...registrations, ...normalized].filter(c => !c.condition || key(c.condition) === key(row.condition));
         if (!candidates.length) {
             errors.push('bus-all lost type ' + key(row.type || row.name));
             continue;
@@ -398,10 +411,10 @@ for (const {module, section, row} of sourceRows) {
         // the existing verification policy. This does not independently prove
         // member visibility or runtime GraalVM reflection behavior.
         for (const group of [
-                'fields',
-                'methods',
-                'queriedMethods'
-            ])
+            'fields',
+            'methods',
+            'queriedMethods'
+        ])
             for (const member of row[group] || []) {
                 const covered = candidates.some(c => (group === 'fields' ? c.allDeclaredFields || c.allPublicFields : member.name === '<init>' ? c.allDeclaredConstructors || c.allPublicConstructors : c.allDeclaredMethods || c.allPublicMethods) || (c[group] || []).some(x => sameMember(x, member)));
                 if (!covered)
@@ -417,13 +430,17 @@ for (const {module, section, row} of sourceRows) {
 // Check property arguments separately: join continuation lines, then locate
 // initialization targets and -H: options in exported property text. Presence
 // checking does not detect initialization-mode conflicts or option equivalence.
-for (const module of direct)
+for (const module of aggregatedModules)
     for (const f of walk(path.join(root, module, 'src/main/resources/META-INF/native-image')).filter(f => f.endsWith('/native-image.properties'))) {
         const text = fs.readFileSync(f, 'utf8').replace(/\\\r?\n\s*/g, ' ');
         for (const match of text.matchAll(/--initialize-at-(build|run)-time=([^\s]+)/g))
             for (const type of match[2].split(','))
                 if (!exportedProps.some(p => p.includes(type)))
                     errors.push('bus-all lost initialization ' + type);
+        for (const match of text.matchAll(/--features=([^\s]+)/g))
+            for (const feature of match[1].split(','))
+                if (!exportedProps.some(p => p.includes(feature)))
+                    errors.push('bus-all lost native feature ' + feature);
         for (const option of text.matchAll(/(?:^|\s)(-H:[^\s]+)/g))
             if (!exportedProps.some(p => p.includes(option[1])))
                 errors.push('bus-all lost native option ' + option[1]);
@@ -432,10 +449,11 @@ for (const module of direct)
 // Parent/BOM artifacts have no JAR. Their installed publication POMs must not
 // retain an unresolved CI-friendly revision placeholder.
 for (const module of [
-        'bus-bom',
-        'bus-parent'
-    ]) {
-    const installed = path.join(process.env.HOME, '.m2/repository/org/miaixz', module, version, `${ module }-${ version }.pom`), text = fs.readFileSync(installed, 'utf8');
+    'bus-bom',
+    'bus-parent'
+]) {
+    const installed = path.join(process.env.HOME, '.m2/repository/org/miaixz', module, version, `${module}-${version}.pom`),
+        text = fs.readFileSync(installed, 'utf8');
     if (text.includes('${revision}'))
         errors.push(module + ': published POM contains unresolved revision');
 }

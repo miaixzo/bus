@@ -42,6 +42,7 @@ public final class DisplayConnector {
      * Prevents instantiation.
      */
     private DisplayConnector() {
+        // No initialization required.
     }
 
     /**

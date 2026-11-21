@@ -144,6 +144,7 @@ public class GetSCU implements AutoCloseable {
             }
             updateProgress(as, null);
         }
+
     };
 
     /**
@@ -478,6 +479,7 @@ public class GetSCU implements AutoCloseable {
                 super.onDimseRSP(as, cmd, data);
                 updateProgress(as, cmd);
             }
+
         };
     }
 

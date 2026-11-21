@@ -1,10 +1,11 @@
 [
   {
     "latest": true,
-    "metadata-version": "1.40.0",
-    "description": "Conditional Bus integration metadata only; supplements upstream metadata without replacing it.",
+    "metadata-version": "1.41.0",
+    "description": "Temporal Workflow Java SDK",
     "tested-versions": [
-      "1.40.0"
+      "1.41.0",
+      "1.41.1"
     ]
   }
 ]

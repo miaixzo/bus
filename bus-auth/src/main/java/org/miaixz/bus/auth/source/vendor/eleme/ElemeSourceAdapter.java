@@ -979,6 +979,8 @@ public class ElemeSourceAdapter implements VendorAdapter {
         /**
          * Validates one typed private merchant result.
          *
+         * @param subject    positive merchant user identifier
+         * @param attributes validated merchant attributes
          * @throws IllegalArgumentException if a component is absent or blank
          */
         private Merchant {

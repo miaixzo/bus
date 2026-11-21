@@ -1606,6 +1606,31 @@ public class Http {
         public static final String API_KEY_HEADER = "X-API-Key";
 
         /**
+         * Internal header carrying the compact service identity token between internal services.
+         */
+        public static final String SERVICE_TOKEN_HEADER = "X-Service-Token";
+
+        /**
+         * Request signature timestamp header name.
+         */
+        public static final String TIMESTAMP_HEADER = "X-Timestamp";
+
+        /**
+         * Request signature nonce header name.
+         */
+        public static final String NONCE_HEADER = "X-Nonce";
+
+        /**
+         * Request signature value header name.
+         */
+        public static final String SIGNATURE_HEADER = "X-Sign";
+
+        /**
+         * Internal header carrying a one-request proof between the gateway and its authorization service.
+         */
+        public static final String FORWARD_PROOF_HEADER = "X-Forward-Proof";
+
+        /**
          * Supported access-token header names for platform-specific token guards.
          * <p>
          * Strict Bearer parsing still accepts only {@link Header#AUTHORIZATION}.

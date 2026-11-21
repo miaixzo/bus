@@ -42,6 +42,13 @@ public record ClaimMapping(Source source, String sourceName, String targetName, 
     /**
      * Validates explicit mapping fields without evaluating expressions or coercing value types.
      *
+     * @param source       source category
+     * @param sourceName   exact source attribute or evidence claim name
+     * @param targetName   exact target claim name
+     * @param issuer       optional exact evidence issuer filter
+     * @param required     whether absence without a default is an issue
+     * @param sensitive    whether the resulting claim requires sensitive handling
+     * @param defaultValue optional exact JsonValue used only when the source is absent
      * @throws IllegalArgumentException if a component is {@code null} or required text is blank
      * @throws ValidateException        if a Subject attribute mapping declares an evidence issuer
      */

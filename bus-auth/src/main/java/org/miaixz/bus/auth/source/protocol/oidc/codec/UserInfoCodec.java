@@ -61,6 +61,7 @@ public class UserInfoCodec {
      * Creates a strict UserInfo codec that processes JSON through {@link JsonKit}.
      */
     public UserInfoCodec() {
+        // No initialization required.
     }
 
     /**
@@ -613,6 +614,8 @@ public class UserInfoCodec {
 
         /**
          * Validates the successful decoded branch.
+         *
+         * @param response standard UserInfo response
          */
         public Success {
             Assert.notNull(response, "Decoded OpenID Connect UserInfo response must not be null");
@@ -632,6 +635,8 @@ public class UserInfoCodec {
         /**
          * Validates the erroneous decoded branch.
          *
+         * @param response standard OAuth error response
+         * @param status   original HTTP 4xx or 5xx status
          * @throws ValidateException if the status is outside HTTP 4xx and 5xx
          */
         public Error {

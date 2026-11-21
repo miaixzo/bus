@@ -251,6 +251,7 @@ public interface NetworkParams {
                     + addressToString(gateway) + ", interfaceName=" + interfaceName + ", interfaceIndex="
                     + interfaceIndex + ", metric=" + metric + ", isGateway=" + isGateway + ", isHost=" + isHost + "]";
         }
+
     }
 
 }

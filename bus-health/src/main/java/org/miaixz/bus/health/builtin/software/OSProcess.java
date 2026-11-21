@@ -24,7 +24,6 @@ import java.util.Map;
 
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.Builder;
-import org.miaixz.bus.health.windows.driver.wmi.Win32ProcessCached;
 
 /**
  * Represents a Process on the operating system, which may contain multiple threads.
@@ -67,8 +66,9 @@ public interface OSProcess {
      * the same bitness (e.g., this will fail on a 32-bit process if queried by 64-bit and vice versa). If reading
      * process memory fails, by default, performs a single WMI query for this process, with some latency. If this method
      * will be frequently called for multiple processes, see the configuration file to enable a batch query mode
-     * leveraging {@link Win32ProcessCached#getCommandLine} to improve performance, or setting that parameter via
-     * {@link Builder#set(String, Object)} before instantiating any {@link OSProcess} object.
+     * leveraging {@link org.miaixz.bus.health.windows.driver.wmi.Win32ProcessCached#getCommandLine} to improve
+     * performance, or setting that parameter via {@link Builder#set(String, Object)} before instantiating any
+     * {@link org.miaixz.bus.health.builtin.software.OSProcess} object.
      * </p>
      *
      * @return the process command line.
@@ -326,8 +326,8 @@ public interface OSProcess {
      * and the precision of the Operating System's tick counters. A polling interval of at least a few seconds is
      * recommended.
      *
-     * @param proc An {@link OSProcess} object containing statistics for this same process collected at a prior point in
-     *             time. May be null.
+     * @param proc An {@link org.miaixz.bus.health.builtin.software.OSProcess} object containing statistics for this
+     *             same process collected at a prior point in time. May be null.
      * @return If the prior snapshot is for the same process at a prior point in time, the proportion of elapsed up time
      *         between the current process snapshot and the previous one that the process was executing in kernel or
      *         user mode. Returns cumulative load otherwise.

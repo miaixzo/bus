@@ -47,10 +47,15 @@ public final class ColorMapCompiler {
      * Prevents utility class instantiation.
      */
     private ColorMapCompiler() {
+        // No initialization required.
     }
 
     /**
      * Samples evenly over the map's default range, both ends included.
+     *
+     * @param map     color map to sample or transform
+     * @param entries number of evenly spaced color samples to compile
+     * @return colors sampled at the requested input positions
      */
     public static Rgba[] sample(ColorMap map, int entries) {
         requireEntries(entries);
@@ -65,6 +70,12 @@ public final class ColorMapCompiler {
 
     /**
      * One sample per input value in {@code [minInput, maxInput]}, mapped to the domain first.
+     *
+     * @param map           color map to sample or transform
+     * @param minInput      inclusive minimum stored pixel value
+     * @param maxInput      inclusive maximum stored pixel value
+     * @param inputToDomain mapping from a stored pixel value to the color-map domain
+     * @return colors sampled at the requested input positions
      */
     public static Rgba[] sample(ColorMap map, int minInput, int maxInput, DoubleUnaryOperator inputToDomain) {
         Objects.requireNonNull(inputToDomain, "Input mapping cannot be null");
@@ -79,6 +90,11 @@ public final class ColorMapCompiler {
 
     /**
      * Linear mapping of a display window onto the map's default range.
+     *
+     * @param map       color map to sample or transform
+     * @param windowMin lower bound of the display window
+     * @param windowMax upper bound of the display window
+     * @return linear mapping from the display window to the color-map domain
      */
     public static DoubleUnaryOperator windowToDomain(ColorMap map, double windowMin, double windowMax) {
         if (!(windowMax > windowMin)) {
@@ -91,6 +107,9 @@ public final class ColorMapCompiler {
 
     /**
      * 256-entry table that remembers {@code map} as its {@link ByteLut#source()}.
+     *
+     * @param map color map to sample or transform
+     * @return 256-entry BGR byte lookup table retaining its source color map
      */
     public static ByteLut toByteLut(ColorMap map) {
         return new ByteLut(map.name(), toBgr(map, BYTE_LUT_ENTRIES), map);
@@ -98,6 +117,10 @@ public final class ColorMapCompiler {
 
     /**
      * {@code [3][entries]} planes in B, G, R order, the {@link ByteLut} layout.
+     *
+     * @param map     color map to sample or transform
+     * @param entries number of evenly spaced color samples to compile
+     * @return blue, green and red channel planes
      */
     public static byte[][] toBgr(ColorMap map, int entries) {
         return pack(sample(map, entries), false);
@@ -105,6 +128,10 @@ public final class ColorMapCompiler {
 
     /**
      * {@code [4][entries]} planes in A, B, G, R order, the layout of 4-byte ABGR images.
+     *
+     * @param map     color map to sample or transform
+     * @param entries number of evenly spaced color samples to compile
+     * @return alpha, blue, green and red channel planes
      */
     public static byte[][] toAbgr(ColorMap map, int entries) {
         return pack(sample(map, entries), true);
@@ -112,6 +139,10 @@ public final class ColorMapCompiler {
 
     /**
      * Interleaved RGBA8 bytes, the layout of a 1D GPU texture.
+     *
+     * @param map     color map to sample or transform
+     * @param entries number of evenly spaced color samples to compile
+     * @return interleaved RGBA8 color bytes
      */
     public static byte[] toRgba(ColorMap map, int entries) {
         return interleave(sample(map, entries));
@@ -119,6 +150,12 @@ public final class ColorMapCompiler {
 
     /**
      * Interleaved RGBA8 bytes with one texel per input value.
+     *
+     * @param map           color map to sample or transform
+     * @param minInput      inclusive minimum stored pixel value
+     * @param maxInput      inclusive maximum stored pixel value
+     * @param inputToDomain mapping from a stored pixel value to the color-map domain
+     * @return interleaved RGBA8 color bytes
      */
     public static byte[] toRgba(ColorMap map, int minInput, int maxInput, DoubleUnaryOperator inputToDomain) {
         return interleave(sample(map, minInput, maxInput, inputToDomain));
@@ -127,6 +164,13 @@ public final class ColorMapCompiler {
     /**
      * Byte lookup table indexed by stored pixel value, with B, G, R and optionally A bands, so a 16-bit single-channel
      * image becomes an 8-bit color image in one {@link LookupTableCV#lookup(org.miaixz.bus.opencv.core.Mat)} pass.
+     *
+     * @param map           color map to sample or transform
+     * @param minInput      inclusive minimum stored pixel value
+     * @param maxInput      inclusive maximum stored pixel value
+     * @param inputToDomain mapping from a stored pixel value to the color-map domain
+     * @param withAlpha     whether the compiled table includes an alpha band
+     * @return lookup table indexed by stored pixel values
      */
     public static LookupTableCV toLookupTable(
             ColorMap map,

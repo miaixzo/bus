@@ -58,6 +58,12 @@ public record LinkedInOptions(Vendor.Id vendor, Vendor.Variant variant, String c
     /**
      * Validates and freezes one LinkedIn registration without resolving its client secret.
      *
+     * @param vendor      exact LinkedIn platform identifier
+     * @param variant     exact default LinkedIn OpenID Connect variant
+     * @param clientId    public client identifier issued by LinkedIn
+     * @param credential  external client-secret reference
+     * @param redirectUri exact callback URI registered in the LinkedIn Developer Portal
+     * @param scopes      ordered current-product scopes containing {@code openid} and {@code profile}
      * @throws IllegalArgumentException if a required component, container, or scope is {@code null} or blank
      * @throws ValidateException        if routing, credential type, callback, or scopes differ from the frozen manifest
      */

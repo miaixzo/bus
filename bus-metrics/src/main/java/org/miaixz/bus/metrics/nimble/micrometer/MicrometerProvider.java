@@ -287,6 +287,7 @@ public class MicrometerProvider implements Provider {
                 public String contentType() {
                     return Builder.PROMETHEUS_CONTENT_TYPE;
                 }
+
             });
         } catch (NoSuchMethodException exception) {
             return Optional.empty();
@@ -365,6 +366,7 @@ public class MicrometerProvider implements Provider {
             public TimerSnapshot snapshot() {
                 return mirror.snapshot();
             }
+
         };
     }
 
@@ -413,6 +415,7 @@ public class MicrometerProvider implements Provider {
             public TimerSnapshot snapshot() {
                 return mirror.snapshot();
             }
+
         };
     }
 
@@ -451,6 +454,7 @@ public class MicrometerProvider implements Provider {
                 public long count() {
                     return (long) meter.count();
                 }
+
             };
             return new Created<>(counter, meter);
         });
@@ -765,6 +769,7 @@ public class MicrometerProvider implements Provider {
         private void tick() {
             rates.tick();
         }
+
     }
 
     /**
@@ -825,6 +830,7 @@ public class MicrometerProvider implements Provider {
         private void close() {
             lease.close();
         }
+
     }
 
     /**
@@ -954,6 +960,7 @@ public class MicrometerProvider implements Provider {
                 lease.close();
             }
         }
+
     }
 
     /**
@@ -1026,6 +1033,7 @@ public class MicrometerProvider implements Provider {
                 diagnostics.collectionError("micrometer", "invalid_point");
             }
         }
+
     }
 
 }

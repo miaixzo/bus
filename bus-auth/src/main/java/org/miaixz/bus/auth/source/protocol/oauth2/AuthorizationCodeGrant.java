@@ -46,6 +46,10 @@ public record AuthorizationCodeGrant(String code, Optional<String> redirectUri, 
     /**
      * Creates and validates an authorization-code grant parameter set.
      *
+     * @param code         authorization code received from the authorization endpoint
+     * @param redirectUri  optional redirect URI that must exactly match the authorization request
+     * @param clientId     optional client identifier required for an unauthenticated client
+     * @param codeVerifier optional PKCE code verifier
      * @throws IllegalArgumentException if a required value or optional container is {@code null}
      * @throws ValidateException        if a value violates RFC 6749 or RFC 7636 wire syntax
      */

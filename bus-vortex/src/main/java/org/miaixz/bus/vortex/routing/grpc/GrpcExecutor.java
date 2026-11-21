@@ -25,19 +25,17 @@ import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.core.io.buffer.DataBufferLimitException;
 import org.springframework.core.io.buffer.PooledDataBuffer;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.net.Http;
-import org.miaixz.bus.core.net.MediaType;
-import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.core.xyz.UrlKit;
 import org.miaixz.bus.cortex.Assets;
+import org.miaixz.bus.cortex.registry.ServiceRoutes;
+import org.miaixz.bus.errors.transport.reactive.ReactiveErrorHandler;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.vortex.*;
 import org.miaixz.bus.vortex.routing.Coordinator;
@@ -105,7 +103,8 @@ public class GrpcExecutor extends Coordinator<String, ServerResponse> {
      * @return A streaming ServerResponse
      */
     private Mono<ServerResponse> executeStreaming(Assets assets, String payload, Delivery delivery) {
-        return request(assets, payload).retrieve().onStatus(status -> true, clientResponse -> Mono.empty())
+        return request(assets, payload).retrieve()
+                .onStatus(status -> status.isError(), ReactiveErrorHandler::upstreamFailure)
                 .toEntityFlux(DataBuffer.class).flatMap(responseEntity -> {
                     Logger.info(
                             false,
@@ -135,7 +134,8 @@ public class GrpcExecutor extends Coordinator<String, ServerResponse> {
      * @return A buffered ServerResponse
      */
     private Mono<ServerResponse> executeBuffering(Context context, Assets assets, String payload) {
-        return request(assets, payload).retrieve().onStatus(status -> true, clientResponse -> Mono.empty())
+        return request(assets, payload).retrieve()
+                .onStatus(status -> status.isError(), ReactiveErrorHandler::upstreamFailure)
                 .toEntityFlux(DataBuffer.class).flatMap(responseEntity -> {
                     Logger.info(
                             false,
@@ -202,14 +202,14 @@ public class GrpcExecutor extends Coordinator<String, ServerResponse> {
                     "Vortex",
                     "Invoking gRPC method via HTTP: protocol=grpc, {} on {}:{}",
                     fullMethodName,
-                    assets.getHost(),
-                    assets.getPort());
+                    ServiceRoutes.resolve(assets).getHost(),
+                    ServiceRoutes.resolve(assets).getPort());
 
             URI uri = UrlKit.toURI(buildGrpcUrl(assets, fullMethodName));
 
             Logger.info(true, "Vortex", "GRPC method {} invoked successfully: protocol=grpc", fullMethodName);
-            return Egress.request(HttpMethod.POST, uri).header(Http.Header.CONTENT_TYPE, MediaType.APPLICATION_JSON)
-                    .bodyValue(payload).retrieve().onStatus(status -> true, clientResponse -> Mono.empty())
+            return Egress.Grpc.request(uri, payload).retrieve()
+                    .onStatus(status -> status.isError(), ReactiveErrorHandler::upstreamFailure)
                     .toEntityFlux(DataBuffer.class).flatMap(
                             responseEntity -> Octets
                                     .readForParsing(
@@ -223,7 +223,6 @@ public class GrpcExecutor extends Coordinator<String, ServerResponse> {
                                                     .doFinally(signalType -> bufferedBody.close())));
 
         } catch (Exception e) {
-            Logger.error(false, "Vortex", "Failed to invoke gRPC method '{}': protocol=grpc", assets.getMethod(), e);
             return Mono.error(new RuntimeException("Failed to invoke gRPC method: " + assets.getMethod(), e));
         }
     }
@@ -237,8 +236,7 @@ public class GrpcExecutor extends Coordinator<String, ServerResponse> {
      */
     private WebClient.RequestHeadersSpec<?> request(Assets assets, String payload) {
         URI uri = UrlKit.toURI(buildGrpcUrl(assets, assets.getMethod()));
-        return Egress.request(HttpMethod.POST, uri).header(Http.Header.CONTENT_TYPE, MediaType.APPLICATION_JSON)
-                .bodyValue(payload);
+        return Egress.Grpc.request(uri, payload);
     }
 
     /**
@@ -267,7 +265,7 @@ public class GrpcExecutor extends Coordinator<String, ServerResponse> {
      */
     private String buildGrpcUrl(Assets assets, String fullMethodName) {
         StringBuilder url = new StringBuilder();
-        url.append(Protocol.HTTP_PREFIX).append(assets.getHost()).append(Symbol.COLON).append(assets.getPort());
+        url.append(ServiceRoutes.resolve(assets).toASCIIString());
 
         if (StringKit.isNotEmpty(fullMethodName)) {
             url.append(Symbol.SLASH).append(fullMethodName);

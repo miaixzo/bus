@@ -1,0 +1,78 @@
+{
+  "resources": [
+    {
+      "condition": {
+        "typeReached": "org.apache.logging.log4j.LogManager"
+      },
+      "glob": "META-INF/org/apache/logging/log4j/core/config/plugins/Log4j2Plugins.dat"
+    },
+    {
+      "condition": {
+        "typeReached": "org.apache.logging.log4j.LogManager"
+      },
+      "glob": "META-INF/services/org.apache.logging.log4j.core.util.ContextDataProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.apache.logging.log4j.LogManager"
+      },
+      "glob": "META-INF/services/org.apache.logging.log4j.core.util.WatchEventService"
+    },
+    {
+      "condition": {
+        "typeReached": "org.apache.logging.log4j.LogManager"
+      },
+      "glob": "log4j2*.xml"
+    },
+    {
+      "condition": {
+        "typeReached": "org.apache.logging.log4j.LogManager"
+      },
+      "glob": "log4j2*.properties"
+    },
+    {
+      "condition": {
+        "typeReached": "org.apache.logging.log4j.LogManager"
+      },
+      "glob": "log4j2*.json"
+    },
+    {
+      "condition": {
+        "typeReached": "org.apache.logging.log4j.LogManager"
+      },
+      "glob": "log4j2*.jsn"
+    },
+    {
+      "condition": {
+        "typeReached": "org.apache.logging.log4j.LogManager"
+      },
+      "glob": "log4j2*.yaml"
+    },
+    {
+      "condition": {
+        "typeReached": "org.apache.logging.log4j.LogManager"
+      },
+      "glob": "log4j2*.yml"
+    }
+  ],
+  "reflection": [
+    {
+      "condition": {
+        "typeReached": "org.apache.logging.log4j.LogManager"
+      },
+      "type": "com.fasterxml.jackson.databind.ObjectMapper"
+    },
+    {
+      "condition": {
+        "typeReached": "org.apache.logging.log4j.LogManager"
+      },
+      "type": "jakarta.servlet.Servlet"
+    },
+    {
+      "condition": {
+        "typeReached": "org.apache.logging.log4j.LogManager"
+      },
+      "type": "javax.servlet.Servlet"
+    }
+  ]
+}

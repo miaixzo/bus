@@ -39,6 +39,7 @@ public record WorkerSlots(Set<Slot> slots) {
     /**
      * Freezes one slot set.
      *
+     * @param slots required project integration slots
      * @throws IllegalArgumentException if the set or one slot is {@code null}
      */
     public WorkerSlots {

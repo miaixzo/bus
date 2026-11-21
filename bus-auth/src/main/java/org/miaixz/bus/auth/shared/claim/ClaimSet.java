@@ -38,6 +38,7 @@ public record ClaimSet(List<Entry> claims) {
     /**
      * Validates and freezes entries while enforcing exact target-name uniqueness.
      *
+     * @param claims ordered entries whose target claim names are unique
      * @throws IllegalArgumentException if the list or an entry is {@code null}
      * @throws ValidateException        if a target claim name is duplicated
      */
@@ -91,6 +92,10 @@ public record ClaimSet(List<Entry> claims) {
         /**
          * Validates one immutable mapped claim entry.
          *
+         * @param name      exact target claim name
+         * @param value     exact implementation-neutral JSON value
+         * @param origin    source attribute or evidence provenance
+         * @param sensitive whether callers must suppress the value from logs and general display
          * @throws IllegalArgumentException if text is blank or another component is {@code null}
          */
         public Entry {
@@ -116,6 +121,10 @@ public record ClaimSet(List<Entry> claims) {
         /**
          * Validates and freezes provenance without inventing missing verification metadata.
          *
+         * @param source     explicit source category selected by the mapping
+         * @param sourceName exact source attribute or evidence claim name
+         * @param issuer     optional verified evidence issuer or explicit mapping filter
+         * @param verifiedAt optional evidence verification instant
          * @throws IllegalArgumentException if a component is {@code null} or text is blank
          * @throws ValidateException        if a Subject attribute incorrectly declares evidence provenance
          */

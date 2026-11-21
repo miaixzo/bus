@@ -662,6 +662,8 @@ public class MapperPluginBuilder {
         }
         return copy.enabled(source.enabled()).mode(source.mode()).dryRun(source.dryRun()).printSql(source.printSql())
                 .failFast(source.failFast()).continueOnError(source.continueOnError())
+                .targetCatalog(source.targetCatalog()).targetSchema(source.targetSchema())
+                .dropColumnDefaults(copySet(source.dropColumnDefaults())).reorderTables(copySet(source.reorderTables()))
                 .includeTables(copySet(source.includeTables())).excludeTables(copySet(source.excludeTables()))
                 .includeEntities(copySet(source.includeEntities())).excludeEntities(copySet(source.excludeEntities()))
                 .allowCreateTable(source.allowCreateTable()).allowAddColumn(source.allowAddColumn())
@@ -695,6 +697,9 @@ public class MapperPluginBuilder {
         return new SchemaConfig().enabled(schemaProperties.isEnabled()).mode(schemaProperties.getMode())
                 .dryRun(schemaProperties.isDryRun()).printSql(schemaProperties.isPrintSql())
                 .failFast(schemaProperties.isFailFast()).continueOnError(schemaProperties.isContinueOnError())
+                .targetCatalog(schemaProperties.getTargetCatalog()).targetSchema(schemaProperties.getTargetSchema())
+                .dropColumnDefaults(copySet(schemaProperties.getDropColumnDefaults()))
+                .reorderTables(copySet(schemaProperties.getReorderTables()))
                 .includeTables(copySet(schemaProperties.getIncludeTables()))
                 .excludeTables(copySet(schemaProperties.getExcludeTables()))
                 .includeEntities(copySet(schemaProperties.getIncludeEntities()))

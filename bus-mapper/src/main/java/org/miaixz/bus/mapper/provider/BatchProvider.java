@@ -494,17 +494,18 @@ public class BatchProvider extends BasicProvider {
             shape.append("</foreach>");
         }
         String columns = selective ? buildDynamicColumnList(entity, "list", Symbol.ZERO)
-                : "(" + insertColumnList(entity) + ")";
+                : Symbol.PARENTHESE_LEFT + insertColumnList(entity) + Symbol.PARENTHESE_RIGHT;
         String rows = "<foreach collection=\"list\" item=\"item\" separator=\",\">"
                 + buildMergeSource(entity, "item.", true) + "</foreach>";
         String values = buildSourceReferenceList(entity, "source", selective, "list[0]");
         return shape + "MERGE INTO " + entity.tableName() + " target" + Symbol.LF + "USING (VALUES " + rows
                 + ") source " + buildMergeSource(entity, Normal.EMPTY, false) + Symbol.LF + "ON ("
-                + buildMergeOnClause(entity, "target", "source") + ")" + Symbol.LF + "WHEN MATCHED THEN UPDATE SET "
+                + buildMergeOnClause(entity, "target", "source") + Symbol.PARENTHESE_RIGHT + Symbol.LF
+                + "WHEN MATCHED THEN UPDATE SET "
                 + (selective ? buildSelectiveAssignments(entity, "SOURCE")
                         : buildUpdateAssignments(entity, "SOURCE", "source", false))
                 + Symbol.LF + "WHEN NOT MATCHED THEN INSERT " + columns + " VALUES "
-                + (selective ? values : "(" + values + ")");
+                + (selective ? values : Symbol.PARENTHESE_LEFT + values + Symbol.PARENTHESE_RIGHT);
     }
 
     /**

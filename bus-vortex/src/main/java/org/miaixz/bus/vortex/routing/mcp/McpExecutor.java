@@ -19,13 +19,17 @@
 */
 package org.miaixz.bus.vortex.routing.mcp;
 
+import java.math.BigDecimal;
 import java.net.URI;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.springframework.core.ResolvableType;
+import org.springframework.core.codec.StringDecoder;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.core.io.buffer.DataBufferLimitException;
+import org.springframework.core.io.buffer.DefaultDataBufferFactory;
 import org.springframework.core.io.buffer.PooledDataBuffer;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -35,6 +39,7 @@ import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
+import org.springframework.web.server.ServerWebExchange;
 
 import org.miaixz.bus.core.basic.normal.Consts;
 import org.miaixz.bus.core.lang.Charset;
@@ -47,7 +52,13 @@ import org.miaixz.bus.core.xyz.UrlKit;
 import org.miaixz.bus.cortex.Assets;
 import org.miaixz.bus.cortex.Type;
 import org.miaixz.bus.cortex.registry.RegistryAssets;
+import org.miaixz.bus.cortex.registry.ServiceRoutes;
+import org.miaixz.bus.errors.ComponentFailure;
+import org.miaixz.bus.errors.ErrorType;
+import org.miaixz.bus.errors.transport.http.PublicHttpError;
+import org.miaixz.bus.errors.transport.reactive.ReactiveErrorHandler;
 import org.miaixz.bus.extra.json.JsonKit;
+import org.miaixz.bus.extra.json.JsonValue;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.vortex.*;
 import org.miaixz.bus.vortex.magic.ErrorCode;
@@ -68,6 +79,16 @@ import reactor.core.publisher.Mono;
  * @author Kimi Liu
  */
 public class McpExecutor extends Coordinator<ServerRequest, ServerResponse> {
+
+    /**
+     * Published JSON-RPC error used for untrusted upstream errors and unreadable replies.
+     */
+    private static final PublicHttpError RPC_ERROR = new PublicHttpError("-32603", "Internal error");
+
+    /**
+     * Reports failures whose mcp-request response or lifecycle is owned by this adapter.
+     */
+    private static final ComponentFailure FAILURES = new ComponentFailure("vortex", "mcp-request");
 
     /**
      * Creates an MCP Streamable HTTP reverse proxy executor.
@@ -101,7 +122,7 @@ public class McpExecutor extends Coordinator<ServerRequest, ServerResponse> {
         }
         Assets target = context.getAssets();
         if (target == null || !Type.MCP.is(RegistryAssets.typeOf(target))
-                || !Integer.valueOf(Args.PROTOCOL_MCP).equals(target.getProtocol())
+                || !Integer.valueOf(Args.ROUTE_MCP).equals(target.getProtocol())
                 || StringKit.isBlank(target.getMethod()) || StringKit.isBlank(target.getUrl())
                 || (target.getStatus() != null && !Integer.valueOf(1).equals(target.getStatus()))) {
             return buildErrorResponse(
@@ -124,7 +145,7 @@ public class McpExecutor extends Coordinator<ServerRequest, ServerResponse> {
                 target.getMethod(),
                 targetUri);
 
-        WebClient.RequestBodySpec bodySpec = Egress
+        WebClient.RequestBodySpec bodySpec = Egress.Http
                 .request(HttpMethod.valueOf(context.getHttpMethod().value()), targetUri);
         Logger.info(
                 true,
@@ -226,7 +247,8 @@ public class McpExecutor extends Coordinator<ServerRequest, ServerResponse> {
                     path);
         }
 
-        return isStreaming ? executeStreaming(bodySpec, context, delivery, ip, method, path)
+        return isStreaming
+                ? executeStreaming(bodySpec, context, request.exchange(), delivery, targetUri, ip, method, path)
                 : executeBuffering(bodySpec, context, ip, method, path);
     }
 
@@ -305,10 +327,10 @@ public class McpExecutor extends Coordinator<ServerRequest, ServerResponse> {
      * @return The route base URL, or {@code null} when host configuration is missing.
      */
     private String buildRelativeRouteBaseUrl(Assets assets, Context context) {
-        if (context == null || StringKit.isBlank(assets.getHost())) {
+        if (context == null || assets.getInstances() == null) {
             return null;
         }
-        return joinPath(buildBaseUrl(context), assets.getUrl());
+        return joinPath(ServiceRoutes.resolve(context.getAssets()).toASCIIString(), assets.getUrl());
     }
 
     /**
@@ -402,7 +424,9 @@ public class McpExecutor extends Coordinator<ServerRequest, ServerResponse> {
      *
      * @param bodySpec The request body specification.
      * @param context  qualified MCP request context used for endpoint rewriting
+     * @param exchange active gateway exchange for per-frame error correlation
      * @param delivery realtime-stream or download delivery mode
+     * @param target   actual downstream URI used for this request
      * @param ip       The client IP for logging.
      * @param method   The HTTP method for logging.
      * @param path     The request path for logging.
@@ -411,11 +435,13 @@ public class McpExecutor extends Coordinator<ServerRequest, ServerResponse> {
     private Mono<ServerResponse> executeStreaming(
             WebClient.RequestBodySpec bodySpec,
             Context context,
+            ServerWebExchange exchange,
             Delivery delivery,
+            URI target,
             String ip,
             String method,
             String path) {
-        return bodySpec.retrieve().onStatus(status -> true, clientResponse -> Mono.empty())
+        return bodySpec.retrieve().onStatus(status -> status.isError(), ReactiveErrorHandler::upstreamFailure)
                 .toEntityFlux(DataBuffer.class).flatMap(responseEntity -> {
                     ServerResponse.BodyBuilder responseBuilder = ServerResponse.status(responseEntity.getStatusCode());
                     Logger.debug(
@@ -446,10 +472,35 @@ public class McpExecutor extends Coordinator<ServerRequest, ServerResponse> {
                                 path,
                                 dataBuffer.readableByteCount());
                     });
+                    MediaType media = responseEntity.getHeaders().getContentType();
+                    if (media != null && MediaType.TEXT_EVENT_STREAM.isCompatibleWith(media)) {
+                        responseBuilder.headers(headers -> {
+                            headers.clear();
+                            headers.setContentType(MediaType.TEXT_EVENT_STREAM);
+                            headers.setCacheControl("no-store");
+                            var upstream = responseEntity.getHeaders();
+                            String session = upstream.getFirst(Args.MCP_SESSION_ID);
+                            if (session != null && session.matches("[\\x21-\\x7E]{1,256}")) {
+                                headers.set(Args.MCP_SESSION_ID, session);
+                            }
+                            String version = upstream.getFirst(Args.MCP_PROTOCOL_VERSION);
+                            if (version != null && version.matches("[0-9]{4}-[0-9]{2}-[0-9]{2}")) {
+                                headers.set(Args.MCP_PROTOCOL_VERSION, version);
+                            }
+                        });
+                        bodyFlux = filterSseErrors(bodyFlux, exchange);
+                    } else if (media != null && MediaType.APPLICATION_JSON.isCompatibleWith(media)) {
+                        return writeJsonResponse(
+                                responseBuilder,
+                                bodyFlux,
+                                responseEntity.getHeaders(),
+                                responseEntity.getStatusCode().value());
+                    }
                     bodyFlux = rewriteSseEndpointIfNeeded(
                             bodyFlux,
                             context,
                             responseEntity.getHeaders(),
+                            target,
                             ip,
                             method,
                             path).doOnDiscard(PooledDataBuffer.class, Octets::release);
@@ -474,24 +525,173 @@ public class McpExecutor extends Coordinator<ServerRequest, ServerResponse> {
                                 method,
                                 path,
                                 serverResponse.statusCode()))
-                .doOnError(
-                        error -> Logger.error(
-                                false,
-                                "Vortex",
-                                "Request FAILED (Streaming): protocol=mcp, clientIp={}, method={}, path={}, event=MCP_ROUTER_ERROR, {}",
-                                ip,
-                                method,
-                                path,
-                                error.getMessage(),
-                                error))
-                .doOnCancel(
-                        () -> Logger.warn(
-                                false,
-                                "Vortex",
-                                "Request was cancelled by client (Streaming).: protocol=mcp, clientIp={}, method={}, path={}, event=MCP_ROUTER_CANCEL",
-                                ip,
-                                method,
-                                path));
+                .doOnCancel(() -> FAILURES.failed(ErrorType.CANCELLED, 0, null, context.getX_request_id()));
+    }
+
+    /**
+     * Rebuilds recognizable JSON-RPC errors even when the upstream HTTP status is successful. Successful JSON-RPC data
+     * is left byte-for-byte intact.
+     *
+     * @param bytes       detached response or SSE data
+     * @param expectsJson whether malformed content is a protocol error
+     * @return normalized error document, or null if the original body can pass through
+     */
+    private static JsonValue publicRpcError(byte[] bytes, boolean expectsJson) {
+        if (bytes.length == 0) {
+            return null;
+        }
+        try {
+            var original = JsonKit.readValue(bytes, 64, true);
+            if (original instanceof JsonValue.ArrayValue batch) {
+                var safe = batch.values().stream().map(McpExecutor::publicRpcValue).toList();
+                return safe.equals(batch.values()) ? null : new JsonValue.ArrayValue(safe);
+            }
+            var safe = publicRpcValue(original);
+            return safe == original ? null : safe;
+        } catch (RuntimeException invalid) {
+            return expectsJson ? rpcError(JsonValue.NullValue.instance(), RPC_ERROR) : null;
+        }
+    }
+
+    /**
+     * Replaces only the error branch of a JSON-RPC message.
+     *
+     * @param value decoded response or batch entry
+     * @return original success or a sanitized error object
+     */
+    private static JsonValue publicRpcValue(JsonValue value) {
+        if (value instanceof JsonValue.ObjectValue object
+                && new JsonValue.StringValue("2.0").equals(object.values().get("jsonrpc"))
+                && object.values().containsKey("error")) {
+            var id = object.values().get("id");
+            return rpcError(id instanceof JsonValue.NumberValue ? id : JsonValue.NullValue.instance(), RPC_ERROR);
+        }
+        return value;
+    }
+
+    /**
+     * Creates a fixed JSON-RPC error without copying upstream message or data.
+     *
+     * @param id    numeric identifier or JSON null
+     * @param error approved JSON-RPC error definition
+     * @return public error document
+     */
+    private static JsonValue.ObjectValue rpcError(JsonValue id, PublicHttpError error) {
+        return new JsonValue.ObjectValue(Map.of(
+                "jsonrpc",
+                new JsonValue.StringValue("2.0"),
+                "id",
+                id,
+                "error",
+                new JsonValue.ObjectValue(Map.of(
+                        "code",
+                        new JsonValue.NumberValue(new BigDecimal(error.code())),
+                        "message",
+                        new JsonValue.StringValue(error.description())))));
+    }
+
+    /**
+     * Filters complete SSE frames so an error split across network chunks is still recognized.
+     *
+     * @param body     response body owned by the relay
+     * @param exchange active gateway exchange
+     * @return SSE frames with safe error payloads
+     */
+    private static Flux<DataBuffer> filterSseErrors(Flux<DataBuffer> body, ServerWebExchange exchange) {
+        var decoder = StringDecoder.allMimeTypes(
+                List.of("\r\n\r\n", "\r\n\n", "\n\r\n", "\r\n\r", "\r\r\n", "\n\n", "\r\r", "\n\r"),
+                false);
+        decoder.setMaxInMemorySize(Math.toIntExact(Holder.get().getMaxBufferedResponseSize()));
+        return decoder.decode(body, ResolvableType.forClass(String.class), MediaType.TEXT_EVENT_STREAM, Map.of())
+                .map(frame -> DefaultDataBufferFactory.sharedInstance.wrap(publicSseFrame(frame, exchange)));
+    }
+
+    /**
+     * Recognizes named error events and JSON-RPC error messages within an SSE frame.
+     *
+     * @param frame    complete decoded event with its original delimiter
+     * @param exchange active gateway exchange for error observation
+     * @return original frame bytes or a safe replacement event
+     */
+    private static byte[] publicSseFrame(String frame, ServerWebExchange exchange) {
+        var data = new StringBuilder();
+        boolean errorEvent = false;
+        String decoded = frame.startsWith("\uFEFF") ? frame.substring(1) : frame;
+        for (String line : decoded.split("\r\n|\r|\n")) {
+            if (line.startsWith("event:") && "error".equalsIgnoreCase(line.substring(6).strip())) {
+                errorEvent = true;
+            }
+            if (line.startsWith("data:")) {
+                if (!data.isEmpty()) {
+                    data.append('\n');
+                }
+                String value = line.substring(5);
+                data.append(value.startsWith(" ") ? value.substring(1) : value);
+            }
+        }
+        String payload = data.toString();
+        String leading = payload.stripLeading();
+        var safe = publicRpcError(payload.getBytes(Charset.UTF_8), leading.startsWith("{") || leading.startsWith("["));
+        if (!errorEvent && safe == null) {
+            return frame.getBytes(Charset.UTF_8);
+        }
+        String event = errorEvent ? "event: error\n" : "";
+        return ReactiveErrorHandler.renderFrame(exchange, ErrorType.DEPENDENCY_UNAVAILABLE, RPC_ERROR, error -> {
+            var document = safe == null ? rpcError(JsonValue.NullValue.instance(), error) : safe;
+            return (event + "data: " + new String(JsonKit.writeValue(document), Charset.UTF_8) + "\n\n")
+                    .getBytes(Charset.UTF_8);
+        });
+    }
+
+    /**
+     * Buffers an MCP JSON response under the existing response budget before exposing it.
+     *
+     * @param builder response with the upstream success status
+     * @param body    upstream response body
+     * @param headers original response headers
+     * @param status  verified upstream status
+     * @return original successful body or normalized JSON-RPC error
+     */
+    private static Mono<ServerResponse> writeJsonResponse(
+            ServerResponse.BodyBuilder builder,
+            Flux<DataBuffer> body,
+            HttpHeaders headers,
+            int status) {
+        return Octets.readForRelay(
+                body,
+                Math.toIntExact(Holder.get().getMaxBufferedResponseSize()),
+                Holder.responseBufferBudget(),
+                headers.getContentLength()).flatMap(buffered -> writePublicJson(builder, buffered, status));
+    }
+
+    /**
+     * Keeps the buffer lease attached to unmodified responses and releases it before writing a safe error.
+     *
+     * @param builder  prepared response builder
+     * @param buffered leased JSON body
+     * @param status   verified upstream status
+     * @return ownership-aware response
+     */
+    private static Mono<ServerResponse> writePublicJson(
+            ServerResponse.BodyBuilder builder,
+            Octets.BufferedBody buffered,
+            int status) {
+        byte[] original = buffered.bytes();
+        var safe = publicRpcError(original, true);
+        if (safe == null) {
+            return Octets.own(
+                    builder.contentLength(buffered.length())
+                            .body(BodyInserters.fromDataBuffers(Octets.chunks(buffered))),
+                    buffered);
+        }
+        buffered.close();
+        return ReactiveErrorHandler.render(
+                org.springframework.http.HttpStatusCode.valueOf(status),
+                ErrorType.DEPENDENCY_UNAVAILABLE,
+                null,
+                RPC_ERROR,
+                error -> ServerResponse.status(status).contentType(MediaType.APPLICATION_JSON)
+                        .bodyValue(JsonKit.writeValue(safe)));
     }
 
     /**
@@ -504,6 +704,7 @@ public class McpExecutor extends Coordinator<ServerRequest, ServerResponse> {
      * @param bodyFlux response body from downstream
      * @param context  current request context
      * @param headers  downstream response headers
+     * @param target   actual downstream SSE URI
      * @param ip       client IP for logging
      * @param method   HTTP method for logging
      * @param path     inbound request path for logging
@@ -513,6 +714,7 @@ public class McpExecutor extends Coordinator<ServerRequest, ServerResponse> {
             Flux<DataBuffer> bodyFlux,
             Context context,
             HttpHeaders headers,
+            URI target,
             String ip,
             String method,
             String path) {
@@ -521,7 +723,7 @@ public class McpExecutor extends Coordinator<ServerRequest, ServerResponse> {
                 || !MediaType.TEXT_EVENT_STREAM.isCompatibleWith(headers.getContentType())) {
             return bodyFlux;
         }
-        String downstreamPrefix = downstreamMessagesPrefix(context.getAssets());
+        String downstreamPrefix = downstreamMessagesPrefix(target);
         String gatewayPrefix = gatewayMessagesPrefix(context.getAssets());
         if (StringKit.isBlank(downstreamPrefix) || StringKit.isBlank(gatewayPrefix)
                 || downstreamPrefix.equals(gatewayPrefix)) {
@@ -574,13 +776,13 @@ public class McpExecutor extends Coordinator<ServerRequest, ServerResponse> {
     /**
      * Builds the downstream messages endpoint prefix that may be emitted in legacy MCP SSE endpoint events.
      *
-     * @param assets current MCP route asset
+     * @param target actual downstream SSE URI
      * @return downstream messages prefix, such as {@code /mcp/messages}
      */
-    private String downstreamMessagesPrefix(Assets assets) {
-        String servicePath = trimSlashes(assets.getPath());
-        return StringKit.isBlank(servicePath) ? Symbol.SLASH + "messages"
-                : Symbol.SLASH + servicePath + Symbol.SLASH + "messages";
+    private String downstreamMessagesPrefix(URI target) {
+        String path = target.getRawPath();
+        return path.endsWith(Symbol.SLASH + "sse") ? target.resolve("messages").getRawPath()
+                : joinPath(path, "messages");
     }
 
     /**
@@ -599,27 +801,6 @@ public class McpExecutor extends Coordinator<ServerRequest, ServerResponse> {
             return routePrefix.substring(0, routePrefix.length() - sseSuffix.length()) + Symbol.SLASH + "messages";
         }
         return routePrefix;
-    }
-
-    /**
-     * Removes leading and trailing slashes from a path fragment.
-     *
-     * @param value path fragment
-     * @return normalized path fragment
-     */
-    private String trimSlashes(String value) {
-        if (StringKit.isBlank(value)) {
-            return Normal.EMPTY;
-        }
-        int start = 0;
-        int end = value.length();
-        while (start < end && value.charAt(start) == Symbol.C_SLASH) {
-            start++;
-        }
-        while (end > start && value.charAt(end - 1) == Symbol.C_SLASH) {
-            end--;
-        }
-        return value.substring(start, end);
     }
 
     /**
@@ -642,7 +823,7 @@ public class McpExecutor extends Coordinator<ServerRequest, ServerResponse> {
             String ip,
             String method,
             String path) {
-        return bodySpec.retrieve().onStatus(status -> true, clientResponse -> Mono.empty())
+        return bodySpec.retrieve().onStatus(status -> status.isError(), ReactiveErrorHandler::upstreamFailure)
                 .toEntityFlux(DataBuffer.class).flatMap(responseEntity -> {
                     Logger.info(
                             false,
@@ -692,6 +873,13 @@ public class McpExecutor extends Coordinator<ServerRequest, ServerResponse> {
                                                     "Atomic MCP response length mismatch: declared=" + declaredLength
                                                             + ", actual=" + bodyLength));
                                 }
+                                MediaType media = responseEntity.getHeaders().getContentType();
+                                if (media != null && MediaType.APPLICATION_JSON.isCompatibleWith(media)) {
+                                    return writePublicJson(
+                                            responseBuilder,
+                                            bufferedBody,
+                                            responseEntity.getStatusCode().value());
+                                }
                                 return Octets.own(
                                         responseBuilder.contentLength(bodyLength)
                                                 .body(BodyInserters.fromDataBuffers(Octets.chunks(bufferedBody))),
@@ -715,24 +903,7 @@ public class McpExecutor extends Coordinator<ServerRequest, ServerResponse> {
                                 method,
                                 path,
                                 serverResponse.statusCode()))
-                .doOnError(
-                        error -> Logger.error(
-                                false,
-                                "Vortex",
-                                "Request FAILED (Buffering): protocol=mcp, clientIp={}, method={}, path={}, event=MCP_ROUTER_ERROR, {}",
-                                ip,
-                                method,
-                                path,
-                                error.getMessage(),
-                                error))
-                .doOnCancel(
-                        () -> Logger.warn(
-                                false,
-                                "Vortex",
-                                "Request was cancelled by client (Buffering).: protocol=mcp, clientIp={}, method={}, path={}, event=MCP_ROUTER_CANCEL",
-                                ip,
-                                method,
-                                path));
+                .doOnCancel(() -> FAILURES.failed(ErrorType.CANCELLED, 0, null, context.getX_request_id()));
     }
 
     /**
@@ -758,9 +929,14 @@ public class McpExecutor extends Coordinator<ServerRequest, ServerResponse> {
      * @return A {@link Mono} emitting the error {@link ServerResponse}.
      */
     private Mono<ServerResponse> buildErrorResponse(HttpStatus status, String code, String desc) {
-        Map<String, String> body = Map.of(Consts.CODE, code, Consts.DESC, desc);
-        return ServerResponse.status(status).contentType(MediaType.APPLICATION_JSON)
-                .bodyValue(JsonKit.toJsonString(body));
+        ErrorType type = status.is5xxServerError() ? ErrorType.CONFIGURATION_FAILURE : ErrorType.INVALID_REQUEST;
+        return ReactiveErrorHandler.render(
+                status,
+                type,
+                null,
+                new PublicHttpError(code, desc),
+                error -> ServerResponse.status(status).contentType(MediaType.APPLICATION_JSON).bodyValue(
+                        JsonKit.toJsonString(Map.of(Consts.CODE, error.code(), Consts.DESC, error.description()))));
     }
 
 }

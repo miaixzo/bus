@@ -49,6 +49,14 @@ public record ResourceType(List<String> schemas, Optional<String> id, String nam
     /**
      * Enforces the discovery schema, endpoint shape, schema URIs, and extension uniqueness.
      *
+     * @param schemas          singleton standard ResourceType schema URI
+     * @param id               resource type identifier when supplied
+     * @param name             resource type name
+     * @param description      human-readable resource type description when supplied
+     * @param endpoint         relative SCIM resource collection endpoint
+     * @param schema           absolute core schema URI for the resource type
+     * @param schemaExtensions supported extension schemas and required flags
+     * @param meta             service-provider-maintained discovery resource metadata
      * @throws IllegalArgumentException if a required value, container, or extension is {@code null}
      * @throws ValidateException        if a schema, endpoint, optional text, or duplicate extension is invalid
      */
@@ -144,6 +152,8 @@ public record ResourceType(List<String> schemas, Optional<String> id, String nam
         /**
          * Requires an absolute extension schema URI.
          *
+         * @param schema   absolute extension schema URI
+         * @param required whether every resource of this type must include the extension
          * @throws IllegalArgumentException if {@code schema} is {@code null}
          * @throws ValidateException        if the schema is blank or not an absolute URI
          */

@@ -54,6 +54,12 @@ public record MeituanOptions(Vendor.Id vendor, Vendor.Variant variant, String cl
     /**
      * Validates and freezes one Meituan registration without resolving its application secret.
      *
+     * @param vendor      exact Meituan platform identifier
+     * @param variant     exact default Meituan variant
+     * @param clientId    canonical non-negative decimal {@code app_id}
+     * @param credential  external application-secret reference
+     * @param redirectUri exact callback URI registered by the external project
+     * @param scopes      immutable empty list because Meituan requires an empty scope parameter
      * @throws IllegalArgumentException if a required component or container is {@code null} or blank
      * @throws ValidateException        if routing, app id, credential, callback, or scopes differ from the manifest
      */

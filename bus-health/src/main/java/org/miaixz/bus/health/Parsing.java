@@ -125,9 +125,9 @@ public class Parsing {
 
     /**
      * Pattern for Windows DeviceID vendor and product ID without requiring a trailing instance component. Matches both
-     * full PNPDeviceID strings (PCI\VEN_8086&DEV_56A0&...\instance) and bare MatchingDeviceId values
-     * (pci\ven_8086&dev_56a0&...) that lack the trailing backslash. Case-insensitive to handle both the uppercase
-     * PNPDeviceID format and the lowercase MatchingDeviceId registry values.
+     * full PNPDeviceID strings ({@code PCI\VEN_8086&DEV_56A0&...\instance}) and bare MatchingDeviceId values
+     * ({@code pci\ven_8086&dev_56a0&...}) that lack the trailing backslash. Case-insensitive to handle both the
+     * uppercase PNPDeviceID format and the lowercase MatchingDeviceId registry values.
      */
     private static final java.util.regex.Pattern VENDOR_PRODUCT_ID = java.util.regex.Pattern
             .compile("(?i).*(?:VID|VEN)_(\\p{XDigit}{4})&(?:PID|DEV)_(\\p{XDigit}{4}).*");
@@ -420,6 +420,7 @@ public class Parsing {
                     put("THz", 1_000_000_000_000L);
                     put("PHz", 1_000_000_000_000_000L);
                 }
+
             };
             double value = parseDoubleOrDefault(matcher.group(1), -1d);
             long multiplier = map.getOrDefault(matcher.group(3), -1L);
@@ -1120,6 +1121,48 @@ public class Parsing {
     public static String getTextAfterString(String text, String marker) {
         int index = text.indexOf(marker);
         return index < 0 ? Normal.EMPTY : text.substring(index + marker.length());
+    }
+
+    /**
+     * Decodes the three-digit octal escapes used by the Linux kernel in mount-related files. A backslash not followed
+     * by three octal digits is preserved.
+     *
+     * @param text the text to decode
+     * @return the decoded text
+     */
+    public static String unescapeOctal(String text) {
+        int index = text.indexOf(Symbol.C_BACKSLASH);
+        if (index < Normal._0) {
+            return text;
+        }
+        StringBuilder result = new StringBuilder(text.length());
+        result.append(text, Normal._0, index);
+        while (index < text.length()) {
+            char current = text.charAt(index);
+            if (current == Symbol.C_BACKSLASH && index + Normal._3 < text.length()
+                    && isOctalDigit(text.charAt(index + Normal._1)) && isOctalDigit(text.charAt(index + Normal._2))
+                    && isOctalDigit(text.charAt(index + Normal._3))) {
+                result.append(
+                        (char) ((text.charAt(index + Normal._1) - Symbol.C_ZERO) * Normal._64
+                                + (text.charAt(index + Normal._2) - Symbol.C_ZERO) * Normal._8
+                                + text.charAt(index + Normal._3) - Symbol.C_ZERO));
+                index += Normal._4;
+            } else {
+                result.append(current);
+                index++;
+            }
+        }
+        return result.toString();
+    }
+
+    /**
+     * Tests whether a character is an octal digit.
+     *
+     * @param character the character to test
+     * @return {@code true} when the character is between zero and seven
+     */
+    private static boolean isOctalDigit(char character) {
+        return character >= Symbol.C_ZERO && character <= Symbol.C_SEVEN;
     }
 
     /**

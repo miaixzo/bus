@@ -728,6 +728,7 @@ public class WebSocketX {
                 public void failure(final Throwable cause) {
                     errorHandler.accept(cause);
                 }
+
             };
             return this;
         }

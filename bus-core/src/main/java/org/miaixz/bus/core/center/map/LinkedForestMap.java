@@ -243,6 +243,7 @@ public class LinkedForestMap<K, V> implements ForestMap<K, V> {
                         detachNode(last);
                         last = null;
                     }
+
                 };
             }
 
@@ -285,6 +286,7 @@ public class LinkedForestMap<K, V> implements ForestMap<K, V> {
             public void clear() {
                 LinkedForestMap.this.clear();
             }
+
         };
     }
 

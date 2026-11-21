@@ -326,6 +326,9 @@ public class UdpChannel implements Lifecycle, AutoCloseable {
 
         /**
          * Creates a validated received datagram.
+         *
+         * @param message immutable received message
+         * @param peer    numeric datagram peer
          */
         ReceivedDatagram {
             message = Assert.notNull(message, () -> new ValidateException("UDP message must not be null"));

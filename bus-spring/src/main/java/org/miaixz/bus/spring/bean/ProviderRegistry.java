@@ -116,6 +116,8 @@ public class ProviderRegistry implements ApplicationListener<ContextClosedEvent>
 
     /**
      * Clears this registry only when its owning Spring context closes.
+     *
+     * @param event application event to process
      */
     @Override
     public void onApplicationEvent(ContextClosedEvent event) {

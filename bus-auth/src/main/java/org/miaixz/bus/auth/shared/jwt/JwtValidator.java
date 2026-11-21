@@ -300,6 +300,15 @@ public class JwtValidator {
         /**
          * Validates and freezes common claim requirements.
          *
+         * @param issuer             exact required issuer
+         * @param audiences          non-empty allowed audience set
+         * @param subjectRequired    whether sub must be present
+         * @param expirationRequired whether exp must be present
+         * @param issuedAtRequired   whether iat must be present
+         * @param jwtIdRequired      whether jti must be present
+         * @param maximumAge         optional positive age measured from iat
+         * @param replay             optional atomic jti replay registration context
+         * @param requiredClaims     exact additional JsonValue claim requirements
          * @throws IllegalArgumentException if a component or collection entry is {@code null}
          * @throws ValidateException        if issuer/audience is blank, maximum age is not positive, or replay lacks
          *                                  exp/jti
@@ -340,6 +349,10 @@ public class JwtValidator {
 
         /**
          * Validates replay isolation fields.
+         *
+         * @param tenantId  owning tenant identifier
+         * @param protocol  formal protocol that owns the JWT
+         * @param authority stable Provider or Source authority
          */
         public Replay {
             Assert.notBlank(tenantId, "JWT replay tenant id must not be blank");

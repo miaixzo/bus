@@ -13,11 +13,121 @@
       "serializable": true
     },
     {
+      "type": "java.lang.Enum",
+      "methods": [
+        {
+          "name": "compareTo",
+          "parameterTypes": [
+            "java.lang.Enum"
+          ]
+        },
+        {
+          "name": "compareTo",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "describeConstable",
+          "parameterTypes": []
+        },
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "getDeclaringClass",
+          "parameterTypes": []
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "name",
+          "parameterTypes": []
+        },
+        {
+          "name": "ordinal",
+          "parameterTypes": []
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "valueOf",
+          "parameterTypes": [
+            "java.lang.Class",
+            "java.lang.String"
+          ]
+        }
+      ],
+      "serializable": true
+    },
+    {
       "type": "java.lang.Exception",
       "serializable": true
     },
     {
+      "type": "java.lang.Object",
+      "methods": [
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "getClass",
+          "parameterTypes": []
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "notify",
+          "parameterTypes": []
+        },
+        {
+          "name": "notifyAll",
+          "parameterTypes": []
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long",
+            "int"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "wait",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
       "type": "java.lang.StackTraceElement",
+      "serializable": true
+    },
+    {
+      "type": "java.lang.String",
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.center.map.IntHashMap"
+      },
       "serializable": true
     },
     {
@@ -49,11 +159,17 @@
       ]
     },
     {
-      "type": "java.lang.String",
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.center.map.IntHashMap"
-      },
-      "serializable": true
+      "type": "java.lang.reflect.WildcardType",
+      "methods": [
+        {
+          "name": "getLowerBounds",
+          "parameterTypes": []
+        },
+        {
+          "name": "getUpperBounds",
+          "parameterTypes": []
+        }
+      ]
     },
     {
       "type": "java.util.HashMap",
@@ -124,6 +240,80 @@
         "typeReached": "org.miaixz.bus.core.cache.SimpleCache"
       },
       "serializable": true
+    },
+    {
+      "type": "org.miaixz.bus.core.Binder",
+      "fields": [
+        {
+          "name": "source"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "boolean"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "boolean"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.Context",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.util.Properties"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.Lifecycle$State",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "int"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.Version",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ]
     },
     {
       "type": "org.miaixz.bus.core.basic.advice.ErrorAdvice",
@@ -221,7 +411,8 @@
             "java.lang.Integer"
           ]
         }
-      ]
+      ],
+      "serializable": true
     },
     {
       "type": "org.miaixz.bus.core.basic.entity.Audit$AuditBuilder",
@@ -471,7 +662,8 @@
             "java.lang.String"
           ]
         }
-      ]
+      ],
+      "serializable": true
     },
     {
       "type": "org.miaixz.bus.core.basic.entity.Authorize$AuthorizeBuilder",
@@ -548,7 +740,8 @@
             "java.lang.Object[]"
           ]
         }
-      ]
+      ],
+      "serializable": true
     },
     {
       "type": "org.miaixz.bus.core.basic.entity.Entity$EntityBuilder",
@@ -655,7 +848,8 @@
             "java.lang.Object"
           ]
         }
-      ]
+      ],
+      "serializable": true
     },
     {
       "type": "org.miaixz.bus.core.basic.entity.Message$MessageBuilder",
@@ -807,7 +1001,8 @@
             "java.lang.Integer"
           ]
         }
-      ]
+      ],
+      "serializable": true
     },
     {
       "type": "org.miaixz.bus.core.basic.entity.Query$QueryBuilder",
@@ -914,7 +1109,8 @@
             "long"
           ]
         }
-      ]
+      ],
+      "serializable": true
     },
     {
       "type": "org.miaixz.bus.core.basic.entity.Result$ResultBuilder",
@@ -972,7 +1168,8 @@
             "java.lang.String"
           ]
         }
-      ]
+      ],
+      "serializable": true
     },
     {
       "type": "org.miaixz.bus.core.basic.entity.Space$SpaceBuilder",
@@ -1024,7 +1221,8 @@
             "java.lang.String"
           ]
         }
-      ]
+      ],
+      "serializable": true
     },
     {
       "type": "org.miaixz.bus.core.basic.entity.Tenant$TenantBuilder",
@@ -1196,7 +1394,8 @@
             "java.lang.String"
           ]
         }
-      ]
+      ],
+      "serializable": true
     },
     {
       "type": "org.miaixz.bus.core.basic.entity.Tracer$TracerBuilder",
@@ -1283,6 +1482,28 @@
           "parameterTypes": [
             "java.lang.String",
             "int"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.bean.DynaBean",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.bean.NullWrapper",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.Class"
           ]
         }
       ]
@@ -1388,6 +1609,20 @@
       ]
     },
     {
+      "type": "org.miaixz.bus.core.bean.copier.ValueToBeanCopier",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.core.bean.copier.ValueProvider",
+            "java.lang.Object",
+            "java.lang.reflect.Type",
+            "org.miaixz.bus.core.bean.copier.CopyOptions"
+          ]
+        }
+      ]
+    },
+    {
       "type": "org.miaixz.bus.core.bean.copier.provider.BeanValueProvider",
       "methods": [
         {
@@ -1424,20 +1659,6 @@
           "name": "<init>",
           "parameterTypes": [
             "java.util.Map"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.bean.copier.ValueToBeanCopier",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "org.miaixz.bus.core.bean.copier.ValueProvider",
-            "java.lang.Object",
-            "java.lang.reflect.Type",
-            "org.miaixz.bus.core.bean.copier.CopyOptions"
           ]
         }
       ]
@@ -1533,28 +1754,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.core.bean.DynaBean",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.bean.NullWrapper",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.Class"
-          ]
-        }
-      ]
-    },
-    {
       "type": "org.miaixz.bus.core.bean.path.BeanPath",
       "methods": [
         {
@@ -1627,42 +1826,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.core.Binder",
-      "fields": [
-        {
-          "name": "source"
-        }
-      ],
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "boolean"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "boolean"
-          ]
-        }
-      ]
-    },
-    {
       "type": "org.miaixz.bus.core.builder.GenericBuilder",
       "methods": [
         {
@@ -1672,6 +1835,34 @@
           ]
         }
       ]
+    },
+    {
+      "type": "org.miaixz.bus.core.cache.GlobalPruneTimer",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "int"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.cache.SimpleCache",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.util.Map"
+          ]
+        }
+      ],
+      "serializable": true
     },
     {
       "type": "org.miaixz.bus.core.cache.file.AbstractFileCache",
@@ -1734,18 +1925,6 @@
             "int",
             "int",
             "long"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.cache.GlobalPruneTimer",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "int"
           ]
         }
       ]
@@ -1831,15 +2010,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.core.cache.provider.LockedCache",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
       "type": "org.miaixz.bus.core.cache.provider.LRUCache",
       "methods": [
         {
@@ -1854,6 +2024,15 @@
             "int",
             "long"
           ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.cache.provider.LockedCache",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
         }
       ]
     },
@@ -1945,20 +2124,57 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.core.cache.SimpleCache",
+      "type": "org.miaixz.bus.core.center.CollectionOperation",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.util.Collection[]"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.center.CollectionStream",
       "methods": [
         {
           "name": "<init>",
           "parameterTypes": []
-        },
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.center.CollectionValidator",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.center.TransCollection",
+      "methods": [
         {
           "name": "<init>",
           "parameterTypes": [
-            "java.util.Map"
+            "java.util.Collection",
+            "java.util.function.Function"
           ]
         }
-      ],
-      "serializable": true
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.center.TransSpliterator",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.util.Spliterator",
+            "java.util.function.Function"
+          ]
+        }
+      ]
     },
     {
       "type": "org.miaixz.bus.core.center.array.ArrayValidator",
@@ -1982,35 +2198,6 @@
     },
     {
       "type": "org.miaixz.bus.core.center.array.PrimitiveArray",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.center.CollectionOperation",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.util.Collection[]"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.center.CollectionStream",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.center.CollectionValidator",
       "methods": [
         {
           "name": "<init>",
@@ -2072,15 +2259,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.core.center.date.builder.DateBuilder",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
       "type": "org.miaixz.bus.core.center.date.Calculate",
       "methods": [
         {
@@ -2122,6 +2300,315 @@
       ]
     },
     {
+      "type": "org.miaixz.bus.core.center.date.DateTime",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.CharSequence"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.CharSequence",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.CharSequence",
+            "java.text.DateFormat"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.CharSequence",
+            "java.time.format.DateTimeFormatter"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.CharSequence",
+            "org.miaixz.bus.core.center.date.format.parser.PositionDateParser"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.CharSequence",
+            "org.miaixz.bus.core.center.date.format.parser.PositionDateParser",
+            "boolean"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.time.Instant"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.time.Instant",
+            "java.time.ZoneId"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.time.temporal.TemporalAccessor"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.time.ZonedDateTime"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.util.Calendar"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.util.Date"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.util.Date",
+            "java.util.TimeZone"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.util.TimeZone"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "long",
+            "java.util.TimeZone"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.center.date.Formatter",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.center.date.Galaxy",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.center.date.Holiday",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "int",
+            "int",
+            "int",
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.center.date.Modifier",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.center.date.Modify",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "int"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.center.date.Month",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "int",
+            "int"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.center.date.NonClock",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "long"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.center.date.NonClock$InstanceHolder",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.center.date.Quarter",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "int",
+            "int",
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.center.date.Resolver",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.center.date.StopWatch",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "boolean"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.center.date.StopWatch$TaskInfo",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "long"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.center.date.Various",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "int",
+            "int"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.center.date.Week",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "int",
+            "int",
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.center.date.Zodiac",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "int",
+            "long",
+            "java.lang.String",
+            "java.time.MonthDay",
+            "java.time.MonthDay"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.center.date.builder.DateBuilder",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
       "type": "org.miaixz.bus.core.center.date.culture.Animal",
       "methods": [
         {
@@ -2140,6 +2627,387 @@
     },
     {
       "type": "org.miaixz.bus.core.center.date.culture.Beast",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.center.date.culture.Direction",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.center.date.culture.Duty",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.center.date.culture.Element",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String[]",
+            "int"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.center.date.culture.God",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.center.date.culture.HiddenStems",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "int",
+            "int",
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.center.date.culture.JulianDay",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "double"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.center.date.culture.Land",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.center.date.culture.Loops",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.center.date.culture.Luck",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.center.date.culture.Opposite",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "int",
+            "int",
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.center.date.culture.Phase",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "int",
+            "int",
+            "int"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "int",
+            "int",
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.center.date.culture.Phase$PhaseDay",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.core.center.date.culture.Phase",
+            "int"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.center.date.culture.Replenish",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.core.center.date.culture.Tradition",
+            "int"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.center.date.culture.Samsara",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String[]",
+            "int"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.center.date.culture.Sixty",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.center.date.culture.Sound",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.center.date.culture.Taboo",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.center.date.culture.Ten",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.center.date.culture.Terrain",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.center.date.culture.Tradition",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.center.date.culture.Twenty",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.center.date.culture.Vesta",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "int"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.center.date.culture.Week",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.center.date.culture.Winds",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.center.date.culture.Zodiac",
       "methods": [
         {
           "name": "<init>",
@@ -2204,23 +3072,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.core.center.date.culture.Direction",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "int"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        }
-      ]
-    },
-    {
       "type": "org.miaixz.bus.core.center.date.culture.dog.Dog",
       "methods": [
         {
@@ -2245,23 +3096,6 @@
           "parameterTypes": [
             "org.miaixz.bus.core.center.date.culture.dog.Dog",
             "int"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.center.date.culture.Duty",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "int"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String"
           ]
         }
       ]
@@ -2406,24 +3240,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.core.center.date.culture.Element",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "int"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String[]",
-            "int"
-          ]
-        }
-      ]
-    },
-    {
       "type": "org.miaixz.bus.core.center.date.culture.festival.AbstractFestival",
       "methods": [
         {
@@ -2525,37 +3341,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.core.center.date.culture.God",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "int"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.center.date.culture.HiddenStems",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "int",
-            "int",
-            "java.lang.String"
-          ]
-        }
-      ]
-    },
-    {
       "type": "org.miaixz.bus.core.center.date.culture.hijri.HijriDay",
       "methods": [
         {
@@ -2587,60 +3372,6 @@
           "name": "<init>",
           "parameterTypes": [
             "int"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.center.date.culture.JulianDay",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "double"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.center.date.culture.Land",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "int"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.center.date.culture.Loops",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.center.date.culture.Luck",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "int"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String"
           ]
         }
       ]
@@ -2816,20 +3547,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.core.center.date.culture.Opposite",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "int",
-            "int",
-            "java.lang.String"
-          ]
-        }
-      ]
-    },
-    {
       "type": "org.miaixz.bus.core.center.date.culture.parts.AbstractDay",
       "methods": [
         {
@@ -2989,39 +3706,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.core.center.date.culture.Phase",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "int",
-            "int",
-            "int"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "int",
-            "int",
-            "java.lang.String"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.center.date.culture.Phase$PhaseDay",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "org.miaixz.bus.core.center.date.culture.Phase",
-            "int"
-          ]
-        }
-      ]
-    },
-    {
       "type": "org.miaixz.bus.core.center.date.culture.plumrain.PlumRain",
       "methods": [
         {
@@ -3113,47 +3797,6 @@
     },
     {
       "type": "org.miaixz.bus.core.center.date.culture.ren.MinorRen",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "int"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.center.date.culture.Replenish",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "org.miaixz.bus.core.center.date.culture.Tradition",
-            "int"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.center.date.culture.Samsara",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String[]",
-            "int"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.center.date.culture.Sixty",
       "methods": [
         {
           "name": "<init>",
@@ -3467,23 +4110,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.core.center.date.culture.Sound",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "int"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        }
-      ]
-    },
-    {
       "type": "org.miaixz.bus.core.center.date.culture.star.nine.Dipper",
       "methods": [
         {
@@ -3615,259 +4241,6 @@
           "name": "<init>",
           "parameterTypes": [
             "java.lang.String"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.center.date.culture.Taboo",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "int"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.center.date.culture.Ten",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "int"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.center.date.culture.Terrain",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "int"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.center.date.culture.Tradition",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.center.date.culture.Twenty",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "int"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.center.date.culture.Vesta",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "int"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.center.date.culture.Week",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "int"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.center.date.culture.Winds",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "int"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.center.date.culture.Zodiac",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "int"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.center.date.DateTime",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.CharSequence"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.CharSequence",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.CharSequence",
-            "java.text.DateFormat"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.CharSequence",
-            "java.time.format.DateTimeFormatter"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.CharSequence",
-            "org.miaixz.bus.core.center.date.format.parser.PositionDateParser"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.CharSequence",
-            "org.miaixz.bus.core.center.date.format.parser.PositionDateParser",
-            "boolean"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.time.Instant"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.time.Instant",
-            "java.time.ZoneId"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.time.temporal.TemporalAccessor"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.time.ZonedDateTime"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.util.Calendar"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.util.Date"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.util.Date",
-            "java.util.TimeZone"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.util.TimeZone"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "long",
-            "java.util.TimeZone"
           ]
         }
       ]
@@ -4301,92 +4674,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.core.center.date.Formatter",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.center.date.Galaxy",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.center.date.Holiday",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "int",
-            "int",
-            "int",
-            "java.lang.String"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.center.date.Modifier",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.center.date.Modify",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "int"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.center.date.Month",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "int",
-            "int"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.center.date.NonClock",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "long"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.center.date.NonClock$InstanceHolder",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
       "type": "org.miaixz.bus.core.center.date.printer.DefaultDatePrinter",
       "methods": [
         {
@@ -4422,106 +4709,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.core.center.date.Quarter",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "int",
-            "int",
-            "java.lang.String"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.center.date.Resolver",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.center.date.StopWatch",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "boolean"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.center.date.StopWatch$TaskInfo",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "long"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.center.date.Various",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "int",
-            "int"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.center.date.Week",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "int",
-            "int",
-            "java.lang.String"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.center.date.Zodiac",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "int",
-            "long",
-            "java.lang.String",
-            "java.time.MonthDay",
-            "java.time.MonthDay"
-          ]
-        }
-      ]
-    },
-    {
       "type": "org.miaixz.bus.core.center.function.ComposeX",
       "methods": [
         {
@@ -4529,6 +4716,17 @@
           "parameterTypes": [
             "java.util.function.Function",
             "java.util.function.Function"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.center.function.FunctionX",
+      "methods": [
+        {
+          "name": "apply",
+          "parameterTypes": [
+            "java.lang.Object"
           ]
         }
       ]
@@ -4550,6 +4748,28 @@
           "parameterTypes": [
             "java.lang.reflect.Executable",
             "java.lang.invoke.SerializedLambda"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.center.function.PredicateX",
+      "methods": [
+        {
+          "name": "test",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.center.function.UnaryOperatorX",
+      "methods": [
+        {
+          "name": "apply",
+          "parameterTypes": [
+            "java.lang.Object"
           ]
         }
       ]
@@ -4767,6 +4987,10 @@
             "java.util.List",
             "int"
           ]
+        },
+        {
+          "name": "isEmpty",
+          "parameterTypes": []
         }
       ]
     },
@@ -4968,6 +5192,335 @@
           "name": "<init>",
           "parameterTypes": [
             "java.util.Map"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.center.map.CustomKeyMap",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.util.Map"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.center.map.Dictionary",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "boolean"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "int",
+            "boolean"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "int",
+            "float"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "int",
+            "float",
+            "boolean"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.util.Map"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.center.map.FixedLinkedHashMap",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "int"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.center.map.FunctionKeyMap",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.util.Map",
+            "org.miaixz.bus.core.center.function.FunctionX"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.center.map.FunctionMap",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.util.Map",
+            "org.miaixz.bus.core.center.function.FunctionX",
+            "org.miaixz.bus.core.center.function.FunctionX"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.core.center.function.SupplierX",
+            "org.miaixz.bus.core.center.function.FunctionX",
+            "org.miaixz.bus.core.center.function.FunctionX"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.center.map.IntHashMap",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "int"
+          ]
+        }
+      ],
+      "serializable": true
+    },
+    {
+      "type": "org.miaixz.bus.core.center.map.LinkedForestMap",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "boolean"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.center.map.LinkedForestMap$EntryNodeWrapper",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.core.center.map.TreeEntry"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.center.map.LinkedForestMap$TreeEntryNode",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.core.center.map.LinkedForestMap$TreeEntryNode",
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.core.center.map.LinkedForestMap$TreeEntryNode",
+            "java.lang.Object",
+            "java.lang.Object"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.center.map.MapBuilder",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.util.Map"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.center.map.MapGets",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.center.map.MapJoiner",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.core.text.StringJoiner",
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.center.map.MapProxy",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.util.Map"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.center.map.MapValidator",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.center.map.MapWrapper",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.util.function.Supplier"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.util.Map"
+          ]
+        }
+      ],
+      "serializable": true
+    },
+    {
+      "type": "org.miaixz.bus.core.center.map.TableMap",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.Object[]",
+            "java.lang.Object[]"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.center.map.TolerantMap",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "int",
+            "float",
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "int",
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.util.Map",
+            "java.lang.Object"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.center.map.TransMap",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.util.Map"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.core.center.function.SupplierX"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.center.map.TripletTable",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.util.List"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.util.List",
+            "java.util.List",
+            "java.util.List"
           ]
         }
       ]
@@ -5307,238 +5860,6 @@
       "serializable": true
     },
     {
-      "type": "org.miaixz.bus.core.center.map.CustomKeyMap",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.util.Map"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.center.map.Dictionary",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "boolean"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "int"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "int",
-            "boolean"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "int",
-            "float"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "int",
-            "float",
-            "boolean"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.util.Map"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.center.map.FixedLinkedHashMap",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "int"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.center.map.FunctionKeyMap",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.util.Map",
-            "org.miaixz.bus.core.center.function.FunctionX"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.center.map.FunctionMap",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.util.Map",
-            "org.miaixz.bus.core.center.function.FunctionX",
-            "org.miaixz.bus.core.center.function.FunctionX"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "org.miaixz.bus.core.center.function.SupplierX",
-            "org.miaixz.bus.core.center.function.FunctionX",
-            "org.miaixz.bus.core.center.function.FunctionX"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.center.map.IntHashMap",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "int"
-          ]
-        }
-      ],
-      "serializable": true
-    },
-    {
-      "type": "org.miaixz.bus.core.center.map.LinkedForestMap",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "boolean"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.center.map.LinkedForestMap$EntryNodeWrapper",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "org.miaixz.bus.core.center.map.TreeEntry"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.center.map.LinkedForestMap$TreeEntryNode",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "org.miaixz.bus.core.center.map.LinkedForestMap$TreeEntryNode",
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "org.miaixz.bus.core.center.map.LinkedForestMap$TreeEntryNode",
-            "java.lang.Object",
-            "java.lang.Object"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.center.map.MapBuilder",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.util.Map"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.center.map.MapGets",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.center.map.MapJoiner",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "org.miaixz.bus.core.text.StringJoiner",
-            "java.lang.String"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.center.map.MapProxy",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.util.Map"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.center.map.MapValidator",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.center.map.MapWrapper",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.util.function.Supplier"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.util.Map"
-          ]
-        }
-      ],
-      "serializable": true
-    },
-    {
       "type": "org.miaixz.bus.core.center.map.multiple.AbstractCollValueMap",
       "methods": [
         {
@@ -5848,103 +6169,6 @@
         }
       ],
       "serializable": true
-    },
-    {
-      "type": "org.miaixz.bus.core.center.map.TableMap",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "int"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.Object[]",
-            "java.lang.Object[]"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.center.map.TolerantMap",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "int",
-            "float",
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "int",
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.util.Map",
-            "java.lang.Object"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.center.map.TransMap",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.util.Map"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "org.miaixz.bus.core.center.function.SupplierX"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.center.map.TripletTable",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "int"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.util.List"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.util.List",
-            "java.util.List",
-            "java.util.List"
-          ]
-        }
-      ]
     },
     {
       "type": "org.miaixz.bus.core.center.object.ObjectValidator",
@@ -6328,354 +6552,11 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.core.center.TransCollection",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.util.Collection",
-            "java.util.function.Function"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.center.TransSpliterator",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.util.Spliterator",
-            "java.util.function.Function"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.codec.binary.Base32",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.codec.binary.Base58",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.codec.binary.Base62",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.codec.binary.Base64",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.codec.binary.Base85",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.codec.binary.Base85Codec",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.codec.binary.Base85Codec$Base85Decoder",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "byte[]"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.codec.binary.Base85Codec$Base85Encoder",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "byte[]"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.codec.binary.Crockford",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "boolean"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.codec.binary.decoder.Base32Decoder",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.codec.binary.decoder.Base58Decoder",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.codec.binary.decoder.Base62Decoder",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "byte[]"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.codec.binary.decoder.Base64Decoder",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.codec.binary.encoder.Base32Encoder",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.Character"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.codec.binary.encoder.Base58Encoder",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "char[]"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.codec.binary.encoder.Base62Encoder",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "byte[]"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.codec.binary.Hex",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.codec.binary.provider.Base16Provider",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "boolean"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.codec.binary.provider.Base32Provider",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.codec.binary.provider.Base58Provider",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.codec.binary.provider.Base62Provider",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.codec.binary.Z85",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
       "type": "org.miaixz.bus.core.codec.Caesar",
       "methods": [
         {
           "name": "<init>",
           "parameterTypes": []
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.codec.hash.CityHash",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.codec.hash.ConsistentHash",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "int",
-            "java.util.Collection"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "org.miaixz.bus.core.codec.hash.Hash32",
-            "int",
-            "java.util.Collection"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.codec.hash.KetamaHash",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.codec.hash.metro.AbstractMetroHash",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "long"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.codec.hash.metro.MetroHash128",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "long"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.codec.hash.metro.MetroHash64",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "long"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.codec.hash.MurmurHash",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.codec.hash.Simhash",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "int",
-            "int"
-          ]
         }
       ]
     },
@@ -6771,6 +6652,325 @@
         {
           "name": "<init>",
           "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.codec.binary.Base32",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.codec.binary.Base58",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.codec.binary.Base62",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.codec.binary.Base64",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.codec.binary.Base85",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.codec.binary.Base85Codec",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.codec.binary.Base85Codec$Base85Decoder",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "byte[]"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.codec.binary.Base85Codec$Base85Encoder",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "byte[]"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.codec.binary.Crockford",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "boolean"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.codec.binary.Hex",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.codec.binary.Z85",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.codec.binary.decoder.Base32Decoder",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.codec.binary.decoder.Base58Decoder",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.codec.binary.decoder.Base62Decoder",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "byte[]"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.codec.binary.decoder.Base64Decoder",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.codec.binary.encoder.Base32Encoder",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.Character"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.codec.binary.encoder.Base58Encoder",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "char[]"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.codec.binary.encoder.Base62Encoder",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "byte[]"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.codec.binary.provider.Base16Provider",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "boolean"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.codec.binary.provider.Base32Provider",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.codec.binary.provider.Base58Provider",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.codec.binary.provider.Base62Provider",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.codec.hash.CityHash",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.codec.hash.ConsistentHash",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "int",
+            "java.util.Collection"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.core.codec.hash.Hash32",
+            "int",
+            "java.util.Collection"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.codec.hash.KetamaHash",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.codec.hash.MurmurHash",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.codec.hash.Simhash",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "int",
+            "int"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.codec.hash.metro.AbstractMetroHash",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "long"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.codec.hash.metro.MetroHash128",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "long"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.codec.hash.metro.MetroHash64",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "long"
+          ]
         }
       ]
     },
@@ -7023,21 +7223,6 @@
           "name": "<init>",
           "parameterTypes": [
             "boolean"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.Context",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.util.Properties"
           ]
         }
       ]
@@ -7449,24 +7634,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.core.convert.stringer.BlobStringer",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.convert.stringer.ClobStringer",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
       "type": "org.miaixz.bus.core.convert.TemporalAccessorConverter",
       "methods": [
         {
@@ -7556,6 +7723,24 @@
       ]
     },
     {
+      "type": "org.miaixz.bus.core.convert.stringer.BlobStringer",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.convert.stringer.ClobStringer",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
       "type": "org.miaixz.bus.core.data.CIN",
       "methods": [
         {
@@ -7604,6 +7789,59 @@
         {
           "name": "<init>",
           "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.data.Masking",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.data.Strength",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.data.Strength$CHAR_TYPE",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "int"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.data.Strength$PASSWD_LEVEL",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "int"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.data.VIN",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
         }
       ]
     },
@@ -7727,15 +7965,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.core.data.Masking",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
       "type": "org.miaixz.bus.core.data.masking.MaskingManager",
       "methods": [
         {
@@ -7806,50 +8035,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.core.data.Strength",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.data.Strength$CHAR_TYPE",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "int"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.data.Strength$PASSWD_LEVEL",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "int"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.data.VIN",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        }
-      ]
-    },
-    {
       "type": "org.miaixz.bus.core.instance.InstanceFactory",
       "methods": [
         {
@@ -7897,37 +8082,6 @@
           ]
         }
       ]
-    },
-    {
-      "type": "org.miaixz.bus.core.io.buffer.Buffer",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.io.buffer.Buffer$UnsafeCursor",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.io.buffer.ByteBuffer",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "org.miaixz.bus.core.io.buffer.Buffer",
-            "int"
-          ]
-        }
-      ],
-      "serializable": true
     },
     {
       "type": "org.miaixz.bus.core.io.ByteOrderMark",
@@ -7987,6 +8141,106 @@
       ]
     },
     {
+      "type": "org.miaixz.bus.core.io.FastCharArrayReader",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "char[]"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "char[]",
+            "int",
+            "int"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.CharSequence"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.io.FastStringWriter",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "int"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.io.LineReader",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.io.InputStream",
+            "java.nio.charset.Charset"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.io.Reader"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.io.ReaderWrapper",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.io.Reader"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.io.buffer.Buffer",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.io.buffer.Buffer$UnsafeCursor",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.io.buffer.ByteBuffer",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.core.io.buffer.Buffer",
+            "int"
+          ]
+        }
+      ],
+      "serializable": true
+    },
+    {
       "type": "org.miaixz.bus.core.io.check.CRC16",
       "methods": [
         {
@@ -7997,6 +8251,18 @@
           "name": "<init>",
           "parameterTypes": [
             "org.miaixz.bus.core.io.check.crc16.CRC16Checksum"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.io.check.CRC8",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "int",
+            "short"
           ]
         }
       ]
@@ -8097,18 +8363,6 @@
         {
           "name": "<init>",
           "parameterTypes": []
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.io.check.CRC8",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "int",
-            "short"
-          ]
         }
       ]
     },
@@ -8402,46 +8656,6 @@
             "int",
             "long",
             "org.miaixz.bus.core.io.TransferObserver"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.io.FastCharArrayReader",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "char[]"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "char[]",
-            "int",
-            "int"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.CharSequence"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.io.FastStringWriter",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "int"
           ]
         }
       ]
@@ -8798,35 +9012,6 @@
             "java.nio.file.Path",
             "java.nio.file.Path",
             "java.nio.file.CopyOption[]"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.io.LineReader",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.io.InputStream",
-            "java.nio.charset.Charset"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.io.Reader"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.io.ReaderWrapper",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.io.Reader"
           ]
         }
       ]
@@ -9558,17 +9743,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.core.io.watch.WatcherChain",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "org.miaixz.bus.core.io.watch.Watcher[]"
-          ]
-        }
-      ]
-    },
-    {
       "type": "org.miaixz.bus.core.io.watch.WatchKind",
       "methods": [
         {
@@ -9613,6 +9787,17 @@
       ]
     },
     {
+      "type": "org.miaixz.bus.core.io.watch.WatcherChain",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.core.io.watch.Watcher[]"
+          ]
+        }
+      ]
+    },
+    {
       "type": "org.miaixz.bus.core.lang.Algorithm",
       "methods": [
         {
@@ -9651,6 +9836,579 @@
       ]
     },
     {
+      "type": "org.miaixz.bus.core.lang.Assert",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.lang.Charset",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.lang.Console",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.lang.Console$Table",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.lang.EnumValue$Action",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "int"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.lang.EnumValue$Align",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "int"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.lang.EnumValue$Append",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "int"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.lang.EnumValue$Balance",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "int"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.lang.EnumValue$Compare",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "int",
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.lang.EnumValue$Format",
+      "fields": [
+        {
+          "name": "TEXT"
+        },
+        {
+          "name": "JSON"
+        },
+        {
+          "name": "YAML"
+        },
+        {
+          "name": "PROPERTIES"
+        },
+        {
+          "name": "$VALUES"
+        }
+      ],
+      "methods": [
+        {
+          "name": "values",
+          "parameterTypes": []
+        },
+        {
+          "name": "valueOf",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "$values",
+          "parameterTypes": []
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "int"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.lang.EnumValue$Gradient",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "int"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.lang.EnumValue$Masking",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "int"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.lang.EnumValue$Mode",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "int"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.lang.EnumValue$Modifier",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "int",
+            "int"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.lang.EnumValue$Naming",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "int",
+            "long",
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.lang.EnumValue$Params",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "int"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.lang.EnumValue$Phase",
+      "fields": [
+        {
+          "name": "DRAFT"
+        },
+        {
+          "name": "ACTIVE"
+        },
+        {
+          "name": "DEPRECATED"
+        },
+        {
+          "name": "DISABLED"
+        },
+        {
+          "name": "key"
+        },
+        {
+          "name": "$VALUES"
+        }
+      ],
+      "methods": [
+        {
+          "name": "values",
+          "parameterTypes": []
+        },
+        {
+          "name": "valueOf",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "key",
+          "parameterTypes": []
+        },
+        {
+          "name": "matches",
+          "parameterTypes": [
+            "java.lang.Integer"
+          ]
+        },
+        {
+          "name": "fromKey",
+          "parameterTypes": [
+            "java.lang.Integer"
+          ]
+        },
+        {
+          "name": "$values",
+          "parameterTypes": []
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "int",
+            "int"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.lang.EnumValue$Probe",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "int",
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.lang.EnumValue$Sort",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "int",
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.lang.EnumValue$Switch",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "int"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.lang.EnumValue$Thumb",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "int",
+            "int"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.lang.EnumValue$Track",
+      "fields": [
+        {
+          "name": "STABLE"
+        },
+        {
+          "name": "BETA"
+        },
+        {
+          "name": "CANARY"
+        },
+        {
+          "name": "key"
+        },
+        {
+          "name": "$VALUES"
+        }
+      ],
+      "methods": [
+        {
+          "name": "values",
+          "parameterTypes": []
+        },
+        {
+          "name": "valueOf",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "normalize",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "key",
+          "parameterTypes": []
+        },
+        {
+          "name": "$values",
+          "parameterTypes": []
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "int",
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.lang.EnumValue$Type",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "int"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.lang.EnumValue$Variant",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "int",
+            "int"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.lang.EnumValue$Visibility",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "int",
+            "int"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.lang.EnumValue$Zoom",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "int"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.lang.Fields",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.lang.Gender",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "int",
+            "int",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.lang.I18n",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "int",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.lang.Keys",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.lang.Normal",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "parameterTypes": [
+            "java.net.URL"
+          ],
+          "name": "isFileURL"
+        },
+        {
+          "parameterTypes": [
+            "java.net.URL"
+          ],
+          "name": "isVfsURL"
+        },
+        {
+          "parameterTypes": [
+            "java.net.URL"
+          ],
+          "name": "isFileOrVfsURL"
+        },
+        {
+          "parameterTypes": [
+            "java.net.URL"
+          ],
+          "name": "isJarURL"
+        },
+        {
+          "parameterTypes": [
+            "java.net.URL"
+          ],
+          "name": "isJarFileURL"
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.lang.Optional",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.lang.Regex",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.lang.Symbol",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.lang.Validator",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.lang.ZoneId",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "int",
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.lang.annotation.AfterCommit"
+    },
+    {
       "type": "org.miaixz.bus.core.lang.annotation.Async$MethodNameTransformer",
       "methods": [
         {
@@ -9679,6 +10437,109 @@
             "java.lang.String",
             "int"
           ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.lang.annotation.Transactional",
+      "methods": [
+        {
+          "name": "transactionManager",
+          "parameterTypes": []
+        },
+        {
+          "name": "propagation",
+          "parameterTypes": []
+        },
+        {
+          "name": "isolation",
+          "parameterTypes": []
+        },
+        {
+          "name": "rollbackFor",
+          "parameterTypes": []
+        },
+        {
+          "name": "noRollbackFor",
+          "parameterTypes": []
+        },
+        {
+          "name": "timeout",
+          "parameterTypes": []
+        },
+        {
+          "name": "readOnly",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.lang.annotation.Transactional$Isolation",
+      "methods": [
+        {
+          "name": "values",
+          "parameterTypes": []
+        },
+        {
+          "name": "valueOf",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ],
+      "fields": [
+        {
+          "name": "DEFAULT"
+        },
+        {
+          "name": "READ_UNCOMMITTED"
+        },
+        {
+          "name": "READ_COMMITTED"
+        },
+        {
+          "name": "REPEATABLE_READ"
+        },
+        {
+          "name": "SERIALIZABLE"
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.lang.annotation.Transactional$Propagation",
+      "methods": [
+        {
+          "name": "values",
+          "parameterTypes": []
+        },
+        {
+          "name": "valueOf",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ],
+      "fields": [
+        {
+          "name": "REQUIRED"
+        },
+        {
+          "name": "SUPPORTS"
+        },
+        {
+          "name": "MANDATORY"
+        },
+        {
+          "name": "REQUIRES_NEW"
+        },
+        {
+          "name": "NOT_SUPPORTED"
+        },
+        {
+          "name": "NEVER"
+        },
+        {
+          "name": "NESTED"
         }
       ]
     },
@@ -9741,6 +10602,90 @@
           "name": "<init>",
           "parameterTypes": [
             "java.lang.annotation.Annotation"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.lang.annotation.resolve.GenericAnnotationMapping",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.annotation.Annotation",
+            "boolean"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.lang.annotation.resolve.RepeatableAnnotationCollector$AbstractCollector",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.lang.annotation.resolve.RepeatableAnnotationCollector$Condition",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.core.center.function.BiPredicateX"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.lang.annotation.resolve.RepeatableAnnotationCollector$Full",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.lang.annotation.resolve.RepeatableAnnotationCollector$None",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.lang.annotation.resolve.RepeatableAnnotationCollector$Standard",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.lang.annotation.resolve.ResolvedAnnotationMapping",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.core.lang.annotation.resolve.ResolvedAnnotationMapping",
+            "java.lang.annotation.Annotation",
+            "boolean"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.lang.annotation.resolve.ResolvedAnnotationMapping$AliasSet",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.core.lang.annotation.resolve.ResolvedAnnotationMapping",
+            "int[]"
           ]
         }
       ]
@@ -9874,18 +10819,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.core.lang.annotation.resolve.GenericAnnotationMapping",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.annotation.Annotation",
-            "boolean"
-          ]
-        }
-      ]
-    },
-    {
       "type": "org.miaixz.bus.core.lang.annotation.resolve.processor.AbstractLinkAnnotationPostProcessor",
       "methods": [
         {
@@ -9918,78 +10851,6 @@
         {
           "name": "<init>",
           "parameterTypes": []
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.lang.annotation.resolve.RepeatableAnnotationCollector$AbstractCollector",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.lang.annotation.resolve.RepeatableAnnotationCollector$Condition",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "org.miaixz.bus.core.center.function.BiPredicateX"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.lang.annotation.resolve.RepeatableAnnotationCollector$Full",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.lang.annotation.resolve.RepeatableAnnotationCollector$None",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.lang.annotation.resolve.RepeatableAnnotationCollector$Standard",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.lang.annotation.resolve.ResolvedAnnotationMapping",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "org.miaixz.bus.core.lang.annotation.resolve.ResolvedAnnotationMapping",
-            "java.lang.annotation.Annotation",
-            "boolean"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.lang.annotation.resolve.ResolvedAnnotationMapping$AliasSet",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "org.miaixz.bus.core.lang.annotation.resolve.ResolvedAnnotationMapping",
-            "int[]"
-          ]
         }
       ]
     },
@@ -10391,43 +11252,7 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.core.lang.Assert",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
       "type": "org.miaixz.bus.core.lang.caller.StackTraceCaller",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.lang.Charset",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.lang.Console",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.lang.Console$Table",
       "methods": [
         {
           "name": "<init>",
@@ -10441,403 +11266,6 @@
         {
           "name": "<init>",
           "parameterTypes": []
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.lang.EnumValue$Action",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "int"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.lang.EnumValue$Align",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "int"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.lang.EnumValue$Append",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "int"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.lang.EnumValue$Balance",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "int"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.lang.EnumValue$Compare",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "int",
-            "java.lang.String"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.lang.EnumValue$Format",
-      "fields": [
-        {
-          "name": "TEXT"
-        },
-        {
-          "name": "JSON"
-        },
-        {
-          "name": "YAML"
-        },
-        {
-          "name": "PROPERTIES"
-        },
-        {
-          "name": "$VALUES"
-        }
-      ],
-      "methods": [
-        {
-          "name": "values",
-          "parameterTypes": []
-        },
-        {
-          "name": "valueOf",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "$values",
-          "parameterTypes": []
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "int"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.lang.EnumValue$Gradient",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "int"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.lang.EnumValue$Masking",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "int"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.lang.EnumValue$Mode",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "int"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.lang.EnumValue$Modifier",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "int",
-            "int"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.lang.EnumValue$Naming",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "int",
-            "long",
-            "java.lang.String"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.lang.EnumValue$Params",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "int"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.lang.EnumValue$Probe",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "int",
-            "java.lang.String"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.lang.EnumValue$Phase",
-      "fields": [
-        {
-          "name": "DRAFT"
-        },
-        {
-          "name": "ACTIVE"
-        },
-        {
-          "name": "DEPRECATED"
-        },
-        {
-          "name": "DISABLED"
-        },
-        {
-          "name": "key"
-        },
-        {
-          "name": "$VALUES"
-        }
-      ],
-      "methods": [
-        {
-          "name": "values",
-          "parameterTypes": []
-        },
-        {
-          "name": "valueOf",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "key",
-          "parameterTypes": []
-        },
-        {
-          "name": "matches",
-          "parameterTypes": [
-            "java.lang.Integer"
-          ]
-        },
-        {
-          "name": "fromKey",
-          "parameterTypes": [
-            "java.lang.Integer"
-          ]
-        },
-        {
-          "name": "$values",
-          "parameterTypes": []
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "int",
-            "int"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.lang.EnumValue$Sort",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "int",
-            "java.lang.String"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.lang.EnumValue$Switch",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "int"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.lang.EnumValue$Thumb",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "int",
-            "int"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.lang.EnumValue$Track",
-      "fields": [
-        {
-          "name": "STABLE"
-        },
-        {
-          "name": "BETA"
-        },
-        {
-          "name": "CANARY"
-        },
-        {
-          "name": "key"
-        },
-        {
-          "name": "$VALUES"
-        }
-      ],
-      "methods": [
-        {
-          "name": "values",
-          "parameterTypes": []
-        },
-        {
-          "name": "valueOf",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "normalize",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "key",
-          "parameterTypes": []
-        },
-        {
-          "name": "$values",
-          "parameterTypes": []
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "int",
-            "java.lang.String"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.lang.EnumValue$Type",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "int"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.lang.EnumValue$Variant",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "int",
-            "int"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.lang.EnumValue$Visibility",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "int",
-            "int"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.lang.EnumValue$Zoom",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "int"
-          ]
         }
       ]
     },
@@ -12226,7 +12654,7 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.core.lang.exception.MapperException",
+      "type": "org.miaixz.bus.core.lang.exception.MQueueException",
       "methods": [
         {
           "name": "<init>",
@@ -12306,7 +12734,7 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.core.lang.exception.MQueueException",
+      "type": "org.miaixz.bus.core.lang.exception.MapperException",
       "methods": [
         {
           "name": "<init>",
@@ -12979,6 +13407,86 @@
         },
         {
           "name": "desc"
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.lang.exception.RetryableException",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.Object[]"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.Throwable"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.Throwable",
+            "java.lang.String",
+            "java.lang.Object[]"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.Throwable"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.Throwable",
+            "boolean",
+            "boolean"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.Throwable"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.core.basic.normal.Errors"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.core.basic.normal.Errors",
+            "java.lang.String"
+          ]
         }
       ]
     },
@@ -13662,44 +14170,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.core.lang.Fields",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.lang.Gender",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "int",
-            "int",
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.lang.I18n",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "int",
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        }
-      ]
-    },
-    {
       "type": "org.miaixz.bus.core.lang.intern.StringIntern",
       "methods": [
         {
@@ -13710,15 +14180,6 @@
     },
     {
       "type": "org.miaixz.bus.core.lang.intern.WeakIntern",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.lang.Keys",
       "methods": [
         {
           "name": "<init>",
@@ -13798,40 +14259,6 @@
         {
           "name": "<init>",
           "parameterTypes": []
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.lang.loader.classloader.JarClassLoader",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.net.URL[]"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.net.URL[]",
-            "java.lang.ClassLoader"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.lang.loader.classloader.ResourceClassLoader",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.ClassLoader",
-            "java.util.Map"
-          ]
         }
       ]
     },
@@ -14071,6 +14498,69 @@
       ]
     },
     {
+      "type": "org.miaixz.bus.core.lang.loader.StdLoader",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.ClassLoader"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.lang.loader.StdLoader$Enumerator",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.ClassLoader",
+            "java.lang.String",
+            "boolean",
+            "org.miaixz.bus.core.lang.loader.Filter"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.lang.loader.classloader.JarClassLoader",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.net.URL[]"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.net.URL[]",
+            "java.lang.ClassLoader"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.lang.loader.classloader.ResourceClassLoader",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.ClassLoader",
+            "java.util.Map"
+          ]
+        }
+      ]
+    },
+    {
       "type": "org.miaixz.bus.core.lang.loader.spi.AbstractServiceLoader",
       "methods": [
         {
@@ -14118,35 +14608,6 @@
         {
           "name": "<init>",
           "parameterTypes": []
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.lang.loader.StdLoader",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.ClassLoader"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.lang.loader.StdLoader$Enumerator",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.ClassLoader",
-            "java.lang.String",
-            "boolean",
-            "org.miaixz.bus.core.lang.loader.Filter"
-          ]
         }
       ]
     },
@@ -14386,46 +14847,16 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.core.lang.Normal",
+      "type": "org.miaixz.bus.core.lang.pool.PoolConfig",
       "methods": [
         {
           "name": "<init>",
           "parameterTypes": []
-        },
-        {
-          "parameterTypes": [
-            "java.net.URL"
-          ],
-          "name": "isFileURL"
-        },
-        {
-          "parameterTypes": [
-            "java.net.URL"
-          ],
-          "name": "isVfsURL"
-        },
-        {
-          "parameterTypes": [
-            "java.net.URL"
-          ],
-          "name": "isFileOrVfsURL"
-        },
-        {
-          "parameterTypes": [
-            "java.net.URL"
-          ],
-          "name": "isJarURL"
-        },
-        {
-          "parameterTypes": [
-            "java.net.URL"
-          ],
-          "name": "isJarFileURL"
         }
       ]
     },
     {
-      "type": "org.miaixz.bus.core.lang.Optional",
+      "type": "org.miaixz.bus.core.lang.pool.SimplePoolable",
       "methods": [
         {
           "name": "<init>",
@@ -14461,6 +14892,15 @@
       ]
     },
     {
+      "type": "org.miaixz.bus.core.lang.pool.partition.PartitionPoolConfig",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
       "type": "org.miaixz.bus.core.lang.pool.partition.PartitionPoolable",
       "methods": [
         {
@@ -14473,30 +14913,16 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.core.lang.pool.partition.PartitionPoolConfig",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.lang.pool.PoolConfig",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.lang.pool.SimplePoolable",
+      "type": "org.miaixz.bus.core.lang.range.BoundType",
       "methods": [
         {
           "name": "<init>",
           "parameterTypes": [
-            "java.lang.Object"
+            "java.lang.String",
+            "int",
+            "java.lang.String",
+            "java.lang.String",
+            "int"
           ]
         }
       ]
@@ -14518,21 +14944,6 @@
           "parameterTypes": [
             "org.miaixz.bus.core.lang.range.Bound",
             "org.miaixz.bus.core.lang.range.Bound"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.lang.range.BoundType",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "int",
-            "java.lang.String",
-            "java.lang.String",
-            "int"
           ]
         }
       ]
@@ -14719,6 +15130,46 @@
       ]
     },
     {
+      "type": "org.miaixz.bus.core.lang.reflect.JdkProxy",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.lang.reflect.NullType",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.lang.reflect.ParameterizedType",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.reflect.Type[]",
+            "java.lang.reflect.Type",
+            "java.lang.reflect.Type"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.lang.reflect.TypeReference",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
       "type": "org.miaixz.bus.core.lang.reflect.creator.AdaptiveObjectCreator",
       "methods": [
         {
@@ -14760,15 +15211,6 @@
           "parameterTypes": [
             "java.lang.Class"
           ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.lang.reflect.JdkProxy",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
         }
       ]
     },
@@ -14847,46 +15289,6 @@
           "parameterTypes": [
             "java.lang.Class"
           ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.lang.reflect.NullType",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.lang.reflect.ParameterizedType",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.reflect.Type[]",
-            "java.lang.reflect.Type",
-            "java.lang.reflect.Type"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.lang.reflect.TypeReference",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.lang.Regex",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
         }
       ]
     },
@@ -15010,15 +15412,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.core.lang.Symbol",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
       "type": "org.miaixz.bus.core.lang.thread.BlockPolicy",
       "methods": [
         {
@@ -15077,155 +15470,6 @@
     },
     {
       "type": "org.miaixz.bus.core.lang.thread.GlobalThreadPool",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.lang.thread.lock.Lock",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.lang.thread.lock.NoLock",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.lang.thread.lock.NoReadWriteLock",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.lang.thread.lock.SegmentLock",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.lang.thread.lock.SegmentLock$CompactSegmentLock",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "int",
-            "org.miaixz.bus.core.center.function.SupplierX"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.lang.thread.lock.SegmentLock$LargeLazySegmentLock",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "int",
-            "org.miaixz.bus.core.center.function.SupplierX"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.lang.thread.lock.SegmentLock$PaddedLock",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.lang.thread.lock.SegmentLock$PaddedSemaphore",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "int"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.lang.thread.lock.SegmentLock$PowerOfTwoSegmentLock",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "int"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.lang.thread.lock.SegmentLock$SmallLazySegmentLock",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "int",
-            "org.miaixz.bus.core.center.function.SupplierX"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.lang.thread.lock.SegmentLock$SmallLazySegmentLock$ArrayReference",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.Object",
-            "int",
-            "java.lang.ref.ReferenceQueue"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.lang.thread.lock.SegmentLock$WeakSafeCondition",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.util.concurrent.locks.Condition",
-            "org.miaixz.bus.core.lang.thread.lock.SegmentLock$WeakSafeReadWriteLock"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.lang.thread.lock.SegmentLock$WeakSafeLock",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.util.concurrent.locks.Lock",
-            "org.miaixz.bus.core.lang.thread.lock.SegmentLock$WeakSafeReadWriteLock"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.lang.thread.lock.SegmentLock$WeakSafeReadWriteLock",
       "methods": [
         {
           "name": "<init>",
@@ -15474,6 +15718,155 @@
       ]
     },
     {
+      "type": "org.miaixz.bus.core.lang.thread.lock.Lock",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.lang.thread.lock.NoLock",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.lang.thread.lock.NoReadWriteLock",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.lang.thread.lock.SegmentLock",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.lang.thread.lock.SegmentLock$CompactSegmentLock",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "int",
+            "org.miaixz.bus.core.center.function.SupplierX"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.lang.thread.lock.SegmentLock$LargeLazySegmentLock",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "int",
+            "org.miaixz.bus.core.center.function.SupplierX"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.lang.thread.lock.SegmentLock$PaddedLock",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.lang.thread.lock.SegmentLock$PaddedSemaphore",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "int"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.lang.thread.lock.SegmentLock$PowerOfTwoSegmentLock",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "int"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.lang.thread.lock.SegmentLock$SmallLazySegmentLock",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "int",
+            "org.miaixz.bus.core.center.function.SupplierX"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.lang.thread.lock.SegmentLock$SmallLazySegmentLock$ArrayReference",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.Object",
+            "int",
+            "java.lang.ref.ReferenceQueue"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.lang.thread.lock.SegmentLock$WeakSafeCondition",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.util.concurrent.locks.Condition",
+            "org.miaixz.bus.core.lang.thread.lock.SegmentLock$WeakSafeReadWriteLock"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.lang.thread.lock.SegmentLock$WeakSafeLock",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.util.concurrent.locks.Lock",
+            "org.miaixz.bus.core.lang.thread.lock.SegmentLock$WeakSafeReadWriteLock"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.lang.thread.lock.SegmentLock$WeakSafeReadWriteLock",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
       "type": "org.miaixz.bus.core.lang.thread.threadlocal.FastThreadLocal",
       "methods": [
         {
@@ -15587,46 +15980,12 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.core.lang.Validator",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
       "type": "org.miaixz.bus.core.lang.wrapper.SimpleWrapper",
       "methods": [
         {
           "name": "<init>",
           "parameterTypes": [
             "java.lang.Object"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.lang.ZoneId",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "int",
-            "java.lang.String"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.Lifecycle$State",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "int"
           ]
         }
       ]
@@ -15976,24 +16335,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.core.net.ip.IPv4",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.net.ip.IPv6",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
       "type": "org.miaixz.bus.core.net.MaskBit",
       "methods": [
         {
@@ -16122,6 +16463,24 @@
           "parameterTypes": [
             "java.net.Proxy"
           ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.net.ip.IPv4",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.net.ip.IPv6",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
         }
       ]
     },
@@ -16256,6 +16615,15 @@
       ]
     },
     {
+      "type": "org.miaixz.bus.core.text.ASCIIStrCache",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
       "type": "org.miaixz.bus.core.text.AntPathMatcher",
       "methods": [
         {
@@ -16316,49 +16684,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.core.text.ASCIIStrCache",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.text.bloom.AbstractFilter",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "int"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.text.bloom.CombinedBloomFilter",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "org.miaixz.bus.core.text.bloom.BloomFilter[]"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.text.bloom.FunctionFilter",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "int",
-            "java.util.function.ToIntFunction[]"
-          ]
-        }
-      ]
-    },
-    {
       "type": "org.miaixz.bus.core.text.CharArray",
       "methods": [
         {
@@ -16401,6 +16726,247 @@
           "name": "<init>",
           "parameterTypes": [
             "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.text.NamingCase",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.text.OffsetMatcher",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "boolean",
+            "boolean",
+            "boolean"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "boolean",
+            "boolean",
+            "int"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.text.PooledStringBuilder",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.StringBuilder"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.text.StringBuilderPool",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.text.StringBuilderPool$PoolConfig",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.text.StringBuilderPool$PoolConfig$Builder",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.core.text.StringBuilderPool$PoolConfig"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.text.StringBuilderPool$PoolStats",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "long",
+            "long",
+            "long",
+            "long",
+            "long",
+            "long",
+            "double",
+            "double"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.text.StringJoiner",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.Appendable",
+            "java.lang.CharSequence"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.Appendable",
+            "java.lang.CharSequence",
+            "java.lang.CharSequence",
+            "java.lang.CharSequence"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.CharSequence"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.CharSequence",
+            "java.lang.CharSequence",
+            "java.lang.CharSequence"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.text.StringJoiner$NullMode",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "int"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.text.StringRepeater",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "int"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.text.StringSplitter",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.CharSequence",
+            "org.miaixz.bus.core.text.finder.TextFinder",
+            "int",
+            "boolean"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.text.StringStripper",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.CharSequence",
+            "java.lang.CharSequence",
+            "boolean",
+            "boolean"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.text.StringTrimer",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.core.text.StringTrimer$TrimMode",
+            "org.miaixz.bus.core.center.function.PredicateX"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.text.StringTrimer$TrimMode",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "int"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.text.TextSimilarity",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.text.bloom.AbstractFilter",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "int"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.text.bloom.CombinedBloomFilter",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.core.text.bloom.BloomFilter[]"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.text.bloom.FunctionFilter",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "int",
+            "java.util.function.ToIntFunction[]"
           ]
         }
       ]
@@ -16621,36 +17187,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.core.text.NamingCase",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.text.OffsetMatcher",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "boolean",
-            "boolean",
-            "boolean"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "boolean",
-            "boolean",
-            "int"
-          ]
-        }
-      ]
-    },
-    {
       "type": "org.miaixz.bus.core.text.placeholder.PlaceholderParser",
       "methods": [
         {
@@ -16668,63 +17204,6 @@
             "java.lang.String",
             "java.lang.String",
             "char"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.text.placeholder.segment.AbstractSegment",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.text.placeholder.segment.IndexedSegment",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.text.placeholder.segment.LiteralSegment",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.text.placeholder.segment.NamedSegment",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.text.placeholder.segment.SingleSegment",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String"
           ]
         }
       ]
@@ -16791,6 +17270,63 @@
       ]
     },
     {
+      "type": "org.miaixz.bus.core.text.placeholder.segment.AbstractSegment",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.text.placeholder.segment.IndexedSegment",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.text.placeholder.segment.LiteralSegment",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.text.placeholder.segment.NamedSegment",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.text.placeholder.segment.SingleSegment",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
       "type": "org.miaixz.bus.core.text.placeholder.template.NamedPlaceholderString",
       "methods": [
         {
@@ -16841,17 +17377,6 @@
           "name": "<init>",
           "parameterTypes": [
             "java.lang.String"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.text.PooledStringBuilder",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.StringBuilder"
           ]
         }
       ]
@@ -16983,172 +17508,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.core.text.StringBuilderPool",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.text.StringBuilderPool$PoolConfig",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.text.StringBuilderPool$PoolConfig$Builder",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "org.miaixz.bus.core.text.StringBuilderPool$PoolConfig"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.text.StringBuilderPool$PoolStats",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "long",
-            "long",
-            "long",
-            "long",
-            "long",
-            "long",
-            "double",
-            "double"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.text.StringJoiner",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.Appendable",
-            "java.lang.CharSequence"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.Appendable",
-            "java.lang.CharSequence",
-            "java.lang.CharSequence",
-            "java.lang.CharSequence"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.CharSequence"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.CharSequence",
-            "java.lang.CharSequence",
-            "java.lang.CharSequence"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.text.StringJoiner$NullMode",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "int"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.text.StringRepeater",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "int"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.text.StringSplitter",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.CharSequence",
-            "org.miaixz.bus.core.text.finder.TextFinder",
-            "int",
-            "boolean"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.text.StringStripper",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.CharSequence",
-            "java.lang.CharSequence",
-            "boolean",
-            "boolean"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.text.StringTrimer",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "org.miaixz.bus.core.text.StringTrimer$TrimMode",
-            "org.miaixz.bus.core.center.function.PredicateX"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.text.StringTrimer$TrimMode",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "int"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.text.TextSimilarity",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
       "type": "org.miaixz.bus.core.tree.BeanTree",
       "methods": [
         {
@@ -17237,15 +17596,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.core.tree.parser.DefaultNodeParser",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
       "type": "org.miaixz.bus.core.tree.TreeBuilder",
       "methods": [
         {
@@ -17282,13 +17632,11 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.core.Version",
+      "type": "org.miaixz.bus.core.tree.parser.DefaultNodeParser",
       "methods": [
         {
           "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
+          "parameterTypes": []
         }
       ]
     },
@@ -17319,6 +17667,24 @@
             "org.w3c.dom.Node",
             "boolean"
           ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.xml.XPath",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.xml.XXE",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
         }
       ]
     },
@@ -17362,24 +17728,6 @@
           "parameterTypes": [
             "javax.xml.transform.Source"
           ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.xml.XPath",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.xml.XXE",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
         }
       ]
     },
@@ -17510,16 +17858,23 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.core.xyz.CollectorKit",
+      "type": "org.miaixz.bus.core.xyz.CollKit",
       "methods": [
         {
           "name": "<init>",
           "parameterTypes": []
+        },
+        {
+          "name": "partition",
+          "parameterTypes": [
+            "java.util.Collection",
+            "int"
+          ]
         }
       ]
     },
     {
-      "type": "org.miaixz.bus.core.xyz.CollKit",
+      "type": "org.miaixz.bus.core.xyz.CollectorKit",
       "methods": [
         {
           "name": "<init>",
@@ -18011,182 +18366,104 @@
       "jniAccessible": true
     },
     {
-      "type": "java.lang.Object",
+      "type": "org.miaixz.bus.core.basic.entity.Option",
+      "fields": [
+        {
+          "name": "name"
+        }
+      ],
       "methods": [
         {
-          "name": "equals",
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "<init>",
           "parameterTypes": [
-            "java.lang.Object"
+            "org.miaixz.bus.core.basic.entity.Option$OptionBuilder"
           ]
         },
         {
-          "name": "getClass",
+          "name": "builder",
           "parameterTypes": []
         },
         {
-          "name": "hashCode",
+          "name": "getName",
           "parameterTypes": []
         },
         {
-          "name": "notify",
-          "parameterTypes": []
-        },
-        {
-          "name": "notifyAll",
-          "parameterTypes": []
-        },
-        {
-          "name": "toString",
-          "parameterTypes": []
-        },
-        {
-          "name": "wait",
+          "name": "setName",
           "parameterTypes": [
-            "long",
-            "int"
+            "java.lang.String"
           ]
-        },
-        {
-          "name": "wait",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "wait",
-          "parameterTypes": []
         }
       ]
     },
     {
-      "type": "java.lang.reflect.WildcardType",
-      "methods": [
+      "type": "org.miaixz.bus.core.basic.entity.Option$OptionBuilder",
+      "fields": [
         {
-          "name": "getLowerBounds",
-          "parameterTypes": []
-        },
-        {
-          "name": "getUpperBounds",
-          "parameterTypes": []
+          "name": "name"
         }
-      ]
-    },
-    {
-      "type": "java.lang.Enum",
+      ],
       "methods": [
         {
-          "name": "compareTo",
-          "parameterTypes": [
-            "java.lang.Enum"
-          ]
-        },
-        {
-          "name": "compareTo",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "describeConstable",
-          "parameterTypes": []
-        },
-        {
-          "name": "equals",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "getDeclaringClass",
-          "parameterTypes": []
-        },
-        {
-          "name": "hashCode",
+          "name": "<init>",
           "parameterTypes": []
         },
         {
           "name": "name",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "self",
           "parameterTypes": []
         },
         {
-          "name": "ordinal",
+          "name": "build",
           "parameterTypes": []
         },
         {
           "name": "toString",
           "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.core.basic.entity.Option$OptionBuilderImpl",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
         },
         {
-          "name": "valueOf",
-          "parameterTypes": [
-            "java.lang.Class",
-            "java.lang.String"
-          ]
-        }
-      ],
-      "serializable": true
-    },
-    {
-      "type": "org.miaixz.bus.core.center.function.UnaryOperatorX",
-      "methods": [
+          "name": "self",
+          "parameterTypes": []
+        },
         {
-          "name": "apply",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.center.function.FunctionX",
-      "methods": [
-        {
-          "name": "apply",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.core.center.function.PredicateX",
-      "methods": [
-        {
-          "name": "test",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
+          "name": "build",
+          "parameterTypes": []
         }
       ]
     }
   ],
   "resources": [
     {
-      "bundle": "messages"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.center.iterator.EnumerationIterator"
-      },
-      "glob": "org/miaixz/bus/core/xyz"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.io.resource.ClassPathResource"
-      },
-      "glob": "org/miaixz/bus/core/io/resource/ClassPathResource.class"
-    },
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.io.resource.JarResource"
-      },
-      "glob": "org/miaixz/bus/core/xyz"
-    },
-    {
       "condition": {
         "typeReached": "org.miaixz.bus.core.lang.loader.StdLoader$Enumerator"
       },
       "glob": "META-INF"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.xyz.ResourceKit"
+      },
+      "glob": "META-INF"
+    },
+    {
+      "bundle": "messages"
     },
     {
       "condition": {
@@ -18202,9 +18479,9 @@
     },
     {
       "condition": {
-        "typeReached": "org.miaixz.bus.core.xyz.ResourceKit"
+        "typeReached": "org.miaixz.bus.core.io.resource.ClassPathResource"
       },
-      "glob": "META-INF"
+      "glob": "org/miaixz/bus/core/io/resource/ClassPathResource.class"
     },
     {
       "condition": {
@@ -18217,6 +18494,18 @@
         "typeReached": "org.miaixz.bus.core.xyz.UrlKit"
       },
       "glob": "org/miaixz/bus/core/io/resource/ClassPathResource.class"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.center.iterator.EnumerationIterator"
+      },
+      "glob": "org/miaixz/bus/core/xyz"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.io.resource.JarResource"
+      },
+      "glob": "org/miaixz/bus/core/xyz"
     },
     {
       "glob": "org/miaixz/bus/core/xyz"

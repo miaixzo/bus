@@ -61,6 +61,7 @@ public abstract class AbstractFilter implements BloomFilter {
     /**
      * Contains method.
      *
+     * @param text The string to check.
      * @return the boolean value
      */
     @Override
@@ -71,6 +72,7 @@ public abstract class AbstractFilter implements BloomFilter {
     /**
      * Add method.
      *
+     * @param text The string to add.
      * @return the boolean value
      */
     @Override

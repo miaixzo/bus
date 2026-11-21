@@ -89,6 +89,8 @@ public class NativeMeter implements Meter {
 
     /**
      * Returns the cumulative count since creation.
+     *
+     * @return cumulative event count since creation
      */
     @Override
     public long count() {
@@ -106,6 +108,8 @@ public class NativeMeter implements Meter {
 
     /**
      * Returns the 1-minute EWMA rate in events/second.
+     *
+     * @return one-minute exponentially weighted event rate per second
      */
     @Override
     public double oneMinuteRate() {
@@ -114,6 +118,8 @@ public class NativeMeter implements Meter {
 
     /**
      * Returns the 5-minute EWMA rate in events/second.
+     *
+     * @return five-minute exponentially weighted event rate per second
      */
     @Override
     public double fiveMinuteRate() {
@@ -122,6 +128,8 @@ public class NativeMeter implements Meter {
 
     /**
      * Returns the 15-minute EWMA rate in events/second.
+     *
+     * @return fifteen-minute exponentially weighted event rate per second
      */
     @Override
     public double fifteenMinuteRate() {
@@ -130,6 +138,8 @@ public class NativeMeter implements Meter {
 
     /**
      * Returns the mean rate since creation in events/second.
+     *
+     * @return mean event rate per second since creation
      */
     @Override
     public double meanRate() {

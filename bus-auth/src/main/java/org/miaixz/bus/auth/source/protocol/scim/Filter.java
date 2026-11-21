@@ -123,6 +123,7 @@ public interface Filter {
         /**
          * Validates the attribute path.
          *
+         * @param attributePath standard SCIM attribute path
          * @throws IllegalArgumentException if {@code attributePath} is {@code null}
          * @throws ValidateException        if the attribute path syntax is invalid
          */
@@ -145,6 +146,9 @@ public interface Filter {
         /**
          * Validates the attribute path and required comparison operands.
          *
+         * @param attributePath   standard SCIM attribute path
+         * @param operator        standard comparison operator
+         * @param comparisonValue JSON primitive comparison value
          * @throws IllegalArgumentException if an operand is {@code null}
          * @throws ValidateException        if the attribute path syntax is invalid
          */
@@ -166,6 +170,8 @@ public interface Filter {
 
         /**
          * Requires a non-null operand.
+         *
+         * @param operand filter being negated
          */
         public Not {
             operand = Assert.notNull(operand, "SCIM not operand must not be null");
@@ -184,6 +190,9 @@ public interface Filter {
 
         /**
          * Requires two non-null operands.
+         *
+         * @param left  left filter operand
+         * @param right right filter operand
          */
         public And {
             left = Assert.notNull(left, "SCIM and left operand must not be null");
@@ -203,6 +212,9 @@ public interface Filter {
 
         /**
          * Requires two non-null operands.
+         *
+         * @param left  left filter operand
+         * @param right right filter operand
          */
         public Or {
             left = Assert.notNull(left, "SCIM or left operand must not be null");
@@ -223,6 +235,8 @@ public interface Filter {
         /**
          * Validates the outer path and requires a nested filter.
          *
+         * @param attributePath standard path of the multi-valued complex attribute
+         * @param valueFilter   nested filter evaluated against one complex value
          * @throws IllegalArgumentException if a required operand is {@code null}
          * @throws ValidateException        if the attribute path syntax is invalid
          */
@@ -246,6 +260,9 @@ public interface Filter {
         /**
          * Validates and freezes one parsed attribute path.
          *
+         * @param schemaUri    optional schema URI prefix
+         * @param attribute    primary attribute name
+         * @param subAttribute optional sub-attribute name
          * @throws IllegalArgumentException if a component or optional container is {@code null}
          * @throws ValidateException        if the reconstructed path violates RFC 7644 syntax
          */
@@ -363,6 +380,8 @@ public interface Filter {
 
         /**
          * Requires a non-null string value.
+         *
+         * @param value decoded Unicode string
          */
         public StringValue {
             value = Assert.notNull(value, "SCIM filter string value must not be null");
@@ -390,6 +409,8 @@ public interface Filter {
 
         /**
          * Requires a non-null exact decimal value.
+         *
+         * @param value arbitrary-precision decimal number
          */
         public NumberValue {
             value = Assert.notNull(value, "SCIM filter number value must not be null");

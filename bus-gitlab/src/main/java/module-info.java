@@ -34,6 +34,7 @@ module bus.gitlab {
     requires java.logging;
 
     requires bus.core;
+    requires bus.errors;
     requires bus.logger;
 
     requires static com.fasterxml.jackson.annotation;

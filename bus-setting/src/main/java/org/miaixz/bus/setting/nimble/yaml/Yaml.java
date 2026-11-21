@@ -270,6 +270,7 @@ public class Yaml {
                     }
                     return event;
                 }
+
             };
             final SafeConstructor constructor = new SafeConstructor(options);
             constructor.setAllowDuplicateKeys(false);

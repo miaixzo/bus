@@ -69,6 +69,7 @@ public enum Chrono {
      * Constructor for Chrono enum.
      *
      * @param millis The number of milliseconds for this unit.
+     * @param name   display name of the time unit
      */
     Chrono(final long millis, final String name) {
         this.millis = millis;

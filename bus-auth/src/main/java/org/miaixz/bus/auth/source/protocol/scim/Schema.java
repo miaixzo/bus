@@ -47,6 +47,12 @@ public record Schema(List<String> schemas, String id, Optional<String> name, Opt
     /**
      * Enforces the discovery schema, described schema URI, and unique top-level attributes.
      *
+     * @param schemas     singleton standard Schema resource schema URI
+     * @param id          absolute schema URI described by this resource
+     * @param name        human-readable schema name when supplied
+     * @param description human-readable schema description when supplied
+     * @param attributes  top-level schema attribute definitions
+     * @param meta        service-provider-maintained discovery resource metadata
      * @throws IllegalArgumentException if a required value, container, or attribute is {@code null}
      * @throws ValidateException        if a schema URI, optional text, or attribute name is invalid
      */
@@ -370,6 +376,18 @@ public record Schema(List<String> schemas, String id, Optional<String> name, Opt
         /**
          * Enforces type-specific schema attribute definition invariants.
          *
+         * @param name            case-insensitive attribute name
+         * @param type            standard SCIM attribute data type
+         * @param multiValued     whether the attribute contains a value array
+         * @param description     human-readable attribute description when supplied
+         * @param required        whether resource representations require the attribute
+         * @param caseExact       whether string comparison is case-sensitive
+         * @param mutability      standard attribute mutability
+         * @param returned        standard response-return behavior
+         * @param uniqueness      standard uniqueness constraint
+         * @param canonicalValues permitted canonical string values
+         * @param referenceTypes  permitted reference resource types or {@code external}/{@code uri}
+         * @param subAttributes   recursive definitions for a complex attribute
          * @throws IllegalArgumentException if a required value, container, or list entry is {@code null}
          * @throws ValidateException        if type-specific canonical, reference, or sub-attribute rules are violated
          */

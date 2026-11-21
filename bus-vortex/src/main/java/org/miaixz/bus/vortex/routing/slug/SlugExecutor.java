@@ -42,6 +42,8 @@ import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.core.xyz.UrlKit;
 import org.miaixz.bus.cortex.Assets;
+import org.miaixz.bus.cortex.registry.ServiceRoutes;
+import org.miaixz.bus.errors.transport.reactive.ReactiveErrorHandler;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.vortex.*;
 import org.miaixz.bus.vortex.magic.ErrorCode;
@@ -96,7 +98,7 @@ public class SlugExecutor implements Executor<ServerRequest, ServerResponse> {
     @Override
     public Mono<ServerResponse> execute(Context context, ServerRequest request) {
         URI target = target(context, request);
-        WebClient.RequestBodySpec bodySpec = Egress
+        WebClient.RequestBodySpec bodySpec = Egress.Http
                 .request(HttpMethod.valueOf(context.getHttpMethod().value()), target);
         bodySpec.headers(headers -> {
             headers.addAll(request.headers().asHttpHeaders());
@@ -128,7 +130,7 @@ public class SlugExecutor implements Executor<ServerRequest, ServerResponse> {
                 request.path(),
                 target);
 
-        return bodySpec.retrieve().onStatus(status -> true, clientResponse -> Mono.empty())
+        return bodySpec.retrieve().onStatus(status -> status.isError(), ReactiveErrorHandler::upstreamFailure)
                 .toEntityFlux(DataBuffer.class).flatMap(responseEntity -> {
                     ServerResponse.BodyBuilder responseBuilder = ServerResponse.status(responseEntity.getStatusCode());
                     responseBuilder.headers(headers -> {
@@ -196,17 +198,7 @@ public class SlugExecutor implements Executor<ServerRequest, ServerResponse> {
      * @return base URL
      */
     private String base(Assets assets) {
-        StringBuilder builder = new StringBuilder(StringKit.toStringOrEmpty(assets.getHost()));
-        if (assets.getPort() != null && assets.getPort() > 0) {
-            builder.append(Symbol.COLON).append(assets.getPort());
-        }
-        if (StringKit.isNotBlank(assets.getPath())) {
-            if (!assets.getPath().startsWith(Symbol.SLASH)) {
-                builder.append(Symbol.SLASH);
-            }
-            builder.append(assets.getPath());
-        }
-        return UrlKit.normalize(builder.toString(), false);
+        return ServiceRoutes.resolve(assets).toASCIIString();
     }
 
     /**

@@ -79,6 +79,7 @@ public enum QueryRetrieveLevel {
             iod.add(new IOD.DataElement(Tag.StudyInstanceUID, VR.UI, IOD.DataElementType.TYPE_1, -1, -1, 0));
             return iod;
         }
+
     },
     /**
      * The series value.
@@ -106,6 +107,7 @@ public enum QueryRetrieveLevel {
             iod.add(new IOD.DataElement(Tag.SeriesInstanceUID, VR.UI, IOD.DataElementType.TYPE_1, -1, -1, 0));
             return iod;
         }
+
     },
     /**
      * The image value.
@@ -135,6 +137,7 @@ public enum QueryRetrieveLevel {
             iod.add(new IOD.DataElement(Tag.SOPInstanceUID, VR.UI, IOD.DataElementType.TYPE_1, -1, -1, 0));
             return iod;
         }
+
     },
     /**
      * The frame value.
@@ -150,6 +153,7 @@ public enum QueryRetrieveLevel {
         protected IOD retrieveKeysIOD(QueryRetrieveLevel rootLevel, boolean relational) {
             return IMAGE.retrieveKeysIOD(rootLevel, relational);
         }
+
     };
 
     /**

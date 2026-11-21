@@ -49,6 +49,11 @@ public record Rgba(float red, float green, float blue, float alpha) {
 
     /**
      * Clamps every component to the normalized range, treating NaN as zero.
+     *
+     * @param red   red component
+     * @param green green component
+     * @param blue  blue component
+     * @param alpha opacity component
      */
     public Rgba {
         red = clamp(red);

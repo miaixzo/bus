@@ -41,6 +41,10 @@ public record ProviderCapabilities(boolean observable, Optional<ScrapeSupport> s
 
     /**
      * Validates optional capability values.
+     *
+     * @param observable whether observable family registration is supported
+     * @param scrape     optional text scrape capability
+     * @param snapshot   optional structured snapshot capability
      */
     public ProviderCapabilities {
         scrape = Objects.requireNonNull(scrape, "Scrape capability must not be null");

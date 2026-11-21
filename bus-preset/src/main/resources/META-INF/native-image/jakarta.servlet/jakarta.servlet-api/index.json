@@ -2,7 +2,7 @@
   {
     "latest": true,
     "metadata-version": "6.1.0",
-    "description": "Conditional Bus integration metadata only; supplements upstream metadata without replacing it.",
+    "description": "Eclipse Enterprise for Java (EE4J) is an open source initiative to create standard APIs, implementations of those APIs, and technology compatibility kits for Java runtimes that enable development, deployment, and management of server-side and cloud-native applications.",
     "tested-versions": [
       "6.1.0"
     ]

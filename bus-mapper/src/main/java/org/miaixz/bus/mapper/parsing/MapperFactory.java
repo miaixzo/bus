@@ -25,7 +25,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import jakarta.persistence.AttributeOverride;
+
 import org.miaixz.bus.core.lang.Optional;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.FieldKit;
 import org.miaixz.bus.core.xyz.ModifierKit;
 import org.miaixz.bus.mapper.builder.ClassMetaResolver;
@@ -125,12 +128,42 @@ public abstract class MapperFactory {
                         }
                         isSuperclass = true;
                     }
+                    validateOverrides(tableMeta);
                     // Mark as processed.
                     tableMeta.ready(true);
                 }
             }
         }
         return tableMeta;
+    }
+
+    /**
+     * Validates effective overrides after the complete column SPI chain has run. The nearest declaration owns each
+     * property; declarations at the same hierarchy level cannot duplicate a property, and an effective override must
+     * identify exactly one column rather than guessing how to apply it to a zero- or multi-column SPI result.
+     *
+     * @param table the fully assembled mapping, before it is marked ready
+     * @throws IllegalArgumentException when an override is duplicated, unmapped, or ambiguous
+     */
+    private static void validateOverrides(TableMeta table) {
+        Set<String> effective = new HashSet<>();
+        for (Class<?> owner = table.entityClass(); owner != null; owner = owner.getSuperclass()) {
+            Set<String> local = new HashSet<>();
+            for (AttributeOverride override : owner.getDeclaredAnnotationsByType(AttributeOverride.class)) {
+                String name = override.name();
+                if (!local.add(name)) {
+                    throw new IllegalArgumentException(
+                            "Duplicate column override: " + owner.getName() + Symbol.DOT + name);
+                }
+                if (effective.add(name)) {
+                    long count = table.columns().stream().filter(column -> name.equals(column.property())).count();
+                    if (count != 1) {
+                        throw new IllegalArgumentException("Column override requires exactly one mapped column: "
+                                + table.entityClass().getName() + Symbol.DOT + name + ", columns=" + count);
+                    }
+                }
+            }
+        }
     }
 
     /**

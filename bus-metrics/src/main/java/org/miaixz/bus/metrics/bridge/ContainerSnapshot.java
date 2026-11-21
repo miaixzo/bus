@@ -30,6 +30,9 @@ public record ContainerSnapshot(double cpuSeconds, long memoryUsageBytes) {
 
     /**
      * Validates container values.
+     *
+     * @param cpuSeconds       cumulative container CPU time in seconds
+     * @param memoryUsageBytes current container memory usage in bytes
      */
     public ContainerSnapshot {
         if (!Double.isFinite(cpuSeconds) || cpuSeconds < 0 || memoryUsageBytes < 0) {

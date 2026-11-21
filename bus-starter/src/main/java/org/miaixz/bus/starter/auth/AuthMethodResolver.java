@@ -52,6 +52,7 @@ import org.miaixz.bus.spring.context.ContextBuilder;
  *         // The 'user' parameter is directly available without manual retrieval.
  *         return userService.getUserInfo(user.getId());
  *     }
+ *
  * }
  * }</pre>
  * <p>

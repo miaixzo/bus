@@ -33,6 +33,8 @@ public record Tag(String key, String value) {
     /**
      * Compact constructor — validates key and normalises null value to empty string.
      *
+     * @param key   tag key; must not be blank
+     * @param value tag value; {@code null} is normalised to {@code ""}
      * @throws IllegalArgumentException if {@code key} is null or blank
      */
     public Tag {
@@ -57,6 +59,8 @@ public record Tag(String key, String value) {
 
     /**
      * Returns {@code key="value"} suitable for use in Prometheus label strings.
+     *
+     * @return Prometheus-compatible label text in key="value" form
      */
     @Override
     public String toString() {

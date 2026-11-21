@@ -207,6 +207,26 @@ public class SchemaConfig {
     private String scriptLocation = Normal.EMPTY;
 
     /**
+     * Optional unqualified schema used only for this initializer invocation.
+     */
+    private String targetSchema;
+
+    /**
+     * Explicit catalog used for this initialization, independent of the optional schema.
+     */
+    private String targetCatalog;
+
+    /**
+     * Exact qualified table-and-column coordinates whose database defaults may be removed.
+     */
+    private Set<String> dropColumnDefaults = new HashSet<>();
+
+    /**
+     * Exact table coordinates whose physical order must match the mapped entity.
+     */
+    private Set<String> reorderTables = new HashSet<>();
+
+    /**
      * Constructs a new SchemaConfig instance.
      */
     public SchemaConfig() {

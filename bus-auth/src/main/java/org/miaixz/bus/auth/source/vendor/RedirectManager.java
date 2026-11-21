@@ -475,6 +475,10 @@ public class RedirectManager {
 
         /**
          * Validates generated redirect authorization material.
+         *
+         * @param state         generated opaque state
+         * @param nonce         optional generated OpenID Connect nonce
+         * @param codeChallenge optional RFC 7636 S256 challenge
          */
         public Initiation {
             Assert.notBlank(state, "Vendor redirect state must not be blank");
@@ -495,6 +499,9 @@ public class RedirectManager {
 
         /**
          * Validates one platform-prepared authorization redirect.
+         *
+         * @param location         platform authorization redirect location
+         * @param correlationValue callback value bound to generated state
          */
         public Prepared {
             Assert.notBlank(location, "Vendor authorization redirect location must not be blank");
@@ -516,6 +523,10 @@ public class RedirectManager {
 
         /**
          * Validates consumed callback security material passed to the platform adapter.
+         *
+         * @param callback     raw platform callback transport
+         * @param correlation  consumed callback correlation
+         * @param codeVerifier optional RFC 7636 verifier
          */
         public Completion {
             Assert.notNull(callback, "Vendor inbound callback must not be null");

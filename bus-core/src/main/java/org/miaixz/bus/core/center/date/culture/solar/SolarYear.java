@@ -115,6 +115,7 @@ public class SolarYear extends AbstractYear {
     /**
      * Gets the Chinese name of this year.
      *
+     * @param n The number of units to advance.
      * @return the localized display name of this year
      */
     @Override

@@ -65,6 +65,7 @@ public class ReplacerChain extends StringReplacer implements Chain<StringReplace
     /**
      * Addchain method.
      *
+     * @param element comparator or replacer to append to the chain
      * @return the ReplacerChain value
      */
     @Override

@@ -73,7 +73,7 @@ public final class CpuHostMetrics implements MetricBinder {
      *
      * @param name       metric name
      * @param kind       instrument kind
-     * @param numberKind numeric representation
+     * @param number     numeric representation
      * @param unit       metric unit
      * @param attributes ordered attribute schema
      * @return metric descriptor

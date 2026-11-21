@@ -167,69 +167,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.pay.cache.PayCache",
-      "fields": [
-        {
-          "name": "INSTANCE"
-        }
-      ],
-      "methods": [
-        {
-          "name": "clear",
-          "parameterTypes": []
-        },
-        {
-          "name": "containsKey",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "read",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "read",
-          "parameterTypes": [
-            "java.util.Collection"
-          ]
-        },
-        {
-          "name": "remove",
-          "parameterTypes": [
-            "java.lang.String[]"
-          ]
-        },
-        {
-          "name": "valueOf",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "values",
-          "parameterTypes": []
-        },
-        {
-          "name": "write",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.Object",
-            "long"
-          ]
-        },
-        {
-          "name": "write",
-          "parameterTypes": [
-            "java.util.Map",
-            "long"
-          ]
-        }
-      ]
-    },
-    {
       "type": "org.miaixz.bus.pay.Checker",
       "methods": [
         {
@@ -502,6 +439,196 @@
       ]
     },
     {
+      "type": "org.miaixz.bus.pay.Mode",
+      "fields": [
+        {
+          "name": "SELLER"
+        },
+        {
+          "name": "SERVICE"
+        },
+        {
+          "name": "value"
+        }
+      ],
+      "methods": [
+        {
+          "name": "getValue",
+          "parameterTypes": []
+        },
+        {
+          "name": "valueOf",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "values",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.pay.Registry",
+      "fields": [
+        {
+          "name": "ALIPAY"
+        },
+        {
+          "name": "JDPAY"
+        },
+        {
+          "name": "PAYPAL"
+        },
+        {
+          "name": "TENPAY"
+        },
+        {
+          "name": "UNIONPAY"
+        },
+        {
+          "name": "WECHAT"
+        }
+      ],
+      "methods": [
+        {
+          "name": "require",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "valueOf",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "values",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.pay.Registry$6$R",
+      "fields": [
+        {
+          "name": "$VALUES"
+        },
+        {
+          "name": "ACTION"
+        },
+        {
+          "name": "CHINA"
+        },
+        {
+          "name": "CHINA2"
+        },
+        {
+          "name": "FRAUD"
+        },
+        {
+          "name": "HK"
+        },
+        {
+          "name": "PAY_APP"
+        },
+        {
+          "name": "url"
+        },
+        {
+          "name": "US"
+        }
+      ],
+      "methods": [
+        {
+          "name": "$values",
+          "parameterTypes": []
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "int",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "valueOf",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "values",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.pay.cache.PayCache",
+      "fields": [
+        {
+          "name": "INSTANCE"
+        }
+      ],
+      "methods": [
+        {
+          "name": "clear",
+          "parameterTypes": []
+        },
+        {
+          "name": "containsKey",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "read",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "read",
+          "parameterTypes": [
+            "java.util.Collection"
+          ]
+        },
+        {
+          "name": "remove",
+          "parameterTypes": [
+            "java.lang.String[]"
+          ]
+        },
+        {
+          "name": "valueOf",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "values",
+          "parameterTypes": []
+        },
+        {
+          "name": "write",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.Object",
+            "long"
+          ]
+        },
+        {
+          "name": "write",
+          "parameterTypes": [
+            "java.util.Map",
+            "long"
+          ]
+        }
+      ]
+    },
+    {
       "type": "org.miaixz.bus.pay.magic.Currency",
       "fields": [
         {
@@ -741,36 +868,6 @@
         },
         {
           "name": "self",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.pay.Mode",
-      "fields": [
-        {
-          "name": "SELLER"
-        },
-        {
-          "name": "SERVICE"
-        },
-        {
-          "name": "value"
-        }
-      ],
-      "methods": [
-        {
-          "name": "getValue",
-          "parameterTypes": []
-        },
-        {
-          "name": "valueOf",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "values",
           "parameterTypes": []
         }
       ]
@@ -1901,6 +1998,219 @@
         {
           "name": "values",
           "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.pay.nimble.jdpay.JdPayBuilder",
+      "methods": [
+        {
+          "name": "addXmlHead",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "addXmlHeadAndElJdPay",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "decrypt",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "decrypt",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "decryptByPublicKey",
+          "parameterTypes": [
+            "byte[]",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "decryptMerchant",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "delXmlElm",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "encrypt",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "encryptByPrivateKey",
+          "parameterTypes": [
+            "byte[]",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "encryptMerchant",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "extractTagValue",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "fomatXml",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getXmlElm",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "md5LowerCase",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "parse",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "sign",
+          "parameterTypes": [
+            "byte[]",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "signRemoveSelectedKeys",
+          "parameterTypes": [
+            "java.lang.Object",
+            "java.lang.String",
+            "java.util.List"
+          ]
+        },
+        {
+          "name": "signString",
+          "parameterTypes": [
+            "java.lang.Object",
+            "java.util.List"
+          ]
+        },
+        {
+          "name": "toJdPayXml",
+          "parameterTypes": [
+            "java.util.Map"
+          ]
+        },
+        {
+          "name": "toMap",
+          "parameterTypes": [
+            "java.util.Map",
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.pay.nimble.jdpay.JdPayProvider",
+      "methods": [
+        {
+          "name": "cancelUserRelation",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "doPost",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "fkmPay",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getUrl",
+          "parameterTypes": []
+        },
+        {
+          "name": "getUrl",
+          "parameterTypes": [
+            "org.miaixz.bus.pay.Complex"
+          ]
+        },
+        {
+          "name": "getUserRelation",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "queryBaiTiaoFq",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "queryOrder",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "refund",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "revoke",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "uniOrder",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
         }
       ]
     },
@@ -3084,6 +3394,9 @@
         },
         {
           "name": "version"
+        },
+        {
+          "name": "oTradeNum"
         }
       ],
       "methods": [
@@ -3249,6 +3562,9 @@
         },
         {
           "name": "version"
+        },
+        {
+          "name": "oTradeNum"
         }
       ],
       "methods": [
@@ -3517,6 +3833,9 @@
         },
         {
           "name": "version"
+        },
+        {
+          "name": "oTradeNum"
         }
       ],
       "methods": [
@@ -5119,169 +5438,71 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.pay.nimble.jdpay.JdPayBuilder",
+      "type": "org.miaixz.bus.pay.nimble.paypal.PaypalBuilder",
       "methods": [
         {
-          "name": "addXmlHead",
+          "name": "retryOnException",
           "parameterTypes": [
-            "java.lang.String"
+            "int",
+            "java.util.concurrent.Callable"
           ]
         },
         {
-          "name": "addXmlHeadAndElJdPay",
+          "name": "retryOnException",
           "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "decrypt",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "decrypt",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "decryptByPublicKey",
-          "parameterTypes": [
-            "byte[]",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "decryptMerchant",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "delXmlElm",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "encrypt",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "encryptByPrivateKey",
-          "parameterTypes": [
-            "byte[]",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "encryptMerchant",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "extractTagValue",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "fomatXml",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "getXmlElm",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "md5LowerCase",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "parse",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "sign",
-          "parameterTypes": [
-            "byte[]",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "signRemoveSelectedKeys",
-          "parameterTypes": [
-            "java.lang.Object",
-            "java.lang.String",
-            "java.util.List"
-          ]
-        },
-        {
-          "name": "signString",
-          "parameterTypes": [
-            "java.lang.Object",
-            "java.util.List"
-          ]
-        },
-        {
-          "name": "toJdPayXml",
-          "parameterTypes": [
-            "java.util.Map"
-          ]
-        },
-        {
-          "name": "toMap",
-          "parameterTypes": [
-            "java.util.Map",
-            "java.lang.String"
+            "int",
+            "long",
+            "java.util.concurrent.Callable"
           ]
         }
       ]
     },
     {
-      "type": "org.miaixz.bus.pay.nimble.jdpay.JdPayProvider",
+      "type": "org.miaixz.bus.pay.nimble.paypal.PaypalProvider",
       "methods": [
         {
-          "name": "cancelUserRelation",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "doPost",
+          "name": "captureOrder",
           "parameterTypes": [
             "java.lang.String",
             "java.lang.String"
           ]
         },
         {
-          "name": "fkmPay",
+          "name": "captureQuery",
           "parameterTypes": [
             "java.lang.String"
           ]
+        },
+        {
+          "name": "createOrder",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getAccessToken",
+          "parameterTypes": [
+            "boolean"
+          ]
+        },
+        {
+          "name": "getBaseHeaders",
+          "parameterTypes": [
+            "org.miaixz.bus.pay.nimble.paypal.entity.AccessToken"
+          ]
+        },
+        {
+          "name": "getBaseHeaders",
+          "parameterTypes": [
+            "org.miaixz.bus.pay.nimble.paypal.entity.AccessToken",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getToken",
+          "parameterTypes": []
         },
         {
           "name": "getUrl",
@@ -5294,18 +5515,6 @@
           ]
         },
         {
-          "name": "getUserRelation",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "queryBaiTiaoFq",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
           "name": "queryOrder",
           "parameterTypes": [
             "java.lang.String"
@@ -5314,18 +5523,20 @@
         {
           "name": "refund",
           "parameterTypes": [
+            "java.lang.String",
             "java.lang.String"
           ]
         },
         {
-          "name": "revoke",
+          "name": "refundQuery",
           "parameterTypes": [
             "java.lang.String"
           ]
         },
         {
-          "name": "uniOrder",
+          "name": "updateOrder",
           "parameterTypes": [
+            "java.lang.String",
             "java.lang.String"
           ]
         }
@@ -5477,71 +5688,84 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.pay.nimble.paypal.PaypalBuilder",
+      "type": "org.miaixz.bus.pay.nimble.tenpay.TenpayProvider",
       "methods": [
         {
-          "name": "retryOnException",
+          "name": "closeOrder",
           "parameterTypes": [
-            "int",
-            "java.util.concurrent.Callable"
+            "java.util.Map"
           ]
         },
         {
-          "name": "retryOnException",
+          "name": "createReadPack",
           "parameterTypes": [
-            "int",
-            "long",
-            "java.util.concurrent.Callable"
+            "java.util.Map",
+            "java.io.InputStream",
+            "java.lang.String"
           ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.pay.nimble.paypal.PaypalProvider",
-      "methods": [
+        },
         {
-          "name": "captureOrder",
+          "name": "createReadPack",
           "parameterTypes": [
+            "java.util.Map",
             "java.lang.String",
             "java.lang.String"
           ]
         },
         {
-          "name": "captureQuery",
+          "name": "doPost",
           "parameterTypes": [
+            "org.miaixz.bus.pay.Complex",
+            "java.util.Map"
+          ]
+        },
+        {
+          "name": "doPost",
+          "parameterTypes": [
+            "org.miaixz.bus.pay.Complex",
+            "java.util.Map",
+            "java.io.InputStream",
             "java.lang.String"
           ]
         },
         {
-          "name": "createOrder",
+          "name": "doPost",
           "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "getAccessToken",
-          "parameterTypes": [
-            "boolean"
-          ]
-        },
-        {
-          "name": "getBaseHeaders",
-          "parameterTypes": [
-            "org.miaixz.bus.pay.nimble.paypal.entity.AccessToken"
-          ]
-        },
-        {
-          "name": "getBaseHeaders",
-          "parameterTypes": [
-            "org.miaixz.bus.pay.nimble.paypal.entity.AccessToken",
-            "java.lang.String",
+            "org.miaixz.bus.pay.Complex",
+            "java.util.Map",
             "java.lang.String",
             "java.lang.String"
           ]
         },
         {
-          "name": "getToken",
-          "parameterTypes": []
+          "name": "downloadBill",
+          "parameterTypes": [
+            "java.util.Map"
+          ]
+        },
+        {
+          "name": "downloadHbBill",
+          "parameterTypes": [
+            "java.util.Map"
+          ]
+        },
+        {
+          "name": "downloadTransferBill",
+          "parameterTypes": [
+            "java.util.Map"
+          ]
+        },
+        {
+          "name": "getHbInfo",
+          "parameterTypes": [
+            "java.util.Map"
+          ]
+        },
+        {
+          "name": "getTransferInfo",
+          "parameterTypes": [
+            "java.util.Map"
+          ]
         },
         {
           "name": "getUrl",
@@ -5554,14 +5778,45 @@
           ]
         },
         {
-          "name": "queryOrder",
+          "name": "microPay",
           "parameterTypes": [
+            "java.util.Map"
+          ]
+        },
+        {
+          "name": "orderQuery",
+          "parameterTypes": [
+            "java.util.Map"
+          ]
+        },
+        {
+          "name": "orderRefund",
+          "parameterTypes": [
+            "java.util.Map",
+            "java.io.InputStream",
             "java.lang.String"
           ]
         },
         {
-          "name": "refund",
+          "name": "orderRefund",
           "parameterTypes": [
+            "java.util.Map",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "orderReverse",
+          "parameterTypes": [
+            "java.util.Map",
+            "java.io.InputStream",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "orderReverse",
+          "parameterTypes": [
+            "java.util.Map",
             "java.lang.String",
             "java.lang.String"
           ]
@@ -5569,14 +5824,29 @@
         {
           "name": "refundQuery",
           "parameterTypes": [
+            "java.util.Map"
+          ]
+        },
+        {
+          "name": "transfer",
+          "parameterTypes": [
+            "java.util.Map",
+            "java.io.InputStream",
             "java.lang.String"
           ]
         },
         {
-          "name": "updateOrder",
+          "name": "transfer",
           "parameterTypes": [
+            "java.util.Map",
             "java.lang.String",
             "java.lang.String"
+          ]
+        },
+        {
+          "name": "unifiedOrder",
+          "parameterTypes": [
+            "java.util.Map"
           ]
         }
       ]
@@ -8775,82 +9045,23 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.pay.nimble.tenpay.TenpayProvider",
+      "type": "org.miaixz.bus.pay.nimble.unionpay.UnionPayBuilder",
       "methods": [
         {
-          "name": "closeOrder",
+          "name": "buildAuthUrl",
           "parameterTypes": [
-            "java.util.Map"
-          ]
-        },
-        {
-          "name": "createReadPack",
-          "parameterTypes": [
-            "java.util.Map",
-            "java.io.InputStream",
             "java.lang.String"
           ]
-        },
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.pay.nimble.unionpay.UnionPayProvider",
+      "methods": [
         {
-          "name": "createReadPack",
+          "name": "execution",
           "parameterTypes": [
-            "java.util.Map",
             "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "doPost",
-          "parameterTypes": [
-            "org.miaixz.bus.pay.Complex",
-            "java.util.Map"
-          ]
-        },
-        {
-          "name": "doPost",
-          "parameterTypes": [
-            "org.miaixz.bus.pay.Complex",
-            "java.util.Map",
-            "java.io.InputStream",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "doPost",
-          "parameterTypes": [
-            "org.miaixz.bus.pay.Complex",
-            "java.util.Map",
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "downloadBill",
-          "parameterTypes": [
-            "java.util.Map"
-          ]
-        },
-        {
-          "name": "downloadHbBill",
-          "parameterTypes": [
-            "java.util.Map"
-          ]
-        },
-        {
-          "name": "downloadTransferBill",
-          "parameterTypes": [
-            "java.util.Map"
-          ]
-        },
-        {
-          "name": "getHbInfo",
-          "parameterTypes": [
-            "java.util.Map"
-          ]
-        },
-        {
-          "name": "getTransferInfo",
-          "parameterTypes": [
             "java.util.Map"
           ]
         },
@@ -8862,78 +9073,6 @@
           "name": "getUrl",
           "parameterTypes": [
             "org.miaixz.bus.pay.Complex"
-          ]
-        },
-        {
-          "name": "microPay",
-          "parameterTypes": [
-            "java.util.Map"
-          ]
-        },
-        {
-          "name": "orderQuery",
-          "parameterTypes": [
-            "java.util.Map"
-          ]
-        },
-        {
-          "name": "orderRefund",
-          "parameterTypes": [
-            "java.util.Map",
-            "java.io.InputStream",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "orderRefund",
-          "parameterTypes": [
-            "java.util.Map",
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "orderReverse",
-          "parameterTypes": [
-            "java.util.Map",
-            "java.io.InputStream",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "orderReverse",
-          "parameterTypes": [
-            "java.util.Map",
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "refundQuery",
-          "parameterTypes": [
-            "java.util.Map"
-          ]
-        },
-        {
-          "name": "transfer",
-          "parameterTypes": [
-            "java.util.Map",
-            "java.io.InputStream",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "transfer",
-          "parameterTypes": [
-            "java.util.Map",
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "unifiedOrder",
-          "parameterTypes": [
-            "java.util.Map"
           ]
         }
       ]
@@ -12362,24 +12501,1006 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.pay.nimble.unionpay.UnionPayBuilder",
+      "type": "org.miaixz.bus.pay.nimble.wechat.AuthType",
+      "fields": [
+        {
+          "name": "cert"
+        },
+        {
+          "name": "code"
+        },
+        {
+          "name": "desc"
+        },
+        {
+          "name": "RSA"
+        },
+        {
+          "name": "SM2"
+        }
+      ],
       "methods": [
         {
-          "name": "buildAuthUrl",
+          "name": "getCert",
+          "parameterTypes": []
+        },
+        {
+          "name": "getCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "getDesc",
+          "parameterTypes": []
+        },
+        {
+          "name": "valueOf",
           "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "values",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.pay.nimble.wechat.WechatPayBuilder",
+      "methods": [
+        {
+          "name": "appCreateSign",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "appCreateSign",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.security.PrivateKey"
+          ]
+        },
+        {
+          "name": "appPrepayIdCreateSign",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "org.miaixz.bus.core.lang.Algorithm"
+          ]
+        },
+        {
+          "name": "bizPayUrl",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "bizPayUrl",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "bizPayUrl",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "org.miaixz.bus.core.lang.Algorithm"
+          ]
+        },
+        {
+          "name": "buildAuthorization",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "buildAuthorization",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "long",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "buildAuthorization",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.security.PrivateKey",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "buildAuthorization",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.security.PrivateKey",
+            "java.lang.String",
+            "java.lang.String",
+            "long",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "buildResMap",
+          "parameterTypes": [
+            "org.miaixz.bus.pay.magic.Message"
+          ]
+        },
+        {
+          "name": "buildSign",
+          "parameterTypes": [
+            "java.util.Map",
+            "java.lang.String",
+            "org.miaixz.bus.core.lang.Algorithm"
+          ]
+        },
+        {
+          "name": "buildSign",
+          "parameterTypes": [
+            "java.util.Map",
+            "java.lang.String",
+            "org.miaixz.bus.core.lang.Algorithm",
+            "boolean"
+          ]
+        },
+        {
+          "name": "buildSign",
+          "parameterTypes": [
+            "java.util.Map",
+            "java.lang.String",
+            "org.miaixz.bus.core.lang.Algorithm",
+            "java.lang.String",
+            "java.lang.String",
+            "boolean"
+          ]
+        },
+        {
+          "name": "checkByPublicKey",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "checkByPublicKey",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.security.PublicKey"
+          ]
+        },
+        {
+          "name": "codeIsOk",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "createSign",
+          "parameterTypes": [
+            "java.util.Map",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "createSign",
+          "parameterTypes": [
+            "java.util.Map",
+            "java.lang.String",
+            "org.miaixz.bus.core.lang.Algorithm"
+          ]
+        },
+        {
+          "name": "createSign",
+          "parameterTypes": [
+            "java.util.Map",
+            "java.lang.String",
+            "org.miaixz.bus.core.lang.Algorithm",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "decryptByPrivateKey",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "decryptByPrivateKey",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "decryptByPrivateKeyByWx",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "decryptToString",
+          "parameterTypes": [
+            "byte[]",
+            "byte[]",
+            "byte[]",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "encryptByPrivateKey",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "encryptByPrivateKey",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.security.PrivateKey"
+          ]
+        },
+        {
+          "name": "encryptByPublicKey",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "encryptByPublicKey",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "encryptByPublicKeyByWx",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "forEachMap",
+          "parameterTypes": [
+            "java.util.Map",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getBaseHeaders",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getHeaders",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getKeys",
+          "parameterTypes": []
+        },
+        {
+          "name": "getPrivateKey",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getPublicKey",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getUploadHeaders",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "jsApiCreateSign",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "jsApiCreateSign",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.security.PrivateKey"
+          ]
+        },
+        {
+          "name": "loadPrivateKey",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "loadPublicKey",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "miniAppPrepayIdCreateSign",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "org.miaixz.bus.core.lang.Algorithm"
+          ]
+        },
+        {
+          "name": "prepayIdCreateSign",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "org.miaixz.bus.core.lang.Algorithm"
+          ]
+        },
+        {
+          "name": "replace",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String[]"
+          ]
+        },
+        {
+          "name": "verifyNotify",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.io.InputStream"
+          ]
+        },
+        {
+          "name": "verifyNotify",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "verifyNotify",
+          "parameterTypes": [
+            "java.util.Map",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "verifyNotify",
+          "parameterTypes": [
+            "java.util.Map",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "verifyNotify",
+          "parameterTypes": [
+            "java.util.Map",
+            "java.lang.String",
+            "org.miaixz.bus.core.lang.Algorithm"
+          ]
+        },
+        {
+          "name": "verifyNotify",
+          "parameterTypes": [
+            "java.util.Map",
+            "java.lang.String",
+            "org.miaixz.bus.core.lang.Algorithm",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "verifySignature",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "verifySignature",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.io.InputStream"
+          ]
+        },
+        {
+          "name": "verifySignature",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.security.PublicKey"
+          ]
+        },
+        {
+          "name": "verifySignature",
+          "parameterTypes": [
+            "org.miaixz.bus.pay.magic.Message",
+            "java.io.InputStream"
+          ]
+        },
+        {
+          "name": "verifySignature",
+          "parameterTypes": [
+            "org.miaixz.bus.pay.magic.Message",
             "java.lang.String"
           ]
         }
       ]
     },
     {
-      "type": "org.miaixz.bus.pay.nimble.unionpay.UnionPayProvider",
+      "type": "org.miaixz.bus.pay.nimble.wechat.WechatPayProvider",
       "methods": [
         {
-          "name": "execution",
+          "name": "authCodeToOpenid",
+          "parameterTypes": [
+            "java.util.Map"
+          ]
+        },
+        {
+          "name": "closeOrder",
+          "parameterTypes": [
+            "java.util.Map"
+          ]
+        },
+        {
+          "name": "contractBill",
+          "parameterTypes": [
+            "java.util.Map",
+            "org.miaixz.bus.pay.Mode"
+          ]
+        },
+        {
+          "name": "contractOrder",
+          "parameterTypes": [
+            "java.util.Map"
+          ]
+        },
+        {
+          "name": "delete",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "deleteContract",
+          "parameterTypes": [
+            "java.util.Map",
+            "org.miaixz.bus.pay.Mode"
+          ]
+        },
+        {
+          "name": "depositConsume",
+          "parameterTypes": [
+            "java.util.Map",
+            "java.io.InputStream",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "depositConsume",
+          "parameterTypes": [
+            "java.util.Map",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "depositFacePay",
+          "parameterTypes": [
+            "java.util.Map"
+          ]
+        },
+        {
+          "name": "depositMicroPay",
+          "parameterTypes": [
+            "java.util.Map"
+          ]
+        },
+        {
+          "name": "depositOrderQuery",
+          "parameterTypes": [
+            "java.util.Map"
+          ]
+        },
+        {
+          "name": "depositRefund",
+          "parameterTypes": [
+            "java.util.Map",
+            "java.io.InputStream",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "depositRefund",
+          "parameterTypes": [
+            "java.util.Map",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "depositRefundQuery",
+          "parameterTypes": [
+            "java.util.Map"
+          ]
+        },
+        {
+          "name": "depositReverse",
+          "parameterTypes": [
+            "java.util.Map",
+            "java.io.InputStream",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "depositReverse",
+          "parameterTypes": [
+            "java.util.Map",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "doGet",
           "parameterTypes": [
             "java.lang.String",
             "java.util.Map"
+          ]
+        },
+        {
+          "name": "doPost",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.util.Map"
+          ]
+        },
+        {
+          "name": "doPostSsl",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.util.Map",
+            "java.io.InputStream"
+          ]
+        },
+        {
+          "name": "doPostSsl",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.util.Map",
+            "java.io.InputStream",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "doPostSsl",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.util.Map",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "doPostSsl",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.util.Map",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "doPostSslByProtocol",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.util.Map",
+            "java.io.InputStream",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "doPostSslByProtocol",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.util.Map",
+            "java.io.InputStream",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "doPostSslByProtocol",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.util.Map",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "doPostSslByProtocol",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.util.Map",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "doUploadSsl",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.util.Map",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "doUploadSsl",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.util.Map",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "doUploadSslByProtocol",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.util.Map",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "doUploadSslByProtocol",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.util.Map",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "downloadBill",
+          "parameterTypes": [
+            "boolean",
+            "java.util.Map"
+          ]
+        },
+        {
+          "name": "downloadFundFlow",
+          "parameterTypes": [
+            "java.util.Map",
+            "java.io.InputStream",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "downloadFundFlow",
+          "parameterTypes": [
+            "java.util.Map",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "entrustWeb",
+          "parameterTypes": [
+            "java.util.Map",
+            "org.miaixz.bus.pay.Mode"
+          ]
+        },
+        {
+          "name": "execution",
+          "parameterTypes": [
+            "org.miaixz.bus.pay.Complex",
+            "java.util.Map"
+          ]
+        },
+        {
+          "name": "execution",
+          "parameterTypes": [
+            "org.miaixz.bus.pay.Complex",
+            "java.util.Map",
+            "java.io.InputStream"
+          ]
+        },
+        {
+          "name": "execution",
+          "parameterTypes": [
+            "org.miaixz.bus.pay.Complex",
+            "java.util.Map",
+            "java.io.InputStream",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "execution",
+          "parameterTypes": [
+            "org.miaixz.bus.pay.Complex",
+            "java.util.Map",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "execution",
+          "parameterTypes": [
+            "org.miaixz.bus.pay.Complex",
+            "java.util.Map",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "execution",
+          "parameterTypes": [
+            "org.miaixz.bus.pay.Complex",
+            "java.util.Map",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "executionByGet",
+          "parameterTypes": [
+            "org.miaixz.bus.pay.Complex",
+            "java.util.Map"
+          ]
+        },
+        {
+          "name": "executionByProtocol",
+          "parameterTypes": [
+            "org.miaixz.bus.pay.Complex",
+            "java.util.Map",
+            "java.io.InputStream",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "executionByProtocol",
+          "parameterTypes": [
+            "org.miaixz.bus.pay.Complex",
+            "java.util.Map",
+            "java.io.InputStream",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "executionByProtocol",
+          "parameterTypes": [
+            "org.miaixz.bus.pay.Complex",
+            "java.util.Map",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "executionByProtocol",
+          "parameterTypes": [
+            "org.miaixz.bus.pay.Complex",
+            "java.util.Map",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "executionByProtocol",
+          "parameterTypes": [
+            "org.miaixz.bus.pay.Complex",
+            "java.util.Map",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "facePay",
+          "parameterTypes": [
+            "java.util.Map"
+          ]
+        },
+        {
+          "name": "facePayQuery",
+          "parameterTypes": [
+            "java.util.Map"
+          ]
+        },
+        {
+          "name": "facePayReverse",
+          "parameterTypes": [
+            "java.util.Map",
+            "java.io.InputStream",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "facePayReverse",
+          "parameterTypes": [
+            "java.util.Map",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "get",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.util.Map"
+          ]
+        },
+        {
+          "name": "getAuthInfo",
+          "parameterTypes": [
+            "java.util.Map"
+          ]
+        },
+        {
+          "name": "getHbInfo",
+          "parameterTypes": [
+            "java.util.Map",
+            "java.io.InputStream",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getHbInfo",
+          "parameterTypes": [
+            "java.util.Map",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getPublicKey",
+          "parameterTypes": [
+            "java.util.Map",
+            "java.io.InputStream",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getPublicKey",
+          "parameterTypes": [
+            "java.util.Map",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getPublicKeyByProtocol",
+          "parameterTypes": [
+            "java.util.Map",
+            "java.io.InputStream",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getPublicKeyByProtocol",
+          "parameterTypes": [
+            "java.util.Map",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getSignKey",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "org.miaixz.bus.core.lang.Algorithm"
+          ]
+        },
+        {
+          "name": "getTransferInfo",
+          "parameterTypes": [
+            "java.util.Map",
+            "java.io.InputStream",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getTransferInfo",
+          "parameterTypes": [
+            "java.util.Map",
+            "java.lang.String",
+            "java.lang.String"
           ]
         },
         {
@@ -12390,6 +13511,750 @@
           "name": "getUrl",
           "parameterTypes": [
             "org.miaixz.bus.pay.Complex"
+          ]
+        },
+        {
+          "name": "h5EntrustWeb",
+          "parameterTypes": [
+            "java.util.Map",
+            "org.miaixz.bus.pay.Mode"
+          ]
+        },
+        {
+          "name": "microPay",
+          "parameterTypes": [
+            "boolean",
+            "java.util.Map"
+          ]
+        },
+        {
+          "name": "multiProfitSharing",
+          "parameterTypes": [
+            "java.util.Map",
+            "java.io.InputStream",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "multiProfitSharing",
+          "parameterTypes": [
+            "java.util.Map",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "orderQuery",
+          "parameterTypes": [
+            "java.util.Map"
+          ]
+        },
+        {
+          "name": "orderRefund",
+          "parameterTypes": [
+            "boolean",
+            "java.util.Map",
+            "java.io.InputStream",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "orderRefund",
+          "parameterTypes": [
+            "boolean",
+            "java.util.Map",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "orderRefundByProtocol",
+          "parameterTypes": [
+            "boolean",
+            "java.util.Map",
+            "java.io.InputStream",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "orderRefundByProtocol",
+          "parameterTypes": [
+            "boolean",
+            "java.util.Map",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "orderRefundQuery",
+          "parameterTypes": [
+            "boolean",
+            "java.util.Map"
+          ]
+        },
+        {
+          "name": "orderReport",
+          "parameterTypes": [
+            "java.util.Map"
+          ]
+        },
+        {
+          "name": "orderReverse",
+          "parameterTypes": [
+            "java.util.Map",
+            "java.io.InputStream",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "orderReverse",
+          "parameterTypes": [
+            "java.util.Map",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "papPayApply",
+          "parameterTypes": [
+            "java.util.Map",
+            "org.miaixz.bus.pay.Mode"
+          ]
+        },
+        {
+          "name": "patch",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "payBank",
+          "parameterTypes": [
+            "java.util.Map",
+            "java.io.InputStream",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "payBank",
+          "parameterTypes": [
+            "java.util.Map",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "payBankByProtocol",
+          "parameterTypes": [
+            "java.util.Map",
+            "java.io.InputStream",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "payBankByProtocol",
+          "parameterTypes": [
+            "java.util.Map",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "post",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "preEntrustWeb",
+          "parameterTypes": [
+            "java.util.Map",
+            "org.miaixz.bus.pay.Mode"
+          ]
+        },
+        {
+          "name": "profitSharing",
+          "parameterTypes": [
+            "java.util.Map",
+            "java.io.InputStream",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "profitSharing",
+          "parameterTypes": [
+            "java.util.Map",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "profitSharingAddReceiver",
+          "parameterTypes": [
+            "java.util.Map"
+          ]
+        },
+        {
+          "name": "profitSharingFinish",
+          "parameterTypes": [
+            "java.util.Map",
+            "java.io.InputStream",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "profitSharingFinish",
+          "parameterTypes": [
+            "java.util.Map",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "profitSharingQuery",
+          "parameterTypes": [
+            "java.util.Map"
+          ]
+        },
+        {
+          "name": "profitSharingRemoveReceiver",
+          "parameterTypes": [
+            "java.util.Map"
+          ]
+        },
+        {
+          "name": "profitSharingReturn",
+          "parameterTypes": [
+            "java.util.Map",
+            "java.io.InputStream",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "profitSharingReturn",
+          "parameterTypes": [
+            "java.util.Map",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "profitSharingReturnQuery",
+          "parameterTypes": [
+            "java.util.Map"
+          ]
+        },
+        {
+          "name": "pushOrder",
+          "parameterTypes": [
+            "java.util.Map"
+          ]
+        },
+        {
+          "name": "put",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "queryBank",
+          "parameterTypes": [
+            "java.util.Map",
+            "java.io.InputStream",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "queryBank",
+          "parameterTypes": [
+            "java.util.Map",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "queryContract",
+          "parameterTypes": [
+            "java.util.Map",
+            "org.miaixz.bus.pay.Mode"
+          ]
+        },
+        {
+          "name": "queryCouponsInfo",
+          "parameterTypes": [
+            "java.util.Map"
+          ]
+        },
+        {
+          "name": "queryCouponStock",
+          "parameterTypes": [
+            "java.util.Map"
+          ]
+        },
+        {
+          "name": "queryTrans2pocket",
+          "parameterTypes": [
+            "java.util.Map",
+            "java.io.InputStream",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "queryTrans2pocket",
+          "parameterTypes": [
+            "java.util.Map",
+            "java.io.InputStream",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "queryTrans2pocket",
+          "parameterTypes": [
+            "java.util.Map",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "queryTrans2pocketByProtocol",
+          "parameterTypes": [
+            "java.util.Map",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "queryWorkWxRedPack",
+          "parameterTypes": [
+            "java.util.Map",
+            "java.io.InputStream",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "queryWorkWxRedPack",
+          "parameterTypes": [
+            "java.util.Map",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "queryWorkWxRedPackByProtocol",
+          "parameterTypes": [
+            "java.util.Map",
+            "java.io.InputStream",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "queryWorkWxRedPackByProtocol",
+          "parameterTypes": [
+            "java.util.Map",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "sendCoupon",
+          "parameterTypes": [
+            "java.util.Map",
+            "java.io.InputStream",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "sendGroupRedPack",
+          "parameterTypes": [
+            "java.util.Map",
+            "java.io.InputStream",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "sendGroupRedPack",
+          "parameterTypes": [
+            "java.util.Map",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "sendGroupRedPackByProtocol",
+          "parameterTypes": [
+            "java.util.Map",
+            "java.io.InputStream",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "sendGroupRedPackByProtocol",
+          "parameterTypes": [
+            "java.util.Map",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "sendMiniProgramRedPack",
+          "parameterTypes": [
+            "java.util.Map",
+            "java.io.InputStream",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "sendMiniProgramRedPack",
+          "parameterTypes": [
+            "java.util.Map",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "sendMiniProgramRedPackByProtocol",
+          "parameterTypes": [
+            "java.util.Map",
+            "java.io.InputStream",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "sendMiniProgramRedPackByProtocol",
+          "parameterTypes": [
+            "java.util.Map",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "sendRedPack",
+          "parameterTypes": [
+            "java.util.Map",
+            "java.io.InputStream",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "sendRedPack",
+          "parameterTypes": [
+            "java.util.Map",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "sendRedPackByProtocol",
+          "parameterTypes": [
+            "java.util.Map",
+            "java.io.InputStream",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "sendRedPackByProtocol",
+          "parameterTypes": [
+            "java.util.Map",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "sendWorkWxRedPack",
+          "parameterTypes": [
+            "java.util.Map",
+            "java.io.InputStream",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "sendWorkWxRedPack",
+          "parameterTypes": [
+            "java.util.Map",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "sendWorkWxRedPackByProtocol",
+          "parameterTypes": [
+            "java.util.Map",
+            "java.io.InputStream",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "sendWorkWxRedPackByProtocol",
+          "parameterTypes": [
+            "java.util.Map",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "toShortUrl",
+          "parameterTypes": [
+            "java.util.Map"
+          ]
+        },
+        {
+          "name": "trans2pocket",
+          "parameterTypes": [
+            "java.util.Map",
+            "java.io.InputStream",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "trans2pocket",
+          "parameterTypes": [
+            "java.util.Map",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "trans2pocketByProtocol",
+          "parameterTypes": [
+            "java.util.Map",
+            "java.io.InputStream",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "trans2pocketByProtocol",
+          "parameterTypes": [
+            "java.util.Map",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "transfers",
+          "parameterTypes": [
+            "java.util.Map",
+            "java.io.InputStream",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "transfers",
+          "parameterTypes": [
+            "java.util.Map",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "transfersByProtocol",
+          "parameterTypes": [
+            "java.util.Map",
+            "java.io.InputStream",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "transfersByProtocol",
+          "parameterTypes": [
+            "java.util.Map",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "upload",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.io.File"
+          ]
+        },
+        {
+          "name": "upload",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.util.Map",
+            "java.util.Map"
+          ]
+        },
+        {
+          "name": "v3",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.io.File"
+          ]
+        },
+        {
+          "name": "v3",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "v3",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "v3",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "long",
+            "java.lang.String",
+            "java.io.File"
+          ]
+        },
+        {
+          "name": "v3",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.util.Map"
+          ]
+        },
+        {
+          "name": "v3",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.util.Map",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "v3",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.security.PrivateKey",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "v3",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.security.PrivateKey",
+            "java.lang.String",
+            "java.lang.String",
+            "long",
+            "java.lang.String",
+            "java.io.File"
+          ]
+        },
+        {
+          "name": "v3",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.security.PrivateKey",
+            "java.util.Map"
+          ]
+        },
+        {
+          "name": "v3",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.security.PrivateKey",
+            "java.lang.String",
+            "java.io.File"
+          ]
+        },
+        {
+          "name": "xPay",
+          "parameterTypes": [
+            "org.miaixz.bus.pay.Complex",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String"
           ]
         }
       ]
@@ -13867,56 +15732,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.pay.nimble.wechat.api.v3.PayrollCardApi",
-      "fields": [
-        {
-          "name": "AUTHENTICATION_LIST"
-        },
-        {
-          "name": "AUTHENTICATION_PRE_ORDER"
-        },
-        {
-          "name": "AUTHENTICATION_RESULT"
-        },
-        {
-          "name": "BATCH_TRANSFER"
-        },
-        {
-          "name": "PRE_ORDER_WITH_AUTH"
-        },
-        {
-          "name": "RELATION"
-        },
-        {
-          "name": "TOKEN"
-        }
-      ],
-      "methods": [
-        {
-          "name": "desc",
-          "parameterTypes": []
-        },
-        {
-          "name": "method",
-          "parameterTypes": []
-        },
-        {
-          "name": "type",
-          "parameterTypes": []
-        },
-        {
-          "name": "valueOf",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "values",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
       "type": "org.miaixz.bus.pay.nimble.wechat.api.v3.PayScoreApi",
       "fields": [
         {
@@ -13948,6 +15763,56 @@
         },
         {
           "name": "PAY_SCORE_SERVICE_ORDER_SYNC"
+        }
+      ],
+      "methods": [
+        {
+          "name": "desc",
+          "parameterTypes": []
+        },
+        {
+          "name": "method",
+          "parameterTypes": []
+        },
+        {
+          "name": "type",
+          "parameterTypes": []
+        },
+        {
+          "name": "valueOf",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "values",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.pay.nimble.wechat.api.v3.PayrollCardApi",
+      "fields": [
+        {
+          "name": "AUTHENTICATION_LIST"
+        },
+        {
+          "name": "AUTHENTICATION_PRE_ORDER"
+        },
+        {
+          "name": "AUTHENTICATION_RESULT"
+        },
+        {
+          "name": "BATCH_TRANSFER"
+        },
+        {
+          "name": "PRE_ORDER_WITH_AUTH"
+        },
+        {
+          "name": "RELATION"
+        },
+        {
+          "name": "TOKEN"
         }
       ],
       "methods": [
@@ -14161,50 +16026,6 @@
         },
         {
           "name": "type",
-          "parameterTypes": []
-        },
-        {
-          "name": "valueOf",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "values",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.pay.nimble.wechat.AuthType",
-      "fields": [
-        {
-          "name": "cert"
-        },
-        {
-          "name": "code"
-        },
-        {
-          "name": "desc"
-        },
-        {
-          "name": "RSA"
-        },
-        {
-          "name": "SM2"
-        }
-      ],
-      "methods": [
-        {
-          "name": "getCert",
-          "parameterTypes": []
-        },
-        {
-          "name": "getCode",
-          "parameterTypes": []
-        },
-        {
-          "name": "getDesc",
           "parameterTypes": []
         },
         {
@@ -23855,1818 +25676,6 @@
         },
         {
           "name": "self",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.pay.nimble.wechat.WechatPayBuilder",
-      "methods": [
-        {
-          "name": "appCreateSign",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "appCreateSign",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "java.security.PrivateKey"
-          ]
-        },
-        {
-          "name": "appPrepayIdCreateSign",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "org.miaixz.bus.core.lang.Algorithm"
-          ]
-        },
-        {
-          "name": "bizPayUrl",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "bizPayUrl",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "bizPayUrl",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "org.miaixz.bus.core.lang.Algorithm"
-          ]
-        },
-        {
-          "name": "buildAuthorization",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "buildAuthorization",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "long",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "buildAuthorization",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "java.security.PrivateKey",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "buildAuthorization",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "java.security.PrivateKey",
-            "java.lang.String",
-            "java.lang.String",
-            "long",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "buildResMap",
-          "parameterTypes": [
-            "org.miaixz.bus.pay.magic.Message"
-          ]
-        },
-        {
-          "name": "buildSign",
-          "parameterTypes": [
-            "java.util.Map",
-            "java.lang.String",
-            "org.miaixz.bus.core.lang.Algorithm"
-          ]
-        },
-        {
-          "name": "buildSign",
-          "parameterTypes": [
-            "java.util.Map",
-            "java.lang.String",
-            "org.miaixz.bus.core.lang.Algorithm",
-            "boolean"
-          ]
-        },
-        {
-          "name": "buildSign",
-          "parameterTypes": [
-            "java.util.Map",
-            "java.lang.String",
-            "org.miaixz.bus.core.lang.Algorithm",
-            "java.lang.String",
-            "java.lang.String",
-            "boolean"
-          ]
-        },
-        {
-          "name": "checkByPublicKey",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "checkByPublicKey",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String",
-            "java.security.PublicKey"
-          ]
-        },
-        {
-          "name": "codeIsOk",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "createSign",
-          "parameterTypes": [
-            "java.util.Map",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "createSign",
-          "parameterTypes": [
-            "java.util.Map",
-            "java.lang.String",
-            "org.miaixz.bus.core.lang.Algorithm"
-          ]
-        },
-        {
-          "name": "createSign",
-          "parameterTypes": [
-            "java.util.Map",
-            "java.lang.String",
-            "org.miaixz.bus.core.lang.Algorithm",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "decryptByPrivateKey",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "decryptByPrivateKey",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "decryptByPrivateKeyByWx",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "decryptToString",
-          "parameterTypes": [
-            "byte[]",
-            "byte[]",
-            "byte[]",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "encryptByPrivateKey",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "encryptByPrivateKey",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.security.PrivateKey"
-          ]
-        },
-        {
-          "name": "encryptByPublicKey",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "encryptByPublicKey",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "encryptByPublicKeyByWx",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "forEachMap",
-          "parameterTypes": [
-            "java.util.Map",
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "getBaseHeaders",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "getHeaders",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "getKeys",
-          "parameterTypes": []
-        },
-        {
-          "name": "getPrivateKey",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "getPublicKey",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "getUploadHeaders",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "jsApiCreateSign",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "jsApiCreateSign",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String",
-            "java.security.PrivateKey"
-          ]
-        },
-        {
-          "name": "loadPrivateKey",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "loadPublicKey",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "miniAppPrepayIdCreateSign",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "org.miaixz.bus.core.lang.Algorithm"
-          ]
-        },
-        {
-          "name": "prepayIdCreateSign",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "org.miaixz.bus.core.lang.Algorithm"
-          ]
-        },
-        {
-          "name": "replace",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String[]"
-          ]
-        },
-        {
-          "name": "verifyNotify",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "java.io.InputStream"
-          ]
-        },
-        {
-          "name": "verifyNotify",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "verifyNotify",
-          "parameterTypes": [
-            "java.util.Map",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "verifyNotify",
-          "parameterTypes": [
-            "java.util.Map",
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "verifyNotify",
-          "parameterTypes": [
-            "java.util.Map",
-            "java.lang.String",
-            "org.miaixz.bus.core.lang.Algorithm"
-          ]
-        },
-        {
-          "name": "verifyNotify",
-          "parameterTypes": [
-            "java.util.Map",
-            "java.lang.String",
-            "org.miaixz.bus.core.lang.Algorithm",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "verifySignature",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "verifySignature",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "java.io.InputStream"
-          ]
-        },
-        {
-          "name": "verifySignature",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "java.security.PublicKey"
-          ]
-        },
-        {
-          "name": "verifySignature",
-          "parameterTypes": [
-            "org.miaixz.bus.pay.magic.Message",
-            "java.io.InputStream"
-          ]
-        },
-        {
-          "name": "verifySignature",
-          "parameterTypes": [
-            "org.miaixz.bus.pay.magic.Message",
-            "java.lang.String"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.pay.nimble.wechat.WechatPayProvider",
-      "methods": [
-        {
-          "name": "authCodeToOpenid",
-          "parameterTypes": [
-            "java.util.Map"
-          ]
-        },
-        {
-          "name": "closeOrder",
-          "parameterTypes": [
-            "java.util.Map"
-          ]
-        },
-        {
-          "name": "contractBill",
-          "parameterTypes": [
-            "java.util.Map",
-            "org.miaixz.bus.pay.Mode"
-          ]
-        },
-        {
-          "name": "contractOrder",
-          "parameterTypes": [
-            "java.util.Map"
-          ]
-        },
-        {
-          "name": "delete",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "deleteContract",
-          "parameterTypes": [
-            "java.util.Map",
-            "org.miaixz.bus.pay.Mode"
-          ]
-        },
-        {
-          "name": "depositConsume",
-          "parameterTypes": [
-            "java.util.Map",
-            "java.io.InputStream",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "depositConsume",
-          "parameterTypes": [
-            "java.util.Map",
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "depositFacePay",
-          "parameterTypes": [
-            "java.util.Map"
-          ]
-        },
-        {
-          "name": "depositMicroPay",
-          "parameterTypes": [
-            "java.util.Map"
-          ]
-        },
-        {
-          "name": "depositOrderQuery",
-          "parameterTypes": [
-            "java.util.Map"
-          ]
-        },
-        {
-          "name": "depositRefund",
-          "parameterTypes": [
-            "java.util.Map",
-            "java.io.InputStream",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "depositRefund",
-          "parameterTypes": [
-            "java.util.Map",
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "depositRefundQuery",
-          "parameterTypes": [
-            "java.util.Map"
-          ]
-        },
-        {
-          "name": "depositReverse",
-          "parameterTypes": [
-            "java.util.Map",
-            "java.io.InputStream",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "depositReverse",
-          "parameterTypes": [
-            "java.util.Map",
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "doGet",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.util.Map"
-          ]
-        },
-        {
-          "name": "doPost",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.util.Map"
-          ]
-        },
-        {
-          "name": "doPostSsl",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.util.Map",
-            "java.io.InputStream"
-          ]
-        },
-        {
-          "name": "doPostSsl",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.util.Map",
-            "java.io.InputStream",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "doPostSsl",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.util.Map",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "doPostSsl",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.util.Map",
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "doPostSslByProtocol",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.util.Map",
-            "java.io.InputStream",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "doPostSslByProtocol",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.util.Map",
-            "java.io.InputStream",
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "doPostSslByProtocol",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.util.Map",
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "doPostSslByProtocol",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.util.Map",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "doUploadSsl",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.util.Map",
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "doUploadSsl",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.util.Map",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "doUploadSslByProtocol",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.util.Map",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "doUploadSslByProtocol",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.util.Map",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "downloadBill",
-          "parameterTypes": [
-            "boolean",
-            "java.util.Map"
-          ]
-        },
-        {
-          "name": "downloadFundFlow",
-          "parameterTypes": [
-            "java.util.Map",
-            "java.io.InputStream",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "downloadFundFlow",
-          "parameterTypes": [
-            "java.util.Map",
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "entrustWeb",
-          "parameterTypes": [
-            "java.util.Map",
-            "org.miaixz.bus.pay.Mode"
-          ]
-        },
-        {
-          "name": "execution",
-          "parameterTypes": [
-            "org.miaixz.bus.pay.Complex",
-            "java.util.Map"
-          ]
-        },
-        {
-          "name": "execution",
-          "parameterTypes": [
-            "org.miaixz.bus.pay.Complex",
-            "java.util.Map",
-            "java.io.InputStream"
-          ]
-        },
-        {
-          "name": "execution",
-          "parameterTypes": [
-            "org.miaixz.bus.pay.Complex",
-            "java.util.Map",
-            "java.io.InputStream",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "execution",
-          "parameterTypes": [
-            "org.miaixz.bus.pay.Complex",
-            "java.util.Map",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "execution",
-          "parameterTypes": [
-            "org.miaixz.bus.pay.Complex",
-            "java.util.Map",
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "execution",
-          "parameterTypes": [
-            "org.miaixz.bus.pay.Complex",
-            "java.util.Map",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "executionByGet",
-          "parameterTypes": [
-            "org.miaixz.bus.pay.Complex",
-            "java.util.Map"
-          ]
-        },
-        {
-          "name": "executionByProtocol",
-          "parameterTypes": [
-            "org.miaixz.bus.pay.Complex",
-            "java.util.Map",
-            "java.io.InputStream",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "executionByProtocol",
-          "parameterTypes": [
-            "org.miaixz.bus.pay.Complex",
-            "java.util.Map",
-            "java.io.InputStream",
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "executionByProtocol",
-          "parameterTypes": [
-            "org.miaixz.bus.pay.Complex",
-            "java.util.Map",
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "executionByProtocol",
-          "parameterTypes": [
-            "org.miaixz.bus.pay.Complex",
-            "java.util.Map",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "executionByProtocol",
-          "parameterTypes": [
-            "org.miaixz.bus.pay.Complex",
-            "java.util.Map",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "facePay",
-          "parameterTypes": [
-            "java.util.Map"
-          ]
-        },
-        {
-          "name": "facePayQuery",
-          "parameterTypes": [
-            "java.util.Map"
-          ]
-        },
-        {
-          "name": "facePayReverse",
-          "parameterTypes": [
-            "java.util.Map",
-            "java.io.InputStream",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "facePayReverse",
-          "parameterTypes": [
-            "java.util.Map",
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "get",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "java.util.Map"
-          ]
-        },
-        {
-          "name": "getAuthInfo",
-          "parameterTypes": [
-            "java.util.Map"
-          ]
-        },
-        {
-          "name": "getHbInfo",
-          "parameterTypes": [
-            "java.util.Map",
-            "java.io.InputStream",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "getHbInfo",
-          "parameterTypes": [
-            "java.util.Map",
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "getPublicKey",
-          "parameterTypes": [
-            "java.util.Map",
-            "java.io.InputStream",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "getPublicKey",
-          "parameterTypes": [
-            "java.util.Map",
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "getPublicKeyByProtocol",
-          "parameterTypes": [
-            "java.util.Map",
-            "java.io.InputStream",
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "getPublicKeyByProtocol",
-          "parameterTypes": [
-            "java.util.Map",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "getSignKey",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String",
-            "org.miaixz.bus.core.lang.Algorithm"
-          ]
-        },
-        {
-          "name": "getTransferInfo",
-          "parameterTypes": [
-            "java.util.Map",
-            "java.io.InputStream",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "getTransferInfo",
-          "parameterTypes": [
-            "java.util.Map",
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "getUrl",
-          "parameterTypes": []
-        },
-        {
-          "name": "getUrl",
-          "parameterTypes": [
-            "org.miaixz.bus.pay.Complex"
-          ]
-        },
-        {
-          "name": "h5EntrustWeb",
-          "parameterTypes": [
-            "java.util.Map",
-            "org.miaixz.bus.pay.Mode"
-          ]
-        },
-        {
-          "name": "microPay",
-          "parameterTypes": [
-            "boolean",
-            "java.util.Map"
-          ]
-        },
-        {
-          "name": "multiProfitSharing",
-          "parameterTypes": [
-            "java.util.Map",
-            "java.io.InputStream",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "multiProfitSharing",
-          "parameterTypes": [
-            "java.util.Map",
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "orderQuery",
-          "parameterTypes": [
-            "java.util.Map"
-          ]
-        },
-        {
-          "name": "orderRefund",
-          "parameterTypes": [
-            "boolean",
-            "java.util.Map",
-            "java.io.InputStream",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "orderRefund",
-          "parameterTypes": [
-            "boolean",
-            "java.util.Map",
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "orderRefundByProtocol",
-          "parameterTypes": [
-            "boolean",
-            "java.util.Map",
-            "java.io.InputStream",
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "orderRefundByProtocol",
-          "parameterTypes": [
-            "boolean",
-            "java.util.Map",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "orderRefundQuery",
-          "parameterTypes": [
-            "boolean",
-            "java.util.Map"
-          ]
-        },
-        {
-          "name": "orderReport",
-          "parameterTypes": [
-            "java.util.Map"
-          ]
-        },
-        {
-          "name": "orderReverse",
-          "parameterTypes": [
-            "java.util.Map",
-            "java.io.InputStream",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "orderReverse",
-          "parameterTypes": [
-            "java.util.Map",
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "papPayApply",
-          "parameterTypes": [
-            "java.util.Map",
-            "org.miaixz.bus.pay.Mode"
-          ]
-        },
-        {
-          "name": "patch",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "payBank",
-          "parameterTypes": [
-            "java.util.Map",
-            "java.io.InputStream",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "payBank",
-          "parameterTypes": [
-            "java.util.Map",
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "payBankByProtocol",
-          "parameterTypes": [
-            "java.util.Map",
-            "java.io.InputStream",
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "payBankByProtocol",
-          "parameterTypes": [
-            "java.util.Map",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "post",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "preEntrustWeb",
-          "parameterTypes": [
-            "java.util.Map",
-            "org.miaixz.bus.pay.Mode"
-          ]
-        },
-        {
-          "name": "profitSharing",
-          "parameterTypes": [
-            "java.util.Map",
-            "java.io.InputStream",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "profitSharing",
-          "parameterTypes": [
-            "java.util.Map",
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "profitSharingAddReceiver",
-          "parameterTypes": [
-            "java.util.Map"
-          ]
-        },
-        {
-          "name": "profitSharingFinish",
-          "parameterTypes": [
-            "java.util.Map",
-            "java.io.InputStream",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "profitSharingFinish",
-          "parameterTypes": [
-            "java.util.Map",
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "profitSharingQuery",
-          "parameterTypes": [
-            "java.util.Map"
-          ]
-        },
-        {
-          "name": "profitSharingRemoveReceiver",
-          "parameterTypes": [
-            "java.util.Map"
-          ]
-        },
-        {
-          "name": "profitSharingReturn",
-          "parameterTypes": [
-            "java.util.Map",
-            "java.io.InputStream",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "profitSharingReturn",
-          "parameterTypes": [
-            "java.util.Map",
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "profitSharingReturnQuery",
-          "parameterTypes": [
-            "java.util.Map"
-          ]
-        },
-        {
-          "name": "pushOrder",
-          "parameterTypes": [
-            "java.util.Map"
-          ]
-        },
-        {
-          "name": "put",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "queryBank",
-          "parameterTypes": [
-            "java.util.Map",
-            "java.io.InputStream",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "queryBank",
-          "parameterTypes": [
-            "java.util.Map",
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "queryContract",
-          "parameterTypes": [
-            "java.util.Map",
-            "org.miaixz.bus.pay.Mode"
-          ]
-        },
-        {
-          "name": "queryCouponsInfo",
-          "parameterTypes": [
-            "java.util.Map"
-          ]
-        },
-        {
-          "name": "queryCouponStock",
-          "parameterTypes": [
-            "java.util.Map"
-          ]
-        },
-        {
-          "name": "queryTrans2pocket",
-          "parameterTypes": [
-            "java.util.Map",
-            "java.io.InputStream",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "queryTrans2pocket",
-          "parameterTypes": [
-            "java.util.Map",
-            "java.io.InputStream",
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "queryTrans2pocket",
-          "parameterTypes": [
-            "java.util.Map",
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "queryTrans2pocketByProtocol",
-          "parameterTypes": [
-            "java.util.Map",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "queryWorkWxRedPack",
-          "parameterTypes": [
-            "java.util.Map",
-            "java.io.InputStream",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "queryWorkWxRedPack",
-          "parameterTypes": [
-            "java.util.Map",
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "queryWorkWxRedPackByProtocol",
-          "parameterTypes": [
-            "java.util.Map",
-            "java.io.InputStream",
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "queryWorkWxRedPackByProtocol",
-          "parameterTypes": [
-            "java.util.Map",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "sendCoupon",
-          "parameterTypes": [
-            "java.util.Map",
-            "java.io.InputStream",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "sendGroupRedPack",
-          "parameterTypes": [
-            "java.util.Map",
-            "java.io.InputStream",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "sendGroupRedPack",
-          "parameterTypes": [
-            "java.util.Map",
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "sendGroupRedPackByProtocol",
-          "parameterTypes": [
-            "java.util.Map",
-            "java.io.InputStream",
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "sendGroupRedPackByProtocol",
-          "parameterTypes": [
-            "java.util.Map",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "sendMiniProgramRedPack",
-          "parameterTypes": [
-            "java.util.Map",
-            "java.io.InputStream",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "sendMiniProgramRedPack",
-          "parameterTypes": [
-            "java.util.Map",
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "sendMiniProgramRedPackByProtocol",
-          "parameterTypes": [
-            "java.util.Map",
-            "java.io.InputStream",
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "sendMiniProgramRedPackByProtocol",
-          "parameterTypes": [
-            "java.util.Map",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "sendRedPack",
-          "parameterTypes": [
-            "java.util.Map",
-            "java.io.InputStream",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "sendRedPack",
-          "parameterTypes": [
-            "java.util.Map",
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "sendRedPackByProtocol",
-          "parameterTypes": [
-            "java.util.Map",
-            "java.io.InputStream",
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "sendRedPackByProtocol",
-          "parameterTypes": [
-            "java.util.Map",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "sendWorkWxRedPack",
-          "parameterTypes": [
-            "java.util.Map",
-            "java.io.InputStream",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "sendWorkWxRedPack",
-          "parameterTypes": [
-            "java.util.Map",
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "sendWorkWxRedPackByProtocol",
-          "parameterTypes": [
-            "java.util.Map",
-            "java.io.InputStream",
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "sendWorkWxRedPackByProtocol",
-          "parameterTypes": [
-            "java.util.Map",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "toShortUrl",
-          "parameterTypes": [
-            "java.util.Map"
-          ]
-        },
-        {
-          "name": "trans2pocket",
-          "parameterTypes": [
-            "java.util.Map",
-            "java.io.InputStream",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "trans2pocket",
-          "parameterTypes": [
-            "java.util.Map",
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "trans2pocketByProtocol",
-          "parameterTypes": [
-            "java.util.Map",
-            "java.io.InputStream",
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "trans2pocketByProtocol",
-          "parameterTypes": [
-            "java.util.Map",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "transfers",
-          "parameterTypes": [
-            "java.util.Map",
-            "java.io.InputStream",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "transfers",
-          "parameterTypes": [
-            "java.util.Map",
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "transfersByProtocol",
-          "parameterTypes": [
-            "java.util.Map",
-            "java.io.InputStream",
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "transfersByProtocol",
-          "parameterTypes": [
-            "java.util.Map",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "upload",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "java.io.File"
-          ]
-        },
-        {
-          "name": "upload",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.util.Map",
-            "java.util.Map"
-          ]
-        },
-        {
-          "name": "v3",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "java.io.File"
-          ]
-        },
-        {
-          "name": "v3",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "v3",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "v3",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "long",
-            "java.lang.String",
-            "java.io.File"
-          ]
-        },
-        {
-          "name": "v3",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "java.util.Map"
-          ]
-        },
-        {
-          "name": "v3",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "java.util.Map",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "v3",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "java.security.PrivateKey",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "v3",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "java.security.PrivateKey",
-            "java.lang.String",
-            "java.lang.String",
-            "long",
-            "java.lang.String",
-            "java.io.File"
-          ]
-        },
-        {
-          "name": "v3",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "java.security.PrivateKey",
-            "java.util.Map"
-          ]
-        },
-        {
-          "name": "v3",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "java.security.PrivateKey",
-            "java.lang.String",
-            "java.io.File"
-          ]
-        },
-        {
-          "name": "xPay",
-          "parameterTypes": [
-            "org.miaixz.bus.pay.Complex",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.pay.Registry",
-      "fields": [
-        {
-          "name": "ALIPAY"
-        },
-        {
-          "name": "JDPAY"
-        },
-        {
-          "name": "PAYPAL"
-        },
-        {
-          "name": "TENPAY"
-        },
-        {
-          "name": "UNIONPAY"
-        },
-        {
-          "name": "WECHAT"
-        }
-      ],
-      "methods": [
-        {
-          "name": "require",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "valueOf",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "values",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.pay.Registry$6$R",
-      "fields": [
-        {
-          "name": "$VALUES"
-        },
-        {
-          "name": "ACTION"
-        },
-        {
-          "name": "CHINA"
-        },
-        {
-          "name": "CHINA2"
-        },
-        {
-          "name": "FRAUD"
-        },
-        {
-          "name": "HK"
-        },
-        {
-          "name": "PAY_APP"
-        },
-        {
-          "name": "url"
-        },
-        {
-          "name": "US"
-        }
-      ],
-      "methods": [
-        {
-          "name": "$values",
-          "parameterTypes": []
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "int",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "valueOf",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "values",
           "parameterTypes": []
         }
       ]

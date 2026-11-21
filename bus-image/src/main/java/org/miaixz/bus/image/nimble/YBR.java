@@ -40,6 +40,7 @@ public enum YBR {
         public float[] fromRGB(float[] rgb) {
             return convert(rgb, TO_YBR_FULL);
         }
+
     },
     /**
      * The partial value.
@@ -55,6 +56,7 @@ public enum YBR {
         public float[] fromRGB(float[] rgb) {
             return convert(rgb, TO_YBR_PARTIAL);
         }
+
     };
 
     /**

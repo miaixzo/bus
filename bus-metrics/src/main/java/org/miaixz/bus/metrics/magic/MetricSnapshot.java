@@ -33,6 +33,9 @@ public record MetricSnapshot(long collectedAtEpochMillis, List<MetricFamilySnaps
 
     /**
      * Validates and copies the snapshot.
+     *
+     * @param collectedAtEpochMillis wall-clock collection time in epoch milliseconds
+     * @param families               immutable metric family snapshots
      */
     public MetricSnapshot {
         if (collectedAtEpochMillis < 0) {

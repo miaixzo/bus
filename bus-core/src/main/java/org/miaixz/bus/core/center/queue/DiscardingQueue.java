@@ -56,6 +56,7 @@ public class DiscardingQueue extends AbstractQueue<Object> {
     /**
      * Add method.
      *
+     * @param e element to enqueue
      * @return the boolean value
      */
     @Override
@@ -66,6 +67,7 @@ public class DiscardingQueue extends AbstractQueue<Object> {
     /**
      * Offer method.
      *
+     * @param e element to enqueue
      * @return the boolean value
      */
     @Override

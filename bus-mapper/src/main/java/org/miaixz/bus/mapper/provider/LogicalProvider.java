@@ -73,6 +73,7 @@ public class LogicalProvider extends BasicProvider {
                         + entity.groupByColumn().orElse(Normal.EMPTY) + entity.havingColumn().orElse(Normal.EMPTY)
                         + entity.orderByColumn().orElse(Normal.EMPTY);
             }
+
         });
     }
 
@@ -114,6 +115,7 @@ public class LogicalProvider extends BasicProvider {
                         + entity.groupByColumn().orElse(Normal.EMPTY) + entity.havingColumn().orElse(Normal.EMPTY)
                         + entity.orderByColumn().orElse(Normal.EMPTY);
             }
+
         });
     }
 
@@ -149,6 +151,7 @@ public class LogicalProvider extends BasicProvider {
                         + ifTest("orderByClause == null", () -> entity.orderByColumn().orElse(Normal.EMPTY))
                         + ifTest("endSql != null and endSql != ''", () -> "${endSql}");
             }
+
         });
     }
 
@@ -184,6 +187,7 @@ public class LogicalProvider extends BasicProvider {
                                 () -> ifParameterNotNull(() -> CONDITION_ROOT_WHERE) + logicalCondition(entity, false))
                         + ifTest("endSql != null and endSql != ''", () -> "${endSql}");
             }
+
         });
     }
 
@@ -210,6 +214,7 @@ public class LogicalProvider extends BasicProvider {
                                         .collect(Collectors.joining(" AND ")))
                         + logicalCondition(entity, false);
             }
+
         });
     }
 
@@ -235,6 +240,7 @@ public class LogicalProvider extends BasicProvider {
                                 column -> ifTest(column.notNullTest(), () -> "AND " + column.columnEqualsProperty()))
                                 .collect(Collectors.joining(Symbol.LF)) + logicalCondition(entity, false));
             }
+
         });
     }
 
@@ -272,6 +278,7 @@ public class LogicalProvider extends BasicProvider {
                                 () -> CONDITION_PARAMETER_WHERE + logicalCondition(entity, false))
                         + ifTest("condition.endSql != null and condition.endSql != ''", () -> "${condition.endSql}");
             }
+
         });
     }
 
@@ -312,6 +319,7 @@ public class LogicalProvider extends BasicProvider {
                                 () -> CONDITION_PARAMETER_WHERE + logicalCondition(entity, false))
                         + ifTest("condition.endSql != null and condition.endSql != ''", () -> "${condition.endSql}");
             }
+
         });
     }
 
@@ -346,6 +354,7 @@ public class LogicalProvider extends BasicProvider {
                                 () -> CONDITION_PARAMETER_WHERE + logicalCondition(entity, false))
                         + ifTest("condition.endSql != null and condition.endSql != ''", () -> "${condition.endSql}");
             }
+
         });
     }
 
@@ -374,6 +383,7 @@ public class LogicalProvider extends BasicProvider {
                                         .collect(Collectors.joining(" AND ")))
                         + logicalCondition(entity, false);
             }
+
         });
     }
 
@@ -407,6 +417,7 @@ public class LogicalProvider extends BasicProvider {
                                         .collect(Collectors.joining(" AND ")))
                         + logicalCondition(entity, false);
             }
+
         });
     }
 
@@ -444,6 +455,7 @@ public class LogicalProvider extends BasicProvider {
                                         .collect(Collectors.joining(" AND ")))
                         + logicalCondition(entity, false);
             }
+
         });
     }
 
@@ -477,6 +489,7 @@ public class LogicalProvider extends BasicProvider {
                                         .collect(Collectors.joining(Symbol.LF)) + " AND "
                                         + logicalCondition(entity, true));
             }
+
         });
     }
 
@@ -503,6 +516,7 @@ public class LogicalProvider extends BasicProvider {
                                 .stream().map(ColumnMeta::columnEqualsProperty).collect(Collectors.joining(" AND "))
                         + " AND " + logicalCondition(entity, true);
             }
+
         });
     }
 
@@ -532,6 +546,7 @@ public class LogicalProvider extends BasicProvider {
                         + CONDITION_ROOT_WHERE + " AND " + logicalCondition(entity, true)
                         + ifTest("endSql != null and endSql != ''", () -> "${endSql}");
             }
+
         });
     }
 
@@ -619,7 +634,7 @@ public class LogicalProvider extends BasicProvider {
      * @return The equality operator (" = " or " IS ").
      */
     private static String choiceEqualsOperator(String value) {
-        if ("null".compareToIgnoreCase(value) == 0) {
+        if (Normal.NULL.compareToIgnoreCase(value) == 0) {
             return " IS ";
         }
         return " = ";
@@ -632,7 +647,7 @@ public class LogicalProvider extends BasicProvider {
      * @return The inequality operator (" != " or " IS NOT ").
      */
     private static String choiceNotEqualsOperator(String value) {
-        if ("null".compareToIgnoreCase(value) == 0) {
+        if (Normal.NULL.compareToIgnoreCase(value) == 0) {
             return " IS NOT ";
         }
         return " != ";

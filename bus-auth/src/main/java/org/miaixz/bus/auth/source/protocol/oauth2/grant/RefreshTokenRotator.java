@@ -48,8 +48,8 @@ import org.miaixz.bus.extra.json.JsonValue;
  * Rotates OAuth refresh-token families with reuse detection and fixed absolute family expiration.
  * <p>
  * The authoritative {@link AuthorizationCache} record is checked before every rotation and atomically becomes
- * compromised when a rotated generation is reused. Access and refresh caches remain derived token indexes. New token
- * values remain unreturned until the old active generation is atomically replaced with its rotated state.
+ * compromised when a rotated sequence is reused. Access and refresh caches remain derived token indexes. New token
+ * values remain unreturned until the old active sequence is atomically replaced with its rotated state.
  * </p>
  *
  * @author Kimi Liu
@@ -82,7 +82,7 @@ public class RefreshTokenRotator {
     private final AccessTokenIssuer issuer;
 
     /**
-     * Source-isolated opaque token generation and irreversible key derivation.
+     * Source-isolated opaque token creation and irreversible key derivation.
      */
     private final TokenMaterial tokenMaterial;
 
@@ -221,7 +221,7 @@ public class RefreshTokenRotator {
     }
 
     /**
-     * Reads one refresh-token generation and selects active rotation or reuse handling.
+     * Reads one refresh-token sequence and selects active rotation or reuse handling.
      *
      * @param grant   standard refresh-token grant
      * @param client  resolved client registration
@@ -263,13 +263,13 @@ public class RefreshTokenRotator {
     }
 
     /**
-     * Checks the authoritative authorization family before permitting an active generation to rotate.
+     * Checks the authoritative authorization family before permitting an active sequence to rotate.
      *
      * @param grant   standard refresh-token grant
      * @param client  resolved client registration
      * @param oldKey  isolated current refresh-token digest
      * @param stored  current expiring state
-     * @param entry   active current generation
+     * @param entry   active current sequence
      * @param context immutable invocation context
      * @param timeout shared operation timeout
      * @return asynchronous token outcome
@@ -309,20 +309,20 @@ public class RefreshTokenRotator {
                                         OAuth2ErrorCode.INVALID_SCOPE,
                                         "OAuth 2.x refreshed scope exceeds the original authorization")));
             }
-            if (entry.generation() == Long.MAX_VALUE) {
-                return completed(storeFailure("OAuth 2.x refresh token generation is exhausted"));
+            if (entry.sequence() == Long.MAX_VALUE) {
+                return completed(storeFailure("OAuth 2.x refresh token sequence is exhausted"));
             }
             return createSuccessor(client, oldKey, stored, entry, scope, context, timeout, 1);
         });
     }
 
     /**
-     * Creates an unreturned successor generation before issuing its corresponding access token.
+     * Creates an unreturned successor token before issuing its corresponding access token.
      *
      * @param client  resolved client registration
      * @param oldKey  isolated current refresh-token digest
      * @param stored  current expiring refresh state
-     * @param entry   active current generation
+     * @param entry   active current sequence
      * @param scope   effective non-expanding scope
      * @param context immutable invocation context
      * @param timeout shared operation timeout
@@ -345,7 +345,7 @@ public class RefreshTokenRotator {
         final String refreshToken = tokenMaterial.create();
         final String refreshKey = tokenMaterial.key(refreshToken);
         final RefreshTokenCache.Entry successor = new RefreshTokenCache.Entry(sourceId, client.id(), entry.subjectId(),
-                entry.familyId(), entry.generation() + 1L, scope, entry.audience(), entry.confirmation(),
+                entry.familyId(), entry.sequence() + 1L, scope, entry.audience(), entry.confirmation(),
                 entry.openIdBinding(), RefreshTokenCache.Status.ACTIVE);
         final CompletionStage<Boolean> creation;
         try {
@@ -396,11 +396,11 @@ public class RefreshTokenRotator {
     }
 
     /**
-     * Atomically marks the prior generation rotated and publishes the already persisted successor values.
+     * Atomically marks the prior token rotated and publishes the already persisted successor values.
      *
      * @param oldKey         isolated prior refresh-token digest
      * @param stored         current prior expiring state
-     * @param entry          current active prior generation
+     * @param entry          current active prior token
      * @param refreshToken   unreturned successor refresh token
      * @param refreshKey     isolated successor digest
      * @param accessResponse unreturned persisted access-token response
@@ -416,7 +416,7 @@ public class RefreshTokenRotator {
             final TokenResponse accessResponse,
             final Timeout timeout) {
         final RefreshTokenCache.Entry rotated = new RefreshTokenCache.Entry(entry.sourceId(), entry.clientId(),
-                entry.subjectId(), entry.familyId(), entry.generation(), entry.scope(), entry.audience(),
+                entry.subjectId(), entry.familyId(), entry.sequence(), entry.scope(), entry.audience(),
                 entry.confirmation(), entry.openIdBinding(), RefreshTokenCache.Status.ROTATED);
         final long ttlMillis = remainingTtl(stored.expiresAt(), timeout.clock().now());
         if (ttlMillis <= 0L) {
@@ -459,11 +459,11 @@ public class RefreshTokenRotator {
     }
 
     /**
-     * Marks the authoritative authorization compromised and records reuse on the presented token generation.
+     * Marks the authoritative authorization compromised and records reuse on the presented token sequence.
      *
      * @param oldKey  isolated reused token digest
-     * @param stored  current reused generation state
-     * @param entry   reused generation entry
+     * @param stored  current reused sequence state
+     * @param entry   reused sequence entry
      * @param timeout shared operation timeout
      * @return asynchronous invalid-grant outcome after authoritative family-state persistence
      */
@@ -482,7 +482,7 @@ public class RefreshTokenRotator {
             }
             if (entry.status() == RefreshTokenCache.Status.ROTATED) {
                 final RefreshTokenCache.Entry reused = new RefreshTokenCache.Entry(entry.sourceId(), entry.clientId(),
-                        entry.subjectId(), entry.familyId(), entry.generation(), entry.scope(), entry.audience(),
+                        entry.subjectId(), entry.familyId(), entry.sequence(), entry.scope(), entry.audience(),
                         entry.confirmation(), entry.openIdBinding(), RefreshTokenCache.Status.REUSED);
                 try {
                     return services.refreshTokenCache()
@@ -499,7 +499,7 @@ public class RefreshTokenRotator {
     /**
      * Conclusively transitions an active authorization family to compromised or observes an already non-active state.
      *
-     * @param entry   reused refresh-token generation identifying the authorization family
+     * @param entry   reused refresh-token sequence identifying the authorization family
      * @param timeout shared operation timeout
      * @param attempt one-based compare-and-set attempt
      * @return stage completed with a conclusive non-active family state
@@ -562,7 +562,7 @@ public class RefreshTokenRotator {
      * Confirms that the final failed family CAS observed another completed non-active transition.
      *
      * @param key     Source-isolated authorization family key
-     * @param entry   reused refresh-token generation
+     * @param entry   reused refresh-token sequence
      * @param timeout shared operation timeout
      * @return stage completed when the family is conclusively non-active
      */
@@ -582,11 +582,11 @@ public class RefreshTokenRotator {
     }
 
     /**
-     * Best-effort revokes an active generation belonging to a family already marked as reused.
+     * Best-effort revokes an active sequence belonging to a family already marked as reused.
      *
      * @param oldKey  isolated active token digest
-     * @param stored  current active generation state
-     * @param entry   active generation entry
+     * @param stored  current active sequence state
+     * @param entry   active sequence entry
      * @param timeout shared operation timeout
      * @return asynchronous invalid-grant outcome
      */
@@ -596,7 +596,7 @@ public class RefreshTokenRotator {
             final RefreshTokenCache.Entry entry,
             final Timeout timeout) {
         final RefreshTokenCache.Entry revoked = new RefreshTokenCache.Entry(entry.sourceId(), entry.clientId(),
-                entry.subjectId(), entry.familyId(), entry.generation(), entry.scope(), entry.audience(),
+                entry.subjectId(), entry.familyId(), entry.sequence(), entry.scope(), entry.audience(),
                 entry.confirmation(), entry.openIdBinding(), RefreshTokenCache.Status.REVOKED);
         final long ttlMillis = remainingTtl(stored.expiresAt(), timeout.clock().now());
         if (ttlMillis <= 0L) {
@@ -628,7 +628,7 @@ public class RefreshTokenRotator {
     }
 
     /**
-     * Cleans both unreturned successor credentials after the old-generation CAS cannot publish them.
+     * Cleans both unreturned successor credentials after the old-token CAS cannot publish them.
      *
      * @param refreshKey  isolated successor refresh-token digest
      * @param accessToken unreturned opaque access token

@@ -120,12 +120,19 @@ public class MongoProperties {
      * @param readTimeout       read timeout
      * @param receiveBufferSize receive buffer size
      * @param sendBufferSize    send buffer size
+     *
+     * @author Kimi Liu
      */
     public record Socket(@DefaultValue("10s") Duration connectTimeout, @DefaultValue("10s") Duration readTimeout,
             @DefaultValue(Symbol.ZERO) int receiveBufferSize, @DefaultValue(Symbol.ZERO) int sendBufferSize) {
 
         /**
          * Validates socket settings.
+         *
+         * @param connectTimeout    connect timeout
+         * @param readTimeout       read timeout
+         * @param receiveBufferSize receive buffer size
+         * @param sendBufferSize    send buffer size
          */
         public Socket {
             positive(connectTimeout, "socket.connect-timeout", false);
@@ -170,6 +177,7 @@ public class MongoProperties {
         public int getSendBufferSize() {
             return sendBufferSize;
         }
+
     }
 
     /**
@@ -180,6 +188,8 @@ public class MongoProperties {
      * @param requiredReplicaSetName required replica set name
      * @param localThreshold         local threshold
      * @param serverSelectionTimeout server selection timeout
+     *
+     * @author Kimi Liu
      */
     public record Cluster(ClusterConnectionMode mode, @DefaultValue("UNKNOWN") ClusterType requiredClusterType,
             String requiredReplicaSetName, @DefaultValue("15ms") Duration localThreshold,
@@ -187,6 +197,12 @@ public class MongoProperties {
 
         /**
          * Validates cluster timing settings.
+         *
+         * @param mode                   configured operating mode
+         * @param requiredClusterType    required cluster type
+         * @param requiredReplicaSetName required replica set name
+         * @param localThreshold         local threshold
+         * @param serverSelectionTimeout server selection timeout
          */
         public Cluster {
             positive(localThreshold, "cluster.local-threshold", false);
@@ -237,6 +253,7 @@ public class MongoProperties {
         public long getServerSelectionTimeoutMilliSeconds() {
             return serverSelectionTimeout.toMillis();
         }
+
     }
 
     /**
@@ -244,12 +261,17 @@ public class MongoProperties {
      *
      * @param heartbeatFrequency    heartbeat frequency
      * @param minHeartbeatFrequency min heartbeat frequency
+     *
+     * @author Kimi Liu
      */
     public record Server(@DefaultValue("10s") Duration heartbeatFrequency,
             @DefaultValue("500ms") Duration minHeartbeatFrequency) {
 
         /**
          * Validates heartbeat intervals.
+         *
+         * @param heartbeatFrequency    heartbeat frequency
+         * @param minHeartbeatFrequency min heartbeat frequency
          */
         public Server {
             positive(heartbeatFrequency, "server.heartbeat-frequency", false);
@@ -273,6 +295,7 @@ public class MongoProperties {
         public long getMinHeartbeatFrequencyMilliSeconds() {
             return minHeartbeatFrequency.toMillis();
         }
+
     }
 
     /**
@@ -285,6 +308,8 @@ public class MongoProperties {
      * @param maxConnectionIdleTime   max connection idle time
      * @param maintenanceInitialDelay maintenance initial delay
      * @param maintenanceFrequency    maintenance frequency
+     *
+     * @author Kimi Liu
      */
     public record Connection(@DefaultValue("100") int maxSize, @DefaultValue(Symbol.ZERO) int minSize,
             @DefaultValue("2m") Duration maxWaitTime, @DefaultValue(Symbol.ZERO) Duration maxConnectionLifeTime,
@@ -294,6 +319,14 @@ public class MongoProperties {
 
         /**
          * Validates pool bounds and durations.
+         *
+         * @param maxSize                 max size
+         * @param minSize                 min size
+         * @param maxWaitTime             max wait time
+         * @param maxConnectionLifeTime   max connection life time
+         * @param maxConnectionIdleTime   max connection idle time
+         * @param maintenanceInitialDelay maintenance initial delay
+         * @param maintenanceFrequency    maintenance frequency
          */
         public Connection {
             if (maxSize <= 0 || minSize < 0 || minSize > maxSize) {
@@ -368,6 +401,7 @@ public class MongoProperties {
         public long getMaintenanceFrequencyMilliSeconds() {
             return maintenanceFrequency.toMillis();
         }
+
     }
 
     /**
@@ -375,6 +409,8 @@ public class MongoProperties {
      *
      * @param enabled                whether the feature is enabled
      * @param invalidHostNameAllowed invalid host name allowed
+     *
+     * @author Kimi Liu
      */
     public record Ssl(boolean enabled, boolean invalidHostNameAllowed) {
 
@@ -395,6 +431,7 @@ public class MongoProperties {
         public boolean isInvalidHostNameAllowed() {
             return invalidHostNameAllowed;
         }
+
     }
 
 }

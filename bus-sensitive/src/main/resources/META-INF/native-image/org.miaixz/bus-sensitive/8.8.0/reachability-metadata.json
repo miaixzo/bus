@@ -209,6 +209,148 @@
       ]
     },
     {
+      "type": "org.miaixz.bus.sensitive.Provider",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "alreadyBeSentisived",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "clone",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "getCondition",
+          "parameterTypes": [
+            "java.lang.annotation.Annotation[]"
+          ]
+        },
+        {
+          "name": "getStrategy",
+          "parameterTypes": [
+            "java.lang.annotation.Annotation[]"
+          ]
+        },
+        {
+          "name": "handleClassField",
+          "parameterTypes": [
+            "org.miaixz.bus.sensitive.Context",
+            "java.lang.Object",
+            "java.lang.Class"
+          ]
+        },
+        {
+          "name": "handleSensitive",
+          "parameterTypes": [
+            "org.miaixz.bus.sensitive.Context",
+            "java.lang.Object",
+            "java.lang.reflect.Field"
+          ]
+        },
+        {
+          "name": "handleSensitiveEntry",
+          "parameterTypes": [
+            "org.miaixz.bus.sensitive.Context",
+            "java.lang.Object",
+            "java.lang.reflect.Field"
+          ]
+        },
+        {
+          "name": "json",
+          "parameterTypes": [
+            "java.lang.Object",
+            "java.lang.annotation.Annotation"
+          ]
+        },
+        {
+          "name": "needHandleEntryType",
+          "parameterTypes": [
+            "java.lang.Class"
+          ]
+        },
+        {
+          "name": "on",
+          "parameterTypes": [
+            "java.lang.Object",
+            "java.lang.annotation.Annotation",
+            "boolean"
+          ]
+        },
+        {
+          "name": "processArrayField",
+          "parameterTypes": [
+            "org.miaixz.bus.sensitive.Context",
+            "java.lang.Object",
+            "java.lang.reflect.Field"
+          ]
+        },
+        {
+          "name": "processCollectionField",
+          "parameterTypes": [
+            "org.miaixz.bus.sensitive.Context",
+            "java.lang.Object",
+            "java.lang.reflect.Field"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.sensitive.Registry",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "require",
+          "parameterTypes": [
+            "java.lang.annotation.Annotation[]"
+          ]
+        },
+        {
+          "name": "require",
+          "parameterTypes": [
+            "java.lang.Class"
+          ]
+        },
+        {
+          "name": "require",
+          "parameterTypes": [
+            "org.miaixz.bus.core.lang.EnumValue$Masking"
+          ]
+        },
+        {
+          "name": "contains",
+          "parameterTypes": [
+            "org.miaixz.bus.core.lang.EnumValue$Masking"
+          ]
+        },
+        {
+          "name": "register",
+          "parameterTypes": [
+            "org.miaixz.bus.sensitive.nimble.StrategyProvider"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.sensitive.Sanitizer",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
       "type": "org.miaixz.bus.sensitive.nimble.AbstractProvider",
       "methods": [
         {
@@ -468,148 +610,6 @@
             "java.lang.String",
             "java.lang.String"
           ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.sensitive.Provider",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "alreadyBeSentisived",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "clone",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "getCondition",
-          "parameterTypes": [
-            "java.lang.annotation.Annotation[]"
-          ]
-        },
-        {
-          "name": "getStrategy",
-          "parameterTypes": [
-            "java.lang.annotation.Annotation[]"
-          ]
-        },
-        {
-          "name": "handleClassField",
-          "parameterTypes": [
-            "org.miaixz.bus.sensitive.Context",
-            "java.lang.Object",
-            "java.lang.Class"
-          ]
-        },
-        {
-          "name": "handleSensitive",
-          "parameterTypes": [
-            "org.miaixz.bus.sensitive.Context",
-            "java.lang.Object",
-            "java.lang.reflect.Field"
-          ]
-        },
-        {
-          "name": "handleSensitiveEntry",
-          "parameterTypes": [
-            "org.miaixz.bus.sensitive.Context",
-            "java.lang.Object",
-            "java.lang.reflect.Field"
-          ]
-        },
-        {
-          "name": "json",
-          "parameterTypes": [
-            "java.lang.Object",
-            "java.lang.annotation.Annotation"
-          ]
-        },
-        {
-          "name": "needHandleEntryType",
-          "parameterTypes": [
-            "java.lang.Class"
-          ]
-        },
-        {
-          "name": "on",
-          "parameterTypes": [
-            "java.lang.Object",
-            "java.lang.annotation.Annotation",
-            "boolean"
-          ]
-        },
-        {
-          "name": "processArrayField",
-          "parameterTypes": [
-            "org.miaixz.bus.sensitive.Context",
-            "java.lang.Object",
-            "java.lang.reflect.Field"
-          ]
-        },
-        {
-          "name": "processCollectionField",
-          "parameterTypes": [
-            "org.miaixz.bus.sensitive.Context",
-            "java.lang.Object",
-            "java.lang.reflect.Field"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.sensitive.Registry",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "require",
-          "parameterTypes": [
-            "java.lang.annotation.Annotation[]"
-          ]
-        },
-        {
-          "name": "require",
-          "parameterTypes": [
-            "java.lang.Class"
-          ]
-        },
-        {
-          "name": "require",
-          "parameterTypes": [
-            "org.miaixz.bus.core.lang.EnumValue$Masking"
-          ]
-        },
-        {
-          "name": "contains",
-          "parameterTypes": [
-            "org.miaixz.bus.core.lang.EnumValue$Masking"
-          ]
-        },
-        {
-          "name": "register",
-          "parameterTypes": [
-            "org.miaixz.bus.sensitive.nimble.StrategyProvider"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.sensitive.Sanitizer",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
         }
       ]
     }

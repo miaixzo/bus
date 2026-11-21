@@ -36,6 +36,11 @@ public record SpringStartupSummary(String appName, long applicationBootElapsedTi
 
     /**
      * Copies mutable input and validates duration values.
+     *
+     * @param appName                    application name
+     * @param applicationBootElapsedTime total startup duration in milliseconds
+     * @param applicationBootTime        startup timestamp in milliseconds since the epoch
+     * @param stageStats                 ordered Spring startup stages
      */
     public SpringStartupSummary {
         if (applicationBootElapsedTime < 0) {
@@ -79,6 +84,9 @@ public record SpringStartupSummary(String appName, long applicationBootElapsedTi
 
         /**
          * Validates one Spring startup stage.
+         *
+         * @param name           stable stage name
+         * @param durationMillis stage duration in milliseconds
          */
         public Stage {
             Objects.requireNonNull(name, "name");

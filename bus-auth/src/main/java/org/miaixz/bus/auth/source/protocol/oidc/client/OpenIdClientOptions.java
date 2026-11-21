@@ -57,6 +57,12 @@ public record OpenIdClientOptions(OAuth2ClientOptions oauth2Options, Optional<En
     /**
      * Normalizes endpoint containers and enforces OIDC code-flow transport and algorithm invariants.
      *
+     * @param oauth2Options            validated OAuth 2.x client options used by the relying party
+     * @param discoveryEndpoint        required OpenID Provider Metadata endpoint
+     * @param userInfoEndpoint         optional UserInfo endpoint
+     * @param jwkSetEndpoint           required JWK Set endpoint
+     * @param endSessionEndpoint       optional RP-Initiated Logout endpoint
+     * @param idTokenSigningAlgorithms exact locally enabled ID Token JWS algorithms
      * @throws IllegalArgumentException if a required component, container, or set item is {@code null}
      * @throws ValidateException        if an endpoint, OAuth profile, or signing algorithm is unsupported or insecure
      */

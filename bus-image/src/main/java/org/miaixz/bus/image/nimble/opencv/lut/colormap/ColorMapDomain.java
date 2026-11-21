@@ -56,6 +56,11 @@ public record ColorMapDomain(DomainKind kind, String unit, double min, double ma
     /**
      * Validates the domain kind, finite ordered bounds, and kind-specific constraints.
      *
+     * @param kind      interpretation of stop positions
+     * @param unit      physical unit for {@link DomainKind#ABSOLUTE} and {@link DomainKind#FIXED}, else null
+     * @param min       lower domain bound
+     * @param max       upper domain bound
+     * @param reference what 100 percent means for {@link DomainKind#PERCENT}, else null
      * @throws NullPointerException     if the domain kind is null
      * @throws IllegalArgumentException if the bounds or kind-specific values are invalid
      */
@@ -119,6 +124,9 @@ public record ColorMapDomain(DomainKind kind, String unit, double min, double ma
 
     /**
      * Fraction of the range at {@code value}, not clamped.
+     *
+     * @param value domain value to normalize without clamping
+     * @return fractional position in the domain range without clamping
      */
     public double normalize(double value) {
         return (value - min) / span();

@@ -1,0 +1,30 @@
+{
+  "reflection": [
+    {
+      "type": "org.springframework.beans.factory.xml.DefaultBeanDefinitionDocumentReader",
+      "condition": {
+        "typeReached": "org.springframework.beans.factory.xml.XmlBeanDefinitionReader"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    }
+  ],
+  "resources": [
+    {
+      "condition": {
+        "typeReached": "org.springframework.beans.factory.xml.XmlBeanDefinitionReader"
+      },
+      "glob": "META-INF/spring.schemas"
+    },
+    {
+      "condition": {
+        "typeReached": "org.springframework.beans.factory.xml.XmlBeanDefinitionReader"
+      },
+      "glob": "org/springframework/beans/factory/xml/spring-beans.xsd"
+    }
+  ]
+}

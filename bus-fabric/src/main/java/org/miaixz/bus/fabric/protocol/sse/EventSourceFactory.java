@@ -360,6 +360,7 @@ public class EventSourceFactory implements EventSource.Factory, AutoCloseable {
                                 finish();
                             }
                         }
+
                     }).callback(new Callback<>() {
 
                         /**
@@ -396,6 +397,7 @@ public class EventSourceFactory implements EventSource.Factory, AutoCloseable {
                                 finish();
                             }
                         }
+
                     }).build();
             final Call<SseSession> current = exchange.call().enqueue();
             call.set(current);

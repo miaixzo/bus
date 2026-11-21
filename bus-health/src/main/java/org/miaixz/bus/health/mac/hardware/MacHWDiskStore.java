@@ -42,6 +42,7 @@ import com.sun.jna.platform.mac.SystemB.Statfs;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
+import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.hardware.HWDiskStore;
 import org.miaixz.bus.health.builtin.hardware.HWPartition;
 import org.miaixz.bus.health.builtin.hardware.common.AbstractHWDiskStore;
@@ -237,8 +238,9 @@ public class MacHWDiskStore extends AbstractHWDiskStore {
                             size = sizePtr.longValue();
                             diskInfo.release();
 
-                            // Use the model as a key to get serial from IOKit
-                            if (!"Disk Image".equals(model)) {
+                            // Prefer this disk's own block-storage device serial before matching by model.
+                            serial = queryDeviceSerial(bsdName);
+                            if (serial.isEmpty() && !"Disk Image".equals(model)) {
                                 CFStringRef modelNameRef = CFStringRef.createCFString(model);
                                 CFMutableDictionaryRef propertyDict = CF.CFDictionaryCreateMutable(
                                         CF.CFAllocatorGetDefault(),
@@ -463,7 +465,7 @@ public class MacHWDiskStore extends AbstractHWDiskStore {
                             IORegistryEntry device = driver.getParentEntry("IOService");
                             if (device != null) {
                                 try {
-                                    String type = readMediumType(device);
+                                    String type = readDeviceCharacteristic(device, "Medium Type");
                                     if (type != null) {
                                         if (type.contains("Solid State") || type.contains("SSD")) {
                                             return "SSD";
@@ -490,37 +492,86 @@ public class MacHWDiskStore extends AbstractHWDiskStore {
     }
 
     /**
-     * Reads the IOKit medium type from an IOBlockStorageDevice entry.
+     * Reads the serial number from the block-storage device backing a whole disk.
+     *
+     * @param bsdName the BSD disk name
+     * @return the serial number, or an empty string when unavailable
+     */
+    private static String queryDeviceSerial(String bsdName) {
+        CFMutableDictionaryRef matchingDict = IOKitUtil.getBSDNameMatchingDict(bsdName);
+        if (matchingDict == null) {
+            return Normal.EMPTY;
+        }
+        IOIterator iterator = IOKitUtil.getMatchingServices(matchingDict);
+        if (iterator == null) {
+            return Normal.EMPTY;
+        }
+        try {
+            IORegistryEntry media = iterator.next();
+            if (media == null) {
+                return Normal.EMPTY;
+            }
+            try {
+                IORegistryEntry driver = media.getParentEntry("IOService");
+                if (driver == null) {
+                    return Normal.EMPTY;
+                }
+                try {
+                    IORegistryEntry device = driver.getParentEntry("IOService");
+                    if (device == null) {
+                        return Normal.EMPTY;
+                    }
+                    try {
+                        return Parsing.getStringValueOrEmpty(readDeviceCharacteristic(device, "Serial Number"));
+                    } finally {
+                        device.release();
+                    }
+                } finally {
+                    driver.release();
+                }
+            } finally {
+                media.release();
+            }
+        } finally {
+            iterator.release();
+        }
+    }
+
+    /**
+     * Reads an IOKit device characteristic from an IOBlockStorageDevice entry.
      *
      * @param device the IOKit device entry
-     * @return the medium type string, or {@code null}
+     * @param key    the device-characteristic key
+     * @return the characteristic string, or {@code null}
      */
-    private static String readMediumType(IORegistryEntry device) {
+    private static String readDeviceCharacteristic(IORegistryEntry device, String key) {
         CFMutableDictionaryRef props = device.createCFProperties();
         if (props == null) {
             return null;
         }
         CFStringRef deviceCharacteristics = CFStringRef.createCFString("Device Characteristics");
-        CFStringRef mediumTypeKey = CFStringRef.createCFString("Medium Type");
+        CFStringRef characteristicKey = CFStringRef.createCFString(key);
         try {
             Pointer charDict = props.getValue(deviceCharacteristics);
             if (charDict != null) {
                 CFDictionaryRef characteristics = new CFDictionaryRef(charDict);
-                Pointer mediumType = characteristics.getValue(mediumTypeKey);
-                if (mediumType != null) {
-                    return CFKit.cfPointerToString(mediumType);
+                Pointer characteristic = characteristics.getValue(characteristicKey);
+                if (characteristic != null) {
+                    return CFKit.cfPointerToString(characteristic);
                 }
             }
             return null;
         } finally {
-            mediumTypeKey.release();
+            characteristicKey.release();
             deviceCharacteristics.release();
             props.release();
         }
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * The number of reads from the disk
+     *
+     * @return the reads
      */
     @Override
     public long getReads() {
@@ -528,7 +579,9 @@ public class MacHWDiskStore extends AbstractHWDiskStore {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * The number of bytes read from the disk
+     *
+     * @return the bytes read
      */
     @Override
     public long getReadBytes() {
@@ -536,7 +589,9 @@ public class MacHWDiskStore extends AbstractHWDiskStore {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * The number of writes to the disk
+     *
+     * @return the writes
      */
     @Override
     public long getWrites() {
@@ -544,7 +599,9 @@ public class MacHWDiskStore extends AbstractHWDiskStore {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * The number of bytes written to the disk
+     *
+     * @return the bytes written
      */
     @Override
     public long getWriteBytes() {
@@ -552,7 +609,10 @@ public class MacHWDiskStore extends AbstractHWDiskStore {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * The length of the disk queue (#I/O's in progress). Includes I/O requests that have been issued to the device
+     * driver but have not yet completed. Not supported on macOS.
+     *
+     * @return the current disk queue length
      */
     @Override
     public long getCurrentQueueLength() {
@@ -560,7 +620,9 @@ public class MacHWDiskStore extends AbstractHWDiskStore {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * The time spent reading or writing, in milliseconds.
+     *
+     * @return the transfer time
      */
     @Override
     public long getTransferTime() {
@@ -568,7 +630,9 @@ public class MacHWDiskStore extends AbstractHWDiskStore {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * The time this disk's statistics were updated.
+     *
+     * @return the timeStamp, in milliseconds since the epoch.
      */
     @Override
     public long getTimeStamp() {
@@ -576,7 +640,9 @@ public class MacHWDiskStore extends AbstractHWDiskStore {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * The partitions on this disk.
+     *
+     * @return an {@code UnmodifiableList} of the partitions on this drive.
      */
     @Override
     public List<HWPartition> getPartitions() {
@@ -594,7 +660,12 @@ public class MacHWDiskStore extends AbstractHWDiskStore {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Make a best effort to update all the statistics about the drive without needing to recreate the drive list. This
+     * method provides for more frequent periodic updates of individual drive statistics but may be less efficient to
+     * use if updating all drives. It will not detect if a removable drive has been removed and replaced by a different
+     * drive in between method calls.
+     *
+     * @return True if the update was (probably) successful, false if the disk was not found
      */
     @Override
     public synchronized boolean updateAttributes() {

@@ -70,6 +70,7 @@ import org.miaixz.bus.fabric.network.tls.context.TlsContext;
 import org.miaixz.bus.fabric.protocol.http.HttpRequest;
 import org.miaixz.bus.fabric.protocol.http.HttpResponse;
 import org.miaixz.bus.fabric.protocol.http.body.PayloadBody;
+import org.miaixz.bus.fabric.protocol.http.http2.Http2Connection;
 import org.miaixz.bus.fabric.registry.connection.ConnectionLease;
 import org.miaixz.bus.fabric.registry.connection.ConnectionPool;
 import org.miaixz.bus.fabric.runtime.Activity;
@@ -253,8 +254,26 @@ public class HttpConnect implements HttpStage, AutoCloseable {
      */
     public HttpConnect(final ConnectionPool pool, final TlsContext tlsContext, final TlsSettings tlsSettings,
             final Listener<Object> listener, final DnsResolver resolver, final Dispatcher dispatcher) {
+        this(pool, tlsContext, tlsSettings, listener, resolver, dispatcher, Options.empty());
+    }
+
+    /**
+     * Creates a connect stage with shared connection pool, TLS dependencies, lifecycle listener, DNS resolver,
+     * dispatcher, and context options.
+     *
+     * @param pool           connection pool
+     * @param tlsContext     TLS context
+     * @param tlsSettings    TLS settings
+     * @param listener       lifecycle listener
+     * @param resolver       DNS resolver
+     * @param dispatcher     runtime dispatcher
+     * @param contextOptions context options copied into route destinations
+     */
+    public HttpConnect(final ConnectionPool pool, final TlsContext tlsContext, final TlsSettings tlsSettings,
+            final Listener<Object> listener, final DnsResolver resolver, final Dispatcher dispatcher,
+            final Options contextOptions) {
         this(pool, new SocketConnector(listener, resolver, dispatcher), tlsContext, tlsSettings, listener, resolver,
-                dispatcher);
+                dispatcher, contextOptions);
         this.ownsConnector = true;
     }
 
@@ -317,6 +336,24 @@ public class HttpConnect implements HttpStage, AutoCloseable {
     HttpConnect(final ConnectionPool pool, final Connector connector, final TlsContext tlsContext,
             final TlsSettings tlsSettings, final Listener<Object> listener, final DnsResolver resolver,
             final Dispatcher dispatcher) {
+        this(pool, connector, tlsContext, tlsSettings, listener, resolver, dispatcher, Options.empty());
+    }
+
+    /**
+     * Creates a connect stage with explicit dependencies and context options.
+     *
+     * @param pool           connection pool
+     * @param connector      network connector
+     * @param tlsContext     TLS context
+     * @param tlsSettings    TLS settings
+     * @param listener       lifecycle listener
+     * @param resolver       DNS resolver
+     * @param dispatcher     runtime dispatcher
+     * @param contextOptions context options copied into route destinations
+     */
+    HttpConnect(final ConnectionPool pool, final Connector connector, final TlsContext tlsContext,
+            final TlsSettings tlsSettings, final Listener<Object> listener, final DnsResolver resolver,
+            final Dispatcher dispatcher, final Options contextOptions) {
         this.name = normalizeName("http-connect");
         this.pool = require(pool, "Connection pool");
         this.connector = require(connector, "Network connector");
@@ -325,7 +362,7 @@ public class HttpConnect implements HttpStage, AutoCloseable {
         this.listener = safe(listener);
         this.resolver = require(resolver, "DNS resolver");
         this.dispatcher = require(dispatcher, "Dispatcher");
-        this.routePlanner = new HttpRoutePlanner(tlsContext, tlsSettings);
+        this.routePlanner = new HttpRoutePlanner(tlsContext, tlsSettings, contextOptions);
         this.proxyConnector = new StreamProxyConnector();
         this.tlsConnector = new HttpTlsConnector(tlsContext, tlsSettings, this.listener, this.dispatcher);
         this.acquirer = new HttpConnectionAcquirer(this.pool);
@@ -1192,7 +1229,7 @@ public class HttpConnect implements HttpStage, AutoCloseable {
          */
         @Override
         public boolean healthy() {
-            return delegate.healthy();
+            return !http2ShuttingDown() && delegate.healthy();
         }
 
         /**
@@ -1202,7 +1239,21 @@ public class HttpConnect implements HttpStage, AutoCloseable {
          */
         @Override
         public boolean reusable() {
-            return delegate.reusable() && !draining() && capacity() > Normal._0;
+            return !http2ShuttingDown() && delegate.reusable() && !draining() && capacity() > Normal._0;
+        }
+
+        /**
+         * Returns whether the shared HTTP/2 session has received or sent GOAWAY.
+         * <p>
+         * HTTP/2 multiplexing means the TLS/socket can still look healthy after GOAWAY. The pool must not lease the
+         * connection again in that state.
+         * </p>
+         *
+         * @return {@code true} when the HTTP/2 session is shutting down
+         */
+        final boolean http2ShuttingDown() {
+            return attachment != null && attachment.session() instanceof Http2Connection session
+                    && session.isShuttingDown();
         }
 
         /**
@@ -1395,7 +1446,7 @@ public class HttpConnect implements HttpStage, AutoCloseable {
          */
         @Override
         public boolean healthy() {
-            return tls.opened() && raw.healthy();
+            return !http2ShuttingDown() && tls.opened() && raw.healthy();
         }
 
         /**
@@ -1527,7 +1578,7 @@ public class HttpConnect implements HttpStage, AutoCloseable {
          */
         @Override
         public boolean healthy() {
-            return tls.opened() && raw.healthy();
+            return !http2ShuttingDown() && tls.opened() && raw.healthy();
         }
 
         /**
@@ -1573,6 +1624,7 @@ public class HttpConnect implements HttpStage, AutoCloseable {
                 raw.abort();
             }
         }
+
     }
 
     /**
@@ -1674,6 +1726,7 @@ public class HttpConnect implements HttpStage, AutoCloseable {
                 listener.changed(capacity(), draining);
             }
         }
+
     }
 
     /**
@@ -2473,6 +2526,7 @@ public class HttpConnect implements HttpStage, AutoCloseable {
                 throw new SocketException("Unable to close socket", e);
             }
         }
+
     }
 
     /**
@@ -2953,6 +3007,7 @@ public class HttpConnect implements HttpStage, AutoCloseable {
                     // The timeout has already won; channel-close failures are cleanup-only.
                 }
             }
+
         }
 
         /**
@@ -3035,6 +3090,7 @@ public class HttpConnect implements HttpStage, AutoCloseable {
             public void close() {
                 SocketConduit.this.close();
             }
+
         }
 
     }

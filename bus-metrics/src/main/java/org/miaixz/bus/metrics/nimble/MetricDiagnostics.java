@@ -75,6 +75,7 @@ public interface MetricDiagnostics {
             requireToken("provider", provider);
             requireToken("metric", metric);
         }
+
     };
 
     /**
@@ -167,6 +168,7 @@ public interface MetricDiagnostics {
                         Tag.of("provider", providerName),
                         Tag.of("metric", metric)).increment();
             }
+
         };
     }
 

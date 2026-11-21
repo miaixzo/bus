@@ -26,6 +26,8 @@ import java.util.Deque;
 import java.util.List;
 import java.util.Set;
 
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
@@ -122,14 +124,14 @@ public class AffixSqlRewriter {
                 continue;
             }
             boolean qualified = false;
-            while (tableIndex + 2 < tokens.size() && tokens.get(tableIndex + 1).is(".")
+            while (tableIndex + 2 < tokens.size() && tokens.get(tableIndex + 1).is(Symbol.DOT)
                     && tokens.get(tableIndex + 2).identifier()) {
                 qualified = true;
                 tableIndex += 2;
                 table = tokens.get(tableIndex);
             }
             index = tableIndex;
-            if (source && (tableIndex + 1 < tokens.size() && tokens.get(tableIndex + 1).is("(")
+            if (source && (tableIndex + 1 < tokens.size() && tokens.get(tableIndex + 1).is(Symbol.PARENTHESE_LEFT)
                     || !qualified && visible(table, tableIndex, ctes))) {
                 continue;
             }
@@ -142,7 +144,7 @@ public class AffixSqlRewriter {
             if (prefixed && suffixed) {
                 continue;
             }
-            String replacement = (prefixed ? "" : prefix) + tableName + (suffixed ? "" : suffix);
+            String replacement = (prefixed ? Normal.EMPTY : prefix) + tableName + (suffixed ? Normal.EMPTY : suffix);
             result.append(sql, copied, table.start()).append(table.render(replacement));
             copied = table.end();
         }
@@ -166,9 +168,9 @@ public class AffixSqlRewriter {
             if (!openings.isEmpty()) {
                 container[index] = openings.peek();
             }
-            if (tokens.get(index).is("(")) {
+            if (tokens.get(index).is(Symbol.PARENTHESE_LEFT)) {
                 openings.push(index);
-            } else if (tokens.get(index).is(")") && !openings.isEmpty()) {
+            } else if (tokens.get(index).is(Symbol.PARENTHESE_RIGHT) && !openings.isEmpty()) {
                 closing[openings.pop()] = index;
             }
         }
@@ -190,14 +192,15 @@ public class AffixSqlRewriter {
             int cursor = index + 1;
             while (cursor < end && tokens.get(cursor).identifier()) {
                 Token name = tokens.get(cursor++);
-                if (cursor < end && tokens.get(cursor).is("(")) {
+                if (cursor < end && tokens.get(cursor).is(Symbol.PARENTHESE_LEFT)) {
                     int columns = closing[cursor];
                     if (columns < 0) {
                         break;
                     }
                     cursor = columns + 1;
                 }
-                if (cursor + 1 >= end || !tokens.get(cursor).is("AS") || !tokens.get(cursor + 1).is("(")) {
+                if (cursor + 1 >= end || !tokens.get(cursor).is("AS")
+                        || !tokens.get(cursor + 1).is(Symbol.PARENTHESE_LEFT)) {
                     break;
                 }
                 int body = closing[cursor + 1];
@@ -206,7 +209,7 @@ public class AffixSqlRewriter {
                 }
                 result.add(new Cte(name, body + 1, end));
                 cursor = body + 1;
-                if (cursor >= end || !tokens.get(cursor).is(",")) {
+                if (cursor >= end || !tokens.get(cursor).is(Symbol.COMMA)) {
                     break;
                 }
                 cursor++;
@@ -251,22 +254,24 @@ public class AffixSqlRewriter {
                 cursor++;
                 continue;
             }
-            if (value == '-' && cursor + 1 < sql.length() && sql.charAt(cursor + 1) == '-') {
+            if (value == Symbol.C_MINUS && cursor + 1 < sql.length() && sql.charAt(cursor + 1) == Symbol.C_MINUS) {
                 cursor += 2;
-                while (cursor < sql.length() && sql.charAt(cursor) != '\n' && sql.charAt(cursor) != '\r') {
+                while (cursor < sql.length() && sql.charAt(cursor) != Symbol.C_LF
+                        && sql.charAt(cursor) != Symbol.C_CR) {
                     cursor++;
                 }
                 continue;
             }
-            if (value == '/' && cursor + 1 < sql.length() && sql.charAt(cursor + 1) == '*') {
+            if (value == Symbol.C_SLASH && cursor + 1 < sql.length() && sql.charAt(cursor + 1) == Symbol.C_STAR) {
                 cursor += 2;
                 int depth = 1;
                 while (cursor < sql.length() && depth > 0) {
-                    if (cursor + 1 < sql.length() && sql.charAt(cursor) == '/' && sql.charAt(cursor + 1) == '*') {
+                    if (cursor + 1 < sql.length() && sql.charAt(cursor) == Symbol.C_SLASH
+                            && sql.charAt(cursor + 1) == Symbol.C_STAR) {
                         depth++;
                         cursor += 2;
-                    } else if (cursor + 1 < sql.length() && sql.charAt(cursor) == '*'
-                            && sql.charAt(cursor + 1) == '/') {
+                    } else if (cursor + 1 < sql.length() && sql.charAt(cursor) == Symbol.C_STAR
+                            && sql.charAt(cursor + 1) == Symbol.C_SLASH) {
                         depth--;
                         cursor += 2;
                     } else {
@@ -276,14 +281,16 @@ public class AffixSqlRewriter {
                 continue;
             }
             int start = cursor;
-            if ((value == '#' || value == '$') && cursor + 1 < sql.length() && sql.charAt(cursor + 1) == '{') {
-                int finish = sql.indexOf('}', cursor + 2);
+            if ((value == Symbol.C_HASH || value == Symbol.C_DOLLAR) && cursor + 1 < sql.length()
+                    && sql.charAt(cursor + 1) == Symbol.C_BRACE_LEFT) {
+                int finish = sql.indexOf(Symbol.C_BRACE_RIGHT, cursor + 2);
                 cursor = finish < 0 ? sql.length() : finish + 1;
-                result.add(new Token("", start, cursor, false, (char) 0));
+                result.add(new Token(Normal.EMPTY, start, cursor, false, (char) 0));
                 continue;
             }
-            if (value == '\'' || value == '"' || value == '`' || value == '[') {
-                char close = value == '[' ? ']' : value;
+            if (value == Symbol.C_SINGLE_QUOTE || value == Symbol.C_DOUBLE_QUOTES || value == Symbol.C_BACKTICK
+                    || value == Symbol.C_BRACKET_LEFT) {
+                char close = value == Symbol.C_BRACKET_LEFT ? Symbol.C_BRACKET_RIGHT : value;
                 cursor++;
                 StringBuilder identifier = new StringBuilder();
                 boolean complete = false;
@@ -297,36 +304,40 @@ public class AffixSqlRewriter {
                             complete = true;
                             break;
                         }
-                    } else if (value == '\'' && current == '\\' && cursor < sql.length()) {
+                    } else if (value == Symbol.C_SINGLE_QUOTE && current == Symbol.C_BACKSLASH
+                            && cursor < sql.length()) {
                         identifier.append(current).append(sql.charAt(cursor++));
                     } else {
                         identifier.append(current);
                     }
                 }
-                result.add(new Token(identifier.toString(), start, cursor, complete && value != '\'', value));
+                result.add(
+                        new Token(identifier.toString(), start, cursor, complete && value != Symbol.C_SINGLE_QUOTE,
+                                value));
                 continue;
             }
-            if (value == '$') {
+            if (value == Symbol.C_DOLLAR) {
                 int delimiter = cursor + 1;
                 while (delimiter < sql.length() && (letter(sql.charAt(delimiter))
                         || delimiter > cursor + 1 && Character.isDigit(sql.charAt(delimiter)))) {
                     delimiter++;
                 }
-                if (delimiter < sql.length() && sql.charAt(delimiter) == '$') {
+                if (delimiter < sql.length() && sql.charAt(delimiter) == Symbol.C_DOLLAR) {
                     String marker = sql.substring(cursor, delimiter + 1);
                     int finish = sql.indexOf(marker, delimiter + 1);
                     cursor = finish < 0 ? sql.length() : finish + marker.length();
-                    result.add(new Token("", start, cursor, false, (char) 0));
+                    result.add(new Token(Normal.EMPTY, start, cursor, false, (char) 0));
                     continue;
                 }
             }
-            if ((value == ':' || value == '@' || value == '$') && cursor + 1 < sql.length()
+            if ((value == Symbol.C_COLON || value == Symbol.C_AT || value == Symbol.C_DOLLAR)
+                    && cursor + 1 < sql.length()
                     && (letter(sql.charAt(cursor + 1)) || Character.isDigit(sql.charAt(cursor + 1)))) {
                 cursor += 2;
                 while (cursor < sql.length() && part(sql.charAt(cursor))) {
                     cursor++;
                 }
-                result.add(new Token("", start, cursor, false, (char) 0));
+                result.add(new Token(Normal.EMPTY, start, cursor, false, (char) 0));
                 continue;
             }
             if (letter(value)) {
@@ -350,7 +361,7 @@ public class AffixSqlRewriter {
      * @return {@code true} for an ASCII letter or underscore
      */
     private static boolean letter(char value) {
-        return value >= 'a' && value <= 'z' || value >= 'A' && value <= 'Z' || value == '_';
+        return value >= 'a' && value <= 'z' || value >= 'A' && value <= 'Z' || value == Symbol.C_UNDERLINE;
     }
 
     /**
@@ -360,7 +371,7 @@ public class AffixSqlRewriter {
      * @return {@code true} for an identifier letter, digit or dollar sign
      */
     private static boolean part(char value) {
-        return letter(value) || value >= '0' && value <= '9' || value == '$';
+        return letter(value) || value >= Symbol.C_ZERO && value <= Symbol.C_NINE || value == Symbol.C_DOLLAR;
     }
 
     /**
@@ -394,9 +405,10 @@ public class AffixSqlRewriter {
             if (quote == 0) {
                 return replacement;
             }
-            char close = quote == '[' ? ']' : quote;
-            return quote + replacement.replace(String.valueOf(close), "" + close + close) + close;
+            char close = quote == Symbol.C_BRACKET_LEFT ? Symbol.C_BRACKET_RIGHT : quote;
+            return quote + replacement.replace(String.valueOf(close), Normal.EMPTY + close + close) + close;
         }
+
     }
 
     /**

@@ -59,6 +59,20 @@ public record AuthenticationRequest(AuthorizationRequest authorizationRequest, O
     /**
      * Creates and validates an immutable OpenID Connect code-flow authentication request.
      *
+     * @param authorizationRequest standard OAuth authorization request containing response type, client, redirect,
+     *                             scope, state and OAuth extensions
+     * @param nonce                optional replay-binding value returned in the ID Token when supplied
+     * @param display              optional requested authorization-server display mode
+     * @param prompt               optional ordered prompt value
+     * @param maxAge               optional maximum authentication age in seconds
+     * @param uiLocales            ordered preferred BCP 47 user-interface locales
+     * @param idTokenHint          optional prior ID Token hint
+     * @param loginHint            optional login identifier hint
+     * @param acrValues            ordered requested authentication context class references
+     * @param claims               optional OpenID Connect claims request object
+     * @param responseMode         optional response mode, restricted to the code-flow {@code query} and {@code
+     *                             form_post} registrations accepted by this authorization-code request model
+     * @param extensions           unknown OpenID Connect request parameters
      * @throws IllegalArgumentException if a required component, container, list, or list entry is {@code null}
      * @throws ValidateException        if flow, scope, nonce, locale, ACR, response mode, or extension syntax is
      *                                  invalid

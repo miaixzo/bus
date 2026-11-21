@@ -285,6 +285,9 @@ public class RedNoteManifest implements VendorManifest<RedNoteOptions> {
         /**
          * Validates and freezes one authorization request without adding OAuth fields.
          *
+         * @param redirectUri registered callback URI that must equal the selected Source setting
+         * @param scopes      ordered official marketing scopes, or empty to use manifest defaults
+         * @param state       non-blank application correlation value
          * @throws IllegalArgumentException if a component, collection member, or state is {@code null} or blank
          */
         public MarketingAuthorizationRequest {
@@ -315,6 +318,8 @@ public class RedNoteManifest implements VendorManifest<RedNoteOptions> {
         /**
          * Requires exactly one non-blank platform credential branch.
          *
+         * @param code         initial authorization code, empty for refresh
+         * @param refreshToken refresh token, empty for initial exchange
          * @throws IllegalArgumentException if an optional container is {@code null} or a present value is blank
          * @throws ValidateException        if both or neither request branches are selected
          */
@@ -361,6 +366,10 @@ public class RedNoteManifest implements VendorManifest<RedNoteOptions> {
         /**
          * Validates one successful platform token result without inventing a token type.
          *
+         * @param accessToken  sensitive marketing access token
+         * @param refreshToken optional sensitive marketing refresh token
+         * @param scope        optional platform-returned scope text
+         * @param expiresIn    optional positive lifetime selected from the active response branch
          * @throws IllegalArgumentException if an optional container is null or a present text value is blank
          * @throws ValidateException        if a present lifetime is not positive
          */

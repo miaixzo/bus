@@ -225,6 +225,7 @@ public class LdapDicomConfiguration implements DicomConfiguration {
      * @param attrid the attrid.
      * @param value  the value.
      * @param sb     the sb.
+     * @param <T>    type of the input elements
      */
     private static <T> void appendFilter(String attrid, T value, StringBuilder sb) {
         if (value == null)
@@ -240,6 +241,7 @@ public class LdapDicomConfiguration implements DicomConfiguration {
      * @param attrid the attrid.
      * @param values the values.
      * @param sb     the sb.
+     * @param <T>    type of the input elements
      */
     private static <T> void appendFilter(String attrid, T[] values, StringBuilder sb) {
         if (values.length == 0)
@@ -686,6 +688,7 @@ public class LdapDicomConfiguration implements DicomConfiguration {
      * Gets the dicom configuration extension.
      *
      * @param clazz the clazz.
+     * @param <T>   DICOM configuration extension type
      * @return the dicom configuration extension.
      */
     @Override

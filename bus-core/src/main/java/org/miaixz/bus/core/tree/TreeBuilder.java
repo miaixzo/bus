@@ -248,6 +248,7 @@ public class TreeBuilder<E> implements Builder<MapTree<E>> {
 
                 return node;
             }
+
         });
     }
 

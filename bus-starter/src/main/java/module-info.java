@@ -39,6 +39,7 @@ module bus.starter {
     requires bus.core;
     requires bus.cortex;
     requires bus.crypto;
+    requires bus.errors;
     requires bus.extra;
     requires bus.fabric;
     requires bus.health;
@@ -64,19 +65,18 @@ module bus.starter {
     requires static curator.framework;
     requires static dubbo;
     requires static elasticsearch.java;
-    requires static elasticsearch.rest5.client;
     requires static io.netty.transport;
     requires static jakarta.annotation;
     requires static jakarta.persistence;
     requires static jakarta.servlet;
     requires static lombok;
     requires static org.aspectj.weaver;
-    requires static org.apache.httpcomponents.client5.httpclient5;
     requires static org.mongodb.driver.core;
     requires static org.mybatis;
     requires static org.mybatis.spring;
     requires static reactor.core;
     requires static reactor.netty.http;
+    requires static spring.aop;
     requires static spring.beans;
     requires static spring.boot;
     requires static spring.boot.autoconfigure;
@@ -87,11 +87,13 @@ module bus.starter {
     requires static spring.context;
     requires static spring.core;
     requires static spring.jdbc;
+    requires static spring.tx;
     requires static spring.web;
     requires static spring.webflux;
     requires static spring.webmvc;
 
     exports org.miaixz.bus.starter;
+    exports org.miaixz.bus.starter.anchor;
     exports org.miaixz.bus.starter.annotation;
     exports org.miaixz.bus.starter.auth;
     exports org.miaixz.bus.starter.cache;
@@ -100,6 +102,7 @@ module bus.starter {
     exports org.miaixz.bus.starter.cortex;
     exports org.miaixz.bus.starter.dubbo;
     exports org.miaixz.bus.starter.elastic;
+    exports org.miaixz.bus.starter.errors;
     exports org.miaixz.bus.starter.fabric;
     exports org.miaixz.bus.starter.health;
     exports org.miaixz.bus.starter.i18n;
@@ -127,6 +130,7 @@ module bus.starter {
     exports org.miaixz.bus.starter.wrapper.routing;
     exports org.miaixz.bus.starter.zookeeper;
 
+    opens org.miaixz.bus.starter.anchor to spring.beans, spring.boot, spring.context, spring.core;
     opens org.miaixz.bus.starter to spring.beans, spring.boot, spring.context, spring.core;
     opens org.miaixz.bus.starter.auth to spring.beans, spring.boot, spring.context, spring.core;
     opens org.miaixz.bus.starter.cache to spring.beans, spring.boot, spring.context, spring.core;
@@ -135,6 +139,7 @@ module bus.starter {
     opens org.miaixz.bus.starter.cortex to spring.beans, spring.boot, spring.context, spring.core;
     opens org.miaixz.bus.starter.dubbo to spring.beans, spring.boot, spring.context, spring.core;
     opens org.miaixz.bus.starter.elastic to spring.beans, spring.boot, spring.context, spring.core;
+    opens org.miaixz.bus.starter.errors to spring.beans, spring.boot, spring.context, spring.core;
     opens org.miaixz.bus.starter.fabric to spring.beans, spring.boot, spring.context, spring.core;
     opens org.miaixz.bus.starter.health to spring.beans, spring.boot, spring.context, spring.core;
     opens org.miaixz.bus.starter.i18n to spring.beans, spring.boot, spring.context, spring.core;

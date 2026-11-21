@@ -95,6 +95,14 @@ public class Vendor {
 
         /**
          * Validates and freezes one short-lived Vendor configuration command.
+         *
+         * @param vendor     exact Vendor platform identifier
+         * @param variant    exact platform variant identifier
+         * @param clientId   public client identifier issued by the external platform
+         * @param credential short-lived plaintext client secret or private key lease
+         * @param callback   exact registered callback, empty only for direct variants
+         * @param scopes     requested scopes, or empty to use manifest defaults
+         * @param parameters immutable manifest-form parameter values
          */
         public Configuration {
             vendor = Assert.notNull(vendor, "Vendor configuration platform must not be null");

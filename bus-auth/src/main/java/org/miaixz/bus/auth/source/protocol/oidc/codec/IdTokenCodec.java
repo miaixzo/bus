@@ -256,6 +256,8 @@ public class IdTokenCodec {
         /**
          * Creates an immutable decoded ID Token result.
          *
+         * @param jwt    verified shared JWT
+         * @param claims typed OpenID Connect ID Token claims
          * @throws IllegalArgumentException if a component is {@code null}
          */
         public Decoded {

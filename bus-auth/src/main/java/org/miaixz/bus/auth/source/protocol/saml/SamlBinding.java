@@ -46,6 +46,7 @@ public record SamlBinding(String value) {
     /**
      * Validates the lexical binding value without closing the OASIS extension registry.
      *
+     * @param value exact absolute binding URI
      * @throws IllegalArgumentException if {@code value} is {@code null} or blank
      * @throws ValidateException        if {@code value} is not an absolute URI
      */

@@ -1,6 +1,383 @@
 {
   "reflection": [
     {
+      "type": "java.lang.ClassLoader",
+      "condition": {
+        "typeReached": "org.springframework.boot.loader.launch.LaunchedClassLoader"
+      },
+      "methods": [
+        {
+          "name": "clearAssertionStatus",
+          "parameterTypes": []
+        },
+        {
+          "name": "getDefinedPackage",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getDefinedPackages",
+          "parameterTypes": []
+        },
+        {
+          "name": "getName",
+          "parameterTypes": []
+        },
+        {
+          "name": "getParent",
+          "parameterTypes": []
+        },
+        {
+          "name": "getPlatformClassLoader",
+          "parameterTypes": []
+        },
+        {
+          "name": "getResource",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getResources",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getSystemClassLoader",
+          "parameterTypes": []
+        },
+        {
+          "name": "getSystemResource",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getSystemResourceAsStream",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getSystemResources",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getUnnamedModule",
+          "parameterTypes": []
+        },
+        {
+          "name": "isRegisteredAsParallelCapable",
+          "parameterTypes": []
+        },
+        {
+          "name": "loadClass",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "resources",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setClassAssertionStatus",
+          "parameterTypes": [
+            "java.lang.String",
+            "boolean"
+          ]
+        },
+        {
+          "name": "setDefaultAssertionStatus",
+          "parameterTypes": [
+            "boolean"
+          ]
+        },
+        {
+          "name": "setPackageAssertionStatus",
+          "parameterTypes": [
+            "java.lang.String",
+            "boolean"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "java.net.URLClassLoader",
+      "condition": {
+        "typeReached": "org.springframework.boot.loader.launch.LaunchedClassLoader"
+      },
+      "methods": [
+        {
+          "name": "getResourceAsStream",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getURLs",
+          "parameterTypes": []
+        },
+        {
+          "name": "newInstance",
+          "parameterTypes": [
+            "java.net.URL[]",
+            "java.lang.ClassLoader"
+          ]
+        },
+        {
+          "name": "newInstance",
+          "parameterTypes": [
+            "java.net.URL[]"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "java.util.Enumeration",
+      "condition": {
+        "typeReached": "org.springframework.boot.loader.launch.LaunchedClassLoader"
+      },
+      "methods": [
+        {
+          "name": "asIterator",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "java.util.zip.ZipConstants",
+      "fields": [
+        {
+          "name": "CENATT"
+        },
+        {
+          "name": "CENATX"
+        },
+        {
+          "name": "CENCOM"
+        },
+        {
+          "name": "CENCRC"
+        },
+        {
+          "name": "CENDSK"
+        },
+        {
+          "name": "CENEXT"
+        },
+        {
+          "name": "CENFLG"
+        },
+        {
+          "name": "CENHDR"
+        },
+        {
+          "name": "CENHOW"
+        },
+        {
+          "name": "CENLEN"
+        },
+        {
+          "name": "CENNAM"
+        },
+        {
+          "name": "CENOFF"
+        },
+        {
+          "name": "CENSIG"
+        },
+        {
+          "name": "CENSIZ"
+        },
+        {
+          "name": "CENTIM"
+        },
+        {
+          "name": "CENVEM"
+        },
+        {
+          "name": "CENVER"
+        },
+        {
+          "name": "ENDCOM"
+        },
+        {
+          "name": "ENDHDR"
+        },
+        {
+          "name": "ENDOFF"
+        },
+        {
+          "name": "ENDSIG"
+        },
+        {
+          "name": "ENDSIZ"
+        },
+        {
+          "name": "ENDSUB"
+        },
+        {
+          "name": "ENDTOT"
+        },
+        {
+          "name": "EXTCRC"
+        },
+        {
+          "name": "EXTHDR"
+        },
+        {
+          "name": "EXTLEN"
+        },
+        {
+          "name": "EXTSIG"
+        },
+        {
+          "name": "EXTSIZ"
+        },
+        {
+          "name": "LOCCRC"
+        },
+        {
+          "name": "LOCEXT"
+        },
+        {
+          "name": "LOCFLG"
+        },
+        {
+          "name": "LOCHDR"
+        },
+        {
+          "name": "LOCHOW"
+        },
+        {
+          "name": "LOCLEN"
+        },
+        {
+          "name": "LOCNAM"
+        },
+        {
+          "name": "LOCSIG"
+        },
+        {
+          "name": "LOCSIZ"
+        },
+        {
+          "name": "LOCTIM"
+        },
+        {
+          "name": "LOCVER"
+        }
+      ]
+    },
+    {
+      "type": "java.util.zip.ZipEntry",
+      "fields": [
+        {
+          "name": "DEFLATED"
+        },
+        {
+          "name": "STORED"
+        }
+      ],
+      "methods": [
+        {
+          "name": "getComment",
+          "parameterTypes": []
+        },
+        {
+          "name": "getCompressedSize",
+          "parameterTypes": []
+        },
+        {
+          "name": "getCrc",
+          "parameterTypes": []
+        },
+        {
+          "name": "getCreationTime",
+          "parameterTypes": []
+        },
+        {
+          "name": "getExtra",
+          "parameterTypes": []
+        },
+        {
+          "name": "getLastAccessTime",
+          "parameterTypes": []
+        },
+        {
+          "name": "getLastModifiedTime",
+          "parameterTypes": []
+        },
+        {
+          "name": "getTime",
+          "parameterTypes": []
+        },
+        {
+          "name": "getTimeLocal",
+          "parameterTypes": []
+        },
+        {
+          "name": "setComment",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setCompressedSize",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "setCrc",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "setCreationTime",
+          "parameterTypes": [
+            "java.nio.file.attribute.FileTime"
+          ]
+        },
+        {
+          "name": "setLastAccessTime",
+          "parameterTypes": [
+            "java.nio.file.attribute.FileTime"
+          ]
+        },
+        {
+          "name": "setLastModifiedTime",
+          "parameterTypes": [
+            "java.nio.file.attribute.FileTime"
+          ]
+        },
+        {
+          "name": "setTime",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "setTimeLocal",
+          "parameterTypes": [
+            "java.time.LocalDateTime"
+          ]
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
       "type": "org.miaixz.bus.shade.beans.Builder",
       "methods": [
         {
@@ -437,6 +814,9 @@
         },
         {
           "name": "version"
+        },
+        {
+          "name": "isHump"
         }
       ],
       "methods": [
@@ -717,6 +1097,206 @@
           "name": "setVersion",
           "parameterTypes": [
             "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.shade.safety.Builder",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "absolutize",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "all",
+          "parameterTypes": []
+        },
+        {
+          "name": "all",
+          "parameterTypes": [
+            "java.util.Collection"
+          ]
+        },
+        {
+          "name": "and",
+          "parameterTypes": []
+        },
+        {
+          "name": "and",
+          "parameterTypes": [
+            "java.util.Collection"
+          ]
+        },
+        {
+          "name": "any",
+          "parameterTypes": []
+        },
+        {
+          "name": "any",
+          "parameterTypes": [
+            "java.util.Collection"
+          ]
+        },
+        {
+          "name": "close",
+          "parameterTypes": [
+            "java.io.Closeable"
+          ]
+        },
+        {
+          "name": "close",
+          "parameterTypes": [
+            "java.io.Closeable",
+            "boolean"
+          ]
+        },
+        {
+          "name": "delete",
+          "parameterTypes": [
+            "java.io.File"
+          ]
+        },
+        {
+          "name": "delete",
+          "parameterTypes": [
+            "java.io.File",
+            "boolean"
+          ]
+        },
+        {
+          "name": "isAbsolute",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "isRelative",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "key",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "key",
+          "parameterTypes": [
+            "java.lang.String",
+            "int",
+            "int",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "key",
+          "parameterTypes": [
+            "java.lang.String",
+            "int",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "key",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "normalize",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "not",
+          "parameterTypes": [
+            "org.miaixz.bus.shade.safety.Complex"
+          ]
+        },
+        {
+          "name": "or",
+          "parameterTypes": []
+        },
+        {
+          "name": "or",
+          "parameterTypes": [
+            "java.util.Collection"
+          ]
+        },
+        {
+          "name": "readln",
+          "parameterTypes": [
+            "java.io.InputStream"
+          ]
+        },
+        {
+          "name": "removeKey",
+          "parameterTypes": [
+            "java.util.jar.Attributes"
+          ]
+        },
+        {
+          "name": "retainKey",
+          "parameterTypes": [
+            "org.miaixz.bus.shade.safety.algorithm.Key",
+            "java.util.jar.Attributes"
+          ]
+        },
+        {
+          "name": "transfer",
+          "parameterTypes": [
+            "java.io.InputStream",
+            "java.io.File"
+          ]
+        },
+        {
+          "name": "transfer",
+          "parameterTypes": [
+            "java.io.InputStream",
+            "java.io.OutputStream"
+          ]
+        },
+        {
+          "name": "transfer",
+          "parameterTypes": [
+            "java.io.Reader",
+            "java.io.File"
+          ]
+        },
+        {
+          "name": "transfer",
+          "parameterTypes": [
+            "java.io.Reader",
+            "java.io.Writer"
+          ]
+        },
+        {
+          "name": "writeln",
+          "parameterTypes": [
+            "java.io.OutputStream",
+            "byte[]"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.shade.safety.Launcher",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String[]"
           ]
         }
       ]
@@ -1139,11 +1719,7 @@
       "condition": {
         "typeReached": "org.springframework.boot.loader.launch.LaunchedClassLoader"
       },
-      "fields": [
-        {
-          "name": "bootURLHandler"
-        }
-      ],
+      "fields": [],
       "methods": [
         {
           "name": "<init>",
@@ -1172,37 +1748,6 @@
           "parameterTypes": [
             "java.lang.String"
           ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.shade.safety.boot.BootClassLoader$XBootEnumeration",
-      "condition": {
-        "typeReached": "org.springframework.boot.loader.launch.LaunchedClassLoader"
-      },
-      "fields": [
-        {
-          "name": "enumeration"
-        },
-        {
-          "name": "this$0"
-        }
-      ],
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "org.miaixz.bus.shade.safety.boot.BootClassLoader",
-            "java.util.Enumeration"
-          ]
-        },
-        {
-          "name": "hasMoreElements",
-          "parameterTypes": []
-        },
-        {
-          "name": "nextElement",
-          "parameterTypes": []
         }
       ]
     },
@@ -2084,195 +2629,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.shade.safety.Builder",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "absolutize",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "all",
-          "parameterTypes": []
-        },
-        {
-          "name": "all",
-          "parameterTypes": [
-            "java.util.Collection"
-          ]
-        },
-        {
-          "name": "and",
-          "parameterTypes": []
-        },
-        {
-          "name": "and",
-          "parameterTypes": [
-            "java.util.Collection"
-          ]
-        },
-        {
-          "name": "any",
-          "parameterTypes": []
-        },
-        {
-          "name": "any",
-          "parameterTypes": [
-            "java.util.Collection"
-          ]
-        },
-        {
-          "name": "close",
-          "parameterTypes": [
-            "java.io.Closeable"
-          ]
-        },
-        {
-          "name": "close",
-          "parameterTypes": [
-            "java.io.Closeable",
-            "boolean"
-          ]
-        },
-        {
-          "name": "delete",
-          "parameterTypes": [
-            "java.io.File"
-          ]
-        },
-        {
-          "name": "delete",
-          "parameterTypes": [
-            "java.io.File",
-            "boolean"
-          ]
-        },
-        {
-          "name": "isAbsolute",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "isRelative",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "key",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "key",
-          "parameterTypes": [
-            "java.lang.String",
-            "int",
-            "int",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "key",
-          "parameterTypes": [
-            "java.lang.String",
-            "int",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "key",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "normalize",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "not",
-          "parameterTypes": [
-            "org.miaixz.bus.shade.safety.Complex"
-          ]
-        },
-        {
-          "name": "or",
-          "parameterTypes": []
-        },
-        {
-          "name": "or",
-          "parameterTypes": [
-            "java.util.Collection"
-          ]
-        },
-        {
-          "name": "readln",
-          "parameterTypes": [
-            "java.io.InputStream"
-          ]
-        },
-        {
-          "name": "removeKey",
-          "parameterTypes": [
-            "java.util.jar.Attributes"
-          ]
-        },
-        {
-          "name": "retainKey",
-          "parameterTypes": [
-            "org.miaixz.bus.shade.safety.algorithm.Key",
-            "java.util.jar.Attributes"
-          ]
-        },
-        {
-          "name": "transfer",
-          "parameterTypes": [
-            "java.io.InputStream",
-            "java.io.File"
-          ]
-        },
-        {
-          "name": "transfer",
-          "parameterTypes": [
-            "java.io.InputStream",
-            "java.io.OutputStream"
-          ]
-        },
-        {
-          "name": "transfer",
-          "parameterTypes": [
-            "java.io.Reader",
-            "java.io.File"
-          ]
-        },
-        {
-          "name": "transfer",
-          "parameterTypes": [
-            "java.io.Reader",
-            "java.io.Writer"
-          ]
-        },
-        {
-          "name": "writeln",
-          "parameterTypes": [
-            "java.io.OutputStream",
-            "byte[]"
-          ]
-        }
-      ]
-    },
-    {
       "type": "org.miaixz.bus.shade.safety.complex.AllComplex",
       "methods": [
         {
@@ -2394,17 +2750,6 @@
           "name": "on",
           "parameterTypes": [
             "java.lang.Object"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.shade.safety.Launcher",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String[]"
           ]
         }
       ]
@@ -3099,6 +3444,165 @@
       ]
     },
     {
+      "type": "org.miaixz.bus.shade.screw.dialect.DatabaseQueryFactory",
+      "fields": [
+        {
+          "name": "dataSource"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "javax.sql.DataSource"
+          ]
+        },
+        {
+          "name": "getDataSource",
+          "parameterTypes": []
+        },
+        {
+          "name": "newInstance",
+          "parameterTypes": []
+        },
+        {
+          "name": "setDataSource",
+          "parameterTypes": [
+            "javax.sql.DataSource"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.shade.screw.dialect.DatabaseType",
+      "fields": [
+        {
+          "name": "CACHEDB"
+        },
+        {
+          "name": "DB2"
+        },
+        {
+          "name": "desc"
+        },
+        {
+          "name": "H2"
+        },
+        {
+          "name": "implClass"
+        },
+        {
+          "name": "MARIADB"
+        },
+        {
+          "name": "MYSQL"
+        },
+        {
+          "name": "name"
+        },
+        {
+          "name": "ORACLE"
+        },
+        {
+          "name": "OTHER"
+        },
+        {
+          "name": "POSTGRE_SQL"
+        },
+        {
+          "name": "SQL_SERVER"
+        },
+        {
+          "name": "SQL_SERVER2005"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "int",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.Class"
+          ]
+        },
+        {
+          "name": "getDbType",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getDesc",
+          "parameterTypes": []
+        },
+        {
+          "name": "getImplClass",
+          "parameterTypes": []
+        },
+        {
+          "name": "getName",
+          "parameterTypes": []
+        },
+        {
+          "name": "getType",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "valueOf",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "values",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.shade.screw.dialect.OtherDataBaseQuery",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "javax.sql.DataSource"
+          ]
+        },
+        {
+          "name": "getDataBase",
+          "parameterTypes": []
+        },
+        {
+          "name": "getPrimaryKeys",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getTableColumns",
+          "parameterTypes": []
+        },
+        {
+          "name": "getTableColumns",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getTables",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
       "type": "org.miaixz.bus.shade.screw.dialect.cachedb.CacheDbColumn",
       "fields": [
         {
@@ -3461,30 +3965,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.shade.screw.dialect.cachedb.CacheDbDatabase",
-      "fields": [
-        {
-          "name": "database"
-        }
-      ],
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "getDatabase",
-          "parameterTypes": []
-        },
-        {
-          "name": "setDatabase",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        }
-      ]
-    },
-    {
       "type": "org.miaixz.bus.shade.screw.dialect.cachedb.CacheDbDataBaseQuery",
       "methods": [
         {
@@ -3520,6 +4000,30 @@
         {
           "name": "getTables",
           "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.shade.screw.dialect.cachedb.CacheDbDatabase",
+      "fields": [
+        {
+          "name": "database"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "getDatabase",
+          "parameterTypes": []
+        },
+        {
+          "name": "setDatabase",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
         }
       ]
     },
@@ -3754,130 +4258,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.shade.screw.dialect.DatabaseQueryFactory",
-      "fields": [
-        {
-          "name": "dataSource"
-        }
-      ],
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "javax.sql.DataSource"
-          ]
-        },
-        {
-          "name": "getDataSource",
-          "parameterTypes": []
-        },
-        {
-          "name": "newInstance",
-          "parameterTypes": []
-        },
-        {
-          "name": "setDataSource",
-          "parameterTypes": [
-            "javax.sql.DataSource"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.shade.screw.dialect.DatabaseType",
-      "fields": [
-        {
-          "name": "CACHEDB"
-        },
-        {
-          "name": "DB2"
-        },
-        {
-          "name": "desc"
-        },
-        {
-          "name": "H2"
-        },
-        {
-          "name": "implClass"
-        },
-        {
-          "name": "MARIADB"
-        },
-        {
-          "name": "MYSQL"
-        },
-        {
-          "name": "name"
-        },
-        {
-          "name": "ORACLE"
-        },
-        {
-          "name": "OTHER"
-        },
-        {
-          "name": "POSTGRE_SQL"
-        },
-        {
-          "name": "SQL_SERVER"
-        },
-        {
-          "name": "SQL_SERVER2005"
-        }
-      ],
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "int",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.Class"
-          ]
-        },
-        {
-          "name": "getDbType",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "getDesc",
-          "parameterTypes": []
-        },
-        {
-          "name": "getImplClass",
-          "parameterTypes": []
-        },
-        {
-          "name": "getName",
-          "parameterTypes": []
-        },
-        {
-          "name": "getType",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "valueOf",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "values",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
       "type": "org.miaixz.bus.shade.screw.dialect.db2.Db2DataBaseQuery",
       "methods": [
         {
@@ -3923,6 +4303,45 @@
         },
         {
           "name": "getDataBase",
+          "parameterTypes": []
+        },
+        {
+          "name": "getPrimaryKeys",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getTableColumns",
+          "parameterTypes": []
+        },
+        {
+          "name": "getTableColumns",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getTables",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.shade.screw.dialect.mariadb.MariaDbDataBaseQuery",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "javax.sql.DataSource"
+          ]
+        },
+        {
+          "name": "getDataBase",
+          "parameterTypes": []
+        },
+        {
+          "name": "getPrimaryKeys",
           "parameterTypes": []
         },
         {
@@ -4330,45 +4749,6 @@
           "parameterTypes": [
             "java.lang.String"
           ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.shade.screw.dialect.mariadb.MariaDbDataBaseQuery",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "javax.sql.DataSource"
-          ]
-        },
-        {
-          "name": "getDataBase",
-          "parameterTypes": []
-        },
-        {
-          "name": "getPrimaryKeys",
-          "parameterTypes": []
-        },
-        {
-          "name": "getPrimaryKeys",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "getTableColumns",
-          "parameterTypes": []
-        },
-        {
-          "name": "getTableColumns",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "getTables",
-          "parameterTypes": []
         }
       ]
     },
@@ -4965,30 +5345,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.shade.screw.dialect.mysql.MySqlDatabase",
-      "fields": [
-        {
-          "name": "database"
-        }
-      ],
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "getDatabase",
-          "parameterTypes": []
-        },
-        {
-          "name": "setDatabase",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        }
-      ]
-    },
-    {
       "type": "org.miaixz.bus.shade.screw.dialect.mysql.MySqlDataBaseQuery",
       "methods": [
         {
@@ -5024,6 +5380,30 @@
         {
           "name": "getTables",
           "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.shade.screw.dialect.mysql.MySqlDatabase",
+      "fields": [
+        {
+          "name": "database"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "getDatabase",
+          "parameterTypes": []
+        },
+        {
+          "name": "setDatabase",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
         }
       ]
     },
@@ -5620,30 +6000,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.shade.screw.dialect.oracle.OracleDatabase",
-      "fields": [
-        {
-          "name": "database"
-        }
-      ],
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "getDatabase",
-          "parameterTypes": []
-        },
-        {
-          "name": "setDatabase",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        }
-      ]
-    },
-    {
       "type": "org.miaixz.bus.shade.screw.dialect.oracle.OracleDataBaseQuery",
       "methods": [
         {
@@ -5683,6 +6039,30 @@
         {
           "name": "isDda",
           "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.shade.screw.dialect.oracle.OracleDatabase",
+      "fields": [
+        {
+          "name": "database"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "getDatabase",
+          "parameterTypes": []
+        },
+        {
+          "name": "setDatabase",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
         }
       ]
     },
@@ -5835,41 +6215,6 @@
           "parameterTypes": [
             "java.lang.String"
           ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.shade.screw.dialect.OtherDataBaseQuery",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "javax.sql.DataSource"
-          ]
-        },
-        {
-          "name": "getDataBase",
-          "parameterTypes": []
-        },
-        {
-          "name": "getPrimaryKeys",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "getTableColumns",
-          "parameterTypes": []
-        },
-        {
-          "name": "getTableColumns",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "getTables",
-          "parameterTypes": []
         }
       ]
     },
@@ -6236,30 +6581,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.shade.screw.dialect.postgresql.PostgreSqlDatabase",
-      "fields": [
-        {
-          "name": "database"
-        }
-      ],
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "getDatabase",
-          "parameterTypes": []
-        },
-        {
-          "name": "setDatabase",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        }
-      ]
-    },
-    {
       "type": "org.miaixz.bus.shade.screw.dialect.postgresql.PostgreSqlDataBaseQuery",
       "methods": [
         {
@@ -6295,6 +6616,30 @@
         {
           "name": "getTables",
           "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.shade.screw.dialect.postgresql.PostgreSqlDatabase",
+      "fields": [
+        {
+          "name": "database"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "getDatabase",
+          "parameterTypes": []
+        },
+        {
+          "name": "setDatabase",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
         }
       ]
     },
@@ -6891,30 +7236,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.shade.screw.dialect.sqlserver.SqlServerDatabase",
-      "fields": [
-        {
-          "name": "database"
-        }
-      ],
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "getDatabase",
-          "parameterTypes": []
-        },
-        {
-          "name": "setDatabase",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        }
-      ]
-    },
-    {
       "type": "org.miaixz.bus.shade.screw.dialect.sqlserver.SqlServerDataBaseQuery",
       "methods": [
         {
@@ -6950,6 +7271,30 @@
         {
           "name": "getTables",
           "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.shade.screw.dialect.sqlserver.SqlServerDatabase",
+      "fields": [
+        {
+          "name": "database"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "getDatabase",
+          "parameterTypes": []
+        },
+        {
+          "name": "setDatabase",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
         }
       ]
     },
@@ -7747,43 +8092,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.shade.screw.metadata.DatabaseSchema",
-      "fields": [
-        {
-          "name": "database"
-        },
-        {
-          "name": "tables"
-        }
-      ],
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "getDatabase",
-          "parameterTypes": []
-        },
-        {
-          "name": "getTables",
-          "parameterTypes": []
-        },
-        {
-          "name": "setDatabase",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setTables",
-          "parameterTypes": [
-            "java.util.List"
-          ]
-        }
-      ]
-    },
-    {
       "type": "org.miaixz.bus.shade.screw.metadata.DataSchema",
       "fields": [
         {
@@ -7871,6 +8179,43 @@
           "name": "setVersion",
           "parameterTypes": [
             "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.shade.screw.metadata.DatabaseSchema",
+      "fields": [
+        {
+          "name": "database"
+        },
+        {
+          "name": "tables"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "getDatabase",
+          "parameterTypes": []
+        },
+        {
+          "name": "getTables",
+          "parameterTypes": []
+        },
+        {
+          "name": "setDatabase",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setTables",
+          "parameterTypes": [
+            "java.util.List"
           ]
         }
       ]
@@ -8148,383 +8493,6 @@
         },
         {
           "name": "self",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
-      "type": "java.lang.ClassLoader",
-      "condition": {
-        "typeReached": "org.springframework.boot.loader.launch.LaunchedClassLoader"
-      },
-      "methods": [
-        {
-          "name": "clearAssertionStatus",
-          "parameterTypes": []
-        },
-        {
-          "name": "getDefinedPackage",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "getDefinedPackages",
-          "parameterTypes": []
-        },
-        {
-          "name": "getName",
-          "parameterTypes": []
-        },
-        {
-          "name": "getParent",
-          "parameterTypes": []
-        },
-        {
-          "name": "getPlatformClassLoader",
-          "parameterTypes": []
-        },
-        {
-          "name": "getResource",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "getResources",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "getSystemClassLoader",
-          "parameterTypes": []
-        },
-        {
-          "name": "getSystemResource",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "getSystemResourceAsStream",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "getSystemResources",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "getUnnamedModule",
-          "parameterTypes": []
-        },
-        {
-          "name": "isRegisteredAsParallelCapable",
-          "parameterTypes": []
-        },
-        {
-          "name": "loadClass",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "resources",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setClassAssertionStatus",
-          "parameterTypes": [
-            "java.lang.String",
-            "boolean"
-          ]
-        },
-        {
-          "name": "setDefaultAssertionStatus",
-          "parameterTypes": [
-            "boolean"
-          ]
-        },
-        {
-          "name": "setPackageAssertionStatus",
-          "parameterTypes": [
-            "java.lang.String",
-            "boolean"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "java.net.URLClassLoader",
-      "condition": {
-        "typeReached": "org.springframework.boot.loader.launch.LaunchedClassLoader"
-      },
-      "methods": [
-        {
-          "name": "getResourceAsStream",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "getURLs",
-          "parameterTypes": []
-        },
-        {
-          "name": "newInstance",
-          "parameterTypes": [
-            "java.net.URL[]",
-            "java.lang.ClassLoader"
-          ]
-        },
-        {
-          "name": "newInstance",
-          "parameterTypes": [
-            "java.net.URL[]"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "java.util.Enumeration",
-      "condition": {
-        "typeReached": "org.springframework.boot.loader.launch.LaunchedClassLoader"
-      },
-      "methods": [
-        {
-          "name": "asIterator",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
-      "type": "java.util.zip.ZipConstants",
-      "fields": [
-        {
-          "name": "CENATT"
-        },
-        {
-          "name": "CENATX"
-        },
-        {
-          "name": "CENCOM"
-        },
-        {
-          "name": "CENCRC"
-        },
-        {
-          "name": "CENDSK"
-        },
-        {
-          "name": "CENEXT"
-        },
-        {
-          "name": "CENFLG"
-        },
-        {
-          "name": "CENHDR"
-        },
-        {
-          "name": "CENHOW"
-        },
-        {
-          "name": "CENLEN"
-        },
-        {
-          "name": "CENNAM"
-        },
-        {
-          "name": "CENOFF"
-        },
-        {
-          "name": "CENSIG"
-        },
-        {
-          "name": "CENSIZ"
-        },
-        {
-          "name": "CENTIM"
-        },
-        {
-          "name": "CENVEM"
-        },
-        {
-          "name": "CENVER"
-        },
-        {
-          "name": "ENDCOM"
-        },
-        {
-          "name": "ENDHDR"
-        },
-        {
-          "name": "ENDOFF"
-        },
-        {
-          "name": "ENDSIG"
-        },
-        {
-          "name": "ENDSIZ"
-        },
-        {
-          "name": "ENDSUB"
-        },
-        {
-          "name": "ENDTOT"
-        },
-        {
-          "name": "EXTCRC"
-        },
-        {
-          "name": "EXTHDR"
-        },
-        {
-          "name": "EXTLEN"
-        },
-        {
-          "name": "EXTSIG"
-        },
-        {
-          "name": "EXTSIZ"
-        },
-        {
-          "name": "LOCCRC"
-        },
-        {
-          "name": "LOCEXT"
-        },
-        {
-          "name": "LOCFLG"
-        },
-        {
-          "name": "LOCHDR"
-        },
-        {
-          "name": "LOCHOW"
-        },
-        {
-          "name": "LOCLEN"
-        },
-        {
-          "name": "LOCNAM"
-        },
-        {
-          "name": "LOCSIG"
-        },
-        {
-          "name": "LOCSIZ"
-        },
-        {
-          "name": "LOCTIM"
-        },
-        {
-          "name": "LOCVER"
-        }
-      ]
-    },
-    {
-      "type": "java.util.zip.ZipEntry",
-      "fields": [
-        {
-          "name": "DEFLATED"
-        },
-        {
-          "name": "STORED"
-        }
-      ],
-      "methods": [
-        {
-          "name": "getComment",
-          "parameterTypes": []
-        },
-        {
-          "name": "getCompressedSize",
-          "parameterTypes": []
-        },
-        {
-          "name": "getCrc",
-          "parameterTypes": []
-        },
-        {
-          "name": "getCreationTime",
-          "parameterTypes": []
-        },
-        {
-          "name": "getExtra",
-          "parameterTypes": []
-        },
-        {
-          "name": "getLastAccessTime",
-          "parameterTypes": []
-        },
-        {
-          "name": "getLastModifiedTime",
-          "parameterTypes": []
-        },
-        {
-          "name": "getTime",
-          "parameterTypes": []
-        },
-        {
-          "name": "getTimeLocal",
-          "parameterTypes": []
-        },
-        {
-          "name": "setComment",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setCompressedSize",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "setCrc",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "setCreationTime",
-          "parameterTypes": [
-            "java.nio.file.attribute.FileTime"
-          ]
-        },
-        {
-          "name": "setLastAccessTime",
-          "parameterTypes": [
-            "java.nio.file.attribute.FileTime"
-          ]
-        },
-        {
-          "name": "setLastModifiedTime",
-          "parameterTypes": [
-            "java.nio.file.attribute.FileTime"
-          ]
-        },
-        {
-          "name": "setTime",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "setTimeLocal",
-          "parameterTypes": [
-            "java.time.LocalDateTime"
-          ]
-        },
-        {
-          "name": "toString",
           "parameterTypes": []
         }
       ]

@@ -28,7 +28,6 @@ import org.miaixz.bus.vortex.Router;
 import org.miaixz.bus.vortex.routing.rest.RestExecutor;
 
 import reactor.core.publisher.Mono;
-import reactor.util.annotation.NonNull;
 
 /**
  * A {@link Router} implementation for forwarding requests to standard RESTful HTTP/HTTPS downstream services.
@@ -68,7 +67,6 @@ public class RestRouter implements Router<ServerRequest, ServerResponse> {
      * @param input The ServerRequest object (strongly typed)
      * @return A {@code Mono<ServerResponse>} containing the ServerResponse from the downstream service.
      */
-    @NonNull
     @Override
     public Mono<ServerResponse> route(ServerRequest input) {
         ServerRequest request = input;

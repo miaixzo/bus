@@ -45,6 +45,11 @@ public record SingleSignOnServiceEndpoint(SamlBinding binding, String location, 
     /**
      * Validates EndpointType URI fields and takes deep immutable ownership of extensions.
      *
+     * @param binding          required binding URI
+     * @param location         required endpoint URI
+     * @param responseLocation optional response endpoint URI
+     * @param extensions       ordered foreign child elements
+     * @param attributes       ordered foreign attributes keyed by expanded QName
      * @throws IllegalArgumentException if a component, item, key, or value is {@code null}
      * @throws ValidateException        if a URI or extension value is invalid
      */

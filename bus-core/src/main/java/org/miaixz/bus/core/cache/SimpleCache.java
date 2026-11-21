@@ -291,6 +291,7 @@ public class SimpleCache<K, V> implements Iterable<Map.Entry<K, V>>, Serializabl
                             lock.writeLock().unlock();
                         }
                     }
+
                 };
                 return last;
             }
@@ -318,6 +319,7 @@ public class SimpleCache<K, V> implements Iterable<Map.Entry<K, V>>, Serializabl
                     lock.writeLock().unlock();
                 }
             }
+
         };
     }
 
@@ -467,6 +469,7 @@ public class SimpleCache<K, V> implements Iterable<Map.Entry<K, V>>, Serializabl
         public Condition newCondition() {
             return delegate.newCondition();
         }
+
     }
 
     /**

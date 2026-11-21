@@ -1,13 +1,191 @@
 {
   "reflection": [
     {
-      "type": "org.miaixz.bus.fabric.runtime.resource.Cancellation",
-      "fields": [
+      "type": "org.miaixz.bus.fabric.Headers",
+      "methods": [
         {
-          "name": "callbacks"
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String[]"
+          ]
         },
         {
-          "name": "state"
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String[]",
+            "boolean"
+          ]
+        },
+        {
+          "name": "asciiEqualsIgnoreCase",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "asciiLowerHash",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "asMap",
+          "parameterTypes": []
+        },
+        {
+          "name": "builder",
+          "parameterTypes": []
+        },
+        {
+          "name": "buildMapSnapshot",
+          "parameterTypes": []
+        },
+        {
+          "name": "contains",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "contentLength",
+          "parameterTypes": []
+        },
+        {
+          "name": "empty",
+          "parameterTypes": []
+        },
+        {
+          "name": "get",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "isTokenCharacter",
+          "parameterTypes": [
+            "char"
+          ]
+        },
+        {
+          "name": "name",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "newBuilder",
+          "parameterTypes": []
+        },
+        {
+          "name": "of",
+          "parameterTypes": [
+            "java.lang.String[]"
+          ]
+        },
+        {
+          "name": "of",
+          "parameterTypes": [
+            "java.util.Map"
+          ]
+        },
+        {
+          "name": "size",
+          "parameterTypes": []
+        },
+        {
+          "name": "validateName",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "validateValue",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "value",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "values",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "with",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "without",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.fabric.Headers$Builder",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.fabric.Headers"
+          ]
+        },
+        {
+          "name": "add",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "build",
+          "parameterTypes": []
+        },
+        {
+          "name": "buildOrReuse",
+          "parameterTypes": [
+            "org.miaixz.bus.fabric.Headers"
+          ]
+        },
+        {
+          "name": "ensure",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "remove",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "removeAll",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "set",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
         }
       ]
     },
@@ -773,195 +951,6 @@
         {
           "name": "reset",
           "parameterTypes": []
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.fabric.Headers",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String[]"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String[]",
-            "boolean"
-          ]
-        },
-        {
-          "name": "asciiEqualsIgnoreCase",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "asciiLowerHash",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "asMap",
-          "parameterTypes": []
-        },
-        {
-          "name": "builder",
-          "parameterTypes": []
-        },
-        {
-          "name": "buildMapSnapshot",
-          "parameterTypes": []
-        },
-        {
-          "name": "contains",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "contentLength",
-          "parameterTypes": []
-        },
-        {
-          "name": "empty",
-          "parameterTypes": []
-        },
-        {
-          "name": "get",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "isTokenCharacter",
-          "parameterTypes": [
-            "char"
-          ]
-        },
-        {
-          "name": "name",
-          "parameterTypes": [
-            "int"
-          ]
-        },
-        {
-          "name": "newBuilder",
-          "parameterTypes": []
-        },
-        {
-          "name": "of",
-          "parameterTypes": [
-            "java.lang.String[]"
-          ]
-        },
-        {
-          "name": "of",
-          "parameterTypes": [
-            "java.util.Map"
-          ]
-        },
-        {
-          "name": "size",
-          "parameterTypes": []
-        },
-        {
-          "name": "validateName",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "validateValue",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "value",
-          "parameterTypes": [
-            "int"
-          ]
-        },
-        {
-          "name": "values",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "with",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "without",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.fabric.Headers$Builder",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "org.miaixz.bus.fabric.Headers"
-          ]
-        },
-        {
-          "name": "add",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "build",
-          "parameterTypes": []
-        },
-        {
-          "name": "buildOrReuse",
-          "parameterTypes": [
-            "org.miaixz.bus.fabric.Headers"
-          ]
-        },
-        {
-          "name": "ensure",
-          "parameterTypes": [
-            "int"
-          ]
-        },
-        {
-          "name": "remove",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "removeAll",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "set",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String"
-          ]
         }
       ]
     },
@@ -2224,6 +2213,956 @@
           "name": "secure",
           "parameterTypes": [
             "boolean"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.fabric.protocol.http.HttpRequest",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.core.net.Http$Method",
+            "org.miaixz.bus.fabric.UnoUrl",
+            "org.miaixz.bus.fabric.Headers",
+            "org.miaixz.bus.fabric.protocol.http.body.PayloadBody",
+            "java.util.Map",
+            "boolean",
+            "org.miaixz.bus.fabric.network.proxy.ProxyPlan",
+            "org.miaixz.bus.fabric.Timeout"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.core.net.Http$Method",
+            "org.miaixz.bus.fabric.UnoUrl",
+            "org.miaixz.bus.fabric.Headers",
+            "org.miaixz.bus.fabric.protocol.http.body.PayloadBody",
+            "java.util.Map",
+            "org.miaixz.bus.fabric.network.proxy.ProxyPlan",
+            "org.miaixz.bus.fabric.Timeout"
+          ]
+        },
+        {
+          "name": "authority",
+          "parameterTypes": []
+        },
+        {
+          "name": "body",
+          "parameterTypes": []
+        },
+        {
+          "name": "bodyLength",
+          "parameterTypes": []
+        },
+        {
+          "name": "builder",
+          "parameterTypes": []
+        },
+        {
+          "name": "cacheControl",
+          "parameterTypes": []
+        },
+        {
+          "name": "headers",
+          "parameterTypes": []
+        },
+        {
+          "name": "immutableTags",
+          "parameterTypes": [
+            "java.util.Map"
+          ]
+        },
+        {
+          "name": "isHttps",
+          "parameterTypes": []
+        },
+        {
+          "name": "method",
+          "parameterTypes": []
+        },
+        {
+          "name": "methodText",
+          "parameterTypes": []
+        },
+        {
+          "name": "newBuilder",
+          "parameterTypes": []
+        },
+        {
+          "name": "proxy",
+          "parameterTypes": []
+        },
+        {
+          "name": "replayable",
+          "parameterTypes": []
+        },
+        {
+          "name": "requestTarget",
+          "parameterTypes": []
+        },
+        {
+          "name": "require",
+          "parameterTypes": [
+            "java.lang.Object",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "tag",
+          "parameterTypes": []
+        },
+        {
+          "name": "tag",
+          "parameterTypes": [
+            "java.lang.Class"
+          ]
+        },
+        {
+          "name": "timeout",
+          "parameterTypes": []
+        },
+        {
+          "name": "toBuilder",
+          "parameterTypes": []
+        },
+        {
+          "name": "url",
+          "parameterTypes": []
+        },
+        {
+          "name": "userAgent",
+          "parameterTypes": []
+        },
+        {
+          "name": "validateBodyPolicy",
+          "parameterTypes": [
+            "org.miaixz.bus.core.net.Http$Method",
+            "org.miaixz.bus.fabric.protocol.http.body.PayloadBody"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.fabric.protocol.http.HttpX",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.fabric.Context",
+            "org.miaixz.bus.fabric.protocol.http.HttpRequest",
+            "org.miaixz.bus.fabric.Callback",
+            "org.miaixz.bus.fabric.observe.EventObserver",
+            "org.miaixz.bus.fabric.Filter",
+            "org.miaixz.bus.fabric.guard.GuardRule"
+          ]
+        },
+        {
+          "name": "address",
+          "parameterTypes": []
+        },
+        {
+          "name": "builder",
+          "parameterTypes": [
+            "org.miaixz.bus.fabric.Context"
+          ]
+        },
+        {
+          "name": "call",
+          "parameterTypes": []
+        },
+        {
+          "name": "enqueue",
+          "parameterTypes": []
+        },
+        {
+          "name": "execute",
+          "parameterTypes": []
+        },
+        {
+          "name": "execute",
+          "parameterTypes": [
+            "org.miaixz.bus.fabric.runtime.resource.Cancellation"
+          ]
+        },
+        {
+          "name": "headers",
+          "parameterTypes": []
+        },
+        {
+          "name": "itinerary",
+          "parameterTypes": []
+        },
+        {
+          "name": "message",
+          "parameterTypes": [
+            "org.miaixz.bus.fabric.Payload"
+          ]
+        },
+        {
+          "name": "protocol",
+          "parameterTypes": []
+        },
+        {
+          "name": "request",
+          "parameterTypes": []
+        },
+        {
+          "name": "require",
+          "parameterTypes": [
+            "java.lang.Object",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "tag",
+          "parameterTypes": []
+        },
+        {
+          "name": "timeout",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.fabric.protocol.http.HttpX$Builder",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.fabric.Context"
+          ]
+        },
+        {
+          "name": "absolute",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "addressPolicy",
+          "parameterTypes": [
+            "org.miaixz.bus.fabric.guard.route.AddressPolicy"
+          ]
+        },
+        {
+          "name": "appendPathSegments",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "appendQuery",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "applyPath",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "base",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "body",
+          "parameterTypes": [
+            "byte[]"
+          ]
+        },
+        {
+          "name": "body",
+          "parameterTypes": [
+            "byte[]",
+            "org.miaixz.bus.core.net.MediaType"
+          ]
+        },
+        {
+          "name": "body",
+          "parameterTypes": [
+            "java.io.File"
+          ]
+        },
+        {
+          "name": "body",
+          "parameterTypes": [
+            "java.io.File",
+            "org.miaixz.bus.core.net.MediaType"
+          ]
+        },
+        {
+          "name": "body",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "body",
+          "parameterTypes": [
+            "java.lang.Object",
+            "org.miaixz.bus.fabric.codec.DataCodec"
+          ]
+        },
+        {
+          "name": "body",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "body",
+          "parameterTypes": [
+            "java.lang.String",
+            "org.miaixz.bus.core.net.MediaType"
+          ]
+        },
+        {
+          "name": "body",
+          "parameterTypes": [
+            "java.nio.file.Path"
+          ]
+        },
+        {
+          "name": "body",
+          "parameterTypes": [
+            "java.nio.file.Path",
+            "org.miaixz.bus.core.net.MediaType"
+          ]
+        },
+        {
+          "name": "body",
+          "parameterTypes": [
+            "org.miaixz.bus.core.io.source.Source",
+            "long"
+          ]
+        },
+        {
+          "name": "body",
+          "parameterTypes": [
+            "org.miaixz.bus.core.io.source.Source",
+            "long",
+            "org.miaixz.bus.core.net.MediaType"
+          ]
+        },
+        {
+          "name": "body",
+          "parameterTypes": [
+            "org.miaixz.bus.fabric.Payload"
+          ]
+        },
+        {
+          "name": "body",
+          "parameterTypes": [
+            "org.miaixz.bus.fabric.Payload",
+            "org.miaixz.bus.core.net.MediaType"
+          ]
+        },
+        {
+          "name": "body",
+          "parameterTypes": [
+            "org.miaixz.bus.fabric.codec.body.RequestBody"
+          ]
+        },
+        {
+          "name": "body",
+          "parameterTypes": [
+            "org.miaixz.bus.fabric.protocol.http.body.PayloadBody"
+          ]
+        },
+        {
+          "name": "build",
+          "parameterTypes": []
+        },
+        {
+          "name": "buildBody",
+          "parameterTypes": []
+        },
+        {
+          "name": "buildHeaders",
+          "parameterTypes": [
+            "org.miaixz.bus.fabric.protocol.http.body.PayloadBody",
+            "org.miaixz.bus.fabric.Headers"
+          ]
+        },
+        {
+          "name": "buildRequest",
+          "parameterTypes": []
+        },
+        {
+          "name": "buildUrl",
+          "parameterTypes": []
+        },
+        {
+          "name": "call",
+          "parameterTypes": []
+        },
+        {
+          "name": "callback",
+          "parameterTypes": [
+            "org.miaixz.bus.fabric.Callback"
+          ]
+        },
+        {
+          "name": "codec",
+          "parameterTypes": [
+            "org.miaixz.bus.fabric.codec.DataCodec"
+          ]
+        },
+        {
+          "name": "delete",
+          "parameterTypes": []
+        },
+        {
+          "name": "delete",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "directProxy",
+          "parameterTypes": []
+        },
+        {
+          "name": "encode",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "encoded",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "encoded",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "encoded",
+          "parameterTypes": [
+            "java.util.Map"
+          ]
+        },
+        {
+          "name": "encodedForm",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "encodedForm",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "enqueue",
+          "parameterTypes": []
+        },
+        {
+          "name": "ensureBodyMode",
+          "parameterTypes": [
+            "org.miaixz.bus.fabric.protocol.http.HttpX$BodyMode"
+          ]
+        },
+        {
+          "name": "execute",
+          "parameterTypes": []
+        },
+        {
+          "name": "executeText",
+          "parameterTypes": []
+        },
+        {
+          "name": "file",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.io.File"
+          ]
+        },
+        {
+          "name": "file",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "byte[]"
+          ]
+        },
+        {
+          "name": "file",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "byte[]",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "file",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.io.File"
+          ]
+        },
+        {
+          "name": "file",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "file",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "file",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "org.miaixz.bus.core.io.source.Source",
+            "long"
+          ]
+        },
+        {
+          "name": "file",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.nio.file.Path"
+          ]
+        },
+        {
+          "name": "file",
+          "parameterTypes": [
+            "java.nio.file.Path"
+          ]
+        },
+        {
+          "name": "filter",
+          "parameterTypes": [
+            "org.miaixz.bus.fabric.Filter"
+          ]
+        },
+        {
+          "name": "form",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "form",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "form",
+          "parameterTypes": [
+            "java.util.Map"
+          ]
+        },
+        {
+          "name": "get",
+          "parameterTypes": []
+        },
+        {
+          "name": "get",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "guard",
+          "parameterTypes": [
+            "org.miaixz.bus.fabric.guard.GuardRule"
+          ]
+        },
+        {
+          "name": "hasPathPlaceholder",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "head",
+          "parameterTypes": []
+        },
+        {
+          "name": "head",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "header",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "header",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "headers",
+          "parameterTypes": [
+            "java.util.Map"
+          ]
+        },
+        {
+          "name": "headers",
+          "parameterTypes": [
+            "org.miaixz.bus.fabric.Headers"
+          ]
+        },
+        {
+          "name": "id",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "inheritProxy",
+          "parameterTypes": []
+        },
+        {
+          "name": "json",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "media",
+          "parameterTypes": [
+            "org.miaixz.bus.core.net.MediaType"
+          ]
+        },
+        {
+          "name": "mergeHeaders",
+          "parameterTypes": [
+            "org.miaixz.bus.fabric.Headers"
+          ]
+        },
+        {
+          "name": "method",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "method",
+          "parameterTypes": [
+            "org.miaixz.bus.core.net.Http$Method"
+          ]
+        },
+        {
+          "name": "multipart",
+          "parameterTypes": []
+        },
+        {
+          "name": "observe",
+          "parameterTypes": [
+            "org.miaixz.bus.fabric.observe.EventObserver"
+          ]
+        },
+        {
+          "name": "param",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "param",
+          "parameterTypes": [
+            "java.util.Map"
+          ]
+        },
+        {
+          "name": "part",
+          "parameterTypes": [
+            "org.miaixz.bus.fabric.protocol.http.body.MultipartBody$Part"
+          ]
+        },
+        {
+          "name": "parts",
+          "parameterTypes": []
+        },
+        {
+          "name": "patch",
+          "parameterTypes": []
+        },
+        {
+          "name": "patch",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "path",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "path",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "path",
+          "parameterTypes": [
+            "java.util.Map"
+          ]
+        },
+        {
+          "name": "pathSegments",
+          "parameterTypes": []
+        },
+        {
+          "name": "pathSplit",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "pathVariables",
+          "parameterTypes": []
+        },
+        {
+          "name": "post",
+          "parameterTypes": []
+        },
+        {
+          "name": "post",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "progress",
+          "parameterTypes": [
+            "java.util.function.BiConsumer"
+          ]
+        },
+        {
+          "name": "protectPathPlaceholders",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "proxy",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "proxy",
+          "parameterTypes": [
+            "org.miaixz.bus.fabric.Address"
+          ]
+        },
+        {
+          "name": "proxy",
+          "parameterTypes": [
+            "org.miaixz.bus.fabric.network.proxy.ProxyPlan"
+          ]
+        },
+        {
+          "name": "proxyAuthorization",
+          "parameterTypes": [
+            "org.miaixz.bus.fabric.Headers"
+          ]
+        },
+        {
+          "name": "proxyCredentials",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "put",
+          "parameterTypes": []
+        },
+        {
+          "name": "put",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "query",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "query",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "query",
+          "parameterTypes": [
+            "java.util.Map"
+          ]
+        },
+        {
+          "name": "queryEntries",
+          "parameterTypes": []
+        },
+        {
+          "name": "range",
+          "parameterTypes": [
+            "long",
+            "long"
+          ]
+        },
+        {
+          "name": "replaceHeader",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "request",
+          "parameterTypes": []
+        },
+        {
+          "name": "resolveTarget",
+          "parameterTypes": []
+        },
+        {
+          "name": "restorePathPlaceholders",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "simpleTargetMatches",
+          "parameterTypes": [
+            "org.miaixz.bus.fabric.protocol.http.HttpRequest"
+          ]
+        },
+        {
+          "name": "soap",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.util.Map"
+          ]
+        },
+        {
+          "name": "socksProxy",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "socksProxy",
+          "parameterTypes": [
+            "org.miaixz.bus.fabric.Address"
+          ]
+        },
+        {
+          "name": "stringValue",
+          "parameterTypes": [
+            "java.lang.Object",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "systemProxy",
+          "parameterTypes": []
+        },
+        {
+          "name": "tag",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "text",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "timeout",
+          "parameterTypes": [
+            "java.time.Duration"
+          ]
+        },
+        {
+          "name": "timeout",
+          "parameterTypes": [
+            "org.miaixz.bus.fabric.Timeout"
+          ]
+        },
+        {
+          "name": "to",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "url",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "userAgent",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "validatePercent",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "validateText",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
           ]
         }
       ]
@@ -4194,956 +5133,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.fabric.protocol.http.HttpRequest",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "org.miaixz.bus.core.net.Http$Method",
-            "org.miaixz.bus.fabric.UnoUrl",
-            "org.miaixz.bus.fabric.Headers",
-            "org.miaixz.bus.fabric.protocol.http.body.PayloadBody",
-            "java.util.Map",
-            "boolean",
-            "org.miaixz.bus.fabric.network.proxy.ProxyPlan",
-            "org.miaixz.bus.fabric.Timeout"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "org.miaixz.bus.core.net.Http$Method",
-            "org.miaixz.bus.fabric.UnoUrl",
-            "org.miaixz.bus.fabric.Headers",
-            "org.miaixz.bus.fabric.protocol.http.body.PayloadBody",
-            "java.util.Map",
-            "org.miaixz.bus.fabric.network.proxy.ProxyPlan",
-            "org.miaixz.bus.fabric.Timeout"
-          ]
-        },
-        {
-          "name": "authority",
-          "parameterTypes": []
-        },
-        {
-          "name": "body",
-          "parameterTypes": []
-        },
-        {
-          "name": "bodyLength",
-          "parameterTypes": []
-        },
-        {
-          "name": "builder",
-          "parameterTypes": []
-        },
-        {
-          "name": "cacheControl",
-          "parameterTypes": []
-        },
-        {
-          "name": "headers",
-          "parameterTypes": []
-        },
-        {
-          "name": "immutableTags",
-          "parameterTypes": [
-            "java.util.Map"
-          ]
-        },
-        {
-          "name": "isHttps",
-          "parameterTypes": []
-        },
-        {
-          "name": "method",
-          "parameterTypes": []
-        },
-        {
-          "name": "methodText",
-          "parameterTypes": []
-        },
-        {
-          "name": "newBuilder",
-          "parameterTypes": []
-        },
-        {
-          "name": "proxy",
-          "parameterTypes": []
-        },
-        {
-          "name": "replayable",
-          "parameterTypes": []
-        },
-        {
-          "name": "requestTarget",
-          "parameterTypes": []
-        },
-        {
-          "name": "require",
-          "parameterTypes": [
-            "java.lang.Object",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "tag",
-          "parameterTypes": []
-        },
-        {
-          "name": "tag",
-          "parameterTypes": [
-            "java.lang.Class"
-          ]
-        },
-        {
-          "name": "timeout",
-          "parameterTypes": []
-        },
-        {
-          "name": "toBuilder",
-          "parameterTypes": []
-        },
-        {
-          "name": "url",
-          "parameterTypes": []
-        },
-        {
-          "name": "userAgent",
-          "parameterTypes": []
-        },
-        {
-          "name": "validateBodyPolicy",
-          "parameterTypes": [
-            "org.miaixz.bus.core.net.Http$Method",
-            "org.miaixz.bus.fabric.protocol.http.body.PayloadBody"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.fabric.protocol.http.HttpX",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "org.miaixz.bus.fabric.Context",
-            "org.miaixz.bus.fabric.protocol.http.HttpRequest",
-            "org.miaixz.bus.fabric.Callback",
-            "org.miaixz.bus.fabric.observe.EventObserver",
-            "org.miaixz.bus.fabric.Filter",
-            "org.miaixz.bus.fabric.guard.GuardRule"
-          ]
-        },
-        {
-          "name": "address",
-          "parameterTypes": []
-        },
-        {
-          "name": "builder",
-          "parameterTypes": [
-            "org.miaixz.bus.fabric.Context"
-          ]
-        },
-        {
-          "name": "call",
-          "parameterTypes": []
-        },
-        {
-          "name": "enqueue",
-          "parameterTypes": []
-        },
-        {
-          "name": "execute",
-          "parameterTypes": []
-        },
-        {
-          "name": "execute",
-          "parameterTypes": [
-            "org.miaixz.bus.fabric.runtime.resource.Cancellation"
-          ]
-        },
-        {
-          "name": "headers",
-          "parameterTypes": []
-        },
-        {
-          "name": "itinerary",
-          "parameterTypes": []
-        },
-        {
-          "name": "message",
-          "parameterTypes": [
-            "org.miaixz.bus.fabric.Payload"
-          ]
-        },
-        {
-          "name": "protocol",
-          "parameterTypes": []
-        },
-        {
-          "name": "request",
-          "parameterTypes": []
-        },
-        {
-          "name": "require",
-          "parameterTypes": [
-            "java.lang.Object",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "tag",
-          "parameterTypes": []
-        },
-        {
-          "name": "timeout",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.fabric.protocol.http.HttpX$Builder",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "org.miaixz.bus.fabric.Context"
-          ]
-        },
-        {
-          "name": "absolute",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "addressPolicy",
-          "parameterTypes": [
-            "org.miaixz.bus.fabric.guard.route.AddressPolicy"
-          ]
-        },
-        {
-          "name": "appendPathSegments",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "appendQuery",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "applyPath",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "base",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "body",
-          "parameterTypes": [
-            "byte[]"
-          ]
-        },
-        {
-          "name": "body",
-          "parameterTypes": [
-            "byte[]",
-            "org.miaixz.bus.core.net.MediaType"
-          ]
-        },
-        {
-          "name": "body",
-          "parameterTypes": [
-            "java.io.File"
-          ]
-        },
-        {
-          "name": "body",
-          "parameterTypes": [
-            "java.io.File",
-            "org.miaixz.bus.core.net.MediaType"
-          ]
-        },
-        {
-          "name": "body",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "body",
-          "parameterTypes": [
-            "java.lang.Object",
-            "org.miaixz.bus.fabric.codec.DataCodec"
-          ]
-        },
-        {
-          "name": "body",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "body",
-          "parameterTypes": [
-            "java.lang.String",
-            "org.miaixz.bus.core.net.MediaType"
-          ]
-        },
-        {
-          "name": "body",
-          "parameterTypes": [
-            "java.nio.file.Path"
-          ]
-        },
-        {
-          "name": "body",
-          "parameterTypes": [
-            "java.nio.file.Path",
-            "org.miaixz.bus.core.net.MediaType"
-          ]
-        },
-        {
-          "name": "body",
-          "parameterTypes": [
-            "org.miaixz.bus.core.io.source.Source",
-            "long"
-          ]
-        },
-        {
-          "name": "body",
-          "parameterTypes": [
-            "org.miaixz.bus.core.io.source.Source",
-            "long",
-            "org.miaixz.bus.core.net.MediaType"
-          ]
-        },
-        {
-          "name": "body",
-          "parameterTypes": [
-            "org.miaixz.bus.fabric.Payload"
-          ]
-        },
-        {
-          "name": "body",
-          "parameterTypes": [
-            "org.miaixz.bus.fabric.Payload",
-            "org.miaixz.bus.core.net.MediaType"
-          ]
-        },
-        {
-          "name": "body",
-          "parameterTypes": [
-            "org.miaixz.bus.fabric.codec.body.RequestBody"
-          ]
-        },
-        {
-          "name": "body",
-          "parameterTypes": [
-            "org.miaixz.bus.fabric.protocol.http.body.PayloadBody"
-          ]
-        },
-        {
-          "name": "build",
-          "parameterTypes": []
-        },
-        {
-          "name": "buildBody",
-          "parameterTypes": []
-        },
-        {
-          "name": "buildHeaders",
-          "parameterTypes": [
-            "org.miaixz.bus.fabric.protocol.http.body.PayloadBody",
-            "org.miaixz.bus.fabric.Headers"
-          ]
-        },
-        {
-          "name": "buildRequest",
-          "parameterTypes": []
-        },
-        {
-          "name": "buildUrl",
-          "parameterTypes": []
-        },
-        {
-          "name": "call",
-          "parameterTypes": []
-        },
-        {
-          "name": "callback",
-          "parameterTypes": [
-            "org.miaixz.bus.fabric.Callback"
-          ]
-        },
-        {
-          "name": "codec",
-          "parameterTypes": [
-            "org.miaixz.bus.fabric.codec.DataCodec"
-          ]
-        },
-        {
-          "name": "delete",
-          "parameterTypes": []
-        },
-        {
-          "name": "delete",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "directProxy",
-          "parameterTypes": []
-        },
-        {
-          "name": "encode",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "encoded",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "encoded",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "encoded",
-          "parameterTypes": [
-            "java.util.Map"
-          ]
-        },
-        {
-          "name": "encodedForm",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "encodedForm",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "enqueue",
-          "parameterTypes": []
-        },
-        {
-          "name": "ensureBodyMode",
-          "parameterTypes": [
-            "org.miaixz.bus.fabric.protocol.http.HttpX$BodyMode"
-          ]
-        },
-        {
-          "name": "execute",
-          "parameterTypes": []
-        },
-        {
-          "name": "executeText",
-          "parameterTypes": []
-        },
-        {
-          "name": "file",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.io.File"
-          ]
-        },
-        {
-          "name": "file",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String",
-            "byte[]"
-          ]
-        },
-        {
-          "name": "file",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String",
-            "byte[]",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "file",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String",
-            "java.io.File"
-          ]
-        },
-        {
-          "name": "file",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "file",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "file",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String",
-            "org.miaixz.bus.core.io.source.Source",
-            "long"
-          ]
-        },
-        {
-          "name": "file",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.nio.file.Path"
-          ]
-        },
-        {
-          "name": "file",
-          "parameterTypes": [
-            "java.nio.file.Path"
-          ]
-        },
-        {
-          "name": "filter",
-          "parameterTypes": [
-            "org.miaixz.bus.fabric.Filter"
-          ]
-        },
-        {
-          "name": "form",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "form",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "form",
-          "parameterTypes": [
-            "java.util.Map"
-          ]
-        },
-        {
-          "name": "get",
-          "parameterTypes": []
-        },
-        {
-          "name": "get",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "guard",
-          "parameterTypes": [
-            "org.miaixz.bus.fabric.guard.GuardRule"
-          ]
-        },
-        {
-          "name": "hasPathPlaceholder",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "head",
-          "parameterTypes": []
-        },
-        {
-          "name": "head",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "header",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "header",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "headers",
-          "parameterTypes": [
-            "java.util.Map"
-          ]
-        },
-        {
-          "name": "headers",
-          "parameterTypes": [
-            "org.miaixz.bus.fabric.Headers"
-          ]
-        },
-        {
-          "name": "id",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "inheritProxy",
-          "parameterTypes": []
-        },
-        {
-          "name": "json",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "media",
-          "parameterTypes": [
-            "org.miaixz.bus.core.net.MediaType"
-          ]
-        },
-        {
-          "name": "mergeHeaders",
-          "parameterTypes": [
-            "org.miaixz.bus.fabric.Headers"
-          ]
-        },
-        {
-          "name": "method",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "method",
-          "parameterTypes": [
-            "org.miaixz.bus.core.net.Http$Method"
-          ]
-        },
-        {
-          "name": "multipart",
-          "parameterTypes": []
-        },
-        {
-          "name": "observe",
-          "parameterTypes": [
-            "org.miaixz.bus.fabric.observe.EventObserver"
-          ]
-        },
-        {
-          "name": "param",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "param",
-          "parameterTypes": [
-            "java.util.Map"
-          ]
-        },
-        {
-          "name": "part",
-          "parameterTypes": [
-            "org.miaixz.bus.fabric.protocol.http.body.MultipartBody$Part"
-          ]
-        },
-        {
-          "name": "parts",
-          "parameterTypes": []
-        },
-        {
-          "name": "patch",
-          "parameterTypes": []
-        },
-        {
-          "name": "patch",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "path",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "path",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "path",
-          "parameterTypes": [
-            "java.util.Map"
-          ]
-        },
-        {
-          "name": "pathSegments",
-          "parameterTypes": []
-        },
-        {
-          "name": "pathSplit",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "pathVariables",
-          "parameterTypes": []
-        },
-        {
-          "name": "post",
-          "parameterTypes": []
-        },
-        {
-          "name": "post",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "progress",
-          "parameterTypes": [
-            "java.util.function.BiConsumer"
-          ]
-        },
-        {
-          "name": "protectPathPlaceholders",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "proxy",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "proxy",
-          "parameterTypes": [
-            "org.miaixz.bus.fabric.Address"
-          ]
-        },
-        {
-          "name": "proxy",
-          "parameterTypes": [
-            "org.miaixz.bus.fabric.network.proxy.ProxyPlan"
-          ]
-        },
-        {
-          "name": "proxyAuthorization",
-          "parameterTypes": [
-            "org.miaixz.bus.fabric.Headers"
-          ]
-        },
-        {
-          "name": "proxyCredentials",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "put",
-          "parameterTypes": []
-        },
-        {
-          "name": "put",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "query",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "query",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "query",
-          "parameterTypes": [
-            "java.util.Map"
-          ]
-        },
-        {
-          "name": "queryEntries",
-          "parameterTypes": []
-        },
-        {
-          "name": "range",
-          "parameterTypes": [
-            "long",
-            "long"
-          ]
-        },
-        {
-          "name": "replaceHeader",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "request",
-          "parameterTypes": []
-        },
-        {
-          "name": "resolveTarget",
-          "parameterTypes": []
-        },
-        {
-          "name": "restorePathPlaceholders",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "simpleTargetMatches",
-          "parameterTypes": [
-            "org.miaixz.bus.fabric.protocol.http.HttpRequest"
-          ]
-        },
-        {
-          "name": "soap",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String",
-            "java.util.Map"
-          ]
-        },
-        {
-          "name": "socksProxy",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "socksProxy",
-          "parameterTypes": [
-            "org.miaixz.bus.fabric.Address"
-          ]
-        },
-        {
-          "name": "stringValue",
-          "parameterTypes": [
-            "java.lang.Object",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "systemProxy",
-          "parameterTypes": []
-        },
-        {
-          "name": "tag",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "text",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "timeout",
-          "parameterTypes": [
-            "java.time.Duration"
-          ]
-        },
-        {
-          "name": "timeout",
-          "parameterTypes": [
-            "org.miaixz.bus.fabric.Timeout"
-          ]
-        },
-        {
-          "name": "to",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "url",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "userAgent",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "validatePercent",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "validateText",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        }
-      ]
-    },
-    {
       "type": "org.miaixz.bus.fabric.protocol.socket.SocketSession",
       "methods": [
         {
@@ -6433,6 +6422,17 @@
             "java.lang.String",
             "java.util.function.Supplier"
           ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.fabric.runtime.resource.Cancellation",
+      "fields": [
+        {
+          "name": "callbacks"
+        },
+        {
+          "name": "state"
         }
       ]
     }

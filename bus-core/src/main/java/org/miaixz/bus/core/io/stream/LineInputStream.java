@@ -96,6 +96,7 @@ public class LineInputStream extends FilterInputStream implements Iterable<byte[
             protected byte[] computeNext() {
                 return readLine();
             }
+
         };
     }
 

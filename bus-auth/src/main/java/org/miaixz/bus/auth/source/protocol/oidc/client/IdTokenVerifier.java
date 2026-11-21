@@ -296,6 +296,15 @@ public class IdTokenVerifier {
         /**
          * Validates and normalizes one complete ID Token verification request.
          *
+         * @param idToken           sensitive ID Token compact serialization
+         * @param verification      explicit JOSE key and critical-extension verification input
+         * @param expectedIssuer    trusted OpenID Provider issuer
+         * @param clientId          relying-party client identifier expected in aud and azp
+         * @param expectedNonce     nonce sent in the Authentication Request
+         * @param maxAge            optional requested maximum authentication age in seconds
+         * @param accessToken       optional access token used when at_hash is present
+         * @param authorizationCode optional authorization code used when c_hash is present
+         * @param state             optional state value used when s_hash is present
          * @throws IllegalArgumentException if a required component or optional container is {@code null}
          * @throws ValidateException        if text is blank or maximum age is negative
          */

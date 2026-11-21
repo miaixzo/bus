@@ -47,16 +47,33 @@ final class HttpRoutePlanner {
     private final TlsPolicy tlsPolicy;
 
     /**
+     * Context options copied into every route destination.
+     */
+    private final Options contextOptions;
+
+    /**
      * Creates a route planner.
      *
      * @param tlsContext  TLS context
      * @param tlsSettings TLS settings
      */
     HttpRoutePlanner(final TlsContext tlsContext, final TlsSettings tlsSettings) {
+        this(tlsContext, tlsSettings, Options.empty());
+    }
+
+    /**
+     * Creates a route planner with context options.
+     *
+     * @param tlsContext     TLS context
+     * @param tlsSettings    TLS settings
+     * @param contextOptions context options copied into destinations
+     */
+    HttpRoutePlanner(final TlsContext tlsContext, final TlsSettings tlsSettings, final Options contextOptions) {
         if ((tlsContext == null) != (tlsSettings == null)) {
             throw new ValidateException("TLS context and settings must both be present or both be absent");
         }
         this.tlsPolicy = tlsContext == null ? null : TlsPolicy.of(tlsContext, tlsSettings);
+        this.contextOptions = contextOptions == null ? Options.empty() : contextOptions;
     }
 
     /**
@@ -131,7 +148,8 @@ final class HttpRoutePlanner {
     Plan plan(final Address target, final ProxyPlan proxy, final boolean nativeTls) {
         validate(proxy);
         final Protocol protocol = target.secure() ? Protocol.HTTPS : Protocol.HTTP;
-        Options options = Options.of(Builder.OPTION_TLS, target.secure()).with(Builder.OPTION_SECURE, target.secure())
+        Options options = contextOptions.with(Builder.OPTION_TLS, target.secure())
+                .with(Builder.OPTION_SECURE, target.secure())
                 .with(Builder.OPTION_MULTIPLEX, protocol == Protocol.HTTP_2)
                 .with(Builder.OPTION_PROTOCOL, protocol.name).with(Builder.OPTION_ROUTE_PROXY, routeIdentity(proxy))
                 .with(Builder.OPTION_ROUTE_TUNNEL, proxy.requiresTunnel(target));

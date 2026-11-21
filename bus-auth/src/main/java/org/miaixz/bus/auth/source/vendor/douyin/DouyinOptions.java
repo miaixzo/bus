@@ -55,6 +55,12 @@ public record DouyinOptions(Vendor.Id vendor, Vendor.Variant variant, String cli
     /**
      * Validates and freezes one Douyin registration without resolving secret material.
      *
+     * @param vendor      exact Douyin platform identifier
+     * @param variant     exact {@code open} or {@code mini-program} variant
+     * @param clientId    registered open-platform client key or mini-program appid
+     * @param credential  external client-secret or App Secret reference
+     * @param redirectUri exact registered open-platform callback, empty for mini-program
+     * @param scopes      ordered open-platform scopes, empty for mini-program
      * @throws IllegalArgumentException if a required component or collection member is {@code null} or blank
      * @throws ValidateException        if routing, credential, redirect URI, or scope data violate the selected variant
      */

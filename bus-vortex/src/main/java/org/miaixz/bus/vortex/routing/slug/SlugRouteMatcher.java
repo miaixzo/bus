@@ -23,7 +23,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
+import org.springframework.http.HttpMethod;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.server.ServerWebExchange;
 
@@ -121,6 +123,23 @@ public class SlugRouteMatcher {
     }
 
     /**
+     * Finds methods that actually own the same public slug path and registry scope.
+     *
+     * @param exchange request whose current method did not match
+     * @return visible alternate methods, empty if the path is unowned or ambiguous
+     */
+    public Set<HttpMethod> publicMethods(ServerWebExchange exchange) {
+        var request = exchange.getRequest();
+        String appId = request.getQueryParams().getFirst(Args.APP_ID);
+        if (StringKit.isBlank(appId)) {
+            appId = request.getHeaders().getFirst(Args.APP_ID);
+        }
+        return this.registry.publicMethods(
+                spec(appId, request.getMethod().name()),
+                asset -> match(request.getPath().value(), asset) != null);
+    }
+
+    /**
      * Matches a functional server request to one public slug route.
      *
      * @param request current server request
@@ -175,7 +194,7 @@ public class SlugRouteMatcher {
      */
     private Match match(String path, Assets assets) {
         if (assets == null || !Objects.equals(Type.API.key(), assets.getType())
-                || !Objects.equals(Args.PROTOCOL_SLUG, assets.getProtocol())) {
+                || !Objects.equals(Args.ROUTE_SLUG, assets.getProtocol())) {
             return null;
         }
         Match best = null;

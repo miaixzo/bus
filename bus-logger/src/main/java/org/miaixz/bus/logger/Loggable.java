@@ -36,6 +36,11 @@ public record Loggable(Level level, Throwable throwable, String format, Object[]
 
     /**
      * Validates the logging level and defensively copies the message arguments.
+     *
+     * @param level     logging level
+     * @param throwable associated failure, or {@code null}
+     * @param format    provider-compatible message format
+     * @param arguments message arguments
      */
     public Loggable {
         Objects.requireNonNull(level, "level");

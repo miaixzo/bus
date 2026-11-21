@@ -159,6 +159,8 @@ public class CortexProperties {
     }
 
     /**
+     * Returns a safe diagnostic representation of this configuration.
+     *
      * @return safe diagnostic text
      */
     @Override
@@ -198,6 +200,11 @@ public class CortexProperties {
 
         /**
          * Creates and validates bridge options.
+         *
+         * @param mode       configured operating mode
+         * @param url        service endpoint URL
+         * @param maxRetries max retries
+         * @param source     source schema settings
          */
         public Bridge {
             mode = StringKit.isBlank(mode) ? "pull-only" : mode.trim();

@@ -150,7 +150,7 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
             /**
              * Write method.
              *
-             * @return the void value
+             * @param b The byte to write.
              */
             @Override
             public void write(int b) {
@@ -160,7 +160,9 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
             /**
              * Write method.
              *
-             * @return the void value
+             * @param data      The byte array containing the data to write. Must not be {@code null}.
+             * @param offset    the starting offset in the byte array
+             * @param byteCount the number of bytes to write
              */
             @Override
             public void write(byte[] data, int offset, int byteCount) {
@@ -170,7 +172,6 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
             /**
              * Flush method.
              *
-             * @return the void value
              */
             @Override
             public void flush() {
@@ -179,7 +180,6 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
             /**
              * Close method.
              *
-             * @return the void value
              */
             @Override
             public void close() {
@@ -194,6 +194,7 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
             public String toString() {
                 return Buffer.this + ".outputStream()";
             }
+
         };
     }
 
@@ -288,6 +289,9 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
             /**
              * Read method.
              *
+             * @param sink      the byte array to read into
+             * @param offset    the starting offset in the byte array
+             * @param byteCount the maximum number of bytes to read
              * @return the int value
              */
             @Override
@@ -308,7 +312,6 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
             /**
              * Close method.
              *
-             * @return the void value
              */
             @Override
             public void close() {
@@ -323,6 +326,7 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
             public String toString() {
                 return Buffer.this + ".inputStream()";
             }
+
         };
     }
 

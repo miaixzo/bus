@@ -165,6 +165,16 @@ public class Charter {
         DROP_COLUMN(Group.SCHEMA),
 
         /**
+         * Removes an explicitly selected column's database default.
+         */
+        DROP_COLUMN_DEFAULT(Group.SCHEMA),
+
+        /**
+         * Changes the physical column order of an explicitly selected table.
+         */
+        REORDER_COLUMNS(Group.SCHEMA),
+
+        /**
          * Create index operation.
          */
         CREATE_INDEX(Group.SCHEMA),

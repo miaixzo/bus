@@ -703,6 +703,7 @@ public class ImageReader extends javax.imageio.ImageReader {
                     }
                     return delegate.get();
                 }
+
             });
         }
         return suppliers;

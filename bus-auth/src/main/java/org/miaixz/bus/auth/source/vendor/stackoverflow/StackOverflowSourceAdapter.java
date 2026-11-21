@@ -859,6 +859,9 @@ public class StackOverflowSourceAdapter implements VendorAdapter {
         /**
          * Validates one private token result without adding a synthetic token type.
          *
+         * @param accessToken sensitive access token
+         * @param expiresIn   positive access-token lifetime in seconds, or empty for a requested {@code no_expiry}
+         *                    token
          * @throws IllegalArgumentException if the access token is blank
          * @throws IllegalArgumentException if the lifetime container is {@code null}
          * @throws ValidateException        if a present lifetime is not positive

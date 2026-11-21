@@ -943,6 +943,8 @@ public class WeiboSourceAdapter implements VendorAdapter {
         /**
          * Validates private Weibo access material.
          *
+         * @param accessToken sensitive access token
+         * @param userId      token-bound Weibo UID
          * @throws IllegalArgumentException if a component is blank
          */
         private Access {

@@ -1015,6 +1015,7 @@ public class Galaxy {
         protected boolean removeEldestEntry(Map.Entry<Double, Double> eldest) {
             return size() > 13;
         }
+
     };
 
     /**
@@ -1026,6 +1027,7 @@ public class Galaxy {
         protected boolean removeEldestEntry(Map.Entry<Double, Double> eldest) {
             return size() > 13;
         }
+
     };
 
     /**

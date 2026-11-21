@@ -21,7 +21,6 @@ package org.miaixz.bus.vortex.guard;
 
 import java.security.MessageDigest;
 import java.util.*;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.springframework.core.io.buffer.DataBuffer;
@@ -30,6 +29,7 @@ import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpRequestDecorator;
 import org.springframework.web.server.ServerWebExchange;
 
+import org.miaixz.bus.core.center.function.FunctionX;
 import org.miaixz.bus.core.codec.binary.Base64;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
@@ -121,6 +121,29 @@ public class SignatureVerifier {
     }
 
     /**
+     * Signs an authorized GET at the final downstream request boundary.
+     *
+     * @param permit compact authorization issued for this request
+     * @param secret base64url one-request key received only over the private verification connection
+     * @param path   exact downstream raw path
+     * @param query  exact downstream raw query, or null if absent
+     * @return base64url proof for the complete GET target
+     */
+    public static String forwardProof(String permit, String secret, String path, String query) {
+        var encoding = java.util.Base64.getUrlEncoder().withoutPadding();
+        byte[] key = java.util.Base64.getUrlDecoder().decode(secret);
+        try {
+            if (key.length != Normal._32)
+                throw new IllegalArgumentException("Invalid request signing key");
+            byte[] value = JsonKit.toJsonString(Arrays.asList(Http.Method.GET.value(), path, query, permit))
+                    .getBytes(Charset.UTF_8);
+            return encoding.encodeToString(Builder.hmacSha256(key).digest(value));
+        } finally {
+            Arrays.fill(key, (byte) Normal._0);
+        }
+    }
+
+    /**
      * Verifies the legacy parameter signature used by public Slug routes.
      *
      * @param context current request context
@@ -174,7 +197,7 @@ public class SignatureVerifier {
             ServerWebExchange exchange,
             Context context,
             Assets assets,
-            Function<ServerWebExchange, Mono<Void>> continuation) {
+            FunctionX<ServerWebExchange, Mono<Void>> continuation) {
         Objects.requireNonNull(continuation, "Continuation cannot be null");
         return verifyMcpExchange(exchange, context, assets).flatMap(
                 validatedExchange -> Mono.defer(() -> continuation.apply(validatedExchange))
@@ -246,9 +269,9 @@ public class SignatureVerifier {
      * @param body    cached request bytes, or an empty array
      */
     private static void verifyMcpRequest(ServerHttpRequest request, Context context, Assets assets, byte[] body) {
-        String timestamp = request.getHeaders().getFirst(Args.X_TIMESTAMP);
-        String nonce = request.getHeaders().getFirst(Args.X_NONCE);
-        String signature = request.getHeaders().getFirst(Args.X_SIGN);
+        String timestamp = request.getHeaders().getFirst(Http.Auth.TIMESTAMP_HEADER);
+        String nonce = request.getHeaders().getFirst(Http.Auth.NONCE_HEADER);
+        String signature = request.getHeaders().getFirst(Http.Auth.SIGNATURE_HEADER);
         if (StringKit.isBlank(timestamp) || StringKit.isBlank(nonce) || StringKit.isBlank(signature)) {
             throw new SignatureException(ErrorCode._100109);
         }
@@ -332,7 +355,7 @@ public class SignatureVerifier {
 
         String token = Http.Auth.bearerToken(context.getHeaders());
         if (StringKit.isNotBlank(token)) {
-            validateJwt(token);
+            validateBearer(token);
             return new KeyBinding(derive(Signing.Credential.TOKEN, token, method, timestamp),
                     Signing.Credential.TOKEN.key());
         }
@@ -351,7 +374,7 @@ public class SignatureVerifier {
      * Derives a fixed-size v1 HMAC key without constructing a credential-sized concatenated string.
      *
      * @param credentialType credential domain
-     * @param credential     raw Bearer JWT or API key
+     * @param credential     raw bearer token or API key
      * @param method         logical API method
      * @param timestamp      request timestamp
      * @return 32-byte SHA-256 key material
@@ -478,15 +501,19 @@ public class SignatureVerifier {
     }
 
     /**
-     * Validates the bounded canonical three-segment representation required for v1 Bearer JWTs.
+     * Validates a compact JWT or the 256-bit Base64URL bearer format issued by OAuth2. Authorization still requires the
+     * configured online verifier to accept the original bearer.
      *
-     * @param token raw Bearer JWT
+     * @param token raw bearer credential
      */
-    private static void validateJwt(String token) {
+    private static void validateBearer(String token) {
         if (!isAsciiWithin(token, Normal._8192)) {
             throw new ValidateException(ErrorCode._100109);
         }
         int first = token.indexOf(Symbol.DOT);
+        if (first < 0 && token.length() == Normal._43 && isBase64Url(token, 0, token.length())) {
+            return;
+        }
         int second = first < 0 ? -1 : token.indexOf(Symbol.DOT, first + 1);
         if (first <= 0 || second <= first + 1 || second >= token.length() - 1
                 || token.indexOf(Symbol.DOT, second + 1) >= 0 || !isBase64Url(token, 0, first)
@@ -496,9 +523,9 @@ public class SignatureVerifier {
     }
 
     /**
-     * Tests whether one compact JWT segment contains only unpadded Base64URL characters.
+     * Tests whether the credential segment contains only unpadded Base64URL characters.
      *
-     * @param value source JWT
+     * @param value source credential
      * @param start inclusive segment start
      * @param end   exclusive segment end
      * @return {@code true} when the segment is valid

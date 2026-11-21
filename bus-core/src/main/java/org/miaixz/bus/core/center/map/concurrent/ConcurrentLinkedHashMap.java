@@ -1169,6 +1169,7 @@ public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements 
             boolean shouldDrainBuffers(final boolean delayable) {
                 return !delayable;
             }
+
         },
 
         /**
@@ -1186,6 +1187,7 @@ public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements 
             boolean shouldDrainBuffers(final boolean delayable) {
                 return true;
             }
+
         },
 
         /**
@@ -1203,6 +1205,7 @@ public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements 
             boolean shouldDrainBuffers(final boolean delayable) {
                 return false;
             }
+
         };
 
         /**

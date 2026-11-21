@@ -43,6 +43,13 @@ public record SearchParameters(List<String> attributes, List<String> excludedAtt
     /**
      * Validates, detaches, and freezes all search parameters.
      *
+     * @param attributes         requested return attribute paths
+     * @param excludedAttributes requested excluded attribute paths
+     * @param filter             optional parsed filter AST
+     * @param sortBy             optional sort attribute path
+     * @param sortOrder          optional standard sort direction
+     * @param startIndex         optional one-based first result index
+     * @param count              optional non-negative requested result count
      * @throws IllegalArgumentException if a component, container, or list item is {@code null}
      * @throws ValidateException        if attribute selection, path syntax, or pagination is invalid
      */

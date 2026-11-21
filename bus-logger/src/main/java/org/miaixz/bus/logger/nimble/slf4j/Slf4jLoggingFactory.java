@@ -72,6 +72,7 @@ public class Slf4jLoggingFactory extends AbstractFactory {
             public void write(final int b) {
                 buf.append((char) b);
             }
+
         }, true, Charset.US_ASCII));
 
         try {

@@ -71,7 +71,7 @@ public class UpyunOssProvider extends AbstractProvider {
      * Generates the Upyun REST API signature for authentication.
      *
      * @param method        The HTTP method (e.g., GET, PUT, DELETE).
-     * @param path          The request path (e.g., /<bucket>/<path>).
+     * @param path          The request path (e.g., {@code /<bucket>/<path>}).
      * @param date          The GMT formatted date string.
      * @param contentLength The length of the request body. Use 0 for GET and DELETE requests.
      * @return The generated signature string.

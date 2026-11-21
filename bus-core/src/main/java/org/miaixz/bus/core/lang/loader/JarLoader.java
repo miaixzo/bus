@@ -94,6 +94,9 @@ public class JarLoader extends ResourceLoader implements Loader {
     /**
      * Load method.
      *
+     * @param path        the base path to search for resources.
+     * @param recursively whether to search for resources in subdirectories.
+     * @param filter      the filter to apply to resources.
      * @return the Enumeration&lt;Resource&gt; value
      */
     @Override

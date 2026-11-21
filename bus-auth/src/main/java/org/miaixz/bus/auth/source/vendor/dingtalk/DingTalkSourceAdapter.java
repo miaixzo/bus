@@ -1023,6 +1023,9 @@ public class DingTalkSourceAdapter implements VendorAdapter {
         /**
          * Validates one exact callback branch.
          *
+         * @param code  authorization code on success
+         * @param state mandatory browser correlation value
+         * @param error platform error on rejection
          * @throws IllegalArgumentException if state is blank
          * @throws ValidateException        if success and error are both present or absent
          */
@@ -1048,6 +1051,9 @@ public class DingTalkSourceAdapter implements VendorAdapter {
         /**
          * Validates and freezes one private delegated token result.
          *
+         * @param accessToken sensitive delegated access token
+         * @param expireIn    positive token lifetime in seconds
+         * @param corpId      optional selected organization identifier
          * @throws IllegalArgumentException if the token or optional container is invalid
          * @throws ValidateException        if the lifetime is not positive
          */

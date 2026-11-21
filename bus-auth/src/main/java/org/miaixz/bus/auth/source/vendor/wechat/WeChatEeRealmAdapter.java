@@ -2456,6 +2456,7 @@ public class WeChatEeRealmAdapter implements VendorAdapter {
         private int code() {
             return code;
         }
+
     }
 
     /**
@@ -2513,6 +2514,7 @@ public class WeChatEeRealmAdapter implements VendorAdapter {
                     : ordered.contains(Realm.Kind.USER) ? Phase.USERS : Phase.GROUPS;
             return new CursorState(phase, ordered, Position.initial(phase));
         }
+
     }
 
     /**
@@ -2631,6 +2633,7 @@ public class WeChatEeRealmAdapter implements VendorAdapter {
                 }
             }
         }
+
     }
 
     /**
@@ -2670,6 +2673,7 @@ public class WeChatEeRealmAdapter implements VendorAdapter {
                 throw new ValidateException("WeChat user replay fingerprint must be lowercase SHA-256 hexadecimal");
             }
         }
+
     }
 
     /**
@@ -2709,6 +2713,7 @@ public class WeChatEeRealmAdapter implements VendorAdapter {
                 throw new ValidateException("WeChat member replay fingerprint must be lowercase SHA-256 hexadecimal");
             }
         }
+
     }
 
     /**
@@ -2741,6 +2746,7 @@ public class WeChatEeRealmAdapter implements VendorAdapter {
                 throw new ValidateException("WeChat department order must not be negative");
             }
         }
+
     }
 
     /**
@@ -2794,6 +2800,7 @@ public class WeChatEeRealmAdapter implements VendorAdapter {
             orderedManagers.sort(String::compareTo);
             managerIds = List.copyOf(orderedManagers);
         }
+
     }
 
     /**
@@ -2815,6 +2822,7 @@ public class WeChatEeRealmAdapter implements VendorAdapter {
             id = requireText(id, "WeChat group identifier");
             name = requireText(name, "WeChat group name");
         }
+
     }
 
     /**
@@ -2833,6 +2841,7 @@ public class WeChatEeRealmAdapter implements VendorAdapter {
         private Member {
             id = requireText(id, "WeChat group member identifier");
         }
+
     }
 
     /**
@@ -2866,6 +2875,7 @@ public class WeChatEeRealmAdapter implements VendorAdapter {
         public String toString() {
             return Builder.REDACTED_VALUE;
         }
+
     }
 
 }

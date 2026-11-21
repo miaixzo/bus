@@ -51,6 +51,12 @@ public record ProginnOptions(Vendor.Id vendor, Vendor.Variant variant, String cl
     /**
      * Validates and freezes one Proginn registration without resolving its secret.
      *
+     * @param vendor      exact Proginn platform identifier
+     * @param variant     exact default Proginn variant
+     * @param clientId    public client identifier issued by Proginn
+     * @param credential  external client-secret reference
+     * @param redirectUri exact callback URI registered for the application
+     * @param scopes      ordered requested Proginn scopes, or empty to use the manifest default
      * @throws IllegalArgumentException if a required component, container, or scope is {@code null} or blank
      * @throws ValidateException        if routing, credential, callback, scope vocabulary, or uniqueness is invalid
      */

@@ -27,6 +27,11 @@ package org.miaixz.bus.starter;
 public class GeniusBuilder {
 
     /**
+     * Configuration prefix for anchor.
+     */
+    public static final String ANCHOR = "bus.anchor";
+
+    /**
      * Configuration prefix for auth.
      */
     public static final String AUTH = "bus.auth";
@@ -150,6 +155,16 @@ public class GeniusBuilder {
      * Configuration prefix for validate.
      */
     public static final String VALIDATE = "bus.validate";
+
+    /**
+     * Configuration root for shared Bus error handling.
+     */
+    public static final String ERRORS = "bus.errors";
+
+    /**
+     * Configuration prefix for the standard error logging subscription.
+     */
+    public static final String ERRORS_LOGGING = ERRORS + ".logging";
 
     /**
      * Configuration prefix for vortex.

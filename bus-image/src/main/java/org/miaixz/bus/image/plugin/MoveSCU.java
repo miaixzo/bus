@@ -381,6 +381,7 @@ public class MoveSCU extends Device implements AutoCloseable {
                 super.onDimseRSP(as, cmd, data);
                 updateProgress(cmd);
             }
+
         };
     }
 

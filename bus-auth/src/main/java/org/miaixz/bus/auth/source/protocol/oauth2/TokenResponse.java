@@ -46,6 +46,12 @@ public record TokenResponse(String accessToken, TokenType tokenType, Optional<Lo
     /**
      * Creates and validates an immutable successful token response.
      *
+     * @param accessToken  issued access token
+     * @param tokenType    registered access-token type
+     * @param expiresIn    optional access-token lifetime in seconds
+     * @param refreshToken optional refresh token
+     * @param scope        optional effective scope when it differs from or was absent in the request
+     * @param extensions   unknown response members that do not duplicate registered components
      * @throws IllegalArgumentException if a required component or optional container is {@code null}
      * @throws ValidateException        if token syntax, lifetime, token type URI, or extensions violate the active RFCs
      */

@@ -101,6 +101,8 @@ public class NativeHistogram implements Histogram {
 
     /**
      * Returns the total number of recorded values.
+     *
+     * @return number of recorded observations
      */
     @Override
     public long count() {
@@ -109,6 +111,8 @@ public class NativeHistogram implements Histogram {
 
     /**
      * Returns the sum of all recorded values.
+     *
+     * @return sum of all recorded observations
      */
     @Override
     public double totalAmount() {
@@ -117,6 +121,8 @@ public class NativeHistogram implements Histogram {
 
     /**
      * Returns the maximum recorded value.
+     *
+     * @return maximum recorded observation
      */
     @Override
     public double max() {
@@ -139,6 +145,8 @@ public class NativeHistogram implements Histogram {
 
     /**
      * Returns an atomic snapshot for cross-instance aggregation.
+     *
+     * @return atomic snapshot of the histogram state
      */
     @Override
     public TimerSnapshot snapshot() {

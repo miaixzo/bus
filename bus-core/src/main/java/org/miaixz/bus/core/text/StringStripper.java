@@ -76,6 +76,7 @@ public class StringStripper implements UnaryOperatorX<CharSequence>, Serializabl
     /**
      * Apply method.
      *
+     * @param charSequence character sequence to process
      * @return the String value
      */
     @Override

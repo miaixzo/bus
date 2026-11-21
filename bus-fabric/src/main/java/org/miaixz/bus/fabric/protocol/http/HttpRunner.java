@@ -732,7 +732,8 @@ public class HttpRunner {
             this.materializeMaxBytes = context.options().materializeMaxBytes();
             this.bridge = new HttpBridge(cookies, userAgent);
             this.connect = new HttpConnect(context.reactor().directory().connectionPool(), tlsContext, tlsSettings,
-                    context.listener(), context.reactor().resolver(), context.reactor().dispatcher());
+                    context.listener(), context.reactor().resolver(), context.reactor().dispatcher(),
+                    context.options());
             this.stages = List.of(
                     new HttpRetry(HttpRetryPolicy.resolve(context.options()), authenticator),
                     new HttpProxyRouting(context.options()),
@@ -761,6 +762,7 @@ public class HttpRunner {
         private static Pipeline create(final Context context) {
             return new Pipeline(context);
         }
+
     }
 
     /**

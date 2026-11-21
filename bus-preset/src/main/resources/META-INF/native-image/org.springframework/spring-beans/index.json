@@ -1,0 +1,11 @@
+[
+  {
+    "latest": true,
+    "metadata-version": "7.0.0",
+    "description": "Spring Beans",
+    "tested-versions": [
+      "7.0.0",
+      "7.0.9"
+    ]
+  }
+]

@@ -110,6 +110,7 @@ public record RadiusAttribute(Type type, byte[] value) {
         /**
          * Validates one open-registry Attribute Type.
          *
+         * @param value unsigned one-octet Type value
          * @throws IllegalArgumentException if {@code value} is outside 1 through 255
          */
         public Type {

@@ -60,7 +60,11 @@ public class AntLoader extends PatternLoader implements Loader {
     /**
      * Load method.
      *
+     * @param pattern     The pattern expression for resources.
+     * @param recursively whether to search for resources in subdirectories.
+     * @param filter      the filter to apply to resources.
      * @return the Enumeration&lt;Resource&gt; value
+     * @throws IOException if an underlying input or output operation fails
      */
     @Override
     public Enumeration<Resource> load(String pattern, boolean recursively, Filter filter) throws IOException {

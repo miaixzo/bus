@@ -5881,6 +5881,7 @@ public class Attributes implements Serializable {
      *
      * @param val value
      * @param ss  string array
+     * @param <T> type of the input elements
      * @return Whether the value is one of the allowed values
      */
     private <T> boolean isOneOf(Object val, T[] ss) {

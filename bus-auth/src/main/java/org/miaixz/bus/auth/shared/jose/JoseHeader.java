@@ -611,6 +611,20 @@ public class JoseHeader {
         /**
          * Validates, detaches, and freezes all registered components and extension members.
          *
+         * @param algorithm                   optional JOSE algorithm identifier
+         * @param jwkSetUrl                   optional JWK Set URL
+         * @param jsonWebKey                  optional embedded JSON Web Key
+         * @param keyId                       optional key identifier hint
+         * @param certificateUrl              optional X.509 certificate URL
+         * @param certificateChain            ordered base64 DER certificate chain
+         * @param certificateThumbprint       optional SHA-1 certificate thumbprint
+         * @param certificateThumbprintSha256 optional SHA-256 certificate thumbprint
+         * @param type                        optional complete-object media type
+         * @param contentType                 optional secured-content media type
+         * @param critical                    ordered critical extension names
+         * @param encryption                  optional JWE content-encryption algorithm
+         * @param compression                 optional JWE compression algorithm
+         * @param extensions                  unregistered extension parameters
          * @throws IllegalArgumentException if a component or container is {@code null}
          * @throws ValidateException        if text, URI, array, or extension ownership is invalid
          */

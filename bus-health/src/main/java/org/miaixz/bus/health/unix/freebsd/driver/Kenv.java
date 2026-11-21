@@ -38,6 +38,7 @@ public final class Kenv {
 
     /** Prevents instantiation. */
     private Kenv() {
+        // No initialization required.
     }
 
     /**

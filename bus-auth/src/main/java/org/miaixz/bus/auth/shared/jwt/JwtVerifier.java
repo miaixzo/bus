@@ -196,6 +196,9 @@ public class JwtVerifier {
 
         /**
          * Validates and freezes signed JWT verification inputs.
+         *
+         * @param key      public or symmetric JWS verification key
+         * @param critical critical extension names processed by the caller
          */
         public Signed {
             Assert.notNull(key, "Signed JWT verification key must not be null");
@@ -219,6 +222,11 @@ public class JwtVerifier {
 
         /**
          * Validates and freezes encrypted JWT verification inputs.
+         *
+         * @param decryptionKey      private or symmetric JWE recipient key
+         * @param nestedSignatureKey explicit nested JWS key when cty identifies JWT
+         * @param outerCritical      processed outer JWE critical extensions
+         * @param innerCritical      processed nested JWS critical extensions
          */
         public Encrypted {
             Assert.notNull(decryptionKey, "Encrypted JWT decryption key must not be null");

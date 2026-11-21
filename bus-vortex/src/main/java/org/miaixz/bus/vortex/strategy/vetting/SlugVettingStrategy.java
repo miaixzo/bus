@@ -52,7 +52,7 @@ public class SlugVettingStrategy extends VettingStrategy {
      */
     @Override
     public Integer protocol() {
-        return Args.PROTOCOL_SLUG;
+        return Args.ROUTE_SLUG;
     }
 
     /**

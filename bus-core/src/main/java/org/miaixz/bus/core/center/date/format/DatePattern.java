@@ -415,8 +415,6 @@ public class DatePattern {
         }
 
         /**
-         * Description inherited from parent class or interface.
-         * <p>
          * Returns the estimated length of the formatted output for this character literal.
          *
          * @return {@code 1} as a character literal has a fixed length
@@ -427,12 +425,11 @@ public class DatePattern {
         }
 
         /**
-         * Description inherited from parent class or interface.
-         * <p>
          * Appends the character literal to the buffer.
          *
          * @param buffer   the buffer to append to
          * @param calendar the calendar (ignored for character literals)
+         * @throws IOException if an I/O error occurs.
          */
         @Override
         public void appendTo(final Appendable buffer, final Calendar calendar) throws IOException {
@@ -463,8 +460,6 @@ public class DatePattern {
         }
 
         /**
-         * Description inherited from parent class or interface.
-         * <p>
          * Returns the length of this string literal.
          *
          * @return the length of the string literal
@@ -475,12 +470,11 @@ public class DatePattern {
         }
 
         /**
-         * Description inherited from parent class or interface.
-         * <p>
          * Appends the string literal to the buffer.
          *
          * @param buffer   the buffer to append to
          * @param calendar the calendar (ignored for string literals)
+         * @throws IOException if an I/O error occurs.
          */
         @Override
         public void appendTo(final Appendable buffer, final Calendar calendar) throws IOException {
@@ -518,8 +512,6 @@ public class DatePattern {
         }
 
         /**
-         * Description inherited from parent class or interface.
-         * <p>
          * Returns the maximum length of any value in the text field array.
          *
          * @return the maximum length of the text values
@@ -537,12 +529,11 @@ public class DatePattern {
         }
 
         /**
-         * Description inherited from parent class or interface.
-         * <p>
          * Appends the text value for the specified calendar field to the buffer.
          *
          * @param buffer   the buffer to append to
          * @param calendar the calendar containing the field value
+         * @throws IOException if an I/O error occurs.
          */
         @Override
         public void appendTo(final Appendable buffer, final Calendar calendar) throws IOException {
@@ -573,8 +564,6 @@ public class DatePattern {
         }
 
         /**
-         * Description inherited from parent class or interface.
-         * <p>
          * Returns the estimated maximum length for an unpadded number field.
          *
          * @return the estimated maximum length (4 digits)
@@ -585,12 +574,11 @@ public class DatePattern {
         }
 
         /**
-         * Description inherited from parent class or interface.
-         * <p>
          * Appends the unpadded numeric value of the specified field to the buffer.
          *
          * @param buffer   the buffer to append to
          * @param calendar the calendar containing the field value
+         * @throws IOException if an I/O error occurs.
          */
         @Override
         public void appendTo(final Appendable buffer, final Calendar calendar) throws IOException {
@@ -598,12 +586,11 @@ public class DatePattern {
         }
 
         /**
-         * Description inherited from parent class or interface.
-         * <p>
          * Appends the unpadded numeric value to the buffer.
          *
          * @param buffer the buffer to append to
          * @param value  the value to append
+         * @throws IOException if an I/O error occurs.
          */
         @Override
         public void appendTo(final Appendable buffer, final int value) throws IOException {
@@ -638,8 +625,6 @@ public class DatePattern {
         }
 
         /**
-         * Description inherited from parent class or interface.
-         * <p>
          * Returns the estimated maximum length for an unpadded month field.
          *
          * @return the estimated maximum length (2 digits)
@@ -650,12 +635,11 @@ public class DatePattern {
         }
 
         /**
-         * Description inherited from parent class or interface.
-         * <p>
          * Appends the unpadded month value (1-12) to the buffer.
          *
          * @param buffer   the buffer to append to
          * @param calendar the calendar containing the month value
+         * @throws IOException if an I/O error occurs.
          */
         @Override
         public void appendTo(final Appendable buffer, final Calendar calendar) throws IOException {
@@ -663,12 +647,11 @@ public class DatePattern {
         }
 
         /**
-         * Description inherited from parent class or interface.
-         * <p>
          * Appends the unpadded month value to the buffer.
          *
          * @param buffer the buffer to append to
          * @param value  the month value (1-12)
+         * @throws IOException if an I/O error occurs.
          */
         @Override
         public void appendTo(final Appendable buffer, final int value) throws IOException {
@@ -713,8 +696,6 @@ public class DatePattern {
         }
 
         /**
-         * Description inherited from parent class or interface.
-         * <p>
          * Returns the padded size of this number field.
          *
          * @return the padded size
@@ -725,12 +706,11 @@ public class DatePattern {
         }
 
         /**
-         * Description inherited from parent class or interface.
-         * <p>
          * Appends the padded numeric value of the specified field to the buffer.
          *
          * @param buffer   the buffer to append to
          * @param calendar the calendar containing the field value
+         * @throws IOException if an I/O error occurs.
          */
         @Override
         public void appendTo(final Appendable buffer, final Calendar calendar) throws IOException {
@@ -738,12 +718,11 @@ public class DatePattern {
         }
 
         /**
-         * Description inherited from parent class or interface.
-         * <p>
          * Appends the padded numeric value to the buffer.
          *
          * @param buffer the buffer to append to
          * @param value  the value to append with padding
+         * @throws IOException if an I/O error occurs.
          */
         @Override
         public void appendTo(final Appendable buffer, final int value) throws IOException {
@@ -774,8 +753,6 @@ public class DatePattern {
         }
 
         /**
-         * Description inherited from parent class or interface.
-         * <p>
          * Returns the length of a two-digit number field.
          *
          * @return {@code 2} for two-digit fields
@@ -786,12 +763,11 @@ public class DatePattern {
         }
 
         /**
-         * Description inherited from parent class or interface.
-         * <p>
          * Appends the two-digit numeric value of the specified field to the buffer.
          *
          * @param buffer   the buffer to append to
          * @param calendar the calendar containing the field value
+         * @throws IOException if an I/O error occurs.
          */
         @Override
         public void appendTo(final Appendable buffer, final Calendar calendar) throws IOException {
@@ -799,12 +775,11 @@ public class DatePattern {
         }
 
         /**
-         * Description inherited from parent class or interface.
-         * <p>
          * Appends the value as a two-digit number to the buffer.
          *
          * @param buffer the buffer to append to
          * @param value  the value to append (will be formatted to 2 digits)
+         * @throws IOException if an I/O error occurs.
          */
         @Override
         public void appendTo(final Appendable buffer, final int value) throws IOException {
@@ -837,8 +812,6 @@ public class DatePattern {
         }
 
         /**
-         * Description inherited from parent class or interface.
-         * <p>
          * Returns the length of a two-digit year field.
          *
          * @return {@code 2} for two-digit years
@@ -849,12 +822,11 @@ public class DatePattern {
         }
 
         /**
-         * Description inherited from parent class or interface.
-         * <p>
          * Appends the two-digit year value to the buffer.
          *
          * @param buffer   the buffer to append to
          * @param calendar the calendar containing the year value
+         * @throws IOException if an I/O error occurs.
          */
         @Override
         public void appendTo(final Appendable buffer, final Calendar calendar) throws IOException {
@@ -862,12 +834,11 @@ public class DatePattern {
         }
 
         /**
-         * Description inherited from parent class or interface.
-         * <p>
          * Appends the two-digit value to the buffer.
          *
          * @param buffer the buffer to append to
          * @param value  the value to append as two digits
+         * @throws IOException if an I/O error occurs.
          */
         @Override
         public void appendTo(final Appendable buffer, final int value) throws IOException {
@@ -896,8 +867,6 @@ public class DatePattern {
         }
 
         /**
-         * Description inherited from parent class or interface.
-         * <p>
          * Returns the length of a two-digit month field.
          *
          * @return {@code 2} for two-digit months
@@ -908,12 +877,11 @@ public class DatePattern {
         }
 
         /**
-         * Description inherited from parent class or interface.
-         * <p>
          * Appends the two-digit month value (01-12) to the buffer.
          *
          * @param buffer   the buffer to append to
          * @param calendar the calendar containing the month value
+         * @throws IOException if an I/O error occurs.
          */
         @Override
         public void appendTo(final Appendable buffer, final Calendar calendar) throws IOException {
@@ -921,12 +889,11 @@ public class DatePattern {
         }
 
         /**
-         * Description inherited from parent class or interface.
-         * <p>
          * Appends the value as a two-digit month to the buffer.
          *
          * @param buffer the buffer to append to
          * @param value  the month value to append (1-12)
+         * @throws IOException if an I/O error occurs.
          */
         @Override
         public void appendTo(final Appendable buffer, final int value) throws IOException {
@@ -957,8 +924,6 @@ public class DatePattern {
         }
 
         /**
-         * Description inherited from parent class or interface.
-         * <p>
          * Returns the estimated length of the 12-hour field.
          *
          * @return the estimated length
@@ -969,12 +934,11 @@ public class DatePattern {
         }
 
         /**
-         * Description inherited from parent class or interface.
-         * <p>
          * Appends the 12-hour format value (1-12) to the buffer.
          *
          * @param buffer   the buffer to append to
          * @param calendar the calendar containing the hour value
+         * @throws IOException if an I/O error occurs.
          */
         @Override
         public void appendTo(final Appendable buffer, final Calendar calendar) throws IOException {
@@ -986,12 +950,11 @@ public class DatePattern {
         }
 
         /**
-         * Description inherited from parent class or interface.
-         * <p>
          * Appends the 12-hour format value to the buffer.
          *
          * @param buffer the buffer to append to
          * @param value  the value to append
+         * @throws IOException if an I/O error occurs.
          */
         @Override
         public void appendTo(final Appendable buffer, final int value) throws IOException {
@@ -1022,8 +985,6 @@ public class DatePattern {
         }
 
         /**
-         * Description inherited from parent class or interface.
-         * <p>
          * Returns the estimated length of the 24-hour field.
          *
          * @return the estimated length
@@ -1034,12 +995,11 @@ public class DatePattern {
         }
 
         /**
-         * Description inherited from parent class or interface.
-         * <p>
          * Appends the 24-hour format value (1-24) to the buffer.
          *
          * @param buffer   the buffer to append to
          * @param calendar the calendar containing the hour value
+         * @throws IOException if an I/O error occurs.
          */
         @Override
         public void appendTo(final Appendable buffer, final Calendar calendar) throws IOException {
@@ -1051,12 +1011,11 @@ public class DatePattern {
         }
 
         /**
-         * Description inherited from parent class or interface.
-         * <p>
          * Appends the 24-hour format value to the buffer.
          *
          * @param buffer the buffer to append to
          * @param value  the value to append
+         * @throws IOException if an I/O error occurs.
          */
         @Override
         public void appendTo(final Appendable buffer, final int value) throws IOException {
@@ -1087,8 +1046,6 @@ public class DatePattern {
         }
 
         /**
-         * Description inherited from parent class or interface.
-         * <p>
          * Returns the estimated length of the day-in-week field.
          *
          * @return the estimated length
@@ -1099,12 +1056,11 @@ public class DatePattern {
         }
 
         /**
-         * Description inherited from parent class or interface.
-         * <p>
          * Appends the day of week as a number (1=Monday...7=Sunday) to the buffer.
          *
          * @param buffer   the buffer to append to
          * @param calendar the calendar containing the day of week value
+         * @throws IOException if an I/O error occurs.
          */
         @Override
         public void appendTo(final Appendable buffer, final Calendar calendar) throws IOException {
@@ -1113,12 +1069,11 @@ public class DatePattern {
         }
 
         /**
-         * Description inherited from parent class or interface.
-         * <p>
          * Appends the day-in-week value to the buffer.
          *
          * @param buffer the buffer to append to
          * @param value  the value to append
+         * @throws IOException if an I/O error occurs.
          */
         @Override
         public void appendTo(final Appendable buffer, final int value) throws IOException {
@@ -1149,8 +1104,6 @@ public class DatePattern {
         }
 
         /**
-         * Description inherited from parent class or interface.
-         * <p>
          * Returns the estimated length of the week-based year field.
          *
          * @return the estimated length
@@ -1161,12 +1114,11 @@ public class DatePattern {
         }
 
         /**
-         * Description inherited from parent class or interface.
-         * <p>
          * Appends the week-based year value to the buffer.
          *
          * @param buffer   the buffer to append to
          * @param calendar the calendar containing the week year value
+         * @throws IOException if an I/O error occurs.
          */
         @Override
         public void appendTo(final Appendable buffer, final Calendar calendar) throws IOException {
@@ -1178,12 +1130,11 @@ public class DatePattern {
         }
 
         /**
-         * Description inherited from parent class or interface.
-         * <p>
          * Appends the week year value to the buffer.
          *
          * @param buffer the buffer to append to
          * @param value  the week year value to append
+         * @throws IOException if an I/O error occurs.
          */
         @Override
         public void appendTo(final Appendable buffer, final int value) throws IOException {
@@ -1234,8 +1185,6 @@ public class DatePattern {
         }
 
         /**
-         * Description inherited from parent class or interface.
-         * <p>
          * Returns the maximum length of the standard or daylight timezone name.
          *
          * @return the maximum length of the timezone names
@@ -1246,12 +1195,11 @@ public class DatePattern {
         }
 
         /**
-         * Description inherited from parent class or interface.
-         * <p>
          * Appends the timezone name (standard or daylight) to the buffer based on the calendar's DST offset.
          *
          * @param buffer   the buffer to append to
          * @param calendar the calendar containing the timezone information
+         * @throws IOException if an I/O error occurs.
          */
         @Override
         public void appendTo(final Appendable buffer, final Calendar calendar) throws IOException {
@@ -1297,8 +1245,6 @@ public class DatePattern {
         }
 
         /**
-         * Description inherited from parent class or interface.
-         * <p>
          * Returns the length of the timezone offset format.
          *
          * @return {@code 5} for the +/-HHMM or +/-HH:mm format
@@ -1309,12 +1255,11 @@ public class DatePattern {
         }
 
         /**
-         * Description inherited from parent class or interface.
-         * <p>
          * Appends the timezone offset to the buffer in +/-HHMM or +/-HH:mm format.
          *
          * @param buffer   the buffer to append to
          * @param calendar the calendar containing the timezone offset
+         * @throws IOException if an I/O error occurs.
          */
         @Override
         public void appendTo(final Appendable buffer, final Calendar calendar) throws IOException {
@@ -1388,8 +1333,6 @@ public class DatePattern {
         }
 
         /**
-         * Description inherited from parent class or interface.
-         * <p>
          * Returns the length of the ISO 8601 timezone format.
          *
          * @return the length of the format
@@ -1400,12 +1343,11 @@ public class DatePattern {
         }
 
         /**
-         * Description inherited from parent class or interface.
-         * <p>
          * Appends the timezone offset in ISO 8601 format to the buffer.
          *
          * @param buffer   the buffer to append to
          * @param calendar the calendar containing the timezone offset
+         * @throws IOException if an I/O error occurs.
          */
         @Override
         public void appendTo(final Appendable buffer, final Calendar calendar) throws IOException {
@@ -1471,8 +1413,6 @@ public class DatePattern {
         }
 
         /**
-         * Description inherited from parent class or interface.
-         * <p>
          * Computes the hash code for this timezone display key.
          *
          * @return the hash code
@@ -1483,8 +1423,6 @@ public class DatePattern {
         }
 
         /**
-         * Description inherited from parent class or interface.
-         * <p>
          * Checks if this key is equal to another object.
          *
          * @param object the object to compare with

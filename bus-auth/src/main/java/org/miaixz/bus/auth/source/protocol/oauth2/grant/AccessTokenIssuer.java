@@ -103,7 +103,7 @@ public class AccessTokenIssuer {
     private final Augmenter augmenter;
 
     /**
-     * Source-isolated opaque token generation and irreversible key derivation.
+     * Source-isolated opaque token creation and irreversible key derivation.
      */
     private final TokenMaterial tokenMaterial;
 
@@ -1348,6 +1348,18 @@ public class AccessTokenIssuer {
         /**
          * Validates and freezes the internal authorized grant.
          *
+         * @param consumer        verified immutable consumer registration
+         * @param subjectId       authorized subject or client identifier
+         * @param scope           effective non-expanding scope
+         * @param audience        intended resource audience
+         * @param grantType       exact standard grant type that produced this internal grant
+         * @param refreshToken    whether an initial refresh-token family must be created
+         * @param issuedTokenType optional RFC 8693 issued-token-type response value
+         * @param actorSubjectId  optional RFC 8693 acting-subject identifier
+         * @param confirmation    optional safe sender-constraining confirmation identifier
+         * @param openIdBinding   optional OpenID Connect authorization context inherited from the original code
+         * @param authorizationId optional existing authorization identifier; initial grants allocate one before
+         *                        issuance
          * @throws IllegalArgumentException if required text, a collection, or an optional container is invalid
          */
         public Grant {

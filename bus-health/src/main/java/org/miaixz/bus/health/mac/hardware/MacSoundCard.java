@@ -20,8 +20,17 @@
 package org.miaixz.bus.health.mac.hardware;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
+import com.sun.jna.platform.mac.IOKit.IOIterator;
+import com.sun.jna.platform.mac.IOKit.IORegistryEntry;
+import com.sun.jna.platform.mac.IOKitUtil;
+
+import org.miaixz.bus.core.lang.Charset;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.annotation.Immutable;
 import org.miaixz.bus.health.Builder;
 import org.miaixz.bus.health.Parsing;
@@ -46,6 +55,21 @@ final class MacSoundCard extends AbstractSoundCard {
     private static final String APPLE = "Apple Inc.";
 
     /**
+     * Intel Mac audio-driver property list.
+     */
+    private static final String APPLE_HDA_PLIST = "/System/Library/Extensions/AppleHDA.kext/Contents/Info.plist";
+
+    /**
+     * Apple Silicon embedded-audio driver property list.
+     */
+    private static final String EMBEDDED_AUDIO_PLIST = "/System/Library/Extensions/AppleEmbeddedAudio.kext/Contents/Info.plist";
+
+    /**
+     * Device-tree compatible prefix identifying an audio control chip.
+     */
+    private static final String AUDIO_CONTROL_PREFIX = "audio-control,";
+
+    /**
      * Constructor for MacSoundCard.
      *
      * @param kernelVersion The kernel version of the sound card driver.
@@ -62,37 +86,73 @@ final class MacSoundCard extends AbstractSoundCard {
      * @return A list of {@link MacSoundCard} objects representing the sound cards.
      */
     public static List<SoundCard> getSoundCards() {
-        List<SoundCard> soundCards = new ArrayList<>();
+        List<String> hdaPlist = Builder.readFile(APPLE_HDA_PLIST, false);
+        if (!hdaPlist.isEmpty()) {
+            String version = plistValue(hdaPlist, "com.apple.driver.AppleHDAController");
+            String kernelVersion = version.isEmpty() ? "AppleHDAController" : "AppleHDAController " + version;
+            return Collections.singletonList(new MacSoundCard(kernelVersion, APPLE, "AppleHDACodec"));
+        }
+        String version = plistValue(Builder.readFile(EMBEDDED_AUDIO_PLIST, false), "CFBundleShortVersionString");
+        String kernelVersion = version.isEmpty() ? "AppleEmbeddedAudio" : "AppleEmbeddedAudio " + version;
+        return queryAudioControlChips(kernelVersion);
+    }
 
-        // /System/Library/Extensions/AppleHDA.kext/Contents/Info.plist
-
-        // ..... snip ....
-        // <dict>
-        // <key>com.apple.driver.AppleHDAController</key>
-        // <string>1.7.2a1</string>
-
-        String manufacturer = APPLE;
-        String kernelVersion = "AppleHDAController";
-        String codec = "AppleHDACodec";
-
-        boolean version = false;
-        String versionMarker = "<key>com.apple.driver.AppleHDAController</key>";
-
-        for (final String checkLine : Builder
-                .readFile("/System/Library/Extensions/AppleHDA.kext/Contents/Info.plist", false)) {
-            if (checkLine.contains(versionMarker)) {
-                version = true;
-                continue;
+    /**
+     * Lists distinct Apple Silicon audio chips from IOKit's I2C device registry.
+     *
+     * @param kernelVersion the embedded-audio driver version
+     * @return sound cards representing distinct audio chip parts
+     */
+    private static List<SoundCard> queryAudioControlChips(String kernelVersion) {
+        Map<String, String> nameByPart = new LinkedHashMap<>();
+        IOIterator iterator = IOKitUtil.getMatchingServices("AppleARMIICDevice");
+        if (iterator == null) {
+            return Collections.emptyList();
+        }
+        try {
+            IORegistryEntry entry = iterator.next();
+            while (entry != null) {
+                try {
+                    byte[] data = entry.getByteArrayProperty("compatible");
+                    String compatible = data == null ? Normal.EMPTY : Parsing.decodeNulTerminated(data, Charset.UTF_8);
+                    if (compatible.startsWith(AUDIO_CONTROL_PREFIX)) {
+                        String part = compatible.substring(AUDIO_CONTROL_PREFIX.length());
+                        String name = Parsing.getStringValueOrUnknown(entry.getName());
+                        String known = nameByPart.get(part);
+                        if (!part.isEmpty() && (known == null || name.length() < known.length())) {
+                            nameByPart.put(part, name);
+                        }
+                    }
+                } finally {
+                    entry.release();
+                }
+                entry = iterator.next();
             }
-            if (version) {
-                kernelVersion = "AppleHDAController "
-                        + Parsing.getTextBetweenStrings(checkLine, "<string>", "</string>");
-                version = false;
+        } finally {
+            iterator.release();
+        }
+        List<SoundCard> soundCards = new ArrayList<>(nameByPart.size());
+        for (Map.Entry<String, String> entry : nameByPart.entrySet()) {
+            soundCards.add(new MacSoundCard(kernelVersion, entry.getValue(), entry.getKey()));
+        }
+        return soundCards;
+    }
+
+    /**
+     * Reads the string value following a key in an XML property list.
+     *
+     * @param plist the property-list lines
+     * @param key   the key whose value to read
+     * @return the value, or an empty string when the key is absent
+     */
+    static String plistValue(List<String> plist, String key) {
+        String marker = "<key>" + key + "</key>";
+        for (int index = Normal._0; index < plist.size() - Normal._1; index++) {
+            if (plist.get(index).contains(marker)) {
+                return Parsing.getTextBetweenStrings(plist.get(index + Normal._1), "<string>", "</string>").trim();
             }
         }
-        soundCards.add(new MacSoundCard(kernelVersion, manufacturer, codec));
-
-        return soundCards;
+        return Normal.EMPTY;
     }
 
 }

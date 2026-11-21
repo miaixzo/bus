@@ -51,6 +51,12 @@ public record RedNoteOptions(Vendor.Id vendor, Vendor.Variant variant, String cl
     /**
      * Validates and freezes one RedNote marketing registration without resolving its secret.
      *
+     * @param vendor      exact RedNote platform identifier
+     * @param variant     exact marketing variant
+     * @param clientId    marketing application identifier
+     * @param credential  external application-secret reference
+     * @param redirectUri exact callback URI registered for authorization
+     * @param scopes      ordered official marketing scopes, or empty to use the manifest default
      * @throws IllegalArgumentException if a required component, container, or scope is {@code null} or blank
      * @throws ValidateException        if routing, credential, callback, scope vocabulary, or identity coverage is
      *                                  invalid

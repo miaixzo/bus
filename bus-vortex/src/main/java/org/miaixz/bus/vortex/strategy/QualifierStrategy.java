@@ -22,8 +22,12 @@ package org.miaixz.bus.vortex.strategy;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ServerWebExchange;
 
 import org.miaixz.bus.core.Order;
@@ -31,6 +35,7 @@ import org.miaixz.bus.core.basic.normal.Consts;
 import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.bean.copier.CopyOptions;
 import org.miaixz.bus.core.lang.EnumValue;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.xyz.BeanKit;
@@ -38,6 +43,8 @@ import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.cortex.Assets;
 import org.miaixz.bus.cortex.Keying;
 import org.miaixz.bus.cortex.Type;
+import org.miaixz.bus.errors.transport.http.RouteFailure;
+import org.miaixz.bus.errors.transport.reactive.ReactiveErrorHandler;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.vortex.Args;
 import org.miaixz.bus.vortex.Channel;
@@ -113,7 +120,7 @@ public class QualifierStrategy extends AbstractStrategy {
                         method,
                         version,
                         verb);
-                return Mono.error(new ValidateException(ErrorCode._100800));
+                return Mono.error(routeMiss(exchange, requestRoute, ErrorCode._100800));
             })).flatMap(match -> {
                 Assets assets = match.assets();
                 context.setAssets(assets);
@@ -121,7 +128,7 @@ public class QualifierStrategy extends AbstractStrategy {
                 Logger.info(
                         true,
                         "Vortex",
-                        "Asset resolved: strategy=qualifier, clientIp={}, type={}, appId={}, method={}, version={}, verb={}, policy={}, signing={}, mode={}, host={}, port={}, path={}, url={}",
+                        "Asset resolved: strategy=qualifier, clientIp={}, type={}, appId={}, method={}, version={}, verb={}, policy={}, signing={}, mode={}, instances={}, url={}",
                         context.getX_request_ip(),
                         assets.getType(),
                         assets.getApp_id(),
@@ -131,24 +138,12 @@ public class QualifierStrategy extends AbstractStrategy {
                         assets.getPolicy(),
                         assets.getSigning(),
                         assets.getProtocol(),
-                        assets.getHost(),
-                        assets.getPort(),
-                        assets.getPath(),
+                        assets.getInstances() == null ? Normal._0 : assets.getInstances().size(),
                         assets.getUrl());
                 Mono<Void> validationMono = this.method(context, assets);
-                Mono<Void> authMono = !Consts.ZERO.equals(assets.getPolicy()) ? Mono.defer(() -> {
-                    if (Boolean.TRUE.equals(exchange.getAttribute(Context.JSON_ARRAY_BODY_ATTRIBUTE))) {
-                        // The array body is preserved. Query identity claims must never survive verification as
-                        // fallback values for absent principal attributes; routing coordinates stay unchanged.
-                        context.getParameters().keySet().removeIf(name -> {
-                            String key = StringKit.toLowerCase(name);
-                            return key.startsWith("x_user_") || key.startsWith("x_tenant_")
-                                    || key.startsWith("x_space_") || key.startsWith("x_role_")
-                                    || key.startsWith("x_duty_") || key.equals("x_raw_data");
-                        });
-                    }
-                    return this.authorize(context);
-                }) : Mono.empty();
+                Mono<Void> authMono = !Consts.ZERO.equals(assets.getPolicy())
+                        ? Mono.defer(() -> this.authorize(context))
+                        : Mono.empty();
                 return validationMono.then(authMono).then(finalizeParameters(exchange, context));
             }).then(
                     Mono.fromRunnable(
@@ -190,6 +185,30 @@ public class QualifierStrategy extends AbstractStrategy {
         String version = this.version(exchange, context);
         Integer verb = context.getHttpMethod() == null ? null : context.getHttpMethod().verb();
         return Keying.RegistrySpec.route(null, type, appId, method, version, verb);
+    }
+
+    /**
+     * Supplies route-specific status and headers for a confirmed lookup miss. The original validation code remains
+     * available to legacy clients.
+     *
+     * @param exchange gateway exchange with its selected policy
+     * @param route    exact request coordinates used for lookup
+     * @param legacy   original lookup failure code
+     * @return routing failure or the original validation failure for an incomplete lookup
+     */
+    protected ValidateException routeMiss(ServerWebExchange exchange, Keying.RegistrySpec route, Errors legacy) {
+        if (!route.routable()) {
+            return new ValidateException(legacy);
+        }
+        if (ReactiveErrorHandler.needsRouteMethodFacts(exchange)) {
+            Set<HttpMethod> methods = this.registry.publicMethods(route);
+            if (!methods.isEmpty()) {
+                HttpHeaders headers = new HttpHeaders();
+                headers.setAllow(methods);
+                return new RouteFailure(legacy, HttpStatus.METHOD_NOT_ALLOWED, headers);
+            }
+        }
+        return new RouteFailure(legacy, HttpStatus.NOT_FOUND, HttpHeaders.EMPTY);
     }
 
     /**

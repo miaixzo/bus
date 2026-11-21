@@ -241,6 +241,7 @@ public class FixLO2UN extends SimpleFileVisitor<Path> {
             Path dstFile(Path srcFile, Path srcPath, Path destPath) {
                 return destPath.resolve(srcFile == srcPath ? srcFile.getFileName() : srcPath.relativize(srcFile));
             }
+
         };
 
         /**

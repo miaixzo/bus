@@ -35,6 +35,8 @@ public record Http2Policy(int maxMultiplexStreams) implements Policy {
 
     /**
      * Validates the stream limit.
+     *
+     * @param maxMultiplexStreams positive maximum logical streams retained by one destination
      */
     public Http2Policy {
         if (maxMultiplexStreams <= 0) {

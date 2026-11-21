@@ -4,7 +4,7 @@
     "metadata-version": "2.21.0",
     "source-code-url": "https://repo.maven.apache.org/maven2/com/fasterxml/jackson/datatype/jackson-datatype-jsr310/$version$/jackson-datatype-jsr310-$version$-sources.jar",
     "repository-url": "https://github.com/FasterXML/jackson-modules-java8",
-    "description": "Jackson 2 constructor registration used by Temporal default data conversion.",
+    "description": "Add-on module to support JSR-310 (Java 8 Date & Time API) data types.",
     "tested-versions": [
       "2.21.0",
       "2.21.5"

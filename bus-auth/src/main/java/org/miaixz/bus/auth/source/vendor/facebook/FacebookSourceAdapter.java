@@ -877,6 +877,11 @@ public class FacebookSourceAdapter implements VendorAdapter {
         /**
          * Validates the exact success or resource-owner denial branch.
          *
+         * @param code             authorization code for a successful callback
+         * @param state            mandatory browser correlation value
+         * @param error            OAuth error for a denied callback
+         * @param errorDescription provider diagnostic for a denied callback
+         * @param errorReason      Facebook denial reason
          * @throws IllegalArgumentException if the state is blank
          * @throws ValidateException        if members do not form one exact supported branch
          */
@@ -913,6 +918,8 @@ public class FacebookSourceAdapter implements VendorAdapter {
         /**
          * Validates one private Facebook token success value.
          *
+         * @param accessToken sensitive access token
+         * @param expiresIn   positive access-token lifetime in seconds
          * @throws IllegalArgumentException if the access token is blank
          * @throws ValidateException        if the lifetime is not positive
          */

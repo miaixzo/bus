@@ -34,6 +34,7 @@ module bus.cache {
     requires java.sql;
 
     requires bus.core;
+    requires bus.errors;
     requires bus.extra;
     requires bus.logger;
     requires bus.proxy;

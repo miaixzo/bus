@@ -53,6 +53,13 @@ public record AlipayOptions(Vendor.Id vendor, Vendor.Variant variant, String cli
     /**
      * Validates and freezes one Alipay Source configuration without resolving key material.
      *
+     * @param vendor            exact Alipay routing identifier
+     * @param variant           exact Alipay variant
+     * @param clientId          Alipay application identifier
+     * @param credential        external private signing-key reference
+     * @param redirectUri       exact registered callback URI
+     * @param scopes            ordered authorization scopes
+     * @param verificationKeyId external Alipay public verification-key identifier
      * @throws IllegalArgumentException if a required value is null or blank
      * @throws ValidateException        if routing or credential type differs from the frozen manifest
      */

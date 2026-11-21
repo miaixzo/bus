@@ -101,11 +101,8 @@ public class CircleProvider extends AbstractProvider {
     }
 
     /**
-     * Description inherited from parent class or interface.
-     * <p>
      * Creates a CAPTCHA image with circular interference patterns. The image is rendered with random circles as visual
      * interference and the provided code is drawn in colorful text.
-     * </p>
      *
      * @param code the CAPTCHA code to render
      * @return the generated CAPTCHA image with circular interference

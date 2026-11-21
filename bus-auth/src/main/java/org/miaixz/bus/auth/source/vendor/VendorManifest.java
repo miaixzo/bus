@@ -322,6 +322,15 @@ public interface VendorManifest<O extends VendorOptions<?>> {
         /**
          * Validates and freezes one platform variant.
          *
+         * @param platform           stable identifier of the owning platform manifest
+         * @param variant            stable platform variant identifier
+         * @param protocol           actual industry-standard or proprietary wire protocol
+         * @param pkce               immutable platform PKCE policy
+         * @param credentialType     exact credential material required by this variant
+         * @param defaultScopes      ordered framework defaults for authorization requests
+         * @param targets            official fixed or constrained-template platform targets
+         * @param capabilityManifest fully implemented capability manifest
+         * @param deviations         documented platform deviations from the selected protocol
          * @throws IllegalArgumentException if a component or collection item is {@code null}
          */
         public Variant {

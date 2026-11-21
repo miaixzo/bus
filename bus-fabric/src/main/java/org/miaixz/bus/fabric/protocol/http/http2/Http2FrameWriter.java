@@ -224,6 +224,8 @@ final class Http2FrameWriter implements AutoCloseable {
 
     /**
      * Emits and flushes pending frames once while leaving closure of the externally owned sink to the connection.
+     *
+     * @throws IOException if an underlying input or output operation fails
      */
     @Override
     public void close() throws IOException {

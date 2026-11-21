@@ -227,6 +227,7 @@ public class PrometheusProvider implements Provider {
             public String contentType() {
                 return Builder.PROMETHEUS_CONTENT_TYPE;
             }
+
         };
         this.capabilities = new ProviderCapabilities(true, Optional.of(scrape), Optional.empty());
         this.scheduler = Executors.newSingleThreadScheduledExecutor(task -> {
@@ -461,6 +462,7 @@ public class PrometheusProvider implements Provider {
                 public long count() {
                     return collector.labelValues(labelValues(finalTags)).getLongValue();
                 }
+
             };
         });
     }
@@ -505,6 +507,7 @@ public class PrometheusProvider implements Provider {
      * @param stateObj object whose state is sampled on each read
      * @param fn       function to extract a double value from the state object
      * @param tags     optional tags
+     * @param <T>      state object type sampled by the gauge
      * @return a Gauge backed by a Prometheus Gauge
      */
     @Override
@@ -632,6 +635,7 @@ public class PrometheusProvider implements Provider {
                 public TimerSnapshot snapshot() {
                     return mirror.snapshot();
                 }
+
             };
         });
     }
@@ -703,6 +707,7 @@ public class PrometheusProvider implements Provider {
                 public TimerSnapshot snapshot() {
                     return mirror.snapshot();
                 }
+
             };
         });
     }
@@ -816,6 +821,8 @@ public class PrometheusProvider implements Provider {
 
     /**
      * Returns the provider-owned counters.
+     *
+     * @return snapshot of the provider-owned counters
      */
     @Override
     public Iterable<org.miaixz.bus.metrics.nimble.Counter> counters() {
@@ -824,6 +831,8 @@ public class PrometheusProvider implements Provider {
 
     /**
      * Returns the provider-owned legacy meters.
+     *
+     * @return snapshot of the provider-owned rate meters
      */
     @Override
     public Iterable<Meter> meters() {
@@ -832,6 +841,8 @@ public class PrometheusProvider implements Provider {
 
     /**
      * Returns the provider-owned gauges.
+     *
+     * @return snapshot of the provider-owned gauges
      */
     @Override
     public Iterable<Gauge> gauges() {
@@ -840,6 +851,8 @@ public class PrometheusProvider implements Provider {
 
     /**
      * Returns the provider-owned timers.
+     *
+     * @return snapshot of the provider-owned timers
      */
     @Override
     public Iterable<Timer> timers() {
@@ -848,6 +861,8 @@ public class PrometheusProvider implements Provider {
 
     /**
      * Returns the provider-owned histograms.
+     *
+     * @return snapshot of the provider-owned histograms
      */
     @Override
     public Iterable<org.miaixz.bus.metrics.nimble.Histogram> histograms() {
@@ -856,6 +871,8 @@ public class PrometheusProvider implements Provider {
 
     /**
      * Returns the provider-owned LLM timers.
+     *
+     * @return snapshot of the provider-owned LLM timers
      */
     @Override
     public Iterable<LlmTimer> llmTimers() {
@@ -939,6 +956,7 @@ public class PrometheusProvider implements Provider {
         private void tick() {
             rates.tick();
         }
+
     }
 
     /**
@@ -991,6 +1009,7 @@ public class PrometheusProvider implements Provider {
                     });
             return builder.build();
         }
+
     }
 
     /**
@@ -1091,6 +1110,7 @@ public class PrometheusProvider implements Provider {
                 lease.close();
             }
         }
+
     }
 
     /**
@@ -1160,6 +1180,7 @@ public class PrometheusProvider implements Provider {
                 diagnostics.collectionError("prometheus", "invalid_point");
             }
         }
+
     }
 
 }

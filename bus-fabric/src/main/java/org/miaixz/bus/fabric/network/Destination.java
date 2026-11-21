@@ -300,6 +300,8 @@ public class Destination {
 
     /**
      * Computes the immutable connection-key hash once during construction.
+     *
+     * @return hash code of the immutable connection-key coordinates
      */
     private int computeHashCode() {
         int result = 31 * protocol.hashCode() + address.hashCode();

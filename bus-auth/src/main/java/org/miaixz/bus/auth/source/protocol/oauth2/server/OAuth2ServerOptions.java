@@ -117,6 +117,29 @@ public record OAuth2ServerOptions(String issuer, Optional<Endpoint> authorizatio
 
     /**
      * Normalizes immutable collections and enforces endpoint, grant, lifetime, PKCE, and rotation invariants.
+     *
+     * @param issuer                              authorization server issuer identifier
+     * @param authorizationEndpoint               optional authorization endpoint
+     * @param tokenEndpoint                       optional token endpoint
+     * @param introspectionEndpoint               optional token introspection endpoint
+     * @param revocationEndpoint                  optional token revocation endpoint
+     * @param deviceAuthorizationEndpoint         optional device authorization endpoint
+     * @param deviceVerificationUri               optional end-user verification URI required by the device
+     *                                            authorization grant
+     * @param authorizationServerMetadataEndpoint optional authorization server metadata endpoint
+     * @param scopesSupported                     scope tokens available for client registration
+     * @param grantTypesSupported                 exact enabled standard grant types
+     * @param tokenEndpointAuthMethodsSupported   exact token endpoint authentication methods
+     * @param authorizationCodeLifetime           maximum authorization code lifetime
+     * @param accessTokenLifetime                 access token lifetime
+     * @param refreshTokenLifetime                refresh token family lifetime
+     * @param deviceCodeLifetime                  device and user code lifetime
+     * @param devicePollingInterval               minimum token polling interval
+     * @param pkceRequired                        whether every authorization-code request requires PKCE
+     * @param refreshTokenRotationRequired        whether every refresh use rotates the token family
+     * @param dpopSupported                       whether the authorization server can issue DPoP-constrained access
+     *                                            tokens
+     * @param federatedJwtEnabled                 whether explicit federated machine JWT authentication is enabled
      */
     public OAuth2ServerOptions {
         issuer = requireHttpsIssuer(issuer);

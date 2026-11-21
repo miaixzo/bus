@@ -34,6 +34,10 @@ public record AttributeDescriptor<T>(String key, AttributeType type, boolean str
 
     /**
      * Validates the schema entry.
+     *
+     * @param key            attribute key
+     * @param type           value type
+     * @param strictIdentity whether cardinality overflow must reject this identity instead of merging it
      */
     public AttributeDescriptor {
         if (key == null || key.isBlank()) {

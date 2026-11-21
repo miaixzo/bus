@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.cortex.bridge;
 
+import java.util.List;
 import java.util.Objects;
 
 import org.miaixz.bus.cortex.Assets;
@@ -52,9 +53,7 @@ public class ApiAssetsConverter {
             throw new IllegalArgumentException("Instance application does not match the API definition");
         }
         Assets asset = RegistryAssets.copy(service);
-        asset.setId(instance.getChecksum());
-        asset.setHost(instance.getHost());
-        asset.setPort(instance.getPort());
+        asset.setInstances(List.of(instance));
         asset.setWeight(instance.getWeight());
         return asset;
     }

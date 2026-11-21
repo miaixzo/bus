@@ -28,6 +28,7 @@ import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.session.ResultHandler;
 import org.apache.ibatis.session.RowBounds;
 
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.mapper.Args;
@@ -159,19 +160,19 @@ public class AuditHandler<T> extends ScopedProviderHandler<T, AuditConfig, Audit
         boolean logParameters = Boolean.parseBoolean(
                 properties.getProperty(
                         dsPrefix + Args.AUDIT_LOG_PARAMETERS,
-                        properties.getProperty(sharedPrefix + Args.AUDIT_LOG_PARAMETERS, "true")));
+                        properties.getProperty(sharedPrefix + Args.AUDIT_LOG_PARAMETERS, Normal.TRUE)));
         boolean logResults = Boolean.parseBoolean(
                 properties.getProperty(
                         dsPrefix + Args.AUDIT_LOG_RESULTS,
-                        properties.getProperty(sharedPrefix + Args.AUDIT_LOG_RESULTS, "false")));
+                        properties.getProperty(sharedPrefix + Args.AUDIT_LOG_RESULTS, Normal.FALSE)));
         boolean logAllSql = Boolean.parseBoolean(
                 properties.getProperty(
                         dsPrefix + Args.AUDIT_LOG_ALL_SQL,
-                        properties.getProperty(sharedPrefix + Args.AUDIT_LOG_ALL_SQL, "false")));
+                        properties.getProperty(sharedPrefix + Args.AUDIT_LOG_ALL_SQL, Normal.FALSE)));
         boolean printConsole = Boolean.parseBoolean(
                 properties.getProperty(
                         dsPrefix + Args.AUDIT_PRINT_CONSOLE,
-                        properties.getProperty(sharedPrefix + Args.AUDIT_PRINT_CONSOLE, "false")));
+                        properties.getProperty(sharedPrefix + Args.AUDIT_PRINT_CONSOLE, Normal.FALSE)));
 
         return AuditConfig.builder().slowSqlThreshold(slowSqlThreshold).logParameters(logParameters).provider(provider)
                 .logResults(logResults).logAllSql(logAllSql).printConsole(printConsole).build();

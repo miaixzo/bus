@@ -65,6 +65,11 @@ public class SentinelRequestHandler implements HandlerInterceptor {
 
     /**
      * Records only correlation metadata and aggregate input counts.
+     *
+     * @param request  current HTTP request
+     * @param response current HTTP response
+     * @param handler  selected request handler
+     * @return whether request processing should continue
      */
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
@@ -88,6 +93,11 @@ public class SentinelRequestHandler implements HandlerInterceptor {
 
     /**
      * Records completion status and elapsed time without headers, parameter values, or body content.
+     *
+     * @param request   current HTTP request
+     * @param response  current HTTP response
+     * @param handler   selected request handler
+     * @param exception failure raised during request processing, or null on success
      */
     @Override
     public void afterCompletion(

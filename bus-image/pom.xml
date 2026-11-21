@@ -83,6 +83,10 @@
     <dependencies>
         <dependency>
             <groupId>org.miaixz</groupId>
+            <artifactId>bus-errors</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.miaixz</groupId>
             <artifactId>bus-crypto</artifactId>
             <optional>true</optional>
         </dependency>

@@ -514,9 +514,10 @@ public class IOD extends ArrayList<IOD.DataElement> {
         protected final ArrayList<Condition> childs = new ArrayList<>();
 
         /**
-         * Adds a child condition to this composite condition.
+         * Tests whether the attributes satisfy this composite condition.
          *
          * @param attrs the child condition to add
+         * @return whether the supplied attributes satisfy this composite condition
          */
         public abstract boolean match(Attributes attrs);
 
@@ -547,7 +548,9 @@ public class IOD extends ArrayList<IOD.DataElement> {
         }
 
         /**
-         * Description inherited from parent class or interface.
+         * Checks if the condition is empty (e.g., a composite condition with no children).
+         *
+         * @return {@code true} if empty, {@code false} otherwise.
          */
         @Override
         public boolean isEmpty() {
@@ -1117,6 +1120,12 @@ public class IOD extends ArrayList<IOD.DataElement> {
         /**
          * Handles the start of a {@code <DataElement>} element.
          *
+         * @param tagStr         hexadecimal DICOM tag text
+         * @param vrStr          DICOM value-representation name
+         * @param typeStr        IOD data-element requirement type
+         * @param vmStr          DICOM value-multiplicity expression
+         * @param items          allowed sequence-item count expression
+         * @param valueNumberStr one-based value-number expression
          * @throws SAXException on parsing errors.
          */
         private void startDataElement(
@@ -1164,6 +1173,10 @@ public class IOD extends ArrayList<IOD.DataElement> {
 
         /**
          * Parses the DataElementType from a string.
+         *
+         * @param s XML attribute text to parse
+         * @return IOD requirement type represented by the attribute text
+         * @throws SAXException if the IOD element or attribute is invalid for the supported schema
          */
         private DataElementType typeOf(String s) throws SAXException {
             if (s == null)
@@ -1177,6 +1190,10 @@ public class IOD extends ArrayList<IOD.DataElement> {
 
         /**
          * Parses the VR from a string.
+         *
+         * @param s XML attribute text to parse
+         * @return DICOM value representation represented by the attribute text
+         * @throws SAXException if the IOD element or attribute is invalid for the supported schema
          */
         private VR vrOf(String s) throws SAXException {
             try {
@@ -1190,6 +1207,10 @@ public class IOD extends ArrayList<IOD.DataElement> {
 
         /**
          * Parses the DICOM tag from a hex string.
+         *
+         * @param s XML attribute text to parse
+         * @return integer DICOM tag parsed from hexadecimal text
+         * @throws SAXException if the IOD element or attribute is invalid for the supported schema
          */
         private int tagOf(String s) throws SAXException {
             try {
@@ -1203,6 +1224,10 @@ public class IOD extends ArrayList<IOD.DataElement> {
 
         /**
          * Parses a tag path (e.g., "00100010/00400009") into an array of integer tags.
+         *
+         * @param s XML attribute text to parse
+         * @return ordered DICOM tags forming the attribute path
+         * @throws SAXException if the IOD element or attribute is invalid for the supported schema
          */
         private int[] tagPathOf(String s) throws SAXException {
             String[] ss = Builder.split(s, Symbol.C_SLASH);
@@ -1221,6 +1246,11 @@ public class IOD extends ArrayList<IOD.DataElement> {
 
         /**
          * Parses the value number from a string.
+         *
+         * @param s   XML attribute text to parse
+         * @param def default value used when the attribute is absent
+         * @return parsed value number, or the supplied default if absent
+         * @throws SAXException if the IOD element or attribute is invalid for the supported schema
          */
         private int valueNumberOf(String s, int def) throws SAXException {
             try {
@@ -1232,6 +1262,9 @@ public class IOD extends ArrayList<IOD.DataElement> {
 
         /**
          * Parses the matchNotPresent boolean flag from a string.
+         *
+         * @param s XML attribute text to parse
+         * @return whether an absent attribute should satisfy the condition
          */
         private boolean matchNotPresentOf(String s) {
             return s != null && s.equalsIgnoreCase("true");
@@ -1239,6 +1272,8 @@ public class IOD extends ArrayList<IOD.DataElement> {
 
         /**
          * Gets the most recently added DataElement.
+         *
+         * @return most recently added data-element definition
          */
         private DataElement getLastDataElement() {
             IOD iod = iodStack.getLast();
@@ -1247,6 +1282,8 @@ public class IOD extends ArrayList<IOD.DataElement> {
 
         /**
          * Handles the end of a {@code <DataElement>} element.
+         *
+         * @throws SAXException if the IOD element or attribute is invalid for the supported schema
          */
         private void endDataElement() throws SAXException {
             DataElement el = getLastDataElement();
@@ -1274,6 +1311,9 @@ public class IOD extends ArrayList<IOD.DataElement> {
 
         /**
          * Parses a list of strings into an int array.
+         *
+         * @param list integer strings to parse
+         * @return integer values parsed from the list
          */
         private int[] parseInts(List<String> list) {
             int[] is = new int[list.size()];
@@ -1299,6 +1339,11 @@ public class IOD extends ArrayList<IOD.DataElement> {
 
         /**
          * Handles the start of an {@code <Item>} element.
+         *
+         * @param id    identifier assigned to this IOD definition
+         * @param idref identifier of an existing IOD definition to reference
+         * @param type  IOD sequence-item requirement type
+         * @throws SAXException if the IOD element or attribute is invalid for the supported schema
          */
         private void startItem(String id, String idref, String type) throws SAXException {
             IOD iod;
@@ -1336,6 +1381,10 @@ public class IOD extends ArrayList<IOD.DataElement> {
 
         /**
          * Handles the start of an {@code <If>} element.
+         *
+         * @param id    identifier assigned to this IOD definition
+         * @param idref identifier of an existing IOD definition to reference
+         * @throws SAXException if the IOD element or attribute is invalid for the supported schema
          */
         private void startIf(String id, String idref) throws SAXException {
             if (!conditionStack.isEmpty())
@@ -1357,6 +1406,10 @@ public class IOD extends ArrayList<IOD.DataElement> {
 
         /**
          * Handles the start of a condition element (e.g., {@code <And>}, {@code <Present>}).
+         *
+         * @param name name of the SDK field to read
+         * @param cond condition node to push onto the condition stack
+         * @throws SAXException if the IOD element or attribute is invalid for the supported schema
          */
         private void startCondition(String name, Condition cond) throws SAXException {
             if (!(elementConditions || itemConditions))
@@ -1367,6 +1420,9 @@ public class IOD extends ArrayList<IOD.DataElement> {
 
         /**
          * Handles the end of a condition element.
+         *
+         * @param name name of the SDK field to read
+         * @throws SAXException if the IOD element or attribute is invalid for the supported schema
          */
         private void endCondition(String name) throws SAXException {
             Condition cond = conditionStack.removeLast();

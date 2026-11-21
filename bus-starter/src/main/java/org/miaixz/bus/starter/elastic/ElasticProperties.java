@@ -26,6 +26,7 @@ import java.util.List;
 import lombok.Getter;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.bind.ConstructorBinding;
 import org.springframework.boot.context.properties.bind.DefaultValue;
 import org.springframework.validation.annotation.Validated;
 
@@ -73,6 +74,21 @@ public class ElasticProperties {
     private final String schema;
 
     /**
+     * Preferred HTTP protocol version: {@code auto}, {@code 1.1} or {@code 2}.
+     */
+    private final String httpVersion;
+
+    /**
+     * HTTP/2 keepalive PING interval; zero disables keepalive.
+     */
+    private final Duration http2PingInterval;
+
+    /**
+     * HTTP/2 keepalive PING acknowledgement timeout.
+     */
+    private final Duration http2PingTimeout;
+
+    /**
      * Maximum time allowed to establish a connection.
      */
     private final Duration connectTimeout;
@@ -105,19 +121,34 @@ public class ElasticProperties {
      * @param username                 credential-provider username reference
      * @param password                 credential-provider password reference
      * @param schema                   URI scheme
+     * @param httpVersion              preferred HTTP protocol version
+     * @param http2PingInterval        HTTP/2 keepalive PING interval
+     * @param http2PingTimeout         HTTP/2 keepalive PING acknowledgement timeout
      * @param connectTimeout           connection timeout
      * @param socketTimeout            response timeout
      * @param connectionRequestTimeout connection-pool acquisition timeout
      * @param maxConnectTotal          maximum total connections
      * @param maxConnectPerRoute       maximum connections per route
      */
+    @ConstructorBinding
     public ElasticProperties(@DefaultValue("false") boolean enabled, String hosts, String username, String password,
-            @DefaultValue(DEFAULT_SCHEMA) String schema, @DefaultValue("6s") Duration connectTimeout,
-            @DefaultValue("60s") Duration socketTimeout, @DefaultValue("6s") Duration connectionRequestTimeout,
-            @DefaultValue("2000") int maxConnectTotal, @DefaultValue("500") int maxConnectPerRoute) {
+            @DefaultValue(DEFAULT_SCHEMA) String schema, @DefaultValue("auto") String httpVersion,
+            @DefaultValue("30s") Duration http2PingInterval, @DefaultValue("10s") Duration http2PingTimeout,
+            @DefaultValue("6s") Duration connectTimeout, @DefaultValue("60s") Duration socketTimeout,
+            @DefaultValue("6s") Duration connectionRequestTimeout, @DefaultValue("2000") int maxConnectTotal,
+            @DefaultValue("500") int maxConnectPerRoute) {
+        if (http2PingInterval == null || http2PingInterval.isNegative()) {
+            throw new IllegalArgumentException("bus.elastic.http2-ping-interval must not be negative");
+        }
+        if (http2PingTimeout == null || http2PingTimeout.isZero() || http2PingTimeout.isNegative()) {
+            throw new IllegalArgumentException("bus.elastic.http2-ping-timeout must be greater than zero");
+        }
         requirePositive(connectTimeout, "connect-timeout");
         requirePositive(socketTimeout, "socket-timeout");
         requirePositive(connectionRequestTimeout, "connection-request-timeout");
+        if (!"auto".equalsIgnoreCase(httpVersion) && !"1.1".equals(httpVersion) && !"2".equals(httpVersion)) {
+            throw new IllegalArgumentException("bus.elastic.http-version must be one of: auto, 1.1, 2");
+        }
         if (maxConnectTotal <= 0 || maxConnectPerRoute <= 0 || maxConnectPerRoute > maxConnectTotal) {
             throw new IllegalArgumentException(
                     "Elasticsearch connection limits must be positive and per-route <= total");
@@ -143,11 +174,35 @@ public class ElasticProperties {
         this.username = username;
         this.password = password;
         this.schema = schema;
+        this.httpVersion = httpVersion == null ? "auto" : httpVersion;
+        this.http2PingInterval = http2PingInterval;
+        this.http2PingTimeout = http2PingTimeout;
         this.connectTimeout = connectTimeout;
         this.socketTimeout = socketTimeout;
         this.connectionRequestTimeout = connectionRequestTimeout;
         this.maxConnectTotal = maxConnectTotal;
         this.maxConnectPerRoute = maxConnectPerRoute;
+    }
+
+    /**
+     * Creates properties with the historical constructor signature.
+     *
+     * @param enabled                  whether Elasticsearch integration is enabled
+     * @param hosts                    comma-separated host and port pairs
+     * @param username                 credential-provider username reference
+     * @param password                 credential-provider password reference
+     * @param schema                   URI scheme
+     * @param connectTimeout           connection timeout
+     * @param socketTimeout            response timeout
+     * @param connectionRequestTimeout connection-pool acquisition timeout
+     * @param maxConnectTotal          maximum total connections
+     * @param maxConnectPerRoute       maximum connections per route
+     */
+    public ElasticProperties(boolean enabled, String hosts, String username, String password, String schema,
+            Duration connectTimeout, Duration socketTimeout, Duration connectionRequestTimeout, int maxConnectTotal,
+            int maxConnectPerRoute) {
+        this(enabled, hosts, username, password, schema, "auto", Duration.ofSeconds(30), Duration.ofSeconds(10),
+                connectTimeout, socketTimeout, connectionRequestTimeout, maxConnectTotal, maxConnectPerRoute);
     }
 
     /**
@@ -212,6 +267,8 @@ public class ElasticProperties {
     }
 
     /**
+     * Returns a safe diagnostic representation of this configuration.
+     *
      * @return safe diagnostic text
      */
     @Override

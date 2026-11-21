@@ -70,6 +70,14 @@ public record GitLabOptions(Vendor.Id vendor, Vendor.Variant variant, String cli
     /**
      * Validates and freezes one GitLab registration without resolving its external credential.
      *
+     * @param vendor        exact GitLab platform identifier
+     * @param variant       exact default login or Enterprise REST Variant
+     * @param clientId      OAuth application ID or empty for Enterprise management
+     * @param credential    external Client Secret or read-only Token reference
+     * @param redirectUri   exact OAuth redirect or empty for Enterprise management
+     * @param scopes        ordered OAuth scopes or empty for Enterprise management
+     * @param instance      empty for login or constrained GitLab deployment DNS host
+     * @param topLevelGroup empty for login or stable top-level group slug
      * @throws IllegalArgumentException if a required component, container, or scope is {@code null} or blank
      * @throws ValidateException        if routing, credential, callback, or scopes differ from the frozen manifest
      */

@@ -49,6 +49,7 @@ public class AuthenticationRequestEncoder {
      * Creates an OIDC Authentication Request encoder that serializes claims through {@link JsonKit}.
      */
     public AuthenticationRequestEncoder() {
+        // No initialization required.
     }
 
     /**

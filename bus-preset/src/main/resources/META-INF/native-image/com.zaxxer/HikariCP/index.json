@@ -2,7 +2,7 @@
   {
     "latest": true,
     "metadata-version": "7.1.0",
-    "description": "Conditional Bus integration metadata only; supplements upstream metadata without replacing it.",
+    "description": "Ultimate JDBC Connection Pool",
     "tested-versions": [
       "7.1.0"
     ]

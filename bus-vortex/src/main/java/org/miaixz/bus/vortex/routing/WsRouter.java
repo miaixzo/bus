@@ -27,6 +27,9 @@ import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
 import org.miaixz.bus.core.net.Http;
+import org.miaixz.bus.errors.ErrorType;
+import org.miaixz.bus.errors.transport.http.PublicHttpError;
+import org.miaixz.bus.errors.transport.reactive.ReactiveErrorHandler;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.vortex.Context;
@@ -122,19 +125,14 @@ public class WsRouter implements Router<ServerRequest, ServerResponse> {
                     .anyMatch(h -> h.equalsIgnoreCase("websocket"));
 
             if (!isWebSocketUpgrade) {
-                Logger.warn(
-                        true,
-                        "Vortex",
-                        "WebSocket upgrade header missing: protocol=ws, clientIp={}, method={}, path={}, event=WS_NOT_UPGRADE",
-                        ip,
-                        method,
-                        path);
-
-                return ServerResponse.status(HttpStatus.BAD_REQUEST).contentType(MediaType.APPLICATION_JSON).bodyValue(
-                        JsonKit.toJsonString(
-                                Map.of(
-                                        "error",
-                                        "WebSocket upgrade required. Please use WebSocket client to connect to this endpoint.")));
+                return ReactiveErrorHandler.render(
+                        HttpStatus.BAD_REQUEST,
+                        ErrorType.INVALID_REQUEST,
+                        null,
+                        new PublicHttpError("400",
+                                "WebSocket upgrade required. Please use WebSocket client to connect to this endpoint."),
+                        error -> ServerResponse.badRequest().contentType(MediaType.APPLICATION_JSON)
+                                .bodyValue(JsonKit.toJsonString(Map.of("error", error.description()))));
             }
 
             Logger.info(

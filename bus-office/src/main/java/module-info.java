@@ -24,8 +24,8 @@
  * Provides APIs for reading, writing, and transforming common office document formats.
  *
  * <p>
- * Includes CSV processing, Excel readers and writers, streaming spreadsheet parsing, cell editing and formatting,
- * Word documents, presentations, OFD documents, and tabular import and export workflows.
+ * Includes CSV processing, Excel readers and writers, streaming spreadsheet parsing, cell editing and formatting, Word
+ * documents, presentations, OFD documents, and tabular import and export workflows.
  *
  * @author Kimi Liu
  */
@@ -35,6 +35,7 @@ module bus.office {
     requires java.xml;
 
     requires bus.core;
+    requires bus.errors;
     requires bus.logger;
 
     requires static lombok;

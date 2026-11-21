@@ -51,6 +51,9 @@ public class ZoneIdConverter extends AbstractConverter implements MatcherConvert
     /**
      * Match method.
      *
+     * @param targetType The target type.
+     * @param rawType    The raw class of the target type.
+     * @param value      The value to be converted.
      * @return the boolean value
      */
     @Override
@@ -61,6 +64,8 @@ public class ZoneIdConverter extends AbstractConverter implements MatcherConvert
     /**
      * Convertinternal method.
      *
+     * @param targetClass The target class to convert to.
+     * @param value       The non-null value to be converted.
      * @return the ZoneId value
      */
     @Override

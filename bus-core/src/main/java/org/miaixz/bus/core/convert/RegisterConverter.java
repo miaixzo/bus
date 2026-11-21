@@ -93,6 +93,7 @@ public class RegisterConverter extends ConverterWithRoot implements Serializable
     /**
      * Initializes the default converters.
      *
+     * @param rootConverter the root converter for recursive sub-object conversion
      * @return the default converter map
      */
     private static Map<Class<?>, Converter> initDefault(final Converter rootConverter) {
@@ -164,7 +165,10 @@ public class RegisterConverter extends ConverterWithRoot implements Serializable
     /**
      * Convert method.
      *
+     * @param targetType The target type to convert to.
+     * @param value      The value to convert.
      * @return the Object value
+     * @throws ConvertException if the value cannot be converted to the requested target type
      */
     @Override
     public Object convert(final Type targetType, final Object value) throws ConvertException {

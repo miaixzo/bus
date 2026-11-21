@@ -475,6 +475,9 @@ public class FindSCU implements AutoCloseable {
     private void query(Attributes keys) throws IOException, InterruptedException {
         DimseRSPHandler rspHandler = new DimseRSPHandler(as.nextMessageID()) {
 
+            /**
+             * Number of pending C-FIND matches received by this response handler.
+             */
             int numMatches;
 
             @Override
@@ -495,6 +498,7 @@ public class FindSCU implements AutoCloseable {
                     state.setStatus(status);
                 }
             }
+
         };
 
         query(keys, rspHandler);

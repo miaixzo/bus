@@ -529,6 +529,7 @@ public class WeChatManifest implements VendorManifest<WeChatOptions> {
      * Creates the stateless WeChat manifest used by Vendor locator assembly.
      */
     public WeChatManifest() {
+        // No initialization required.
     }
 
     /**

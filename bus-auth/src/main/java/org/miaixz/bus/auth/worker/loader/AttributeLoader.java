@@ -44,6 +44,9 @@ public interface AttributeLoader extends Loader<AttributeLoader.Request, Attribu
 
         /**
          * Validates one complete attribute-loading request.
+         *
+         * @param source  exact Source Blueprint entry requesting the data
+         * @param subject exact external subject key
          */
         public Request {
             Assert.notNull(source, "Attribute source must not be null");

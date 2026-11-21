@@ -122,6 +122,13 @@ public record Timeout(Clock clock, Instant deadline, Settings timeout) {
 
         /**
          * Validates every configured timeout duration.
+         *
+         * @param connect connection-establishment timeout
+         * @param read    individual read timeout
+         * @param write   individual write timeout
+         * @param call    complete transport-call timeout
+         * @param ping    keepalive probe timeout
+         * @param close   graceful-close timeout
          */
         public Settings {
             Assert.notNull(connect, "Authentication connect timeout must not be null");

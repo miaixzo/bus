@@ -394,7 +394,7 @@ public class UrlQuery {
      *     1. If key and value are not null (e.g., "a=1" or "=1"), put them directly.
      *     2. If key is not null and value is null (e.g., "a="), the value is treated as an empty string.
      *     3. If key is null and value is not null (e.g., "1"), the value is treated as the key.
-     *     4. If both key and value are null (e.g., &&), they are ignored.
+     *     4. If both key and value are null (e.g., &amp;&amp;), they are ignored.
      * </pre>
      *
      * @param key     The key; if null, the value is used as the key.

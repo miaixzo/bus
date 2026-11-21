@@ -911,6 +911,7 @@ public class FileType {
             put(HexKit.encodeString("FORM"), "aif");// Musepack, SV8
             put(HexKit.encodeString("icns"), "icns");
         }
+
     };
 
     /**

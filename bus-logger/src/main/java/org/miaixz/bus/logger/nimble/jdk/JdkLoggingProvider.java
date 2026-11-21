@@ -99,7 +99,9 @@ public class JdkLoggingProvider extends AbstractProvider {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Gets the name of this logger.
+     *
+     * @return the name of this logger.
      */
     @Override
     public String getName() {
@@ -107,7 +109,9 @@ public class JdkLoggingProvider extends AbstractProvider {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Checks if logging at the TRACE level is enabled.
+     *
+     * @return {@code true} if TRACE level is enabled, {@code false} otherwise.
      */
     @Override
     public boolean isTraceEnabled() {
@@ -115,7 +119,12 @@ public class JdkLoggingProvider extends AbstractProvider {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Logs a formatted message with a throwable at the TRACE level, specifying the fully qualified class name (FQCN).
+     *
+     * @param fqcn   the fully qualified class name of the logger.
+     * @param t      the throwable to log.
+     * @param format the message format.
+     * @param args   the arguments for the message format.
      */
     @Override
     public void trace(final String fqcn, final Throwable t, final String format, final Object... args) {
@@ -123,7 +132,9 @@ public class JdkLoggingProvider extends AbstractProvider {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Checks if logging at the DEBUG level is enabled.
+     *
+     * @return {@code true} if DEBUG level is enabled, {@code false} otherwise.
      */
     @Override
     public boolean isDebugEnabled() {
@@ -131,7 +142,12 @@ public class JdkLoggingProvider extends AbstractProvider {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Logs a formatted message with a throwable at the DEBUG level, specifying the fully qualified class name (FQCN).
+     *
+     * @param fqcn   the fully qualified class name of the logger.
+     * @param t      the throwable to log.
+     * @param format the message format.
+     * @param args   the arguments for the message format.
      */
     @Override
     public void debug(final String fqcn, final Throwable t, final String format, final Object... args) {
@@ -139,7 +155,9 @@ public class JdkLoggingProvider extends AbstractProvider {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Checks if logging at the INFO level is enabled.
+     *
+     * @return {@code true} if INFO level is enabled, {@code false} otherwise.
      */
     @Override
     public boolean isInfoEnabled() {
@@ -147,7 +165,12 @@ public class JdkLoggingProvider extends AbstractProvider {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Logs a formatted message with a throwable at the INFO level, specifying the fully qualified class name (FQCN).
+     *
+     * @param fqcn   the fully qualified class name of the logger.
+     * @param t      the throwable to log.
+     * @param format the message format.
+     * @param args   the arguments for the message format.
      */
     @Override
     public void info(final String fqcn, final Throwable t, final String format, final Object... args) {
@@ -155,7 +178,9 @@ public class JdkLoggingProvider extends AbstractProvider {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Checks if logging at the WARN level is enabled.
+     *
+     * @return {@code true} if WARN level is enabled, {@code false} otherwise.
      */
     @Override
     public boolean isWarnEnabled() {
@@ -163,7 +188,12 @@ public class JdkLoggingProvider extends AbstractProvider {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Logs a formatted message with a throwable at the WARN level, specifying the fully qualified class name (FQCN).
+     *
+     * @param fqcn   the fully qualified class name of the logger.
+     * @param t      the throwable to log.
+     * @param format the message format.
+     * @param args   the arguments for the message format.
      */
     @Override
     public void warn(final String fqcn, final Throwable t, final String format, final Object... args) {
@@ -171,7 +201,9 @@ public class JdkLoggingProvider extends AbstractProvider {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Checks if logging at the ERROR level is enabled.
+     *
+     * @return {@code true} if ERROR level is enabled, {@code false} otherwise.
      */
     @Override
     public boolean isErrorEnabled() {
@@ -179,7 +211,12 @@ public class JdkLoggingProvider extends AbstractProvider {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Logs a formatted message with a throwable at the ERROR level, specifying the fully qualified class name (FQCN).
+     *
+     * @param fqcn   the fully qualified class name of the logger.
+     * @param t      the throwable to log.
+     * @param format the message format.
+     * @param args   the arguments for the message format.
      */
     @Override
     public void error(final String fqcn, final Throwable t, final String format, final Object... args) {
@@ -187,7 +224,13 @@ public class JdkLoggingProvider extends AbstractProvider {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Logs a message with a throwable at the specified level, providing the fully qualified class name (FQCN).
+     *
+     * @param fqcn   the fully qualified class name of the logger.
+     * @param level  the logging level.
+     * @param t      the throwable to log.
+     * @param format the message format.
+     * @param args   the arguments for the message format.
      */
     @Override
     public void log(
@@ -249,7 +292,9 @@ public class JdkLoggingProvider extends AbstractProvider {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Gets the current logging level.
+     *
+     * @return the current logging level, or {@link Level#OFF} if it cannot be determined.
      */
     @Override
     public org.miaixz.bus.logger.Level getLevel() {

@@ -353,6 +353,7 @@ public class HealthMetrics implements MetricBinder {
         public Optional<ContainerSnapshot> container() {
             return Optional.empty();
         }
+
     }
 
 }

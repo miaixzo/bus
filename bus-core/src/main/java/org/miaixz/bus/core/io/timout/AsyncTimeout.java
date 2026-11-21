@@ -252,7 +252,9 @@ public class AsyncTimeout extends Timeout {
             /**
              * Write method.
              *
-             * @return the void value
+             * @param source    the source buffer to read from
+             * @param byteCount the number of bytes to write
+             * @throws IOException if an underlying input or output operation fails
              */
             @Override
             public void write(Buffer source, long byteCount) throws IOException {
@@ -287,7 +289,7 @@ public class AsyncTimeout extends Timeout {
             /**
              * Flush method.
              *
-             * @return the void value
+             * @throws IOException if an underlying input or output operation fails
              */
             @Override
             public void flush() throws IOException {
@@ -306,7 +308,7 @@ public class AsyncTimeout extends Timeout {
             /**
              * Close method.
              *
-             * @return the void value
+             * @throws IOException if an underlying input or output operation fails
              */
             @Override
             public void close() throws IOException {
@@ -341,6 +343,7 @@ public class AsyncTimeout extends Timeout {
             public String toString() {
                 return "AsyncTimeout.sink(" + sink + Symbol.PARENTHESE_RIGHT;
             }
+
         };
     }
 
@@ -357,7 +360,10 @@ public class AsyncTimeout extends Timeout {
             /**
              * Read method.
              *
+             * @param sink      the sink buffer to write to
+             * @param byteCount the number of bytes to read
              * @return the long value
+             * @throws IOException if an underlying input or output operation fails
              */
             @Override
             public long read(Buffer sink, long byteCount) throws IOException {
@@ -377,7 +383,7 @@ public class AsyncTimeout extends Timeout {
             /**
              * Close method.
              *
-             * @return the void value
+             * @throws IOException if an underlying input or output operation fails
              */
             @Override
             public void close() throws IOException {
@@ -412,6 +418,7 @@ public class AsyncTimeout extends Timeout {
             public String toString() {
                 return "AsyncTimeout.source(" + source + Symbol.PARENTHESE_RIGHT;
             }
+
         };
     }
 
@@ -435,6 +442,7 @@ public class AsyncTimeout extends Timeout {
      * @param cause The original {@link IOException} that occurred, or {@code null}.
      * @return The original {@link IOException} if no timeout occurred, or a new {@link IOException} (potentially
      *         wrapping the original cause) if a timeout occurred.
+     * @throws IOException not thrown by this overload; the original or timeout exception is returned to the caller
      */
     final IOException exit(IOException cause) throws IOException {
         if (!exit())

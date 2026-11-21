@@ -150,6 +150,7 @@ public class SAXWriter implements ImageInputHandler {
                     writeAttribute(tag, vr, value, cs, item);
                     return true;
                 }
+
             }, false);
         } catch (SAXException e) {
             throw e;

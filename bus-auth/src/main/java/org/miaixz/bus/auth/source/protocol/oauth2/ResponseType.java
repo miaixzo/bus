@@ -46,6 +46,7 @@ public record ResponseType(String value) {
     /**
      * Validates the RFC 6749 response-type and response-name productions.
      *
+     * @param value case-sensitive, space-delimited response-type wire value
      * @throws IllegalArgumentException if the value is {@code null} or empty
      * @throws ValidateException        if spacing, characters, or duplicate names violate the response-type grammar
      */

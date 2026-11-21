@@ -1305,6 +1305,7 @@ public class AioNetwork implements AutoCloseable {
             managed.remove(attempt.channel);
             IoKit.closeQuietly(attempt.channel);
         }
+
     }
 
 }

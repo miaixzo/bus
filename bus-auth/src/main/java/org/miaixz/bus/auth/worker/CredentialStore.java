@@ -114,6 +114,12 @@ public interface CredentialStore {
 
         /**
          * Validates isolation fields and the irreversible binding digest.
+         *
+         * @param tenantId      owning tenant identifier
+         * @param ownerId       Provider or Source identifier
+         * @param purpose       stable protocol-specific use label
+         * @param bindingDigest lowercase SHA-256 hexadecimal digest of the opaque protocol binding
+         * @param type          exact stored credential material type
          */
         public Key {
             Assert.notBlank(tenantId, "Dynamic credential tenant id must not be blank");

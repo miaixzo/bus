@@ -514,6 +514,7 @@ public class MultiframeExtractor {
                     list.add("FC");
                 sf.setString(Tag.ScanOptions, VR.CS, list.toArray(new String[list.size()]));
             }
+
         },
 
         /**

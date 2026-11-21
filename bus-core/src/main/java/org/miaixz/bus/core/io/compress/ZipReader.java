@@ -173,6 +173,8 @@ public class ZipReader implements Closeable {
 
     /**
      * Close method.
+     *
+     * @throws InternalException if closing the underlying archive raises an I/O failure
      */
     @Override
     public void close() throws InternalException {

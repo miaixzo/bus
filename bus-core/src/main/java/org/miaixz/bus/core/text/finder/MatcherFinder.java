@@ -52,6 +52,7 @@ public class MatcherFinder extends TextFinder {
     /**
      * Start method.
      *
+     * @param from The starting position for the search (inclusive).
      * @return the int value
      */
     @Override
@@ -77,6 +78,7 @@ public class MatcherFinder extends TextFinder {
     /**
      * End method.
      *
+     * @param start The found starting position.
      * @return the int value
      */
     @Override

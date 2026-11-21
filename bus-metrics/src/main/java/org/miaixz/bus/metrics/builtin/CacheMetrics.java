@@ -75,6 +75,8 @@ public class CacheMetrics {
     /**
      * The instrumented cache class.
      *
+     * @param <K> cache key type
+     * @param <V> cached value type
      * @author Kimi Liu
      */
     private static class InstrumentedCache<K, V> implements CacheX<K, V> {

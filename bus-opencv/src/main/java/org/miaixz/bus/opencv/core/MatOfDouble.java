@@ -166,4 +166,5 @@ public class MatOfDouble extends Mat {
             ab[i] = a[i];
         return Arrays.asList(ab);
     }
+
 }

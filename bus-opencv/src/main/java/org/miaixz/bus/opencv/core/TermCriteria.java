@@ -151,4 +151,5 @@ public class TermCriteria {
     public String toString() {
         return "{ type: " + type + ", maxCount: " + maxCount + ", epsilon: " + epsilon + "}";
     }
+
 }

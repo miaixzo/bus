@@ -37,6 +37,11 @@ public record CpuSnapshot(long physicalCount, long logicalCount, List<CpuTime> t
 
     /**
      * Validates and orders the snapshot.
+     *
+     * @param physicalCount physical processor count
+     * @param logicalCount  logical processor count
+     * @param times         cumulative CPU-mode times
+     * @param frequencies   current logical-processor frequencies
      */
     public CpuSnapshot {
         if (physicalCount < 0 || logicalCount < 0) {
@@ -66,12 +71,17 @@ public record CpuSnapshot(long physicalCount, long logicalCount, List<CpuTime> t
 
         /**
          * Validates the CPU time.
+         *
+         * @param logicalNumber logical processor number
+         * @param mode          normalized CPU mode
+         * @param seconds       cumulative time in seconds
          */
         public CpuTime {
             if (logicalNumber < 0 || !MODES.contains(mode) || !Double.isFinite(seconds) || seconds < 0) {
                 throw new IllegalArgumentException("Invalid CPU time");
             }
         }
+
     }
 
     /**
@@ -84,12 +94,16 @@ public record CpuSnapshot(long physicalCount, long logicalCount, List<CpuTime> t
 
         /**
          * Validates the CPU frequency.
+         *
+         * @param logicalNumber logical processor number
+         * @param hertz         current frequency in hertz
          */
         public CpuFrequency {
             if (logicalNumber < 0 || hertz < 0) {
                 throw new IllegalArgumentException("Invalid CPU frequency");
             }
         }
+
     }
 
 }

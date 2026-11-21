@@ -76,6 +76,9 @@ public class OpcZipOutputStream extends ZipOutputStream {
 
     /**
      * Putnextentry method.
+     *
+     * @param e node to unlink from the deque
+     * @throws IOException if an underlying input or output operation fails
      */
     @Override
     public void putNextEntry(final ZipEntry e) throws IOException {
@@ -90,6 +93,8 @@ public class OpcZipOutputStream extends ZipOutputStream {
 
     /**
      * Closeentry method.
+     *
+     * @throws IOException if an underlying input or output operation fails
      */
     @Override
     public void closeEntry() throws IOException {
@@ -114,6 +119,8 @@ public class OpcZipOutputStream extends ZipOutputStream {
 
     /**
      * Finish method.
+     *
+     * @throws IOException if an underlying input or output operation fails
      */
     @Override
     public void finish() throws IOException {
@@ -154,6 +161,8 @@ public class OpcZipOutputStream extends ZipOutputStream {
 
     /**
      * Close method.
+     *
+     * @throws IOException if an underlying input or output operation fails
      */
     @Override
     public void close() throws IOException {

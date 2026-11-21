@@ -62,6 +62,7 @@ public interface JsonValue extends Serializable {
                             Assert.notNull(value, "JSON object member value must not be null")));
             values = Collections.unmodifiableMap(copy);
         }
+
     }
 
     /**
@@ -86,6 +87,7 @@ public interface JsonValue extends Serializable {
             }
             values = Collections.unmodifiableList(copy);
         }
+
     }
 
     /**
@@ -105,6 +107,7 @@ public interface JsonValue extends Serializable {
         public StringValue {
             Assert.notNull(value, "JSON string value must not be null");
         }
+
     }
 
     /**
@@ -124,6 +127,7 @@ public interface JsonValue extends Serializable {
         public NumberValue {
             Assert.notNull(value, "JSON number value must not be null");
         }
+
     }
 
     /**
@@ -189,6 +193,7 @@ public interface JsonValue extends Serializable {
         public String toString() {
             return Normal.NULL;
         }
+
     }
 
 }

@@ -74,6 +74,7 @@ public final class MountTable {
      * Prevents instantiation.
      */
     private MountTable() {
+        // No initialization required.
     }
 
     /**
@@ -166,6 +167,7 @@ public final class MountTable {
         public String getOptions() {
             return options;
         }
+
     }
 
     /**

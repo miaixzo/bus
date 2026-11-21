@@ -49,6 +49,11 @@ public record ScimServerOptions(URI baseUri, ServiceProviderConfig serviceProvid
     /**
      * Validates the secure service URI, typed discovery associations, and safety limits.
      *
+     * @param baseUri               absolute credential-free HTTPS service base URI
+     * @param serviceProviderConfig standard ServiceProviderConfig exposed by discovery
+     * @param resourceTypes         non-empty registered ResourceType discovery objects
+     * @param maximumRequestBytes   positive maximum request body octets
+     * @param maximumJsonDepth      positive maximum JSON nesting depth
      * @throws IllegalArgumentException if a component or resource type is {@code null}
      * @throws ValidateException        if URI, discovery, resource, or limit invariants are invalid
      */

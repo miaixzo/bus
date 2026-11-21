@@ -43,7 +43,9 @@ public abstract class AbstractFactory implements Factory {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Gets the name of the logging framework. This is used to identify the current logging implementation.
+     *
+     * @return the name of the logging framework.
      */
     @Override
     public String getName() {

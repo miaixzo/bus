@@ -45,6 +45,10 @@ public record OAuth2ErrorResponse(OAuth2ErrorCode error, Optional<String> errorD
     /**
      * Creates and validates an OAuth 2.x error parameter set using RFC 6749 wire syntax.
      *
+     * @param error            required OAuth error code
+     * @param errorDescription optional human-readable diagnostic text
+     * @param errorUri         optional URI-reference identifying explanatory material
+     * @param state            optional request-correlation value returned by an authorization endpoint
      * @throws IllegalArgumentException if a required component or optional container is {@code null}
      * @throws ValidateException        if a present component violates its RFC wire grammar
      */

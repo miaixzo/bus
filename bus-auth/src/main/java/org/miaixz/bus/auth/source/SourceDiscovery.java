@@ -44,7 +44,7 @@ public final class SourceDiscovery {
      * Prevents construction of the unified discovery utility.
      */
     private SourceDiscovery() {
-
+        // No initialization required.
     }
 
     /**
@@ -153,6 +153,9 @@ public final class SourceDiscovery {
 
         /**
          * Validates and detaches both connector families.
+         *
+         * @param protocols protocol connectors in stable protocol order
+         * @param vendors   Vendor connectors in stable platform order
          */
         public Discovered {
             Assert.notNull(protocols, "Discovered protocol connectors must not be null");

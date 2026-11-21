@@ -188,6 +188,8 @@ public class OpenIdTokenResponseCodec {
 
         /**
          * Validates the successful response branch.
+         *
+         * @param response OpenID Connect token response
          */
         public Success {
             Assert.notNull(response, "Decoded OpenID Connect token response must not be null");
@@ -206,6 +208,9 @@ public class OpenIdTokenResponseCodec {
 
         /**
          * Validates the erroneous response branch.
+         *
+         * @param response standard token error response
+         * @param status   original HTTP error status
          */
         public Error {
             Assert.notNull(response, "Decoded OpenID Connect token error must not be null");

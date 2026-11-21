@@ -26,6 +26,8 @@ import java.lang.reflect.Method;
 
 import org.miaixz.bus.core.xyz.ModifierKit;
 import org.miaixz.bus.core.xyz.ReflectKit;
+import org.miaixz.bus.errors.ComponentFailure;
+import org.miaixz.bus.errors.ErrorType;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.proxy.Aspect;
 import org.miaixz.bus.proxy.invoker.Interceptor;
@@ -37,6 +39,11 @@ import org.miaixz.bus.proxy.invoker.Interceptor;
  * @author Kimi Liu
  */
 public class JdkInterceptor extends Interceptor implements InvocationHandler {
+
+    /**
+     * Reports target failures after the aspect decides whether to propagate the existing wrapper.
+     */
+    private static final ComponentFailure FAILURES = new ComponentFailure("bus-proxy", "jdk-invoke");
 
     @Serial
     private static final long serialVersionUID = 2552191151665L;
@@ -93,8 +100,9 @@ public class JdkInterceptor extends Interceptor implements InvocationHandler {
                 // "After-throwing" advice (only catches exceptions from the business logic)
                 if (aspect.afterException(target, method, args, e.getTargetException())) {
                     // Rethrow if the aspect allows it
-                    throw e;
+                    throw FAILURES.propagate(ErrorType.EXECUTION_FAILURE, e);
                 }
+                FAILURES.attempt(ErrorType.EXECUTION_FAILURE, e);
             }
 
             // "After" advice

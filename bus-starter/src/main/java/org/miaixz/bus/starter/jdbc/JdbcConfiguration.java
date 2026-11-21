@@ -23,16 +23,19 @@ import java.util.*;
 
 import javax.sql.DataSource;
 
+import org.springframework.aop.config.AopConfigUtils;
 import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.jdbc.autoconfigure.DataSourceAutoConfiguration;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
+import org.springframework.context.annotation.*;
 import org.springframework.core.env.Environment;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.interceptor.BeanFactoryTransactionAttributeSourceAdvisor;
 
 import com.zaxxer.hikari.HikariDataSource;
 
@@ -52,6 +55,7 @@ import org.miaixz.bus.starter.annotation.EnableJdbc;
 @ConditionalOnClass(value = { HikariDataSource.class })
 @ConditionalOnEnabled(annotation = EnableJdbc.class, prefix = GeniusBuilder.DATASOURCE, matchIfMissing = true)
 @Configuration(proxyBeanMethods = false)
+@Import(JdbcConfiguration.ProxyRegistrar.class)
 @AutoConfigureBefore(value = { DataSourceAutoConfiguration.class })
 public class JdbcConfiguration {
 
@@ -190,6 +194,92 @@ public class JdbcConfiguration {
     @ConditionalOnMissingBean(type = "org.springframework.transaction.PlatformTransactionManager")
     public DataSourceTransactionManager transactionManager(DataSource dataSource) {
         return new DataSourceTransactionManager(dataSource);
+    }
+
+    /**
+     * Creates immutable Bus transaction operations backed by the existing transaction manager.
+     *
+     * @param manager effective application transaction manager
+     * @return framework transaction operations
+     */
+    @Bean
+    @ConditionalOnMissingBean(Transactions.class)
+    public Transactions transactions(PlatformTransactionManager manager) {
+        return new Transactions(manager);
+    }
+
+    /**
+     * Resolves method, class, inherited, and composed Bus transaction declarations.
+     *
+     * @return Bus transaction attribute source
+     */
+    @Bean
+    @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
+    public TransactionAnnotationSource busTransactionAttributeSource() {
+        return new TransactionAnnotationSource();
+    }
+
+    /**
+     * Applies Bus transaction attributes and translates infrastructure failures at the transaction boundary.
+     *
+     * @param source framework transaction declarations
+     * @return transaction advice using the existing manager selection rules
+     */
+    @Bean
+    @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
+    public JdbcTransactionInterceptor busTransactionInterceptor(TransactionAnnotationSource source) {
+        var interceptor = new JdbcTransactionInterceptor();
+        interceptor.setTransactionAttributeSource(source);
+        return interceptor;
+    }
+
+    /**
+     * Registers transaction advice only for methods covered by Bus transaction declarations.
+     *
+     * @param source framework transaction declarations
+     * @return framework transaction advisor
+     */
+    @Bean
+    @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
+    public BeanFactoryTransactionAttributeSourceAdvisor busTransactionAdvisor(TransactionAnnotationSource source) {
+        var advisor = new BeanFactoryTransactionAttributeSourceAdvisor();
+        advisor.setTransactionAttributeSource(source);
+        advisor.setAdviceBeanName("busTransactionInterceptor");
+        return advisor;
+    }
+
+    /**
+     * Discovers Core commit listeners and registers their Spring transaction adapters and AOT hints.
+     *
+     * @return commit listener registration infrastructure
+     */
+    @Bean
+    @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
+    @ConditionalOnMissingBean(AfterCommitListenerProcessor.class)
+    public static AfterCommitListenerProcessor busAfterCommitListenerProcessor() {
+        return new AfterCommitListenerProcessor();
+    }
+
+    /**
+     * Registers the standard proxy infrastructure while preserving the host's proxy preference.
+     *
+     * @author Kimi Liu
+     */
+    static class ProxyRegistrar implements ImportBeanDefinitionRegistrar {
+
+        /**
+         * Installs the infrastructure advisor proxy creator if the context does not already have one.
+         *
+         * @param metadata importing JDBC configuration metadata
+         * @param registry current bean definition registry
+         */
+        @Override
+        public void registerBeanDefinitions(
+                org.springframework.core.type.AnnotationMetadata metadata,
+                BeanDefinitionRegistry registry) {
+            AopConfigUtils.registerAutoProxyCreatorIfNecessary(registry);
+        }
+
     }
 
 }

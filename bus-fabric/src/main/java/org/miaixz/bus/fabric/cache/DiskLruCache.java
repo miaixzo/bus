@@ -148,6 +148,7 @@ public class DiskLruCache implements Closeable, Flushable {
                 }
             }
         }
+
     };
 
     /**
@@ -415,6 +416,7 @@ public class DiskLruCache implements Closeable, Flushable {
                 assert (Thread.holdsLock(DiskLruCache.this));
                 hasJournalErrors = true;
             }
+
         };
         return IoKit.buffer(faultHidingSink);
     }
@@ -956,6 +958,7 @@ public class DiskLruCache implements Closeable, Flushable {
                     removeSnapshot = null;
                 }
             }
+
         };
     }
 
@@ -1117,6 +1120,7 @@ public class DiskLruCache implements Closeable, Flushable {
                     }
                 }
             }
+
         });
 
         /**
@@ -1719,6 +1723,7 @@ public class DiskLruCache implements Closeable, Flushable {
                             detach();
                         }
                     }
+
                 };
             }
         }
