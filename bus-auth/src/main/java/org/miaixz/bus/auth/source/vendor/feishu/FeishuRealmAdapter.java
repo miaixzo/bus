@@ -207,7 +207,10 @@ public class FeishuRealmAdapter implements VendorAdapter {
      * @return immutable user resource
      */
     private static Realm.Resource userResource(final User user, final Instant observedAt) {
-        return new Realm.Resource(new Realm.Key(Realm.Kind.USER, user.id()), Map.of("user_id", user.id()), user.name(),
+        final Map<String, String> identifiers = new LinkedHashMap<>();
+        identifiers.put("user_id", user.id());
+        user.mail().ifPresent(mail -> identifiers.put("mail", mail));
+        return new Realm.Resource(new Realm.Key(Realm.Kind.USER, user.id()), identifiers, user.name(),
                 user.active() ? Realm.State.ACTIVE : Realm.State.INACTIVE, EMPTY_ATTRIBUTES, observedAt);
     }
 
@@ -502,7 +505,8 @@ public class FeishuRealmAdapter implements VendorAdapter {
         }
         final JsonValue.ObjectValue status = requiredObject(value, "status");
         return new User(requiredString(value, "user_id"), requiredString(value, "name"),
-                requiredBoolean(status, "is_activated"), departmentIds, optionalText(value, "leader_user_id"));
+                requiredBoolean(status, "is_activated"), departmentIds, optionalText(value, "leader_user_id"),
+                optionalText(value, "enterprise_email").or(() -> optionalText(value, "email")));
     }
 
     /**
@@ -2767,10 +2771,12 @@ public class FeishuRealmAdapter implements VendorAdapter {
      * @param name          exact user display name
      * @param active        official activation state
      * @param departmentIds stable department identifiers in canonical order
+     * @param mail          optional provider-supplied email, preferring the enterprise mailbox
      * @param leaderId      stable manager user identifier, or empty
      * @author Kimi Liu
      */
-    private record User(String id, String name, boolean active, List<String> departmentIds, Optional<String> leaderId) {
+    private record User(String id, String name, boolean active, List<String> departmentIds, Optional<String> leaderId,
+            Optional<String> mail) {
 
         /**
          * Validates and normalizes one minimal user projection.
@@ -2779,6 +2785,7 @@ public class FeishuRealmAdapter implements VendorAdapter {
          * @param name          exact display name
          * @param active        official activation state
          * @param departmentIds stable department identifiers
+         * @param mail          optional provider-supplied email, preferring the enterprise mailbox
          * @param leaderId      stable manager identifier
          */
         private User {
@@ -2796,6 +2803,7 @@ public class FeishuRealmAdapter implements VendorAdapter {
             ordered.sort(String::compareTo);
             departmentIds = List.copyOf(ordered);
             leaderId = Position.optionalText(leaderId, "Feishu user leader identifier");
+            mail = Position.optionalText(mail, "Feishu user mail");
             if (leaderId.isPresent() && id.equals(leaderId.getOrNull())) {
                 throw new ValidateException("Feishu user must not manage itself");
             }
