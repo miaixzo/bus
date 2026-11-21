@@ -16,7 +16,7 @@ with automated code generation utilities to accelerate development.
 - **Selective Encryption**: Choose specific bytecode or resource files to encrypt, avoiding computational waste
 - **Transparent Runtime**: No need to modify Tomcat, Spring, or other source code
 - **Maven Plugin**: Automatic encryption during packaging with Maven plugin integration
-- **Dependency Encryption**: Support for encrypting dependencies in WEB-INF/lib or BOOT-INF/lib
+- **Dependency Encryption**: Support for encrypting dependencies in BOOT-INF/lib (executable JAR)
 
 ### Code Generation
 
@@ -31,6 +31,22 @@ with automated code generation utilities to accelerate development.
 - **Auto-Generation**: Generate comprehensive database design documentation
 - **Multiple Formats**: Support for HTML and other document formats
 - **Flexible Configuration**: Filter tables by name, prefix, or suffix
+
+## 📦 Supported Archives
+
+| Archive | Status | Notes |
+| --- | --- | --- |
+| Executable JAR (`JarLauncher`) | ✅ Supported | `BOOT-INF/classes/**` and `BOOT-INF/lib/*.jar` are decrypted at startup |
+| Executable JAR (`PropertiesLauncher`) | ✅ Supported | Same layout; `loader.main` / `Start-Class` resolution is unchanged |
+| WAR (`WarLauncher`) | ❌ Not supported | The encryptor has no `WEB-INF/**` handling, so a WAR is neither encrypted nor launchable through the shaded launcher |
+
+> **WAR is not supported.** Do not ship an encrypted WAR built with the current version; WAR support is tracked
+> separately. See `docs/upgrade/spring-boot-4.2.md` for the Spring Boot 4.2 verification notes.
+
+On Spring Boot 3.2+ the launcher materializes a plaintext view of `BOOT-INF/classes` and the encrypted nested jars
+into a temporary directory at start-up (deleted on exit), because Spring Boot reads nested jars directly and walks
+nested directory URLs during class path scanning. This costs about 1-2 seconds for a typical application and requires a
+writable temporary directory.
 
 ## 🚀 Quick Start
 

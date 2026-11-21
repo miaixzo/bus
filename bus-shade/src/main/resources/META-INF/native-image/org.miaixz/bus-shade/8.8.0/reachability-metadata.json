@@ -1719,11 +1719,7 @@
       "condition": {
         "typeReached": "org.springframework.boot.loader.launch.LaunchedClassLoader"
       },
-      "fields": [
-        {
-          "name": "bootURLHandler"
-        }
-      ],
+      "fields": [],
       "methods": [
         {
           "name": "<init>",
@@ -1752,37 +1748,6 @@
           "parameterTypes": [
             "java.lang.String"
           ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.shade.safety.boot.BootClassLoader$XBootEnumeration",
-      "condition": {
-        "typeReached": "org.springframework.boot.loader.launch.LaunchedClassLoader"
-      },
-      "fields": [
-        {
-          "name": "enumeration"
-        },
-        {
-          "name": "this$0"
-        }
-      ],
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "org.miaixz.bus.shade.safety.boot.BootClassLoader",
-            "java.util.Enumeration"
-          ]
-        },
-        {
-          "name": "hasMoreElements",
-          "parameterTypes": []
-        },
-        {
-          "name": "nextElement",
-          "parameterTypes": []
         }
       ]
     },
