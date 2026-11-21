@@ -72,6 +72,7 @@ After importing the BOM, add Bus dependencies without specifying versions:
         <groupId>org.miaixz</groupId>
         <artifactId>bus-mapper</artifactId>
     </dependency>
+    
 </dependencies>
 ```
 

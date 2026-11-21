@@ -9,7 +9,7 @@
     <img src="https://img.shields.io/badge/Java-25+-green.svg">
   </a>
   <a target="_blank" href="https://spring.io/projects/spring-boot">
-    <img src="https://img.shields.io/badge/Spring Boot-4.1.2-brightgreen.svg">
+    <img src="https://img.shields.io/badge/Spring Boot-4.2.0-brightgreen.svg">
   </a>
   <a target="_blank" href="https://www.postgresql.org">
     <img src="https://img.shields.io/badge/postgresql-17.x-blue.svg">
@@ -18,7 +18,7 @@
     <img src="https://img.shields.io/badge/dubbo-3.3.x-yellow.svg">
   </a>
   <a target="_blank" href="http://poi.apache.org">
-    <img src="https://img.shields.io/badge/poi-5.4.x-blue.svg">
+    <img src="https://img.shields.io/badge/poi-6.0.x-blue.svg">
   </a>
 </p>
 
@@ -58,7 +58,7 @@ Bus主要版本 3.x、5.x、6.x、8.x，具体如下：
 | [√]  | [bus-core](bus-core)           | 核心工具库，包含并发/反射/日期/集合等20+常用工具类                        |
 | [√]  | [bus-cortex](bus-cortex)       | 统一注册与配置中心，支持API/MCP/Prompt注册、健康探测及空间隔离            |
 | [√]  | [bus-crypto](bus-crypto)       | 加密解密组件，支持AES/DES/SM4/MD5等算法及国密套件                         |
-| [√]  | [bus-errors](bus-errors)       | 公共错误分类、HTTP 错误响应及诊断                                  |
+| [√]  | [bus-errors](bus-errors)       | 公共错误分类、HTTP 错误响应及诊断等                                 |
 | [√]  | [bus-extra](bus-extra)         | 扩展功能包，集成FTP/二维码/MQ/文件处理等外围服务                          |
 | [√]  | [bus-gitlab](bus-gitlab)       | GitLab深度集成，提供CI/CD/仓库/问题等全生命周期管理                       |
 | [√]  | [bus-health](bus-health)       | 健康监控中心，实时采集JVM/OS/容器/中间件监控指标                          |
@@ -77,7 +77,7 @@ Bus主要版本 3.x、5.x、6.x、8.x，具体如下：
 | [√]  | [bus-proxy](bus-proxy)         | 动态代理工具，简化JDK/CGLIB代理实现                                       |
 | [√]  | [bus-sensitive](bus-sensitive) | 敏感数据脱敏，提供注解式/规则式数据遮蔽方案                               |
 | [√]  | [bus-setting](bus-setting)     | 配置管理工具，支持多环境配置/动态刷新/加密存储                            |
-| [√]  | [bus-shade](bus-shade)         | 代码生成器，一键生成Entity/Service/Mapper等基础代码                       |
+| [√]  | [bus-shade](bus-shade)         | 可执行 JAR 安全加固：加密 Spring Boot 归档并通过自定义加载器启动（仅支持可执行 JAR，暂不支持 WAR） |
 | [√]  | [bus-spring](bus-spring)       | Spring 与 Spring Boot 通用集成基础设施                                    |
 | [√]  | [bus-starter](bus-starter)     | SpringBoot启动器，自动装配核心组件及配置                                  |
 | [√]  | [bus-storage](bus-storage)     | 对象存储服务，支持阿里云OSS/腾讯云COS/MinIO等存储方案                     |
