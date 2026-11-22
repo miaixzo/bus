@@ -154,9 +154,9 @@ public class SingleSignOnService {
     /**
      * Resolves the exact requester and registered ACS before producing a protocol response.
      *
-     * @param request original Authentication Request verified at the binding boundary
-     * @param context immutable invocation context
-     * @param timeout shared end-to-end timeout
+     * @param request        original Authentication Request verified at the binding boundary
+     * @param context        immutable invocation context
+     * @param timeout        shared end-to-end timeout
      * @param passiveFailure whether this invocation can only produce a NoPassive error
      * @return stage containing the response or a closed framework failure
      */
@@ -241,10 +241,10 @@ public class SingleSignOnService {
     /**
      * Establishes the safe ACS route and delegates response issuance.
      *
-     * @param request validated standard Authentication Request
-     * @param client  resolved registered service provider
-     * @param context invocation context
-     * @param timeout shared operation timeout
+     * @param request        validated standard Authentication Request
+     * @param client         resolved registered service provider
+     * @param context        invocation context
+     * @param timeout        shared operation timeout
      * @param passiveFailure whether this invocation can only produce a NoPassive error
      * @return issued standard response stage
      */
@@ -264,8 +264,14 @@ public class SingleSignOnService {
                                     "SAML Assertion Consumer Service is not registered for the requester")));
         }
         if (passiveFailure) {
-            return completed(Outcome.succeeded(errorMapper.response(request, destination, Saml.Statuses.NO_PASSIVE,
-                    "The subject cannot be authenticated without interaction", timeout.clock().now())));
+            return completed(
+                    Outcome.succeeded(
+                            errorMapper.response(
+                                    request,
+                                    destination,
+                                    Saml.Statuses.NO_PASSIVE,
+                                    "The subject cannot be authenticated without interaction",
+                                    timeout.clock().now())));
         }
         if (context.authenticatedSubject().isEmpty() || context.authentication().isEmpty()) {
             return completed(

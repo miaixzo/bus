@@ -65,7 +65,6 @@ bus:
 | `guard.inbound.skew` | `5` | 可接受的时钟偏差，单位为秒 |
 | `guard.outbound.enabled` | `false` | 启用出站 `X-Service-Token` 签发 |
 | `guard.outbound.ttl` | `300` | 出站令牌有效期，单位为秒 |
-| `guard.outbound.registry` | 空 | 注册中心直连及快照客户端的受众 |
 | `guard.outbound.gateway` | 空 | 专用网关客户端的受众 |
 | `guard.secret` | 空 | 共享 Base64 根密钥，解码后至少 32 字节，启用任一身份方向时必填 |
 | `audit.enabled` | `false` | 装配审计记录器 |

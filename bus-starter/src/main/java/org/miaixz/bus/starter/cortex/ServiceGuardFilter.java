@@ -20,13 +20,8 @@
 package org.miaixz.bus.starter.cortex;
 
 import java.io.IOException;
-import java.net.InetAddress;
-import java.security.cert.CertificateException;
-import java.security.cert.X509Certificate;
 import java.util.Collections;
 import java.util.Enumeration;
-import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import jakarta.servlet.FilterChain;
@@ -41,16 +36,11 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.util.ServletRequestPathUtils;
 import org.springframework.web.util.WebUtils;
 
-import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.RelevantException;
 import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
-import org.miaixz.bus.core.net.ip.IPv4;
-import org.miaixz.bus.core.net.ip.IPv6;
 import org.miaixz.bus.cortex.guard.GuardEvaluator;
 import org.miaixz.bus.cortex.guard.inbound.InboundDecision.Status;
-import org.miaixz.bus.fabric.network.dns.zone.CidrBlock;
 import org.miaixz.bus.spring.web.wrapper.CachedBodyRequestWrapper;
 import org.miaixz.bus.vortex.guard.SignatureVerifier;
 
@@ -59,42 +49,20 @@ import org.miaixz.bus.vortex.guard.SignatureVerifier;
  *
  * @author Kimi Liu
  */
-public class ServiceAnchorFilter extends OncePerRequestFilter {
+public class ServiceGuardFilter extends OncePerRequestFilter {
 
     /**
      * Identity component shared with the outbound adapter.
      */
     private final GuardEvaluator identity;
-    /**
-     * Context-relative paths that require a verified service identity and a mutually authenticated TLS peer.
-     */
-    private final Set<String> mutualTlsPaths;
-
-    /**
-     * Allowed networks for the direct peer of a request that requires mutual TLS.
-     */
-    private final List<CidrBlock> peers;
 
     /**
      * Creates the Servlet adapter.
      *
      * @param identity shared identity component
      */
-    public ServiceAnchorFilter(GuardEvaluator identity) {
-        this(identity, Set.of(), List.of());
-    }
-
-    /**
-     * Creates a Servlet identity filter with mutual TLS requirements for selected paths.
-     *
-     * @param identity       shared service identity evaluator
-     * @param mutualTlsPaths context-relative paths requiring mutual TLS
-     * @param peers          networks allowed to supply a TLS peer certificate
-     */
-    ServiceAnchorFilter(GuardEvaluator identity, Set<String> mutualTlsPaths, List<CidrBlock> peers) {
+    public ServiceGuardFilter(GuardEvaluator identity) {
         this.identity = identity;
-        this.mutualTlsPaths = Set.copyOf(mutualTlsPaths);
-        this.peers = List.copyOf(peers);
     }
 
     /**
@@ -117,10 +85,6 @@ public class ServiceAnchorFilter extends OncePerRequestFilter {
             int status = decision.status() == Status.REJECTED ? Http.Status.UNAUTHORIZED
                     : Http.Status.SERVICE_UNAVAILABLE;
             reject(response, status);
-            return;
-        }
-        if (mutualTlsPaths.contains(path) && (decision.verified() == null || !trustedPeer(request))) {
-            reject(response, Http.Status.FORBIDDEN);
             return;
         }
         request.setAttribute(GuardEvaluator.VERIFIED_ATTRIBUTE, decision.verified());
@@ -177,42 +141,6 @@ public class ServiceAnchorFilter extends OncePerRequestFilter {
             }
 
         }, response);
-    }
-
-    /**
-     * Checks for a secure request with a currently valid client certificate from an allowed peer address.
-     *
-     * @param request current Servlet request
-     * @return {@code true} if the certificate and direct peer address meet the configured requirements
-     */
-    private boolean trustedPeer(HttpServletRequest request) {
-        if (!request.isSecure()
-                || !(request.getAttribute(
-                        "jakarta.servlet.request.X509Certificate") instanceof X509Certificate[] certificates)
-                || certificates.length == 0 || certificates[0] == null) {
-            return false;
-        }
-        try {
-            var peer = peerAddress(request.getRemoteAddr());
-            certificates[0].checkValidity();
-            return peers.stream().anyMatch(network -> network.contains(peer));
-        } catch (IllegalArgumentException | CertificateException invalid) {
-            return false;
-        }
-    }
-
-    /**
-     * Parses an unscoped mTLS peer address without DNS resolution.
-     *
-     * @param address the remote address or configured CIDR address
-     * @return the numeric address
-     * @throws IllegalArgumentException when the address is not an unscoped IPv4 or IPv6 literal
-     */
-    static InetAddress peerAddress(String address) {
-        if (address == null) {
-            throw new IllegalArgumentException("Invalid Cortex mTLS peer address");
-        }
-        return address.indexOf(Symbol.C_COLON) >= Normal._0 ? IPv6.parseLiteral(address) : IPv4.parseLiteral(address);
     }
 
     /**

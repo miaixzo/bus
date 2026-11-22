@@ -19,14 +19,9 @@
 */
 package org.miaixz.bus.vortex.strategy.qualifier;
 
-import java.util.Objects;
-
 import org.springframework.web.server.ServerWebExchange;
 
 import org.miaixz.bus.core.Order;
-import org.miaixz.bus.core.center.function.SupplierX;
-import org.miaixz.bus.core.net.Http;
-import org.miaixz.bus.cortex.Keying;
 import org.miaixz.bus.vortex.Args;
 import org.miaixz.bus.vortex.Context;
 import org.miaixz.bus.vortex.guard.IdentityGuard;
@@ -45,11 +40,6 @@ import reactor.core.publisher.Mono;
 public class SdcQualifierStrategy extends QualifierStrategy {
 
     /**
-     * Configured bootstrap route, or {@code null} when bootstrap routing is disabled.
-     */
-    private final Bootstrap bootstrap;
-
-    /**
      * Creates the SDC qualification stage.
      *
      * @param provider shared authorization provider
@@ -57,7 +47,6 @@ public class SdcQualifierStrategy extends QualifierStrategy {
      */
     public SdcQualifierStrategy(AuthorizeProvider provider, AssetsRegistry registry) {
         super(provider, registry);
-        this.bootstrap = null;
     }
 
     /**
@@ -68,65 +57,7 @@ public class SdcQualifierStrategy extends QualifierStrategy {
      * @param identities shared service identity adapter
      */
     public SdcQualifierStrategy(AuthorizeProvider provider, AssetsRegistry registry, IdentityGuard identities) {
-        this(provider, registry, identities, null);
-    }
-
-    /**
-     * Creates the SDC qualifier with optional bootstrap routing.
-     *
-     * @param provider   credential validation provider
-     * @param registry   runtime asset registry
-     * @param identities shared service identity adapter
-     * @param bootstrap  configured route, or {@code null} to disable bootstrap routing
-     */
-    public SdcQualifierStrategy(AuthorizeProvider provider, AssetsRegistry registry, IdentityGuard identities,
-            Bootstrap bootstrap) {
         super(provider, registry, identities);
-        this.bootstrap = bootstrap;
-    }
-
-    /**
-     * Resolves the configured bootstrap operation for eligible private requests.
-     *
-     * @param exchange current gateway exchange
-     * @param route    structured route key
-     * @return matching route, or {@code null} when the route or snapshot operation is unavailable
-     */
-    @Override
-    protected AssetsRegistry.RouteMatch findRoute(ServerWebExchange exchange, Keying.RegistrySpec route) {
-        if (bootstrap == null || !bootstrap.method().equals(route.methodPart())) {
-            return super.findRoute(exchange, route);
-        }
-        if (!IdentityGuard.isPrivateSdc(exchange)
-                || !Args.DEFAULT_VERSION.equals(route.versionPart())
-                || !Integer.valueOf(Http.Method.GET.verb()).equals(route.verbPart())) {
-            return null;
-        }
-        var match = bootstrap.route().get();
-        if (match != null) {
-            IdentityGuard.setBootstrapAudience(exchange, bootstrap.audience());
-        }
-        return match;
-    }
-
-    /**
-     * Private SDC route available before the registry loads.
-     *
-     * @param method   configured SDC method
-     * @param audience trusted downstream service code
-     * @param route    supplies a route with a current synthetic instance heartbeat
-     */
-    public record Bootstrap(String method, String audience, SupplierX<AssetsRegistry.RouteMatch> route) {
-
-        /**
-         * Validates the required bootstrap route coordinates.
-         */
-        public Bootstrap {
-            Objects.requireNonNull(method);
-            Objects.requireNonNull(audience);
-            Objects.requireNonNull(route);
-        }
-
     }
 
     /**

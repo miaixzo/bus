@@ -53,7 +53,7 @@ public class SdcRequestStrategy extends RequestStrategy {
     }
 
     /**
-     * Captures query selectors and prepares the shared request context and preserves the POST body for forwarding.
+     * Captures query selectors and preserves the POST body for forwarding.
      *
      * @param exchange incoming SDC exchange
      * @param chain    remaining strategies in the SDC chain
@@ -70,7 +70,7 @@ public class SdcRequestStrategy extends RequestStrategy {
             return Mono.defer(() -> {
                 if (context.getHttpMethod() == Http.Method.GET)
                     return parse(prepared, chain, context);
-                prepared.getAttributes().put(Context.RAW_JSON_PASSTHROUGH_ATTRIBUTE, Boolean.TRUE);
+                prepared.getAttributes().put(Context.RAW_BODY_PASSTHROUGH_ATTRIBUTE, Boolean.TRUE);
                 return chain.apply(prepared);
             }).contextWrite(current -> current.put(Input.class, input));
         });

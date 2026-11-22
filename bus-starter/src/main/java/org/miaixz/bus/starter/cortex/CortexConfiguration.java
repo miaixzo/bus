@@ -48,7 +48,6 @@ import org.springframework.core.Ordered;
 import org.springframework.core.env.Environment;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.http.client.JdkClientHttpRequestFactory;
-import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestClient;
 import org.springframework.web.util.DefaultUriBuilderFactory;
 
@@ -108,7 +107,6 @@ import org.miaixz.bus.cortex.setting.secret.NoOpSecretCodec;
 import org.miaixz.bus.cortex.setting.secret.SecretCodec;
 import org.miaixz.bus.cortex.setting.secret.SecretMasker;
 import org.miaixz.bus.cortex.setting.watch.WatchStore;
-import org.miaixz.bus.fabric.network.dns.zone.CidrBlock;
 import org.miaixz.bus.spring.boot.condition.ConditionalOnEnabled;
 import org.miaixz.bus.starter.GeniusBuilder;
 import org.miaixz.bus.starter.annotation.EnableCortex;
@@ -1140,37 +1138,17 @@ public class CortexConfiguration {
      * while the inbound direction is disabled.
      *
      * @param identity    shared service identity evaluator
-     * @param environment deployment configuration containing the mutual TLS paths and allowed peer networks
      * @return Servlet filter registration
      */
     @Bean
     @ConditionalOnClass({ Servlet.class, Filter.class })
     @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)
     @ConditionalOnEnabled(annotation = EnableCortex.class, prefix = GeniusBuilder.CORTEX_GUARD, member = "guard", name = Normal.EMPTY)
-    FilterRegistrationBean<ServiceAnchorFilter> serviceAnchorFilter(GuardEvaluator identity, Environment environment) {
-        String prefix = GeniusBuilder.CORTEX_GUARD + ".inbound.";
-        var paths = StringUtils.commaDelimitedListToSet(environment.getProperty(prefix + "mtls-paths", ""));
-        var peers = StringUtils.commaDelimitedListToSet(environment.getProperty(prefix + "mtls-peers", "")).stream()
-                .map(CortexConfiguration::peerNetwork).toList();
-        var registration = new FilterRegistrationBean<>(new ServiceAnchorFilter(identity, paths, peers));
+    FilterRegistrationBean<ServiceGuardFilter> serviceGuardFilter(GuardEvaluator identity) {
+        var registration = new FilterRegistrationBean<>(new ServiceGuardFilter(identity));
         registration.setOrder(Ordered.HIGHEST_PRECEDENCE + 20);
         registration.addUrlPatterns(Symbol.SLASH + Symbol.STAR);
         return registration;
-    }
-
-    /**
-     * Parses a peer network from a numeric address and CIDR prefix length.
-     *
-     * @param value configured CIDR notation
-     * @return network used to match Servlet peer addresses
-     * @throws IllegalArgumentException if the address or prefix length is invalid
-     */
-    private static CidrBlock peerNetwork(String value) {
-        var parts = value.trim().split("/", -1);
-        if (parts.length != 2 || !parts[1].matches("[1-9][0-9]{0,2}")) {
-            throw new IllegalArgumentException("Invalid Cortex mTLS peer network");
-        }
-        return new CidrBlock(ServiceAnchorFilter.peerAddress(parts[0]), Integer.parseInt(parts[1]));
     }
 
     /**

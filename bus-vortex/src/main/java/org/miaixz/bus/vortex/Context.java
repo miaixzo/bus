@@ -72,9 +72,9 @@ public class Context extends Tracer {
     public static final String JSON_ARRAY_BODY_ATTRIBUTE = "X.JSON_ARRAY_BODY";
 
     /**
-     * The exchange attribute marking a CST JSON body that must be forwarded without parsing or replay caching.
+     * Marks a request body that must be forwarded without parsing or replay caching.
      */
-    public static final String RAW_JSON_PASSTHROUGH_ATTRIBUTE = "X.RAW_JSON_PASSTHROUGH";
+    public static final String RAW_BODY_PASSTHROUGH_ATTRIBUTE = "X.RAW_BODY_PASSTHROUGH";
 
     /**
      * A map of the HTTP request headers. This map is a direct, single-value representation of the incoming request's

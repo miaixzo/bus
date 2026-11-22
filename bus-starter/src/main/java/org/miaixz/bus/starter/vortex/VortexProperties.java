@@ -19,9 +19,6 @@
 */
 package org.miaixz.bus.starter.vortex;
 
-import java.net.URI;
-import java.util.Arrays;
-
 import lombok.Getter;
 import lombok.Setter;
 
@@ -54,21 +51,6 @@ public class VortexProperties {
     private int port = 8765;
 
     /**
-     * Bind address for the private SDC listener.
-     */
-    private String internalHost = "127.0.0.1";
-
-    /**
-     * Private SDC listening port. Zero disables the listener.
-     */
-    private int internalPort;
-
-    /**
-     * Exact path reserved for private SDC requests.
-     */
-    private String internalPath;
-
-    /**
      * The service path, specifying the access path for the server.
      */
     private String path;
@@ -96,11 +78,6 @@ public class VortexProperties {
     private Assets assets = new Assets();
 
     /**
-     * Optional SDC startup route configuration.
-     */
-    private final Sdc sdc = new Sdc();
-
-    /**
      * Initializes Vortex properties with the documented transport and asset refresh defaults.
      */
     public VortexProperties() {
@@ -118,7 +95,6 @@ public class VortexProperties {
         if (port < 1 || port > 65535) {
             throw new IllegalArgumentException("bus.vortex.port must be in 1..65535");
         }
-        validateSdc();
         if (performance == null || performance.getMaxRequestSize() <= 0 || performance.getMaxMultipartRequestSize() <= 0
                 || performance.getMultipartMemoryThresholdBytes() <= 0
                 || performance.getMultipartMemoryThresholdBytes() > performance.getMaxBufferedRequestSize()
@@ -170,88 +146,6 @@ public class VortexProperties {
     }
 
     /**
-     * Validates the private listener and any configured bootstrap upstream.
-     */
-    private void validateSdc() {
-        if (internalPort < 0 || internalPort > 65535 || internalPort == port) {
-            throw new IllegalArgumentException("bus.vortex.internal-port must be zero or a distinct port in 1..65535");
-        }
-        if (internalPort > 0 && (internalHost == null || internalHost.isBlank() || internalPath == null)) {
-            throw new IllegalArgumentException("bus.vortex.internal-host and internal-path are required for private SDC");
-        }
-        if (internalPath != null && (!isLiteralPath(internalPath)
-                || !internalPath.startsWith(Args.SDC_PATH_PREFIX + "/"))) {
-            throw new IllegalArgumentException("bus.vortex.internal-path must be a literal path under /router/sdc");
-        }
-        Sdc.Bootstrap bootstrap = sdc.getBootstrap();
-        if (bootstrap == null) {
-            return;
-        }
-        if (bootstrap.getMethod() == null || bootstrap.getMethod().isBlank()) {
-            throw new IllegalArgumentException("bus.vortex.sdc.bootstrap.method is required");
-        }
-        URI endpoint = bootstrap.getEndpoint();
-        String operation = bootstrap.getOperationPath();
-        if (endpoint == null || endpoint.getHost() == null || endpoint.getUserInfo() != null
-                || endpoint.getRawQuery() != null || endpoint.getRawFragment() != null
-                || !("http".equals(endpoint.getScheme()) || "https".equals(endpoint.getScheme()))
-                || endpoint.getPort() == 0 || endpoint.getPort() > 65535
-                || !isLiteralPath(operation) || !isLiteralPath(endpoint.getRawPath())
-                || !endpoint.getRawPath().endsWith(operation)) {
-            throw new IllegalArgumentException(
-                    "bus.vortex.sdc.bootstrap.endpoint must be an HTTP(S) URL ending in operation-path");
-        }
-    }
-
-    /**
-     * Checks for an exact path with no encoded characters, patterns, or dot segments.
-     *
-     * @param path configured path
-     * @return true for a literal, normalized path
-     */
-    private static boolean isLiteralPath(String path) {
-        return path != null && path.matches("(/[A-Za-z0-9._~-]+)+")
-                && Arrays.stream(path.split("/")).noneMatch(segment -> ".".equals(segment) || "..".equals(segment));
-    }
-
-    /**
-     * Configuration for SDC routes that are available before the registry is loaded.
-     */
-    @Getter
-    @Setter
-    public static class Sdc {
-
-        /**
-         * Optional bootstrap route.
-         */
-        private Bootstrap bootstrap;
-
-        /**
-         * Upstream coordinates for the private bootstrap operation.
-         */
-        @Getter
-        @Setter
-        public static class Bootstrap {
-
-            /**
-             * SDC method reserved for bootstrap requests.
-             */
-            private String method;
-
-            /**
-             * Complete upstream URI including any deployment prefix and the operation path.
-             */
-            private URI endpoint;
-
-            /**
-             * Operation path used for service identity and private egress policy.
-             */
-            private String operationPath;
-
-        }
-    }
-
-    /**
      * Asset registry refresh settings.
      *
      * @author Kimi Liu
@@ -291,7 +185,8 @@ public class VortexProperties {
         private int refreshStartupDelaySeconds = 10;
 
         /**
-         * Registry method used to resolve public slug forwarding assets. Blank disables registry-backed slug forwarding.
+         * Registry method used to resolve public slug forwarding assets. Blank disables registry-backed slug
+         * forwarding.
          */
         private String slugMethod;
 

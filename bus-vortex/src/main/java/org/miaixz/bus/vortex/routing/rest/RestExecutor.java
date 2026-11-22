@@ -56,7 +56,6 @@ import org.miaixz.bus.errors.transport.reactive.ReactiveErrorHandler;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.vortex.*;
-import org.miaixz.bus.vortex.guard.IdentityGuard;
 import org.miaixz.bus.vortex.guard.SignatureVerifier;
 import org.miaixz.bus.vortex.routing.Coordinator;
 import org.miaixz.bus.vortex.routing.FlowEnforcer;
@@ -87,34 +86,6 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
      * Reports failures whose rest-request response or lifecycle is owned by this adapter.
      */
     private static final ComponentFailure FAILURES = new ComponentFailure("vortex", "rest-request");
-
-    /**
-     * Dedicated client for private SDC operations that require mutual TLS, or {@code null} when unavailable.
-     */
-    private final WebClient privateClient;
-
-    /**
-     * Upstream operation paths that require mutual TLS on private SDC requests.
-     */
-    private final java.util.Set<String> mutualTlsOperations;
-
-    /**
-     * Default constructor.
-     */
-    public RestExecutor() {
-        this(null, java.util.Set.of());
-    }
-
-    /**
-     * Creates the executor with optional mutual TLS transport for private SDC operations.
-     *
-     * @param privateClient       dedicated mutual TLS client, or {@code null} when unavailable
-     * @param mutualTlsOperations upstream operation paths requiring mutual TLS
-     */
-    public RestExecutor(WebClient privateClient, java.util.Set<String> mutualTlsOperations) {
-        this.privateClient = privateClient;
-        this.mutualTlsOperations = java.util.Set.copyOf(mutualTlsOperations);
-    }
 
     /**
      * Executes the HTTP request using the provided context and ServerRequest.
@@ -159,15 +130,7 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
                 targetUri);
 
         HttpMethod downstreamMethod = HttpMethod.valueOf(context.getHttpMethod().value());
-        boolean mutualTls = IdentityGuard.isPrivateSdc(request.exchange())
-                && mutualTlsOperations.contains(assets.getUrl());
-        if (mutualTls && (privateClient == null || !"https".equalsIgnoreCase(targetUri.getScheme()))) {
-            return Mono.error(
-                    new org.springframework.web.server.ResponseStatusException(
-                            org.springframework.http.HttpStatus.SERVICE_UNAVAILABLE));
-        }
-        WebClient.RequestBodySpec bodySpec = mutualTls ? privateClient.method(downstreamMethod).uri(targetUri)
-                : Egress.Http.request(downstreamMethod, targetUri);
+        WebClient.RequestBodySpec bodySpec = Egress.Http.request(downstreamMethod, targetUri);
         Logger.info(
                 true,
                 "Vortex",
@@ -227,7 +190,7 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
                     || !(MediaType.APPLICATION_FORM_URLENCODED.isCompatibleWith(mediaType)
                             || org.miaixz.bus.core.net.MediaType.isJson(mediaType.toString()))
                     || Boolean.TRUE.equals(request.exchange().getAttribute(Context.JSON_ARRAY_BODY_ATTRIBUTE))
-                    || Boolean.TRUE.equals(request.exchange().getAttribute(Context.RAW_JSON_PASSTHROUGH_ATTRIBUTE))) {
+                    || Boolean.TRUE.equals(request.exchange().getAttribute(Context.RAW_BODY_PASSTHROUGH_ATTRIBUTE))) {
                 return Mono.error(new ResponseStatusException(HttpStatus.UNSUPPORTED_MEDIA_TYPE));
             }
             byte[] body = fixJsonEncoding(JsonKit.toJsonString(context.getParameters())).getBytes(Charset.UTF_8);
@@ -242,14 +205,15 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
                 return Mono.error(new ResponseStatusException(HttpStatus.METHOD_NOT_ALLOWED));
             MediaType mediaType = request.headers().contentType().orElse(null);
             if (mediaType != null) {
-                if (MediaType.MULTIPART_FORM_DATA.isCompatibleWith(mediaType)) {
+                if (Boolean.TRUE.equals(request.exchange().getAttribute(Context.RAW_BODY_PASSTHROUGH_ATTRIBUTE))) {
+                    bodySpec.contentType(mediaType);
+                    request.headers().contentLength().ifPresent(bodySpec::contentLength);
+                    bodySpec.body(BodyInserters.fromDataBuffers(request.exchange().getRequest().getBody()
+                            .doOnDiscard(PooledDataBuffer.class, Octets::release)));
+                } else if (MediaType.MULTIPART_FORM_DATA.isCompatibleWith(mediaType)) {
                     handleMultipartBody(bodySpec, context, ip, method, path);
                 } else if (org.miaixz.bus.core.net.MediaType.isJson(mediaType.toString())) {
                     handleJsonRequestBody(bodySpec, request, context, ip, method, path);
-                } else if (MediaType.APPLICATION_FORM_URLENCODED.isCompatibleWith(mediaType)
-                        && IdentityGuard.isPrivateSdc(request.exchange())) {
-                    bodySpec.contentType(mediaType)
-                            .body(BodyInserters.fromDataBuffers(request.bodyToFlux(DataBuffer.class)));
                 } else if (MediaType.APPLICATION_FORM_URLENCODED.isCompatibleWith(mediaType)) {
                     handleFormRequestBody(bodySpec, context, ip, method, path);
                 } else {
@@ -334,22 +298,6 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
             String ip,
             String method,
             String path) {
-        if (Boolean.TRUE.equals(request.exchange().getAttribute(Context.RAW_JSON_PASSTHROUGH_ATTRIBUTE))) {
-            MediaType mediaType = request.headers().contentType().orElse(MediaType.APPLICATION_JSON);
-            bodySpec.contentType(mediaType);
-            request.headers().contentLength().ifPresent(bodySpec::contentLength);
-            Flux<DataBuffer> rawBody = request.exchange().getRequest().getBody()
-                    .doOnDiscard(PooledDataBuffer.class, Octets::release);
-            bodySpec.body(BodyInserters.fromDataBuffers(rawBody));
-            Logger.info(
-                    true,
-                    "Vortex",
-                    "CST JSON body configured for single-subscription passthrough: protocol=http, clientIp={}, method={}, path={}",
-                    ip,
-                    method,
-                    path);
-            return;
-        }
         if (Boolean.TRUE.equals(request.exchange().getAttribute(Context.JSON_ARRAY_BODY_ATTRIBUTE))) {
             MediaType mediaType = request.headers().contentType().orElse(MediaType.APPLICATION_JSON);
             bodySpec.contentType(mediaType);

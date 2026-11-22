@@ -333,20 +333,12 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.starter.cortex.ServiceAnchorFilter",
+      "type": "org.miaixz.bus.starter.cortex.ServiceGuardFilter",
       "methods": [
         {
           "name": "<init>",
           "parameterTypes": [
             "org.miaixz.bus.cortex.guard.GuardEvaluator"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "org.miaixz.bus.cortex.guard.GuardEvaluator",
-            "java.util.Set",
-            "java.util.List"
           ]
         }
       ]

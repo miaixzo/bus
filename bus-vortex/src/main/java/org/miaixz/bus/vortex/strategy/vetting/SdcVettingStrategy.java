@@ -19,24 +19,21 @@
 */
 package org.miaixz.bus.vortex.strategy.vetting;
 
-import java.util.List;
-import java.util.Set;
-
-import org.springframework.http.HttpMethod;
-import org.springframework.web.server.MethodNotAllowedException;
-import org.springframework.web.server.ServerWebExchange;
-import org.springframework.web.server.UnsupportedMediaTypeStatusException;
-
 import org.miaixz.bus.core.Order;
 import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.vortex.Args;
 import org.miaixz.bus.vortex.Context;
-import org.miaixz.bus.vortex.guard.IdentityGuard;
 import org.miaixz.bus.vortex.strategy.VettingStrategy;
 import org.miaixz.bus.vortex.strategy.request.SdcRequestStrategy.Input;
-
+import org.springframework.http.HttpMethod;
+import org.springframework.web.server.MethodNotAllowedException;
+import org.springframework.web.server.ServerWebExchange;
+import org.springframework.web.server.UnsupportedMediaTypeStatusException;
 import reactor.core.publisher.Mono;
+
+import java.util.List;
+import java.util.Set;
 
 /**
  * Validates public SDC requests before credential qualification.
@@ -59,7 +56,7 @@ public class SdcVettingStrategy extends VettingStrategy {
     /**
      * Validates the SDC request method and content type before applying shared validation.
      * <p>
-     * POST requests accept JSON and private ingress additionally accepts form data. GET requests retain valueless
+     * POST requests accept JSON and form data. GET requests retain valueless
      * selectors for route and configuration queries.
      *
      * @param exchange prepared SDC exchange
@@ -76,11 +73,10 @@ public class SdcVettingStrategy extends VettingStrategy {
                         new MethodNotAllowedException(HttpMethod.valueOf(method.value()),
                                 Set.of(HttpMethod.GET, HttpMethod.POST)));
             }
-            boolean privateForm = IdentityGuard.isPrivateSdc(exchange)
-                    && input.contentType() != null
-                    && input.contentType().startsWith("application/x-www-form-urlencoded");
-            if (method == Http.Method.POST && !MediaType.isJson(input.contentType()) && !privateForm) {
-                return Mono.error(new UnsupportedMediaTypeStatusException("SDC POST requires JSON"));
+            boolean form = input.contentType() != null
+                    && input.contentType().startsWith(MediaType.APPLICATION_FORM_URLENCODED);
+            if (method == Http.Method.POST && !MediaType.isJson(input.contentType()) && !form) {
+                return Mono.error(new UnsupportedMediaTypeStatusException("SDC POST requires JSON or form data"));
             }
             if (method == Http.Method.GET) {
                 for (String selector : List.of("routes", "configs")) {

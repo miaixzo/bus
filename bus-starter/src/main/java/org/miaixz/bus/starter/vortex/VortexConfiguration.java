@@ -34,7 +34,6 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.boot.ssl.SslBundles;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -45,7 +44,6 @@ import org.springframework.http.codec.multipart.DefaultPartHttpMessageReader;
 import org.springframework.http.codec.multipart.MultipartHttpMessageReader;
 import org.springframework.http.server.reactive.HttpHandler;
 import org.springframework.http.server.reactive.ReactorHttpHandlerAdapter;
-import org.springframework.util.StringUtils;
 import org.springframework.web.reactive.function.client.ClientRequest;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.server.*;
@@ -56,23 +54,14 @@ import org.springframework.web.server.adapter.WebHttpHandlerBuilder;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
-import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.Port;
-import org.miaixz.bus.core.xyz.DateKit;
 import org.miaixz.bus.core.xyz.StringKit;
-import org.miaixz.bus.cortex.Assets;
-import org.miaixz.bus.cortex.Builder;
-import org.miaixz.bus.cortex.Instance;
 import org.miaixz.bus.cortex.Keying;
-import org.miaixz.bus.cortex.Type;
 import org.miaixz.bus.cortex.builtin.RegistryGenerator;
 import org.miaixz.bus.cortex.guard.GuardEvaluator;
-import org.miaixz.bus.cortex.health.HealthInfo;
-import org.miaixz.bus.cortex.registry.MetadataCodec;
 import org.miaixz.bus.errors.ErrorBoundary;
 import org.miaixz.bus.errors.transport.reactive.ReactiveErrorHandler;
 import org.miaixz.bus.errors.transport.reactive.ReactiveResponseGuard;
-import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.spring.boot.condition.ConditionalOnEnabled;
 import org.miaixz.bus.starter.GeniusBuilder;
 import org.miaixz.bus.starter.annotation.EnableCortex;
@@ -214,16 +203,16 @@ public class VortexConfiguration {
      * threshold, and {@link AdmissionFilter} is installed before protocol filters. Inbound channels use the unified
      * allocator and configured write-buffer watermarks so downloads remain backpressure-aware.
      *
-     * @param filters     A list of all available {@link Filter} beans, injected by Spring.
-     * @param handlers    A list of all available {@link Handler} beans, injected by Spring.
-     * @param restRouter  The REST forwarding router bean.
-     * @param mqRouter    The MQ router bean.
-     * @param mcpRouter   The MCP router bean.
-     * @param grpcRouter  The gRPC router bean.
-     * @param wsRouter    The WebSocket router bean.
-     * @param llmRouter   The LLM router bean.
-     * @param slugRouter  The public slug forwarding router bean.
-     * @param sdcRouter   The service discovery and configuration router bean.
+     * @param filters    A list of all available {@link Filter} beans, injected by Spring.
+     * @param handlers   A list of all available {@link Handler} beans, injected by Spring.
+     * @param restRouter The REST forwarding router bean.
+     * @param mqRouter   The MQ router bean.
+     * @param mcpRouter  The MCP router bean.
+     * @param grpcRouter The gRPC router bean.
+     * @param wsRouter   The WebSocket router bean.
+     * @param llmRouter  The LLM router bean.
+     * @param slugRouter The public slug forwarding router bean.
+     * @param sdcRouter  The service discovery and configuration router bean.
      * @return manager for the public and optional private gateway listeners
      */
     @Bean(initMethod = "start", destroyMethod = "stop")
@@ -309,9 +298,7 @@ public class VortexConfiguration {
                 .port(this.properties.getPort() != 0 ? this.properties.getPort() : Port._8765.getPort())
                 .handle(adapter);
 
-        int port = properties.getInternalPort();
-        HttpServer privateServer = port > 0 ? server.port(port).host(properties.getInternalHost()) : null;
-        return new Vortex(server, privateServer);
+        return new Vortex(server);
     }
 
     /**
@@ -488,32 +475,14 @@ public class VortexConfiguration {
     }
 
     /**
-     * Provides the RestExecutor bean. This executor is responsible for executing HTTP requests to downstream services.
-     * <p>
-     * Regular REST requests use the shared egress client. Configured private operations use a dedicated mutual TLS
-     * client backed by the named SSL bundle.
+     * Creates the HTTP proxy executor using the shared egress client.
      *
-     * @param environment deployment configuration for the mutual TLS operations and SSL bundle
-     * @param bundles     provider of the named SSL bundle when one is configured
-     * @return A new instance of RestExecutor.
+     * @return REST executor
      */
     @Bean
     @ConditionalOnMissingBean(RestExecutor.class)
-    public RestExecutor restExecutor(Environment environment, ObjectProvider<SslBundles> bundles) {
-        String prefix = "bus.vortex.internal-egress.";
-        var operations = StringUtils.commaDelimitedListToSet(environment.getProperty(prefix + "mtls-paths", ""));
-        String bundle = environment.getProperty(prefix + "ssl-bundle", "");
-        WebClient privateClient = null;
-        if (!bundle.isBlank()) {
-            var transport = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(5))
-                    .followRedirects(HttpClient.Redirect.NEVER)
-                    .sslContext(bundles.getObject().getBundle(bundle).createSslContext()).build();
-            privateClient = WebClient.builder().clientConnector(new JdkClientHttpConnector(transport)).codecs(
-                    codecs -> codecs.defaultCodecs()
-                            .maxInMemorySize(Math.toIntExact(properties.getPerformance().getMaxBufferedResponseSize())))
-                    .build();
-        }
-        return new RestExecutor(privateClient, operations);
+    public RestExecutor restExecutor() {
+        return new RestExecutor();
     }
 
     /**
@@ -780,16 +749,14 @@ public class VortexConfiguration {
     /**
      * Adapts gateway exchanges to the shared rules and resolves trusted audiences from the application directory.
      *
-     * @param identity    shared identity evaluator
-     * @param registry    runtime directory of applications and assets
+     * @param identity shared identity evaluator
+     * @param registry runtime directory of applications and assets
      * @return gateway service identity adapter
      */
     @Bean
     @ConditionalOnMissingBean(IdentityGuard.class)
-    public IdentityGuard vortexIdentityGuard(
-            GuardEvaluator identity,
-            AssetsRegistry registry) {
-        return new IdentityGuard(identity, registry::code, properties.getInternalPort(), properties.getInternalPath());
+    public IdentityGuard vortexIdentityGuard(GuardEvaluator identity, AssetsRegistry registry) {
+        return new IdentityGuard(identity, registry::code);
     }
 
     /**
@@ -880,88 +847,19 @@ public class VortexConfiguration {
     }
 
     /**
-     * Provides the service discovery and configuration qualification stage with the deployment endpoint.
+     * Qualifies the SDC request against registered API assets.
      *
      * @param authorizeProvider shared authorization provider
      * @param assetsRegistry    runtime asset registry
-     * @param identities        Shared gateway service identity adapter.
-     * @param environment       deployment configuration for the bootstrap caller and upstream identities
+     * @param identities        shared gateway service identity adapter
      * @return SDC qualification strategy
      */
     @Bean
     public SdcQualifierStrategy sdcQualifierStrategy(
             AuthorizeProvider authorizeProvider,
             AssetsRegistry assetsRegistry,
-            IdentityGuard identities,
-            Environment environment) {
-        var bootstrap = properties.getSdc().getBootstrap();
-        if (bootstrap == null || properties.getInternalPort() == 0) {
-            return new SdcQualifierStrategy(authorizeProvider, assetsRegistry, identities);
-        }
-        String outbound = GeniusBuilder.CORTEX_GUARD + ".outbound.";
-        String caller = environment.getRequiredProperty(outbound + "subject");
-        String audience = environment.getRequiredProperty(outbound + "registry");
-        if (caller.isBlank() || audience.isBlank()) {
-            throw new IllegalArgumentException("The SDC bootstrap route requires Cortex outbound subject and registry");
-        }
-        String method = bootstrap.getMethod().trim();
-        URI target = bootstrap.getEndpoint();
-        String operation = bootstrap.getOperationPath();
-        return new SdcQualifierStrategy(
-                authorizeProvider,
-                assetsRegistry,
-                identities,
-                new SdcQualifierStrategy.Bootstrap(
-                        method, audience, () -> bootstrapRoute(method, target, operation, caller)));
-    }
-
-    /**
-     * Projects the configured bootstrap endpoint into a route asset for private SDC requests.
-     *
-     * @param owner     configured method and synthetic asset owner
-     * @param target    bootstrap endpoint URI
-     * @param operation bootstrap operation path suffix
-     * @param caller    service code permitted to call this route
-     * @return route match containing the bootstrap asset and its synthetic instance
-     */
-    private static AssetsRegistry.RouteMatch bootstrapRoute(String owner, URI target, String operation, String caller) {
-        var health = new HealthInfo();
-        health.setBeat(DateKit.current());
-        health.setLease(120);
-        health.setSession(owner);
-        var instance = new Instance();
-        instance.setId(owner);
-        instance.setApp_id(owner);
-        instance.setKind(Builder.INSTANCE_KIND_SERVICE);
-        instance.setHost(target.getHost());
-        instance.setPort(target.getPort() >= 0 ? target.getPort() : "https".equals(target.getScheme()) ? 443 : 80);
-        instance.setScheme(target.getScheme());
-        instance.setPath(target.getRawPath().substring(0, target.getRawPath().length() - operation.length()));
-        instance.setWeight(1);
-        instance.setStatus(1);
-        instance.health(health);
-        var asset = new Assets();
-        asset.setId(owner);
-        asset.setApp_id(owner);
-        asset.setType(Type.API.key());
-        asset.setProtocol(Args.ROUTE_SDC);
-        asset.setMethod(owner);
-        asset.setVersion(Args.DEFAULT_VERSION);
-        asset.setVerb(Http.Method.GET.verb());
-        asset.setPolicy(0);
-        asset.setSigning(0);
-        asset.setStream(1);
-        asset.setUrl(operation);
-        asset.setInstances(List.of(instance));
-        asset.setMetadata(
-                JsonKit.toJsonString(
-                        Map.of(
-                                MetadataCodec.ROOT,
-                                Map.of(
-                                        "internal", true,
-                                        "serviceIdentity",
-                                        Map.of("inbound", Map.of("mode", "required", "subjects", List.of(caller)))))));
-        return new AssetsRegistry.RouteMatch(asset, "");
+            IdentityGuard identities) {
+        return new SdcQualifierStrategy(authorizeProvider, assetsRegistry, identities);
     }
 
     /**

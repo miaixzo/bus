@@ -320,14 +320,13 @@ public class CortexProperties {
              * @param enabled  whether outbound signing is enabled
              * @param subject  subject attached to issued tokens
              * @param ttl      token lifetime in seconds
-             * @param registry audience for direct registry and snapshot calls
              * @param gateway  destination of the configured gateway client
              * @param rules    explicit outbound target rules
              */
             public Outbound(Boolean enabled, @DefaultValue(Normal.EMPTY) String subject,
-                    @DefaultValue(DEFAULT_TTL) int ttl, @DefaultValue(Normal.EMPTY) String registry,
-                    @DefaultValue(Normal.EMPTY) String gateway, List<Outgoing> rules) {
-                super(enabled, subject, ttl, registry, gateway, rules);
+                    @DefaultValue(DEFAULT_TTL) int ttl, @DefaultValue(Normal.EMPTY) String gateway,
+                    List<Outgoing> rules) {
+                super(enabled, subject, ttl, gateway, rules);
             }
 
         }

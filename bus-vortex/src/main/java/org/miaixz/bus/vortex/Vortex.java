@@ -51,11 +51,6 @@ public class Vortex implements SmartLifecycle {
     private final HttpServer httpServer;
 
     /**
-     * Optional Reactor Netty listener reserved for private SDC requests.
-     */
-    private final HttpServer privateServer;
-
-    /**
      * An atomic flag to track the running state of the server.
      */
     private final AtomicBoolean running = new AtomicBoolean(false);
@@ -66,43 +61,24 @@ public class Vortex implements SmartLifecycle {
     private DisposableServer disposableServer;
 
     /**
-     * Handle used to dispose of the private listener after it binds.
-     */
-    private DisposableServer disposablePrivateServer;
-
-    /**
      * Constructs a new {@code Vortex} server manager.
      *
      * @param httpServer The pre-configured {@link HttpServer} instance to be managed.
      */
     public Vortex(HttpServer httpServer) {
-        this(httpServer, null);
-    }
-
-    /**
-     * Creates a manager for the public listener and an optional private listener.
-     *
-     * @param httpServer    configured public HTTP server
-     * @param privateServer configured private HTTP server, or {@code null} to disable it
-     */
-    public Vortex(HttpServer httpServer, HttpServer privateServer) {
         this.httpServer = httpServer;
-        this.privateServer = privateServer;
     }
 
     /**
-     * Binds the public listener and, when configured, the private listener during Spring startup.
+     * Binds the gateway listener during Spring startup.
      *
-     * @throws RuntimeException if either listener cannot be bound
+     * @throws RuntimeException if the listener cannot be bound
      */
     @Override
     public void start() {
         if (running.compareAndSet(false, true)) {
             try {
                 disposableServer = httpServer.bindNow();
-                if (privateServer != null) {
-                    disposablePrivateServer = privateServer.bindNow();
-                }
                 Logger.info(true, "Vortex", "Gateway listener started: port={}", disposableServer.port());
             } catch (Exception e) {
                 running.set(false);
@@ -116,7 +92,7 @@ public class Vortex implements SmartLifecycle {
     }
 
     /**
-     * Disposes the gateway listeners during Spring shutdown.
+     * Disposes the gateway listener during Spring shutdown.
      * <p>
      * Shutdown then closes the outbound HTTP resources, memory sampler, and byte budgets, which also ends any queued
      * capacity waits.
@@ -131,9 +107,6 @@ public class Vortex implements SmartLifecycle {
                 ErrorBoundary.diagnose(LIFECYCLE, "gateway-stop", e, null);
             }
 
-            if (disposablePrivateServer != null) {
-                disposablePrivateServer.disposeNow();
-            }
             Egress.Http.close(LIFECYCLE);
 
             try {

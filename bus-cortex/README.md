@@ -65,7 +65,6 @@ All properties below are under `bus.cortex`. Existing `cache` options select the
 | `guard.inbound.skew` | `5` | Accepted clock skew in seconds |
 | `guard.outbound.enabled` | `false` | Enable outbound signing of `X-Service-Token` |
 | `guard.outbound.ttl` | `300` | Lifetime of issued service tokens in seconds |
-| `guard.outbound.registry` | Empty | Audience for direct registry and snapshot clients |
 | `guard.outbound.gateway` | Empty | Audience for dedicated gateway clients |
 | `guard.secret` | Empty | Shared Base64 root with at least 32 decoded bytes, required when either identity direction is enabled |
 | `audit.enabled` | `false` | Assemble the audit logger |

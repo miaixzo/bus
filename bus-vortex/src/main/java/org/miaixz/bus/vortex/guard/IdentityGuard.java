@@ -32,7 +32,6 @@ import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.cortex.Assets;
 import org.miaixz.bus.cortex.guard.GuardEvaluator;
 import org.miaixz.bus.cortex.guard.GuardEvaluator.Mode;
-import org.miaixz.bus.cortex.registry.MetadataCodec;
 import org.miaixz.bus.vortex.Args;
 import org.miaixz.bus.vortex.Context;
 import org.miaixz.bus.vortex.routing.slug.SlugRouteMatcher;
@@ -55,16 +54,6 @@ public final class IdentityGuard {
     private static final String ASSET = IdentityGuard.class.getName() + ".asset";
 
     /**
-     * Exchange attribute set by ingress after validating the private listener and path.
-     */
-    private static final String PRIVATE_SDC = IdentityGuard.class.getName() + ".privateSdc";
-
-    /**
-     * Audience assigned to the bootstrap asset by the SDC qualifier.
-     */
-    private static final String BOOTSTRAP_AUDIENCE = IdentityGuard.class.getName() + ".bootstrapAudience";
-
-    /**
      * Shared service identity rule evaluator.
      */
     private final GuardEvaluator identity;
@@ -75,39 +64,14 @@ public final class IdentityGuard {
     private final FunctionX<String, String> resolver;
 
     /**
-     * Port reserved for private SDC ingress, or zero when that listener is disabled.
-     */
-    private final int privatePort;
-
-    /**
-     * Exact application path reserved for private SDC ingress.
-     */
-    private final String privatePath;
-
-    /**
-     * Creates the request adapter for one gateway context.
+     * Creates the gateway service identity adapter.
      *
-     * @param identity common identity evaluator
+     * @param identity shared service identity evaluator
      * @param resolver trusted application code directory
      */
     public IdentityGuard(GuardEvaluator identity, FunctionX<String, String> resolver) {
-        this(identity, resolver, 0, null);
-    }
-
-    /**
-     * Creates the identity adapter with the configured private ingress.
-     *
-     * @param identity    shared service identity evaluator
-     * @param resolver    trusted application code directory
-     * @param privatePort private listener port, or zero when it is disabled
-     * @param privatePath exact path reserved for private SDC, or null when unset
-     */
-    public IdentityGuard(GuardEvaluator identity, FunctionX<String, String> resolver, int privatePort,
-            String privatePath) {
         this.identity = Objects.requireNonNull(identity);
         this.resolver = Objects.requireNonNull(resolver);
-        this.privatePort = privatePort;
-        this.privatePath = privatePath;
     }
 
     /**
@@ -116,16 +80,9 @@ public final class IdentityGuard {
      *
      * @param exchange actual ingress exchange
      * @return exchange with the reserved header removed, or the original exchange when no header was supplied
-     * @throws ResponseStatusException if the request path is served by a different listener
      */
     public ServerWebExchange ingress(ServerWebExchange exchange) {
-        var local = exchange.getRequest().getLocalAddress();
         String path = exchange.getRequest().getPath().pathWithinApplication().value();
-        boolean privateListener = privatePort > 0 && local != null && local.getPort() == privatePort;
-        if (path.equals(privatePath) != privateListener) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        }
-        exchange.getAttributes().put(PRIVATE_SDC, privateListener);
         var received = identity
                 .receive(path, fixed(path), Args.isRestRequest(path), exchange.getRequest().getHeaders()::get);
         if (!received.present())
@@ -136,26 +93,6 @@ public final class IdentityGuard {
                 request -> request
                         .headers(headers -> identity.clearHeaders(null, headers.headerNames(), headers::remove)))
                 .build();
-    }
-
-    /**
-     * Checks whether ingress admitted the exchange on the private SDC listener.
-     *
-     * @param exchange current gateway exchange
-     * @return true when both the listener port and configured private path matched
-     */
-    public static boolean isPrivateSdc(ServerWebExchange exchange) {
-        return Boolean.TRUE.equals(exchange.getAttribute(PRIVATE_SDC));
-    }
-
-    /**
-     * Sets the configured service audience after the private bootstrap route is selected.
-     *
-     * @param exchange current private SDC exchange
-     * @param audience trusted bootstrap service code
-     */
-    public static void setBootstrapAudience(ServerWebExchange exchange, String audience) {
-        exchange.getAttributes().put(BOOTSTRAP_AUDIENCE, audience);
     }
 
     /**
@@ -202,7 +139,7 @@ public final class IdentityGuard {
         }
         if (assets == null)
             return;
-        if (control != sdcAsset || control && isPrivateSdc(exchange) != privateOperation(assets))
+        if (control != sdcAsset)
             throw new ResponseStatusException(HttpStatus.FORBIDDEN);
         if (rest) {
             GuardEvaluator.Asset policy = policy(assets);
@@ -210,18 +147,6 @@ public final class IdentityGuard {
                 exchange.getAttributes().put(ASSET, policy);
             verify(exchange, path, tokens, policy);
         }
-    }
-
-    /**
-     * Checks whether an SDC asset is reserved for private ingress.
-     *
-     * @param asset selected SDC asset
-     * @return {@code true} if the asset targets an internal path or its metadata declares it internal
-     */
-    private static boolean privateOperation(Assets asset) {
-        var metadata = MetadataCodec.object(MetadataCodec.root(asset.getMetadata()).get(MetadataCodec.ROOT));
-        return asset.getUrl() != null && asset.getUrl().startsWith("/internal/")
-                || metadata != null && Boolean.TRUE.equals(metadata.get("internal"));
     }
 
     /**
@@ -248,11 +173,7 @@ public final class IdentityGuard {
      * @param asset    optional policy from the resolved route asset
      * @throws ResponseStatusException if authentication is rejected or a required direction is unavailable
      */
-    private void verify(
-            ServerWebExchange exchange,
-            String path,
-            List<String> tokens,
-            GuardEvaluator.Asset asset) {
+    private void verify(ServerWebExchange exchange, String path, List<String> tokens, GuardEvaluator.Asset asset) {
         var result = identity.accept(path, tokens, fixed(path), asset);
         switch (result.status()) {
             case REJECTED -> throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
@@ -265,7 +186,7 @@ public final class IdentityGuard {
     }
 
     /**
-     * Signs for the configured next hop and includes the authenticated caller and resolved SDC asset.
+     * Signs for the configured next hop and includes the authenticated caller and resolved asset when present.
      *
      * @param exchange qualified request
      * @param context  gateway routing context
@@ -290,17 +211,14 @@ public final class IdentityGuard {
             if (destination != null && !destination.isAbsolute() && destination.getRawAuthority() == null
                     && asset.getApp_id() != null && asset.getInstances() != null && asset.getInstances().size() == 1
                     && asset.getApp_id().equals(asset.getInstances().getFirst().getApp_id())) {
-                audience = isPrivateSdc(exchange) ? exchange.getAttribute(BOOTSTRAP_AUDIENCE) : null;
-                if (audience == null) {
-                    audience = resolver.apply(asset.getApp_id());
-                }
+                audience = resolver.apply(asset.getApp_id());
             }
-            GuardEvaluator.Verified caller = exchange
-                    .getAttribute(GuardEvaluator.VERIFIED_ATTRIBUTE);
+            GuardEvaluator.Verified caller = exchange.getAttribute(GuardEvaluator.VERIFIED_ATTRIBUTE);
             if (fixed == Mode.REQUIRED && caller == null)
                 throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
             if (fixed == Mode.REQUIRED && (asset == null || StringKit.isBlank(asset.getId())))
                 throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE);
+            String assetId = caller != null && asset != null ? asset.getId() : null;
             String token = identity.outbound(
                     route,
                     audience,
@@ -308,8 +226,8 @@ public final class IdentityGuard {
                     fixed,
                     mode,
                     Args.isRestRequest(route),
-                    fixed == Mode.REQUIRED ? caller : null,
-                    fixed == Mode.REQUIRED ? asset.getId() : null);
+                    caller,
+                    assetId);
             return forward(exchange, context, token);
         } catch (IllegalArgumentException | IllegalStateException unavailable) {
             throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE);

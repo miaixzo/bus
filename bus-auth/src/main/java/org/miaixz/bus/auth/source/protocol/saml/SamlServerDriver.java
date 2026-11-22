@@ -332,14 +332,12 @@ public class SamlServerDriver implements ProtocolDriver<SamlServerOptions> {
                 final var response = capability == SamlServerScheme.PASSIVE_FAILURE
                         ? provider.passiveFailure(authn, context, timeout)
                         : provider.singleSignOn(authn, context, timeout);
-                return narrow(
-                        response.thenCompose(outcome -> switch (outcome) {
-                            case Outcome.Succeeded<Response> success -> signer.sign(success.value(), context, timeout);
-                            case Outcome.Rejected<Response> rejected -> completed(Outcome.rejected(rejected.failure()));
-                            case Outcome.Failed<Response> failed -> completed(Outcome.failed(failed.failure()));
-                            default -> throw new IllegalStateException("Unsupported Outcome implementation");
-                        }),
-                        capability.responseType());
+                return narrow(response.thenCompose(outcome -> switch (outcome) {
+                    case Outcome.Succeeded<Response> success -> signer.sign(success.value(), context, timeout);
+                    case Outcome.Rejected<Response> rejected -> completed(Outcome.rejected(rejected.failure()));
+                    case Outcome.Failed<Response> failed -> completed(Outcome.failed(failed.failure()));
+                    default -> throw new IllegalStateException("Unsupported Outcome implementation");
+                }), capability.responseType());
             }
             if (capability == SamlServerScheme.SINGLE_LOGOUT) {
                 if (request == null || request.getClass() != LogoutRequest.class
