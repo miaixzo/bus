@@ -23,9 +23,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.server.MethodNotAllowedException;
-import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.UnsupportedMediaTypeStatusException;
 
@@ -34,6 +32,7 @@ import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.vortex.Args;
 import org.miaixz.bus.vortex.Context;
+import org.miaixz.bus.vortex.guard.IdentityGuard;
 import org.miaixz.bus.vortex.strategy.VettingStrategy;
 import org.miaixz.bus.vortex.strategy.request.SdcRequestStrategy.Input;
 
@@ -58,8 +57,10 @@ public class SdcVettingStrategy extends VettingStrategy {
     }
 
     /**
-     * Validates the GET or JSON POST contract, reserves the snapshot selector for internal use, and retains valueless
-     * GET selectors before shared validation.
+     * Validates the SDC request method and content type before applying shared validation.
+     * <p>
+     * POST requests accept JSON and private ingress additionally accepts form data. GET requests retain valueless
+     * selectors for route and configuration queries.
      *
      * @param exchange prepared SDC exchange
      * @param context  shared gateway request context
@@ -75,10 +76,10 @@ public class SdcVettingStrategy extends VettingStrategy {
                         new MethodNotAllowedException(HttpMethod.valueOf(method.value()),
                                 Set.of(HttpMethod.GET, HttpMethod.POST)));
             }
-            if (input.queryNames().stream().anyMatch("since"::equalsIgnoreCase)) {
-                return Mono.error(new ResponseStatusException(HttpStatus.FORBIDDEN));
-            }
-            if (method == Http.Method.POST && !MediaType.isJson(input.contentType())) {
+            boolean privateForm = IdentityGuard.isPrivateSdc(exchange)
+                    && input.contentType() != null
+                    && input.contentType().startsWith("application/x-www-form-urlencoded");
+            if (method == Http.Method.POST && !MediaType.isJson(input.contentType()) && !privateForm) {
                 return Mono.error(new UnsupportedMediaTypeStatusException("SDC POST requires JSON"));
             }
             if (method == Http.Method.GET) {

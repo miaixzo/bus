@@ -25,15 +25,16 @@ import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.*;
 import java.util.function.ToIntFunction;
-import java.util.function.UnaryOperator;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.miaixz.bus.core.center.function.SupplierX;
+import org.miaixz.bus.core.center.function.UnaryOperatorX;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
+import org.miaixz.bus.core.xyz.FunctionKit;
 import org.miaixz.bus.health.Builder;
 import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.Memoizer;
@@ -140,7 +141,7 @@ final class LinuxSensors extends AbstractSensors {
     /**
      * Runs a Raspberry Pi firmware sensor command.
      */
-    private final UnaryOperator<String> vcgencmd;
+    private final UnaryOperatorX<String> vcgencmd;
 
     /**
      * Indicates whether the Raspberry Pi firmware command is available.
@@ -169,7 +170,7 @@ final class LinuxSensors extends AbstractSensors {
      * @param thermalZoneBasePath the thermal zone base path
      * @param vcgencmd            runs a {@code vcgencmd} subcommand and returns its first line
      */
-    LinuxSensors(String hwmonBasePath, String thermalZoneBasePath, UnaryOperator<String> vcgencmd) {
+    LinuxSensors(String hwmonBasePath, String thermalZoneBasePath, UnaryOperatorX<String> vcgencmd) {
         this.hwmonPath = hwmonBasePath;
         this.thermalZonePath = thermalZoneBasePath;
         this.vcgencmd = vcgencmd;
@@ -187,7 +188,7 @@ final class LinuxSensors extends AbstractSensors {
      * @return The temperature on a Pi, 0 otherwise
      */
     private double queryCpuTemperatureFromVcGenCmd() {
-        String tempStr = vcgencmd.apply("measure_temp");
+        String tempStr = FunctionKit.applyUnaryUnwrapped(vcgencmd, "measure_temp");
         // temp=50.8'C
         if (tempStr.startsWith("temp=")) {
             return Parsing.parseDoubleOrDefault(tempStr.replaceAll("[^\\d|\\.]+", Normal.EMPTY), 0d);
@@ -201,7 +202,7 @@ final class LinuxSensors extends AbstractSensors {
      * @return The temperature on a Pi, 0 otherwise
      */
     private double queryCpuVoltageFromVcGenCmd() {
-        String voltageStr = vcgencmd.apply("measure_volts core");
+        String voltageStr = FunctionKit.applyUnaryUnwrapped(vcgencmd, "measure_volts core");
         // volt=1.20V
         if (voltageStr.startsWith("volt=")) {
             return Parsing.parseDoubleOrDefault(voltageStr.replaceAll("[^\\d|\\.]+", Normal.EMPTY), 0d);

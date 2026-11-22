@@ -23,6 +23,8 @@ import java.time.Duration;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BooleanSupplier;
 
+import org.miaixz.bus.core.center.function.RunnableX;
+import org.miaixz.bus.core.xyz.FunctionKit;
 import org.miaixz.bus.fabric.runtime.Activity;
 import org.miaixz.bus.fabric.runtime.dispatch.DispatchHandle;
 import org.miaixz.bus.fabric.runtime.dispatch.Dispatcher;
@@ -63,7 +65,7 @@ final class WebSocketDeadline implements AutoCloseable {
     /**
      * Timeout action.
      */
-    private final Runnable timeoutAction;
+    private final RunnableX timeoutAction;
 
     /**
      * Current deadline handle.
@@ -81,7 +83,7 @@ final class WebSocketDeadline implements AutoCloseable {
      * @param timeoutAction timeout action
      */
     WebSocketDeadline(final Dispatcher dispatcher, final String key, final Duration timeout,
-            final Cancellation cancellation, final BooleanSupplier waiting, final Runnable timeoutAction) {
+            final Cancellation cancellation, final BooleanSupplier waiting, final RunnableX timeoutAction) {
         this.dispatcher = dispatcher;
         this.key = key;
         this.timeout = timeout;
@@ -101,7 +103,7 @@ final class WebSocketDeadline implements AutoCloseable {
                 .schedule(key + ":close-timeout", timeout, Activity.of("websocket:close-timeout", () -> {
                     handle.set(null);
                     if (waiting.getAsBoolean()) {
-                        timeoutAction.run();
+                        FunctionKit.runUnwrapped(timeoutAction);
                     }
                 }, cancellation));
         final DispatchHandle previous = handle.getAndSet(next);

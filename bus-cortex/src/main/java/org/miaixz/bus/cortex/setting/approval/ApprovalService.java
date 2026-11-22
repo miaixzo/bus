@@ -22,7 +22,6 @@ package org.miaixz.bus.cortex.setting.approval;
 import java.util.List;
 import java.util.Objects;
 
-import org.miaixz.bus.cortex.guard.CortexGuard;
 import org.miaixz.bus.cortex.setting.SettingProvider;
 import org.miaixz.bus.cortex.setting.rollout.Rollout;
 
@@ -37,20 +36,14 @@ public final class ApprovalService {
      * Atomic decision/workflow transaction.
      */
     private final ApprovalStore store;
-    /**
-     * Optional host access policy.
-     */
-    private final CortexGuard guard;
 
     /**
      * Creates approval handling.
      *
      * @param store atomic decisions
-     * @param guard optional host access policy
      */
-    public ApprovalService(ApprovalStore store, CortexGuard guard) {
+    public ApprovalService(ApprovalStore store) {
         this.store = Objects.requireNonNull(store);
-        this.guard = guard;
     }
 
     /**
@@ -61,7 +54,6 @@ public final class ApprovalService {
      * @return immutable evidence
      */
     public List<Approval> query(SettingProvider.Context context, String rollout) {
-        context.check(guard, "read", "approval", rollout);
         return List.copyOf(store.query(context.tenant(), rollout));
     }
 
@@ -89,7 +81,6 @@ public final class ApprovalService {
             String comment) {
         context.requireRequest();
         context.requireActor();
-        context.check(guard, "approve", "rollout", rollout);
         if (frozenChecksum == null || stage == null || decision == null)
             throw new IllegalArgumentException("Exact approval input required");
         Approval evidence = Approval.builder().tenant_id(context.tenant()).rollout_id(rollout).target_id(recipient)

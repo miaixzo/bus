@@ -19,33 +19,25 @@
 */
 package org.miaixz.bus.vortex.strategy.qualifier;
 
-import java.net.URI;
 import java.util.Objects;
-import java.util.function.Supplier;
 
-import org.springframework.http.CacheControl;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.server.ServerWebExchange;
 
 import org.miaixz.bus.core.Order;
-import org.miaixz.bus.core.center.function.FunctionX;
+import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.net.Http;
-import org.miaixz.bus.cortex.Assets;
-import org.miaixz.bus.cortex.Type;
-import org.miaixz.bus.cortex.guard.GuardPolicy;
-import org.miaixz.bus.cortex.registry.api.ApiAssets;
+import org.miaixz.bus.cortex.Keying;
 import org.miaixz.bus.vortex.Args;
 import org.miaixz.bus.vortex.Context;
+import org.miaixz.bus.vortex.guard.IdentityGuard;
 import org.miaixz.bus.vortex.provider.AuthorizeProvider;
 import org.miaixz.bus.vortex.registry.AssetsRegistry;
 import org.miaixz.bus.vortex.strategy.QualifierStrategy;
-import org.miaixz.bus.vortex.strategy.request.SdcRequestStrategy.Input;
 
 import reactor.core.publisher.Mono;
 
 /**
- * Qualifies an SDC request with the configured application authentication and forwarding endpoint.
+ * Qualifies the SDC route from the in-memory route assets after verifying the service identity.
  *
  * @author Kimi Liu
  */
@@ -53,28 +45,88 @@ import reactor.core.publisher.Mono;
 public class SdcQualifierStrategy extends QualifierStrategy {
 
     /**
-     * Supplies the authenticated upstream endpoint.
+     * Configured bootstrap route, or {@code null} when bootstrap routing is disabled.
      */
-    private final Supplier<URI> endpoint;
-
-    /**
-     * Exchanges an application credential for the credential accepted by the upstream.
-     */
-    private final FunctionX<String, String> authenticator;
+    private final Bootstrap bootstrap;
 
     /**
      * Creates the SDC qualification stage.
      *
-     * @param provider      shared authorization provider
-     * @param registry      shared runtime asset registry
-     * @param endpoint      authenticated upstream endpoint
-     * @param authenticator application credential verifier and upstream credential issuer
+     * @param provider shared authorization provider
+     * @param registry shared runtime asset registry
      */
-    public SdcQualifierStrategy(AuthorizeProvider provider, AssetsRegistry registry, Supplier<URI> endpoint,
-            FunctionX<String, String> authenticator) {
+    public SdcQualifierStrategy(AuthorizeProvider provider, AssetsRegistry registry) {
         super(provider, registry);
-        this.endpoint = Objects.requireNonNull(endpoint);
-        this.authenticator = Objects.requireNonNull(authenticator);
+        this.bootstrap = null;
+    }
+
+    /**
+     * Creates the SDC qualifier with the gateway identity adapter.
+     *
+     * @param provider   credential validation provider
+     * @param registry   runtime asset registry
+     * @param identities shared service identity adapter
+     */
+    public SdcQualifierStrategy(AuthorizeProvider provider, AssetsRegistry registry, IdentityGuard identities) {
+        this(provider, registry, identities, null);
+    }
+
+    /**
+     * Creates the SDC qualifier with optional bootstrap routing.
+     *
+     * @param provider   credential validation provider
+     * @param registry   runtime asset registry
+     * @param identities shared service identity adapter
+     * @param bootstrap  configured route, or {@code null} to disable bootstrap routing
+     */
+    public SdcQualifierStrategy(AuthorizeProvider provider, AssetsRegistry registry, IdentityGuard identities,
+            Bootstrap bootstrap) {
+        super(provider, registry, identities);
+        this.bootstrap = bootstrap;
+    }
+
+    /**
+     * Resolves the configured bootstrap operation for eligible private requests.
+     *
+     * @param exchange current gateway exchange
+     * @param route    structured route key
+     * @return matching route, or {@code null} when the route or snapshot operation is unavailable
+     */
+    @Override
+    protected AssetsRegistry.RouteMatch findRoute(ServerWebExchange exchange, Keying.RegistrySpec route) {
+        if (bootstrap == null || !bootstrap.method().equals(route.methodPart())) {
+            return super.findRoute(exchange, route);
+        }
+        if (!IdentityGuard.isPrivateSdc(exchange)
+                || !Args.DEFAULT_VERSION.equals(route.versionPart())
+                || !Integer.valueOf(Http.Method.GET.verb()).equals(route.verbPart())) {
+            return null;
+        }
+        var match = bootstrap.route().get();
+        if (match != null) {
+            IdentityGuard.setBootstrapAudience(exchange, bootstrap.audience());
+        }
+        return match;
+    }
+
+    /**
+     * Private SDC route available before the registry loads.
+     *
+     * @param method   configured SDC method
+     * @param audience trusted downstream service code
+     * @param route    supplies a route with a current synthetic instance heartbeat
+     */
+    public record Bootstrap(String method, String audience, SupplierX<AssetsRegistry.RouteMatch> route) {
+
+        /**
+         * Validates the required bootstrap route coordinates.
+         */
+        public Bootstrap {
+            Objects.requireNonNull(method);
+            Objects.requireNonNull(audience);
+            Objects.requireNonNull(route);
+        }
+
     }
 
     /**
@@ -88,51 +140,27 @@ public class SdcQualifierStrategy extends QualifierStrategy {
     }
 
     /**
-     * Authenticates the application, assigns the configured upstream as the route target, and marks the response with
-     * {@code Cache-Control: no-store}.
+     * Resolves the SDC route version and supplies the shared default when absent.
      *
-     * @param exchange prepared SDC exchange
-     * @param chain    remaining strategies in the SDC chain
-     * @return completion of credential qualification and the remaining strategy chain
+     * @param exchange current web exchange
+     * @param context  current request context
+     * @return resolved route version
      */
     @Override
-    public Mono<Void> apply(ServerWebExchange exchange, Chain chain) {
-        return Mono.deferContextual(view -> {
-            Context context = view.get(Context.class);
-            return authorize(context).then(Mono.defer(() -> {
-                URI target = endpoint.get();
-                Assets assets = ApiAssets.builder().type(Type.API.key()).method(Args.SDC_PATH_PREFIX)
-                        .version(Args.DEFAULT_VERSION).verb(context.getHttpMethod().verb()).protocol(Args.ROUTE_SDC)
-                        .policy(GuardPolicy.CREDENTIAL.code()).url(target.toASCIIString()).stream(1).timeout(60)
-                        .retries(0).build();
-                context.setAssets(assets);
-                exchange.getResponse().beforeCommit(() -> {
-                    exchange.getResponse().getHeaders().setCacheControl(CacheControl.noStore());
-                    return Mono.empty();
-                });
-                return method(context, assets).then(Mono.defer(() -> chain.apply(exchange)));
-            }));
-        });
+    protected String version(ServerWebExchange exchange, Context context) {
+        String version = value(context, Args.VERSION);
+        return version == null || version.isBlank() ? Args.DEFAULT_VERSION : version;
     }
 
     /**
-     * Exchanges exactly one application API key for the upstream credential and stores it for the executor.
+     * Completes authorization for a request whose service identity was verified during route qualification.
      *
-     * @param context shared gateway request context
-     * @return completion after credential exchange, or an unauthorized error
+     * @param context qualified SDC context
+     * @return completion of the credential stage
      */
     @Override
     protected Mono<Void> authorize(Context context) {
-        return Mono.deferContextual(view -> {
-            var keys = view.get(Input.class).apiKeys();
-            String credential = keys.size() == 1 ? authenticator.apply(keys.getFirst()) : null;
-            if (credential == null) {
-                return Mono.error(new ResponseStatusException(HttpStatus.UNAUTHORIZED));
-            }
-
-            context.setHeader(Http.Auth.API_KEY_HEADER, credential);
-            return Mono.empty();
-        });
+        return Mono.empty();
     }
 
 }

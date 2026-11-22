@@ -34,8 +34,6 @@ import org.miaixz.bus.cortex.builtin.batch.BatchOperation;
 import org.miaixz.bus.cortex.builtin.batch.BatchResult;
 import org.miaixz.bus.cortex.builtin.graph.DependencyGraph;
 import org.miaixz.bus.cortex.builtin.graph.ImpactAnalysis;
-import org.miaixz.bus.cortex.guard.CortexGuard;
-import org.miaixz.bus.cortex.guard.GuardContext;
 import org.miaixz.bus.cortex.registry.api.ApiAssets;
 import org.miaixz.bus.cortex.registry.api.ApiRegistry;
 import org.miaixz.bus.cortex.registry.mcp.McpAssets;
@@ -68,11 +66,6 @@ public class RegistryControlService {
     private final PromptRegistry promptRegistry;
 
     /**
-     * Optional shared guard applied to registry mutations.
-     */
-    private final CortexGuard cortexGuard;
-
-    /**
      * Route-key strategy used for alias registration and dependency resolution.
      */
     private final Keying<Keying.RegistrySpec> keying;
@@ -100,70 +93,52 @@ public class RegistryControlService {
      * @param promptRegistry prompt registry
      */
     public RegistryControlService(ApiRegistry apiRegistry, McpRegistry mcpRegistry, PromptRegistry promptRegistry) {
-        this(apiRegistry, mcpRegistry, promptRegistry, null, RegistryGenerator.INSTANCE);
+        this(apiRegistry, mcpRegistry, promptRegistry, RegistryGenerator.INSTANCE);
     }
 
     /**
-     * Creates a RegistryControlService with an optional shared guard.
+     * Creates a RegistryControlService with a route-key strategy.
      *
      * @param apiRegistry    API registry
      * @param mcpRegistry    MCP registry
      * @param promptRegistry prompt registry
-     * @param cortexGuard    optional shared guard
-     */
-    public RegistryControlService(ApiRegistry apiRegistry, McpRegistry mcpRegistry, PromptRegistry promptRegistry,
-            CortexGuard cortexGuard) {
-        this(apiRegistry, mcpRegistry, promptRegistry, cortexGuard, RegistryGenerator.INSTANCE);
-    }
-
-    /**
-     * Creates a RegistryControlService with an optional shared guard and route-key strategy.
-     *
-     * @param apiRegistry    API registry
-     * @param mcpRegistry    MCP registry
-     * @param promptRegistry prompt registry
-     * @param cortexGuard    optional shared guard
      * @param keying         route-key strategy
      */
     public RegistryControlService(ApiRegistry apiRegistry, McpRegistry mcpRegistry, PromptRegistry promptRegistry,
-            CortexGuard cortexGuard, Keying<Keying.RegistrySpec> keying) {
-        this(apiRegistry, mcpRegistry, promptRegistry, cortexGuard, keying, List.of());
+            Keying<Keying.RegistrySpec> keying) {
+        this(apiRegistry, mcpRegistry, promptRegistry, keying, List.of());
     }
 
     /**
-     * Creates a RegistryControlService with optional shared guard, route-key strategy and batch executors.
+     * Creates a RegistryControlService with a route-key strategy and batch executors.
      *
      * @param apiRegistry    API registry
      * @param mcpRegistry    MCP registry
      * @param promptRegistry prompt registry
-     * @param cortexGuard    optional shared guard
      * @param keying         route-key strategy
      * @param batchExecutors external batch executors
      */
     public RegistryControlService(ApiRegistry apiRegistry, McpRegistry mcpRegistry, PromptRegistry promptRegistry,
-            CortexGuard cortexGuard, Keying<Keying.RegistrySpec> keying, List<RegistryBatchExecutor> batchExecutors) {
-        this(apiRegistry, mcpRegistry, promptRegistry, cortexGuard, keying, batchExecutors, List.of());
+            Keying<Keying.RegistrySpec> keying, List<RegistryBatchExecutor> batchExecutors) {
+        this(apiRegistry, mcpRegistry, promptRegistry, keying, batchExecutors, List.of());
     }
 
     /**
-     * Creates a RegistryControlService with optional shared guard, route-key strategy, batch executors and batch
-     * resolvers.
+     * Creates a RegistryControlService with a route-key strategy, batch executors and batch resolvers.
      *
      * @param apiRegistry    API registry
      * @param mcpRegistry    MCP registry
      * @param promptRegistry prompt registry
-     * @param cortexGuard    optional shared guard
      * @param keying         route-key strategy
      * @param batchExecutors external batch executors
      * @param batchResolvers external batch resolvers
      */
     public RegistryControlService(ApiRegistry apiRegistry, McpRegistry mcpRegistry, PromptRegistry promptRegistry,
-            CortexGuard cortexGuard, Keying<Keying.RegistrySpec> keying, List<RegistryBatchExecutor> batchExecutors,
+            Keying<Keying.RegistrySpec> keying, List<RegistryBatchExecutor> batchExecutors,
             List<RegistryBatchResolver> batchResolvers) {
         this.apiRegistry = apiRegistry;
         this.mcpRegistry = mcpRegistry;
         this.promptRegistry = promptRegistry;
-        this.cortexGuard = cortexGuard;
         this.keying = keying == null ? RegistryGenerator.INSTANCE : keying;
         List<RegistryBatchExecutor> executors = new ArrayList<>();
         if (batchExecutors != null) {
@@ -298,7 +273,6 @@ public class RegistryControlService {
                 prepared.getId(),
                 prepared.getMethod(),
                 prepared.getVersion());
-        enforceRegistry("upsert", type, prepared);
         if (!preResolved && prepared.getId() == null && prepared.getMethod() != null && prepared.getVersion() != null) {
             Assets routeExisting = getByRoute(
                     type,
@@ -356,7 +330,6 @@ public class RegistryControlService {
                 type,
                 tenantId,
                 id);
-        enforceRegistry("delete", type, tenantId, id, null, null, null);
         if (!preResolved) {
             registry(type).deregister(tenantId, id);
         } else {
@@ -551,62 +524,6 @@ public class RegistryControlService {
         query.setMethod(method);
         query.setVersion(version);
         return getSingle(query);
-    }
-
-    /**
-     * Applies registry guard policy to one asset mutation.
-     *
-     * @param action guarded action
-     * @param type   registry type
-     * @param asset  registry asset
-     */
-    private void enforceRegistry(String action, Type type, Assets asset) {
-        enforceRegistry(
-                action,
-                type,
-                asset == null ? null : asset.getTenant_id(),
-                asset == null ? null : asset.getId(),
-                asset == null ? null : asset.getApp_id(),
-                asset == null ? null : asset.getMethod(),
-                asset == null ? null : asset.getVersion());
-    }
-
-    /**
-     * Applies registry guard policy using explicit asset coordinates.
-     *
-     * @param action   guarded action
-     * @param type     registry type
-     * @param tenantId tenantId identifier
-     * @param id       asset identifier
-     * @param app_id   application identifier
-     * @param method   protocol method
-     * @param version  protocol version
-     */
-    private void enforceRegistry(
-            String action,
-            Type type,
-            String tenantId,
-            String id,
-            String app_id,
-            String method,
-            String version) {
-        if (cortexGuard == null) {
-            return;
-        }
-        Type effective = Type.requireRegistry(type);
-        GuardContext context = new GuardContext();
-        context.setDomain("registry");
-        context.setAction(action);
-        context.setResourceType(effective.name());
-        context.setResourceId(id);
-        context.setAssetId(id);
-        context.setTenant_id(RegistryIdentity.tenantId(effective, tenantId));
-        context.setApp_id(app_id);
-        context.putAttribute("type", effective.name());
-        context.putAttribute("typeKey", effective.key());
-        context.putAttribute("method", method);
-        context.putAttribute("version", version);
-        cortexGuard.enforce(context);
     }
 
     /**
@@ -1184,18 +1101,6 @@ public class RegistryControlService {
         @Override
         public Assets normalize(Assets asset) {
             return RegistryControlService.this.normalize(asset);
-        }
-
-        /**
-         * Enforces registry guard policy for one batch entry.
-         *
-         * @param action guarded action
-         * @param type   registry type
-         * @param asset  registry asset
-         */
-        @Override
-        public void enforce(String action, Type type, Assets asset) {
-            enforceRegistry(action, type, asset);
         }
 
         /**

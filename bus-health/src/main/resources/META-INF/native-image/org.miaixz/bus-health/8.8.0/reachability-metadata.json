@@ -9331,7 +9331,7 @@
           "parameterTypes": [
             "java.lang.String",
             "java.lang.String",
-            "java.util.function.UnaryOperator"
+            "org.miaixz.bus.core.center.function.UnaryOperatorX"
           ]
         },
         {
@@ -23244,7 +23244,7 @@
             "com.sun.jna.platform.win32.COM.WbemcliUtil$WmiResult",
             "com.sun.jna.platform.win32.COM.WbemcliUtil$WmiResult",
             "com.sun.jna.platform.win32.COM.WbemcliUtil$WmiResult",
-            "java.util.function.UnaryOperator"
+            "org.miaixz.bus.core.center.function.UnaryOperatorX"
           ]
         },
         {
@@ -23264,7 +23264,7 @@
           "name": "classifyDiskTypes",
           "parameterTypes": [
             "com.sun.jna.platform.win32.COM.WbemcliUtil$WmiResult",
-            "org.miaixz.bus.health.windows.hardware.WindowsHWDiskStore$StoragePropertiesResolver"
+            "org.miaixz.bus.core.center.function.FunctionX"
           ]
         },
         {
@@ -23349,7 +23349,7 @@
           "name": "queryBackingStores",
           "parameterTypes": [
             "org.miaixz.bus.health.windows.WmiQueryHandler",
-            "java.util.function.UnaryOperator"
+            "org.miaixz.bus.core.center.function.UnaryOperatorX"
           ]
         },
         {

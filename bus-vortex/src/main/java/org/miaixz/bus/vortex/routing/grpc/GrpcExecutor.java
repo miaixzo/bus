@@ -39,7 +39,7 @@ import org.miaixz.bus.errors.transport.reactive.ReactiveErrorHandler;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.vortex.*;
 import org.miaixz.bus.vortex.routing.Coordinator;
-import org.miaixz.bus.vortex.routing.StreamingRelay;
+import org.miaixz.bus.vortex.routing.FlowEnforcer;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -116,7 +116,7 @@ public class GrpcExecutor extends Coordinator<String, ServerResponse> {
                     copyDownstreamHeaders(responseBuilder, responseEntity.getHeaders());
                     Flux<DataBuffer> dataFlux = responseEntity.getBody() == null ? Flux.empty()
                             : responseEntity.getBody().doOnDiscard(PooledDataBuffer.class, Octets::release);
-                    dataFlux = StreamingRelay.relay(dataFlux, delivery);
+                    dataFlux = FlowEnforcer.relay(dataFlux, delivery);
 
                     return responseBuilder.body(BodyInserters.fromDataBuffers(dataFlux));
                 });

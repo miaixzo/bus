@@ -17,28 +17,9 @@
  ~                                                                           ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.cortex.guard.token;
-
 /**
- * Supported token transport channels.
+ * Selects inbound service identity policies and verifies caller tokens.
  *
  * @author Kimi Liu
  */
-public enum TokenTransport {
-
-    /**
-     * Token is supplied through HTTP headers such as {@code Authorization}.
-     */
-    HEADER,
-
-    /**
-     * Token is supplied through HTTP cookies.
-     */
-    COOKIE,
-
-    /**
-     * Token is supplied through URL query parameters.
-     */
-    QUERY
-
-}
+package org.miaixz.bus.cortex.guard.inbound;

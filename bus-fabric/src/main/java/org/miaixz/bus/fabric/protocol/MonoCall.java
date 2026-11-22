@@ -22,13 +22,12 @@ package org.miaixz.bus.fabric.protocol;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.VarHandle;
 import java.time.Duration;
-import java.util.concurrent.CancellationException;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
+import java.util.Objects;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.miaixz.bus.core.Lifecycle;
+import org.miaixz.bus.core.center.function.ConsumerX;
 import org.miaixz.bus.core.center.function.FunctionX;
 import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.lang.Assert;
@@ -133,6 +132,11 @@ public abstract class MonoCall<T> implements Call<T> {
      * Result or failure retained only until a lazy future observes the terminal state.
      */
     private volatile Object outcome;
+
+    /**
+     * Cleanup registered by the single opt-in future bridge, or null for the existing call paths.
+     */
+    private volatile ConsumerX<? super T> bridgeDiscarded;
 
     /**
      * Creates a call template.
@@ -382,6 +386,42 @@ public abstract class MonoCall<T> implements Call<T> {
      */
     protected CompletableFuture<T> future() {
         return completionFuture();
+    }
+
+    /**
+     * Starts this call through the safe public bridge, preserving protocol-specific cancellation cleanup.
+     *
+     * @param executor executor that must accept execution before the protocol operation starts
+     * @return independent future owning result delivery
+     */
+    @Override
+    public CompletableFuture<T> toFuture(final Executor executor) {
+        return toFuture(executor, this::closeAfterCancelled);
+    }
+
+    /**
+     * Registers one public future owner without exposing the internal completion holder.
+     *
+     * @param executor      execution executor
+     * @param discarded     undelivered result cleanup
+     * @param failureMapper explicit failure adaptation
+     * @return independent future owning result delivery
+     */
+    @Override
+    public CompletableFuture<T> toFuture(
+            final Executor executor,
+            final ConsumerX<? super T> discarded,
+            final FunctionX<? super Throwable, ? extends Throwable> failureMapper) {
+        Objects.requireNonNull(executor, "Executor must not be null");
+        Objects.requireNonNull(discarded, "Discard strategy must not be null");
+        Objects.requireNonNull(failureMapper, "Failure mapper must not be null");
+        synchronized (this) {
+            if (submitted != 0 || bridgeDiscarded != null) {
+                return CompletableFuture.failedFuture(new StatefulException(name + " was already submitted"));
+            }
+            bridgeDiscarded = discarded;
+        }
+        return Call.super.toFuture(executor, discarded, failureMapper);
     }
 
     /**
@@ -658,7 +698,12 @@ public abstract class MonoCall<T> implements Call<T> {
      */
     private CancellationException closeAfterCancellation(final T value, final CancellationException cause) {
         try {
-            closeAfterCancelled(value);
+            final ConsumerX<? super T> discarded = bridgeDiscarded;
+            if (discarded == null) {
+                closeAfterCancelled(value);
+            } else {
+                discarded.accept(value);
+            }
         } catch (final Throwable cleanupFailure) {
             if (cleanupFailure != cause) {
                 cause.addSuppressed(cleanupFailure);
@@ -1129,6 +1174,11 @@ public abstract class MonoCall<T> implements Call<T> {
         private volatile CompletableFuture<T> completion;
 
         /**
+         * Result cleanup enabled only for the opt-in public future bridge.
+         */
+        private volatile ConsumerX<? super T> discarded;
+
+        /**
          * Creates a one-shot direct call.
          *
          * @param template immutable call template
@@ -1186,6 +1236,32 @@ public abstract class MonoCall<T> implements Call<T> {
                 fail(cause);
                 throw cause;
             }
+        }
+
+        /**
+         * Registers cleanup for a value produced after bridge cancellation wins the direct-call lifecycle race.
+         *
+         * @param executor      execution executor
+         * @param discarded     undelivered result cleanup
+         * @param failureMapper explicit failure adaptation
+         * @return independent future owning result delivery
+         */
+        @Override
+        public CompletableFuture<T> toFuture(
+                final Executor executor,
+                final ConsumerX<? super T> discarded,
+                final FunctionX<? super Throwable, ? extends Throwable> failureMapper) {
+            Objects.requireNonNull(executor, "Executor must not be null");
+            Objects.requireNonNull(discarded, "Discard strategy must not be null");
+            Objects.requireNonNull(failureMapper, "Failure mapper must not be null");
+            synchronized (this) {
+                if (this.discarded != null || state != Lifecycle.State.QUEUED) {
+                    return CompletableFuture
+                            .failedFuture(new StatefulException(template.name + " was already submitted"));
+                }
+                this.discarded = discarded;
+            }
+            return Call.super.toFuture(executor, discarded, failureMapper);
         }
 
         /**
@@ -1284,7 +1360,16 @@ public abstract class MonoCall<T> implements Call<T> {
                 result = value;
                 if (!STATE.compareAndSet(this, Lifecycle.State.RUNNING, Lifecycle.State.COMPLETED)) {
                     result = null;
-                    throw new CancellationException(template.name + " cancelled");
+                    final CancellationException cancelled = new CancellationException(template.name + " cancelled");
+                    final ConsumerX<? super T> cleanup = discarded;
+                    if (cleanup != null) {
+                        try {
+                            cleanup.accept(value);
+                        } catch (final Throwable cleanupFailure) {
+                            cancelled.addSuppressed(cleanupFailure);
+                        }
+                    }
+                    throw cancelled;
                 }
                 final CompletableFuture<T> future = completion;
                 if (future != null) {

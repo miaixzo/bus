@@ -20,8 +20,8 @@
 package org.miaixz.bus.fabric.protocol.websocket.calls;
 
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.Function;
 
+import org.miaixz.bus.core.center.function.FunctionX;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.fabric.Builder;
@@ -43,7 +43,7 @@ public class WebSocketCall extends MonoCall<WebSocketSession> {
     /**
      * Single WebSocket-open operation receiving the call lifecycle's cancellation scope.
      */
-    private final Function<Cancellation, WebSocketSession> operation;
+    private final FunctionX<Cancellation, WebSocketSession> operation;
 
     /**
      * Dispatch key returned when this call is submitted asynchronously.
@@ -67,7 +67,7 @@ public class WebSocketCall extends MonoCall<WebSocketSession> {
      */
     public WebSocketCall(final Dispatcher dispatcher, final Callback<? super WebSocketSession> callback,
             final EventObserver observer, final Timeout timeout,
-            final Function<Cancellation, WebSocketSession> operation, final String key) {
+            final FunctionX<Cancellation, WebSocketSession> operation, final String key) {
         super(Builder.WEBSOCKET_OPEN, dispatcher, observer, callback, timeout);
         this.operation = require(operation, "WebSocket operation");
         this.key = require(key, "WebSocket dispatch key");
@@ -88,7 +88,7 @@ public class WebSocketCall extends MonoCall<WebSocketSession> {
             final Dispatcher dispatcher,
             final Callback<? super WebSocketSession> callback,
             final EventObserver observer,
-            final Function<Cancellation, WebSocketSession> operation,
+            final FunctionX<Cancellation, WebSocketSession> operation,
             final String key) {
         return create(dispatcher, callback, observer, Timeout.defaults(), operation, key);
     }
@@ -111,7 +111,7 @@ public class WebSocketCall extends MonoCall<WebSocketSession> {
             final Callback<? super WebSocketSession> callback,
             final EventObserver observer,
             final Timeout timeout,
-            final Function<Cancellation, WebSocketSession> operation,
+            final FunctionX<Cancellation, WebSocketSession> operation,
             final String key) {
         return new WebSocketCall(require(dispatcher, "Dispatcher"), callback,
                 EventObserver.safe(require(observer, "Observer")), require(timeout, "Timeout"), operation, key);

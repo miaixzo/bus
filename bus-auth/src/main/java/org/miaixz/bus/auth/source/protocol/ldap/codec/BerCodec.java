@@ -28,9 +28,9 @@ import java.nio.charset.CodingErrorAction;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.Consumer;
 
 import org.miaixz.bus.auth.FabricX;
+import org.miaixz.bus.core.center.function.ConsumerX;
 import org.miaixz.bus.core.io.ByteString;
 import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.lang.Assert;
@@ -38,6 +38,7 @@ import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.core.xyz.FunctionKit;
 
 /**
  * Frames LDAPv3 messages on a Fabric byte stream and supplies restricted BER primitives to LDAP message codecs.
@@ -706,14 +707,14 @@ public class BerCodec implements FabricX.Framer {
          * @return this writer
          * @throws ProtocolException if nesting exceeds the configured depth
          */
-        Writer constructed(final int tag, final Consumer<Writer> children) {
+        Writer constructed(final int tag, final ConsumerX<Writer> children) {
             validateTag(tag, true);
             Assert.notNull(children, "LDAP BER child writer must not be null");
             if (depth >= maximumDepth) {
                 throw new ProtocolException("LDAP BER nesting exceeds the configured depth");
             }
             final Writer nested = new Writer(maximumDepth, depth + 1);
-            children.accept(nested);
+            FunctionKit.acceptUnwrapped(children, nested);
             writeTlv(content, tag, nested.bytes());
             return this;
         }

@@ -29,6 +29,7 @@ import org.miaixz.bus.cortex.Keying;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.vortex.Args;
 import org.miaixz.bus.vortex.Context;
+import org.miaixz.bus.vortex.guard.IdentityGuard;
 import org.miaixz.bus.vortex.guard.SignatureVerifier;
 import org.miaixz.bus.vortex.magic.ErrorCode;
 import org.miaixz.bus.vortex.provider.AuthorizeProvider;
@@ -56,6 +57,17 @@ public class McpQualifierStrategy extends QualifierStrategy {
      */
     public McpQualifierStrategy(AuthorizeProvider provider, AssetsRegistry registry) {
         super(provider, registry);
+    }
+
+    /**
+     * Creates the MCP qualifier with the gateway identity adapter.
+     *
+     * @param provider   credential validation provider
+     * @param registry   runtime asset registry
+     * @param identities shared service identity adapter
+     */
+    public McpQualifierStrategy(AuthorizeProvider provider, AssetsRegistry registry, IdentityGuard identities) {
+        super(provider, registry, identities);
     }
 
     /**
@@ -89,7 +101,7 @@ public class McpQualifierStrategy extends QualifierStrategy {
             String version = requestRoute.versionPart();
             Integer verb = requestRoute.verbPart();
 
-            return Mono.defer(() -> Mono.justOrEmpty(this.registry.get(requestRoute))).switchIfEmpty(Mono.defer(() -> {
+            return resolve(exchange, requestRoute).switchIfEmpty(Mono.defer(() -> {
                 Logger.warn(
                         false,
                         "Vortex",
@@ -118,7 +130,7 @@ public class McpQualifierStrategy extends QualifierStrategy {
                         assets.getPolicy(),
                         assets.getSigning(),
                         match.remainingPath());
-                Mono<Void> validationMono = this.method(context, assets);
+                Mono<Void> validationMono = this.validateOperation(context, assets);
                 Mono<Void> authMono = !Consts.ZERO.equals(assets.getPolicy()) ? this.authorize(context) : Mono.empty();
                 return validationMono.then(authMono).then(
                         SignatureVerifier.verifyMcp(

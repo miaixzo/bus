@@ -61,8 +61,13 @@ All properties below are under `bus.cortex`. Existing `cache` options select the
 | `bridge.url` | Empty | Required for `push+pull` mode |
 | `bridge.max-retries` | `3` | Positive bridge retry limit |
 | `bridge.source` | Empty | Bridge source marker |
-| `guard.enabled` | `true` | Enable optional Cortex access checks and TokenGuard pre-validation |
-| `guard.token` | TokenGuardConfig defaults | Token transport pre-validation options |
+| `guard.inbound.enabled` | `false` | Enable inbound verification of `X-Service-Token` |
+| `guard.inbound.skew` | `5` | Accepted clock skew in seconds |
+| `guard.outbound.enabled` | `false` | Enable outbound signing of `X-Service-Token` |
+| `guard.outbound.ttl` | `300` | Lifetime of issued service tokens in seconds |
+| `guard.outbound.registry` | Empty | Audience for direct registry and snapshot clients |
+| `guard.outbound.gateway` | Empty | Audience for dedicated gateway clients |
+| `guard.secret` | Empty | Shared Base64 root with at least 32 decoded bytes, required when either identity direction is enabled |
 | `audit.enabled` | `false` | Assemble the audit logger |
 | `release.enabled` | `false` | Assemble the read-only release registry when ReleaseStore exists |
 
@@ -72,9 +77,11 @@ Starter assembles setting services conditionally from host-provided Stores. Curr
 
 `SettingProvider` supplies invocation coordinates and current process data without authenticating callers. Host implementations enforce tenant isolation, process-session consistency, CAS and atomic commits. Approval policy validation belongs to `ApprovalStore`. `SettingStore` commits current definitions and relationships together; `RolloutStore.submit` atomically validates the frozen read-set; `PublicationStore` commits successful snapshots and publication state.
 
-Set `bus.cortex.guard.enabled=false` when an upstream gateway handles access policy. This bypasses optional guard checks for both registry and setting services, including host-supplied guards; it never bypasses tenant matching, edition checks, approval state, frozen checksums, receipt idempotency or secret protection. With guards enabled, host `GuardStrategy` implementations supply access decisions; Cortex does not authenticate accounts or credentials. Reads need no audit actor or request; idempotent mutations require a request, and approval evidence also requires an actor.
+The inbound and outbound settings independently control service identity verification and signing. Starter supplies `Hs256TokenProvider` as the default `ServiceTokenProvider` and `DerivedKeyProvider` as the default `ServiceKeyProvider`. Use `ServiceTokenIssuer` and `ServiceTokenVerifier` for direct signing and verification. Applications can register either provider as a Bean to replace its default. `GuardEvaluator` coordinates the `guard.inbound` and `guard.outbound` policies and handles shared token headers. The token and key provider APIs live in `org.miaixz.bus.cortex.guard.token`. A key provider should publish bounded, thread-safe snapshots and refresh any remote key source outside the request path.
 
-The default `NoOpSecretCodec` rejects sensitive content. Hosts must provide real protection; there is no silent plaintext fallback. TokenGuard only pre-validates credential presence and transport; authentication, permission and license checks remain host responsibilities.
+Applications own resource and operation permissions. Tenant matching, edition checks, approval state, frozen checksums, receipt idempotency, and secret protection are part of service execution. Idempotent mutations require a request, and approval evidence also requires an actor.
+
+The default `NoOpSecretCodec` rejects sensitive content. Hosts must provide a codec that protects sensitive values.
 
 Registry Beans can be injected directly. The static Cortex facade requires a bound Runtime. Starter creates registry-only Runtime when Curator is absent; configuration facade access then fails explicitly. RuntimeHandle releases the binding when the application context closes.
 
@@ -169,7 +176,10 @@ org.miaixz.bus.cortex
 ├── setting/     item, curator, reference, rollout, approval, revision, delivery, watch, secret
 ├── release/     Release, ReleaseCodec, ReleasePublisher, publication stores and read-only registry
 ├── bridge/      Vortex integration
-├── guard/       authorization pre-validation
+├── guard/       service identity configuration and coordination
+│   ├── inbound/  ingress policies, verification and decisions
+│   ├── outbound/ next-hop policies, signing and token caching
+│   └── token/    key and token providers, signing and verification
 ├── health/      health probers
 ├── builtin/     key generation, selectors and batch models
 └── magic/       identity, event, watch and runtime infrastructure

@@ -84,6 +84,21 @@ public class SamlIdentityProvider {
     }
 
     /**
+     * Produces a NoPassive error for a passive request without an authenticated subject.
+     *
+     * @param request original Authentication Request verified at the binding boundary
+     * @param context invocation context without an authenticated subject or session
+     * @param timeout shared end-to-end timeout
+     * @return stage containing the error response or a closed framework failure
+     */
+    public CompletionStage<Outcome<Response>> passiveFailure(
+            final AuthnRequest request,
+            final Context context,
+            final Timeout timeout) {
+        return singleSignOnService.passiveFailure(request, context, timeout);
+    }
+
+    /**
      * Processes one standard SAML Logout Request.
      *
      * @param request standard Logout Request

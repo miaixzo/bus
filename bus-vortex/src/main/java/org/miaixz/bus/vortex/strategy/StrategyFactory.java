@@ -140,7 +140,7 @@ public class StrategyFactory {
      * @return An ordered, unmodifiable list of {@link Strategy} instances to be executed.
      */
     public List<Strategy> getStrategiesFor(ServerWebExchange exchange) {
-        String path = exchange.getRequest().getPath().value();
+        String path = exchange.getRequest().getPath().pathWithinApplication().value();
 
         final String ipTag = "N/A";
 

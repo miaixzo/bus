@@ -55,7 +55,8 @@ public @interface ConditionalOnEnabled {
     String prefix();
 
     /**
-     * Returns the property name appended to {@link #prefix()} for secondary activation.
+     * Returns the property name appended to {@link #prefix()} for secondary activation. An empty name disables
+     * property-based activation.
      *
      * @return feature property name
      */

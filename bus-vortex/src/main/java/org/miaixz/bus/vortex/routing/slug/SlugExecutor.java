@@ -35,7 +35,6 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import org.miaixz.bus.core.lang.Charset;
-import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Http;
@@ -47,7 +46,7 @@ import org.miaixz.bus.errors.transport.reactive.ReactiveErrorHandler;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.vortex.*;
 import org.miaixz.bus.vortex.magic.ErrorCode;
-import org.miaixz.bus.vortex.routing.StreamingRelay;
+import org.miaixz.bus.vortex.routing.FlowEnforcer;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -56,7 +55,7 @@ import reactor.core.publisher.Mono;
  * Executes public slug forwarding requests as strict realtime streams or protected file downloads.
  * <p>
  * Slug responses are never aggregated: route assets must declare {@code stream=2} or {@code stream=3}. The response
- * body is passed through {@link StreamingRelay}, so admission, memory pressure, backpressure and cancellation semantics
+ * body is passed through {@link FlowEnforcer}, so admission, memory pressure, backpressure and cancellation semantics
  * match other streaming protocols.
  *
  * @author Kimi Liu
@@ -154,7 +153,7 @@ public class SlugExecutor implements Executor<ServerRequest, ServerResponse> {
                     if (responseEntity.getHeaders().getContentLength() >= 0) {
                         responseBuilder.contentLength(responseEntity.getHeaders().getContentLength());
                     }
-                    return responseBuilder.body(BodyInserters.fromDataBuffers(StreamingRelay.relay(body, delivery)));
+                    return responseBuilder.body(BodyInserters.fromDataBuffers(FlowEnforcer.relay(body, delivery)));
                 });
     }
 
@@ -166,14 +165,16 @@ public class SlugExecutor implements Executor<ServerRequest, ServerResponse> {
      * @return target URI
      */
     private URI target(Context context, ServerRequest request) {
-        SlugRouteMatcher.Match match = this.matcher.match(request);
+        SlugRouteMatcher.Match match = request.exchange().getAttribute(SlugRouteMatcher.MATCH_ATTRIBUTE);
+        if (match == null) {
+            match = this.matcher.match(request);
+        }
         if (match == null) {
             throw new ValidateException(ErrorCode._100800);
         }
-        String rendered = SlugRouteMatcher.render(match.template(), match.slug());
-        URI renderedUri = UrlKit.toURI(rendered);
-        String path = appendRemaining(stripQueryAndFragment(rendered), remaining(request.path(), match));
-        String target = renderedUri.isAbsolute() ? path : joinPath(base(match.assets()), path);
+        URI renderedUri = SlugRouteMatcher.operation(match, request.path());
+        String path = SlugRouteMatcher.stripQueryAndFragment(renderedUri.toASCIIString());
+        String target = renderedUri.isAbsolute() ? path : SlugRouteMatcher.joinPath(base(match.assets()), path);
 
         List<String> queries = new ArrayList<>();
         if (StringKit.isNotBlank(renderedUri.getRawQuery())) {
@@ -219,80 +220,6 @@ public class SlugExecutor implements Executor<ServerRequest, ServerResponse> {
             });
         }
         return String.join(Symbol.AND, parts);
-    }
-
-    /**
-     * Joins two path fragments without duplicating or losing the separator.
-     *
-     * @param base base path or URL
-     * @param path child path
-     * @return joined path
-     */
-    private String joinPath(String base, String path) {
-        if (StringKit.isBlank(path)) {
-            return base;
-        }
-        boolean baseEnds = base.endsWith(Symbol.SLASH);
-        boolean pathStarts = path.startsWith(Symbol.SLASH);
-        if (baseEnds && pathStarts) {
-            return base + path.substring(1);
-        }
-        if (!baseEnds && !pathStarts) {
-            return base + Symbol.SLASH + path;
-        }
-        return base + path;
-    }
-
-    /**
-     * Returns the path suffix after the matched public prefix and slug value.
-     *
-     * @param path  original request path
-     * @param match resolved slug match
-     * @return remaining path suffix, or an empty string
-     */
-    private String remaining(String path, SlugRouteMatcher.Match match) {
-        if (StringKit.isBlank(path) || match == null) {
-            return Normal.EMPTY;
-        }
-        String matched = match.prefix() + Symbol.SLASH + match.slug();
-        if (path.length() <= matched.length() || !path.startsWith(matched)) {
-            return Normal.EMPTY;
-        }
-        String remaining = path.substring(matched.length());
-        return remaining.startsWith(Symbol.SLASH) ? remaining : Normal.EMPTY;
-    }
-
-    /**
-     * Appends the unmatched request suffix to the rendered target path.
-     *
-     * @param path      rendered target path
-     * @param remaining unmatched request suffix
-     * @return combined target path
-     */
-    private String appendRemaining(String path, String remaining) {
-        if (StringKit.isBlank(remaining)) {
-            return path;
-        }
-        return joinPath(path, remaining);
-    }
-
-    /**
-     * Removes query and fragment components from a rendered target string.
-     *
-     * @param value rendered target string
-     * @return path portion without query or fragment
-     */
-    private String stripQueryAndFragment(String value) {
-        int queryIndex = value.indexOf(Symbol.C_QUESTION_MARK);
-        int fragmentIndex = value.indexOf(Symbol.C_HASH);
-        int end = value.length();
-        if (queryIndex >= 0) {
-            end = Math.min(end, queryIndex);
-        }
-        if (fragmentIndex >= 0) {
-            end = Math.min(end, fragmentIndex);
-        }
-        return value.substring(0, end);
     }
 
 }

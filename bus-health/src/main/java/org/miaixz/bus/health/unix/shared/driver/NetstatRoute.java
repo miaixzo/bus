@@ -27,6 +27,8 @@ import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.tuple.Pair;
+import org.miaixz.bus.core.net.ip.IPv4;
+import org.miaixz.bus.core.net.ip.IPv6;
 import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.software.NetworkParams.IPRoute;
@@ -282,7 +284,7 @@ public final class NetstatRoute {
      * @return The parsed address bytes.
      */
     private static byte[] parseAddress(String token, boolean ipv6) {
-        return ipv6 ? Parsing.parseIpv6AddressToBytes(token) : Parsing.parseIpv4AddressToBytes(token);
+        return ipv6 ? IPv6.parseAddressToBytes(token) : IPv4.parseAddressToBytes(token);
     }
 
     /**

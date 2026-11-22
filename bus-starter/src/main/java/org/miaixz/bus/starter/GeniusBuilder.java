@@ -27,11 +27,6 @@ package org.miaixz.bus.starter;
 public class GeniusBuilder {
 
     /**
-     * Configuration prefix for anchor.
-     */
-    public static final String ANCHOR = "bus.anchor";
-
-    /**
      * Configuration prefix for auth.
      */
     public static final String AUTH = "bus.auth";
@@ -55,6 +50,11 @@ public class GeniusBuilder {
      * Configuration prefix for cortex.
      */
     public static final String CORTEX = "bus.cortex";
+
+    /**
+     * Configuration prefix for Cortex operation guards and service identity.
+     */
+    public static final String CORTEX_GUARD = CORTEX + ".guard";
 
     /**
      * Configuration prefix for compatible Bus datasource definitions.

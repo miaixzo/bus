@@ -19,17 +19,28 @@
 */
 package org.miaixz.bus.fabric.protocol.http.retry;
 
+import java.io.InterruptedIOException;
 import java.net.URI;
+import java.time.DateTimeException;
+import java.time.Duration;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.concurrent.CancellationException;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
+import org.miaixz.bus.core.lang.exception.SocketException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.errors.recovery.RecoveryCoordinator;
 import org.miaixz.bus.errors.recovery.RecoveryPlan;
+import org.miaixz.bus.fabric.Clock;
 import org.miaixz.bus.fabric.Headers;
 import org.miaixz.bus.fabric.UnoUrl;
 import org.miaixz.bus.fabric.guard.route.AddressPolicy;
@@ -39,6 +50,7 @@ import org.miaixz.bus.fabric.protocol.http.auth.HttpAuthenticator;
 import org.miaixz.bus.fabric.protocol.http.body.PayloadBody;
 import org.miaixz.bus.fabric.protocol.http.chain.HttpChain;
 import org.miaixz.bus.fabric.protocol.http.chain.HttpStage;
+import org.miaixz.bus.fabric.runtime.resource.Cancellation;
 import org.miaixz.bus.logger.Logger;
 
 /**
@@ -232,7 +244,10 @@ public class HttpRetry implements HttpStage {
     }
 
     /**
-     * Executes retries and follow-ups.
+     * Executes the exchange, applying the request-specific retry policy when supplied.
+     * <p>
+     * Transport retries use the reported delivery state. Response-status retries require caller-approved replay and a
+     * repeatable request body, and any retry delay must fit the configured limits.
      *
      * @param request initial request to execute and potentially replay
      * @param chain   remaining exchange chain used for first and replayed attempts
@@ -242,6 +257,13 @@ public class HttpRetry implements HttpStage {
     public HttpResponse execute(final HttpRequest request, final HttpChain chain) {
         HttpRequest current = require(request, "HTTP request");
         final HttpChain next = require(chain, "HTTP chain");
+        final HttpRetryPolicy requestPolicy = current.tag(HttpRetryPolicy.class);
+        final HttpRetryPolicy activePolicy = requestPolicy == null ? this.policy : requestPolicy;
+        final Duration budget = current.timeout().call();
+        final RecoveryCoordinator recovery = activePolicy.retryStatuses().isEmpty() ? null
+                : new RecoveryCoordinator(new RecoveryPlan(name, activePolicy.maxAttempts(),
+                        budget.isZero() ? Duration.ofSeconds(Long.MAX_VALUE) : budget));
+        final long recoveryStarted = recovery == null ? 0 : Clock.system().nanos();
         final boolean debug = DEBUG_ENABLED;
         int attempt = Normal._0;
         int staleAttempts = Normal._0;
@@ -255,6 +277,34 @@ public class HttpRetry implements HttpStage {
                 final HttpChain attemptChain = first ? next : next.replayFrom(replayIndex);
                 first = false;
                 final HttpResponse response = attemptChain.proceed(current);
+                if (recovery != null && activePolicy.retryStatuses().contains(response.code())
+                        && activePolicy.replaySafe() && current.body().repeatable()
+                        && attempt < activePolicy.maxAttempts()) {
+                    final Duration fallback = activePolicy.baseDelay().isZero() ? Duration.ofSeconds(1)
+                            : activePolicy.delay(attempt + 1);
+                    final Duration delay = retryDelay(response.headers().get(Http.Header.RETRY_AFTER), fallback);
+                    final Duration read = current.timeout().read();
+                    if (delay.compareTo(activePolicy.maxDelay()) <= 0 && (read.isZero() || delay.compareTo(read) <= 0)
+                            && fitsNanos(delay)
+                            && (budget.isZero() || Duration.ofNanos(Clock.system().nanos() - recoveryStarted)
+                                    .plus(delay).compareTo(budget) < 0)
+                            && recovery.tryRetry(
+                                    name,
+                                    true,
+                                    true,
+                                    RecoveryPlan.Delivery.REPLAY_SAFE,
+                                    next.cancellation().cancelled())) {
+                        response.close();
+                        awaitRetry(delay, next.cancellation());
+                        if (!budget.isZero()
+                                && Duration.ofNanos(Clock.system().nanos() - recoveryStarted).compareTo(budget) >= 0) {
+                            throw new org.miaixz.bus.core.lang.exception.TimeoutException(
+                                    "HTTP retry budget exhausted");
+                        }
+                        attempt++;
+                        continue;
+                    }
+                }
                 final HttpRequest followUp = inheritAddressPolicy(current, followUp(response));
                 if (followUp == null) {
                     if (debug && (attempt > Normal._0 || staleAttempts > Normal._0 || followUps > Normal._0)) {
@@ -273,7 +323,7 @@ public class HttpRetry implements HttpStage {
                     }
                     return prior == null ? response : response.toBuilder().priorResponse(prior).build();
                 }
-                if (!followUpAllowed(response.code(), followUps)) {
+                if (!followUpAllowed(response.code(), followUps, activePolicy)) {
                     if (debug) {
                         Logger.debug(
                                 false,
@@ -308,9 +358,17 @@ public class HttpRetry implements HttpStage {
                 attempt = Normal._0;
                 staleAttempts = Normal._0;
             } catch (final RuntimeException e) {
-                final boolean staleRecovery = attempt < policy.maxAttempts()
-                        && recoverStaleConnection(current, e, staleAttempts);
-                final boolean recoverable = staleRecovery || recover(current, e, attempt);
+                final boolean staleRecovery = attempt < activePolicy.maxAttempts()
+                        && recoverStaleConnection(current, e, staleAttempts, activePolicy);
+                boolean recoverable = staleRecovery || recover(current, e, attempt, activePolicy);
+                if (recoverable && recovery != null) {
+                    recoverable = recovery.tryRetry(
+                            name,
+                            true,
+                            true,
+                            RecoveryPlan.Delivery.REPLAY_SAFE,
+                            next.cancellation().cancelled());
+                }
                 if (debug) {
                     final HttpChain.ExchangeFailure failure = HttpChain.ExchangeFailure.from(e);
                     Logger.debug(
@@ -323,8 +381,8 @@ public class HttpRetry implements HttpStage {
                             staleRecovery,
                             attempt,
                             staleAttempts,
-                            policy.maxAttempts(),
-                            policy.maxStaleRetries(),
+                            activePolicy.maxAttempts(),
+                            activePolicy.maxStaleRetries(),
                             current.method().value(),
                             current.url().host(),
                             current.url().port(),
@@ -340,6 +398,88 @@ public class HttpRetry implements HttpStage {
                     staleAttempts++;
                 }
             }
+        }
+    }
+
+    /**
+     * Parses a positive retry delay from the server's response.
+     *
+     * @param header   value of the {@code Retry-After} header, or {@code null} when absent
+     * @param fallback delay to use when the header gives no valid future retry time
+     * @return parsed delay, the largest representable whole-second duration on numeric overflow, or the fallback
+     */
+    private static Duration retryDelay(final String header, final Duration fallback) {
+        if (header != null) {
+            final String value = header.trim();
+            try {
+                final long seconds = Long.parseLong(value);
+                if (seconds > 0) {
+                    return Duration.ofSeconds(seconds);
+                }
+            } catch (final NumberFormatException ignored) {
+                if (!value.isEmpty() && value.chars().allMatch(c -> c >= '0' && c <= '9')) {
+                    return Duration.ofSeconds(Long.MAX_VALUE);
+                }
+                try {
+                    final Duration delay = Duration.between(
+                            Clock.system().now(),
+                            ZonedDateTime.parse(value, DateTimeFormatter.RFC_1123_DATE_TIME).toInstant());
+                    if (!delay.isNegative() && !delay.isZero()) {
+                        return delay;
+                    }
+                } catch (final DateTimeException invalid) {
+                    // An explicitly configured backoff takes precedence over the default one-second fallback.
+                }
+            }
+        }
+        return fallback;
+    }
+
+    /**
+     * Checks whether the timed wait can represent the given delay.
+     *
+     * @param delay proposed retry delay
+     * @return {@code true} if the duration can be expressed as a {@code long} number of nanoseconds
+     */
+    private static boolean fitsNanos(final Duration delay) {
+        try {
+            delay.toNanos();
+            return true;
+        } catch (final ArithmeticException overflow) {
+            return false;
+        }
+    }
+
+    /**
+     * Waits after the response has been closed, waking immediately on call cancellation or interruption.
+     *
+     * @param delay        retry delay expressed as a duration that fits in nanoseconds
+     * @param cancellation cancellation scope for the current call
+     * @throws CancellationException if the call is cancelled
+     * @throws SocketException       if the waiting thread is interrupted
+     */
+    private static void awaitRetry(final Duration delay, final Cancellation cancellation) {
+        final CompletableFuture<Void> wake = new CompletableFuture<>();
+        final Runnable unregister = cancellation.onCancel(() -> wake.cancel(false));
+        try {
+            cancellation.throwIfCancelled();
+            try {
+                wake.get(delay.toNanos(), TimeUnit.NANOSECONDS);
+            } catch (final java.util.concurrent.TimeoutException elapsed) {
+                cancellation.throwIfCancelled();
+            } catch (final CancellationException cancelled) {
+                cancellation.throwIfCancelled();
+                throw cancelled;
+            } catch (final ExecutionException failed) {
+                throw new CancellationException("HTTP retry wait was cancelled");
+            }
+        } catch (final InterruptedException interrupted) {
+            Thread.currentThread().interrupt();
+            final InterruptedIOException failure = new InterruptedIOException("HTTP retry wait was interrupted");
+            failure.initCause(interrupted);
+            throw new SocketException("HTTP retry wait was interrupted", failure);
+        } finally {
+            unregister.run();
         }
     }
 
@@ -368,6 +508,18 @@ public class HttpRetry implements HttpStage {
      * @return {@code true} when delivery state, failure reason, and retry policy permit another attempt
      */
     public boolean recover(final Throwable cause, final int attempt) {
+        return recover(cause, attempt, this.policy);
+    }
+
+    /**
+     * Checks whether the delivery state and failure reason allow a retry under the supplied policy.
+     *
+     * @param cause   exchange failure to classify
+     * @param attempt zero-based retry attempt
+     * @param policy  effective policy for the request
+     * @return {@code true} if the structured failure qualifies for another attempt
+     */
+    private static boolean recover(final Throwable cause, final int attempt, final HttpRetryPolicy policy) {
         final Throwable current = require(cause, "Failure cause");
         final HttpChain.ExchangeFailure failure = HttpChain.ExchangeFailure.from(current);
         if (failure == null) {
@@ -383,23 +535,33 @@ public class HttpRetry implements HttpStage {
      * @param request request considered for replay
      * @param cause   structured exchange failure
      * @param attempt zero-based retry attempt
+     * @param policy  effective policy for the request
      * @return {@code true} when policy and request semantics permit replay
      */
-    private boolean recover(final HttpRequest request, final Throwable cause, final int attempt) {
+    private boolean recover(
+            final HttpRequest request,
+            final Throwable cause,
+            final int attempt,
+            final HttpRetryPolicy policy) {
         return RecoveryCoordinator
                 .canReplay(idempotent(request.method()), request.body().repeatable(), RecoveryPlan.Delivery.UNPROCESSED)
-                && recover(cause, attempt);
+                && (policy == this.policy ? recover(cause, attempt) : recover(cause, attempt, policy));
     }
 
     /**
-     * Recovers a single exchange that failed because a pooled HTTP/1 connection was already stale.
+     * Determines whether a failed exchange on a reused HTTP/1 connection qualifies for stale-connection recovery.
      *
      * @param request request considered for replay
      * @param cause   structured exchange failure
      * @param attempt zero-based stale recovery attempt
+     * @param policy  effective policy for stale-connection recovery
      * @return {@code true} when all stale-connection and request replay constraints permit recovery
      */
-    private boolean recoverStaleConnection(final HttpRequest request, final Throwable cause, final int attempt) {
+    private static boolean recoverStaleConnection(
+            final HttpRequest request,
+            final Throwable cause,
+            final int attempt,
+            final HttpRetryPolicy policy) {
         final HttpChain.ExchangeFailure failure = HttpChain.ExchangeFailure.from(cause);
         if (!idempotent(request.method()) || !request.body().repeatable() || failure == null) {
             return false;
@@ -458,9 +620,10 @@ public class HttpRetry implements HttpStage {
      *
      * @param code      response status that produced the follow-up
      * @param followUps number of follow-ups already accepted
+     * @param policy    effective policy for redirect follow-ups
      * @return {@code true} when the redirect policy or authentication hard limit allows another request
      */
-    private boolean followUpAllowed(final int code, final int followUps) {
+    private static boolean followUpAllowed(final int code, final int followUps, final HttpRetryPolicy policy) {
         return switch (code) {
             case Http.Status.MULTIPLE_CHOICES, Http.Status.MOVED_PERMANENTLY, Http.Status.FOUND, Http.Status.SEE_OTHER, Http.Status.TEMPORARY_REDIRECT, Http.Status.PERMANENT_REDIRECT -> policy
                     .redirect(code, followUps);

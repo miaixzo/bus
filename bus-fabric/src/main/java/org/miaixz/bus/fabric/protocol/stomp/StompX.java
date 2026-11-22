@@ -27,8 +27,8 @@ import java.net.URISyntaxException;
 import java.time.Duration;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Consumer;
 
+import org.miaixz.bus.core.center.function.ConsumerX;
 import org.miaixz.bus.core.instance.Instances;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Symbol;
@@ -99,7 +99,7 @@ public class StompX {
      *
      * @return no-op message handler
      */
-    private static Consumer<StompMessage> noopHandler() {
+    private static ConsumerX<StompMessage> noopHandler() {
         return Instances.get(StompX.class.getName() + ".noopHandler", () -> message -> {
         });
     }
@@ -388,7 +388,7 @@ public class StompX {
         /**
          * Message handler.
          */
-        private Consumer<StompMessage> handler;
+        private ConsumerX<StompMessage> handler;
 
         /**
          * Session lifecycle listener.
@@ -398,12 +398,12 @@ public class StompX {
         /**
          * Open handler.
          */
-        private Consumer<StompSession> openHandler;
+        private ConsumerX<StompSession> openHandler;
 
         /**
          * Error handler.
          */
-        private Consumer<Throwable> errorHandler;
+        private ConsumerX<Throwable> errorHandler;
 
         /**
          * Creates a builder.
@@ -572,7 +572,7 @@ public class StompX {
          * @param handler STOMP message consumer, or {@code null} for no action
          * @return this builder
          */
-        public Builder onMessage(final Consumer<StompMessage> handler) {
+        public Builder onMessage(final ConsumerX<StompMessage> handler) {
             this.handler = handler == null ? noopHandler() : handler;
             return this;
         }
@@ -583,7 +583,7 @@ public class StompX {
          * @param handler consumer invoked after STOMP connection, or {@code null} for no action
          * @return this builder
          */
-        public Builder onOpen(final Consumer<StompSession> handler) {
+        public Builder onOpen(final ConsumerX<StompSession> handler) {
             this.openHandler = handler == null ? session -> {
             } : handler;
             return composeCallback();
@@ -595,7 +595,7 @@ public class StompX {
          * @param handler consumer invoked when opening fails, or {@code null} for no action
          * @return this builder
          */
-        public Builder onError(final Consumer<Throwable> handler) {
+        public Builder onError(final ConsumerX<Throwable> handler) {
             this.errorHandler = handler == null ? cause -> {
             } : handler;
             return composeCallback();

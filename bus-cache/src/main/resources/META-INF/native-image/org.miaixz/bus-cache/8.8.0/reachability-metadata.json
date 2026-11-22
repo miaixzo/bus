@@ -2133,7 +2133,7 @@
         {
           "name": "schedule",
           "parameterTypes": [
-            "java.lang.Runnable",
+            "org.miaixz.bus.core.center.function.RunnableX",
             "long"
           ]
         },

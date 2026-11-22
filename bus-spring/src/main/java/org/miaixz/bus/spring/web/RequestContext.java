@@ -30,12 +30,14 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.servlet.HandlerMapping;
 
+import org.miaixz.bus.core.center.function.FunctionX;
 import org.miaixz.bus.core.center.map.CaseInsensitiveMap;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.EnumValue;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.Nullable;
 import org.miaixz.bus.core.net.MediaType;
+import org.miaixz.bus.core.xyz.FunctionKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.spring.web.wrapper.CachedBodyRequestWrapper;
@@ -584,38 +586,16 @@ public class RequestContext {
      * @param defaultValue fallback value
      * @return parsed number, or the supplied fallback
      */
-    private <T extends Number> T number(String key, Parser<T> parser, T defaultValue) {
+    private <T extends Number> T number(String key, FunctionX<String, T> parser, T defaultValue) {
         String value = getValue(key, EnumValue.Params.ALL);
         if (StringKit.isEmpty(value)) {
             return defaultValue;
         }
         try {
-            return parser.parse(value);
+            return FunctionKit.applyUnwrapped(parser, value);
         } catch (NumberFormatException ignored) {
             return defaultValue;
         }
-    }
-
-    /**
-     * Parses a numeric request value.
-     *
-     * @param <T> result type
-     *
-     * @author Kimi Liu
-     */
-    @FunctionalInterface
-    private interface Parser<T extends Number> {
-
-        /**
-         * Parses a numeric string.
-         *
-         * @param value numeric text
-         * @return parsed number
-         * @throws NumberFormatException if the text is not a valid number for the requested numeric type
-         */
-
-        T parse(String value) throws NumberFormatException;
-
     }
 
 }

@@ -22,7 +22,6 @@ package org.miaixz.bus.cortex.setting.reference;
 import java.util.*;
 
 import org.miaixz.bus.core.data.id.ID;
-import org.miaixz.bus.cortex.guard.CortexGuard;
 import org.miaixz.bus.cortex.release.ReleaseCodec;
 import org.miaixz.bus.cortex.setting.SettingProvider;
 import org.miaixz.bus.cortex.setting.SettingStore;
@@ -56,10 +55,6 @@ public final class ReferenceService {
      * Sensitive overlay protection.
      */
     private final ItemEditor editor;
-    /**
-     * Optional host access policy.
-     */
-    private final CortexGuard guard;
 
     /**
      * Creates relationship management.
@@ -68,15 +63,12 @@ public final class ReferenceService {
      * @param revisions exact published pins
      * @param codec     option parser
      * @param editor    overlay protection
-     * @param guard     optional host access policy
      */
-    public ReferenceService(ReferenceStore store, RevisionStore revisions, ReferenceCodec codec, ItemEditor editor,
-            CortexGuard guard) {
+    public ReferenceService(ReferenceStore store, RevisionStore revisions, ReferenceCodec codec, ItemEditor editor) {
         this.store = Objects.requireNonNull(store);
         this.revisions = Objects.requireNonNull(revisions);
         this.codec = Objects.requireNonNull(codec);
         this.editor = Objects.requireNonNull(editor);
-        this.guard = guard;
     }
 
     /**
@@ -87,7 +79,6 @@ public final class ReferenceService {
      * @return current relations
      */
     public List<Reference> byItem(SettingProvider.Context context, String item) {
-        context.check(guard, "read", "reference", item);
         return List.copyOf(store.byItem(context.tenant(), item));
     }
 
@@ -99,7 +90,6 @@ public final class ReferenceService {
      * @return current relations
      */
     public List<Reference> byApp(SettingProvider.Context context, String app) {
-        context.check(guard, "read", "app", app);
         return List.copyOf(store.byApp(context.tenant(), app));
     }
 
@@ -111,8 +101,6 @@ public final class ReferenceService {
      * @return counts
      */
     public Map<String, Long> countByItem(SettingProvider.Context context, Set<String> items) {
-        for (String id : items)
-            context.check(guard, "read", "item", id);
         return Map.copyOf(store.countByItem(context.tenant(), Set.copyOf(items)));
     }
 
@@ -124,8 +112,6 @@ public final class ReferenceService {
      * @return counts
      */
     public Map<String, Long> countByApp(SettingProvider.Context context, Set<String> apps) {
-        for (String id : apps)
-            context.check(guard, "read", "app", id);
         return Map.copyOf(store.countByApp(context.tenant(), Set.copyOf(apps)));
     }
 
@@ -142,7 +128,6 @@ public final class ReferenceService {
         if (source == null || !context.tenant().equals(source.getTenant_id()) || source.getId() == null
                 || source.getId().isBlank())
             throw new IllegalArgumentException("Invalid source coordinates");
-        context.check(guard, "associate", "item", source.getId());
         Map<String, Reference> existing = new HashMap<>();
         for (Reference r : store.byItem(context.tenant(), source.getId()))
             existing.put(r.getId(), r);
@@ -221,8 +206,6 @@ public final class ReferenceService {
             if (!context.tenant().equals(next.getTenant_id()) || !source.getId().equals(next.getSource_id())
                     || next.getTarget_id() == null || next.getTarget_id().isBlank())
                 throw new IllegalArgumentException("Invalid relationship coordinates");
-            if (!retained)
-                context.check(guard, "associate", "app", next.getTarget_id());
             if (next.getId() == null)
                 next.setId(ID.objectId());
             if (!recordIds.add(next.getId()))
@@ -251,11 +234,6 @@ public final class ReferenceService {
                         parsed.put(next.getRevision_id(), document);
                     }
                     if (changed || editor.needsOverlayProtection(document, usage.overlay())) {
-                        if (retained) {
-                            context.check(guard, "associate", "item", source.getId());
-                            context.check(guard, "associate", "app", next.getTarget_id());
-                        }
-                        context.check(guard, "secret-edit", "reference", next.getId());
                         usage = new ReferenceCodec.Options(usage.type(), usage.alias(), usage.prefix(),
                                 usage.override(), usage.keys(), editor.protectOverlay(document, usage.overlay()));
                     }

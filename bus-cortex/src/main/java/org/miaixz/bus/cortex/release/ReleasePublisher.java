@@ -21,7 +21,6 @@ package org.miaixz.bus.cortex.release;
 
 import java.util.*;
 
-import org.miaixz.bus.cortex.guard.CortexGuard;
 import org.miaixz.bus.cortex.setting.SettingProvider;
 import org.miaixz.bus.cortex.setting.item.ItemCodec;
 import org.miaixz.bus.cortex.setting.reference.ReferenceCodec;
@@ -47,10 +46,6 @@ public final class ReleasePublisher {
      */
     private final RolloutStore rollouts;
     /**
-     * Optional host access policy.
-     */
-    private final CortexGuard guard;
-    /**
      * Exact historical release reads for rollback verification.
      */
     private final ReleaseStore releases;
@@ -64,15 +59,13 @@ public final class ReleasePublisher {
      *
      * @param publications final atomic commit
      * @param rollouts     workflow intents
-     * @param guard        optional host access policy
      * @param releases     formal releases
      * @param revisions    exact snapshots
      */
-    public ReleasePublisher(PublicationStore publications, RolloutStore rollouts, CortexGuard guard,
-            ReleaseStore releases, RevisionStore revisions) {
+    public ReleasePublisher(PublicationStore publications, RolloutStore rollouts, ReleaseStore releases,
+            RevisionStore revisions) {
         this.publications = Objects.requireNonNull(publications);
         this.rollouts = Objects.requireNonNull(rollouts);
-        this.guard = guard;
         this.releases = Objects.requireNonNull(releases);
         this.revisions = Objects.requireNonNull(revisions);
     }
@@ -87,13 +80,10 @@ public final class ReleasePublisher {
      */
     public Release publish(SettingProvider.Context context, String rollout, long edition) {
         context.requireRequest();
-        context.check(guard, "publish", "rollout", rollout);
         Rollout current = required(context, rollout);
         Plan.Frozen frozen = Plan.frozen(current.getManifest());
         if (!Objects.equals(current.getChecksum(), Plan.checksum(frozen)))
             throw new IllegalStateException("Approved input checksum mismatch");
-        for (String app : frozen.selection().applications())
-            context.check(guard, "publish", "app", app);
         Rollout intent = rollouts.beginPublication(context, rollout, edition, current.getChecksum());
         if (intent.getPublication() == null || !context.tenant().equals(intent.getTenant_id())
                 || !rollout.equals(intent.getId()) || !Objects.equals(current.getChecksum(), intent.getChecksum())
@@ -126,7 +116,6 @@ public final class ReleasePublisher {
      * @return new formal release
      */
     public Release rollback(SettingProvider.Context context, String publishedRelease, String approvedRollout) {
-        context.check(guard, "rollback", "release", publishedRelease);
         Release target = releases.byId(context.tenant(), publishedRelease);
         if (target == null)
             throw new IllegalArgumentException("Published rollback target required");

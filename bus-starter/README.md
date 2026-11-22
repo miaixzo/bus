@@ -264,6 +264,9 @@ bus:
     enabled: true
     hosts: "127.0.0.1:9200"
     schema: "http"
+    http-version: "auto"
+    http2-ping-interval: 0s
+    http2-ping-timeout: 10s
     connect-timeout: 6s
     socket-timeout: 60s
     connection-request-timeout: 6s
@@ -273,6 +276,39 @@ bus:
 
 Each host must contain a valid port in the range `1..65535`. Timeouts and connection limits must be positive, and the
 per-route limit cannot exceed the total limit.
+
+`http-version` accepts `auto`, `1.1`, and `2`. With TLS ALPN, `auto` offers HTTP/2 followed by HTTP/1.1;
+`2` offers only `h2` as a protocol preference. It does not require HTTP/2: a peer that negotiates no ALPN still falls
+back to HTTP/1.1. Cleartext HTTP uses HTTP/1.1. These settings enable neither h2c nor a strict HTTP/2 mode.
+
+`http2-ping-interval` controls the first PING and subsequent keepalive scheduling delay; `0s` disables keepalive.
+`http2-ping-timeout` is the maximum wait for a matching ACK and must be positive. PING applies only to an established
+HTTP/2 session and closes the connection on timeout. HTTP/1.1 connections do not send PING.
+
+Hosts also accept IPv6 entries such as `[::1]:9200`. By default, round-robin selection chooses among eligible nodes,
+with one base attempt per candidate in each call. A request that has not been sent may move to the next node.
+After sending, only `GET`, `HEAD`, and recognized read-only `POST` query endpoints such as search may be replayed after
+`502`, `503`, `504`, or a network failure. Bulk requests are not replayed by default.
+
+Retryable network failures before response handoff and `502/503/504` responses temporarily isolate the node. Isolation starts at 60 seconds,
+increases by approximately √2 for consecutive failures, and is capped at 30 minutes. Expired nodes become eligible again;
+a valid response clears their failure history. If all nodes are isolated, only the earliest-expiring node is probed.
+This tracks configured nodes; it does not discover cluster nodes.
+
+Safe reads use Fabric's request-level status retry policy to retry `429` on the same node once; `429` does not isolate
+the node. The wait uses a positive `Retry-After` seconds value or future HTTP date, with a one-second fallback for missing,
+invalid, non-positive or past values. If the wait exceeds `socket-timeout` or the remaining Call budget,
+the original response is returned without retrying early. The response connection
+is released before waiting, and cancellation or interruption ends the wait. Writes are not replayed on `429`.
+
+When the Elasticsearch SDK's `RetryConfig` is explicitly enabled, safe reads select a single node per attempt and
+the SDK controls retry counts. The adapter adds no `429` wait or retry; the SDK uses its `BackoffPolicy`
+and does not parse `Retry-After`. Writes use a request-local options copy with SDK retries disabled, preserving shared
+configuration. Even with explicit SDK retries, writes with an unknown outcome are not automatically replayed.
+Node switching remains permitted only when a write was not sent or the peer confirmed it was not processed.
+The adapter's Fabric context disables connection retries, stale-connection recovery and redirects. Only safe reads without
+SDK retries enable one request-level `429` retry, avoiding multiplied attempts across layers. Asynchronous delivery and
+cancellation use Fabric's `Call.toFuture(...)`; ES node health, operation safety and SDK type conversion remain in the adapter.
 
 ## Fabric and DNS
 

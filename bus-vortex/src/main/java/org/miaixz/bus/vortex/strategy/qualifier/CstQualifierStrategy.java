@@ -25,6 +25,7 @@ import org.miaixz.bus.core.Order;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.vortex.Args;
 import org.miaixz.bus.vortex.Context;
+import org.miaixz.bus.vortex.guard.IdentityGuard;
 import org.miaixz.bus.vortex.provider.AuthorizeProvider;
 import org.miaixz.bus.vortex.registry.AssetsRegistry;
 import org.miaixz.bus.vortex.strategy.QualifierStrategy;
@@ -49,6 +50,17 @@ public class CstQualifierStrategy extends QualifierStrategy {
      */
     public CstQualifierStrategy(AuthorizeProvider provider, AssetsRegistry registry) {
         super(provider, registry);
+    }
+
+    /**
+     * Creates the CST qualifier with the gateway identity adapter.
+     *
+     * @param provider   credential validation provider
+     * @param registry   runtime asset registry
+     * @param identities shared service identity adapter
+     */
+    public CstQualifierStrategy(AuthorizeProvider provider, AssetsRegistry registry, IdentityGuard identities) {
+        super(provider, registry, identities);
     }
 
     /**

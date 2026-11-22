@@ -23,7 +23,6 @@ import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.Executor;
-import java.util.function.Supplier;
 
 import jakarta.annotation.PreDestroy;
 
@@ -32,8 +31,11 @@ import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.cache.Serializer;
 import org.miaixz.bus.cache.magic.CacheExpire;
 import org.miaixz.bus.cache.serialize.Hessian2Serializer;
+import org.miaixz.bus.core.center.function.RunnableX;
+import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.xyz.FunctionKit;
 import org.miaixz.bus.logger.Logger;
 
 import redis.clients.jedis.Jedis;
@@ -547,7 +549,7 @@ public class RedisCache<K, V> implements CacheX<K, V>, AutoCloseable {
      * @param <T>     result type
      * @return independently completable operation stage
      */
-    private <T> CompletionStage<T> submit(Supplier<T> command) {
+    private <T> CompletionStage<T> submit(SupplierX<T> command) {
         CompletableFuture<T> result = new CompletableFuture<>();
         synchronized (lifecycle) {
             if (closeFuture != null) {
@@ -556,11 +558,11 @@ public class RedisCache<K, V> implements CacheX<K, V>, AutoCloseable {
             inFlight++;
         }
         try {
-            Runnable operation = () -> {
+            RunnableX operation = () -> {
                 T value = null;
                 Throwable failure = null;
                 try {
-                    value = command.get();
+                    value = command.getting();
                 } catch (Throwable caught) {
                     failure = caught;
                 }
@@ -572,9 +574,9 @@ public class RedisCache<K, V> implements CacheX<K, V>, AutoCloseable {
                 }
             };
             if (executor == null)
-                operation.run();
+                FunctionKit.runUnwrapped(operation);
             else
-                executor.execute(operation);
+                executor.execute(() -> FunctionKit.runUnwrapped(operation));
         } catch (Throwable failure) {
             finishOperation();
             result.completeExceptionally(failure);

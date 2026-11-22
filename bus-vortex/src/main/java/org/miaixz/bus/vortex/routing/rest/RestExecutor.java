@@ -29,6 +29,7 @@ import org.springframework.core.io.buffer.DataBufferLimitException;
 import org.springframework.core.io.buffer.PooledDataBuffer;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.codec.multipart.Part;
@@ -38,6 +39,7 @@ import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
+import org.springframework.web.server.ResponseStatusException;
 
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
@@ -54,8 +56,10 @@ import org.miaixz.bus.errors.transport.reactive.ReactiveErrorHandler;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.vortex.*;
+import org.miaixz.bus.vortex.guard.IdentityGuard;
+import org.miaixz.bus.vortex.guard.SignatureVerifier;
 import org.miaixz.bus.vortex.routing.Coordinator;
-import org.miaixz.bus.vortex.routing.StreamingRelay;
+import org.miaixz.bus.vortex.routing.FlowEnforcer;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -85,10 +89,31 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
     private static final ComponentFailure FAILURES = new ComponentFailure("vortex", "rest-request");
 
     /**
+     * Dedicated client for private SDC operations that require mutual TLS, or {@code null} when unavailable.
+     */
+    private final WebClient privateClient;
+
+    /**
+     * Upstream operation paths that require mutual TLS on private SDC requests.
+     */
+    private final java.util.Set<String> mutualTlsOperations;
+
+    /**
      * Default constructor.
      */
     public RestExecutor() {
-        // No initialization required.
+        this(null, java.util.Set.of());
+    }
+
+    /**
+     * Creates the executor with optional mutual TLS transport for private SDC operations.
+     *
+     * @param privateClient       dedicated mutual TLS client, or {@code null} when unavailable
+     * @param mutualTlsOperations upstream operation paths requiring mutual TLS
+     */
+    public RestExecutor(WebClient privateClient, java.util.Set<String> mutualTlsOperations) {
+        this.privateClient = privateClient;
+        this.mutualTlsOperations = java.util.Set.copyOf(mutualTlsOperations);
     }
 
     /**
@@ -133,8 +158,16 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
                 path,
                 targetUri);
 
-        WebClient.RequestBodySpec bodySpec = Egress.Http
-                .request(HttpMethod.valueOf(context.getHttpMethod().value()), targetUri);
+        HttpMethod downstreamMethod = HttpMethod.valueOf(context.getHttpMethod().value());
+        boolean mutualTls = IdentityGuard.isPrivateSdc(request.exchange())
+                && mutualTlsOperations.contains(assets.getUrl());
+        if (mutualTls && (privateClient == null || !"https".equalsIgnoreCase(targetUri.getScheme()))) {
+            return Mono.error(
+                    new org.springframework.web.server.ResponseStatusException(
+                            org.springframework.http.HttpStatus.SERVICE_UNAVAILABLE));
+        }
+        WebClient.RequestBodySpec bodySpec = mutualTls ? privateClient.method(downstreamMethod).uri(targetUri)
+                : Egress.Http.request(downstreamMethod, targetUri);
         Logger.info(
                 true,
                 "Vortex",
@@ -153,8 +186,6 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
                 }
             });
             headers.remove(Http.Auth.FORWARD_PROOF_HEADER);
-            if (context.getForwardProof() != null)
-                headers.set(Http.Auth.FORWARD_PROOF_HEADER, context.getForwardProof().apply(targetUri));
             headers.clearContentHeaders();
         });
         Logger.debug(
@@ -189,13 +220,36 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
                 method,
                 path);
 
-        if (context.getHttpMethod() != Http.Method.GET) {
+        var proof = context.getForwardProof();
+        if (proof != null && context.getHttpMethod() == Http.Method.POST) {
+            MediaType mediaType = request.headers().contentType().orElse(null);
+            if (mediaType == null
+                    || !(MediaType.APPLICATION_FORM_URLENCODED.isCompatibleWith(mediaType)
+                            || org.miaixz.bus.core.net.MediaType.isJson(mediaType.toString()))
+                    || Boolean.TRUE.equals(request.exchange().getAttribute(Context.JSON_ARRAY_BODY_ATTRIBUTE))
+                    || Boolean.TRUE.equals(request.exchange().getAttribute(Context.RAW_JSON_PASSTHROUGH_ATTRIBUTE))) {
+                return Mono.error(new ResponseStatusException(HttpStatus.UNSUPPORTED_MEDIA_TYPE));
+            }
+            byte[] body = fixJsonEncoding(JsonKit.toJsonString(context.getParameters())).getBytes(Charset.UTF_8);
+            if (body.length > SignatureVerifier.FORWARD_BODY_LIMIT)
+                return Mono.error(new ResponseStatusException(HttpStatus.CONTENT_TOO_LARGE));
+            bodySpec.headers(headers -> {
+                headers.remove(Http.Header.CONTENT_ENCODING);
+                headers.set(Http.Auth.FORWARD_PROOF_HEADER, proof.apply(targetUri, body));
+            }).contentType(MediaType.APPLICATION_JSON).contentLength(body.length).bodyValue(body);
+        } else if (context.getHttpMethod() != Http.Method.GET) {
+            if (proof != null)
+                return Mono.error(new ResponseStatusException(HttpStatus.METHOD_NOT_ALLOWED));
             MediaType mediaType = request.headers().contentType().orElse(null);
             if (mediaType != null) {
                 if (MediaType.MULTIPART_FORM_DATA.isCompatibleWith(mediaType)) {
                     handleMultipartBody(bodySpec, context, ip, method, path);
                 } else if (org.miaixz.bus.core.net.MediaType.isJson(mediaType.toString())) {
                     handleJsonRequestBody(bodySpec, request, context, ip, method, path);
+                } else if (MediaType.APPLICATION_FORM_URLENCODED.isCompatibleWith(mediaType)
+                        && IdentityGuard.isPrivateSdc(request.exchange())) {
+                    bodySpec.contentType(mediaType)
+                            .body(BodyInserters.fromDataBuffers(request.bodyToFlux(DataBuffer.class)));
                 } else if (MediaType.APPLICATION_FORM_URLENCODED.isCompatibleWith(mediaType)) {
                     handleFormRequestBody(bodySpec, context, ip, method, path);
                 } else {
@@ -220,6 +274,8 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
                 handleFormRequestBody(bodySpec, context, ip, method, path);
             }
         } else {
+            if (proof != null)
+                bodySpec.header(Http.Auth.FORWARD_PROOF_HEADER, proof.apply(targetUri, null));
             Logger.info(
                     true,
                     "Vortex",
@@ -660,11 +716,11 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
         Logger.info(
                 false,
                 "Vortex",
-                "Downstream response headers: protocol=http, clientIp={}, method={}, path={}, event=HTTP_ROUTER_RECV_HEADERS, {}",
+                "Downstream response header names: protocol=http, clientIp={}, method={}, path={}, event=HTTP_ROUTER_RECV_HEADERS, {}",
                 ip,
                 method,
                 path,
-                responseEntity.getHeaders());
+                responseEntity.getHeaders().headerNames());
 
         ServerResponse.BodyBuilder responseBuilder = ServerResponse.status(responseEntity.getStatusCode());
         copyResponseHeaders(responseBuilder, responseEntity.getHeaders());
@@ -791,12 +847,12 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
         Logger.debug(
                 false,
                 "Vortex",
-                "Downstream response headers: protocol=http, clientIp={}, method={}, path={}, event=HTTP_ROUTER_RECV_HEADERS, mode={}, {}",
+                "Downstream response header names: protocol=http, clientIp={}, method={}, path={}, event=HTTP_ROUTER_RECV_HEADERS, mode={}, {}",
                 ip,
                 method,
                 path,
                 delivery,
-                responseEntity.getHeaders());
+                responseEntity.getHeaders().headerNames());
 
         copyResponseHeaders(responseBuilder, responseEntity.getHeaders());
 
@@ -817,7 +873,7 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
                                 dataBuffer.readableByteCount()))
                         .doOnDiscard(PooledDataBuffer.class, Octets::release);
 
-        bodyFlux = StreamingRelay.relay(bodyFlux, delivery);
+        bodyFlux = FlowEnforcer.relay(bodyFlux, delivery);
 
         return responseBuilder.body(BodyInserters.fromDataBuffers(bodyFlux));
     }

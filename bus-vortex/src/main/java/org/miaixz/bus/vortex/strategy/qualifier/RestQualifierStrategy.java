@@ -19,16 +19,11 @@
 */
 package org.miaixz.bus.vortex.strategy.qualifier;
 
-import org.springframework.web.server.ServerWebExchange;
-
 import org.miaixz.bus.core.Order;
-import org.miaixz.bus.core.basic.normal.Consts;
-import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.cortex.Assets;
-import org.miaixz.bus.cortex.Keying;
-import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.vortex.Context;
-import org.miaixz.bus.vortex.guard.AnchorGuard;
+import org.miaixz.bus.vortex.guard.IdentityGuard;
 import org.miaixz.bus.vortex.guard.SignatureVerifier;
 import org.miaixz.bus.vortex.magic.ErrorCode;
 import org.miaixz.bus.vortex.provider.AuthorizeProvider;
@@ -38,10 +33,7 @@ import org.miaixz.bus.vortex.strategy.QualifierStrategy;
 import reactor.core.publisher.Mono;
 
 /**
- * Qualifies REST/API style requests by resolving route assets and applying route-level authorization.
- * <p>
- * The REST qualifier owns asset lookup, HTTP verb matching, policy authorization, and invocation of the shared
- * signature verifier.
+ * Adds REST request signature validation and its route lookup error to shared qualification.
  *
  * @author Kimi Liu
  */
@@ -49,81 +41,46 @@ import reactor.core.publisher.Mono;
 public class RestQualifierStrategy extends QualifierStrategy {
 
     /**
-     * Creates a REST qualifier strategy.
+     * Creates the REST qualifier for clients without a configured service identity.
      *
      * @param provider credential validation provider
-     * @param registry asset registry
+     * @param registry runtime asset registry
      */
     public RestQualifierStrategy(AuthorizeProvider provider, AssetsRegistry registry) {
         super(provider, registry);
     }
 
     /**
-     * Resolves the request route and stores the matched asset in the request context.
+     * Creates the REST qualifier with the gateway's service identity adapter.
      *
-     * @param exchange current exchange
-     * @param chain    remaining strategy chain
-     * @return qualification completion signal
+     * @param provider   credential validation provider
+     * @param registry   runtime asset registry
+     * @param identities shared service identity adapter
+     */
+    public RestQualifierStrategy(AuthorizeProvider provider, AssetsRegistry registry, IdentityGuard identities) {
+        super(provider, registry, identities);
+    }
+
+    /**
+     * Validates the REST signature configured by the resolved asset.
+     *
+     * @param context current gateway request context
+     * @param assets  selected REST asset
+     * @return REST signature validation completion
      */
     @Override
-    public Mono<Void> apply(ServerWebExchange exchange, Chain chain) {
-        return Mono.deferContextual(contextView -> {
-            final Context context = contextView.get(Context.class);
-            Keying.RegistrySpec requestRoute = route(exchange, context);
-            String type = requestRoute.typeKeyPart();
-            String appId = requestRoute.appIdPart();
-            String method = requestRoute.methodPart();
-            String version = requestRoute.versionPart();
-            Integer verb = requestRoute.verbPart();
+    protected Mono<Void> signature(Context context, Assets assets) {
+        return SignatureVerifier.verifyRest(context, assets);
+    }
 
-            return Mono.defer(() -> Mono.justOrEmpty(this.registry.get(requestRoute))).switchIfEmpty(Mono.defer(() -> {
-                Logger.warn(
-                        false,
-                        "Vortex",
-                        "REST asset not found: strategy=rest-qualifier, clientIp={}, type={}, appId={}, method={}, version={}, verb={}",
-                        context.getX_request_ip(),
-                        type,
-                        appId,
-                        method,
-                        version,
-                        verb);
-                return Mono.error(routeMiss(exchange, requestRoute, ErrorCode._100103));
-            })).flatMap(match -> {
-                Assets assets = match.assets();
-                context.setAssets(assets);
-                AnchorGuard.apply(context, assets.getApp_id(), assets.getUrl());
-                Logger.info(
-                        true,
-                        "Vortex",
-                        "REST asset resolved: strategy=rest-qualifier, clientIp={}, type={}, appId={}, method={}, version={}, verb={}, policy={}, signing={}, mode={}, instances={}, url={}",
-                        context.getX_request_ip(),
-                        assets.getType(),
-                        assets.getApp_id(),
-                        assets.getMethod(),
-                        assets.getVersion(),
-                        assets.getVerb(),
-                        assets.getPolicy(),
-                        assets.getSigning(),
-                        assets.getProtocol(),
-                        assets.getInstances() == null ? Normal._0 : assets.getInstances().size(),
-                        assets.getUrl());
-                Mono<Void> validationMono = this.method(context, assets)
-                        .then(SignatureVerifier.verifyRest(context, assets));
-                Mono<Void> authMono = !Consts.ZERO.equals(assets.getPolicy()) ? this.authorize(context) : Mono.empty();
-                return validationMono.then(authMono).then(finalizeParameters(exchange, context));
-            }).then(
-                    Mono.fromRunnable(
-                            () -> Logger.info(
-                                    true,
-                                    "Vortex",
-                                    "REST qualifier completed: strategy=rest-qualifier, clientIp={}, type={}, appId={}, method={}, version={}",
-                                    context.getX_request_ip(),
-                                    type,
-                                    appId,
-                                    method,
-                                    version)))
-                    .then(chain.apply(exchange));
-        });
+    /**
+     * Provides the REST route lookup error retained for legacy callers.
+     *
+     * @return REST asset lookup error
+     */
+    @Override
+    protected Errors missingRoute() {
+        return ErrorCode._100103;
     }
 
 }

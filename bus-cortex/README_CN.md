@@ -61,8 +61,13 @@ bus:
 | `bridge.url` | 空 | `push+pull` 模式下必须非空 |
 | `bridge.max-retries` | `3` | 桥接重试上限，必须大于零 |
 | `bridge.source` | 空 | 桥接来源标记 |
-| `guard.enabled` | `true` | 启用可选访问检查及 TokenGuard 预检 |
-| `guard.token` | TokenGuardConfig 默认值 | Token 传输预校验选项 |
+| `guard.inbound.enabled` | `false` | 启用入站 `X-Service-Token` 校验 |
+| `guard.inbound.skew` | `5` | 可接受的时钟偏差，单位为秒 |
+| `guard.outbound.enabled` | `false` | 启用出站 `X-Service-Token` 签发 |
+| `guard.outbound.ttl` | `300` | 出站令牌有效期，单位为秒 |
+| `guard.outbound.registry` | 空 | 注册中心直连及快照客户端的受众 |
+| `guard.outbound.gateway` | 空 | 专用网关客户端的受众 |
+| `guard.secret` | 空 | 共享 Base64 根密钥，解码后至少 32 字节，启用任一身份方向时必填 |
 | `audit.enabled` | `false` | 装配审计记录器 |
 | `release.enabled` | `false` | 存在 ReleaseStore 时装配只读发布 Registry |
 
@@ -70,11 +75,13 @@ bus:
 
 Starter 根据宿主提供的 Store 条件装配配置服务。当前定义读写需要 `ItemStore`、`ReferenceStore`、`SettingStore` 等；发布与审批需要 `RolloutStore`、`ApprovalStore`、`PublicationStore`、`ReleaseStore` 和 `RevisionStore`；运行时读取还需要 `WatchStore` 和 `SettingProvider`。具体组合以各 Bean 的 `ConditionalOnBean` 为准。
 
-网关已完成访问控制时，可设置 `bus.cortex.guard.enabled=false`，跳过 Registry 和 Setting 的可选访问检查，包括宿主提供的 Guard。租户匹配、edition、审批状态、冻结摘要、发布回执和敏感保护仍然执行。开启时由宿主 `GuardStrategy` 提供权限决定；Cortex 不认证用户或凭据。普通读取无需操作人和请求编号；幂等写入需要请求编号，审批留痕还需要操作人。
+入站和出站配置分别控制服务身份校验和签发。Starter 默认使用 `Hs256TokenProvider` 作为 `ServiceTokenProvider`，使用按周期派生密钥的 `DerivedKeyProvider` 作为 `ServiceKeyProvider`。直接签发和验证令牌可分别使用 `ServiceTokenIssuer` 和 `ServiceTokenVerifier`。应用可将任一 Provider 注册为 Bean 以替换对应默认实现。`GuardEvaluator` 协调 `guard.inbound` 入站验证和 `guard.outbound` 出站签发，并统一处理令牌请求头。令牌和密钥 Provider 接口位于 `org.miaixz.bus.cortex.guard.token`。密钥 Provider 应发布线程安全且候选数量有限的快照，在请求处理链路之外刷新远程密钥。
+
+资源和操作权限由应用处理。租户匹配、edition、审批状态、冻结摘要、发布回执和敏感保护在服务执行时校验。幂等写入需要请求编号，审批留痕还需要操作人。
 
 宿主实现负责租户数据范围、当前实例与会话一致性、CAS 和原子事务。`SettingProvider` 只提供调用坐标和当前实例数据，不执行身份认证；审批策略有效性由 `ApprovalStore` 检查。`SettingStore` 原子保存当前定义及关系，`RolloutStore.submit` 原子校验冻结读集，`PublicationStore` 原子提交正式发布。
 
-默认 `NoOpSecretCodec` 拒绝敏感内容，宿主需要提供真实保护实现；不会静默降级为明文。TokenGuard 只做凭据存在性及传输预校验，认证、权限与许可证检查仍由宿主执行。
+默认 `NoOpSecretCodec` 拒绝敏感内容，宿主需要提供能够保护敏感值的实现。
 
 Registry Bean 可以直接注入。静态 Cortex 门面需要绑定 Runtime；Starter 支持在没有 Curator 时创建 Registry-only Runtime；此时配置门面调用会明确报错。RuntimeHandle 在上下文关闭时释放绑定。
 
@@ -169,7 +176,10 @@ org.miaixz.bus.cortex
 ├── setting/     item, curator, reference, rollout, approval, revision, delivery, watch, secret
 ├── release/     Release, ReleaseCodec, ReleasePublisher, publication stores and read-only registry
 ├── bridge/      Vortex integration
-├── guard/       authorization pre-validation
+├── guard/       服务身份配置与协调
+│   ├── inbound/  入站规则、验签与结果
+│   ├── outbound/ 下一跳规则、签发与令牌缓存
+│   └── token/    密钥与令牌 Provider、签发与验签
 ├── health/      health probers
 ├── builtin/     key generation, selectors and batch models
 └── magic/       identity, event, watch and runtime infrastructure

@@ -1,4 +1,5 @@
 {
+  "comment": "GuardEvaluator$ModeEditor records an intentional negative class lookup for the optional JavaBeans editor probed by Spring when binding service identity modes.",
   "reflection": [
     {
       "type": "org.miaixz.bus.cortex.Assets",
@@ -809,12 +810,6 @@
           "name": "isTimeout",
           "parameterTypes": [
             "java.lang.Throwable"
-          ]
-        },
-        {
-          "name": "lambda$shutdownTask$0",
-          "parameterTypes": [
-            "java.util.List"
           ]
         },
         {
@@ -5235,733 +5230,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.cortex.guard.CortexGuard",
-      "fields": [
-        {
-          "name": "strategies"
-        }
-      ],
-      "methods": [
-        {
-          "name": "check",
-          "parameterTypes": [
-            "org.miaixz.bus.cortex.guard.GuardContext"
-          ]
-        },
-        {
-          "name": "enforce",
-          "parameterTypes": [
-            "org.miaixz.bus.cortex.guard.GuardContext"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.util.List"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.cortex.guard.GuardContext",
-      "fields": [
-        {
-          "name": "tenant_id"
-        },
-        {
-          "name": "domain"
-        },
-        {
-          "name": "action"
-        },
-        {
-          "name": "resourceType"
-        },
-        {
-          "name": "resourceId"
-        },
-        {
-          "name": "assetId"
-        },
-        {
-          "name": "app_id"
-        },
-        {
-          "name": "policy"
-        },
-        {
-          "name": "token"
-        },
-        {
-          "name": "apiKey"
-        },
-        {
-          "name": "userId"
-        },
-        {
-          "name": "attributes"
-        }
-      ],
-      "methods": [
-        {
-          "name": "tenant_id",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "getAttribute",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "putAttribute",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "getTenant_id",
-          "parameterTypes": []
-        },
-        {
-          "name": "getDomain",
-          "parameterTypes": []
-        },
-        {
-          "name": "getAction",
-          "parameterTypes": []
-        },
-        {
-          "name": "getResourceType",
-          "parameterTypes": []
-        },
-        {
-          "name": "getResourceId",
-          "parameterTypes": []
-        },
-        {
-          "name": "getAssetId",
-          "parameterTypes": []
-        },
-        {
-          "name": "getApp_id",
-          "parameterTypes": []
-        },
-        {
-          "name": "getPolicy",
-          "parameterTypes": []
-        },
-        {
-          "name": "getToken",
-          "parameterTypes": []
-        },
-        {
-          "name": "getApiKey",
-          "parameterTypes": []
-        },
-        {
-          "name": "getUserId",
-          "parameterTypes": []
-        },
-        {
-          "name": "getAttributes",
-          "parameterTypes": []
-        },
-        {
-          "name": "setTenant_id",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setDomain",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setAction",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setResourceType",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setResourceId",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setAssetId",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setApp_id",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setPolicy",
-          "parameterTypes": [
-            "org.miaixz.bus.cortex.guard.GuardPolicy"
-          ]
-        },
-        {
-          "name": "setToken",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setApiKey",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setUserId",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setAttributes",
-          "parameterTypes": [
-            "java.util.Map"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.cortex.guard.GuardDecision",
-      "fields": [
-        {
-          "name": "allowed"
-        },
-        {
-          "name": "code"
-        },
-        {
-          "name": "message"
-        },
-        {
-          "name": "details"
-        }
-      ],
-      "methods": [
-        {
-          "name": "allow",
-          "parameterTypes": []
-        },
-        {
-          "name": "deny",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "isAllowed",
-          "parameterTypes": []
-        },
-        {
-          "name": "getCode",
-          "parameterTypes": []
-        },
-        {
-          "name": "getMessage",
-          "parameterTypes": []
-        },
-        {
-          "name": "getDetails",
-          "parameterTypes": []
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "boolean",
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "boolean",
-            "java.lang.String",
-            "java.lang.String",
-            "java.util.Map"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.cortex.guard.GuardPolicy",
-      "fields": [
-        {
-          "name": "MOCK"
-        },
-        {
-          "name": "ANONYMOUS"
-        },
-        {
-          "name": "CREDENTIAL"
-        },
-        {
-          "name": "CREDENTIAL_PERMISSION"
-        },
-        {
-          "name": "CREDENTIAL_PERMISSION_LICENSE"
-        },
-        {
-          "name": "code"
-        },
-        {
-          "name": "tokenBased"
-        },
-        {
-          "name": "apiKeyBased"
-        },
-        {
-          "name": "permissionRequired"
-        },
-        {
-          "name": "licenseRequired"
-        },
-        {
-          "name": "$VALUES"
-        }
-      ],
-      "methods": [
-        {
-          "name": "values",
-          "parameterTypes": []
-        },
-        {
-          "name": "valueOf",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "fromCode",
-          "parameterTypes": [
-            "java.lang.Integer"
-          ]
-        },
-        {
-          "name": "code",
-          "parameterTypes": []
-        },
-        {
-          "name": "tokenBased",
-          "parameterTypes": []
-        },
-        {
-          "name": "apiKeyBased",
-          "parameterTypes": []
-        },
-        {
-          "name": "authenticationRequired",
-          "parameterTypes": []
-        },
-        {
-          "name": "permissionRequired",
-          "parameterTypes": []
-        },
-        {
-          "name": "licenseRequired",
-          "parameterTypes": []
-        },
-        {
-          "name": "mock",
-          "parameterTypes": []
-        },
-        {
-          "name": "$values",
-          "parameterTypes": []
-        },
-        {
-          "name": "$deserializeLambda$",
-          "parameterTypes": [
-            "java.lang.invoke.SerializedLambda"
-          ]
-        },
-        {
-          "name": "lambda$fromCode$2f9771fd$1",
-          "parameterTypes": [
-            "java.lang.Integer",
-            "org.miaixz.bus.cortex.guard.GuardPolicy"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "int",
-            "int",
-            "boolean",
-            "boolean",
-            "boolean",
-            "boolean"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.cortex.guard.token.TokenCredential",
-      "fields": [
-        {
-          "name": "value"
-        },
-        {
-          "name": "transport"
-        },
-        {
-          "name": "carrierName"
-        },
-        {
-          "name": "bearer"
-        }
-      ],
-      "methods": [
-        {
-          "name": "getValue",
-          "parameterTypes": []
-        },
-        {
-          "name": "getTransport",
-          "parameterTypes": []
-        },
-        {
-          "name": "getCarrierName",
-          "parameterTypes": []
-        },
-        {
-          "name": "isBearer",
-          "parameterTypes": []
-        },
-        {
-          "name": "setValue",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setTransport",
-          "parameterTypes": [
-            "org.miaixz.bus.cortex.guard.token.TokenTransport"
-          ]
-        },
-        {
-          "name": "setCarrierName",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setBearer",
-          "parameterTypes": [
-            "boolean"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.cortex.guard.token.TokenGuardConfig",
-      "fields": [
-        {
-          "name": "enabled"
-        },
-        {
-          "name": "cachePrefix"
-        },
-        {
-          "name": "expireSeconds"
-        },
-        {
-          "name": "refreshThresholdSeconds"
-        },
-        {
-          "name": "autoRefresh"
-        },
-        {
-          "name": "multipleSessions"
-        },
-        {
-          "name": "issuer"
-        },
-        {
-          "name": "secretKey"
-        },
-        {
-          "name": "transports"
-        },
-        {
-          "name": "headerNames"
-        },
-        {
-          "name": "cookieNames"
-        },
-        {
-          "name": "queryNames"
-        },
-        {
-          "name": "bearerPrefix"
-        },
-        {
-          "name": "scopeExpireSeconds"
-        }
-      ],
-      "methods": [
-        {
-          "name": "supports",
-          "parameterTypes": [
-            "org.miaixz.bus.cortex.guard.token.TokenTransport"
-          ]
-        },
-        {
-          "name": "resolveExpireSeconds",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "isEnabled",
-          "parameterTypes": []
-        },
-        {
-          "name": "getCachePrefix",
-          "parameterTypes": []
-        },
-        {
-          "name": "getExpireSeconds",
-          "parameterTypes": []
-        },
-        {
-          "name": "getRefreshThresholdSeconds",
-          "parameterTypes": []
-        },
-        {
-          "name": "isAutoRefresh",
-          "parameterTypes": []
-        },
-        {
-          "name": "isMultipleSessions",
-          "parameterTypes": []
-        },
-        {
-          "name": "getIssuer",
-          "parameterTypes": []
-        },
-        {
-          "name": "getSecretKey",
-          "parameterTypes": []
-        },
-        {
-          "name": "getTransports",
-          "parameterTypes": []
-        },
-        {
-          "name": "getHeaderNames",
-          "parameterTypes": []
-        },
-        {
-          "name": "getCookieNames",
-          "parameterTypes": []
-        },
-        {
-          "name": "getQueryNames",
-          "parameterTypes": []
-        },
-        {
-          "name": "getBearerPrefix",
-          "parameterTypes": []
-        },
-        {
-          "name": "getScopeExpireSeconds",
-          "parameterTypes": []
-        },
-        {
-          "name": "setEnabled",
-          "parameterTypes": [
-            "boolean"
-          ]
-        },
-        {
-          "name": "setCachePrefix",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setExpireSeconds",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "setRefreshThresholdSeconds",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "setAutoRefresh",
-          "parameterTypes": [
-            "boolean"
-          ]
-        },
-        {
-          "name": "setMultipleSessions",
-          "parameterTypes": [
-            "boolean"
-          ]
-        },
-        {
-          "name": "setIssuer",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setSecretKey",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setTransports",
-          "parameterTypes": [
-            "java.util.List"
-          ]
-        },
-        {
-          "name": "setHeaderNames",
-          "parameterTypes": [
-            "java.util.List"
-          ]
-        },
-        {
-          "name": "setCookieNames",
-          "parameterTypes": [
-            "java.util.List"
-          ]
-        },
-        {
-          "name": "setQueryNames",
-          "parameterTypes": [
-            "java.util.List"
-          ]
-        },
-        {
-          "name": "setBearerPrefix",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setScopeExpireSeconds",
-          "parameterTypes": [
-            "java.util.Map"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.cortex.guard.token.TokenGuardStrategy",
-      "fields": [
-        {
-          "name": "ATTRIBUTE_TOKEN_CREDENTIAL"
-        },
-        {
-          "name": "config"
-        }
-      ],
-      "methods": [
-        {
-          "name": "evaluate",
-          "parameterTypes": [
-            "org.miaixz.bus.cortex.guard.GuardContext"
-          ]
-        },
-        {
-          "name": "getConfig",
-          "parameterTypes": []
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "org.miaixz.bus.cortex.guard.token.TokenGuardConfig"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.cortex.guard.token.TokenTransport",
-      "fields": [
-        {
-          "name": "HEADER"
-        },
-        {
-          "name": "COOKIE"
-        },
-        {
-          "name": "QUERY"
-        },
-        {
-          "name": "$VALUES"
-        }
-      ],
-      "methods": [
-        {
-          "name": "values",
-          "parameterTypes": []
-        },
-        {
-          "name": "valueOf",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "$values",
-          "parameterTypes": []
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "int"
-          ]
-        }
-      ]
-    },
-    {
       "type": "org.miaixz.bus.cortex.health.CompositeProber",
       "fields": [
         {
@@ -6231,6 +5499,37 @@
           ]
         }
       ]
+    },
+    {
+      "type": "org.miaixz.bus.cortex.guard.GuardConfig$Incoming",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "org.miaixz.bus.cortex.guard.GuardEvaluator$Mode",
+            "java.util.Set",
+            "java.util.Set"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.cortex.guard.GuardConfig$Outgoing",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "org.miaixz.bus.cortex.guard.GuardEvaluator$Mode",
+            "java.util.Set"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.cortex.guard.GuardEvaluator$ModeEditor"
     },
     {
       "type": "org.miaixz.bus.cortex.magic.AuditLogger",
@@ -8425,9 +7724,6 @@
           "name": "promptRegistry"
         },
         {
-          "name": "cortexGuard"
-        },
-        {
           "name": "keying"
         },
         {
@@ -8514,26 +7810,6 @@
           "name": "getByRoute",
           "parameterTypes": [
             "org.miaixz.bus.cortex.Type",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "enforceRegistry",
-          "parameterTypes": [
-            "java.lang.String",
-            "org.miaixz.bus.cortex.Type",
-            "org.miaixz.bus.cortex.Assets"
-          ]
-        },
-        {
-          "name": "enforceRegistry",
-          "parameterTypes": [
-            "java.lang.String",
-            "org.miaixz.bus.cortex.Type",
-            "java.lang.String",
             "java.lang.String",
             "java.lang.String",
             "java.lang.String",
@@ -8722,16 +7998,6 @@
             "org.miaixz.bus.cortex.registry.api.ApiRegistry",
             "org.miaixz.bus.cortex.registry.mcp.McpRegistry",
             "org.miaixz.bus.cortex.registry.prompt.PromptRegistry",
-            "org.miaixz.bus.cortex.guard.CortexGuard"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "org.miaixz.bus.cortex.registry.api.ApiRegistry",
-            "org.miaixz.bus.cortex.registry.mcp.McpRegistry",
-            "org.miaixz.bus.cortex.registry.prompt.PromptRegistry",
-            "org.miaixz.bus.cortex.guard.CortexGuard",
             "org.miaixz.bus.cortex.Keying"
           ]
         },
@@ -8741,7 +8007,6 @@
             "org.miaixz.bus.cortex.registry.api.ApiRegistry",
             "org.miaixz.bus.cortex.registry.mcp.McpRegistry",
             "org.miaixz.bus.cortex.registry.prompt.PromptRegistry",
-            "org.miaixz.bus.cortex.guard.CortexGuard",
             "org.miaixz.bus.cortex.Keying",
             "java.util.List"
           ]
@@ -8752,7 +8017,6 @@
             "org.miaixz.bus.cortex.registry.api.ApiRegistry",
             "org.miaixz.bus.cortex.registry.mcp.McpRegistry",
             "org.miaixz.bus.cortex.registry.prompt.PromptRegistry",
-            "org.miaixz.bus.cortex.guard.CortexGuard",
             "org.miaixz.bus.cortex.Keying",
             "java.util.List",
             "java.util.List"
@@ -8792,14 +8056,6 @@
         {
           "name": "normalize",
           "parameterTypes": [
-            "org.miaixz.bus.cortex.Assets"
-          ]
-        },
-        {
-          "name": "enforce",
-          "parameterTypes": [
-            "java.lang.String",
-            "org.miaixz.bus.cortex.Type",
             "org.miaixz.bus.cortex.Assets"
           ]
         },
@@ -11512,9 +10768,6 @@
           "name": "rollouts"
         },
         {
-          "name": "guard"
-        },
-        {
           "name": "releases"
         },
         {
@@ -11564,7 +10817,6 @@
           "parameterTypes": [
             "org.miaixz.bus.cortex.release.PublicationStore",
             "org.miaixz.bus.cortex.setting.rollout.RolloutStore",
-            "org.miaixz.bus.cortex.guard.CortexGuard",
             "org.miaixz.bus.cortex.release.ReleaseStore",
             "org.miaixz.bus.cortex.setting.revision.RevisionStore"
           ]
@@ -11825,15 +11077,6 @@
         {
           "name": "requireActor",
           "parameterTypes": []
-        },
-        {
-          "name": "check",
-          "parameterTypes": [
-            "org.miaixz.bus.cortex.guard.CortexGuard",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String"
-          ]
         },
         {
           "name": "toString",
@@ -12594,9 +11837,6 @@
         },
         {
           "name": "published"
-        },
-        {
-          "name": "guard"
         }
       ],
       "methods": [
@@ -12618,8 +11858,7 @@
           "name": "<init>",
           "parameterTypes": [
             "org.miaixz.bus.cortex.setting.curator.ItemService",
-            "org.miaixz.bus.cortex.setting.delivery.ItemQueryService",
-            "org.miaixz.bus.cortex.guard.CortexGuard"
+            "org.miaixz.bus.cortex.setting.delivery.ItemQueryService"
           ]
         }
       ]
@@ -12650,9 +11889,6 @@
         },
         {
           "name": "provider"
-        },
-        {
-          "name": "guard"
         }
       ],
       "methods": [
@@ -12795,8 +12031,7 @@
             "org.miaixz.bus.cortex.setting.rollout.GrayRuleMatcher",
             "org.miaixz.bus.cortex.setting.watch.WatchStore",
             "org.miaixz.bus.cortex.magic.watch.WatchManager",
-            "org.miaixz.bus.cortex.setting.SettingProvider",
-            "org.miaixz.bus.cortex.guard.CortexGuard"
+            "org.miaixz.bus.cortex.setting.SettingProvider"
           ]
         }
       ]

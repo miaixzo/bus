@@ -43,6 +43,8 @@ import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.cache.nimble.MemoryCache;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.basic.normal.Errors;
+import org.miaixz.bus.core.center.function.BiFunctionX;
+import org.miaixz.bus.core.center.function.FunctionX;
 import org.miaixz.bus.core.codec.binary.Base64;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Charset;
@@ -54,6 +56,7 @@ import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.net.url.RFC3986;
+import org.miaixz.bus.core.xyz.FunctionKit;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.extra.json.JsonValue;
 
@@ -1459,8 +1462,8 @@ public class MicrosoftRealmAdapter implements VendorAdapter {
             final Instant observedAt,
             final Timeout timeout,
             final String targetName,
-            final Function<JsonValue.ObjectValue, T> parser,
-            final ResourceMapper<T> mapper) {
+            final FunctionX<JsonValue.ObjectValue, T> parser,
+            final BiFunctionX<T, Instant, Realm.Resource> mapper) {
         final Url requestUrl = state.position().next().isPresent()
                 ? pagination(state.position().next().getOrNull(), state.phase(), Realm.Operation.SNAPSHOT)
                 : listUrl(targetName, state.phase(), request.limit());
@@ -1471,7 +1474,7 @@ public class MicrosoftRealmAdapter implements VendorAdapter {
         final List<Realm.Resource> resources = new ArrayList<>(success.value().items().size());
         final Map<Realm.Key, Realm.Resource> unique = new LinkedHashMap<>();
         for (T item : success.value().items()) {
-            final Realm.Resource resource = mapper.map(item, observedAt);
+            final Realm.Resource resource = FunctionKit.applyUnwrapped(mapper, item, observedAt);
             final Realm.Resource previous = unique.putIfAbsent(resource.key(), resource);
             if (previous != null && !previous.equals(resource)) {
                 return failed(ErrorCode._502, "Microsoft Graph page contains a conflicting resource key");
@@ -1970,8 +1973,8 @@ public class MicrosoftRealmAdapter implements VendorAdapter {
             final Instant observedAt,
             final Timeout timeout,
             final String targetName,
-            final Function<JsonValue.ObjectValue, T> parser,
-            final ResourceMapper<T> mapper) {
+            final FunctionX<JsonValue.ObjectValue, T> parser,
+            final BiFunctionX<T, Instant, Realm.Resource> mapper) {
         final Url url = child(targetName, key.externalId(), null, Map.of("$select", select(key.kind())));
         final Outcome<JsonValue.ObjectValue> fetched = get(url, access, timeout, "retrieve", true);
         if (!(fetched instanceof Outcome.Succeeded<JsonValue.ObjectValue> success)) {
@@ -1980,7 +1983,8 @@ public class MicrosoftRealmAdapter implements VendorAdapter {
         if (success.value() == null) {
             return Outcome.succeeded(new Realm.Retrieved(Optional.empty()));
         }
-        final Realm.Resource resource = mapper.map(parser.apply(success.value()), observedAt);
+        final Realm.Resource resource = FunctionKit
+                .applyUnwrapped(mapper, FunctionKit.applyUnwrapped(parser, success.value()), observedAt);
         if (!key.equals(resource.key())) {
             return failed(ErrorCode._502, "Microsoft retrieve returned a different stable resource key");
         }
@@ -2032,7 +2036,7 @@ public class MicrosoftRealmAdapter implements VendorAdapter {
     private <T> CompletionStage<Outcome<T>> authenticated(
             final Context context,
             final Timeout timeout,
-            final Function<Access, Outcome<T>> operation) {
+            final FunctionX<Access, Outcome<T>> operation) {
         return access(context, timeout).thenCompose(resolved -> switch (resolved) {
             case Outcome.Succeeded<Access> success -> execute(success.value(), timeout, operation)
                     .thenCompose(first -> {
@@ -2083,11 +2087,11 @@ public class MicrosoftRealmAdapter implements VendorAdapter {
     private <T> CompletionStage<Outcome<T>> execute(
             final Access access,
             final Timeout timeout,
-            final Function<Access, Outcome<T>> operation) {
+            final FunctionX<Access, Outcome<T>> operation) {
         try {
             return CompletableFuture.<Outcome<T>>supplyAsync(() -> {
                 try {
-                    return operation.apply(access);
+                    return FunctionKit.applyUnwrapped(operation, access);
                 } catch (TimeoutException ignored) {
                     return failed(ErrorCode._408, "Microsoft Realm operation timed out");
                 } catch (RuntimeException ignored) {
@@ -2368,14 +2372,14 @@ public class MicrosoftRealmAdapter implements VendorAdapter {
             final Access access,
             final Timeout timeout,
             final String operation,
-            final Function<JsonValue.ObjectValue, T> parser) {
+            final FunctionX<JsonValue.ObjectValue, T> parser) {
         final Outcome<JsonValue.ObjectValue> fetched = get(url, access, timeout, operation, false);
         if (!(fetched instanceof Outcome.Succeeded<JsonValue.ObjectValue> success)) {
             return propagate(fetched);
         }
         final List<T> items = new ArrayList<>();
         for (JsonValue value : requiredArray(success.value(), "value")) {
-            items.add(parser.apply(requiredObject(value, "Graph collection item")));
+            items.add(FunctionKit.applyUnwrapped(parser, requiredObject(value, "Graph collection item")));
         }
         return Outcome.succeeded(new WirePage<>(items, next(success.value())));
     }
@@ -2877,26 +2881,6 @@ public class MicrosoftRealmAdapter implements VendorAdapter {
                 default -> throw new ValidateException("Microsoft delta phase has no snapshot successor");
             };
         }
-
-    }
-
-    /**
-     * Maps one minimal wire projection to a implementation-neutral resource.
-     *
-     * @param <T> minimal wire projection type
-     * @author Kimi Liu
-     */
-    @FunctionalInterface
-    private interface ResourceMapper<T> {
-
-        /**
-         * Maps one minimal projection at the shared observation instant.
-         *
-         * @param value      minimal projection
-         * @param observedAt shared invocation observation instant
-         * @return immutable implementation-neutral resource
-         */
-        Realm.Resource map(T value, Instant observedAt);
 
     }
 

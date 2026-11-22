@@ -57,6 +57,16 @@ public class SamlServerScheme implements ProtocolScheme<SamlServerOptions> {
             Capability.Security.SUBJECT_AUTHENTICATED);
 
     /**
+     * Returns only a signed NoPassive error for a verified passive request without an authenticated subject.
+     */
+    public static final Capability<AuthnRequest, Response> PASSIVE_FAILURE = capability(
+            Capability.Key.standard(Protocol.SAML, "passive_failure"),
+            AuthnRequest.class,
+            Response.class,
+            Capability.Interaction.REDIRECT,
+            Capability.Security.PUBLIC);
+
+    /**
      * Processes a SAML Single Logout Request.
      */
     public static final Capability<LogoutRequest, LogoutResponse> SINGLE_LOGOUT = capability(
@@ -80,7 +90,7 @@ public class SamlServerScheme implements ProtocolScheme<SamlServerOptions> {
      * Exact potential identity-provider operations before endpoint-specific runtime narrowing.
      */
     private static final Capability.Manifest MANIFEST = new Capability.Manifest(
-            List.of(SINGLE_SIGN_ON, SINGLE_LOGOUT, METADATA));
+            List.of(SINGLE_SIGN_ON, PASSIVE_FAILURE, SINGLE_LOGOUT, METADATA));
 
     /**
      * Formal specifications implemented by this identity-server scheme.

@@ -153,7 +153,7 @@ public abstract class AbstractStrategy implements Strategy {
                     .map(part -> part.substring(hostPrefix.length()).trim().replace(Symbol.DOUBLE_QUOTES, Normal.EMPTY))
                     .findFirst();
             if (authority.isPresent()) {
-                Logger.debug(true, "Vortex", "{} found in 'Forwarded' header", authority.get());
+                Logger.debug(true, "Vortex", "Authority resolved from the Forwarded header");
                 return authority.map(host -> appendPortIfMissing(host, protocol));
             }
         }
@@ -161,13 +161,13 @@ public abstract class AbstractStrategy implements Strategy {
         String forwardedHostHeader = headers.getFirst("X-Forwarded-Host");
         if (StringKit.hasText(forwardedHostHeader)) {
             String authority = forwardedHostHeader.split(Symbol.COMMA)[0].trim();
-            Logger.debug(true, "Vortex", "{} found in 'X-Forwarded-Host' header", authority);
+            Logger.debug(true, "Vortex", "Authority resolved from the X-Forwarded-Host header");
             return Optional.of(appendPortIfMissing(authority, protocol));
         }
 
         String hostHeader = headers.getFirst(Http.Header.HOST);
         if (StringKit.hasText(hostHeader)) {
-            Logger.debug(true, "Vortex", "{} found in 'Host' header", hostHeader);
+            Logger.debug(true, "Vortex", "Authority resolved from the {} header", Http.Header.HOST);
             return Optional.of(appendPortIfMissing(hostHeader, protocol));
         }
 
@@ -205,36 +205,35 @@ public abstract class AbstractStrategy implements Strategy {
 
         String ip = headers.getFirst("X-Forwarded-For");
         if (StringKit.hasText(ip) && !Normal.UNKNOWN.equalsIgnoreCase(ip)) {
-            String source = "X-Forwarded-For";
             if (ip.contains(Symbol.COMMA)) {
                 String[] ips = ip.split(Symbol.COMMA);
                 for (String ipSegment : ips) {
                     String trimmedIp = ipSegment.trim();
                     if (StringKit.hasText(trimmedIp) && !Normal.UNKNOWN.equalsIgnoreCase(trimmedIp)) {
-                        Logger.debug(true, "Vortex", "Client IP: '{}' found in {} (list)", trimmedIp, source);
+                        Logger.debug(true, "Vortex", "Client IP resolved from the X-Forwarded-For header");
                         return trimmedIp;
                     }
                 }
             }
-            Logger.debug(true, "Vortex", "Client IP: '{}' found in {}", ip.trim(), source);
+            Logger.debug(true, "Vortex", "Client IP resolved from the X-Forwarded-For header");
             return ip.trim();
         }
 
         ip = headers.getFirst("X-Real-IP");
         if (StringKit.hasText(ip) && !Normal.UNKNOWN.equalsIgnoreCase(ip)) {
-            Logger.debug(true, "Vortex", "Client IP: '{}' found in X-Real-IP", ip.trim());
+            Logger.debug(true, "Vortex", "Client IP resolved from the X-Real-IP header");
             return ip.trim();
         }
 
         ip = headers.getFirst("Proxy-Client-IP");
         if (StringKit.hasText(ip) && !Normal.UNKNOWN.equalsIgnoreCase(ip)) {
-            Logger.debug(true, "Vortex", "Client IP: '{}' found in Proxy-Client-IP", ip.trim());
+            Logger.debug(true, "Vortex", "Client IP resolved from the Proxy-Client-IP header");
             return ip.trim();
         }
 
         ip = headers.getFirst("WL-Proxy-Client-IP");
         if (StringKit.hasText(ip) && !Normal.UNKNOWN.equalsIgnoreCase(ip)) {
-            Logger.debug(true, "Vortex", "Client IP: '{}' found in WL-Proxy-Client-IP", ip.trim());
+            Logger.debug(true, "Vortex", "Client IP resolved from the WL-Proxy-Client-IP header");
             return ip.trim();
         }
 
@@ -279,13 +278,8 @@ public abstract class AbstractStrategy implements Strategy {
         Logger.info(
                 true,
                 "Vortex",
-                "Request domain enriched: strategy=abstract, clientIp={}, path={}, x_request_domain={}, host={}, xForwardedHost={}, forwarded={}",
-                x_request_ipv4,
-                exchange.getRequest().getURI().getRawPath(),
-                x_request_domain,
-                exchange.getRequest().getHeaders().getFirst(HttpHeaders.HOST),
-                exchange.getRequest().getHeaders().getFirst("X-Forwarded-Host"),
-                exchange.getRequest().getHeaders().getFirst("Forwarded"));
+                "Request domain enriched: strategy=abstract, path={}",
+                exchange.getRequest().getURI().getRawPath());
     }
 
     /**
@@ -311,7 +305,7 @@ public abstract class AbstractStrategy implements Strategy {
                     .findFirst();
             if (proto.isPresent()) {
                 String protocol = proto.get();
-                Logger.debug(true, "Vortex", "Protocol: '{}' found in 'Forwarded' header", protocol);
+                Logger.debug(true, "Vortex", "Protocol resolved from the Forwarded header");
                 return protocol;
             }
         }
@@ -319,7 +313,7 @@ public abstract class AbstractStrategy implements Strategy {
         String forwardedProtoHeader = headers.getFirst("X-Forwarded-Proto");
         if (StringKit.hasText(forwardedProtoHeader)) {
             String protocol = forwardedProtoHeader.split(Symbol.COMMA)[0].trim();
-            Logger.debug(true, "Vortex", "Protocol: '{}' found in 'X-Forwarded-Proto' header", protocol);
+            Logger.debug(true, "Vortex", "Protocol resolved from the X-Forwarded-Proto header");
             return protocol;
         }
 

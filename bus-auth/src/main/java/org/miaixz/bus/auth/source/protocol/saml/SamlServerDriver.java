@@ -92,6 +92,7 @@ public class SamlServerDriver implements ProtocolDriver<SamlServerOptions> {
     private static Capability.Manifest manifest(final SamlServerOptions options) {
         final List<Capability<?, ?>> capabilities = new ArrayList<>();
         capabilities.add(SamlServerScheme.SINGLE_SIGN_ON);
+        capabilities.add(SamlServerScheme.PASSIVE_FAILURE);
         if (options.singleLogoutServiceEndpoint().isPresent()) {
             capabilities.add(SamlServerScheme.SINGLE_LOGOUT);
         }
@@ -322,21 +323,22 @@ public class SamlServerDriver implements ProtocolDriver<SamlServerOptions> {
             Assert.notNull(timeout, "SAML identity-provider timeout must not be null");
             if (!manifest.capabilities().contains(capability))
                 return missing();
-            if (capability == SamlServerScheme.SINGLE_SIGN_ON) {
+            if (capability == SamlServerScheme.SINGLE_SIGN_ON || capability == SamlServerScheme.PASSIVE_FAILURE) {
                 if (request == null || request.getClass() != AuthnRequest.class
                         || capability.requestType() != AuthnRequest.class
                         || capability.responseType() != Response.class)
                     return mismatch();
+                final AuthnRequest authn = (AuthnRequest) request;
+                final var response = capability == SamlServerScheme.PASSIVE_FAILURE
+                        ? provider.passiveFailure(authn, context, timeout)
+                        : provider.singleSignOn(authn, context, timeout);
                 return narrow(
-                        provider.singleSignOn((AuthnRequest) request, context, timeout)
-                                .thenCompose(outcome -> switch (outcome) {
-                                    case Outcome.Succeeded<Response> success -> signer
-                                            .sign(success.value(), context, timeout);
-                                    case Outcome.Rejected<Response> rejected -> completed(
-                                            Outcome.rejected(rejected.failure()));
-                                    case Outcome.Failed<Response> failed -> completed(Outcome.failed(failed.failure()));
-                                    default -> throw new IllegalStateException("Unsupported Outcome implementation");
-                                }),
+                        response.thenCompose(outcome -> switch (outcome) {
+                            case Outcome.Succeeded<Response> success -> signer.sign(success.value(), context, timeout);
+                            case Outcome.Rejected<Response> rejected -> completed(Outcome.rejected(rejected.failure()));
+                            case Outcome.Failed<Response> failed -> completed(Outcome.failed(failed.failure()));
+                            default -> throw new IllegalStateException("Unsupported Outcome implementation");
+                        }),
                         capability.responseType());
             }
             if (capability == SamlServerScheme.SINGLE_LOGOUT) {

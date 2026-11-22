@@ -20,8 +20,8 @@
 package org.miaixz.bus.fabric.protocol.sse.calls;
 
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.Function;
 
+import org.miaixz.bus.core.center.function.FunctionX;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.fabric.Builder;
@@ -43,7 +43,7 @@ public class SseCall extends MonoCall<SseSession> {
     /**
      * Single SSE-open operation receiving the call lifecycle's cancellation scope.
      */
-    private final Function<Cancellation, SseSession> operation;
+    private final FunctionX<Cancellation, SseSession> operation;
 
     /**
      * Dispatch key returned when this call is submitted asynchronously.
@@ -66,7 +66,7 @@ public class SseCall extends MonoCall<SseSession> {
      * @param key        dispatch key used for asynchronous submission
      */
     public SseCall(final Dispatcher dispatcher, final Callback<? super SseSession> callback,
-            final EventObserver observer, final Timeout timeout, final Function<Cancellation, SseSession> operation,
+            final EventObserver observer, final Timeout timeout, final FunctionX<Cancellation, SseSession> operation,
             final String key) {
         super(Builder.SSE_TAG_OPEN, dispatcher, observer, callback, timeout);
         this.operation = require(operation, "SSE operation");
@@ -88,7 +88,7 @@ public class SseCall extends MonoCall<SseSession> {
             final Dispatcher dispatcher,
             final Callback<? super SseSession> callback,
             final EventObserver observer,
-            final Function<Cancellation, SseSession> operation,
+            final FunctionX<Cancellation, SseSession> operation,
             final String key) {
         return create(dispatcher, callback, observer, Timeout.defaults(), operation, key);
     }
@@ -111,7 +111,7 @@ public class SseCall extends MonoCall<SseSession> {
             final Callback<? super SseSession> callback,
             final EventObserver observer,
             final Timeout timeout,
-            final Function<Cancellation, SseSession> operation,
+            final FunctionX<Cancellation, SseSession> operation,
             final String key) {
         return new SseCall(require(dispatcher, "Dispatcher"), callback,
                 EventObserver.safe(require(observer, "Observer")), require(timeout, "Timeout"), operation, key);

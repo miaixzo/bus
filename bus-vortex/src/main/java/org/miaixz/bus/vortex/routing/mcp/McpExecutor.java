@@ -63,7 +63,7 @@ import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.vortex.*;
 import org.miaixz.bus.vortex.magic.ErrorCode;
 import org.miaixz.bus.vortex.routing.Coordinator;
-import org.miaixz.bus.vortex.routing.StreamingRelay;
+import org.miaixz.bus.vortex.routing.FlowEnforcer;
 import org.miaixz.bus.vortex.routing.rest.RestExecutor;
 
 import reactor.core.publisher.Flux;
@@ -186,11 +186,11 @@ public class McpExecutor extends Coordinator<ServerRequest, ServerResponse> {
         Logger.debug(
                 true,
                 "Vortex",
-                "Request headers: protocol=mcp, clientIp={}, method={}, path={}, headers={}",
+                "Request header names: protocol=mcp, clientIp={}, method={}, path={}, headerNames={}",
                 ip,
                 method,
                 path,
-                request.headers().asHttpHeaders().toSingleValueMap());
+                request.headers().asHttpHeaders().headerNames());
         Logger.debug(
                 true,
                 "Vortex",
@@ -447,11 +447,11 @@ public class McpExecutor extends Coordinator<ServerRequest, ServerResponse> {
                     Logger.debug(
                             false,
                             "Vortex",
-                            "Downstream response headers: protocol=mcp, clientIp={}, method={}, path={}, event=MCP_ROUTER_RECV_HEADERS, {}",
+                            "Downstream response header names: protocol=mcp, clientIp={}, method={}, path={}, event=MCP_ROUTER_RECV_HEADERS, {}",
                             ip,
                             method,
                             path,
-                            responseEntity.getHeaders());
+                            responseEntity.getHeaders().headerNames());
 
                     responseBuilder.headers(headers -> {
                         headers.addAll(responseEntity.getHeaders());
@@ -504,7 +504,7 @@ public class McpExecutor extends Coordinator<ServerRequest, ServerResponse> {
                             ip,
                             method,
                             path).doOnDiscard(PooledDataBuffer.class, Octets::release);
-                    bodyFlux = StreamingRelay.relay(bodyFlux, delivery);
+                    bodyFlux = FlowEnforcer.relay(bodyFlux, delivery);
 
                     return responseBuilder.body(BodyInserters.fromDataBuffers(bodyFlux));
                 })
@@ -828,11 +828,11 @@ public class McpExecutor extends Coordinator<ServerRequest, ServerResponse> {
                     Logger.info(
                             false,
                             "Vortex",
-                            "Downstream response headers: protocol=mcp, clientIp={}, method={}, path={}, event=MCP_ROUTER_RECV_HEADERS, {}",
+                            "Downstream response header names: protocol=mcp, clientIp={}, method={}, path={}, event=MCP_ROUTER_RECV_HEADERS, {}",
                             ip,
                             method,
                             path,
-                            responseEntity.getHeaders());
+                            responseEntity.getHeaders().headerNames());
 
                     ServerResponse.BodyBuilder responseBuilder = ServerResponse.status(responseEntity.getStatusCode());
                     responseBuilder.headers(headers -> {

@@ -71,6 +71,11 @@ import reactor.core.scheduler.Schedulers;
 public class SignatureVerifier {
 
     /**
+     * Maximum number of bytes in a signed downstream JSON body.
+     */
+    public static final int FORWARD_BODY_LIMIT = Normal._1024 * Normal._1024;
+
+    /**
      * Exchange attribute that owns an MCP signed POST body's replay buffer until request termination.
      */
     private static final String MCP_CACHED_BODY = "X.MCP_CACHED_BODY";
@@ -121,22 +126,36 @@ public class SignatureVerifier {
     }
 
     /**
-     * Signs an authorized GET at the final downstream request boundary.
+     * Signs the exact authorized HTTP method, raw destination and downstream body.
      *
      * @param permit compact authorization issued for this request
      * @param secret base64url one-request key received only over the private verification connection
+     * @param method authorized HTTP method
      * @param path   exact downstream raw path
      * @param query  exact downstream raw query, or null if absent
-     * @return base64url proof for the complete GET target
+     * @param body   exact JSON bytes, or null for a GET without a body
+     * @return base64url proof for the downstream request
+     * @throws IllegalArgumentException if the signing key, request method, or body is invalid
      */
-    public static String forwardProof(String permit, String secret, String path, String query) {
+    public static String forwardProof(
+            String permit,
+            String secret,
+            Http.Method method,
+            String path,
+            String query,
+            byte[] body) {
+        if (method == Http.Method.GET ? body != null
+                : method != Http.Method.POST || body == null || body.length == 0 || body.length > FORWARD_BODY_LIMIT) {
+            throw new IllegalArgumentException("Invalid signed request body");
+        }
         var encoding = java.util.Base64.getUrlEncoder().withoutPadding();
         byte[] key = java.util.Base64.getUrlDecoder().decode(secret);
         try {
             if (key.length != Normal._32)
                 throw new IllegalArgumentException("Invalid request signing key");
-            byte[] value = JsonKit.toJsonString(Arrays.asList(Http.Method.GET.value(), path, query, permit))
-                    .getBytes(Charset.UTF_8);
+            var coordinates = body == null ? Arrays.asList(method.value(), path, query, permit)
+                    : Arrays.asList(method.value(), path, query, permit, Builder.sha256Hex(body));
+            byte[] value = JsonKit.toJsonString(coordinates).getBytes(Charset.UTF_8);
             return encoding.encodeToString(Builder.hmacSha256(key).digest(value));
         } finally {
             Arrays.fill(key, (byte) Normal._0);

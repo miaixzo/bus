@@ -103,9 +103,9 @@ public class WsRouter implements Router<ServerRequest, ServerResponse> {
             Logger.debug(
                     true,
                     "Vortex",
-                    "Request headers: protocol=ws, clientIp={}, headers={}",
+                    "Request header names: protocol=ws, clientIp={}, headerNames={}",
                     ip,
-                    input.headers().asHttpHeaders().toSingleValueMap());
+                    input.headers().asHttpHeaders().headerNames());
             Logger.debug(
                     true,
                     "Vortex",

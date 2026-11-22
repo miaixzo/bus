@@ -27,8 +27,8 @@ import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 
+import org.miaixz.bus.core.center.function.ConsumerX;
 import org.miaixz.bus.core.instance.Instances;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Symbol;
@@ -100,7 +100,7 @@ public class SseX {
      *
      * @return no-op event handler
      */
-    private static Consumer<SseEvent> noopHandler() {
+    private static ConsumerX<SseEvent> noopHandler() {
         return Instances.get(SseX.class.getName() + ".noopHandler", () -> event -> {
         });
     }
@@ -362,17 +362,17 @@ public class SseX {
         /**
          * Open handler.
          */
-        private Consumer<SseSession> openHandler;
+        private ConsumerX<SseSession> openHandler;
 
         /**
          * Error handler.
          */
-        private Consumer<Throwable> errorHandler;
+        private ConsumerX<Throwable> errorHandler;
 
         /**
          * Event handler.
          */
-        private Consumer<SseEvent> handler;
+        private ConsumerX<SseEvent> handler;
 
         /**
          * Creates a builder.
@@ -564,7 +564,7 @@ public class SseX {
          * @param handler SSE event consumer, or {@code null} for no action
          * @return this builder
          */
-        public Builder onEvent(final Consumer<SseEvent> handler) {
+        public Builder onEvent(final ConsumerX<SseEvent> handler) {
             this.handler = handler == null ? noopHandler() : handler;
             return this;
         }
@@ -575,7 +575,7 @@ public class SseX {
          * @param handler consumer invoked after a session opens, or {@code null} for no action
          * @return this builder
          */
-        public Builder onOpen(final Consumer<SseSession> handler) {
+        public Builder onOpen(final ConsumerX<SseSession> handler) {
             this.openHandler = handler == null ? session -> {
             } : handler;
             return composeCallback();
@@ -587,7 +587,7 @@ public class SseX {
          * @param handler consumer invoked when opening fails, or {@code null} for no action
          * @return this builder
          */
-        public Builder onError(final Consumer<Throwable> handler) {
+        public Builder onError(final ConsumerX<Throwable> handler) {
             this.errorHandler = handler == null ? cause -> {
             } : handler;
             return composeCallback();

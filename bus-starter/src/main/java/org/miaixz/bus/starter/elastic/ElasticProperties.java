@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.starter.elastic;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.time.Duration;
 import java.util.Arrays;
 import java.util.List;
@@ -74,7 +76,8 @@ public class ElasticProperties {
     private final String schema;
 
     /**
-     * Preferred HTTP protocol version: {@code auto}, {@code 1.1} or {@code 2}.
+     * Preferred HTTP protocol version: {@code auto}, {@code 1.1} or {@code 2}. Version {@code 2} offers h2 through TLS
+     * ALPN; plain HTTP and TLS peers without ALPN fall back to HTTP/1.1.
      */
     private final String httpVersion;
 
@@ -155,19 +158,7 @@ public class ElasticProperties {
         }
         List<String> hostList = splitHosts(hosts);
         for (String host : hostList) {
-            int separator = host.lastIndexOf(Symbol.COLON);
-            if (separator <= 0 || separator == host.length() - 1) {
-                throw new IllegalArgumentException("Invalid Elasticsearch host: " + host);
-            }
-            int port;
-            try {
-                port = Integer.parseInt(host.substring(separator + 1));
-            } catch (NumberFormatException exception) {
-                throw new IllegalArgumentException("Invalid Elasticsearch port: " + host, exception);
-            }
-            if (port < 1 || port > 65535) {
-                throw new IllegalArgumentException("Elasticsearch port must be in 1..65535: " + host);
-            }
+            nodeUri(schema, host);
         }
         this.enabled = enabled;
         this.hosts = hosts;
@@ -214,6 +205,29 @@ public class ElasticProperties {
     private static void requirePositive(Duration value, String name) {
         if (value == null || value.isZero() || value.isNegative()) {
             throw new IllegalArgumentException("bus.elastic." + name + " must be greater than zero");
+        }
+    }
+
+    /**
+     * Validates and builds a node using the same parser during binding and transport initialization.
+     *
+     * @param schema HTTP scheme
+     * @param host   host:port or [IPv6]:port address
+     * @return validated node URI
+     */
+    static URI nodeUri(String schema, String host) {
+        if (!"http".equalsIgnoreCase(schema) && !"https".equalsIgnoreCase(schema)) {
+            throw new IllegalArgumentException("Elasticsearch schema must be http or https");
+        }
+        try {
+            URI uri = new URI(schema + "://" + host).parseServerAuthority();
+            if (uri.getHost() == null || uri.getPort() < 1 || uri.getPort() > 65535 || uri.getUserInfo() != null
+                    || !uri.getRawPath().isEmpty() || uri.getRawQuery() != null || uri.getRawFragment() != null) {
+                throw new IllegalArgumentException("Invalid Elasticsearch host: " + host);
+            }
+            return uri;
+        } catch (URISyntaxException exception) {
+            throw new IllegalArgumentException("Invalid Elasticsearch host: " + host, exception);
         }
     }
 

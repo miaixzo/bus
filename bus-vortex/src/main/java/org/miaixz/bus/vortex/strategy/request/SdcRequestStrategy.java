@@ -19,7 +19,6 @@
 */
 package org.miaixz.bus.vortex.strategy.request;
 
-import java.util.List;
 import java.util.Set;
 
 import org.springframework.http.HttpHeaders;
@@ -54,8 +53,7 @@ public class SdcRequestStrategy extends RequestStrategy {
     }
 
     /**
-     * Captures the original credential headers and query selectors, then prepares the shared request context and
-     * preserves the POST body for forwarding.
+     * Captures query selectors and prepares the shared request context and preserves the POST body for forwarding.
      *
      * @param exchange incoming SDC exchange
      * @param chain    remaining strategies in the SDC chain
@@ -67,13 +65,14 @@ public class SdcRequestStrategy extends RequestStrategy {
             Context context = view.get(Context.class);
             var request = exchange.getRequest();
             HttpHeaders headers = request.getHeaders();
-            var input = new Input(headers.getOrEmpty(Http.Auth.API_KEY_HEADER),
-                    headers.getFirst(HttpHeaders.CONTENT_TYPE), request.getQueryParams().keySet());
+            var input = new Input(headers.getFirst(HttpHeaders.CONTENT_TYPE), request.getQueryParams().keySet());
             ServerWebExchange prepared = prepare(exchange, context, false);
-            return Mono.defer(
-                    () -> context.getHttpMethod() == Http.Method.GET ? parse(prepared, chain, context)
-                            : chain.apply(prepared))
-                    .contextWrite(current -> current.put(Input.class, input));
+            return Mono.defer(() -> {
+                if (context.getHttpMethod() == Http.Method.GET)
+                    return parse(prepared, chain, context);
+                prepared.getAttributes().put(Context.RAW_JSON_PASSTHROUGH_ATTRIBUTE, Boolean.TRUE);
+                return chain.apply(prepared);
+            }).contextWrite(current -> current.put(Input.class, input));
         });
     }
 
@@ -92,11 +91,10 @@ public class SdcRequestStrategy extends RequestStrategy {
     /**
      * Original input needed by the SDC stages before single-value conversion and query sanitization.
      *
-     * @param apiKeys     values supplied in the application credential header
      * @param contentType original media type
      * @param queryNames  supplied query names, including valueless parameters
      */
-    public record Input(List<String> apiKeys, String contentType, Set<String> queryNames) {
+    public record Input(String contentType, Set<String> queryNames) {
     }
 
 }

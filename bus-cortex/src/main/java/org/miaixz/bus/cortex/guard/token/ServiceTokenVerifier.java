@@ -19,13 +19,15 @@
 */
 package org.miaixz.bus.cortex.guard.token;
 
-import org.miaixz.bus.auth.shared.jwt.JWT;
-import org.miaixz.bus.auth.shared.jwt.JwtService;
-
 import java.time.Duration;
 import java.util.Set;
 
+import org.miaixz.bus.auth.shared.jwt.JWT;
+import org.miaixz.bus.auth.shared.jwt.JwtClaims;
+import org.miaixz.bus.auth.shared.jwt.JwtService;
 import org.miaixz.bus.core.lang.Optional;
+import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.extra.json.JsonValue;
 
 /**
  * Verifies a service identity token against the configured shared secret.
@@ -77,27 +79,82 @@ public final class ServiceTokenVerifier {
     }
 
     /**
+     * Reads one optional, nonblank signed forwarding claim.
+     *
+     * @param claims registered and extension claims
+     * @param name   forwarding claim name
+     * @return claim value or null when omitted
+     * @throws IllegalArgumentException if a supplied claim has an invalid shape
+     */
+    public static String forwardingClaim(JwtClaims claims, String name) {
+        JsonValue claim = claims.claim(name).orElse(null);
+        if (claim == null)
+            return null;
+        if (claim instanceof JsonValue.StringValue value && !value.value().isBlank())
+            return value.value();
+        throw new IllegalArgumentException("Invalid service token forwarding claim");
+    }
+
+    /**
+     * Authenticates a compact service token against one trusted HS256 key. The caller applies its claim policy.
+     *
+     * @param compact compact service token
+     * @param secret  trusted HS256 verification key
+     * @return token with an authenticated signature, or null if the compact token is invalid
+     */
+    public static JWT verifySignature(String compact, byte[] secret) {
+        var verifier = JwtService.hs256(secret);
+        try {
+            return verifier.verify(compact);
+        } catch (IllegalArgumentException | ValidateException rejected) {
+            return null;
+        }
+    }
+
+    /**
      * Verifies signature, issuer, audience, temporal claims and subject.
      *
      * @param compact compact token
      * @return whether the token is valid for the configured subject
      */
     public boolean accepts(final String compact) {
+        return subject(compact) != null;
+    }
+
+    /**
+     * Returns the validated subject after verifying the signature, issuer, audience, and lifetime.
+     *
+     * @param compact compact service token
+     * @return verified caller code or null if verification fails
+     */
+    public String subject(final String compact) {
+        JWT verified = verify(compact);
+        return verified == null ? null : verified.claims().subject().orElseThrow();
+    }
+
+    /**
+     * Returns the authenticated token so the caller can use its signed service claims.
+     *
+     * @param compact service token presented by the caller
+     * @return validated token, or null if verification fails
+     */
+    public JWT verify(final String compact) {
         if (compact == null || compact.isEmpty()) {
-            return false;
+            return null;
         }
         for (String subject : subjects) {
             try {
-                final JWT jwt = service.validate(compact, new JWT.Requirements(subject, Set.of(audience), skew, true,
-                        true, true, Optional.empty()));
+                final JWT jwt = service.validate(
+                        compact,
+                        new JWT.Requirements(subject, Set.of(audience), skew, true, true, true, Optional.empty()));
                 if (subject.equals(jwt.claims().subject().orElse(null))) {
-                    return true;
+                    return jwt;
                 }
             } catch (RuntimeException rejected) {
                 // Try the next accepted subject. The rejection reason never reaches the caller.
             }
         }
-        return false;
+        return null;
     }
 
 }

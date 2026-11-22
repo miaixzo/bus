@@ -22,8 +22,10 @@ package org.miaixz.bus.fabric.observe;
 import java.util.List;
 import java.util.Map;
 
+import org.miaixz.bus.core.center.function.RunnableX;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.core.xyz.FunctionKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.fabric.observe.event.FabricEvent;
 
@@ -125,9 +127,9 @@ public class EventListenerBridge implements EventObserver {
      *
      * @param task callback invocation to run
      */
-    private static void invoke(final Runnable task) {
+    private static void invoke(final RunnableX task) {
         try {
-            task.run();
+            FunctionKit.runUnwrapped(task);
         } catch (final RuntimeException ignored) {
             // Observer callbacks must never change protocol execution.
         }

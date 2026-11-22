@@ -20,7 +20,6 @@
 package org.miaixz.bus.errors.transport.servlet;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -28,6 +27,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatusCode;
 
+import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.errors.ErrorBoundary;
 import org.miaixz.bus.errors.ErrorContext;
 import org.miaixz.bus.errors.ErrorDecision.Action;
@@ -186,7 +186,7 @@ public final class ServletErrorHandler {
                 if (fallbackBody) {
                     var error = PublicHttpError.forStatus(selected.status());
                     byte[] body = ("{\"status\":" + selected.status().value() + ",\"error\":\"" + error.description()
-                            + "\"}").getBytes(StandardCharsets.UTF_8);
+                            + "\"}").getBytes(Charset.UTF_8);
                     response.setContentType("application/json");
                     response.setContentLength(body.length);
                     if (request == null || !"HEAD".equals(request.getMethod())) {

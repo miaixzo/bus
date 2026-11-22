@@ -17,45 +17,39 @@
  ~                                                                           ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.cortex.guard.token;
+package org.miaixz.bus.cortex.guard.outbound;
 
-import lombok.Getter;
-import lombok.Setter;
+import java.time.Duration;
+import java.util.List;
+
+import org.miaixz.bus.cortex.guard.GuardEvaluator.Rule;
 
 /**
- * A parsed token credential discovered from one request.
+ * Outbound service identity configuration.
+ *
+ * @param enabled whether outgoing credentials may be issued
+ * @param subject local service code
+ * @param ttl     lifetime of the issued token
+ * @param rules   configured destinations
  *
  * @author Kimi Liu
  */
-@Getter
-@Setter
-public class TokenCredential {
+public record OutboundPolicy(boolean enabled, String subject, Duration ttl, List<Rule> rules) {
 
     /**
-     * Raw token value after trimming and optional bearer-prefix removal.
+     * Validates the active issuer settings and destination rules.
+     *
+     * @param enabled whether outgoing credentials may be issued
+     * @param subject local service code
+     * @param ttl     lifetime of an issued token
+     * @param rules   configured destinations
+     * @throws IllegalArgumentException if the rules are invalid or enabled signing has incomplete settings
      */
-    private String value;
-
-    /**
-     * Request transport channel from which the token was extracted.
-     */
-    private TokenTransport transport;
-
-    /**
-     * Header, cookie, or query-parameter name that carried the token.
-     */
-    private String carrierName;
-
-    /**
-     * Whether the original carrier used a bearer-style format.
-     */
-    private boolean bearer;
-
-    /**
-     * Creates an empty parsed token credential.
-     */
-    public TokenCredential() {
-        // No initialization required.
+    public OutboundPolicy {
+        rules = Rule.validateRules(rules, true);
+        if (enabled && (subject == null || subject.isBlank() || ttl.toSeconds() < 60 || ttl.toSeconds() > 900
+                || rules.isEmpty()))
+            throw new IllegalArgumentException("Incomplete outbound service identity settings");
     }
 
 }

@@ -59,6 +59,7 @@ public class BootPropertiesLauncher extends PropertiesLauncher {
     public static void main(String[] args) throws Exception {
         new BootPropertiesLauncher(args).launch();
     }
+
     /**
      * Creates the class loader used to launch the application, replacing the Spring Boot default with the decrypting
      * {@link BootClassLoader} so that encrypted classes and resources can be read.
@@ -69,12 +70,8 @@ public class BootPropertiesLauncher extends PropertiesLauncher {
      */
     @Override
     protected ClassLoader createClassLoader(Collection<URL> urls) throws Exception {
-        return new BootClassLoader(
-                urls.toArray(new URL[0]),
-                getClass().getClassLoader(),
-                this.launcher.decryptorProvider,
-                this.launcher.encryptorProvider,
-                this.launcher.key);
+        return new BootClassLoader(urls.toArray(new URL[0]), getClass().getClassLoader(),
+                this.launcher.decryptorProvider, this.launcher.encryptorProvider, this.launcher.key);
     }
 
     /**

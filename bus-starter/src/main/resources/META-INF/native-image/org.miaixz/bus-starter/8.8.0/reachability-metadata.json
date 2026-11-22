@@ -1,4 +1,5 @@
 {
+  "comment": "The enum editor entries record intentional negative class lookups by Spring when binding starter configuration properties.",
   "reflection": [
     {
       "type": "org.miaixz.bus.starter.GeniusStarter",
@@ -6,93 +7,6 @@
         {
           "name": "<init>",
           "parameterTypes": []
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.starter.anchor.AnchorConfiguration",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.starter.anchor.AnchorConfiguration$Inbound",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.starter.anchor.AnchorConfiguration$Outbound",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.starter.anchor.AnchorProperties",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "org.miaixz.bus.starter.anchor.AnchorProperties$Inbound",
-            "org.miaixz.bus.starter.anchor.AnchorProperties$Outbound",
-            "java.lang.String",
-            "long"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.starter.anchor.AnchorProperties$Inbound",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "boolean",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "int"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.starter.anchor.AnchorProperties$Outbound",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "boolean",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String",
-            "int",
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.starter.anchor.ServiceAnchorFilter",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "org.miaixz.bus.starter.anchor.AnchorProperties",
-            "org.miaixz.bus.starter.anchor.AnchorKeys"
-          ]
         }
       ]
     },
@@ -162,6 +76,9 @@
           ]
         }
       ]
+    },
+    {
+      "type": "org.miaixz.bus.starter.auth.AuthProperties$SecretPolicyEditor"
     },
     {
       "type": "org.miaixz.bus.starter.auth.AuthService",
@@ -345,8 +262,42 @@
         {
           "name": "<init>",
           "parameterTypes": [
-            "boolean",
-            "org.miaixz.bus.starter.cortex.CortexProperties$Token"
+            "org.miaixz.bus.starter.cortex.CortexProperties$Guard$Inbound",
+            "org.miaixz.bus.starter.cortex.CortexProperties$Guard$Outbound",
+            "java.lang.String",
+            "long",
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.starter.cortex.CortexProperties$Guard$Inbound",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.Boolean",
+            "java.lang.String",
+            "java.lang.String",
+            "int",
+            "java.util.List"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.starter.cortex.CortexProperties$Guard$Outbound",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.Boolean",
+            "java.lang.String",
+            "int",
+            "java.lang.String",
+            "java.lang.String",
+            "java.util.List"
           ]
         }
       ]
@@ -367,15 +318,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.starter.cortex.CortexProperties$Token",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
       "type": "org.miaixz.bus.starter.cortex.CortexProperties$Watch",
       "methods": [
         {
@@ -386,6 +328,25 @@
           "name": "<init>",
           "parameterTypes": [
             "boolean"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.starter.cortex.ServiceAnchorFilter",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.cortex.guard.GuardEvaluator"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.cortex.guard.GuardEvaluator",
+            "java.util.Set",
+            "java.util.List"
           ]
         }
       ]
@@ -512,6 +473,9 @@
           "parameterTypes": []
         }
       ]
+    },
+    {
+      "type": "org.miaixz.bus.starter.errors.ErrorsProperties$TargetEditor"
     },
     {
       "type": "org.miaixz.bus.starter.fabric.FabricConfiguration",
@@ -799,6 +763,9 @@
           ]
         }
       ]
+    },
+    {
+      "type": "org.miaixz.bus.starter.json.JsonProperties$ProviderEditor"
     },
     {
       "type": "org.miaixz.bus.starter.limiter.LimiterConfiguration",
@@ -1497,6 +1464,9 @@
       ]
     },
     {
+      "type": "org.miaixz.bus.starter.sensitive.SensitiveProperties$TypeEditor"
+    },
+    {
       "type": "org.miaixz.bus.starter.storage.StorageConfiguration",
       "methods": [
         {
@@ -1639,6 +1609,24 @@
       ]
     },
     {
+      "type": "org.miaixz.bus.starter.vortex.VortexProperties$Sdc",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.starter.vortex.VortexProperties$Sdc$Bootstrap",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
       "type": "org.miaixz.bus.starter.wrapper.WrapperConfiguration",
       "methods": [
         {
@@ -1760,6 +1748,9 @@
           ]
         }
       ]
+    },
+    {
+      "type": "org.miaixz.bus.starter.wrapper.converter.MessageConverterProperties$TypePolicyEditor"
     },
     {
       "type": "org.miaixz.bus.starter.wrapper.routing.RoutePrefixConfiguration",

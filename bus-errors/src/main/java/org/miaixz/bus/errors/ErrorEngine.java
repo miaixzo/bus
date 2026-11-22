@@ -23,8 +23,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.CancellationException;
-import java.util.function.Consumer;
 
+import org.miaixz.bus.core.center.function.ConsumerX;
 import org.miaixz.bus.errors.ErrorDecision.Action;
 import org.miaixz.bus.errors.ErrorDecision.Basis;
 import org.miaixz.bus.errors.internal.ClassifierRegistry;
@@ -150,7 +150,11 @@ public final class ErrorEngine {
      * @param diagnostics recipient of isolated classifier failures
      * @return error decision
      */
-    ErrorDecision decide(ErrorContext context, FailureFacts facts, Throwable failure, Consumer<Throwable> diagnostics) {
+    ErrorDecision decide(
+            ErrorContext context,
+            FailureFacts facts,
+            Throwable failure,
+            ConsumerX<Throwable> diagnostics) {
         Objects.requireNonNull(context, "context");
         Objects.requireNonNull(facts, "facts");
         Throwable primary = ThrowableNormalizer.primary(failure);
@@ -182,7 +186,7 @@ public final class ErrorEngine {
             return new ErrorDecision(action, classifiedFailure.error(), facts.status(), Basis.STRUCTURED_EXCEPTION,
                     context.policyVersion());
         }
-        ErrorDescriptor classified = this.classifiers.classify(context, facts, primary, diagnostics);
+        ErrorDescriptor classified = this.classifiers.classifyUnwrapped(context, facts, primary, diagnostics);
         if (classified != null) {
             return new ErrorDecision(action, classified, facts.status(), Basis.CLASSIFIER, context.policyVersion());
         }

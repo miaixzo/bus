@@ -24,9 +24,9 @@ import java.net.URISyntaxException;
 import java.time.Duration;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Consumer;
-import java.util.function.Function;
 
+import org.miaixz.bus.core.center.function.ConsumerX;
+import org.miaixz.bus.core.center.function.FunctionX;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Symbol;
@@ -326,12 +326,12 @@ public class WebSocketX {
         /**
          * Open handler.
          */
-        private Consumer<WebSocketSession> openHandler;
+        private ConsumerX<WebSocketSession> openHandler;
 
         /**
          * Error handler.
          */
-        private Consumer<Throwable> errorHandler;
+        private ConsumerX<Throwable> errorHandler;
 
         /**
          * Creates a builder.
@@ -590,7 +590,7 @@ public class WebSocketX {
          * @param resolver function that resolves a channel identifier from each message
          * @return this builder
          */
-        public Builder resolver(final Function<Message, String> resolver) {
+        public Builder resolver(final FunctionX<Message, String> resolver) {
             demuxer().resolver(resolver);
             return this;
         }
@@ -601,7 +601,7 @@ public class WebSocketX {
          * @param handler UTF-8 text consumer, or {@code null} to install a no-op handler
          * @return this builder
          */
-        public Builder onText(final Consumer<String> handler) {
+        public Builder onText(final ConsumerX<String> handler) {
             this.demuxer = null;
             if (handler == null) {
                 this.handler = Demuxer.noop();
@@ -617,7 +617,7 @@ public class WebSocketX {
          * @param handler consumer invoked after a session opens, or {@code null} for no action
          * @return this builder
          */
-        public Builder onOpen(final Consumer<WebSocketSession> handler) {
+        public Builder onOpen(final ConsumerX<WebSocketSession> handler) {
             this.openHandler = handler == null ? session -> {
             } : handler;
             return composeCallback();
@@ -629,7 +629,7 @@ public class WebSocketX {
          * @param handler consumer invoked when opening fails, or {@code null} for no action
          * @return this builder
          */
-        public Builder onError(final Consumer<Throwable> handler) {
+        public Builder onError(final ConsumerX<Throwable> handler) {
             this.errorHandler = handler == null ? cause -> {
             } : handler;
             return composeCallback();

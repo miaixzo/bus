@@ -22,7 +22,6 @@ package org.miaixz.bus.vortex;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
-
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.vortex.strategy.RequestStrategy;
@@ -142,11 +141,6 @@ public class Args {
      * The base URI path for service discovery and configuration (SDC) requests.
      */
     public static final String SDC_PATH_PREFIX = Symbol.SLASH + "router" + Symbol.SLASH + "sdc";
-
-    /**
-     * Default registry method used to resolve public slug forwarding assets.
-     */
-    public static final String VORTEX_SLUG_GET = "vortex.slug.get";
 
     /**
      * A constant for a default API version, e.g., "1.0".
@@ -277,7 +271,7 @@ public class Args {
      * @return {@code true} if the path equals the SDC path, {@code false} otherwise.
      */
     public static boolean isSdcRequest(String path) {
-        return SDC_PATH_PREFIX.equals(path);
+        return isPathPrefix(path, SDC_PATH_PREFIX);
     }
 
     /**

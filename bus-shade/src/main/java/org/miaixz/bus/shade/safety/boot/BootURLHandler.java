@@ -97,7 +97,6 @@ public class BootURLHandler extends Handler {
         Logger.debug(false, "Shade", "Boot URL handler initialized: encryptedResourceCount={}", indexes.size());
     }
 
-
     /**
      * Resolves the archive entry name of a URL, supporting both the {@code jar:file:...!/entry} form and the nested
      * {@code jar:nested:.../!entry!/entry} form used by Spring Boot 3.2 and later.

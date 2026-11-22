@@ -19,11 +19,7 @@
 */
 package org.miaixz.bus.vortex.registry;
 
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Predicate;
 
@@ -310,6 +306,17 @@ public class AssetsRegistry extends AbstractRegistry<Assets> {
     public Assets get(String method, String version, Integer verb) {
         RouteMatch match = get(Keying.RegistrySpec.route(null, null, null, method, version, verb));
         return match == null ? null : match.assets();
+    }
+
+    /**
+     * Resolves a trusted application code for the registry's canonical application identifier. A registry without an
+     * application directory cannot supply an outbound identity audience.
+     *
+     * @param app_id canonical identifier from the resolved asset
+     * @return associated application code, or null when the directory cannot resolve it
+     */
+    public String code(String app_id) {
+        return null;
     }
 
     /**

@@ -40,6 +40,7 @@ import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.cache.nimble.MemoryCache;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.basic.normal.Errors;
+import org.miaixz.bus.core.center.function.FunctionX;
 import org.miaixz.bus.core.codec.binary.Base64;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Charset;
@@ -51,6 +52,7 @@ import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.net.url.RFC3986;
+import org.miaixz.bus.core.xyz.FunctionKit;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.extra.json.JsonValue;
 
@@ -1461,7 +1463,7 @@ public class FeishuRealmAdapter implements VendorAdapter {
     private <T> CompletionStage<Outcome<T>> authenticated(
             final Context context,
             final Timeout timeout,
-            final Function<Access, Outcome<T>> operation) {
+            final FunctionX<Access, Outcome<T>> operation) {
         return access(context, timeout).thenCompose(resolved -> switch (resolved) {
             case Outcome.Succeeded<Access> success -> execute(success.value(), timeout, operation)
                     .thenCompose(first -> {
@@ -1512,13 +1514,15 @@ public class FeishuRealmAdapter implements VendorAdapter {
     private <T> CompletionStage<Outcome<T>> execute(
             final Access access,
             final Timeout timeout,
-            final Function<Access, Outcome<T>> operation) {
+            final FunctionX<Access, Outcome<T>> operation) {
         return CompletableFuture.<Outcome<T>>supplyAsync(() -> {
             if (timeout.expired()) {
                 return failed(ErrorCode._408, "Feishu Realm operation has no remaining timeout");
             }
             try {
-                return Assert.notNull(operation.apply(access), "Feishu Realm operation returned no outcome");
+                return Assert.notNull(
+                        FunctionKit.applyUnwrapped(operation, access),
+                        "Feishu Realm operation returned no outcome");
             } catch (TimeoutException ignored) {
                 return failed(ErrorCode._408, "Feishu Realm operation timed out");
             } catch (RuntimeException ignored) {

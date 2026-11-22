@@ -19,12 +19,12 @@
 */
 package org.miaixz.bus.cortex.guard.token;
 
+import java.time.Duration;
+import java.util.HashMap;
+
 import org.miaixz.bus.auth.shared.jwt.JWT;
 import org.miaixz.bus.auth.shared.jwt.JwtClaims;
 import org.miaixz.bus.auth.shared.jwt.JwtService;
-
-import java.time.Duration;
-import java.util.Map;
 
 /**
  * Issues and caches one short-lived service identity token.
@@ -35,7 +35,17 @@ import java.util.Map;
  *
  * @author Kimi Liu
  */
-public final class ServiceToken {
+public final class ServiceTokenIssuer {
+
+    /**
+     * Signed claim containing the service that authenticated to the forwarding hop.
+     */
+    public static final String ORIGIN = "origin";
+
+    /**
+     * Signed claim identifying the registered route selected by the forwarding hop.
+     */
+    public static final String ASSET = "asset";
 
     /**
      * Signing service bound to the deployment secret.
@@ -51,6 +61,16 @@ public final class ServiceToken {
      * Required audience.
      */
     private final String audience;
+
+    /**
+     * Verified subject of the original caller when signing for a forwarded request.
+     */
+    private final String origin;
+
+    /**
+     * Selected route identifier when the forwarding hop binds its assertion to a registered asset.
+     */
+    private final String asset;
 
     /**
      * Token lifetime.
@@ -75,7 +95,43 @@ public final class ServiceToken {
      * @param secret   raw secret bytes, at least 32
      * @param lifetime positive lifetime, at most 15 minutes
      */
-    public ServiceToken(final String subject, final String audience, final byte[] secret, final Duration lifetime) {
+    public ServiceTokenIssuer(final String subject, final String audience, final byte[] secret,
+            final Duration lifetime) {
+        this(subject, audience, secret, lifetime, null);
+    }
+
+    /**
+     * Creates an issuer for an optional verified caller at the previous hop.
+     *
+     * @param subject  exact issuer and subject
+     * @param audience exact next-hop audience
+     * @param secret   raw signing key
+     * @param lifetime token lifetime
+     * @param origin   verified caller code, or null for a direct request
+     */
+    public ServiceTokenIssuer(String subject, String audience, byte[] secret, Duration lifetime, String origin) {
+        this(subject, audience, secret, lifetime, origin, null);
+    }
+
+    /**
+     * Creates an issuer for an authenticated forwarding hop and its selected route.
+     *
+     * @param subject  exact issuer and subject
+     * @param audience exact next-hop audience
+     * @param secret   raw signing key
+     * @param lifetime token lifetime
+     * @param origin   verified caller code, or null for a direct request
+     * @param asset    selected registered asset identifier, or null when omitted
+     */
+    public ServiceTokenIssuer(String subject, String audience, byte[] secret, Duration lifetime, String origin,
+            String asset) {
+        if (origin != null && origin.isBlank()) {
+            throw new IllegalArgumentException("Service token origin must be a service code");
+        }
+        if (asset != null && (origin == null || asset.isBlank())) {
+            throw new IllegalArgumentException(
+                    "A service token asset requires a verified origin and a route identifier");
+        }
         if (subject == null || subject.isBlank() || audience == null || audience.isBlank()) {
             throw new IllegalArgumentException("Service token subject and audience are required");
         }
@@ -88,6 +144,8 @@ public final class ServiceToken {
         this.service = JwtService.hs256(secret);
         this.subject = subject;
         this.audience = audience;
+        this.origin = origin;
+        this.asset = asset;
         this.lifetime = lifetime;
     }
 
@@ -105,11 +163,35 @@ public final class ServiceToken {
             if (cached != null && System.currentTimeMillis() < refreshAt) {
                 return cached.compact();
             }
-            final JWT issued = service.issue(JwtClaims.of(Map.of(JwtClaims.SUBJECT, subject)), subject, audience, lifetime);
+            final JWT issued = issue();
             cached = issued;
             refreshAt = System.currentTimeMillis() + lifetime.toMillis() * 4 / 5;
             return issued.compact();
         }
+    }
+
+    /**
+     * Signs a fresh token for callers that manage their own signing cache.
+     *
+     * @return compact signed service token
+     */
+    public String sign() {
+        return issue().compact();
+    }
+
+    /**
+     * Builds and signs the configured service claims.
+     *
+     * @return the newly signed JWT
+     */
+    private JWT issue() {
+        var claims = new HashMap<String, String>();
+        claims.put(JwtClaims.SUBJECT, subject);
+        if (origin != null)
+            claims.put(ORIGIN, origin);
+        if (asset != null)
+            claims.put(ASSET, asset);
+        return service.issue(JwtClaims.of(claims), subject, audience, lifetime);
     }
 
 }

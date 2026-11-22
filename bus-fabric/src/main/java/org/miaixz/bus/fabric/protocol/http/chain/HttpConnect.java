@@ -36,8 +36,9 @@ import java.util.Set;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.Supplier;
 
+import org.miaixz.bus.core.center.function.RunnableX;
+import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.io.sink.Sink;
 import org.miaixz.bus.core.io.source.Source;
@@ -94,7 +95,7 @@ public class HttpConnect implements HttpStage, AutoCloseable {
     /**
      * Shared unregister action for synchronous exchanges using {@link Cancellation#none()}.
      */
-    private static final Runnable NOOP_UNREGISTER = () -> {
+    private static final RunnableX NOOP_UNREGISTER = () -> {
     };
 
     /**
@@ -753,7 +754,7 @@ public class HttpConnect implements HttpStage, AutoCloseable {
         }
         final boolean transientConnection = addressGuard != null
                 || Http.Header.CONNECTION_CLOSE.equalsIgnoreCase(current.headers().get(Http.Header.CONNECTION));
-        final Supplier<Connection> factory = () -> open(
+        final SupplierX<Connection> factory = () -> open(
                 route,
                 target,
                 proxy,
@@ -1038,7 +1039,7 @@ public class HttpConnect implements HttpStage, AutoCloseable {
             }
             return source.withBody(source.body(), handshake);
         }
-        final HttpConnectionLease state = new HttpConnectionLease(lease, reusable);
+        final HttpConnectionLease state = new HttpConnectionLease(lease, reusable, source.body().payload());
         final PayloadBody body = source.body().withTransportPayload(state.wrap(source.body().payload()));
         final HttpResponse tracked = source.withBody(body, handshake);
         if (DEBUG_ENABLED) {
@@ -2601,7 +2602,7 @@ public class HttpConnect implements HttpStage, AutoCloseable {
          * @param <T>      operation result type
          * @return already completed or failed future containing the operation outcome
          */
-        private static <T> CompletableFuture<T> direct(final Supplier<T> supplier) {
+        private static <T> CompletableFuture<T> direct(final SupplierX<T> supplier) {
             try {
                 return CompletableFuture.completedFuture(supplier.get());
             } catch (final Throwable failure) {
@@ -2839,7 +2840,7 @@ public class HttpConnect implements HttpStage, AutoCloseable {
         private <T> CompletableFuture<T> background(
                 final String key,
                 final Duration deadline,
-                final Supplier<T> supplier) {
+                final SupplierX<T> supplier) {
             final CompletableFuture<T> result = new CompletableFuture<>();
             final Activity activity = Activity.of(key, () -> result.complete(supplier.get()));
             final DispatchHandle operation = dispatcher.background(key, this, activity);

@@ -91539,7 +91539,7 @@
           "parameterTypes": [
             "java.lang.String",
             "int",
-            "org.miaixz.bus.image.nimble.ImageContentHash$AlgorithmFactory"
+            "org.miaixz.bus.core.center.function.SupplierX"
           ]
         },
         {
@@ -91552,15 +91552,6 @@
             "org.miaixz.bus.opencv.core.Mat",
             "org.miaixz.bus.opencv.core.Mat"
           ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.image.nimble.ImageContentHash$AlgorithmFactory",
-      "methods": [
-        {
-          "name": "create",
-          "parameterTypes": []
         }
       ]
     },
@@ -113810,34 +113801,12 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.image.plugin.StowRS$StowRSFileConsumer",
-      "methods": [
-        {
-          "name": "accept",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.image.plugin.StowRS$StowRSFileFunction",
-      "methods": [
-        {
-          "name": "apply",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        }
-      ]
-    },
-    {
       "type": "org.miaixz.bus.image.plugin.StowRS$StowRSFileVisitor",
       "methods": [
         {
           "name": "<init>",
           "parameterTypes": [
-            "org.miaixz.bus.image.plugin.StowRS$StowRSFileConsumer",
+            "org.miaixz.bus.core.center.function.ConsumerX",
             "boolean"
           ]
         },

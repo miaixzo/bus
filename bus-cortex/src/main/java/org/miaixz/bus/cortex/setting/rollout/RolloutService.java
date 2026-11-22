@@ -22,7 +22,6 @@ package org.miaixz.bus.cortex.setting.rollout;
 import java.util.*;
 
 import org.miaixz.bus.core.data.id.ID;
-import org.miaixz.bus.cortex.guard.CortexGuard;
 import org.miaixz.bus.cortex.release.Release;
 import org.miaixz.bus.cortex.release.ReleaseCodec;
 import org.miaixz.bus.cortex.release.ReleaseStore;
@@ -73,10 +72,6 @@ public final class RolloutService {
      * Host approval policy registry, independent of access checks.
      */
     private final ApprovalStore approvals;
-    /**
-     * Optional host access policy.
-     */
-    private final CortexGuard guard;
 
     /**
      * Creates workflow management.
@@ -88,10 +83,9 @@ public final class RolloutService {
      * @param editor     source verification
      * @param references option parser
      * @param approvals  approval policy registry
-     * @param guard      optional host access policy
      */
     public RolloutService(RolloutStore store, SettingStore settings, ReleaseStore releases, RevisionStore revisions,
-            ItemEditor editor, ReferenceCodec references, ApprovalStore approvals, CortexGuard guard) {
+            ItemEditor editor, ReferenceCodec references, ApprovalStore approvals) {
         this.store = Objects.requireNonNull(store);
         this.settings = Objects.requireNonNull(settings);
         this.releases = Objects.requireNonNull(releases);
@@ -99,7 +93,6 @@ public final class RolloutService {
         this.editor = Objects.requireNonNull(editor);
         this.references = Objects.requireNonNull(references);
         this.approvals = Objects.requireNonNull(approvals);
-        this.guard = guard;
     }
 
     /**
@@ -113,7 +106,6 @@ public final class RolloutService {
      */
     public Rollout create(SettingProvider.Context context, String title, String description, Plan.Selection selection) {
         context.requireRequest();
-        context.check(guard, "create", "rollout", null);
         approvals.validatePolicy(context, selection.policy());
         return store.saveDraft(
                 Rollout.builder().tenant_id(context.tenant()).id(ID.objectId()).title(title).description(description)
@@ -140,7 +132,6 @@ public final class RolloutService {
             String description,
             Plan.Selection selection) {
         context.requireRequest();
-        context.check(guard, "edit", "rollout", rollout);
         Rollout next = draft(context, rollout, edition);
         approvals.validatePolicy(context, selection.policy());
         next.setTitle(title);
@@ -159,7 +150,6 @@ public final class RolloutService {
      */
     public void delete(SettingProvider.Context context, String rollout, long edition) {
         context.requireRequest();
-        context.check(guard, "delete", "rollout", rollout);
         draft(context, rollout, edition);
         store.deleteDraft(context.tenant(), rollout, edition);
     }
@@ -172,7 +162,6 @@ public final class RolloutService {
      * @return detached workflow
      */
     public Rollout find(SettingProvider.Context context, String rollout) {
-        context.check(guard, "read", "rollout", rollout);
         Rollout value = store.find(context.tenant(), rollout);
         if (value != null && (!context.tenant().equals(value.getTenant_id()) || !rollout.equals(value.getId())))
             throw new IllegalStateException("Workflow identity mismatch");
@@ -188,7 +177,6 @@ public final class RolloutService {
      * @return workflows
      */
     public List<Rollout> query(SettingProvider.Context context, int offset, int limit) {
-        context.check(guard, "read", "rollout", null);
         if (offset < 0 || limit < 1 || limit > 1000)
             throw new IllegalArgumentException("Invalid workflow page");
         return List.copyOf(store.query(context.tenant(), offset, limit));
@@ -204,12 +192,9 @@ public final class RolloutService {
      */
     public Rollout submit(SettingProvider.Context context, String rollout, long edition) {
         context.requireRequest();
-        context.check(guard, "submit", "rollout", rollout);
         Rollout draft = draft(context, rollout, edition);
         Plan.Selection selection = Plan.selection(draft.getManifest());
         approvals.validatePolicy(context, selection.policy());
-        for (String app : selection.applications())
-            context.check(guard, "publish", "app", app);
         SettingStore.View view = settings.read(context.tenant(), selection.applications());
         Set<String> apps = new HashSet<>();
         view.apps().forEach(app -> {

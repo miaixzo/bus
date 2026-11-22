@@ -21,7 +21,6 @@ package org.miaixz.bus.cortex.setting.delivery;
 
 import java.util.Objects;
 
-import org.miaixz.bus.cortex.guard.CortexGuard;
 import org.miaixz.bus.cortex.setting.SettingProvider;
 import org.miaixz.bus.cortex.setting.curator.ItemService;
 import org.miaixz.bus.cortex.setting.item.ItemCodec;
@@ -42,22 +41,16 @@ public final class ItemExportService {
      * Published content authority.
      */
     private final ItemQueryService published;
-    /**
-     * Optional host export policy.
-     */
-    private final CortexGuard guard;
 
     /**
      * Creates explicit export boundaries.
      *
      * @param items     current views
      * @param published formal content
-     * @param guard     optional host access policy
      */
-    public ItemExportService(ItemService items, ItemQueryService published, CortexGuard guard) {
+    public ItemExportService(ItemService items, ItemQueryService published) {
         this.items = Objects.requireNonNull(items);
         this.published = Objects.requireNonNull(published);
-        this.guard = guard;
     }
 
     /**
@@ -68,7 +61,6 @@ public final class ItemExportService {
      * @return safe canonical definition or absent
      */
     public String current(SettingProvider.Context context, String item) {
-        context.check(guard, "export", "item", item);
         ItemCodec.Document view = items.view(context, item);
         return view == null ? null : new ItemCodec(64, 100000).content(view);
     }
@@ -81,7 +73,6 @@ public final class ItemExportService {
      * @return published business values
      */
     public String published(SettingProvider.Context context, ItemQuery query) {
-        context.check(guard, "export-sensitive", "app", query.getApp_id());
         return published.get(context, query);
     }
 

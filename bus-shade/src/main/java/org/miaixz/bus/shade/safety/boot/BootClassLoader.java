@@ -44,6 +44,7 @@ import java.util.zip.ZipInputStream;
 
 import org.springframework.boot.loader.launch.LaunchedClassLoader;
 
+import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.errors.ComponentFailure;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.shade.safety.Builder;
@@ -149,7 +150,6 @@ public class BootClassLoader extends LaunchedClassLoader {
                 null == this.libraries ? 0 : this.libraries.list().length);
     }
 
-
     /**
      * Recursively deletes a file or directory, ignoring failures during shutdown.
      *
@@ -239,7 +239,7 @@ public class BootClassLoader extends LaunchedClassLoader {
             return names;
         }
         try (InputStream in = zip.getInputStream(index)) {
-            for (String line : new String(in.readAllBytes(), java.nio.charset.StandardCharsets.UTF_8).split("\\R")) {
+            for (String line : new String(in.readAllBytes(), Charset.UTF_8).split("\\R")) {
                 String name = line.trim();
                 if (name.isEmpty()) {
                     continue;
@@ -261,9 +261,9 @@ public class BootClassLoader extends LaunchedClassLoader {
     /**
      * Reads an entry from the encrypted archive, decrypting it when required.
      *
-     * @param zip      the outer archive
-     * @param entry    the entry to read
-     * @param decrypt  whether the entry content is encrypted
+     * @param zip     the outer archive
+     * @param entry   the entry to read
+     * @param decrypt whether the entry content is encrypted
      * @return the entry bytes, or {@code null} when the entry cannot be read
      */
     private byte[] read(final ZipFile zip, final ZipEntry entry, final boolean decrypt) {

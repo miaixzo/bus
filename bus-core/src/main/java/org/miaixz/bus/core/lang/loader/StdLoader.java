@@ -189,7 +189,8 @@ public class StdLoader extends ResourceLoader implements Loader {
                     try {
                         String uri = UrlDecoder.decode(url.getPath(), Charset.UTF_8);
                         String root = uri.substring(0, uri.lastIndexOf(path));
-                        URL context = URI.create(Normal.FILE_URL_PREFIX + RFC3986.PATH.encode(root, Charset.UTF_8)).toURL();
+                        URL context = URI.create(Normal.FILE_URL_PREFIX + RFC3986.PATH.encode(root, Charset.UTF_8))
+                                .toURL();
                         File file = new File(root);
                         resources = new FileLoader(context, file).load(path, recursively, filter);
                         return hasMoreElements();
@@ -200,7 +201,8 @@ public class StdLoader extends ResourceLoader implements Loader {
                     try {
                         String uri = UrlDecoder.decode(url.getPath(), Charset.UTF_8);
                         String root = uri.substring(0, uri.lastIndexOf(path));
-                        URL context = URI.create(Normal.JAR_URL_PREFIX + RFC3986.PATH.encode(root, Charset.UTF_8)).toURL();
+                        URL context = URI.create(Normal.JAR_URL_PREFIX + RFC3986.PATH.encode(root, Charset.UTF_8))
+                                .toURL();
                         JarURLConnection jarURLConnection = (JarURLConnection) url.openConnection();
                         JarFile jarFile = jarURLConnection.getJarFile();
                         resources = new JarLoader(context, jarFile).load(path, recursively, filter);

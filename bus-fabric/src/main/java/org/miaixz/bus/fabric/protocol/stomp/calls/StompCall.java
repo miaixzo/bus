@@ -20,8 +20,8 @@
 package org.miaixz.bus.fabric.protocol.stomp.calls;
 
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.Function;
 
+import org.miaixz.bus.core.center.function.FunctionX;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.fabric.Builder;
@@ -43,7 +43,7 @@ public class StompCall extends MonoCall<StompSession> {
     /**
      * Single STOMP-open operation receiving the call lifecycle's cancellation scope.
      */
-    private final Function<Cancellation, StompSession> operation;
+    private final FunctionX<Cancellation, StompSession> operation;
 
     /**
      * Dispatch key returned when this call is submitted asynchronously.
@@ -66,7 +66,7 @@ public class StompCall extends MonoCall<StompSession> {
      * @param key        dispatch key used for asynchronous submission
      */
     public StompCall(final Dispatcher dispatcher, final Callback<? super StompSession> callback,
-            final EventObserver observer, final Timeout timeout, final Function<Cancellation, StompSession> operation,
+            final EventObserver observer, final Timeout timeout, final FunctionX<Cancellation, StompSession> operation,
             final String key) {
         super(Builder.STOMP_TAG_OPEN, dispatcher, observer, callback, timeout);
         this.operation = require(operation, "STOMP operation");
@@ -88,7 +88,7 @@ public class StompCall extends MonoCall<StompSession> {
             final Dispatcher dispatcher,
             final Callback<? super StompSession> callback,
             final EventObserver observer,
-            final Function<Cancellation, StompSession> operation,
+            final FunctionX<Cancellation, StompSession> operation,
             final String key) {
         return create(dispatcher, callback, observer, Timeout.defaults(), operation, key);
     }
@@ -111,7 +111,7 @@ public class StompCall extends MonoCall<StompSession> {
             final Callback<? super StompSession> callback,
             final EventObserver observer,
             final Timeout timeout,
-            final Function<Cancellation, StompSession> operation,
+            final FunctionX<Cancellation, StompSession> operation,
             final String key) {
         return new StompCall(require(dispatcher, "Dispatcher"), callback,
                 EventObserver.safe(require(observer, "Observer")), require(timeout, "Timeout"), operation, key);

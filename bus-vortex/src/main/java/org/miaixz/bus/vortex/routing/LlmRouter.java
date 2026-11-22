@@ -103,9 +103,9 @@ public class LlmRouter implements Router<ServerRequest, ServerResponse> {
             Logger.debug(
                     true,
                     "Vortex",
-                    "Request headers: clientIp={}, headers={}",
+                    "Request header names: clientIp={}, headerNames={}",
                     context.getX_request_ip(),
-                    input.headers().asHttpHeaders().toSingleValueMap());
+                    input.headers().asHttpHeaders().headerNames());
             Logger.debug(
                     true,
                     "Vortex",

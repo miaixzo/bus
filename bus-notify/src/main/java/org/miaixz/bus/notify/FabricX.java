@@ -22,11 +22,13 @@ package org.miaixz.bus.notify;
 import java.util.Map;
 
 import org.miaixz.bus.core.center.function.BiConsumerX;
+import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
+import org.miaixz.bus.core.xyz.FunctionKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.errors.ComponentFailure;
 import org.miaixz.bus.errors.ErrorType;
@@ -229,9 +231,9 @@ public abstract class FabricX {
      * @param type    dependency failure for reads, or uncertain delivery for sends
      * @return response body from the existing HTTP transport
      */
-    private static String execute(java.util.function.Supplier<String> request, ErrorType type) {
+    private static String execute(SupplierX<String> request, ErrorType type) {
         try {
-            return request.get();
+            return FunctionKit.getUnwrapped(request);
         } catch (RuntimeException failure) {
             throw FAILURES.propagate(type, failure);
         }

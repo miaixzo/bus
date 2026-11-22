@@ -17,9 +17,36 @@
  ~                                                                           ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
+package org.miaixz.bus.cortex.guard.inbound;
+
+import org.miaixz.bus.cortex.guard.GuardEvaluator.Verified;
+
 /**
- * Executes authenticated service discovery and configuration requests.
+ * Result of inbound service authentication.
+ *
+ * @param status   request disposition
+ * @param verified authenticated identity when applicable
  *
  * @author Kimi Liu
  */
-package org.miaixz.bus.vortex.routing.sdc;
+public record InboundDecision(Status status, Verified verified) {
+
+    /**
+     * Transport-neutral inbound result.
+     */
+    public enum Status {
+        /**
+         * The call may continue.
+         */
+        ACCEPTED,
+        /**
+         * The caller did not provide a valid required identity.
+         */
+        REJECTED,
+        /**
+         * The protected identity policy is unavailable.
+         */
+        UNAVAILABLE
+    }
+
+}

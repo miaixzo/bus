@@ -19,10 +19,9 @@
 */
 
 /**
- * Token-oriented guard configuration and strategy types.
+ * Provides service token signing, verification, and key rotation.
  * <p>
- * This package models how Cortex describes token transport, token lifetime policy, and lightweight pre-validation
- * before the request enters the Vortex authorization provider chain.
+ * Key and token providers supply trusted key snapshots and perform cryptographic operations for the guard.
  *
  * @author Kimi Liu
  */

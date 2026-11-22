@@ -24,14 +24,15 @@ import java.time.Instant;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import java.util.function.Supplier;
 
+import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.CryptoException;
 import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
+import org.miaixz.bus.core.xyz.FunctionKit;
 import org.miaixz.bus.core.xyz.PatternKit;
 import org.miaixz.bus.cortex.setting.secret.SecretContext;
 import org.miaixz.bus.cortex.setting.secret.SecretMaterial;
@@ -71,7 +72,7 @@ public final class VaultKvSecretProvider implements SecretProvider {
     /**
      * Trusted factory of one native Fabric builder per attempt; does not own its runtime.
      */
-    private final Supplier<HttpX.Builder> http;
+    private final SupplierX<HttpX.Builder> http;
 
     /**
      * Creates a connection-bound VaultKvSecretProvider. The provider borrows its Fabric runtime and obtains fresh
@@ -123,7 +124,7 @@ public final class VaultKvSecretProvider implements SecretProvider {
      * @throws IllegalArgumentException if configuration values violate the documented constraints
      */
     VaultKvSecretProvider(URI endpoint, String mount, long generation, CloudCredentials.Source tokens,
-            Supplier<HttpX.Builder> http) {
+            SupplierX<HttpX.Builder> http) {
         this(endpoint, mount, null, generation, tokens, http);
     }
 
@@ -141,7 +142,7 @@ public final class VaultKvSecretProvider implements SecretProvider {
      * @throws IllegalArgumentException if configuration values violate the documented constraints
      */
     VaultKvSecretProvider(URI endpoint, String mount, String namespace, long generation, CloudCredentials.Source tokens,
-            Supplier<HttpX.Builder> http) {
+            SupplierX<HttpX.Builder> http) {
         if (generation < 0) {
             throw new IllegalArgumentException("Invalid Vault connection generation");
         }
@@ -298,8 +299,9 @@ public final class VaultKvSecretProvider implements SecretProvider {
      */
     private HttpX.Builder request(URI uri, SecretContext context) {
         try (CloudCredentials token = tokens.acquire(context)) {
-            HttpX.Builder request = http.get().to(uri.toString()).header("X-Vault-Token", token.header())
-                    .header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON).get();
+            HttpX.Builder request = FunctionKit.getUnwrapped(http).to(uri.toString())
+                    .header("X-Vault-Token", token.header()).header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON)
+                    .get();
             if (namespace != null) {
                 request.header("X-Vault-Namespace", namespace);
             }

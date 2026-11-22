@@ -20,8 +20,8 @@
 package org.miaixz.bus.fabric.protocol.socket.calls;
 
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.Function;
 
+import org.miaixz.bus.core.center.function.FunctionX;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.fabric.Builder;
@@ -43,7 +43,7 @@ public class SocketCall extends MonoCall<SocketSession> {
     /**
      * Single socket-open operation receiving the call lifecycle's cancellation scope.
      */
-    private final Function<Cancellation, SocketSession> operation;
+    private final FunctionX<Cancellation, SocketSession> operation;
 
     /**
      * Dispatch key returned when this call is submitted asynchronously.
@@ -66,7 +66,7 @@ public class SocketCall extends MonoCall<SocketSession> {
      * @param key        dispatch key used for asynchronous submission
      */
     public SocketCall(final Dispatcher dispatcher, final Callback<? super SocketSession> callback,
-            final EventObserver observer, final Timeout timeout, final Function<Cancellation, SocketSession> operation,
+            final EventObserver observer, final Timeout timeout, final FunctionX<Cancellation, SocketSession> operation,
             final String key) {
         super(Builder.SOCKET_TAG_OPEN, dispatcher, observer, callback, timeout);
         this.operation = require(operation, "Socket operation");
@@ -88,7 +88,7 @@ public class SocketCall extends MonoCall<SocketSession> {
             final Dispatcher dispatcher,
             final Callback<? super SocketSession> callback,
             final EventObserver observer,
-            final Function<Cancellation, SocketSession> operation,
+            final FunctionX<Cancellation, SocketSession> operation,
             final String key) {
         return create(dispatcher, callback, observer, Timeout.defaults(), operation, key);
     }
@@ -111,7 +111,7 @@ public class SocketCall extends MonoCall<SocketSession> {
             final Callback<? super SocketSession> callback,
             final EventObserver observer,
             final Timeout timeout,
-            final Function<Cancellation, SocketSession> operation,
+            final FunctionX<Cancellation, SocketSession> operation,
             final String key) {
         return new SocketCall(require(dispatcher, "Dispatcher"), callback,
                 EventObserver.safe(require(observer, "Observer")), require(timeout, "Timeout"), operation, key);

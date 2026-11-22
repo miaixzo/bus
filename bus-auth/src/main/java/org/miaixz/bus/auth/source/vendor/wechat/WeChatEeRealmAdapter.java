@@ -39,6 +39,7 @@ import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.cache.nimble.MemoryCache;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.basic.normal.Errors;
+import org.miaixz.bus.core.center.function.FunctionX;
 import org.miaixz.bus.core.codec.binary.Base64;
 import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.lang.Assert;
@@ -50,6 +51,7 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.net.Protocol;
+import org.miaixz.bus.core.xyz.FunctionKit;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.extra.json.JsonValue;
 import org.miaixz.bus.fabric.Payload;
@@ -218,7 +220,7 @@ public class WeChatEeRealmAdapter implements VendorAdapter {
     private static <T> int parentIndex(
             final List<T> values,
             final Optional<String> parentId,
-            final Function<T, String> identity,
+            final FunctionX<T, String> identity,
             final String message) {
         if (values.isEmpty()) {
             if (parentId.isPresent()) {
@@ -230,7 +232,7 @@ public class WeChatEeRealmAdapter implements VendorAdapter {
             return 0;
         }
         for (int index = 0; index < values.size(); index++) {
-            if (parentId.getOrNull().equals(identity.apply(values.get(index)))) {
+            if (parentId.getOrNull().equals(FunctionKit.applyUnwrapped(identity, values.get(index)))) {
                 return index;
             }
         }
@@ -1528,7 +1530,7 @@ public class WeChatEeRealmAdapter implements VendorAdapter {
     private <T> CompletionStage<Outcome<T>> authenticated(
             final Context context,
             final Timeout timeout,
-            final Function<Access, Outcome<T>> operation) {
+            final FunctionX<Access, Outcome<T>> operation) {
         return access(context, timeout).thenCompose(resolved -> switch (resolved) {
             case Outcome.Succeeded<Access> success -> execute(success.value(), timeout, operation)
                     .thenCompose(first -> {
@@ -1579,13 +1581,15 @@ public class WeChatEeRealmAdapter implements VendorAdapter {
     private <T> CompletionStage<Outcome<T>> execute(
             final Access access,
             final Timeout timeout,
-            final Function<Access, Outcome<T>> operation) {
+            final FunctionX<Access, Outcome<T>> operation) {
         return CompletableFuture.<Outcome<T>>supplyAsync(() -> {
             if (timeout.expired()) {
                 return failed(ErrorCode._408, "WeChat Realm operation has no remaining timeout");
             }
             try {
-                return Assert.notNull(operation.apply(access), "WeChat Realm operation returned no outcome");
+                return Assert.notNull(
+                        FunctionKit.applyUnwrapped(operation, access),
+                        "WeChat Realm operation returned no outcome");
             } catch (TimeoutException ignored) {
                 return failed(ErrorCode._408, "WeChat Realm operation timed out");
             } catch (RuntimeException ignored) {
@@ -1833,7 +1837,7 @@ public class WeChatEeRealmAdapter implements VendorAdapter {
             final String operation,
             final boolean allowNotFound,
             final Map<String, ?> query,
-            final Function<Response, JsonValue.ObjectValue> reader) {
+            final FunctionX<Response, JsonValue.ObjectValue> reader) {
         if (timeout.expired()) {
             return failed(ErrorCode._408, "WeCom management request has no remaining timeout");
         }
@@ -1854,7 +1858,7 @@ public class WeChatEeRealmAdapter implements VendorAdapter {
             if (!response.successful()) {
                 return httpFailure(response, operation);
             }
-            final JsonValue.ObjectValue envelope = reader.apply(response);
+            final JsonValue.ObjectValue envelope = FunctionKit.applyUnwrapped(reader, response);
             final long code = requiredLong(envelope, "errcode");
             if (code == Normal._0) {
                 return Outcome.succeeded(envelope);

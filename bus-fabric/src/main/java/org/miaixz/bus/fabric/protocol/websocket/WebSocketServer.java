@@ -33,10 +33,10 @@ import java.util.concurrent.CompletionException;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.BiConsumer;
-import java.util.function.Consumer;
-import java.util.function.Function;
 
 import org.miaixz.bus.core.Lifecycle;
+import org.miaixz.bus.core.center.function.ConsumerX;
+import org.miaixz.bus.core.center.function.FunctionX;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
@@ -1120,13 +1120,13 @@ public class WebSocketServer implements Lifecycle {
         /**
          * Open handler.
          */
-        private Consumer<WebSocketSession> openHandler = session -> {
+        private ConsumerX<WebSocketSession> openHandler = session -> {
         };
 
         /**
          * Error handler.
          */
-        private Consumer<Throwable> errorHandler = cause -> {
+        private ConsumerX<Throwable> errorHandler = cause -> {
         };
 
         /**
@@ -1381,7 +1381,7 @@ public class WebSocketServer implements Lifecycle {
          * @param resolver function that resolves a channel identifier from each message
          * @return this builder
          */
-        public Builder resolver(final Function<Message, String> resolver) {
+        public Builder resolver(final FunctionX<Message, String> resolver) {
             demuxer().resolver(resolver);
             return this;
         }
@@ -1406,7 +1406,7 @@ public class WebSocketServer implements Lifecycle {
          * @param handler open handler
          * @return this builder
          */
-        public Builder onOpen(final Consumer<WebSocketSession> handler) {
+        public Builder onOpen(final ConsumerX<WebSocketSession> handler) {
             this.openHandler = handler == null ? session -> {
             } : handler;
             return composeSessionListener();
@@ -1418,7 +1418,7 @@ public class WebSocketServer implements Lifecycle {
          * @param handler error handler
          * @return this builder
          */
-        public Builder onError(final Consumer<Throwable> handler) {
+        public Builder onError(final ConsumerX<Throwable> handler) {
             this.errorHandler = handler == null ? cause -> {
             } : handler;
             return composeSessionListener();

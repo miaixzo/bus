@@ -26,12 +26,7 @@ import org.springframework.context.annotation.Import;
 import org.miaixz.bus.starter.cortex.CortexConfiguration;
 
 /**
- * Enables Bus Cortex — unified service registry and configuration center.
- * <p>
- * Importing this annotation bootstraps all Cortex beans: registry, health checking, config center, cluster, audit log,
- * and the client-side SDK beans.
- * <p>
- * Then configure {@code bus.cortex.server-addr} in {@code application.yml}.
+ * Enables the independently configured Cortex registry and Servlet service identity adapters.
  *
  * @author Kimi Liu
  */
@@ -41,5 +36,20 @@ import org.miaixz.bus.starter.cortex.CortexConfiguration;
 @Target({ ElementType.TYPE })
 @Import({ CortexConfiguration.class })
 public @interface EnableCortex {
+
+    /**
+     * Enables Cortex registry, configuration, and watch services.
+     *
+     * @return whether registry services should be assembled
+     */
+    boolean registry() default true;
+
+    /**
+     * Enables the Servlet service identity adapter independently of {@link #registry()}. The inbound and outbound
+     * directions are configured under {@code bus.cortex.guard}.
+     *
+     * @return whether the Servlet service identity adapter should be installed
+     */
+    boolean guard() default false;
 
 }

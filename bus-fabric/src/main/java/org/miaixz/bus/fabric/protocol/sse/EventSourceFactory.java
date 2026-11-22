@@ -25,8 +25,8 @@ import java.util.IdentityHashMap;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.Consumer;
 
+import org.miaixz.bus.core.center.function.ConsumerX;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.StatefulException;
@@ -261,7 +261,7 @@ public class EventSourceFactory implements EventSource.Factory, AutoCloseable {
         /**
          * Factory removal hook.
          */
-        private final Consumer<EventSource> onClose;
+        private final ConsumerX<EventSource> onClose;
 
         /**
          * Response metadata.
@@ -297,7 +297,7 @@ public class EventSourceFactory implements EventSource.Factory, AutoCloseable {
          * @param onClose  factory removal hook
          */
         private DefaultEventSource(final Context context, final HttpRequest request, final EventSourceListener listener,
-                final Consumer<EventSource> onClose) {
+                final ConsumerX<EventSource> onClose) {
             this.context = require(context, "Context");
             this.request = require(request, "Request");
             this.listener = require(listener, "Listener");

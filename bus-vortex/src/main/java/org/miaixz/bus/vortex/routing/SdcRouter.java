@@ -24,7 +24,7 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 
 import org.miaixz.bus.vortex.Context;
 import org.miaixz.bus.vortex.Router;
-import org.miaixz.bus.vortex.routing.sdc.SdcExecutor;
+import org.miaixz.bus.vortex.routing.rest.RestExecutor;
 
 import reactor.core.publisher.Mono;
 
@@ -38,14 +38,14 @@ public class SdcRouter implements Router<ServerRequest, ServerResponse> {
     /**
      * Executor for the SDC upstream.
      */
-    private final SdcExecutor executor;
+    private final RestExecutor executor;
 
     /**
      * Creates the SDC router.
      *
      * @param executor SDC executor
      */
-    public SdcRouter(SdcExecutor executor) {
+    public SdcRouter(RestExecutor executor) {
         this.executor = executor;
     }
 

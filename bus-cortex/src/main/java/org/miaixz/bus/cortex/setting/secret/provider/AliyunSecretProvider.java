@@ -26,6 +26,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.function.Supplier;
 
+import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.codec.binary.Base64;
 import org.miaixz.bus.core.data.id.ID;
@@ -36,6 +37,7 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.CryptoException;
 import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
+import org.miaixz.bus.core.xyz.FunctionKit;
 import org.miaixz.bus.core.xyz.PatternKit;
 import org.miaixz.bus.cortex.setting.secret.SecretContext;
 import org.miaixz.bus.cortex.setting.secret.SecretMaterial;
@@ -70,7 +72,7 @@ public final class AliyunSecretProvider implements SecretProvider {
     /**
      * Trusted factory of one native Fabric builder per attempt; does not own its runtime.
      */
-    private final Supplier<HttpX.Builder> http;
+    private final SupplierX<HttpX.Builder> http;
     /**
      * Clock used to produce deterministic UTC signing timestamps.
      */
@@ -131,7 +133,7 @@ public final class AliyunSecretProvider implements SecretProvider {
      * @throws IllegalArgumentException if configuration values violate the documented constraints
      */
     AliyunSecretProvider(String region, URI endpoint, long generation, CloudCredentials.Source credentials,
-            Supplier<HttpX.Builder> http) {
+            SupplierX<HttpX.Builder> http) {
         this(region, endpoint, generation, credentials, http, Clock.systemUTC(), ID::randomUUID);
     }
 
@@ -150,7 +152,7 @@ public final class AliyunSecretProvider implements SecretProvider {
      * @throws IllegalArgumentException if configuration values violate the documented constraints
      */
     AliyunSecretProvider(String region, URI endpoint, long generation, CloudCredentials.Source credentials,
-            Supplier<HttpX.Builder> http, Clock clock, Supplier<String> nonce) {
+            SupplierX<HttpX.Builder> http, Clock clock, Supplier<String> nonce) {
         if (region == null || !PatternKit.isMatch(Pattern.get("[a-z0-9-]+", 0), region) || generation < 0) {
             throw new IllegalArgumentException("Invalid Alibaba connection");
         }
@@ -291,7 +293,7 @@ public final class AliyunSecretProvider implements SecretProvider {
             }
             parameters.put("Signature", signature(parameters, identity));
             // POST form keeps the signed identity and resource out of the request URI.
-            return http.get().to(endpoint.toString())
+            return FunctionKit.getUnwrapped(http).to(endpoint.toString())
                     .header(Http.Header.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED).post()
                     .body(CloudProtocol.query(parameters));
         }

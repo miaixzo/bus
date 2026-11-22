@@ -17,32 +17,9 @@
  ~                                                                           ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.cortex.guard;
-
 /**
- * Extension point for access-control evaluators.
+ * Selects outbound service identity policies and manages next-hop tokens.
  *
  * @author Kimi Liu
  */
-@FunctionalInterface
-public interface GuardStrategy {
-
-    /**
-     * Evaluates one request context and returns the decision.
-     *
-     * @param context guard evaluation context
-     * @return guard decision
-     */
-    GuardDecision evaluate(GuardContext context);
-
-    /**
-     * Returns whether this strategy supports the supplied context.
-     *
-     * @param context guard context
-     * @return {@code true} when supported
-     */
-    default boolean supports(GuardContext context) {
-        return context != null;
-    }
-
-}
+package org.miaixz.bus.cortex.guard.outbound;

@@ -31,6 +31,7 @@
  */
 module bus.starter {
 
+    requires java.net.http;
     requires java.sql;
 
     requires bus.auth;
@@ -93,7 +94,6 @@ module bus.starter {
     requires static spring.webmvc;
 
     exports org.miaixz.bus.starter;
-    exports org.miaixz.bus.starter.anchor;
     exports org.miaixz.bus.starter.annotation;
     exports org.miaixz.bus.starter.auth;
     exports org.miaixz.bus.starter.cache;
@@ -130,7 +130,6 @@ module bus.starter {
     exports org.miaixz.bus.starter.wrapper.routing;
     exports org.miaixz.bus.starter.zookeeper;
 
-    opens org.miaixz.bus.starter.anchor to spring.beans, spring.boot, spring.context, spring.core;
     opens org.miaixz.bus.starter to spring.beans, spring.boot, spring.context, spring.core;
     opens org.miaixz.bus.starter.auth to spring.beans, spring.boot, spring.context, spring.core;
     opens org.miaixz.bus.starter.cache to spring.beans, spring.boot, spring.context, spring.core;

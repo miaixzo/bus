@@ -20,6 +20,7 @@
 package org.miaixz.bus.starter.cortex;
 
 import java.time.Duration;
+import java.util.List;
 
 import lombok.Getter;
 
@@ -30,8 +31,10 @@ import org.springframework.validation.annotation.Validated;
 
 import org.miaixz.bus.cache.Options;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.StringKit;
-import org.miaixz.bus.cortex.guard.token.TokenGuardConfig;
+import org.miaixz.bus.cortex.guard.GuardConfig;
+import org.miaixz.bus.cortex.guard.GuardEvaluator;
 import org.miaixz.bus.starter.GeniusBuilder;
 
 /**
@@ -126,7 +129,7 @@ public class CortexProperties {
         this.cache = cache;
         this.watch = watch == null ? new Watch(false) : watch;
         this.bridge = bridge == null ? new Bridge("pull-only", Normal.EMPTY, 3, Normal.EMPTY) : bridge;
-        this.guard = guard == null ? new Guard(true, new Token()) : guard;
+        this.guard = guard == null ? new Guard() : guard;
         this.audit = audit == null ? new Audit(false) : audit;
         this.release = release == null ? new Release(false) : release;
     }
@@ -257,55 +260,76 @@ public class CortexProperties {
     }
 
     /**
-     * Guard integration options.
-     *
-     * @param enabled whether the feature is enabled
-     * @param token   guard token
-     * @author Kimi Liu
+     * Binds the shared Cortex guard configuration under {@code bus.cortex.guard}.
      */
-    public record Guard(@DefaultValue("true") boolean enabled, @DefaultValue Token token) {
+    public static final class Guard extends GuardConfig {
 
         /**
-         * Binds the canonical guard options even when the convenience constructor is present.
-         *
-         * @param enabled whether optional access checks are enabled
-         * @param token   credential pre-validation options, or null to use defaults
-         */
-        @ConstructorBinding
-        public Guard {
-            token = token == null ? new Token() : token;
-        }
-
-        /**
-         * Creates guard defaults.
+         * Creates default service identity settings.
          */
         public Guard() {
-            this(true, new Token());
-        }
-
-        /**
-         * Returns the token.
-         *
-         * @return token guard configuration
-         */
-        public Token getToken() {
-            return token;
-        }
-
-    }
-
-    /**
-     * Token guard binding type retained for the Cortex guard contract.
-     *
-     * @author Kimi Liu
-     */
-    public static class Token extends TokenGuardConfig {
-
-        /**
-         * Creates token guard defaults.
-         */
-        public Token() {
             super();
+        }
+
+        /**
+         * Binds the two service identity directions and default key settings.
+         *
+         * @param inbound  inbound caller verification settings
+         * @param outbound outbound signing settings
+         * @param secret   shared Base64-encoded signing root
+         * @param rotate   derived-key rotation period in seconds
+         * @param label    domain separation label
+         */
+        @ConstructorBinding
+        public Guard(@DefaultValue Inbound inbound, @DefaultValue Outbound outbound,
+                @DefaultValue(Normal.EMPTY) String secret, @DefaultValue(DEFAULT_ROTATE) long rotate,
+                @DefaultValue(GuardEvaluator.DEFAULT_LABEL) String label) {
+            super(inbound, outbound, secret, rotate, label);
+        }
+
+        /**
+         * Binds application settings for the shared inbound policy.
+         */
+        public static final class Inbound extends GuardConfig.Inbound {
+
+            /**
+             * Configures the bound inbound verification settings.
+             *
+             * @param enabled  whether inbound caller verification is enabled
+             * @param subjects accepted subject codes separated by commas
+             * @param audience required audience for this application
+             * @param skew     accepted clock displacement in seconds
+             * @param rules    explicit inbound path rules
+             */
+            public Inbound(Boolean enabled, @DefaultValue(Normal.EMPTY) String subjects,
+                    @DefaultValue(Normal.EMPTY) String audience, @DefaultValue(Symbol.FIVE) int skew,
+                    List<Incoming> rules) {
+                super(enabled, subjects, audience, skew, rules);
+            }
+
+        }
+
+        /**
+         * Binds application settings for the shared outbound policy.
+         */
+        public static final class Outbound extends GuardConfig.Outbound {
+
+            /**
+             * Configures the bound outbound signing settings.
+             *
+             * @param enabled  whether outbound signing is enabled
+             * @param subject  subject attached to issued tokens
+             * @param ttl      token lifetime in seconds
+             * @param registry audience for direct registry and snapshot calls
+             * @param gateway  destination of the configured gateway client
+             * @param rules    explicit outbound target rules
+             */
+            public Outbound(Boolean enabled, @DefaultValue(Normal.EMPTY) String subject,
+                    @DefaultValue(DEFAULT_TTL) int ttl, @DefaultValue(Normal.EMPTY) String registry,
+                    @DefaultValue(Normal.EMPTY) String gateway, List<Outgoing> rules) {
+                super(enabled, subject, ttl, registry, gateway, rules);
+            }
+
         }
 
     }

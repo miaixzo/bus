@@ -28,6 +28,7 @@ import java.util.stream.Collectors;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.server.ServerWebExchange;
 
 import org.miaixz.bus.core.Order;
@@ -43,6 +44,7 @@ import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.cortex.Assets;
 import org.miaixz.bus.cortex.Keying;
 import org.miaixz.bus.cortex.Type;
+import org.miaixz.bus.cortex.guard.GuardEvaluator;
 import org.miaixz.bus.errors.transport.http.RouteFailure;
 import org.miaixz.bus.errors.transport.reactive.ReactiveErrorHandler;
 import org.miaixz.bus.logger.Logger;
@@ -50,6 +52,7 @@ import org.miaixz.bus.vortex.Args;
 import org.miaixz.bus.vortex.Channel;
 import org.miaixz.bus.vortex.Context;
 import org.miaixz.bus.vortex.Formats;
+import org.miaixz.bus.vortex.guard.IdentityGuard;
 import org.miaixz.bus.vortex.magic.ErrorCode;
 import org.miaixz.bus.vortex.magic.Principal;
 import org.miaixz.bus.vortex.provider.AuthorizeProvider;
@@ -58,11 +61,8 @@ import org.miaixz.bus.vortex.registry.AssetsRegistry;
 import reactor.core.publisher.Mono;
 
 /**
- * Basic qualifier strategy for routes without protocol-specific qualification rules.
- * <p>
- * This strategy owns the common asset-route, HTTP-method, and authorization rules used by CST/MQ/gRPC/WebSocket style
- * routes. Protocol-specific strategies can extend it and override {@link #apply(ServerWebExchange, Chain)} when they
- * need custom asset matching.
+ * Resolves route assets and applies shared service identity, HTTP verb and business authorization rules. A strategy
+ * with custom asset resolution calls {@link #validateIdentity} before applying protocol-specific stages.
  *
  * @author Kimi Liu
  */
@@ -80,14 +80,31 @@ public class QualifierStrategy extends AbstractStrategy {
     protected final AssetsRegistry registry;
 
     /**
+     * Evaluates service identity after the actual runtime asset has been resolved.
+     */
+    private final IdentityGuard identities;
+
+    /**
      * Creates a qualifier support instance.
      *
      * @param provider credential validation provider
      * @param registry asset registry
      */
     public QualifierStrategy(AuthorizeProvider provider, AssetsRegistry registry) {
+        this(provider, registry, new IdentityGuard(GuardEvaluator.disabled(), appId -> null));
+    }
+
+    /**
+     * Creates a qualifier with the gateway's service identity adapter.
+     *
+     * @param provider   credential validation provider
+     * @param registry   runtime asset registry
+     * @param identities shared service identity adapter
+     */
+    public QualifierStrategy(AuthorizeProvider provider, AssetsRegistry registry, IdentityGuard identities) {
         this.provider = provider;
         this.registry = registry;
+        this.identities = identities;
     }
 
     /**
@@ -109,7 +126,7 @@ public class QualifierStrategy extends AbstractStrategy {
             String version = requestRoute.versionPart();
             Integer verb = requestRoute.verbPart();
 
-            return Mono.defer(() -> Mono.justOrEmpty(this.registry.get(requestRoute))).switchIfEmpty(Mono.defer(() -> {
+            return resolve(exchange, requestRoute).switchIfEmpty(Mono.defer(() -> {
                 Logger.warn(
                         false,
                         "Vortex",
@@ -120,7 +137,7 @@ public class QualifierStrategy extends AbstractStrategy {
                         method,
                         version,
                         verb);
-                return Mono.error(routeMiss(exchange, requestRoute, ErrorCode._100800));
+                return Mono.error(routeMiss(exchange, requestRoute, missingRoute()));
             })).flatMap(match -> {
                 Assets assets = match.assets();
                 context.setAssets(assets);
@@ -140,7 +157,7 @@ public class QualifierStrategy extends AbstractStrategy {
                         assets.getProtocol(),
                         assets.getInstances() == null ? Normal._0 : assets.getInstances().size(),
                         assets.getUrl());
-                Mono<Void> validationMono = this.method(context, assets);
+                Mono<Void> validationMono = validateOperation(context, assets);
                 Mono<Void> authMono = !Consts.ZERO.equals(assets.getPolicy())
                         ? Mono.defer(() -> this.authorize(context))
                         : Mono.empty();
@@ -158,6 +175,82 @@ public class QualifierStrategy extends AbstractStrategy {
                                     version)))
                     .then(chain.apply(exchange));
         });
+    }
+
+    /**
+     * Resolves one registry asset and evaluates service identity before exposing the lookup result.
+     *
+     * @param exchange sanitized request exchange
+     * @param route    requested asset identity
+     * @return matched asset and remainder, or an empty result for a miss
+     */
+    protected final Mono<AssetsRegistry.RouteMatch> resolve(ServerWebExchange exchange, Keying.RegistrySpec route) {
+        return Mono.defer(() -> {
+            AssetsRegistry.RouteMatch match;
+            try {
+                match = findRoute(exchange, route);
+            } catch (RuntimeException unavailable) {
+                if (unavailable instanceof ResponseStatusException
+                        || Args.isRestRequest(exchange.getRequest().getPath().pathWithinApplication().value())) {
+                    validateIdentity(exchange, null);
+                }
+                throw unavailable;
+            }
+            validateIdentity(exchange, match == null ? null : match.assets());
+            return Mono.justOrEmpty(match);
+        });
+    }
+
+    /**
+     * Resolves a route asset from the runtime registry.
+     *
+     * @param exchange current gateway exchange
+     * @param route    structured route key
+     * @return matching route, or {@code null} when no route is available
+     */
+    protected AssetsRegistry.RouteMatch findRoute(ServerWebExchange exchange, Keying.RegistrySpec route) {
+        return registry.get(route);
+    }
+
+    /**
+     * Applies the shared service identity policy to the result of asset resolution.
+     *
+     * @param exchange sanitized request exchange
+     * @param assets   selected runtime asset, or null for a lookup miss
+     */
+    protected final void validateIdentity(ServerWebExchange exchange, Assets assets) {
+        identities.qualified(exchange, assets);
+    }
+
+    /**
+     * Validates the operation and its protocol signature before business authorization.
+     *
+     * @param context current request context
+     * @param assets  selected runtime asset
+     * @return completion of HTTP verb and protocol signature validation
+     */
+    protected final Mono<Void> validateOperation(Context context, Assets assets) {
+        return method(context, assets).then(Mono.defer(() -> signature(context, assets)));
+    }
+
+    /**
+     * Applies the signature convention specific to this protocol, when it uses one.
+     *
+     * @param context qualified request context
+     * @param assets  selected runtime asset
+     * @return signature validation completion
+     */
+    protected Mono<Void> signature(Context context, Assets assets) {
+        return Mono.empty();
+    }
+
+    /**
+     * Provides the legacy error code for an unsuccessful route lookup.
+     *
+     * @return route lookup error for this protocol
+     */
+    protected Errors missingRoute() {
+        return ErrorCode._100800;
     }
 
     /**

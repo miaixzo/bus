@@ -39,10 +39,12 @@ import javax.xml.transform.stream.StreamResult;
 import org.w3c.dom.*;
 
 import org.miaixz.bus.auth.source.protocol.saml.*;
+import org.miaixz.bus.core.center.function.FunctionX;
 import org.miaixz.bus.core.lang.*;
 import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.xml.XXE;
+import org.miaixz.bus.core.xyz.FunctionKit;
 import org.miaixz.bus.extra.json.JsonValue;
 
 /**
@@ -342,7 +344,7 @@ public class SamlMessageCodec {
             final byte[] xml,
             final String namespace,
             final String localName,
-            final Reader<T> reader) {
+            final FunctionX<Element, T> reader) {
         final byte[] source = checkedBytes(xml);
         try {
             final DocumentBuilderFactory factory = XXE.disableXXE(DocumentBuilderFactory.newInstance());
@@ -353,7 +355,7 @@ public class SamlMessageCodec {
             require(root, namespace, localName);
             final LinkedHashSet<String> ids = new LinkedHashSet<>();
             inspect(root, 1, ids);
-            final T message = reader.read(root);
+            final T message = FunctionKit.applyUnwrapped(reader, root);
             return new Document<>(message, source, ids);
         } catch (ValidateException exception) {
             throw exception;
@@ -406,45 +408,6 @@ public class SamlMessageCodec {
                 inspect(child, depth + 1, ids);
             }
         }
-    }
-
-    /**
-     * Maps one nullable source value into a non-null typed result.
-     *
-     * @param <S> source type
-     * @param <T> target type
-     * @author Kimi Liu
-     */
-    @FunctionalInterface
-    private interface Mapper<S, T> {
-
-        /**
-         * Converts one present source value.
-         *
-         * @param source present source value
-         * @return converted target value
-         */
-        T map(S source);
-
-    }
-
-    /**
-     * Converts one exact root element into its typed SAML message.
-     *
-     * @param <T> decoded message type
-     * @author Kimi Liu
-     */
-    @FunctionalInterface
-    private interface Reader<T> {
-
-        /**
-         * Reads one already validated root element.
-         *
-         * @param root exact root element
-         * @return typed standard message
-         */
-        T read(Element root);
-
     }
 
     /**
@@ -2066,8 +2029,8 @@ public class SamlMessageCodec {
          * @param mapper mapper invoked only for a present source
          * @return empty or mapped Bus optional
          */
-        private static <S, T> Optional<T> optionalObject(final S value, final Mapper<S, T> mapper) {
-            return value == null ? Optional.empty() : Optional.of(mapper.map(value));
+        private static <S, T> Optional<T> optionalObject(final S value, final FunctionX<S, T> mapper) {
+            return value == null ? Optional.empty() : Optional.of(FunctionKit.applyUnwrapped(mapper, value));
         }
 
         /**

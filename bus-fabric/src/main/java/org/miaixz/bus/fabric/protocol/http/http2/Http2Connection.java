@@ -357,7 +357,7 @@ public class Http2Connection implements AutoCloseable {
      */
     private Http2Connection(final Connection connection, final PushObserver pushObserver, final Dispatcher dispatcher,
             final boolean ownsDispatcher) {
-        this(connection, pushObserver, dispatcher, ownsDispatcher, Normal.MEBI_64);
+        this(connection, pushObserver, dispatcher, ownsDispatcher, Normal.MEBI_64, null, null);
     }
 
     /**
@@ -368,9 +368,12 @@ public class Http2Connection implements AutoCloseable {
      * @param dispatcher            dispatcher running reader and background work
      * @param ownsDispatcher        whether closing this connection closes the dispatcher
      * @param maxQueuedInboundBytes maximum aggregate queued inbound DATA bytes
+     * @param pingInterval          keepalive scheduling delay; zero disables keepalive
+     * @param pingTimeout           maximum time to wait for a matching PING acknowledgement
      */
     private Http2Connection(final Connection connection, final PushObserver pushObserver, final Dispatcher dispatcher,
-            final boolean ownsDispatcher, final long maxQueuedInboundBytes) {
+            final boolean ownsDispatcher, final long maxQueuedInboundBytes, final Duration pingInterval,
+            final Duration pingTimeout) {
         this.connection = require(connection, "Network connection");
         // Request read deadlines are stream-local under multiplexing; never retain an HTTP/1 socket timeout here.
         this.connection.source().timeout().timeout(Duration.ZERO);
@@ -483,13 +486,14 @@ public class Http2Connection implements AutoCloseable {
         this.maxConcurrentStreams.set(localStreamLimit);
         final Options pingOptions = connection.destination() == null ? Options.empty()
                 : connection.destination().options();
-        final Duration interval = pingOptions == null ? null : pingOptions.get(Builder.HTTP2_PING_INTERVAL);
-        final Duration timeout = pingOptions == null ? null : pingOptions.get(Builder.HTTP2_PING_TIMEOUT);
+        final Duration interval = pingInterval != null ? pingInterval
+                : pingOptions == null ? null : pingOptions.get(Builder.HTTP2_PING_INTERVAL);
+        final Duration timeout = pingTimeout != null ? pingTimeout
+                : pingOptions == null ? null : pingOptions.get(Builder.HTTP2_PING_TIMEOUT);
         this.pingInterval = interval == null || interval.isNegative() ? Duration.ZERO : interval;
         this.pingTimeout = timeout == null || timeout.isZero() || timeout.isNegative() ? Duration.ofSeconds(10)
                 : timeout;
         publishCapacity(false);
-        schedulePing();
         if (Logger.isInfoEnabled()) {
             Logger.info(
                     true,
@@ -550,6 +554,30 @@ public class Http2Connection implements AutoCloseable {
     }
 
     /**
+     * Creates a connection with explicit session settings and a shared dispatcher.
+     *
+     * @param connection   physical network connection
+     * @param dispatcher   shared runtime dispatcher
+     * @param pingInterval keepalive scheduling delay; zero disables keepalive
+     * @param pingTimeout  maximum time to wait for a matching PING acknowledgement
+     * @return configured HTTP/2 session
+     */
+    public static Http2Connection create(
+            final Connection connection,
+            final Dispatcher dispatcher,
+            final Duration pingInterval,
+            final Duration pingTimeout) {
+        if (pingInterval == null || pingInterval.isNegative()) {
+            throw new ValidateException("HTTP/2 PING interval must not be null or negative");
+        }
+        if (pingTimeout == null || pingTimeout.isZero() || pingTimeout.isNegative()) {
+            throw new ValidateException("HTTP/2 PING timeout must be positive");
+        }
+        return new Http2Connection(connection, PushObserver.canceling(), require(dispatcher, "Dispatcher"), false,
+                Normal.MEBI_64, pingInterval, pingTimeout);
+    }
+
+    /**
      * Creates a connection with a push observer.
      *
      * @param connection   network connection
@@ -599,7 +627,7 @@ public class Http2Connection implements AutoCloseable {
             final Dispatcher dispatcher,
             final long maxQueuedInboundBytes) {
         return new Http2Connection(connection, PushObserver.canceling(), require(dispatcher, "Dispatcher"), false,
-                maxQueuedInboundBytes);
+                maxQueuedInboundBytes, null, null);
     }
 
     /**
@@ -1394,6 +1422,7 @@ public class Http2Connection implements AutoCloseable {
         if (!readerHandle.compareAndSet(null, handle)) {
             dispatcher.cancel(handle);
         }
+        schedulePing();
     }
 
     /**
@@ -1715,9 +1744,15 @@ public class Http2Connection implements AutoCloseable {
      */
     @Override
     public void close() {
-        final State current = state.getAndUpdate(value -> value == State.CLOSED ? State.CLOSED : State.CLOSING);
-        if (current == State.CLOSED) {
-            closeOwnedDispatcher();
+        final State current = state.getAndUpdate(value -> value.terminal() ? value : State.CLOSING);
+        if (current.terminal()) {
+            try {
+                if (current != State.CLOSED) {
+                    connection.abort();
+                }
+            } finally {
+                closeOwnedDispatcher();
+            }
             return;
         }
         if (current == State.CLOSING) {

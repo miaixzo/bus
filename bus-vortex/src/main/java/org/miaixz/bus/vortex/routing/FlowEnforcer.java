@@ -43,12 +43,12 @@ import reactor.core.publisher.Flux;
  *
  * @author Kimi Liu
  */
-public class StreamingRelay {
+public class FlowEnforcer {
 
     /**
      * Creates a stateless streaming relay entry point.
      */
-    public StreamingRelay() {
+    public FlowEnforcer() {
         // No initialization required.
     }
 

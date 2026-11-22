@@ -133,9 +133,45 @@ public class SingleSignOnService {
             final AuthnRequest request,
             final Context context,
             final Timeout timeout) {
+        return respond(request, context, timeout, false);
+    }
+
+    /**
+     * Returns a NoPassive error after validating the request and its registered response route.
+     *
+     * @param request original Authentication Request verified at the binding boundary
+     * @param context invocation context without an authenticated subject or session
+     * @param timeout shared end-to-end timeout
+     * @return stage containing the error response or a closed framework failure
+     */
+    public CompletionStage<Outcome<Response>> passiveFailure(
+            final AuthnRequest request,
+            final Context context,
+            final Timeout timeout) {
+        return respond(request, context, timeout, true);
+    }
+
+    /**
+     * Resolves the exact requester and registered ACS before producing a protocol response.
+     *
+     * @param request original Authentication Request verified at the binding boundary
+     * @param context immutable invocation context
+     * @param timeout shared end-to-end timeout
+     * @param passiveFailure whether this invocation can only produce a NoPassive error
+     * @return stage containing the response or a closed framework failure
+     */
+    private CompletionStage<Outcome<Response>> respond(
+            final AuthnRequest request,
+            final Context context,
+            final Timeout timeout,
+            final boolean passiveFailure) {
         Assert.notNull(request, "SAML Authentication Request must not be null");
         Assert.notNull(context, "SAML Single Sign-On context must not be null");
         Assert.notNull(timeout, "SAML Single Sign-On timeout must not be null");
+        if (passiveFailure && (!Boolean.TRUE.equals(request.passive().getOrNull())
+                || context.authenticatedSubject().isPresent() || context.authentication().isPresent())) {
+            return completed(Outcome.rejected(failure(ErrorCode._400, "Expected an unauthenticated passive request")));
+        }
         final Outcome<String> requester = requester(request, timeout);
         return switch (requester) {
             case Outcome.Succeeded<String> success -> Outcome.mapStage(
@@ -147,7 +183,8 @@ public class SingleSignOnService {
                                 request,
                                 client.value(),
                                 context,
-                                timeout);
+                                timeout,
+                                passiveFailure);
                         case Outcome.Rejected<ConsumerMetadata> rejected -> completed(
                                 Outcome.rejected(rejected.failure()));
                         case Outcome.Failed<ConsumerMetadata> failed -> completed(Outcome.failed(failed.failure()));
@@ -208,13 +245,15 @@ public class SingleSignOnService {
      * @param client  resolved registered service provider
      * @param context invocation context
      * @param timeout shared operation timeout
+     * @param passiveFailure whether this invocation can only produce a NoPassive error
      * @return issued standard response stage
      */
     private CompletionStage<Outcome<Response>> issue(
             final AuthnRequest request,
             final ConsumerMetadata client,
             final Context context,
-            final Timeout timeout) {
+            final Timeout timeout,
+            final boolean passiveFailure) {
         final String issuer = request.issuer().getOrNull().nameId().value();
         final String destination = request.assertionConsumerServiceUrl().getOrNull();
         if (!issuer.equals(client.id()) || !client.redirectUris().contains(destination)) {
@@ -223,6 +262,10 @@ public class SingleSignOnService {
                             failure(
                                     ErrorCode._400,
                                     "SAML Assertion Consumer Service is not registered for the requester")));
+        }
+        if (passiveFailure) {
+            return completed(Outcome.succeeded(errorMapper.response(request, destination, Saml.Statuses.NO_PASSIVE,
+                    "The subject cannot be authenticated without interaction", timeout.clock().now())));
         }
         if (context.authenticatedSubject().isEmpty() || context.authentication().isEmpty()) {
             return completed(

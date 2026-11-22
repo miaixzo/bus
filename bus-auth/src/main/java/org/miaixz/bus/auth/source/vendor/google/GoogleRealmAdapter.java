@@ -49,6 +49,7 @@ import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.cache.nimble.MemoryCache;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.basic.normal.Errors;
+import org.miaixz.bus.core.center.function.FunctionX;
 import org.miaixz.bus.core.codec.binary.Base64;
 import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.lang.*;
@@ -59,6 +60,7 @@ import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.net.url.RFC3986;
+import org.miaixz.bus.core.xyz.FunctionKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.extra.json.JsonValue;
@@ -1597,7 +1599,7 @@ public class GoogleRealmAdapter implements VendorAdapter {
     private <T> CompletionStage<Outcome<T>> authenticated(
             final Context context,
             final Timeout timeout,
-            final Function<Access, Outcome<T>> operation) {
+            final FunctionX<Access, Outcome<T>> operation) {
         return access(context, timeout).thenCompose(resolved -> switch (resolved) {
             case Outcome.Succeeded<Access> success -> execute(success.value(), timeout, operation)
                     .thenCompose(first -> {
@@ -1648,13 +1650,15 @@ public class GoogleRealmAdapter implements VendorAdapter {
     private <T> CompletionStage<Outcome<T>> execute(
             final Access access,
             final Timeout timeout,
-            final Function<Access, Outcome<T>> operation) {
+            final FunctionX<Access, Outcome<T>> operation) {
         return CompletableFuture.<Outcome<T>>supplyAsync(() -> {
             if (timeout.expired()) {
                 return failed(ErrorCode._408, "Google Workspace operation has no remaining timeout");
             }
             try {
-                return Assert.notNull(operation.apply(access), "Google Workspace operation returned no outcome");
+                return Assert.notNull(
+                        FunctionKit.applyUnwrapped(operation, access),
+                        "Google Workspace operation returned no outcome");
             } catch (TimeoutException ignored) {
                 return failed(ErrorCode._408, "Google Workspace operation timed out");
             } catch (RuntimeException ignored) {
@@ -1929,7 +1933,7 @@ public class GoogleRealmAdapter implements VendorAdapter {
             final Timeout timeout,
             final String operation,
             final boolean allowNotFound,
-            final Function<Response, JsonValue.ObjectValue> reader) {
+            final FunctionX<Response, JsonValue.ObjectValue> reader) {
         if (timeout.expired()) {
             return failed(ErrorCode._408, "Google Admin SDK request has no remaining timeout");
         }
@@ -1947,7 +1951,7 @@ public class GoogleRealmAdapter implements VendorAdapter {
             if (!response.successful()) {
                 return adminHttpFailure(response, operation, allowNotFound);
             }
-            return Outcome.succeeded(reader.apply(response));
+            return Outcome.succeeded(FunctionKit.applyUnwrapped(reader, response));
         } catch (RuntimeException ignored) {
             return failed(ErrorCode._502, "Google Admin SDK returned an invalid response");
         }
@@ -2038,14 +2042,14 @@ public class GoogleRealmAdapter implements VendorAdapter {
             final Timeout timeout,
             final String operation,
             final String member,
-            final Function<JsonValue.ObjectValue, T> parser) {
+            final FunctionX<JsonValue.ObjectValue, T> parser) {
         final Outcome<JsonValue.ObjectValue> fetched = get(url, access, timeout, operation, false);
         if (!(fetched instanceof Outcome.Succeeded<JsonValue.ObjectValue> success)) {
             return propagate(fetched);
         }
         final List<T> items = new ArrayList<>();
         for (JsonValue value : requiredArray(success.value(), member)) {
-            items.add(parser.apply(requiredObject(value, member + " item")));
+            items.add(FunctionKit.applyUnwrapped(parser, requiredObject(value, member + " item")));
         }
         return Outcome.succeeded(new WirePage<>(items, optionalString(success.value(), "nextPageToken")));
     }

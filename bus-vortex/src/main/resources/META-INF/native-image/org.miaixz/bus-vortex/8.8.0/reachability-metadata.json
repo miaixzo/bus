@@ -524,7 +524,6 @@
           "name": "lambda$filter$0",
           "parameterTypes": [
             "org.springframework.web.server.ServerWebExchange",
-            "java.lang.String",
             "org.springframework.web.server.WebFilterChain"
           ]
         },

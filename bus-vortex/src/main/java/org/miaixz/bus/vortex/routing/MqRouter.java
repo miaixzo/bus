@@ -101,9 +101,9 @@ public class MqRouter implements Router<ServerRequest, ServerResponse> {
             Logger.debug(
                     true,
                     "Vortex",
-                    "Request headers: protocol=mq, clientIp={}, headers={}",
+                    "Request header names: protocol=mq, clientIp={}, headerNames={}",
                     context.getX_request_ip(),
-                    input.headers().asHttpHeaders().toSingleValueMap());
+                    input.headers().asHttpHeaders().headerNames());
 
             return Octets
                     .readForParsing(

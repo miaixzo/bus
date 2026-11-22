@@ -29,6 +29,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.miaixz.bus.core.Lifecycle.State;
+import org.miaixz.bus.core.center.function.RunnableX;
 import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.io.sink.Sink;
 import org.miaixz.bus.core.io.source.Source;
@@ -37,6 +38,7 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.exception.StatefulException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Http;
+import org.miaixz.bus.core.xyz.FunctionKit;
 import org.miaixz.bus.fabric.*;
 import org.miaixz.bus.fabric.cache.CacheEntry;
 import org.miaixz.bus.fabric.cache.CacheStore;
@@ -1052,7 +1054,7 @@ public class HttpCache implements AutoCloseable {
         /**
          * Failure callback.
          */
-        private final Runnable failureCallback;
+        private final RunnableX failureCallback;
 
         /**
          * Failure guard.
@@ -1065,7 +1067,7 @@ public class HttpCache implements AutoCloseable {
          * @param delegate        store writer isolated from network-body failures
          * @param failureCallback action invoked for the first cache write failure
          */
-        private IsolatedCacheWriter(final CacheWriter delegate, final Runnable failureCallback) {
+        private IsolatedCacheWriter(final CacheWriter delegate, final RunnableX failureCallback) {
             this.delegate = require(delegate, "Cache writer");
             this.failureCallback = require(failureCallback, "Cache writer failure callback");
             this.failed = new AtomicBoolean();
@@ -1177,7 +1179,7 @@ public class HttpCache implements AutoCloseable {
                     cause.addSuppressed(abortFailure);
                 }
             }
-            failureCallback.run();
+            FunctionKit.runUnwrapped(failureCallback);
         }
 
     }

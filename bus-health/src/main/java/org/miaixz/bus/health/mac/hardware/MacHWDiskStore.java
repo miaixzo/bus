@@ -22,7 +22,6 @@ package org.miaixz.bus.health.mac.hardware;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.*;
-import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 
 import com.sun.jna.Native;
@@ -39,9 +38,11 @@ import com.sun.jna.platform.mac.IOKitUtil;
 import com.sun.jna.platform.mac.IOReturnException;
 import com.sun.jna.platform.mac.SystemB.Statfs;
 
+import org.miaixz.bus.core.center.function.UnaryOperatorX;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
+import org.miaixz.bus.core.xyz.FunctionKit;
 import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.hardware.HWDiskStore;
 import org.miaixz.bus.health.builtin.hardware.HWPartition;
@@ -400,12 +401,12 @@ public class MacHWDiskStore extends AbstractHWDiskStore {
      * @param mountOf  A function resolving a path to its mount point.
      * @return The backing store, or an empty optional when unavailable.
      */
-    private static Optional<List<String>> imageBackingStore(String imageUrl, UnaryOperator<String> mountOf) {
+    private static Optional<List<String>> imageBackingStore(String imageUrl, UnaryOperatorX<String> mountOf) {
         String path = imagePath(imageUrl);
         if (path.isEmpty()) {
             return Optional.empty();
         }
-        String mount = mountOf.apply(path);
+        String mount = FunctionKit.applyUnaryUnwrapped(mountOf, path);
         return mount.isEmpty() ? Optional.empty() : Optional.of(Collections.singletonList(StoreKind.FILE.entry(mount)));
     }
 

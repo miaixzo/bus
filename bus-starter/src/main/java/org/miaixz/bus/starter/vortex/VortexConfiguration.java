@@ -19,6 +19,9 @@
 */
 package org.miaixz.bus.starter.vortex;
 
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -29,37 +32,59 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.boot.ssl.SslBundles;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
+import org.springframework.core.env.Environment;
+import org.springframework.http.client.reactive.JdkClientHttpConnector;
 import org.springframework.http.codec.ServerCodecConfigurer;
 import org.springframework.http.codec.multipart.DefaultPartHttpMessageReader;
 import org.springframework.http.codec.multipart.MultipartHttpMessageReader;
 import org.springframework.http.server.reactive.HttpHandler;
 import org.springframework.http.server.reactive.ReactorHttpHandlerAdapter;
+import org.springframework.util.StringUtils;
+import org.springframework.web.reactive.function.client.ClientRequest;
+import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.server.*;
 import org.springframework.web.server.WebHandler;
 import org.springframework.web.server.adapter.ForwardedHeaderTransformer;
 import org.springframework.web.server.adapter.WebHttpHandlerBuilder;
 
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.Port;
+import org.miaixz.bus.core.xyz.DateKit;
 import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.cortex.Assets;
+import org.miaixz.bus.cortex.Builder;
+import org.miaixz.bus.cortex.Instance;
 import org.miaixz.bus.cortex.Keying;
+import org.miaixz.bus.cortex.Type;
 import org.miaixz.bus.cortex.builtin.RegistryGenerator;
+import org.miaixz.bus.cortex.guard.GuardEvaluator;
+import org.miaixz.bus.cortex.health.HealthInfo;
+import org.miaixz.bus.cortex.registry.MetadataCodec;
 import org.miaixz.bus.errors.ErrorBoundary;
 import org.miaixz.bus.errors.transport.reactive.ReactiveErrorHandler;
 import org.miaixz.bus.errors.transport.reactive.ReactiveResponseGuard;
+import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.spring.boot.condition.ConditionalOnEnabled;
 import org.miaixz.bus.starter.GeniusBuilder;
+import org.miaixz.bus.starter.annotation.EnableCortex;
 import org.miaixz.bus.starter.annotation.EnableVortex;
+import org.miaixz.bus.starter.cortex.CortexConfiguration;
 import org.miaixz.bus.starter.errors.ErrorsConfiguration;
 import org.miaixz.bus.starter.errors.ErrorsProperties;
 import org.miaixz.bus.starter.errors.ErrorsProperties.Target;
 import org.miaixz.bus.vortex.*;
 import org.miaixz.bus.vortex.filter.AdmissionFilter;
 import org.miaixz.bus.vortex.filter.PrimaryFilter;
+import org.miaixz.bus.vortex.guard.IdentityGuard;
 import org.miaixz.bus.vortex.handler.ErrorsHandler;
 import org.miaixz.bus.vortex.handler.VortexHandler;
 import org.miaixz.bus.vortex.magic.Delegate;
@@ -75,15 +100,11 @@ import org.miaixz.bus.vortex.routing.llm.LlmFactory;
 import org.miaixz.bus.vortex.routing.mcp.McpExecutor;
 import org.miaixz.bus.vortex.routing.mq.MqExecutor;
 import org.miaixz.bus.vortex.routing.rest.RestExecutor;
-import org.miaixz.bus.vortex.routing.sdc.SdcExecutor;
 import org.miaixz.bus.vortex.routing.slug.SlugExecutor;
 import org.miaixz.bus.vortex.routing.slug.SlugRouteMatcher;
 import org.miaixz.bus.vortex.routing.ws.WsExecutor;
 import org.miaixz.bus.vortex.strategy.*;
-import org.miaixz.bus.vortex.strategy.qualifier.CstQualifierStrategy;
-import org.miaixz.bus.vortex.strategy.qualifier.McpQualifierStrategy;
-import org.miaixz.bus.vortex.strategy.qualifier.RestQualifierStrategy;
-import org.miaixz.bus.vortex.strategy.qualifier.SlugQualifierStrategy;
+import org.miaixz.bus.vortex.strategy.qualifier.*;
 import org.miaixz.bus.vortex.strategy.request.*;
 import org.miaixz.bus.vortex.strategy.vetting.*;
 
@@ -126,7 +147,8 @@ import reactor.netty.http.server.HttpServer;
  * @see Executor
  * @see Strategy
  */
-@EnableConfigurationProperties(value = { VortexProperties.class })
+@EnableConfigurationProperties(VortexProperties.class)
+@Import(CortexConfiguration.class)
 @ImportAutoConfiguration(ErrorsConfiguration.class)
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnClass(name = { "org.miaixz.bus.vortex.Context", "reactor.netty.http.server.HttpServer" })
@@ -192,17 +214,17 @@ public class VortexConfiguration {
      * threshold, and {@link AdmissionFilter} is installed before protocol filters. Inbound channels use the unified
      * allocator and configured write-buffer watermarks so downloads remain backpressure-aware.
      *
-     * @param filters    A list of all available {@link Filter} beans, injected by Spring.
-     * @param handlers   A list of all available {@link Handler} beans, injected by Spring.
-     * @param restRouter The REST forwarding router bean.
-     * @param mqRouter   The MQ router bean.
-     * @param mcpRouter  The MCP router bean.
-     * @param grpcRouter The gRPC router bean.
-     * @param wsRouter   The WebSocket router bean.
-     * @param llmRouter  The LLM router bean.
-     * @param slugRouter The public slug forwarding router bean.
-     * @param sdcRouter  The service discovery and configuration router bean.
-     * @return A {@link Vortex} core component instance, including the HTTP server.
+     * @param filters     A list of all available {@link Filter} beans, injected by Spring.
+     * @param handlers    A list of all available {@link Handler} beans, injected by Spring.
+     * @param restRouter  The REST forwarding router bean.
+     * @param mqRouter    The MQ router bean.
+     * @param mcpRouter   The MCP router bean.
+     * @param grpcRouter  The gRPC router bean.
+     * @param wsRouter    The WebSocket router bean.
+     * @param llmRouter   The LLM router bean.
+     * @param slugRouter  The public slug forwarding router bean.
+     * @param sdcRouter   The service discovery and configuration router bean.
+     * @return manager for the public and optional private gateway listeners
      */
     @Bean(initMethod = "start", destroyMethod = "stop")
     @ConditionalOnMissingBean(Vortex.class)
@@ -287,7 +309,9 @@ public class VortexConfiguration {
                 .port(this.properties.getPort() != 0 ? this.properties.getPort() : Port._8765.getPort())
                 .handle(adapter);
 
-        return new Vortex(server);
+        int port = properties.getInternalPort();
+        HttpServer privateServer = port > 0 ? server.port(port).host(properties.getInternalHost()) : null;
+        return new Vortex(server, privateServer);
     }
 
     /**
@@ -392,6 +416,18 @@ public class VortexConfiguration {
     }
 
     /**
+     * Provides the service discovery and configuration router.
+     *
+     * @param executor SDC executor
+     * @return SDC router
+     */
+    @Bean(name = "sdc")
+    @ConditionalOnMissingBean(name = "sdc")
+    public Router<ServerRequest, ServerResponse> sdc(RestExecutor executor) {
+        return new SdcRouter(executor);
+    }
+
+    /**
      * Configures and provides the public slug forwarding router bean.
      *
      * @param executor The SlugExecutor instance to be used by the router.
@@ -401,18 +437,6 @@ public class VortexConfiguration {
     @ConditionalOnMissingBean(name = "slug")
     public Router<ServerRequest, ServerResponse> slug(SlugExecutor executor) {
         return new SlugRouter(executor);
-    }
-
-    /**
-     * Provides the service discovery and configuration router.
-     *
-     * @param executor SDC executor
-     * @return SDC router
-     */
-    @Bean(name = "sdc")
-    @ConditionalOnMissingBean(name = "sdc")
-    public Router<ServerRequest, ServerResponse> sdc(SdcExecutor executor) {
-        return new SdcRouter(executor);
     }
 
     /**
@@ -466,15 +490,30 @@ public class VortexConfiguration {
     /**
      * Provides the RestExecutor bean. This executor is responsible for executing HTTP requests to downstream services.
      * <p>
-     * The HTTP connection pool is obtained from {@link Holder#connectionProvider()} which is configured globally via
-     * {@code vortex.performance.maxConnections} property.
+     * Regular REST requests use the shared egress client. Configured private operations use a dedicated mutual TLS
+     * client backed by the named SSL bundle.
      *
+     * @param environment deployment configuration for the mutual TLS operations and SSL bundle
+     * @param bundles     provider of the named SSL bundle when one is configured
      * @return A new instance of RestExecutor.
      */
     @Bean
     @ConditionalOnMissingBean(RestExecutor.class)
-    public RestExecutor restExecutor() {
-        return new RestExecutor();
+    public RestExecutor restExecutor(Environment environment, ObjectProvider<SslBundles> bundles) {
+        String prefix = "bus.vortex.internal-egress.";
+        var operations = StringUtils.commaDelimitedListToSet(environment.getProperty(prefix + "mtls-paths", ""));
+        String bundle = environment.getProperty(prefix + "ssl-bundle", "");
+        WebClient privateClient = null;
+        if (!bundle.isBlank()) {
+            var transport = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(5))
+                    .followRedirects(HttpClient.Redirect.NEVER)
+                    .sslContext(bundles.getObject().getBundle(bundle).createSslContext()).build();
+            privateClient = WebClient.builder().clientConnector(new JdkClientHttpConnector(transport)).codecs(
+                    codecs -> codecs.defaultCodecs()
+                            .maxInMemorySize(Math.toIntExact(properties.getPerformance().getMaxBufferedResponseSize())))
+                    .build();
+        }
+        return new RestExecutor(privateClient, operations);
     }
 
     /**
@@ -512,6 +551,11 @@ public class VortexConfiguration {
     }
 
     /**
+     * Provides the service discovery and configuration executor.
+     *
+     * @return SDC executor
+     */
+    /**
      * Provides the public slug forwarding executor bean.
      *
      * @param matcher The slug route matcher.
@@ -521,17 +565,6 @@ public class VortexConfiguration {
     @ConditionalOnMissingBean(SlugExecutor.class)
     public SlugExecutor slugExecutor(SlugRouteMatcher matcher) {
         return new SlugExecutor(matcher);
-    }
-
-    /**
-     * Provides the service discovery and configuration executor.
-     *
-     * @return SDC executor
-     */
-    @Bean
-    @ConditionalOnMissingBean(SdcExecutor.class)
-    public SdcExecutor sdcExecutor() {
-        return new SdcExecutor();
     }
 
     /**
@@ -633,6 +666,17 @@ public class VortexConfiguration {
     }
 
     /**
+     * Provides the service discovery and configuration request strategy.
+     *
+     * @return SDC request strategy
+     */
+    @Bean
+    @ConditionalOnMissingBean(SdcRequestStrategy.class)
+    public SdcRequestStrategy sdcRequestStrategy() {
+        return new SdcRequestStrategy();
+    }
+
+    /**
      * Provides the public slug request strategy bean.
      *
      * @param matcher The slug route matcher.
@@ -642,17 +686,6 @@ public class VortexConfiguration {
     @ConditionalOnMissingBean(SlugRequestStrategy.class)
     public SlugRequestStrategy slugRequestStrategy(SlugRouteMatcher matcher) {
         return new SlugRequestStrategy(matcher);
-    }
-
-    /**
-     * Provides the service discovery and configuration request strategy.
-     *
-     * @return SDC request strategy
-     */
-    @Bean
-    @ConditionalOnMissingBean(SdcRequestStrategy.class)
-    public SdcRequestStrategy sdcRequestStrategy() {
-        return new SdcRequestStrategy();
     }
 
     /**
@@ -705,17 +738,6 @@ public class VortexConfiguration {
     }
 
     /**
-     * Provides the public slug vetting strategy bean.
-     *
-     * @return A new instance of SlugVettingStrategy.
-     */
-    @Bean
-    @ConditionalOnMissingBean(SlugVettingStrategy.class)
-    public SlugVettingStrategy slugVettingStrategy() {
-        return new SlugVettingStrategy();
-    }
-
-    /**
      * Provides the service discovery and configuration vetting strategy.
      *
      * @return SDC vetting strategy
@@ -727,17 +749,81 @@ public class VortexConfiguration {
     }
 
     /**
+     * Provides the public slug vetting strategy bean.
+     *
+     * @return A new instance of SlugVettingStrategy.
+     */
+    @Bean
+    @ConditionalOnMissingBean(SlugVettingStrategy.class)
+    public SlugVettingStrategy slugVettingStrategy() {
+        return new SlugVettingStrategy();
+    }
+
+    /**
      * Provides the basic qualifier strategy bean. This strategy resolves route assets and applies authorization for
      * routes that do not yet have protocol-specific qualification.
      *
      * @param authorizeProvider The AuthorizeProvider for handling authorization logic.
      * @param assetsRegistry    The AssetsRegistry for accessing API asset information.
+     * @param identities        The shared adapter for service identity on resolved assets.
      * @return A new instance of QualifierStrategy.
      */
     @Bean
     @ConditionalOnMissingBean(QualifierStrategy.class)
-    public QualifierStrategy qualifierStrategy(AuthorizeProvider authorizeProvider, AssetsRegistry assetsRegistry) {
-        return new QualifierStrategy(authorizeProvider, assetsRegistry);
+    public QualifierStrategy qualifierStrategy(
+            AuthorizeProvider authorizeProvider,
+            AssetsRegistry assetsRegistry,
+            IdentityGuard identities) {
+        return new QualifierStrategy(authorizeProvider, assetsRegistry, identities);
+    }
+
+    /**
+     * Adapts gateway exchanges to the shared rules and resolves trusted audiences from the application directory.
+     *
+     * @param identity    shared identity evaluator
+     * @param registry    runtime directory of applications and assets
+     * @return gateway service identity adapter
+     */
+    @Bean
+    @ConditionalOnMissingBean(IdentityGuard.class)
+    public IdentityGuard vortexIdentityGuard(
+            GuardEvaluator identity,
+            AssetsRegistry registry) {
+        return new IdentityGuard(identity, registry::code, properties.getInternalPort(), properties.getInternalPath());
+    }
+
+    /**
+     * Creates the reactive client for the configured Cortex gateway and signs each outbound request.
+     *
+     * @param identity    shared service identity evaluator
+     * @param cortex      configuration that validates the target authority and issues the token
+     * @param environment deployment configuration containing the gateway endpoint and response size limit
+     * @return gateway client that sends signed requests without following redirects
+     */
+    @Bean
+    @ConditionalOnEnabled(annotation = EnableCortex.class, prefix = GeniusBuilder.CORTEX_GUARD, member = "guard", name = Normal.EMPTY)
+    @ConditionalOnProperty(prefix = GeniusBuilder.CORTEX_GUARD, name = "outbound.gateway-endpoint")
+    WebClient cortexGatewayWebClient(GuardEvaluator identity, CortexConfiguration cortex, Environment environment) {
+        String prefix = GeniusBuilder.CORTEX_GUARD + ".outbound.";
+        URI gateway = URI.create(environment.getRequiredProperty(prefix + "gateway-endpoint"));
+        var transport = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(5))
+                .followRedirects(HttpClient.Redirect.NEVER).build();
+        return WebClient.builder().baseUrl(gateway.toASCIIString())
+                .clientConnector(new JdkClientHttpConnector(transport))
+                .codecs(
+                        codecs -> codecs.defaultCodecs().maxInMemorySize(
+                                environment.getProperty(
+                                        prefix + "gateway-response-bytes",
+                                        Integer.class,
+                                        16 * 1024 * 1024)))
+                .filter((request, next) -> {
+                    String token = cortex.gatewayToken(identity, gateway, request.url());
+                    var signed = ClientRequest.from(request).headers(
+                            headers -> identity
+                                    .forwardHeaders(null, token, headers.headerNames(), headers::remove, headers::set))
+                            .build();
+                    return next.exchange(signed);
+                }).build();
     }
 
     /**
@@ -746,14 +832,16 @@ public class VortexConfiguration {
      *
      * @param authorizeProvider The AuthorizeProvider for handling authorization logic.
      * @param assetsRegistry    The AssetsRegistry for accessing API asset information.
+     * @param identities        The service identity adapter for the resolved REST asset.
      * @return A new instance of RestQualifierStrategy.
      */
     @Bean
     @ConditionalOnMissingBean(RestQualifierStrategy.class)
     public RestQualifierStrategy restQualifierStrategy(
             AuthorizeProvider authorizeProvider,
-            AssetsRegistry assetsRegistry) {
-        return new RestQualifierStrategy(authorizeProvider, assetsRegistry);
+            AssetsRegistry assetsRegistry,
+            IdentityGuard identities) {
+        return new RestQualifierStrategy(authorizeProvider, assetsRegistry, identities);
     }
 
     /**
@@ -761,14 +849,16 @@ public class VortexConfiguration {
      *
      * @param authorizeProvider The AuthorizeProvider for handling authorization logic.
      * @param assetsRegistry    The AssetsRegistry for accessing API asset information.
+     * @param identities        Shared gateway service identity adapter.
      * @return A new instance of CstQualifierStrategy.
      */
     @Bean
     @ConditionalOnMissingBean(CstQualifierStrategy.class)
     public CstQualifierStrategy cstQualifierStrategy(
             AuthorizeProvider authorizeProvider,
-            AssetsRegistry assetsRegistry) {
-        return new CstQualifierStrategy(authorizeProvider, assetsRegistry);
+            AssetsRegistry assetsRegistry,
+            IdentityGuard identities) {
+        return new CstQualifierStrategy(authorizeProvider, assetsRegistry, identities);
     }
 
     /**
@@ -777,27 +867,101 @@ public class VortexConfiguration {
      *
      * @param authorizeProvider The AuthorizeProvider for handling authorization logic.
      * @param assetsRegistry    The AssetsRegistry for accessing API asset information.
+     * @param identities        Shared gateway service identity adapter.
      * @return A new instance of McpQualifierStrategy.
      */
     @Bean
     @ConditionalOnMissingBean(McpQualifierStrategy.class)
     public McpQualifierStrategy mcpQualifierStrategy(
             AuthorizeProvider authorizeProvider,
-            AssetsRegistry assetsRegistry) {
-        return new McpQualifierStrategy(authorizeProvider, assetsRegistry);
+            AssetsRegistry assetsRegistry,
+            IdentityGuard identities) {
+        return new McpQualifierStrategy(authorizeProvider, assetsRegistry, identities);
     }
 
     /**
-     * Provides the public slug qualifier strategy bean.
+     * Provides the service discovery and configuration qualification stage with the deployment endpoint.
      *
-     * @param matcher           The slug route matcher.
-     * @param authorizeProvider The AuthorizeProvider for handling authorization logic.
-     * @return A new instance of SlugQualifierStrategy.
+     * @param authorizeProvider shared authorization provider
+     * @param assetsRegistry    runtime asset registry
+     * @param identities        Shared gateway service identity adapter.
+     * @param environment       deployment configuration for the bootstrap caller and upstream identities
+     * @return SDC qualification strategy
      */
     @Bean
-    @ConditionalOnMissingBean(SlugQualifierStrategy.class)
-    public SlugQualifierStrategy slugQualifierStrategy(SlugRouteMatcher matcher, AuthorizeProvider authorizeProvider) {
-        return new SlugQualifierStrategy(matcher, authorizeProvider);
+    public SdcQualifierStrategy sdcQualifierStrategy(
+            AuthorizeProvider authorizeProvider,
+            AssetsRegistry assetsRegistry,
+            IdentityGuard identities,
+            Environment environment) {
+        var bootstrap = properties.getSdc().getBootstrap();
+        if (bootstrap == null || properties.getInternalPort() == 0) {
+            return new SdcQualifierStrategy(authorizeProvider, assetsRegistry, identities);
+        }
+        String outbound = GeniusBuilder.CORTEX_GUARD + ".outbound.";
+        String caller = environment.getRequiredProperty(outbound + "subject");
+        String audience = environment.getRequiredProperty(outbound + "registry");
+        if (caller.isBlank() || audience.isBlank()) {
+            throw new IllegalArgumentException("The SDC bootstrap route requires Cortex outbound subject and registry");
+        }
+        String method = bootstrap.getMethod().trim();
+        URI target = bootstrap.getEndpoint();
+        String operation = bootstrap.getOperationPath();
+        return new SdcQualifierStrategy(
+                authorizeProvider,
+                assetsRegistry,
+                identities,
+                new SdcQualifierStrategy.Bootstrap(
+                        method, audience, () -> bootstrapRoute(method, target, operation, caller)));
+    }
+
+    /**
+     * Projects the configured bootstrap endpoint into a route asset for private SDC requests.
+     *
+     * @param owner     configured method and synthetic asset owner
+     * @param target    bootstrap endpoint URI
+     * @param operation bootstrap operation path suffix
+     * @param caller    service code permitted to call this route
+     * @return route match containing the bootstrap asset and its synthetic instance
+     */
+    private static AssetsRegistry.RouteMatch bootstrapRoute(String owner, URI target, String operation, String caller) {
+        var health = new HealthInfo();
+        health.setBeat(DateKit.current());
+        health.setLease(120);
+        health.setSession(owner);
+        var instance = new Instance();
+        instance.setId(owner);
+        instance.setApp_id(owner);
+        instance.setKind(Builder.INSTANCE_KIND_SERVICE);
+        instance.setHost(target.getHost());
+        instance.setPort(target.getPort() >= 0 ? target.getPort() : "https".equals(target.getScheme()) ? 443 : 80);
+        instance.setScheme(target.getScheme());
+        instance.setPath(target.getRawPath().substring(0, target.getRawPath().length() - operation.length()));
+        instance.setWeight(1);
+        instance.setStatus(1);
+        instance.health(health);
+        var asset = new Assets();
+        asset.setId(owner);
+        asset.setApp_id(owner);
+        asset.setType(Type.API.key());
+        asset.setProtocol(Args.ROUTE_SDC);
+        asset.setMethod(owner);
+        asset.setVersion(Args.DEFAULT_VERSION);
+        asset.setVerb(Http.Method.GET.verb());
+        asset.setPolicy(0);
+        asset.setSigning(0);
+        asset.setStream(1);
+        asset.setUrl(operation);
+        asset.setInstances(List.of(instance));
+        asset.setMetadata(
+                JsonKit.toJsonString(
+                        Map.of(
+                                MetadataCodec.ROOT,
+                                Map.of(
+                                        "internal", true,
+                                        "serviceIdentity",
+                                        Map.of("inbound", Map.of("mode", "required", "subjects", List.of(caller)))))));
+        return new AssetsRegistry.RouteMatch(asset, "");
     }
 
     /**
@@ -810,6 +974,23 @@ public class VortexConfiguration {
     @ConditionalOnMissingBean(LimiterStrategy.class)
     public LimiterStrategy limitStrategy(ObjectProvider<LimiterRegistry> limiterRegistryProvider) {
         return new LimiterStrategy(limiterRegistryProvider.getIfAvailable(LimiterRegistry::new));
+    }
+
+    /**
+     * Provides the public slug qualifier strategy bean.
+     *
+     * @param matcher           The slug route matcher.
+     * @param authorizeProvider The AuthorizeProvider for handling authorization logic.
+     * @param identities        Shared gateway service identity adapter.
+     * @return A new instance of SlugQualifierStrategy.
+     */
+    @Bean
+    @ConditionalOnMissingBean(SlugQualifierStrategy.class)
+    public SlugQualifierStrategy slugQualifierStrategy(
+            SlugRouteMatcher matcher,
+            AuthorizeProvider authorizeProvider,
+            IdentityGuard identities) {
+        return new SlugQualifierStrategy(matcher, authorizeProvider, identities);
     }
 
     /**
@@ -845,12 +1026,13 @@ public class VortexConfiguration {
      * will automatically register it in the WebFlux filter chain.
      *
      * @param strategyFactory The StrategyFactory instance.
+     * @param identities      The service identity adapter for inbound and outbound requests.
      * @return A new instance of PrimaryFilter.
      */
     @Bean
     @ConditionalOnMissingBean(PrimaryFilter.class)
-    public PrimaryFilter primaryFilter(StrategyFactory strategyFactory) {
-        return new PrimaryFilter(strategyFactory);
+    public PrimaryFilter primaryFilter(StrategyFactory strategyFactory, IdentityGuard identities) {
+        return new PrimaryFilter(strategyFactory, identities);
     }
 
 }

@@ -22,6 +22,8 @@ package org.miaixz.bus.auth.runtime;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.miaixz.bus.core.Lifecycle;
+import org.miaixz.bus.core.center.function.RunnableX;
+import org.miaixz.bus.core.xyz.FunctionKit;
 
 /**
  * Provides the single lifecycle gate shared by every entry of one authentication runtime.
@@ -97,12 +99,12 @@ final class RuntimeLifecycle {
      * @param publication publication action
      * @return {@code true} when the action ran
      */
-    public boolean commit(final Runnable publication) {
+    public boolean commit(final RunnableX publication) {
         synchronized (gate) {
             if (state != Lifecycle.State.RUNNING) {
                 return false;
             }
-            publication.run();
+            FunctionKit.runUnwrapped(publication);
             return true;
         }
     }

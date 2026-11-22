@@ -24,8 +24,8 @@ import java.time.Instant;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import java.util.function.Supplier;
 
+import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
@@ -34,6 +34,7 @@ import org.miaixz.bus.core.lang.exception.ForbiddenException;
 import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.net.Protocol;
+import org.miaixz.bus.core.xyz.FunctionKit;
 import org.miaixz.bus.core.xyz.PatternKit;
 import org.miaixz.bus.cortex.setting.secret.SecretContext;
 import org.miaixz.bus.cortex.setting.secret.SecretMaterial;
@@ -72,7 +73,7 @@ public final class AzureSecretProvider implements SecretProvider {
     /**
      * Trusted factory of one native Fabric builder per attempt; does not own its runtime.
      */
-    private final Supplier<HttpX.Builder> http;
+    private final SupplierX<HttpX.Builder> http;
 
     /**
      * Creates a connection-bound AzureSecretProvider. The provider borrows its Fabric runtime and obtains fresh
@@ -119,7 +120,7 @@ public final class AzureSecretProvider implements SecretProvider {
      * @throws NullPointerException     if a required collaborator or required component is null
      * @throws IllegalArgumentException if configuration values violate the documented constraints
      */
-    AzureSecretProvider(URI endpoint, long generation, CloudCredentials.Source tokens, Supplier<HttpX.Builder> http) {
+    AzureSecretProvider(URI endpoint, long generation, CloudCredentials.Source tokens, SupplierX<HttpX.Builder> http) {
         this(endpoint, DEFAULT_API_VERSION, generation, tokens, http);
     }
 
@@ -136,7 +137,7 @@ public final class AzureSecretProvider implements SecretProvider {
      * @throws IllegalArgumentException if configuration values violate the documented constraints
      */
     AzureSecretProvider(URI endpoint, String apiVersion, long generation, CloudCredentials.Source tokens,
-            Supplier<HttpX.Builder> http) {
+            SupplierX<HttpX.Builder> http) {
         if (generation < 0 || apiVersion == null || !PatternKit
                 .isMatch(Pattern.get("([0-9]{4}-[0-9]{2}-[0-9]{2}|[0-9]+[.][0-9]+)(-preview)?", 0), apiVersion)) {
             throw new IllegalArgumentException("Invalid Azure secret connection");
@@ -253,7 +254,7 @@ public final class AzureSecretProvider implements SecretProvider {
      */
     private HttpX.Builder request(URI uri, SecretContext context) {
         try (CloudCredentials token = tokens.acquire(context)) {
-            return http.get().to(uri.toString())
+            return FunctionKit.getUnwrapped(http).to(uri.toString())
                     .header(Http.Header.AUTHORIZATION, Http.Auth.BEARER_PREFIX + token.header())
                     .header(Http.Header.ACCEPT, MediaType.APPLICATION_JSON).get();
         }

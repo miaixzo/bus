@@ -19,11 +19,17 @@
 */
 package org.miaixz.bus.starter.cortex;
 
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+
+import jakarta.servlet.Filter;
+import jakarta.servlet.Servlet;
 
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -31,17 +37,26 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.context.properties.bind.Bindable;
 import org.springframework.boot.context.properties.bind.Binder;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.Ordered;
 import org.springframework.core.env.Environment;
+import org.springframework.http.client.ClientHttpRequestInterceptor;
+import org.springframework.http.client.JdkClientHttpRequestFactory;
+import org.springframework.util.StringUtils;
+import org.springframework.web.client.RestClient;
+import org.springframework.web.util.DefaultUriBuilderFactory;
 
 import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.cache.Factory;
 import org.miaixz.bus.cache.Hybrid;
 import org.miaixz.bus.cache.Options;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.cortex.*;
@@ -49,10 +64,11 @@ import org.miaixz.bus.cortex.bridge.VortexBridge;
 import org.miaixz.bus.cortex.builtin.RegistryGenerator;
 import org.miaixz.bus.cortex.builtin.SettingGenerator;
 import org.miaixz.bus.cortex.builtin.event.LoggingWatchListener;
-import org.miaixz.bus.cortex.guard.CortexGuard;
-import org.miaixz.bus.cortex.guard.GuardStrategy;
-import org.miaixz.bus.cortex.guard.token.TokenGuardConfig;
-import org.miaixz.bus.cortex.guard.token.TokenGuardStrategy;
+import org.miaixz.bus.cortex.guard.GuardEvaluator;
+import org.miaixz.bus.cortex.guard.GuardEvaluator.Mode;
+import org.miaixz.bus.cortex.guard.token.Hs256TokenProvider;
+import org.miaixz.bus.cortex.guard.token.ServiceKeyProvider;
+import org.miaixz.bus.cortex.guard.token.ServiceTokenProvider;
 import org.miaixz.bus.cortex.magic.AuditLogger;
 import org.miaixz.bus.cortex.magic.event.CortexChangeLogStore;
 import org.miaixz.bus.cortex.magic.watch.WatchManager;
@@ -92,6 +108,7 @@ import org.miaixz.bus.cortex.setting.secret.NoOpSecretCodec;
 import org.miaixz.bus.cortex.setting.secret.SecretCodec;
 import org.miaixz.bus.cortex.setting.secret.SecretMasker;
 import org.miaixz.bus.cortex.setting.watch.WatchStore;
+import org.miaixz.bus.fabric.network.dns.zone.CidrBlock;
 import org.miaixz.bus.spring.boot.condition.ConditionalOnEnabled;
 import org.miaixz.bus.starter.GeniusBuilder;
 import org.miaixz.bus.starter.annotation.EnableCortex;
@@ -110,7 +127,6 @@ import org.miaixz.bus.starter.annotation.EnableCortex;
 @EnableConfigurationProperties(CortexProperties.class)
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnClass(name = "org.miaixz.bus.cortex.Cortex")
-@ConditionalOnEnabled(annotation = EnableCortex.class, prefix = GeniusBuilder.CORTEX)
 public class CortexConfiguration {
 
     /**
@@ -138,17 +154,6 @@ public class CortexConfiguration {
     }
 
     /**
-     * Resolves host access policy only when guard checks are enabled. Disabling the switch also bypasses a
-     * host-provided guard for Cortex services; persistence and workflow checks are unaffected.
-     *
-     * @param guards optional host guard provider
-     * @return enabled guard, or null when checks are disabled or no guard exists
-     */
-    private CortexGuard guard(ObjectProvider<CortexGuard> guards) {
-        return properties.getGuard().enabled() ? guards.getIfAvailable() : null;
-    }
-
-    /**
      * Wraps the shared registry store as a typed Cortex registry store without unchecked casts in bean methods.
      *
      * @param store shared registry store
@@ -172,6 +177,7 @@ public class CortexConfiguration {
      * @return default Cortex cache
      */
     @Bean("cortexCache")
+    @ConditionalOnEnabled(annotation = EnableCortex.class, prefix = GeniusBuilder.CORTEX, member = "registry")
     @ConditionalOnMissingBean(name = "cortexCache")
     public CacheX<String, Object> cortexCache(ObjectProvider<Factory> factoryProvider, Environment environment) {
         Factory factory = factoryProvider.getIfAvailable(Factory::new);
@@ -191,6 +197,7 @@ public class CortexConfiguration {
      * @return watch manager
      */
     @Bean
+    @ConditionalOnEnabled(annotation = EnableCortex.class, prefix = GeniusBuilder.CORTEX, member = "registry")
     @ConditionalOnMissingBean(WatchManager.class)
     public WatchManager watchManager(@Qualifier("cortexCache") CacheX cache) {
         return new WatchManager(cache(cache), properties.requireMaxWatchesPerTenant(),
@@ -203,6 +210,7 @@ public class CortexConfiguration {
      * @return registry key strategy
      */
     @Bean(name = "registryKeying")
+    @ConditionalOnEnabled(annotation = EnableCortex.class, prefix = GeniusBuilder.CORTEX, member = "registry")
     @ConditionalOnMissingBean(name = "registryKeying")
     public Keying<Keying.RegistrySpec> registryKeying() {
         return RegistryGenerator.INSTANCE;
@@ -214,6 +222,7 @@ public class CortexConfiguration {
      * @return setting key strategy
      */
     @Bean(name = "settingKeying")
+    @ConditionalOnEnabled(annotation = EnableCortex.class, prefix = GeniusBuilder.CORTEX, member = "registry")
     @ConditionalOnMissingBean(name = "settingKeying")
     public Keying<Keying.SettingSpec> settingKeying() {
         return SettingGenerator.INSTANCE;
@@ -225,6 +234,7 @@ public class CortexConfiguration {
      * @return secret masker
      */
     @Bean
+    @ConditionalOnEnabled(annotation = EnableCortex.class, prefix = GeniusBuilder.CORTEX, member = "registry")
     @ConditionalOnMissingBean(SecretMasker.class)
     public SecretMasker secretMasker() {
         return new SecretMasker();
@@ -236,47 +246,10 @@ public class CortexConfiguration {
      * @return secret codec
      */
     @Bean
+    @ConditionalOnEnabled(annotation = EnableCortex.class, prefix = GeniusBuilder.CORTEX, member = "registry")
     @ConditionalOnMissingBean(SecretCodec.class)
     public SecretCodec secretCodec() {
         return new NoOpSecretCodec();
-    }
-
-    /**
-     * Exposes default token guard configuration from starter properties.
-     *
-     * @return token guard config
-     */
-    @Bean
-    @ConditionalOnMissingBean(TokenGuardConfig.class)
-    @ConditionalOnProperty(prefix = "bus.cortex.guard", name = "enabled", havingValue = "true", matchIfMissing = true)
-    public TokenGuardConfig tokenGuardConfig() {
-        return properties.getGuard().getToken();
-    }
-
-    /**
-     * Creates the default token guard strategy when guard support is enabled.
-     *
-     * @param tokenGuardConfig token guard configuration
-     * @return token guard strategy
-     */
-    @Bean
-    @ConditionalOnMissingBean(TokenGuardStrategy.class)
-    @ConditionalOnProperty(prefix = "bus.cortex.guard", name = "enabled", havingValue = "true", matchIfMissing = true)
-    public TokenGuardStrategy tokenGuardStrategy(TokenGuardConfig tokenGuardConfig) {
-        return new TokenGuardStrategy(tokenGuardConfig);
-    }
-
-    /**
-     * Creates the shared Cortex guard used by registry, setting, and version mutation paths.
-     *
-     * @param strategies guard strategies discovered from the application context
-     * @return shared Cortex guard
-     */
-    @Bean
-    @ConditionalOnMissingBean(CortexGuard.class)
-    @ConditionalOnProperty(prefix = "bus.cortex.guard", name = "enabled", havingValue = "true", matchIfMissing = true)
-    public CortexGuard cortexGuard(List<GuardStrategy> strategies) {
-        return new CortexGuard(strategies);
     }
 
     /**
@@ -286,6 +259,7 @@ public class CortexConfiguration {
      * @return audit logger
      */
     @Bean
+    @ConditionalOnEnabled(annotation = EnableCortex.class, prefix = GeniusBuilder.CORTEX, member = "registry")
     @ConditionalOnMissingBean(AuditLogger.class)
     @ConditionalOnProperty(prefix = "bus.cortex.audit", name = "enabled", havingValue = "true")
     public AuditLogger auditLogger(@Qualifier("cortexCache") CacheX cache) {
@@ -299,6 +273,7 @@ public class CortexConfiguration {
      * @return logging watch listener
      */
     @Bean
+    @ConditionalOnEnabled(annotation = EnableCortex.class, prefix = GeniusBuilder.CORTEX, member = "registry")
     @ConditionalOnMissingBean(LoggingWatchListener.class)
     @ConditionalOnProperty(prefix = "bus.cortex.watch", name = "logging-enabled", havingValue = "true")
     public LoggingWatchListener loggingWatchListener(WatchManager watchManager) {
@@ -320,6 +295,7 @@ public class CortexConfiguration {
      * @return API registry
      */
     @Bean
+    @ConditionalOnEnabled(annotation = EnableCortex.class, prefix = GeniusBuilder.CORTEX, member = "registry")
     @ConditionalOnMissingBean(ApiRegistry.class)
     public ApiRegistry apiRegistry(
             @Qualifier("cortexCache") CacheX cache,
@@ -348,6 +324,7 @@ public class CortexConfiguration {
      * @return MCP registry
      */
     @Bean
+    @ConditionalOnEnabled(annotation = EnableCortex.class, prefix = GeniusBuilder.CORTEX, member = "registry")
     @ConditionalOnMissingBean(McpRegistry.class)
     public McpRegistry mcpRegistry(
             @Qualifier("cortexCache") CacheX cache,
@@ -374,6 +351,7 @@ public class CortexConfiguration {
      * @return prompt registry
      */
     @Bean
+    @ConditionalOnEnabled(annotation = EnableCortex.class, prefix = GeniusBuilder.CORTEX, member = "registry")
     @ConditionalOnMissingBean(PromptRegistry.class)
     public PromptRegistry promptRegistry(
             @Qualifier("cortexCache") CacheX cache,
@@ -397,6 +375,7 @@ public class CortexConfiguration {
      * @return read-only release registry
      */
     @Bean("releaseRegistry")
+    @ConditionalOnEnabled(annotation = EnableCortex.class, prefix = GeniusBuilder.CORTEX, member = "registry")
     @ConditionalOnBean(ReleaseStore.class)
     @ConditionalOnMissingBean(ReleaseRegistry.class)
     @ConditionalOnProperty(prefix = "bus.cortex.release", name = "enabled", havingValue = "true")
@@ -413,6 +392,7 @@ public class CortexConfiguration {
      * @return registry refresh service
      */
     @Bean
+    @ConditionalOnEnabled(annotation = EnableCortex.class, prefix = GeniusBuilder.CORTEX, member = "registry")
     @ConditionalOnMissingBean(RegistryRefreshService.class)
     public RegistryRefreshService registryRefreshService(
             ApiRegistry apiRegistry,
@@ -427,23 +407,22 @@ public class CortexConfiguration {
      * @param apiRegistry    API registry
      * @param mcpRegistry    MCP registry
      * @param promptRegistry prompt registry
-     * @param cortexGuard    optional Cortex guard provider
      * @param keyingProvider registry keying provider
      * @param batchExecutors external batch executors
      * @param batchResolvers external batch resolvers
      * @return registry admin service
      */
     @Bean
+    @ConditionalOnEnabled(annotation = EnableCortex.class, prefix = GeniusBuilder.CORTEX, member = "registry")
     @ConditionalOnMissingBean(RegistryControlService.class)
     public RegistryControlService registryAdminService(
             ApiRegistry apiRegistry,
             McpRegistry mcpRegistry,
             PromptRegistry promptRegistry,
-            ObjectProvider<CortexGuard> cortexGuard,
             @Qualifier("registryKeying") ObjectProvider<Keying<Keying.RegistrySpec>> keyingProvider,
             ObjectProvider<RegistryBatchExecutor> batchExecutors,
             ObjectProvider<RegistryBatchResolver> batchResolvers) {
-        return new RegistryControlService(apiRegistry, mcpRegistry, promptRegistry, guard(cortexGuard),
+        return new RegistryControlService(apiRegistry, mcpRegistry, promptRegistry,
                 keyingProvider.getIfAvailable(() -> RegistryGenerator.INSTANCE),
                 batchExecutors.orderedStream().toList(), batchResolvers.orderedStream().toList());
     }
@@ -455,6 +434,7 @@ public class CortexConfiguration {
      * @return bridge listener
      */
     @Bean(name = "vortexBridge", destroyMethod = "close")
+    @ConditionalOnEnabled(annotation = EnableCortex.class, prefix = GeniusBuilder.CORTEX, member = "registry")
     @ConditionalOnMissingBean(VortexBridge.class)
     @ConditionalOnProperty(prefix = "bus.cortex.bridge", name = "mode", havingValue = "push+pull")
     public VortexBridge vortexBridge(ObjectProvider<CortexChangeLogStore> changeLogStore) {
@@ -471,6 +451,7 @@ public class CortexConfiguration {
      * @return definition parser
      */
     @Bean
+    @ConditionalOnEnabled(annotation = EnableCortex.class, prefix = GeniusBuilder.CORTEX, member = "registry")
     @ConditionalOnMissingBean(ItemCodec.class)
     public ItemCodec itemCodec() {
         return new ItemCodec(64, 100000);
@@ -482,6 +463,7 @@ public class CortexConfiguration {
      * @return relationship parser
      */
     @Bean
+    @ConditionalOnEnabled(annotation = EnableCortex.class, prefix = GeniusBuilder.CORTEX, member = "registry")
     @ConditionalOnMissingBean(ReferenceCodec.class)
     public ReferenceCodec referenceCodec() {
         return new ReferenceCodec(64, 100000);
@@ -496,29 +478,26 @@ public class CortexConfiguration {
      * @return definition editor
      */
     @Bean
+    @ConditionalOnEnabled(annotation = EnableCortex.class, prefix = GeniusBuilder.CORTEX, member = "registry")
     @ConditionalOnMissingBean(ItemEditor.class)
     public ItemEditor itemEditor(ItemCodec codec, SecretCodec secrets, SecretMasker masker) {
         return new ItemEditor(codec, secrets, masker);
     }
 
     /**
-     * Assembles current definition management using host stores and optional access policy.
+     * Assembles current definition management using host stores.
      *
      * @param items     current definitions
      * @param revisions exact published snapshots
      * @param editor    definition preparation
-     * @param guards    optional host access policy provider
      * @return current definition service
      */
     @Bean
+    @ConditionalOnEnabled(annotation = EnableCortex.class, prefix = GeniusBuilder.CORTEX, member = "registry")
     @ConditionalOnBean({ ItemStore.class, RevisionStore.class })
     @ConditionalOnMissingBean(ItemService.class)
-    public ItemService itemService(
-            ItemStore items,
-            RevisionStore revisions,
-            ItemEditor editor,
-            ObjectProvider<CortexGuard> guards) {
-        return new ItemService(items, revisions, editor, guard(guards));
+    public ItemService itemService(ItemStore items, RevisionStore revisions, ItemEditor editor) {
+        return new ItemService(items, revisions, editor);
     }
 
     /**
@@ -528,19 +507,18 @@ public class CortexConfiguration {
      * @param revisions  exact published pins
      * @param codec      relationship parser
      * @param editor     sensitive overlay preparation
-     * @param guards     optional host access policy provider
      * @return relationship service
      */
     @Bean
+    @ConditionalOnEnabled(annotation = EnableCortex.class, prefix = GeniusBuilder.CORTEX, member = "registry")
     @ConditionalOnBean({ ReferenceStore.class, RevisionStore.class })
     @ConditionalOnMissingBean(ReferenceService.class)
     public ReferenceService referenceService(
             ReferenceStore references,
             RevisionStore revisions,
             ReferenceCodec codec,
-            ItemEditor editor,
-            ObjectProvider<CortexGuard> guards) {
-        return new ReferenceService(references, revisions, codec, editor, guard(guards));
+            ItemEditor editor) {
+        return new ReferenceService(references, revisions, codec, editor);
     }
 
     /**
@@ -549,32 +527,28 @@ public class CortexConfiguration {
      * @param items      current definition preparation
      * @param references relationship preparation
      * @param store      host-owned atomic current-state transaction
-     * @param guards     optional host access policy provider
      * @return current-state coordinator
      */
     @Bean
+    @ConditionalOnEnabled(annotation = EnableCortex.class, prefix = GeniusBuilder.CORTEX, member = "registry")
     @ConditionalOnBean({ ItemService.class, ReferenceService.class, SettingStore.class })
     @ConditionalOnMissingBean(SettingService.class)
-    public SettingService settingService(
-            ItemService items,
-            ReferenceService references,
-            SettingStore store,
-            ObjectProvider<CortexGuard> guards) {
-        return new SettingService(items, references, store, guard(guards));
+    public SettingService settingService(ItemService items, ReferenceService references, SettingStore store) {
+        return new SettingService(items, references, store);
     }
 
     /**
-     * Assembles immutable approval evidence using the optional host access policy provider.
+     * Assembles immutable approval evidence using the host store.
      *
-     * @param store  approval evidence
-     * @param guards optional host access policy provider
+     * @param store approval evidence
      * @return approval service
      */
     @Bean
+    @ConditionalOnEnabled(annotation = EnableCortex.class, prefix = GeniusBuilder.CORTEX, member = "registry")
     @ConditionalOnBean(ApprovalStore.class)
     @ConditionalOnMissingBean(ApprovalService.class)
-    public ApprovalService approvalService(ApprovalStore store, ObjectProvider<CortexGuard> guards) {
-        return new ApprovalService(store, guard(guards));
+    public ApprovalService approvalService(ApprovalStore store) {
+        return new ApprovalService(store);
     }
 
     /**
@@ -587,10 +561,10 @@ public class CortexConfiguration {
      * @param editor     definition verification
      * @param references relationship parser
      * @param approvals  approval policy registry
-     * @param guards     optional host access policy provider
      * @return rollout service
      */
     @Bean
+    @ConditionalOnEnabled(annotation = EnableCortex.class, prefix = GeniusBuilder.CORTEX, member = "registry")
     @ConditionalOnBean({ RolloutStore.class, SettingStore.class, ReleaseStore.class, RevisionStore.class,
             ApprovalStore.class })
     @ConditionalOnMissingBean(RolloutService.class)
@@ -601,9 +575,8 @@ public class CortexConfiguration {
             RevisionStore revisions,
             ItemEditor editor,
             ReferenceCodec references,
-            ApprovalStore approvals,
-            ObjectProvider<CortexGuard> guards) {
-        return new RolloutService(store, settings, releases, revisions, editor, references, approvals, guard(guards));
+            ApprovalStore approvals) {
+        return new RolloutService(store, settings, releases, revisions, editor, references, approvals);
     }
 
     /**
@@ -611,21 +584,20 @@ public class CortexConfiguration {
      *
      * @param publications atomic formal-publication authority
      * @param rollouts     approved rollout inputs
-     * @param guards       optional host access policy provider
      * @param releases     formal releases
      * @param revisions    exact published snapshots
      * @return formal release publisher
      */
     @Bean
+    @ConditionalOnEnabled(annotation = EnableCortex.class, prefix = GeniusBuilder.CORTEX, member = "registry")
     @ConditionalOnBean({ PublicationStore.class, RolloutStore.class, ReleaseStore.class, RevisionStore.class })
     @ConditionalOnMissingBean(ReleasePublisher.class)
     public ReleasePublisher releasePublisher(
             PublicationStore publications,
             RolloutStore rollouts,
-            ObjectProvider<CortexGuard> guards,
             ReleaseStore releases,
             RevisionStore revisions) {
-        return new ReleasePublisher(publications, rollouts, guard(guards), releases, revisions);
+        return new ReleasePublisher(publications, rollouts, releases, revisions);
     }
 
     /**
@@ -634,6 +606,7 @@ public class CortexConfiguration {
      * @return gray selector
      */
     @Bean
+    @ConditionalOnEnabled(annotation = EnableCortex.class, prefix = GeniusBuilder.CORTEX, member = "registry")
     @ConditionalOnMissingBean(GrayRuleMatcher.class)
     public GrayRuleMatcher grayRuleMatcher() {
         return new GrayRuleMatcher();
@@ -650,10 +623,10 @@ public class CortexConfiguration {
      * @param watches   host-owned subscription evidence
      * @param transport notification transport
      * @param provider  invocation and current process data
-     * @param guards    optional host access policy provider
      * @return published-only curator service
      */
     @Bean
+    @ConditionalOnEnabled(annotation = EnableCortex.class, prefix = GeniusBuilder.CORTEX, member = "registry")
     @ConditionalOnBean({ ReleaseStore.class, RevisionStore.class, WatchStore.class, SettingProvider.class })
     @ConditionalOnMissingBean({ ItemQueryService.class, Curator.class })
     public ItemQueryService settingQueryService(
@@ -664,10 +637,8 @@ public class CortexConfiguration {
             GrayRuleMatcher matcher,
             WatchStore watches,
             WatchManager transport,
-            SettingProvider provider,
-            ObjectProvider<CortexGuard> guards) {
-        return new ItemQueryService(releases, revisions, editor, codec, matcher, watches, transport, provider,
-                guard(guards));
+            SettingProvider provider) {
+        return new ItemQueryService(releases, revisions, editor, codec, matcher, watches, transport, provider);
     }
 
     /**
@@ -675,17 +646,14 @@ public class CortexConfiguration {
      *
      * @param items     current definition views
      * @param published published-only query service
-     * @param guards    optional host access policy provider
      * @return setting export service
      */
     @Bean
+    @ConditionalOnEnabled(annotation = EnableCortex.class, prefix = GeniusBuilder.CORTEX, member = "registry")
     @ConditionalOnBean({ ItemService.class, ItemQueryService.class })
     @ConditionalOnMissingBean(ItemExportService.class)
-    public ItemExportService settingExportService(
-            ItemService items,
-            ItemQueryService published,
-            ObjectProvider<CortexGuard> guards) {
-        return new ItemExportService(items, published, guard(guards));
+    public ItemExportService settingExportService(ItemService items, ItemQueryService published) {
+        return new ItemExportService(items, published);
     }
 
     /**
@@ -699,6 +667,7 @@ public class CortexConfiguration {
      * @return Cortex runtime bundle
      */
     @Bean
+    @ConditionalOnEnabled(annotation = EnableCortex.class, prefix = GeniusBuilder.CORTEX, member = "registry")
     @ConditionalOnMissingBean(Cortex.Runtime.class)
     public Cortex.Runtime cortexRuntime(
             ApiRegistry apiRegistry,
@@ -721,6 +690,7 @@ public class CortexConfiguration {
      * @return handle that releases this binding when the application context closes
      */
     @Bean(destroyMethod = "close")
+    @ConditionalOnEnabled(annotation = EnableCortex.class, prefix = GeniusBuilder.CORTEX, member = "registry")
     @ConditionalOnBean(Cortex.Runtime.class)
     @ConditionalOnMissingBean(Cortex.RuntimeHandle.class)
     public Cortex.RuntimeHandle cortexRuntimeHandle(Cortex.Runtime runtime) {
@@ -1126,6 +1096,169 @@ public class CortexConfiguration {
                     + type.getName() + " was required");
         }
 
+    }
+
+    /**
+     * Provides the default configured epoch keys when the host supplies no key provider.
+     *
+     * @return local key provider
+     */
+    @Bean
+    @org.springframework.context.annotation.Lazy
+    @ConditionalOnMissingBean(ServiceKeyProvider.class)
+    public ServiceKeyProvider serviceKeyProvider() {
+        return properties.getGuard().keyProvider();
+    }
+
+    /**
+     * Provides the default HS256 implementation when the host supplies no token provider.
+     *
+     * @return default cryptographic token provider
+     */
+    @Bean
+    @ConditionalOnMissingBean(ServiceTokenProvider.class)
+    public ServiceTokenProvider serviceTokenProvider() {
+        return new Hs256TokenProvider();
+    }
+
+    /**
+     * Creates the common evaluator with the configured rules and selected providers.
+     *
+     * @param keys   trusted key provider selected for this application
+     * @param tokens cryptographic token provider selected for this application
+     *
+     * @return the shared service identity evaluator
+     */
+    @Bean
+    @ConditionalOnMissingBean(GuardEvaluator.class)
+    public GuardEvaluator serviceIdentity(ServiceKeyProvider keys, ServiceTokenProvider tokens) {
+        return properties.getGuard().identity(keys, tokens);
+    }
+
+    /**
+     * Installs the Servlet identity filter for hosts enabling the Cortex Servlet adapter. Protected paths fail closed
+     * while the inbound direction is disabled.
+     *
+     * @param identity    shared service identity evaluator
+     * @param environment deployment configuration containing the mutual TLS paths and allowed peer networks
+     * @return Servlet filter registration
+     */
+    @Bean
+    @ConditionalOnClass({ Servlet.class, Filter.class })
+    @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)
+    @ConditionalOnEnabled(annotation = EnableCortex.class, prefix = GeniusBuilder.CORTEX_GUARD, member = "guard", name = Normal.EMPTY)
+    FilterRegistrationBean<ServiceAnchorFilter> serviceAnchorFilter(GuardEvaluator identity, Environment environment) {
+        String prefix = GeniusBuilder.CORTEX_GUARD + ".inbound.";
+        var paths = StringUtils.commaDelimitedListToSet(environment.getProperty(prefix + "mtls-paths", ""));
+        var peers = StringUtils.commaDelimitedListToSet(environment.getProperty(prefix + "mtls-peers", "")).stream()
+                .map(CortexConfiguration::peerNetwork).toList();
+        var registration = new FilterRegistrationBean<>(new ServiceAnchorFilter(identity, paths, peers));
+        registration.setOrder(Ordered.HIGHEST_PRECEDENCE + 20);
+        registration.addUrlPatterns(Symbol.SLASH + Symbol.STAR);
+        return registration;
+    }
+
+    /**
+     * Parses a peer network from a numeric address and CIDR prefix length.
+     *
+     * @param value configured CIDR notation
+     * @return network used to match Servlet peer addresses
+     * @throws IllegalArgumentException if the address or prefix length is invalid
+     */
+    private static CidrBlock peerNetwork(String value) {
+        var parts = value.trim().split("/", -1);
+        if (parts.length != 2 || !parts[1].matches("[1-9][0-9]{0,2}")) {
+            throw new IllegalArgumentException("Invalid Cortex mTLS peer network");
+        }
+        return new CidrBlock(ServiceAnchorFilter.peerAddress(parts[0]), Integer.parseInt(parts[1]));
+    }
+
+    /**
+     * Builds a dedicated Servlet client that signs requests for the configured Cortex gateway.
+     *
+     * @param identity    shared service identity evaluator
+     * @param environment deployment configuration
+     * @return configured RestClient
+     */
+    @Bean
+    @ConditionalOnEnabled(annotation = EnableCortex.class, prefix = GeniusBuilder.CORTEX_GUARD, member = "guard", name = Normal.EMPTY)
+    @ConditionalOnProperty(prefix = GeniusBuilder.CORTEX_GUARD, name = "outbound.gateway-endpoint")
+    RestClient cortexGatewayClient(GuardEvaluator identity, Environment environment) {
+        String prefix = GeniusBuilder.CORTEX_GUARD + ".outbound.";
+        URI gateway = URI.create(environment.getRequiredProperty(prefix + "gateway-endpoint"));
+        if (!("http".equalsIgnoreCase(gateway.getScheme()) || "https".equalsIgnoreCase(gateway.getScheme()))
+                || gateway.getHost() == null || gateway.getRawUserInfo() != null || gateway.getRawQuery() != null
+                || gateway.getRawFragment() != null) {
+            throw new IllegalArgumentException("A valid Cortex gateway endpoint is required");
+        }
+        Duration timeout = Duration.ofSeconds(environment.getProperty(prefix + "gateway-timeout", Long.class, 30L));
+        var transport = new JdkClientHttpRequestFactory(
+                HttpClient.newBuilder().connectTimeout(timeout).followRedirects(HttpClient.Redirect.NEVER).build());
+        transport.setReadTimeout(timeout);
+        var uris = new DefaultUriBuilderFactory(gateway.getScheme() + "://" + gateway.getRawAuthority());
+        uris.setEncodingMode(DefaultUriBuilderFactory.EncodingMode.NONE);
+        return RestClient.builder().uriBuilderFactory(uris).requestFactory(transport)
+                .requestInterceptor(serviceAnchorInterceptor(identity, gateway))
+                .defaultStatusHandler(status -> !status.is2xxSuccessful(), (request, response) -> {
+                    throw new IllegalStateException("Cortex gateway returned HTTP " + response.getStatusCode().value());
+                }).build();
+    }
+
+    /**
+     * Provides a signing interceptor for the configured dedicated Servlet client.
+     *
+     * @param identity shared service identity evaluator
+     * @return interceptor for the configured destination
+     */
+    @Bean
+    @ConditionalOnEnabled(annotation = EnableCortex.class, prefix = GeniusBuilder.CORTEX_GUARD, member = "guard", name = Normal.EMPTY)
+    @ConditionalOnProperty(prefix = GeniusBuilder.CORTEX_GUARD, name = "outbound.enabled", havingValue = "true")
+    ClientHttpRequestInterceptor serviceAnchorInterceptor(GuardEvaluator identity) {
+        return serviceAnchorInterceptor(identity, null);
+    }
+
+    /**
+     * Creates an interceptor that replaces reserved identity headers before forwarding the request.
+     *
+     * @param identity shared service identity evaluator
+     * @param gateway  configured gateway endpoint, or {@code null} to use the configured audience
+     * @return outbound service identity interceptor
+     */
+    private ClientHttpRequestInterceptor serviceAnchorInterceptor(GuardEvaluator identity, URI gateway) {
+        String audience = properties.getGuard().outbound().gateway();
+        return (request, body, execution) -> {
+            URI target = request.getURI();
+            var headers = request.getHeaders();
+            String token = gateway != null ? gatewayToken(identity, gateway, target)
+                    : audience.isBlank() ? null
+                            : identity.outbound(null, audience, target.getPath(), null, null, false);
+            identity.forwardHeaders(null, token, headers.headerNames(), headers::remove, headers::set);
+            return execution.execute(request, body);
+        };
+    }
+
+    /**
+     * Signs an outbound request for the configured gateway authority.
+     *
+     * @param identity shared service identity evaluator
+     * @param gateway  configured gateway endpoint
+     * @param target   outgoing request URI
+     * @return the service identity token for the request
+     * @throws IllegalArgumentException if the request scheme or authority differs from the configured gateway
+     * @throws IllegalStateException    if a required service identity token cannot be issued
+     */
+    public String gatewayToken(GuardEvaluator identity, URI gateway, URI target) {
+        if (!gateway.getScheme().equalsIgnoreCase(target.getScheme())
+                || !gateway.getRawAuthority().equalsIgnoreCase(target.getRawAuthority())) {
+            throw new IllegalArgumentException("The Cortex request must target the configured gateway");
+        }
+        return identity.outbound(
+                null,
+                properties.getGuard().outbound().gateway(),
+                target.getPath(),
+                Mode.REQUIRED,
+                null,
+                false);
     }
 
 }

@@ -264,6 +264,11 @@ public class Saml {
         public static final String REQUEST_DENIED = "urn:oasis:names:tc:SAML:2.0:status:RequestDenied";
 
         /**
+         * The identity provider could not authenticate the subject without user interaction.
+         */
+        public static final String NO_PASSIVE = "urn:oasis:names:tc:SAML:2.0:status:NoPassive";
+
+        /**
          * Unknown principal status.
          */
         public static final String UNKNOWN_PRINCIPAL = "urn:oasis:names:tc:SAML:2.0:status:UnknownPrincipal";

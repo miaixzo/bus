@@ -24,6 +24,8 @@ import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.function.Consumer;
 
+import org.miaixz.bus.core.center.function.ConsumerX;
+import org.miaixz.bus.core.xyz.FunctionKit;
 import org.miaixz.bus.errors.ErrorContext;
 import org.miaixz.bus.errors.ErrorDescriptor;
 import org.miaixz.bus.errors.FailureFacts;
@@ -70,6 +72,23 @@ public final class ClassifierRegistry {
             FailureFacts facts,
             Throwable failure,
             Consumer<Throwable> diagnostics) {
+        return classifyUnwrapped(context, facts, failure, secondary -> diagnostics.accept(secondary));
+    }
+
+    /**
+     * Classifies a failure and propagates any failure from the diagnostics callback unchanged.
+     *
+     * @param context     execution boundary
+     * @param facts       verified failure facts
+     * @param failure     normalized failure, possibly {@code null}
+     * @param diagnostics recipient of isolated classifier failures
+     * @return classified error, or {@code null} if none applies
+     */
+    public ErrorDescriptor classifyUnwrapped(
+            ErrorContext context,
+            FailureFacts facts,
+            Throwable failure,
+            ConsumerX<Throwable> diagnostics) {
         for (ErrorClassifier classifier : this.classifiers) {
             try {
                 ErrorDescriptor result = classifier.classify(context, facts, failure);
@@ -78,7 +97,7 @@ public final class ClassifierRegistry {
                 }
             } catch (RuntimeException | Error secondary) {
                 ThrowableNormalizer.rethrowFatal(secondary);
-                diagnostics.accept(secondary);
+                FunctionKit.acceptUnwrapped(diagnostics, secondary);
             }
         }
         return null;

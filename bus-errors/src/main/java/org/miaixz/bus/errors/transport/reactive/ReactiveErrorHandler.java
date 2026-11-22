@@ -23,7 +23,6 @@ import java.util.Arrays;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 import org.springframework.http.*;
 import org.springframework.util.MultiValueMap;
@@ -35,6 +34,8 @@ import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.WebExceptionHandler;
 
 import org.miaixz.bus.core.basic.normal.ErrorCode;
+import org.miaixz.bus.core.center.function.SupplierX;
+import org.miaixz.bus.core.xyz.FunctionKit;
 import org.miaixz.bus.errors.*;
 import org.miaixz.bus.errors.ErrorDecision.Basis;
 import org.miaixz.bus.errors.internal.LegacyErrorSupport;
@@ -222,6 +223,9 @@ public final class ReactiveErrorHandler implements WebExceptionHandler {
      */
     private static final class UpstreamStatus extends ResponseStatusException {
 
+        /**
+         * Serialization version identifier.
+         */
         @java.io.Serial
         private static final long serialVersionUID = 1L;
         /** Common media types that can be advertised without reflecting an upstream token. */
@@ -367,14 +371,14 @@ public final class ReactiveErrorHandler implements WebExceptionHandler {
             ErrorContext context,
             ErrorDecision decision,
             Throwable failure,
-            Supplier<Mono<Void>> writer) {
+            SupplierX<Mono<Void>> writer) {
         String requestId = exchange.getRequest().getId();
         return Mono.defer(() -> {
             var response = exchange.getResponse();
             response.getHeaders().clear();
             response.getCookies().clear();
             ReactiveResponseGuard.approve(response);
-            return writer.get();
+            return FunctionKit.getUnwrapped(writer);
         }).onErrorResume(secondary -> {
             ErrorBoundary.diagnose(context, "error-response", secondary, requestId);
             return exchange.getResponse().isCommitted() ? Mono.error(secondary)

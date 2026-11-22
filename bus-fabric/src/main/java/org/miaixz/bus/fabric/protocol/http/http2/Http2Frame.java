@@ -23,12 +23,14 @@ import java.nio.ByteBuffer;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.miaixz.bus.core.center.function.RunnableX;
 import org.miaixz.bus.core.io.ByteString;
 import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.core.xyz.FunctionKit;
 
 /**
  * Immutable HTTP/2 frame value.
@@ -474,7 +476,7 @@ public class Http2Frame implements AutoCloseable {
             final int streamId,
             final int flags,
             final ByteBuffer payload,
-            final Runnable releaser) {
+            final RunnableX releaser) {
         final PayloadLease lease = new PayloadLease(payload, releaser);
         final int length = lease.remaining();
         if (length > 64 * 1024 || payload.capacity() > Math.max(64 * 1024, length << Normal._2)) {
@@ -1048,7 +1050,7 @@ public class Http2Frame implements AutoCloseable {
         /**
          * Parent-buffer release callback invoked at most once.
          */
-        private final Runnable releaser;
+        private final RunnableX releaser;
 
         /**
          * Idempotent close guard shared by all lease access paths.
@@ -1061,7 +1063,7 @@ public class Http2Frame implements AutoCloseable {
          * @param payload  payload slice retained from the reader
          * @param releaser callback returning parent-buffer ownership
          */
-        private PayloadLease(final ByteBuffer payload, final Runnable releaser) {
+        private PayloadLease(final ByteBuffer payload, final RunnableX releaser) {
             if (payload == null || releaser == null) {
                 throw new ValidateException("HTTP/2 payload lease requires payload and releaser");
             }
@@ -1109,7 +1111,7 @@ public class Http2Frame implements AutoCloseable {
         @Override
         public void close() {
             if (closed.compareAndSet(false, true)) {
-                releaser.run();
+                FunctionKit.runUnwrapped(releaser);
             }
         }
 

@@ -28,14 +28,15 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Supplier;
 
 import com.sun.jna.Native;
 import com.sun.jna.platform.linux.LibC;
 import com.sun.jna.platform.unix.LibCAPI;
 
+import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
+import org.miaixz.bus.core.xyz.FunctionKit;
 import org.miaixz.bus.health.Builder;
 import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.jna.ByRef;
@@ -89,10 +90,10 @@ final class LinuxNetworkParams extends AbstractNetworkParams {
      * @param upstream supplies systemd-resolved's upstream configuration lines
      * @return the DNS server addresses
      */
-    static String[] getDnsServers(List<String> resolv, Supplier<List<String>> upstream) {
+    static String[] getDnsServers(List<String> resolv, SupplierX<List<String>> upstream) {
         String[] servers = parseDnsServers(resolv);
         if (servers.length > 0 && Arrays.stream(servers).allMatch(RESOLVED_STUBS::contains)) {
-            String[] upstreamServers = parseDnsServers(upstream.get(), Integer.MAX_VALUE);
+            String[] upstreamServers = parseDnsServers(FunctionKit.getUnwrapped(upstream), Integer.MAX_VALUE);
             if (upstreamServers.length > 0) {
                 return upstreamServers;
             }

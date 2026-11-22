@@ -23,9 +23,10 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.OptionalLong;
-import java.util.function.Function;
 import java.util.function.ToLongFunction;
 
+import org.miaixz.bus.core.center.function.FunctionX;
+import org.miaixz.bus.core.xyz.FunctionKit;
 import org.miaixz.bus.metrics.Provider;
 import org.miaixz.bus.metrics.bridge.HostMetricCapabilities;
 import org.miaixz.bus.metrics.bridge.ProcessSnapshot;
@@ -107,6 +108,12 @@ public final class ProcessHostMetrics implements MetricBinder {
         return MetricDescriptor.of(name, kind, number, unit, "", attributes);
     }
 
+    /**
+     * Registers the process metric observations with the selected provider.
+     *
+     * @param provider destination metrics provider
+     * @throws IllegalStateException if the metrics are already bound
+     */
     @Override
     public synchronized void bind(Provider provider) {
         if (registrations != null) {
@@ -272,12 +279,12 @@ public final class ProcessHostMetrics implements MetricBinder {
             String name,
             InstrumentKind kind,
             String unit,
-            Function<ProcessSnapshot, OptionalLong> getter) {
+            FunctionX<ProcessSnapshot, OptionalLong> getter) {
         group.add(
                 provider.registerObservable(
                         descriptor(name, kind, NumberKind.LONG, unit, List.of()),
                         measurement -> current().ifPresent(
-                                snapshot -> getter.apply(snapshot)
+                                snapshot -> FunctionKit.applyUnwrapped(getter, snapshot)
                                         .ifPresent(value -> measurement.recordLong(value, Attributes.empty())))));
     }
 
@@ -290,6 +297,9 @@ public final class ProcessHostMetrics implements MetricBinder {
         return cache.get().flatMap(value -> value);
     }
 
+    /**
+     * Closes the active process metric registrations and clears their binding.
+     */
     @Override
     public synchronized void close() {
         if (registrations != null) {

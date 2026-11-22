@@ -19,48 +19,45 @@
 */
 package org.miaixz.bus.cortex.guard.token;
 
-import java.util.function.Supplier;
+import org.miaixz.bus.auth.shared.jwt.JWT;
 
 /**
- * Holds the process-wide service token used for registry and snapshot calls to Lattice.
- * <p>
- * The starter installs a supplier when outbound service identity is enabled. Registry clients read the token per
- * request, so epoch rotation takes effect without recreating the client.
- * </p>
+ * Default {@link ServiceTokenProvider} that uses {@link ServiceTokenIssuer} for HS256 signing and
+ * {@link ServiceTokenVerifier} for signature verification.
  *
  * @author Kimi Liu
  */
-public final class TrustToken {
+public final class Hs256TokenProvider implements ServiceTokenProvider {
 
     /**
-     * Registry token supplier, or null when outbound service identity is disabled.
+     * Creates the default HS256 token provider.
      */
-    private static volatile Supplier<String> registry;
-
-    /**
-     * Prevents additional instances.
-     */
-    private TrustToken() {
-        // No initialization required.
+    public Hs256TokenProvider() {
     }
 
     /**
-     * Installs the registry token supplier.
+     * Signs the claims selected by the service identity evaluator.
      *
-     * @param supplier token supplier bound to the configured registry audience
+     * @param request trusted claims and lifetime
+     * @param key     current signing material
+     * @return compact signed service token
      */
-    public static void install(final Supplier<String> supplier) {
-        registry = supplier;
+    @Override
+    public String issue(Issue request, ServiceKeyProvider.Key key) {
+        return new ServiceTokenIssuer(request.subject(), request.audience(), key.secret(), request.lifetime(),
+                request.origin(), request.asset()).sign();
     }
 
     /**
-     * Returns the current registry token.
+     * Verifies the signature against the selected key. The evaluator enforces the route and claim rules.
      *
-     * @return compact service token, or null when outbound service identity is disabled
+     * @param compact compact service token
+     * @param key     trusted verification material
+     * @return authenticated JWT or null when the signature or compact format is invalid
      */
-    public static String registry() {
-        final Supplier<String> supplier = registry;
-        return supplier == null ? null : supplier.get();
+    @Override
+    public JWT verify(String compact, ServiceKeyProvider.Key key) {
+        return ServiceTokenVerifier.verifySignature(compact, key.secret());
     }
 
 }

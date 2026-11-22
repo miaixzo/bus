@@ -220,6 +220,25 @@ try (HttpResponse response = call.await(Duration.ofSeconds(5))) {
 }
 ```
 
+An unstarted Call can also be bridged once to an independently owned `CompletableFuture`:
+
+```java
+try (ExecutorService executor = Executors.newVirtualThreadPerTaskExecutor()) {
+    CompletableFuture<HttpResponse> future = Fabric.http(context)
+            .get("https://example.com/data")
+            .call()
+            .toFuture(executor);
+    try (HttpResponse response = future.get()) {
+        // Consume and close the response to return its connection.
+    }
+}
+```
+
+Future cancellation propagates to the Call, and execution starts only after the executor accepts the task.
+Undeliverable `AutoCloseable` results are closed; an overload accepts a custom disposal function. Do not also call
+`execute()`, `enqueue()`, or bridge the same Call again. The failure-mapping overload only adapts external API error
+contracts; default overloads preserve exception types.
+
 ### HTTP Cache
 
 HTTP cache is attached through the context with its typed option.
@@ -259,6 +278,33 @@ Automatic transport retries require a repeatable request body and an idempotent 
 `DELETE`, `OPTIONS`, or `TRACE`. `POST` and other non-idempotent requests are never replayed automatically after an
 ambiguous network failure. Pre-reuse validation reduces stale-connection failures where active probing is available, but
 it cannot guarantee that a non-idempotent request will not observe a concurrent peer close.
+
+HTTP response-status retries are disabled by default. Explicitly select statuses and authorize safe replay;
+the request body must still be repeatable:
+
+```java
+HttpRetryPolicy policy = HttpRetryPolicy.builder()
+        .maxAttempts(1).maxStaleRetries(0).maxRedirects(0)
+        .retryOnConnectionFailure(false)
+        .retryStatuses(Set.of(429)).replaySafe(true)
+        .maxDelay(Duration.ofSeconds(2))
+        .build();
+
+try (HttpResponse response = Fabric.http(context)
+        .get("https://example.com/data")
+        .retryPolicy(policy)
+        .execute()) {
+    // Handle the final response.
+}
+```
+
+The request-level `retryPolicy` overrides the Context policy while preserving application and address-policy tags.
+Status, connection and stale-connection retries share the `maxAttempts` total budget. `Retry-After` supports positive
+seconds and future HTTP dates; a missing or invalid value uses explicit `baseDelay` backoff, or one second otherwise. A delay exceeding `maxDelay`,
+the read timeout or the remaining Call budget returns the original response instead of retrying early.
+The previous response is closed before waiting, and cancellation or interruption ends the wait.
+`replaySafe(true)` is the caller's authorization based on operation semantics; a repeatable body or HTTP method alone
+does not establish that a business write can safely be replayed.
 
 ### Cookies
 

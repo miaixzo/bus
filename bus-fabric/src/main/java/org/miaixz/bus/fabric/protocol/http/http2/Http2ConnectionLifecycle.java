@@ -20,10 +20,11 @@
 package org.miaixz.bus.fabric.protocol.http.http2;
 
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.UnaryOperator;
 
 import org.miaixz.bus.core.Lifecycle;
+import org.miaixz.bus.core.center.function.UnaryOperatorX;
 import org.miaixz.bus.core.lang.exception.StatefulException;
+import org.miaixz.bus.core.xyz.FunctionKit;
 
 /**
  * Single source of truth for the public lifecycle of one HTTP/2 connection.
@@ -105,9 +106,9 @@ final class Http2ConnectionLifecycle implements Lifecycle {
      * @param update transition function
      * @return previous state
      */
-    State getAndUpdate(final UnaryOperator<State> update) {
+    State getAndUpdate(final UnaryOperatorX<State> update) {
         return state.getAndUpdate(current -> {
-            final State next = update.apply(current);
+            final State next = FunctionKit.applyUnaryUnwrapped(update, current);
             validate(current, next);
             return next;
         });

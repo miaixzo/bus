@@ -25,7 +25,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.miaixz.bus.core.center.function.RunnableX;
 import org.miaixz.bus.core.xyz.ArrayKit;
+import org.miaixz.bus.core.xyz.FunctionKit;
 import org.miaixz.bus.cortex.magic.runtime.CortexDiagnostics;
 import org.miaixz.bus.cortex.magic.runtime.CortexLifecycle;
 import org.miaixz.bus.cortex.magic.runtime.DiagnosticsSnapshot;
@@ -268,7 +270,7 @@ public class Cortex {
     public static void reset() {
         Logger.info(true, "Cortex", "Runtime reset requested: initialized={}", current != null);
         Runtime previous;
-        Runnable shutdown;
+        RunnableX shutdown;
         synchronized (MONITOR) {
             previous = current;
             current = null;
@@ -279,7 +281,7 @@ public class Cortex {
             Logger.info(false, "Cortex", "Runtime reset completed: stoppedComponents={}", previous.components().size());
             return;
         }
-        shutdown.run();
+        FunctionKit.runUnwrapped(shutdown);
         Logger.info(false, "Cortex", "Runtime reset completed: calloutShutdown=true");
     }
 
@@ -768,12 +770,12 @@ public class Cortex {
                     stopQuietly(component);
                 }
             } finally {
-                Runnable shutdown;
+                RunnableX shutdown;
                 synchronized (MONITOR) {
                     shutdown = current == null ? Callout.shutdownTask() : null;
                 }
                 if (shutdown != null) {
-                    shutdown.run();
+                    FunctionKit.runUnwrapped(shutdown);
                 }
             }
         }

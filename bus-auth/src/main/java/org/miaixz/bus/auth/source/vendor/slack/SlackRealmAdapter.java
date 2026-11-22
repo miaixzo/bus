@@ -24,8 +24,6 @@ import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
-import java.util.function.Function;
-import java.util.function.Supplier;
 
 import org.miaixz.bus.auth.*;
 import org.miaixz.bus.auth.Credential;
@@ -39,6 +37,8 @@ import org.miaixz.bus.auth.source.vendor.VendorTargets;
 import org.miaixz.bus.auth.worker.loader.SecretLoader;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.basic.normal.Errors;
+import org.miaixz.bus.core.center.function.FunctionX;
+import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.codec.binary.Base64;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Charset;
@@ -50,6 +50,7 @@ import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.net.url.RFC3986;
+import org.miaixz.bus.core.xyz.FunctionKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.extra.json.JsonValue;
@@ -439,15 +440,15 @@ public class SlackRealmAdapter implements VendorAdapter {
     private static String fallback(
             final JsonValue.ObjectValue object,
             final String name,
-            final Supplier<String> fallback) {
+            final SupplierX<String> fallback) {
         final JsonValue value = object.values().get(name);
         if (value == null || value instanceof JsonValue.NullValue) {
-            return fallback.get();
+            return FunctionKit.getUnwrapped(fallback);
         }
         if (!(value instanceof JsonValue.StringValue text)) {
             throw new ValidateException(name + " must be a string or null");
         }
-        return StringKit.hasText(text.value()) ? requireText(text.value(), name) : fallback.get();
+        return StringKit.hasText(text.value()) ? requireText(text.value(), name) : FunctionKit.getUnwrapped(fallback);
     }
 
     /**
@@ -945,7 +946,7 @@ public class SlackRealmAdapter implements VendorAdapter {
     private <T> CompletionStage<Outcome<T>> withSecret(
             final Context context,
             final Timeout timeout,
-            final Function<SecretLease, Outcome<T>> operation) {
+            final FunctionX<SecretLease, Outcome<T>> operation) {
         final CompletionStage<Outcome<SecretLoader.Record>> loaded;
         try {
             loaded = services.secretLoader()
@@ -981,7 +982,7 @@ public class SlackRealmAdapter implements VendorAdapter {
     private <T> CompletionStage<Outcome<T>> execute(
             final SecretLoader.Record loaded,
             final Timeout timeout,
-            final Function<SecretLease, Outcome<T>> operation) {
+            final FunctionX<SecretLease, Outcome<T>> operation) {
         final SecretLease raw = loaded == null ? null : loaded.lease();
         final SecretLease secret;
         try {
@@ -998,7 +999,9 @@ public class SlackRealmAdapter implements VendorAdapter {
                     return failed(ErrorCode._408, "Slack SCIM operation has no remaining timeout");
                 }
                 try {
-                    return Assert.notNull(operation.apply(secret), "Slack SCIM operation returned no outcome");
+                    return Assert.notNull(
+                            FunctionKit.applyUnwrapped(operation, secret),
+                            "Slack SCIM operation returned no outcome");
                 } catch (TimeoutException ignored) {
                     return failed(ErrorCode._408, "Slack SCIM operation timed out");
                 } catch (RuntimeException ignored) {
@@ -1031,7 +1034,7 @@ public class SlackRealmAdapter implements VendorAdapter {
             final int start,
             final Timeout timeout,
             final String operation,
-            final Function<JsonValue.ObjectValue, T> parser) {
+            final FunctionX<JsonValue.ObjectValue, T> parser) {
         final Url request = base.newBuilder().query("count", Integer.toString(count))
                 .query("startIndex", Integer.toString(start)).build();
         final Outcome<JsonValue.ObjectValue> fetched = get(request, secret, timeout, operation, false);
@@ -1049,7 +1052,7 @@ public class SlackRealmAdapter implements VendorAdapter {
         }
         final List<T> items = new ArrayList<>(values.size());
         for (JsonValue value : values) {
-            items.add(parser.apply(requiredObject(value, "Slack SCIM resource")));
+            items.add(FunctionKit.applyUnwrapped(parser, requiredObject(value, "Slack SCIM resource")));
         }
         final int next = itemsPerPage > 0 && start - 1 + itemsPerPage < total ? start + itemsPerPage : 0;
         return Outcome.succeeded(new ScimPage<>(items, next));

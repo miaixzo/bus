@@ -24,9 +24,11 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BooleanSupplier;
-import java.util.function.Consumer;
 
+import org.miaixz.bus.core.center.function.ConsumerX;
+import org.miaixz.bus.core.center.function.RunnableX;
 import org.miaixz.bus.core.lang.exception.TimeoutException;
+import org.miaixz.bus.core.xyz.FunctionKit;
 import org.miaixz.bus.fabric.runtime.Activity;
 import org.miaixz.bus.fabric.runtime.dispatch.DispatchHandle;
 import org.miaixz.bus.fabric.runtime.dispatch.Dispatcher;
@@ -67,12 +69,12 @@ final class WebSocketPing implements AutoCloseable {
     /**
      * Callback that enqueues one automatic ping.
      */
-    private final Runnable enqueue;
+    private final RunnableX enqueue;
 
     /**
      * Callback that terminates the session when ping or pong processing fails.
      */
-    private final Consumer<Throwable> failure;
+    private final ConsumerX<Throwable> failure;
 
     /**
      * Current scheduled tick.
@@ -116,8 +118,8 @@ final class WebSocketPing implements AutoCloseable {
      * @param failure      terminal failure callback
      */
     WebSocketPing(final Dispatcher dispatcher, final String key, final Duration interval,
-            final Cancellation cancellation, final BooleanSupplier active, final Runnable enqueue,
-            final Consumer<Throwable> failure) {
+            final Cancellation cancellation, final BooleanSupplier active, final RunnableX enqueue,
+            final ConsumerX<Throwable> failure) {
         this.dispatcher = dispatcher;
         this.key = key;
         this.interval = interval;
@@ -218,7 +220,7 @@ final class WebSocketPing implements AutoCloseable {
             return;
         }
         try {
-            enqueue.run();
+            FunctionKit.runUnwrapped(enqueue);
         } catch (final RuntimeException | Error e) {
             pending.set(false);
             failure.accept(e);

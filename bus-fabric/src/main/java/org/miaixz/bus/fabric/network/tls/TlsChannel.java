@@ -31,12 +31,12 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.ReentrantLock;
-import java.util.function.Supplier;
 
 import javax.net.ssl.SSLEngineResult;
 import javax.net.ssl.SSLEngineResult.HandshakeStatus;
 
 import org.miaixz.bus.core.Lifecycle;
+import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.io.buffer.NioBuffer;
 import org.miaixz.bus.core.io.buffer.NioBufferAllocator;
@@ -362,7 +362,7 @@ public class TlsChannel implements Conduit, Lifecycle {
      * @param <T>       operation result type
      * @return already completed or failed future containing the operation outcome
      */
-    private static <T> CompletableFuture<T> directFuture(final Supplier<T> operation) {
+    private static <T> CompletableFuture<T> directFuture(final SupplierX<T> operation) {
         try {
             return CompletableFuture.completedFuture(operation.get());
         } catch (final Throwable failure) {
@@ -1549,7 +1549,7 @@ public class TlsChannel implements Conduit, Lifecycle {
      * @param <T>       result type
      * @return operation future
      */
-    private <T> CompletableFuture<T> background(final String name, final Supplier<T> operation) {
+    private <T> CompletableFuture<T> background(final String name, final SupplierX<T> operation) {
         final CompletableFuture<T> result = new CompletableFuture<>();
         final Activity activity = Activity.of(name, () -> {
             if (result.isCancelled()) {

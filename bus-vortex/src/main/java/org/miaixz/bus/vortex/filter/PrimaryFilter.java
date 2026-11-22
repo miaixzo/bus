@@ -33,11 +33,12 @@ import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.xyz.DateKit;
+import org.miaixz.bus.cortex.guard.GuardEvaluator;
 import org.miaixz.bus.errors.transport.http.RouteFailure;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.vortex.Context;
 import org.miaixz.bus.vortex.Strategy;
-import org.miaixz.bus.vortex.guard.AnchorVerifier;
+import org.miaixz.bus.vortex.guard.IdentityGuard;
 import org.miaixz.bus.vortex.handler.ErrorsHandler;
 import org.miaixz.bus.vortex.magic.ErrorCode;
 import org.miaixz.bus.vortex.strategy.StrategyFactory;
@@ -57,14 +58,30 @@ import reactor.core.publisher.Mono;
 public class PrimaryFilter extends AbstractFilter {
 
     /**
+     * Gateway adapter for service identity.
+     */
+    private final IdentityGuard identities;
+
+    /**
      * Constructs a new {@code PrimaryFilter}.
      *
      * @param factory The strategy factory, which must not be {@code null}. It provides the appropriate chain of
      *                strategies for each request.
      */
     public PrimaryFilter(StrategyFactory factory) {
+        this(factory, new IdentityGuard(GuardEvaluator.disabled(), appId -> null));
+    }
+
+    /**
+     * Creates the gateway request filter with its scoped identity evaluator.
+     *
+     * @param factory    gateway strategy chain factory
+     * @param identities shared service identity adapter
+     */
+    public PrimaryFilter(StrategyFactory factory, IdentityGuard identities) {
         Assert.notNull(factory, "StrategyFactory must not be null");
         this.factory = factory;
+        this.identities = identities;
     }
 
     /**
@@ -90,45 +107,42 @@ public class PrimaryFilter extends AbstractFilter {
      */
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
-        String path = exchange.getRequest().getPath().value();
-        if (AnchorVerifier.installed() && path.startsWith(AnchorVerifier.CONTROL_PATH) && !AnchorVerifier
-                .verify(exchange.getRequest().getHeaders().getFirst(Http.Auth.SERVICE_TOKEN_HEADER))) {
-            exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
-            return exchange.getResponse().setComplete();
-        }
-        Logger.info(true, "Vortex", "Request received: clientIp=N/A, path={}", path);
-        Logger.debug(true, "Vortex", "Request header snapshot: clientIp=N/A, path={}", path);
-        Logger.debug(
-                true,
-                "Vortex",
-                "Request header names: clientIp=N/A, headerNames={}",
-                exchange.getRequest().getHeaders().headerNames());
-        Logger.debug(
-                true,
-                "Vortex",
-                "Request query field names: clientIp=N/A, fieldNames={}",
-                exchange.getRequest().getQueryParams().keySet());
-
-        if (isPathTraversalAttempt(path)) {
-            throw new ValidateException(ErrorCode._LIMITER);
-        }
-
         return Mono.defer(() -> {
-            List<Strategy> strategies = factory.getStrategiesFor(exchange);
+            String path = exchange.getRequest().getPath().pathWithinApplication().value();
+            ServerWebExchange sanitized = identities.ingress(exchange);
+
+            Logger.info(true, "Vortex", "Request received: clientIp=N/A, path={}", path);
+            Logger.debug(true, "Vortex", "Request header snapshot: clientIp=N/A, path={}", path);
+            Logger.debug(
+                    true,
+                    "Vortex",
+                    "Request header names: clientIp=N/A, headerNames={}",
+                    sanitized.getRequest().getHeaders().headerNames());
+            Logger.debug(
+                    true,
+                    "Vortex",
+                    "Request query field names: clientIp=N/A, fieldNames={}",
+                    sanitized.getRequest().getQueryParams().keySet());
+
+            if (isPathTraversalAttempt(path)) {
+                throw new ValidateException(ErrorCode._LIMITER);
+            }
+
+            List<Strategy> strategies = factory.getStrategiesFor(sanitized);
             if (strategies == null || strategies.isEmpty()) {
                 throw new RouteFailure(ErrorCode._BLOCKED, HttpStatus.NOT_FOUND, HttpHeaders.EMPTY);
             }
             Context context = new Context();
-            context.setX_request_id(exchange.getRequest().getId());
+            context.setX_request_id(sanitized.getRequest().getId());
             context.setTimestamp(DateKit.current());
-            context.setHeaders(exchange.getRequest().getHeaders().toSingleValueMap());
+            context.setHeaders(sanitized.getRequest().getHeaders().toSingleValueMap());
             try {
-                context.setHttpMethod(Http.Method.of(exchange.getRequest().getMethod().name()));
+                context.setHttpMethod(Http.Method.of(sanitized.getRequest().getMethod().name()));
             } catch (IllegalArgumentException e) {
                 throw new ValidateException(ErrorCode._100802.getKey(), ErrorCode._100802.getValue(), e);
             }
 
-            exchange.getAttributes().put(Context.$, context);
+            sanitized.getAttributes().put(Context.$, context);
 
             Logger.info(
                     true,
@@ -139,8 +153,8 @@ public class PrimaryFilter extends AbstractFilter {
                     strategies.stream().map(strategy -> strategy.getClass().getSimpleName())
                             .collect(Collectors.joining(" -> ")));
 
-            return new Chain(strategies, chain).apply(exchange).contextWrite(ctx -> ctx.put(Context.class, context));
-        });
+            return new Chain(strategies, chain).apply(sanitized).contextWrite(ctx -> ctx.put(Context.class, context));
+        }).doOnTerminate(() -> identities.discard(exchange)).doOnCancel(() -> identities.discard(exchange));
     }
 
     /**
@@ -232,7 +246,10 @@ public class PrimaryFilter extends AbstractFilter {
                 Chain next = new Chain(this, this.index + 1);
                 return strategy.apply(exchange, next);
             }
-            return this.chain.filter(exchange);
+            return Mono.defer(() -> {
+                Context context = exchange.getRequiredAttribute(Context.$);
+                return this.chain.filter(identities.outbound(exchange, context));
+            });
         }
 
     }

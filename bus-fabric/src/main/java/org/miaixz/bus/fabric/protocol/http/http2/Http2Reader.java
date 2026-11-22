@@ -21,8 +21,8 @@ package org.miaixz.bus.fabric.protocol.http.http2;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.function.Function;
 
+import org.miaixz.bus.core.center.function.FunctionX;
 import org.miaixz.bus.core.io.ByteString;
 import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.io.source.BufferSource;
@@ -51,7 +51,7 @@ public class Http2Reader implements AutoCloseable {
     /**
      * Connection-owned HPACK decoder callback.
      */
-    private final Function<Buffer, List<Http2Header>> headerDecoder;
+    private final FunctionX<Buffer, List<Http2Header>> headerDecoder;
 
     /**
      * Connection fast path consuming unpadded DATA directly from the incremental input buffer.
@@ -108,7 +108,7 @@ public class Http2Reader implements AutoCloseable {
      * @param decoder    connection-owned stateful HPACK decoder callback
      * @throws ValidateException if either collaborator is {@code null}
      */
-    Http2Reader(final Connection connection, final Function<Buffer, List<Http2Header>> decoder) {
+    Http2Reader(final Connection connection, final FunctionX<Buffer, List<Http2Header>> decoder) {
         final Connection checked = require(connection, "Network connection");
         this.source = IoKit.buffer(checked.source());
         this.headerDecoder = require(decoder, "HTTP/2 header decoder");

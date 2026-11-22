@@ -26,8 +26,9 @@ import java.nio.charset.Charset;
 import java.time.Duration;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.Supplier;
 
+import org.miaixz.bus.core.Lifecycle;
+import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.io.sink.Sink;
 import org.miaixz.bus.core.io.source.BufferSource;
@@ -108,7 +109,7 @@ public class Http1Codec implements HttpCodec {
     /**
      * Reusable lazy trailer view retained with the connection-local codec.
      */
-    private final Supplier<Headers> trailerSupplier;
+    private final SupplierX<Headers> trailerSupplier;
 
     /**
      * Whether the current exchange has not yet received an HTTP status line.
@@ -1219,7 +1220,7 @@ public class Http1Codec implements HttpCodec {
     /**
      * Network response body source.
      */
-    private static final class NetworkSource implements Source, Payload {
+    private static final class NetworkSource implements Source, Payload, Lifecycle {
 
         /**
          * Input stream.
@@ -1252,6 +1253,11 @@ public class Http1Codec implements HttpCodec {
         private InputStream current;
 
         /**
+         * Idempotent close state.
+         */
+        private boolean closed;
+
+        /**
          * Creates a source.
          *
          * @param input  stream providing the response body bytes
@@ -1265,6 +1271,21 @@ public class Http1Codec implements HttpCodec {
             this.length = length;
             require(media, "MediaType");
             this.codec = require(codec, "HTTP codec");
+        }
+
+        /**
+         * Returns the completion state of this message's own framing decoder.
+         *
+         * @return completed only after the full body and framing have been consumed
+         */
+        @Override
+        public State state() {
+            if (input instanceof FixedInputStream fixed && fixed.remaining == Normal._0
+                    || input instanceof ChunkedInputStream chunked && chunked.done
+                    || input instanceof UnknownInputStream unknown && unknown.done) {
+                return State.COMPLETED;
+            }
+            return closed ? State.CANCELLED : opened ? State.RUNNING : State.NEW;
         }
 
         /**
@@ -1433,6 +1454,10 @@ public class Http1Codec implements HttpCodec {
          */
         @Override
         public void close() {
+            if (closed) {
+                return;
+            }
+            closed = true;
             boolean drained = false;
             if (input instanceof FixedInputStream fixed) {
                 drained = fixed.drain();

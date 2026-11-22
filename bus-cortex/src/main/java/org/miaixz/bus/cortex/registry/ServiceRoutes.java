@@ -30,9 +30,9 @@ import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.net.Port;
 import org.miaixz.bus.core.net.Protocol;
-import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.core.xyz.BeanKit;
 import org.miaixz.bus.core.xyz.DateKit;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.cortex.Assets;
 import org.miaixz.bus.cortex.Builder;
 import org.miaixz.bus.cortex.Instance;
@@ -211,9 +211,9 @@ public final class ServiceRoutes {
             throw new IllegalArgumentException("A complete service instance address is required");
         String scheme = instance.getScheme();
         String host = instance.getHost();
-        if ((!Protocol.HTTP.name.equals(scheme) && !Protocol.HTTPS.name.equals(scheme))
-                || host.isBlank() || host.contains(Symbol.SLASH) || host.contains(Symbol.AT)
-                || host.contains(Symbol.QUESTION_MARK) || host.contains(Symbol.HASH))
+        if ((!Protocol.HTTP.name.equals(scheme) && !Protocol.HTTPS.name.equals(scheme)) || host.isBlank()
+                || host.contains(Symbol.SLASH) || host.contains(Symbol.AT) || host.contains(Symbol.QUESTION_MARK)
+                || host.contains(Symbol.HASH))
             throw new IllegalArgumentException("Invalid service instance host or scheme");
         int port = instance.getPort() == null ? defaultPort(scheme) : instance.getPort();
         if (port < Normal._1 || port > Normal._65535)
@@ -227,16 +227,15 @@ public final class ServiceRoutes {
         String authority = host.contains(Symbol.COLON) && !host.startsWith(Symbol.BRACKET_LEFT)
                 ? Symbol.BRACKET_LEFT + host + Symbol.BRACKET_RIGHT
                 : host;
-        URI address = URI.create(scheme + Symbol.COLON + Symbol.FORWARDSLASH + authority
-                + Symbol.COLON + port + path);
+        URI address = URI.create(scheme + Symbol.COLON + Symbol.FORWARDSLASH + authority + Symbol.COLON + port + path);
         if (address.getHost() == null || address.getRawUserInfo() != null || address.getPort() != port)
             throw new IllegalArgumentException("Invalid service instance host");
         return address;
     }
 
     /**
-     * Resolves a complete registration URL into the existing instance coordinates. Explicit fields may be repeated
-     * when they agree with the URL.
+     * Resolves a complete registration URL into the existing instance coordinates. Explicit fields may be repeated when
+     * they agree with the URL.
      *
      * @param url      absolute HTTP or HTTPS URL supplied by the service
      * @param instance announcement carrying the service metadata and optional coordinates
@@ -247,8 +246,8 @@ public final class ServiceRoutes {
         String scheme = StringKit.toLowerCase(announced.getScheme());
         String host = announced.getHost();
         String path = announced.getRawPath();
-        if ((!Protocol.HTTP.name.equals(scheme) && !Protocol.HTTPS.name.equals(scheme))
-                || host == null || announced.getRawUserInfo() != null || announced.getRawQuery() != null
+        if ((!Protocol.HTTP.name.equals(scheme) && !Protocol.HTTPS.name.equals(scheme)) || host == null
+                || announced.getRawUserInfo() != null || announced.getRawQuery() != null
                 || announced.getRawFragment() != null || announced.getRawAuthority().endsWith(Symbol.COLON))
             throw new IllegalArgumentException("An absolute HTTP or HTTPS registration URL is required");
         int port = announced.getPort() == Normal.__1 ? defaultPort(scheme) : announced.getPort();

@@ -67,9 +67,9 @@ public class McpRouter implements Router<ServerRequest, ServerResponse> {
         Logger.debug(
                 true,
                 "Vortex",
-                "MCP request headers: clientIp={}, headers={}",
+                "MCP request header names: clientIp={}, headerNames={}",
                 ip,
-                request.headers().asHttpHeaders().toSingleValueMap());
+                request.headers().asHttpHeaders().headerNames());
         Logger.debug(
                 true,
                 "Vortex",

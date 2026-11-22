@@ -52,7 +52,8 @@ public class EnabledCondition extends SpringBootCondition {
      * @param registry       current Bean definition registry
      * @param annotationName fully qualified enable annotation name
      * @param member         required annotation member, empty for presence-only checks
-     * @return {@code TRUE} when declared and enabled, {@code FALSE} when declared and disabled, {@code null} when absent
+     * @return {@code TRUE} when declared and enabled, {@code FALSE} when declared and disabled, {@code null} when
+     *         absent
      */
     private static Boolean declared(BeanDefinitionRegistry registry, String annotationName, String member) {
         boolean found = false;
@@ -101,12 +102,17 @@ public class EnabledCondition extends SpringBootCondition {
                             .items(annotationName));
         }
         if (Boolean.FALSE.equals(state)) {
-            return ConditionOutcome.noMatch(ConditionMessage.forCondition(ConditionalOnEnabled.class)
-                    .found("the enable annotation disabled this feature").items(annotationName));
+            return ConditionOutcome.noMatch(
+                    ConditionMessage.forCondition(ConditionalOnEnabled.class)
+                            .found("the enable annotation disabled this feature").items(annotationName));
         }
 
         String prefix = (String) attributes.get("prefix");
         String name = (String) attributes.get("name");
+        if (name.isEmpty()) {
+            return ConditionOutcome.noMatch(
+                    ConditionMessage.forCondition(ConditionalOnEnabled.class).didNotFind("enable annotation").atAll());
+        }
         String propertyName = prefix.isEmpty() ? name : prefix + Symbol.DOT + name;
         Boolean propertyValue = context.getEnvironment().getProperty(propertyName, Boolean.class);
         if (Boolean.TRUE.equals(propertyValue)) {

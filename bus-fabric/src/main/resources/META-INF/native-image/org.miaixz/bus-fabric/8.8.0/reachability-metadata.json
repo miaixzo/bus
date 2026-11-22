@@ -1188,7 +1188,7 @@
           "name": "background",
           "parameterTypes": [
             "java.lang.String",
-            "java.util.function.Supplier"
+            "org.miaixz.bus.core.center.function.SupplierX"
           ]
         },
         {
@@ -1260,7 +1260,7 @@
             "org.miaixz.bus.fabric.network.udp.UdpChannel",
             "org.miaixz.bus.fabric.Listener",
             "org.miaixz.bus.fabric.runtime.dispatch.Dispatcher",
-            "java.lang.Runnable"
+            "org.miaixz.bus.core.center.function.RunnableX"
           ]
         },
         {
@@ -1270,7 +1270,7 @@
             "org.miaixz.bus.fabric.network.udp.UdpChannel",
             "org.miaixz.bus.fabric.Listener",
             "org.miaixz.bus.fabric.runtime.dispatch.Dispatcher",
-            "java.lang.Runnable",
+            "org.miaixz.bus.core.center.function.RunnableX",
             "org.miaixz.bus.fabric.network.udp.UdpDatagramCodec"
           ]
         },
@@ -1283,7 +1283,7 @@
             "org.miaixz.bus.fabric.network.udp.UdpChannel",
             "org.miaixz.bus.fabric.Listener",
             "org.miaixz.bus.fabric.runtime.dispatch.Dispatcher",
-            "java.lang.Runnable"
+            "org.miaixz.bus.core.center.function.RunnableX"
           ]
         },
         {
@@ -1295,7 +1295,7 @@
             "org.miaixz.bus.fabric.network.udp.UdpChannel",
             "org.miaixz.bus.fabric.Listener",
             "org.miaixz.bus.fabric.runtime.dispatch.Dispatcher",
-            "java.lang.Runnable",
+            "org.miaixz.bus.core.center.function.RunnableX",
             "org.miaixz.bus.fabric.network.udp.UdpDatagramCodec"
           ]
         },
@@ -3854,7 +3854,9 @@
             "org.miaixz.bus.fabric.protocol.http.http2.PushObserver",
             "org.miaixz.bus.fabric.runtime.dispatch.Dispatcher",
             "boolean",
-            "long"
+            "long",
+            "java.time.Duration",
+            "java.time.Duration"
           ]
         },
         {
@@ -4635,7 +4637,7 @@
           "name": "<init>",
           "parameterTypes": [
             "org.miaixz.bus.fabric.network.Connection",
-            "java.util.function.Function"
+            "org.miaixz.bus.core.center.function.FunctionX"
           ]
         },
         {
@@ -4911,8 +4913,8 @@
             "int",
             "org.miaixz.bus.fabric.Headers",
             "java.util.function.LongConsumer",
-            "java.lang.Runnable",
-            "java.lang.Runnable"
+            "org.miaixz.bus.core.center.function.RunnableX",
+            "org.miaixz.bus.core.center.function.RunnableX"
           ]
         },
         {
@@ -4921,8 +4923,8 @@
             "int",
             "org.miaixz.bus.fabric.Headers",
             "java.util.function.LongConsumer",
-            "java.lang.Runnable",
-            "java.lang.Runnable",
+            "org.miaixz.bus.core.center.function.RunnableX",
+            "org.miaixz.bus.core.center.function.RunnableX",
             "long"
           ]
         },
@@ -5089,7 +5091,7 @@
         {
           "name": "run",
           "parameterTypes": [
-            "java.lang.Runnable"
+            "org.miaixz.bus.core.center.function.RunnableX"
           ]
         },
         {
@@ -5920,14 +5922,14 @@
           "name": "acquire",
           "parameterTypes": [
             "org.miaixz.bus.fabric.network.Destination",
-            "java.util.function.Supplier"
+            "org.miaixz.bus.core.center.function.SupplierX"
           ]
         },
         {
           "name": "acquire",
           "parameterTypes": [
             "org.miaixz.bus.fabric.network.Destination",
-            "java.util.function.Supplier",
+            "org.miaixz.bus.core.center.function.SupplierX",
             "org.miaixz.bus.fabric.runtime.resource.Cancellation"
           ]
         },
@@ -5950,7 +5952,7 @@
           "name": "acquireTransient",
           "parameterTypes": [
             "org.miaixz.bus.fabric.network.Destination",
-            "java.util.function.Supplier",
+            "org.miaixz.bus.core.center.function.SupplierX",
             "org.miaixz.bus.fabric.runtime.resource.Cancellation"
           ]
         },
@@ -6064,7 +6066,7 @@
           "name": "createLease",
           "parameterTypes": [
             "org.miaixz.bus.fabric.network.Destination",
-            "java.util.function.Supplier",
+            "org.miaixz.bus.core.center.function.SupplierX",
             "org.miaixz.bus.fabric.runtime.resource.Cancellation"
           ]
         },
@@ -6336,7 +6338,7 @@
           "parameterTypes": [
             "java.lang.String",
             "java.lang.Object",
-            "java.util.function.Supplier"
+            "org.miaixz.bus.core.center.function.SupplierX"
           ]
         },
         {
@@ -6420,7 +6422,7 @@
           "name": "supply",
           "parameterTypes": [
             "java.lang.String",
-            "java.util.function.Supplier"
+            "org.miaixz.bus.core.center.function.SupplierX"
           ]
         }
       ]

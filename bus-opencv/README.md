@@ -51,6 +51,7 @@ perform computer vision tasks, image processing, and video analysis in your Java
     <artifactId>bus-opencv</artifactId>
     <version>8.x.x</version>
 </dependency>
+
 ```
 
 ### Load OpenCV Library

@@ -25,6 +25,7 @@ import java.util.*;
 import java.util.concurrent.Executor;
 import java.util.regex.Matcher;
 
+import org.miaixz.bus.core.center.function.RunnableX;
 import org.miaixz.bus.core.instance.Instances;
 import org.miaixz.bus.core.io.sink.BufferSink;
 import org.miaixz.bus.core.io.sink.FaultHideSink;
@@ -35,6 +36,7 @@ import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.FileKit;
+import org.miaixz.bus.core.xyz.FunctionKit;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.fabric.Builder;
 import org.miaixz.bus.fabric.runtime.dispatch.Dispatcher;
@@ -103,13 +105,13 @@ public class DiskLruCache implements Closeable, Flushable {
     /**
      * Background task that trims the journal and evicts entries after writes.
      */
-    private final Runnable cleanupRunnable = new Runnable() {
+    private final RunnableX cleanupTask = new RunnableX() {
 
         /**
          * Runs deferred cache trimming and journal rebuild work.
          */
         @Override
-        public void run() {
+        public void running() {
             synchronized (DiskLruCache.this) {
                 if (!initialized || closed) {
                     return; // Nothing to do.
@@ -150,6 +152,11 @@ public class DiskLruCache implements Closeable, Flushable {
         }
 
     };
+
+    /**
+     * Stable executor task that preserves failures from the cleanup operation.
+     */
+    private final Runnable cleanupRunnable = () -> FunctionKit.runUnwrapped(cleanupTask);
 
     /**
      * Buffered writer appending mutations to the active journal.

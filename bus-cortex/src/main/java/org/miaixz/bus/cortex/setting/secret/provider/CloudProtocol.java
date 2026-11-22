@@ -29,12 +29,12 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.TimeoutException;
-import java.util.function.BiFunction;
-import java.util.function.BiPredicate;
-import java.util.function.Function;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+import org.miaixz.bus.core.center.function.BiFunctionX;
+import org.miaixz.bus.core.center.function.BiPredicateX;
+import org.miaixz.bus.core.center.function.FunctionX;
+import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.io.source.AssignSource;
 import org.miaixz.bus.core.io.source.Source;
@@ -50,6 +50,7 @@ import org.miaixz.bus.core.net.Port;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.net.url.UrlEncoder;
 import org.miaixz.bus.core.xyz.ExceptionKit;
+import org.miaixz.bus.core.xyz.FunctionKit;
 import org.miaixz.bus.core.xyz.RandomKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.core.xyz.ThreadKit;
@@ -93,7 +94,7 @@ final class CloudProtocol {
      * @throws IllegalArgumentException if the Fabric runtime permits replay, redirects, retries, or persistence of
      *                                  secret traffic
      */
-    static Supplier<HttpX.Builder> http(Context context) {
+    static SupplierX<HttpX.Builder> http(Context context) {
         Objects.requireNonNull(context, "Fabric context");
         HttpRetryPolicy retry = HttpRetryPolicy.resolve(context.options());
         if (retry.maxAttempts() != 0 || retry.maxStaleRetries() != 0 || retry.maxRedirects() != 0
@@ -505,11 +506,11 @@ final class CloudProtocol {
      * @return parsed success object
      */
     static Map<?, ?> exchange(
-            Function<SecretContext, HttpX.Builder> request,
+            FunctionX<SecretContext, HttpX.Builder> request,
             SecretContext context,
-            BiFunction<Integer, Map<?, ?>, UncheckedException> errors,
-            BiPredicate<Integer, Map<?, ?>> retryable) {
-        return exchange(request, context, errors, retryable, Function.identity());
+            BiFunctionX<Integer, Map<?, ?>, UncheckedException> errors,
+            BiPredicateX<Integer, Map<?, ?>> retryable) {
+        return exchange(request, context, errors, retryable, FunctionX.identity());
     }
 
     /**
@@ -527,11 +528,11 @@ final class CloudProtocol {
      * @throws CryptoException    if the operation fails, expires or exhausts approved retries
      */
     static Map<?, ?> exchange(
-            Function<SecretContext, HttpX.Builder> request,
+            FunctionX<SecretContext, HttpX.Builder> request,
             SecretContext context,
-            BiFunction<Integer, Map<?, ?>, UncheckedException> errors,
-            BiPredicate<Integer, Map<?, ?>> retryable,
-            Function<Map<?, ?>, Map<?, ?>> decode) {
+            BiFunctionX<Integer, Map<?, ?>, UncheckedException> errors,
+            BiPredicateX<Integer, Map<?, ?>> retryable,
+            FunctionX<Map<?, ?>, Map<?, ?>> decode) {
         for (int attempt = 0;; attempt++) {
             context.checkDeadline();
             Instant until = Instant.now().plusSeconds(10);
@@ -543,7 +544,7 @@ final class CloudProtocol {
             // Credential acquisition and local request construction are outside the retryable transport boundary.
             HttpX.Builder builder;
             try {
-                builder = request.apply(attemptContext);
+                builder = FunctionKit.applyUnwrapped(request, attemptContext);
                 attemptContext.checkDeadline();
             } catch (RuntimeException failure) {
                 throw sanitize(failure);
@@ -571,18 +572,18 @@ final class CloudProtocol {
                     }
                 }
                 if (response.code() < Http.Status.OK || response.code() >= Http.Status.MULTIPLE_CHOICES) {
-                    UncheckedException failure = errors.apply(response.code(), body);
+                    UncheckedException failure = FunctionKit.applyUnwrapped(errors, response.code(), body);
                     if (failure instanceof ForbiddenException || attempt >= 2
-                            || !retryable.test(response.code(), body)) {
+                            || !FunctionKit.testUnwrapped(retryable, response.code(), body)) {
                         throw failure;
                     }
                 } else {
                     try {
-                        return decode.apply(body);
+                        return FunctionKit.applyUnwrapped(decode, body);
                     } catch (RuntimeException failure) {
                         if (ExceptionKit.getThrowableList(failure).stream()
                                 .anyMatch(ForbiddenException.class::isInstance) || attempt >= 2
-                                || !retryable.test(response.code(), body)) {
+                                || !FunctionKit.testUnwrapped(retryable, response.code(), body)) {
                             throw sanitize(failure);
                         }
                     }

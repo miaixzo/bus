@@ -88,7 +88,7 @@ public class SamlErrorMapper {
      * @return {@code true} for one supported second-level StatusCode
      */
     private static boolean supported(final String status) {
-        return requester(status) || Saml.Statuses.REQUEST_DENIED.equals(status);
+        return requester(status) || Saml.Statuses.REQUEST_DENIED.equals(status) || Saml.Statuses.NO_PASSIVE.equals(status);
     }
 
     /**

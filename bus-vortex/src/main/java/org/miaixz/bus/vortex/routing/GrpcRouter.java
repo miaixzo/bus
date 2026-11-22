@@ -102,9 +102,9 @@ public class GrpcRouter implements Router<ServerRequest, ServerResponse> {
             Logger.debug(
                     true,
                     "Vortex",
-                    "Request headers: protocol=grpc, clientIp={}, headers={}",
+                    "Request header names: protocol=grpc, clientIp={}, headerNames={}",
                     context.getX_request_ip(),
-                    input.headers().asHttpHeaders().toSingleValueMap());
+                    input.headers().asHttpHeaders().headerNames());
 
             return Octets
                     .readForParsing(

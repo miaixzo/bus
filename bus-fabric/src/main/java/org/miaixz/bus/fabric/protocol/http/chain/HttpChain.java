@@ -265,7 +265,7 @@ public class HttpChain {
      *
      * @return cancellation scope
      */
-    Cancellation cancellation() {
+    public Cancellation cancellation() {
         return cancellation;
     }
 

@@ -26,10 +26,12 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
+import org.miaixz.bus.core.center.function.BinaryOperatorX;
 import org.miaixz.bus.core.center.map.multiple.RowKeyTable;
 import org.miaixz.bus.core.center.map.multiple.Table;
 import org.miaixz.bus.core.center.set.ConcurrentHashSet;
 import org.miaixz.bus.core.xyz.CollectorKit;
+import org.miaixz.bus.core.xyz.FunctionKit;
 import org.miaixz.bus.core.xyz.IteratorKit;
 import org.miaixz.bus.core.xyz.ObjectKit;
 
@@ -201,9 +203,9 @@ public class EntryStream<K, V> extends EnhancedWrappedStream<Map.Entry<K, V>, En
      * during a merge operation.
      *
      * @param <T> the type of the elements
-     * @return a {@link BinaryOperator} for throwing exceptions on duplicate keys
+     * @return a {@link BinaryOperatorX} that rejects duplicate keys
      */
-    private static <T> BinaryOperator<T> throwingMerger() {
+    private static <T> BinaryOperatorX<T> throwingMerger() {
         return (u, v) -> {
             throw new IllegalStateException(String.format("Duplicate data %s", u));
         };
@@ -628,7 +630,11 @@ public class EntryStream<K, V> extends EnhancedWrappedStream<Map.Entry<K, V>, En
      * @throws IllegalArgumentException if duplicate keys are encountered in either the parent or inner maps
      */
     public <N> Table<N, K, V> toTable(final BiFunction<? super K, ? super V, ? extends N> rowKeyMapper) {
-        return toTable(rowKeyMapper, HashMap::new, throwingMerger());
+        final BinaryOperatorX<V> merger = throwingMerger();
+        return toTable(
+                rowKeyMapper,
+                HashMap::new,
+                (left, right) -> FunctionKit.applyBinaryUnwrapped(merger, left, right));
     }
 
     /**

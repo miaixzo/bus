@@ -25,9 +25,9 @@ import java.time.Instant;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.Algorithm;
 import org.miaixz.bus.core.lang.Charset;
@@ -35,6 +35,7 @@ import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.CryptoException;
 import org.miaixz.bus.core.net.MediaType;
+import org.miaixz.bus.core.xyz.FunctionKit;
 import org.miaixz.bus.core.xyz.HexKit;
 import org.miaixz.bus.core.xyz.PatternKit;
 import org.miaixz.bus.cortex.setting.secret.SecretContext;
@@ -70,7 +71,7 @@ public final class HuaweiSecretProvider implements SecretProvider {
     /**
      * Trusted factory of one native Fabric builder per attempt; does not own its runtime.
      */
-    private final Supplier<HttpX.Builder> http;
+    private final SupplierX<HttpX.Builder> http;
     /**
      * Clock used to produce deterministic UTC signing timestamps.
      */
@@ -126,7 +127,7 @@ public final class HuaweiSecretProvider implements SecretProvider {
      * @throws IllegalArgumentException if configuration values violate the documented constraints
      */
     HuaweiSecretProvider(URI endpoint, String projectId, long generation, CloudCredentials.Source credentials,
-            Supplier<HttpX.Builder> http) {
+            SupplierX<HttpX.Builder> http) {
         this(endpoint, projectId, generation, credentials, http, Clock.systemUTC());
     }
 
@@ -144,7 +145,7 @@ public final class HuaweiSecretProvider implements SecretProvider {
      * @throws IllegalArgumentException if configuration values violate the documented constraints
      */
     HuaweiSecretProvider(URI endpoint, String projectId, long generation, CloudCredentials.Source credentials,
-            Supplier<HttpX.Builder> http, Clock clock) {
+            SupplierX<HttpX.Builder> http, Clock clock) {
         if (projectId == null || !PatternKit.isMatch(Pattern.get("[a-fA-F0-9]{32}", 0), projectId) || generation < 0) {
             throw new IllegalArgumentException("Invalid Huawei connection");
         }
@@ -300,7 +301,7 @@ public final class HuaweiSecretProvider implements SecretProvider {
     private HttpX.Builder request(URI uri, SecretContext context) {
         try (CloudCredentials identity = credentials.acquire(context)) {
             Map<String, String> headers = sign(uri, projectId, identity, clock.instant());
-            HttpX.Builder request = http.get().to(uri.toString()).get();
+            HttpX.Builder request = FunctionKit.getUnwrapped(http).to(uri.toString()).get();
             headers.forEach(request::header);
             return request;
         }

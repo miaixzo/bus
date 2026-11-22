@@ -29,7 +29,7 @@ import lombok.Getter;
 import org.springframework.http.codec.multipart.Part;
 
 import org.miaixz.bus.core.basic.entity.Tracer;
-import org.miaixz.bus.core.center.function.FunctionX;
+import org.miaixz.bus.core.center.function.BiFunctionX;
 import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.cortex.Assets;
 import org.miaixz.bus.vortex.filter.PrimaryFilter;
@@ -49,6 +49,9 @@ import org.miaixz.bus.vortex.magic.Parameter;
 @Getter
 public class Context extends Tracer {
 
+    /**
+     * Serialization version identifier.
+     */
     @Serial
     private static final long serialVersionUID = 2560609205001L;
 
@@ -118,16 +121,16 @@ public class Context extends Tracer {
     private Assets assets;
 
     /**
-     * Signs the selected downstream URI using the one-request authorization returned by the trusted provider.
+     * Signs the selected downstream URI and the exact forwarded body.
      */
-    private transient FunctionX<URI, String> forwardProof;
+    private transient BiFunctionX<URI, byte[], String> forwardProof;
 
     /**
      * Installs the signer after successful authentication for the current protected REST call.
      *
      * @param signer signer bound to this request's verified authorization
      */
-    public void setForwardProof(FunctionX<URI, String> signer) {
+    public void setForwardProof(BiFunctionX<URI, byte[], String> signer) {
         this.forwardProof = signer;
     }
 
@@ -181,6 +184,15 @@ public class Context extends Tracer {
      */
     public void setHeader(String key, String value) {
         this.headers.put(key, value);
+    }
+
+    /**
+     * Removes a single request header from the controlled header view.
+     *
+     * @param key header name
+     */
+    public void removeHeader(String key) {
+        this.headers.remove(key);
     }
 
     /**
