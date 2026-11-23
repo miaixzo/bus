@@ -19,6 +19,9 @@
 */
 package org.miaixz.bus.core.basic.spring;
 
+import java.util.List;
+import java.util.Map;
+
 import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.basic.normal.Errors;
@@ -48,6 +51,18 @@ public class Controller {
      */
     public <T> Message<T> write(T data) {
         return write(ErrorCode._SUCCESS, data);
+    }
+
+    /**
+     * Creates a message whose data is written as an original HTTP response.
+     *
+     * @param status  final HTTP status
+     * @param headers multi-value response headers
+     * @param body    exact response bytes, or null for an empty response
+     * @return message for HTTP output
+     */
+    public Message<byte[]> write(int status, Map<String, List<String>> headers, byte[] body) {
+        return Message.http(status, headers, body);
     }
 
     /**

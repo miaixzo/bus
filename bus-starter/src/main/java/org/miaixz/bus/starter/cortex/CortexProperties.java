@@ -317,11 +317,11 @@ public class CortexProperties {
             /**
              * Configures the bound outbound signing settings.
              *
-             * @param enabled  whether outbound signing is enabled
-             * @param subject  subject attached to issued tokens
-             * @param ttl      token lifetime in seconds
-             * @param gateway  destination of the configured gateway client
-             * @param rules    explicit outbound target rules
+             * @param enabled whether outbound signing is enabled
+             * @param subject subject attached to issued tokens
+             * @param ttl     token lifetime in seconds
+             * @param gateway destination of the configured gateway client
+             * @param rules   explicit outbound target rules
              */
             public Outbound(Boolean enabled, @DefaultValue(Normal.EMPTY) String subject,
                     @DefaultValue(DEFAULT_TTL) int ttl, @DefaultValue(Normal.EMPTY) String gateway,

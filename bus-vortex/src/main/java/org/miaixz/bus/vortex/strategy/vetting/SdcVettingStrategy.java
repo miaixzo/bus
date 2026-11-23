@@ -19,6 +19,14 @@
 */
 package org.miaixz.bus.vortex.strategy.vetting;
 
+import java.util.List;
+import java.util.Set;
+
+import org.springframework.http.HttpMethod;
+import org.springframework.web.server.MethodNotAllowedException;
+import org.springframework.web.server.ServerWebExchange;
+import org.springframework.web.server.UnsupportedMediaTypeStatusException;
+
 import org.miaixz.bus.core.Order;
 import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
@@ -26,14 +34,8 @@ import org.miaixz.bus.vortex.Args;
 import org.miaixz.bus.vortex.Context;
 import org.miaixz.bus.vortex.strategy.VettingStrategy;
 import org.miaixz.bus.vortex.strategy.request.SdcRequestStrategy.Input;
-import org.springframework.http.HttpMethod;
-import org.springframework.web.server.MethodNotAllowedException;
-import org.springframework.web.server.ServerWebExchange;
-import org.springframework.web.server.UnsupportedMediaTypeStatusException;
-import reactor.core.publisher.Mono;
 
-import java.util.List;
-import java.util.Set;
+import reactor.core.publisher.Mono;
 
 /**
  * Validates public SDC requests before credential qualification.
@@ -56,8 +58,8 @@ public class SdcVettingStrategy extends VettingStrategy {
     /**
      * Validates the SDC request method and content type before applying shared validation.
      * <p>
-     * POST requests accept JSON and form data. GET requests retain valueless
-     * selectors for route and configuration queries.
+     * POST requests accept JSON and form data. GET requests retain valueless selectors for route and configuration
+     * queries.
      *
      * @param exchange prepared SDC exchange
      * @param context  shared gateway request context

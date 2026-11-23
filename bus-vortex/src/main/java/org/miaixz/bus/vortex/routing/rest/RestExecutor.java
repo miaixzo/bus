@@ -208,8 +208,10 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
                 if (Boolean.TRUE.equals(request.exchange().getAttribute(Context.RAW_BODY_PASSTHROUGH_ATTRIBUTE))) {
                     bodySpec.contentType(mediaType);
                     request.headers().contentLength().ifPresent(bodySpec::contentLength);
-                    bodySpec.body(BodyInserters.fromDataBuffers(request.exchange().getRequest().getBody()
-                            .doOnDiscard(PooledDataBuffer.class, Octets::release)));
+                    bodySpec.body(
+                            BodyInserters.fromDataBuffers(
+                                    request.exchange().getRequest().getBody()
+                                            .doOnDiscard(PooledDataBuffer.class, Octets::release)));
                 } else if (MediaType.MULTIPART_FORM_DATA.isCompatibleWith(mediaType)) {
                     handleMultipartBody(bodySpec, context, ip, method, path);
                 } else if (org.miaixz.bus.core.net.MediaType.isJson(mediaType.toString())) {

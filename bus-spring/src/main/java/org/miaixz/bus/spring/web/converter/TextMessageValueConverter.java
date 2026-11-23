@@ -19,31 +19,28 @@
 */
 package org.miaixz.bus.spring.web.converter;
 
-import java.util.List;
-
-import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.StringHttpMessageConverter;
 
 import org.miaixz.bus.core.lang.Charset;
 
 /**
- * Configures Spring MVC plain-text conversion with UTF-8 encoding.
+ * Reads and writes strings with UTF-8 as the default charset.
  *
  * @author Kimi Liu
  */
-public class TextWebMvcConfigurer implements MessageConverterRegistrar {
+public class TextMessageValueConverter extends StringHttpMessageConverter implements MessageValueConverter<String> {
 
     /**
-     * Creates the text MVC configurer.
+     * Creates a UTF-8 string converter.
      */
-    public TextWebMvcConfigurer() {
-        // No initialization required.
+    public TextMessageValueConverter() {
+        super(Charset.UTF_8);
     }
 
     /**
-     * Returns the stable name used to order and diagnose this converter registrar.
+     * Returns the diagnostic name of the Bus text converter.
      *
-     * @return registrar name
+     * @return converter name
      */
     @Override
     public String name() {
@@ -51,25 +48,13 @@ public class TextWebMvcConfigurer implements MessageConverterRegistrar {
     }
 
     /**
-     * Runs after higher-priority converter registrars.
+     * Orders the string converter after the Bus JSON converter.
      *
-     * @return registrar order
+     * @return converter order
      */
     @Override
     public int getOrder() {
         return 100;
-    }
-
-    /**
-     * Registers a UTF-8 string converter while preserving Spring's established media types.
-     *
-     * @param converters mutable message converter list
-     */
-    @Override
-    public void register(List<HttpMessageConverter<?>> converters) {
-        if (converters.stream().noneMatch(StringHttpMessageConverter.class::isInstance)) {
-            converters.add(new StringHttpMessageConverter(Charset.UTF_8));
-        }
     }
 
 }

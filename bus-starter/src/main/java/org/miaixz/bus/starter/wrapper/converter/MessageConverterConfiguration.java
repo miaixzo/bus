@@ -19,27 +19,30 @@
 */
 package org.miaixz.bus.starter.wrapper.converter;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Supplier;
 
 import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.AutoConfigurationPackages;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.extra.json.JsonProvider;
 import org.miaixz.bus.extra.json.JsonTypeFilter;
 import org.miaixz.bus.logger.Logger;
-import org.miaixz.bus.spring.web.converter.JsonMessageConverter;
-import org.miaixz.bus.spring.web.converter.JsonWebMvcConfigurer;
-import org.miaixz.bus.spring.web.converter.MessageConverterRegistrar;
-import org.miaixz.bus.spring.web.converter.TextWebMvcConfigurer;
+import org.miaixz.bus.spring.web.converter.JsonMessageValueConverter;
+import org.miaixz.bus.spring.web.converter.MessageValueConverter;
+import org.miaixz.bus.spring.web.converter.MessageWebMvcConfigurer;
+import org.miaixz.bus.spring.web.converter.TextMessageValueConverter;
 import org.miaixz.bus.starter.GeniusBuilder;
 
 /**
@@ -57,6 +60,39 @@ public class MessageConverterConfiguration {
      */
     public MessageConverterConfiguration() {
         // No initialization required.
+    }
+
+    /**
+     * Assembles converters for Servlet MVC. Converter instances are held by the configurer to keep MVC target type
+     * rules scoped to MVC.
+     *
+     * @param customConverters application suppliers of MVC converters
+     * @param providers        application JSON providers
+     * @param properties       message-converter type policy and explicit allow-list
+     * @param beanFactory      current bean factory containing the application base-package registration
+     * @return configurer that applies the converters in order
+     */
+    @Bean
+    @ConditionalOnMissingBean(MessageWebMvcConfigurer.class)
+    public MessageWebMvcConfigurer messageWebMvcConfigurer(
+            ObjectProvider<Supplier<? extends MessageValueConverter<?>>> customConverters,
+            ObjectProvider<JsonProvider> providers,
+            MessageConverterProperties properties,
+            BeanFactory beanFactory) {
+        List<MessageValueConverter<?>> converters = new ArrayList<>();
+        customConverters.stream().map(Supplier::get).forEach(converters::add);
+        if (converters.stream().noneMatch(TextMessageValueConverter.class::isInstance)) {
+            converters.add(new TextMessageValueConverter());
+        }
+        if (converters.stream().noneMatch(JsonMessageValueConverter.class::isInstance)) {
+            providers.ifAvailable(
+                    provider -> converters.add(
+                            allowsAll(properties) ? new JsonMessageValueConverter(provider, JsonTypeFilter.always())
+                                    : JsonMessageValueConverter.withAllowedTypes(
+                                            provider,
+                                            String.join(Symbol.COMMA, allowedTypeRules(properties, beanFactory)))));
+        }
+        return new MessageWebMvcConfigurer(converters);
     }
 
     /**
@@ -108,53 +144,6 @@ public class MessageConverterConfiguration {
         }
         return Arrays.stream(autoType.split("[,\\r\\n]+")).map(String::trim).filter(value -> !value.isEmpty())
                 .distinct().toList();
-    }
-
-    /**
-     * Creates the text web mvc configurer.
-     *
-     * @return the configurer that registers plain-text conversion
-     */
-    @Bean
-    @ConditionalOnMissingBean(TextWebMvcConfigurer.class)
-    public TextWebMvcConfigurer textWebMvcConfigurer() {
-        return new TextWebMvcConfigurer();
-    }
-
-    /**
-     * Creates the json web mvc configurer.
-     *
-     * @param registrars ordered converter registrars contributed by the application
-     * @return the configurer that registers JSON conversion
-     */
-    @Bean
-    @ConditionalOnMissingBean(JsonWebMvcConfigurer.class)
-    public JsonWebMvcConfigurer jsonWebMvcConfigurer(List<MessageConverterRegistrar> registrars) {
-        return new JsonWebMvcConfigurer(registrars);
-    }
-
-    /**
-     * Creates the json message converter.
-     *
-     * @param provider    application JSON provider managed by JSON configuration
-     * @param properties  message-converter type policy and explicit allow-list
-     * @param beanFactory current Bean factory containing the application base-package registration
-     * @return the HTTP message converter backed by the selected JSON Provider
-     */
-    @Bean
-    @ConditionalOnBean(JsonProvider.class)
-    @ConditionalOnMissingBean(JsonMessageConverter.class)
-    public JsonMessageConverter jsonMessageConverter(
-            JsonProvider provider,
-            MessageConverterProperties properties,
-            BeanFactory beanFactory) {
-        JsonMessageConverter converter = new JsonMessageConverter(provider);
-        if (allowsAll(properties)) {
-            converter.typeFilter(JsonTypeFilter.always());
-            return converter;
-        }
-        converter.autoType(String.join(",", allowedTypeRules(properties, beanFactory)));
-        return converter;
     }
 
 }

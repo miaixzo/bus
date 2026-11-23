@@ -45,20 +45,6 @@ public final class ThrowableNormalizer {
     }
 
     /**
-     * Gives JVM termination and fatal resource failures back to the runtime.
-     *
-     * @param failure error caught by a failure-handling callback
-     */
-    public static void rethrowFatal(Throwable failure) {
-        if (failure instanceof VirtualMachineError fatal) {
-            throw fatal;
-        }
-        if (failure instanceof ThreadDeath stopped) {
-            throw stopped;
-        }
-    }
-
-    /**
      * Captures a bounded, cycle-safe diagnostic chain in outer-to-inner order.
      *
      * @param failure outer failure, possibly {@code null}
@@ -96,31 +82,6 @@ public final class ThrowableNormalizer {
     }
 
     /**
-     * Identifies wrappers that expose their causes as the primary failure.
-     *
-     * @param failure candidate exception, possibly null
-     * @return whether the wrapper is transparent
-     */
-    private static boolean transparent(Throwable failure) {
-        return failure instanceof CompletionException || failure instanceof ExecutionException
-                || failure instanceof InvocationTargetException || failure instanceof UndeclaredThrowableException;
-    }
-
-    /**
-     * Reads the cause and isolates a malformed exception implementation.
-     *
-     * @param failure exception whose cause is requested
-     * @return cause, or null if it is unavailable
-     */
-    private static Throwable causeOf(Throwable failure) {
-        try {
-            return failure.getCause();
-        } catch (RuntimeException malformed) {
-            return null;
-        }
-    }
-
-    /**
      * Finds a diagnostic cause for a legacy compatibility mapping.
      *
      * @param causes bounded chain
@@ -135,6 +96,42 @@ public final class ThrowableNormalizer {
             }
         }
         return null;
+    }
+
+    /**
+     * Identifies wrappers that expose their causes as the primary failure.
+     *
+     * @param failure candidate exception, possibly null
+     * @return whether the wrapper is transparent
+     */
+    private static boolean transparent(Throwable failure) {
+        return failure instanceof CompletionException || failure instanceof ExecutionException
+                || failure instanceof InvocationTargetException || failure instanceof UndeclaredThrowableException;
+    }
+
+    /**
+     * Gives fatal JVM failures back to the runtime.
+     *
+     * @param failure error caught by a failure-handling callback
+     */
+    public static void rethrowFatal(Throwable failure) {
+        if (failure instanceof VirtualMachineError fatal) {
+            throw fatal;
+        }
+    }
+
+    /**
+     * Reads the cause and isolates a malformed exception implementation.
+     *
+     * @param failure exception whose cause is requested
+     * @return cause, or null if it is unavailable
+     */
+    private static Throwable causeOf(Throwable failure) {
+        try {
+            return failure.getCause();
+        } catch (RuntimeException malformed) {
+            return null;
+        }
     }
 
 }

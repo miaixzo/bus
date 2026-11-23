@@ -88,8 +88,8 @@ public class GuardConfig {
      */
     public GuardConfig() {
         this(new Inbound(false, Normal.EMPTY, Normal.EMPTY, Integer.parseInt(Symbol.FIVE), List.of()),
-                new Outbound(false, Normal.EMPTY, Integer.parseInt(DEFAULT_TTL), Normal.EMPTY, List.of()),
-                Normal.EMPTY, Long.parseLong(DEFAULT_ROTATE), GuardEvaluator.DEFAULT_LABEL);
+                new Outbound(false, Normal.EMPTY, Integer.parseInt(DEFAULT_TTL), Normal.EMPTY, List.of()), Normal.EMPTY,
+                Long.parseLong(DEFAULT_ROTATE), GuardEvaluator.DEFAULT_LABEL);
     }
 
     /**
@@ -197,15 +197,14 @@ public class GuardConfig {
         /**
          * Configures the outbound service identity options.
          *
-         * @param enabled  whether outbound signing is enabled
-         * @param subject  subject attached to issued tokens
-         * @param ttl      token lifetime in seconds
-         * @param gateway  destination of the configured gateway client
-         * @param rules    explicit outbound target rules
+         * @param enabled whether outbound signing is enabled
+         * @param subject subject attached to issued tokens
+         * @param ttl     token lifetime in seconds
+         * @param gateway destination of the configured gateway client
+         * @param rules   explicit outbound target rules
          */
 
-        public Outbound(Boolean enabled, String subject, int ttl, String gateway,
-                List<Outgoing> rules) {
+        public Outbound(Boolean enabled, String subject, int ttl, String gateway, List<Outgoing> rules) {
             this.enabled = enabled;
             this.subject = subject;
             this.ttl = ttl;

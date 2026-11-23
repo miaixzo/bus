@@ -164,7 +164,7 @@ public final class ErrorEngine {
         }
         // A local boundary may already own a verified archive or optional provider failure.
         // Transport handlers leave linkage failures to their runtime.
-        if (primary instanceof VirtualMachineError || primary instanceof ThreadDeath || (primary instanceof LinkageError
+        if (primary instanceof VirtualMachineError || (primary instanceof LinkageError
                 && (context.phase() != ErrorContext.Phase.LOCAL || facts.descriptor() == null))) {
             return new ErrorDecision(Action.PROPAGATE, descriptor(ErrorType.UNKNOWN), facts.status(),
                     Basis.FATAL_SIGNAL, context.policyVersion());

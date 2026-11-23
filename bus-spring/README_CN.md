@@ -232,13 +232,15 @@ bus:
 
 转换器包提供：
 
-- `AbstractHttpMessageConverter`作为通用转换器底座；
-- `JsonMessageConverter` 用于Bus JSON 提供商；
-- `JsonTypeMatcher` 用于支持的 JSON 目标；
-- `MessageConverterRegistrar` 用于确定性转换器放置；
-- 用于 MVC 集成的 `JsonWebMvcConfigurer` 和 `TextWebMvcConfigurer`。
+- `JsonMessageValueConverter` 通过 Bus JSON Provider 读写 JSON。
+- `TextMessageValueConverter` 以 UTF-8 读写字符串。
+- `JsonTypeMatcher` 筛选可反序列化的 JSON 目标类型。
+- `MessageValueConverter` 统一 HTTP 消息体读写和排序接口。
+- `MessageWebMvcConfigurer` 注册转换器并安装 MVC 返回值处理器。
+- `MessageReturnValueHandler` 写出显式指定的 HTTP 状态码、响应头和响应体字节。
 
-`bus-spring` 提供这些机制，但不会自动激活它们。 Starter 的包装转换器 配置拥有激活和条件。
+Bus Starter 默认在 Servlet MVC 中安装返回值处理器。Wrapper 的转换器配置控制 JSON、文本及应用自定义转换器的注册。
+应用可以通过 `Supplier<? extends MessageValueConverter<?>>` Bean 提供 MVC 转换器。
 
 ## Body 缓存
 

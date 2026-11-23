@@ -247,14 +247,16 @@ and must not be overwritten by request input.
 
 The converter package provides:
 
-- `AbstractHttpMessageConverter` as the common converter base;
-- `JsonMessageConverter` for the Bus JSON provider;
+- `JsonMessageValueConverter` for provider-backed JSON conversion;
+- `TextMessageValueConverter` for UTF-8 string conversion;
 - `JsonTypeMatcher` for supported JSON targets;
-- `MessageConverterRegistrar` for deterministic converter placement;
-- `JsonWebMvcConfigurer` and `TextWebMvcConfigurer` for MVC integration.
+- `MessageValueConverter` for HTTP body conversion and deterministic placement;
+- `MessageWebMvcConfigurer` for converter registration and MVC return-value handler installation;
+- `MessageReturnValueHandler` for explicit HTTP status, headers and byte output.
 
-`bus-spring` supplies these mechanics but does not automatically activate them. Starter's wrapper converter
-configuration owns activation and conditions.
+Bus Starter installs the return-value handler in Servlet MVC by default. Wrapper converter configuration controls JSON,
+text and application-contributed converter registration. Applications can contribute MVC converters through
+`Supplier<? extends MessageValueConverter<?>>` beans.
 
 ## Body caching
 

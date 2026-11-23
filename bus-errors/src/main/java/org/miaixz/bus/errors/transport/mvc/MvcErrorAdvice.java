@@ -24,6 +24,7 @@ import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.function.ToIntFunction;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -158,6 +159,24 @@ public final class MvcErrorAdvice {
     }
 
     /**
+     * Handles a controller-local HTTP error described by a custom MVC return value.
+     *
+     * @param component stable owner of the application error contract
+     * @param failure   original application exception
+     * @param renderer  existing response mapping
+     * @param status    extracts the HTTP status from the mapped response
+     * @param <T>       application response type
+     * @return response approved by the existing Servlet error boundary
+     */
+    public static <T> T handleResponse(
+            String component,
+            Exception failure,
+            Supplier<T> renderer,
+            ToIntFunction<T> status) {
+        return handleResponse(component, failure, null, renderer, status, response -> () -> response);
+    }
+
+    /**
      * Handles a controller-local error and keeps its existing response mapping and optional direct write.
      *
      * @param component stable owner of the application error contract
@@ -176,10 +195,43 @@ public final class MvcErrorAdvice {
             HttpServletRequest request,
             Supplier<ResponseEntity<T>> renderer,
             ResponseWriter<T, X> writer) throws X {
+        return MvcErrorAdvice.<ResponseEntity<T>, X>handleResponse(
+                component,
+                failure,
+                request,
+                renderer,
+                response -> response.getStatusCode().value(),
+                response -> () -> {
+                    writer.write(response);
+                    return response;
+                });
+    }
+
+    /**
+     * Preserves error observation and approval for both native and custom return values.
+     *
+     * @param component stable owner of the application error contract
+     * @param failure   original application exception
+     * @param request   current servlet request, or null to use the bound request
+     * @param renderer  existing response mapping
+     * @param status    extracts the HTTP status from the mapped response
+     * @param effect    optionally writes the response after approval
+     * @param <T>       application response type
+     * @param <X>       checked write exception preserved for MVC
+     * @return mapped response
+     * @throws X if the direct response write fails
+     */
+    private static <T, X extends Exception> T handleResponse(
+            String component,
+            Exception failure,
+            HttpServletRequest request,
+            Supplier<T> renderer,
+            ToIntFunction<T> status,
+            Function<T, ErrorBoundary.Effect<T, X>> effect) throws X {
         var context = new ErrorContext(component, "http", ErrorContext.Phase.OPEN);
         var operation = ServletErrorHandler.operation(ErrorBoundary.standard(), currentRequest(request));
         String requestId = requestId(request);
-        ResponseEntity<T> response;
+        T response;
         try {
             response = renderer.get();
         } catch (RuntimeException | Error secondary) {
@@ -188,12 +240,11 @@ public final class MvcErrorAdvice {
             operation.observe(context, decision, true, failure, requestId);
             throw secondary;
         }
-        var verified = new FailureFacts(FailureFacts.Source.LOCAL, null, response.getStatusCode().value());
+        var verified = new FailureFacts(FailureFacts.Source.LOCAL, null, status.applyAsInt(response));
         var decision = operation.decide(context, verified, failure);
         return operation.complete(context, decision, failure, requestId, () -> {
             resetAndApprove();
-            writer.write(response);
-            return response;
+            return effect.apply(response).run();
         });
     }
 

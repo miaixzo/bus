@@ -21,7 +21,11 @@ package org.miaixz.bus.core.basic.entity;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
@@ -31,7 +35,7 @@ import org.miaixz.bus.core.basic.normal.Errors;
 
 /**
  * Represents a standard response message.
- *
+ * <p>
  * Uses {@code code}, {@code desc}, and {@code data} for both success and failure responses. Serialized objects using
  * the former response fields are rejected by the changed serialization version. Rebuild callers against the code/desc
  * API and migrate persisted objects before upgrading.
@@ -63,10 +67,63 @@ public class Message<T> implements Serializable {
     public T data;
 
     /**
+     * HTTP status for an original byte response, or null for a business message.
+     */
+    @Getter(AccessLevel.NONE)
+    @Setter(AccessLevel.NONE)
+    private transient Integer status;
+
+    /**
+     * Multi-value HTTP headers used only when writing an original byte response.
+     */
+    @Getter(AccessLevel.NONE)
+    @Setter(AccessLevel.NONE)
+    private transient Map<String, List<String>> headers;
+
+    /**
      * Constructs a new {@code Message} instance.
      */
     public Message() {
         // No initialization required.
+    }
+
+    /**
+     * Returns the status selected for HTTP output.
+     *
+     * @return HTTP status, or null for the business envelope
+     */
+    public Integer status() {
+        return status;
+    }
+
+    /**
+     * Returns the headers selected for HTTP output.
+     *
+     * @return immutable multi-value headers, or an empty map when absent
+     */
+    public Map<String, List<String>> headers() {
+        return headers == null ? Map.of() : headers;
+    }
+
+    /**
+     * Creates a message containing the exact bytes and metadata for an HTTP response.
+     *
+     * @param status  final HTTP status
+     * @param headers multi-value response headers
+     * @param body    exact response bytes, or null for an empty response
+     * @return message for HTTP output
+     */
+    public static Message<byte[]> http(int status, Map<String, List<String>> headers, byte[] body) {
+        if (status < 200 || status > 599) {
+            throw new IllegalArgumentException("Invalid final HTTP status: " + status);
+        }
+        Message<byte[]> message = new Message<>();
+        Map<String, List<String>> values = new LinkedHashMap<>();
+        headers.forEach((name, entries) -> values.put(name, List.copyOf(entries)));
+        message.status = status;
+        message.headers = Map.copyOf(values);
+        message.data = body;
+        return message;
     }
 
     /**

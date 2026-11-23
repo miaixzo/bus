@@ -19,45 +19,22 @@
 */
 package org.miaixz.bus.spring.web.converter;
 
-import java.util.List;
-
 import org.springframework.core.Ordered;
 import org.springframework.http.converter.HttpMessageConverter;
 
 /**
- * Stateless contract for appending Bus-managed HTTP message converters.
+ * Reads and writes HTTP message bodies with an explicit MVC converter order.
  *
+ * @param <T> supported message body type
  * @author Kimi Liu
  */
-public interface MessageConverterRegistrar extends Ordered {
+public interface MessageValueConverter<T> extends HttpMessageConverter<T>, Ordered {
 
     /**
-     * Returns the stable registrar name used for conflict detection.
+     * Returns the diagnostic name of this converter.
      *
-     * @return registrar name
+     * @return converter name
      */
-
     String name();
-
-    @Override
-    int getOrder();
-
-    /**
-     * Appends this registrar's converters to the MVC converter list.
-     *
-     * @param converters mutable MVC converter list
-     */
-
-    void register(List<HttpMessageConverter<?>> converters);
-
-    /**
-     * Applies the configured automatic JSON type rule.
-     *
-     * @param autoType auto type
-     */
-
-    default void autoType(String autoType) {
-        // Registrars without deserialization type handling ignore this optional input.
-    }
 
 }

@@ -1137,7 +1137,7 @@ public class CortexConfiguration {
      * Installs the Servlet identity filter for hosts enabling the Cortex Servlet adapter. Protected paths fail closed
      * while the inbound direction is disabled.
      *
-     * @param identity    shared service identity evaluator
+     * @param identity shared service identity evaluator
      * @return Servlet filter registration
      */
     @Bean
