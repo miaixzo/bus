@@ -27,20 +27,22 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.server.ServerWebExchange;
 
+import org.miaixz.bus.auth.guard.GuardEvaluator;
+import org.miaixz.bus.auth.guard.GuardEvaluator.Mode;
+import org.miaixz.bus.auth.guard.GuardEvaluator.Target;
+import org.miaixz.bus.auth.guard.inbound.InboundDecision;
 import org.miaixz.bus.core.center.function.BiConsumerX;
 import org.miaixz.bus.core.center.function.FunctionX;
 import org.miaixz.bus.core.center.function.PredicateX;
 import org.miaixz.bus.core.net.Http;
-import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.cortex.Assets;
-import org.miaixz.bus.cortex.guard.GuardEvaluator;
-import org.miaixz.bus.cortex.guard.GuardEvaluator.Mode;
+import org.miaixz.bus.cortex.registry.MetadataCodec;
 import org.miaixz.bus.vortex.Args;
 import org.miaixz.bus.vortex.Context;
 import org.miaixz.bus.vortex.routing.slug.SlugRouteMatcher;
 
 /**
- * Adapts Vortex requests and resolved assets to the transport-neutral service identity rules.
+ * Supplies gateway route and destination information to Auth and applies the resulting decisions to the exchange.
  *
  * @author Kimi Liu
  */
@@ -125,12 +127,10 @@ public final class IdentityGuard {
         var headers = exchange.getRequest().getHeaders();
         if (!headers.containsHeader(Http.Auth.SERVICE_TOKEN_HEADER))
             return exchange;
-        if (identity.inboundEnabled()) {
-            String path = exchange.getRequest().getPath().pathWithinApplication().value();
-            var received = identity.receive(path, fixed(path), true, headers::get);
-            if (!received.values().isEmpty())
-                exchange.getAttributes().put(TOKENS, received.values());
-        }
+        String path = exchange.getRequest().getPath().pathWithinApplication().value();
+        var received = identity.receive(path, fixed(path), true, headers::get);
+        if (!received.values().isEmpty())
+            exchange.getAttributes().put(TOKENS, received.values());
         return exchange.mutate().request(
                 request -> request
                         .headers(mutable -> identity.clearHeaders(null, mutable.headerNames(), mutable::remove)))
@@ -159,9 +159,9 @@ public final class IdentityGuard {
     }
 
     /**
-     * Evaluates service identity after route resolution, then applies application admission before business
-     * authorization. Admission also runs when inbound verification is disabled and receives no verified caller in that
-     * case. A route miss still obeys the ingress identity rules and has no asset to admit.
+     * Evaluates service identity after route resolution, then applies control-channel and asset admission before
+     * business authorization. These admission rules also apply when token verification is disabled. A route miss still
+     * obeys the ingress identity rules and has no asset to admit.
      *
      * @param exchange sanitized gateway exchange
      * @param assets   selected runtime asset, or null for an unsuccessful lookup
@@ -171,9 +171,11 @@ public final class IdentityGuard {
     public void qualified(ServerWebExchange exchange, Assets assets) {
         verifyRouteIdentity(exchange, assets);
         if (assets != null) {
-            GuardEvaluator.Verified caller = identity.inboundEnabled()
-                    ? exchange.getAttribute(GuardEvaluator.VERIFIED_ATTRIBUTE)
-                    : null;
+            GuardEvaluator.Verified caller = verified(exchange);
+            if (caller == null && (Integer.valueOf(Args.ROUTE_SDC).equals(assets.getProtocol())
+                    || requiresIdentity.test(assets))) {
+                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+            }
             admission.accept(assets, caller);
         }
     }
@@ -191,6 +193,7 @@ public final class IdentityGuard {
         boolean rest = Args.isRestRequest(path);
         boolean sdcAsset = assets != null && Integer.valueOf(Args.ROUTE_SDC).equals(assets.getProtocol());
         if (!identity.inboundEnabled()) {
+            exchange.getAttributes().put(InboundDecision.ATTRIBUTE, identity.accept(path, List.of(), null, null));
             if (assets != null && control != sdcAsset)
                 throw new ResponseStatusException(HttpStatus.FORBIDDEN);
             return;
@@ -202,8 +205,7 @@ public final class IdentityGuard {
                     ? policy(assets, true, identity.outboundEnabled())
                     : null;
             verify(exchange, path, tokens, policy, required);
-            if (control && sdcAsset
-                    && (policy == null || policy.inbound() != Mode.REQUIRED || policy.subjects().isEmpty()))
+            if (control && sdcAsset && (policy == null || !policy.requiresRestrictedCaller()))
                 throw new ResponseStatusException(HttpStatus.FORBIDDEN);
         }
         if (assets == null)
@@ -229,7 +231,8 @@ public final class IdentityGuard {
      */
     private static GuardEvaluator.Asset policy(Assets assets, boolean inbound, boolean outbound) {
         try {
-            return GuardEvaluator.asset(assets.getMetadata(), inbound, outbound);
+            return !inbound && !outbound ? null
+                    : GuardEvaluator.asset(MetadataCodec.serviceIdentity(assets.getMetadata()), inbound, outbound);
         } catch (IllegalArgumentException invalid) {
             throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE);
         }
@@ -251,19 +254,27 @@ public final class IdentityGuard {
             List<String> tokens,
             GuardEvaluator.Asset asset,
             boolean required) {
-        var result = identity.accept(path, tokens, required ? Mode.REQUIRED : fixed(path), asset);
+        var result = identity.accept(path, tokens, fixed(path), asset, required);
         switch (result.status()) {
             case REJECTED -> throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
             case UNAVAILABLE -> throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE);
-            case ACCEPTED -> {
-                if (result.verified() != null)
-                    exchange.getAttributes().put(GuardEvaluator.VERIFIED_ATTRIBUTE, result.verified());
-            }
+            case ACCEPTED -> exchange.getAttributes().put(InboundDecision.ATTRIBUTE, result);
         }
     }
 
     /**
-     * Signs for the configured next hop and includes the authenticated caller and resolved asset when present.
+     * Reads the optional caller from the Auth decision for this request.
+     *
+     * @param exchange current exchange
+     * @return verified caller, or null if the decision contains none
+     */
+    private static GuardEvaluator.Verified verified(ServerWebExchange exchange) {
+        InboundDecision decision = exchange.getAttribute(InboundDecision.ATTRIBUTE);
+        return decision == null ? null : decision.verified();
+    }
+
+    /**
+     * Applies the Auth forwarding decision at the gateway's outbound stage.
      *
      * @param exchange qualified request
      * @param context  gateway routing context
@@ -271,48 +282,44 @@ public final class IdentityGuard {
      * @throws ResponseStatusException if a required caller or next-hop credential is unavailable
      */
     public ServerWebExchange outbound(ServerWebExchange exchange, Context context) {
-        if (!identity.outboundEnabled())
-            return forward(exchange, context, null);
         String route = exchange.getRequest().getPath().pathWithinApplication().value();
-        Mode fixed = fixed(route);
-        var asset = context.getAssets();
-        if (fixed == Mode.OFF || asset == null && fixed == null)
-            return forward(exchange, context, null);
-        GuardEvaluator.Asset policy = !identity.inboundEnabled() && Args.isRestRequest(route) && asset != null
-                ? policy(asset, false, true)
-                : exchange.getAttribute(ASSET);
-        Mode mode = policy == null ? null : policy.outbound();
-        if (Args.isRestRequest(route) && mode != Mode.REQUIRED)
-            return forward(exchange, context, null);
-        try {
-            SlugRouteMatcher.Match slug = exchange.getAttribute(SlugRouteMatcher.MATCH_ATTRIBUTE);
-            URI destination = slug != null ? SlugRouteMatcher.operation(slug, exchange.getRequest().getPath().value())
-                    : asset == null || asset.getUrl() == null ? null : URI.create(asset.getUrl());
-            String audience = null;
-            if (destination != null && !destination.isAbsolute() && destination.getRawAuthority() == null
-                    && asset.getApp_id() != null && asset.getInstances() != null && asset.getInstances().size() == 1
-                    && asset.getApp_id().equals(asset.getInstances().getFirst().getApp_id())) {
-                audience = resolver.apply(asset.getApp_id());
-            }
-            GuardEvaluator.Verified caller = exchange.getAttribute(GuardEvaluator.VERIFIED_ATTRIBUTE);
-            if (fixed == Mode.REQUIRED && identity.inboundEnabled() && caller == null)
-                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
-            if (fixed == Mode.REQUIRED && (asset == null || StringKit.isBlank(asset.getId())))
-                throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE);
-            String assetId = caller != null && asset != null ? asset.getId() : null;
-            String token = identity.outbound(
-                    route,
-                    audience,
-                    destination == null ? null : destination.getPath(),
-                    fixed,
-                    mode,
-                    Args.isRestRequest(route),
-                    caller,
-                    assetId);
-            return forward(exchange, context, token);
-        } catch (IllegalArgumentException | IllegalStateException unavailable) {
-            throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE);
+        Assets asset = context.getAssets();
+        boolean rest = Args.isRestRequest(route);
+        var decision = identity.forward(
+                route,
+                fixed(route),
+                asset != null,
+                rest,
+                () -> !identity.inboundEnabled() && rest && asset != null ? policy(asset, false, true)
+                        : exchange.getAttribute(ASSET),
+                () -> target(exchange, asset),
+                verified(exchange),
+                asset == null ? null : asset.getId());
+        return switch (decision.status()) {
+            case READY -> forward(exchange, context, decision.token());
+            case REJECTED -> throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+            case UNAVAILABLE -> throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE);
+        };
+    }
+
+    /**
+     * Resolves the gateway's authorized target path and the registered service that owns it.
+     *
+     * @param exchange qualified request
+     * @param asset    resolved route asset
+     * @return target coordinates for Auth to evaluate
+     */
+    private Target target(ServerWebExchange exchange, Assets asset) {
+        SlugRouteMatcher.Match slug = exchange.getAttribute(SlugRouteMatcher.MATCH_ATTRIBUTE);
+        URI destination = slug != null ? SlugRouteMatcher.operation(slug, exchange.getRequest().getPath().value())
+                : asset == null || asset.getUrl() == null ? null : URI.create(asset.getUrl());
+        String audience = null;
+        if (destination != null && !destination.isAbsolute() && destination.getRawAuthority() == null
+                && asset.getApp_id() != null && asset.getInstances() != null && asset.getInstances().size() == 1
+                && asset.getApp_id().equals(asset.getInstances().getFirst().getApp_id())) {
+            audience = resolver.apply(asset.getApp_id());
         }
+        return new Target(audience, destination == null ? null : destination.getPath());
     }
 
     /**

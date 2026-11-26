@@ -1522,9 +1522,6 @@
           "name": "syncIntervalSeconds"
         },
         {
-          "name": "timestampToleranceMinutes"
-        },
-        {
           "name": "multipartMemoryThresholdBytes"
         },
         {
@@ -1665,10 +1662,6 @@
           "parameterTypes": []
         },
         {
-          "name": "$default$timestampToleranceMinutes",
-          "parameterTypes": []
-        },
-        {
           "name": "<init>",
           "parameterTypes": []
         },
@@ -1768,10 +1761,6 @@
         },
         {
           "name": "getSyncIntervalSeconds",
-          "parameterTypes": []
-        },
-        {
-          "name": "getTimestampToleranceMinutes",
           "parameterTypes": []
         },
         {
@@ -1922,12 +1911,6 @@
         },
         {
           "name": "setSyncIntervalSeconds",
-          "parameterTypes": [
-            "int"
-          ]
-        },
-        {
-          "name": "setTimestampToleranceMinutes",
           "parameterTypes": [
             "int"
           ]
@@ -2241,12 +2224,6 @@
         },
         {
           "name": "syncIntervalSeconds",
-          "parameterTypes": [
-            "int"
-          ]
-        },
-        {
-          "name": "timestampToleranceMinutes",
           "parameterTypes": [
             "int"
           ]

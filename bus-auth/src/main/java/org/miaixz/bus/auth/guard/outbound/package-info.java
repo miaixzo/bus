@@ -18,8 +18,8 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Assembles inbound and outbound service identity and coordinates shared token header handling.
+ * Selects outbound service identity policies and manages next-hop tokens.
  *
  * @author Kimi Liu
  */
-package org.miaixz.bus.cortex.guard;
+package org.miaixz.bus.auth.guard.outbound;

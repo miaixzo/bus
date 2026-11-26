@@ -17,39 +17,48 @@
  ~                                                                           ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.cortex.guard.outbound;
+package org.miaixz.bus.auth.guard.token;
 
-import java.time.Duration;
-import java.util.List;
-
-import org.miaixz.bus.cortex.guard.GuardEvaluator.Rule;
+import org.miaixz.bus.auth.shared.jwt.JWT;
 
 /**
- * Outbound service identity configuration.
- *
- * @param enabled whether outgoing credentials may be issued
- * @param subject local service code
- * @param ttl     lifetime of the issued token
- * @param rules   configured destinations
+ * Default {@link ServiceTokenProvider} that uses {@link ServiceTokenIssuer} for HS256 signing and
+ * {@link ServiceTokenVerifier} for signature verification.
  *
  * @author Kimi Liu
  */
-public record OutboundPolicy(boolean enabled, String subject, Duration ttl, List<Rule> rules) {
+public final class Hs256TokenProvider implements ServiceTokenProvider {
 
     /**
-     * Validates the active issuer settings and destination rules.
-     *
-     * @param enabled whether outgoing credentials may be issued
-     * @param subject local service code
-     * @param ttl     lifetime of an issued token
-     * @param rules   configured destinations
-     * @throws IllegalArgumentException if the rules are invalid or enabled signing has incomplete settings
+     * Creates the default HS256 token provider.
      */
-    public OutboundPolicy {
-        rules = Rule.validateRules(rules, true);
-        if (enabled && (subject == null || subject.isBlank() || ttl.toSeconds() < 60 || ttl.toSeconds() > 900
-                || rules.isEmpty()))
-            throw new IllegalArgumentException("Incomplete outbound service identity settings");
+    public Hs256TokenProvider() {
+        // No initialization required.
+    }
+
+    /**
+     * Signs the claims selected by the service identity evaluator.
+     *
+     * @param issue trusted claims and lifetime
+     * @param key   current signing material
+     * @return compact signed service token
+     */
+    @Override
+    public String issue(Issue issue, ServiceKeyProvider.Key key) {
+        return new ServiceTokenIssuer(issue.subject(), issue.audience(), key.secret(), issue.lifetime(), issue.origin(),
+                issue.asset()).sign();
+    }
+
+    /**
+     * Verifies the signature against the selected key. The evaluator enforces the route and claim rules.
+     *
+     * @param compact compact service token
+     * @param key     trusted verification material
+     * @return authenticated JWT or null when the signature or compact format is invalid
+     */
+    @Override
+    public JWT verify(String compact, ServiceKeyProvider.Key key) {
+        return ServiceTokenVerifier.verify(compact, key.secret());
     }
 
 }

@@ -41,6 +41,7 @@ import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import org.springframework.web.server.ResponseStatusException;
 
+import org.miaixz.bus.auth.guard.SignValidator;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
@@ -56,7 +57,6 @@ import org.miaixz.bus.errors.transport.reactive.ReactiveErrorHandler;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.vortex.*;
-import org.miaixz.bus.vortex.guard.SignatureVerifier;
 import org.miaixz.bus.vortex.routing.Coordinator;
 import org.miaixz.bus.vortex.routing.FlowEnforcer;
 
@@ -194,7 +194,7 @@ public class RestExecutor extends Coordinator<ServerRequest, ServerResponse> {
                 return Mono.error(new ResponseStatusException(HttpStatus.UNSUPPORTED_MEDIA_TYPE));
             }
             byte[] body = fixJsonEncoding(JsonKit.toJsonString(context.getParameters())).getBytes(Charset.UTF_8);
-            if (body.length > SignatureVerifier.FORWARD_BODY_LIMIT)
+            if (body.length > SignValidator.FORWARD_BODY_LIMIT)
                 return Mono.error(new ResponseStatusException(HttpStatus.CONTENT_TOO_LARGE));
             bodySpec.headers(headers -> {
                 headers.remove(Http.Header.CONTENT_ENCODING);

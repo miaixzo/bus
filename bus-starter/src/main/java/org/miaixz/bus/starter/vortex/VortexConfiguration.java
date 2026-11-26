@@ -51,9 +51,9 @@ import org.springframework.web.server.WebHandler;
 import org.springframework.web.server.adapter.ForwardedHeaderTransformer;
 import org.springframework.web.server.adapter.WebHttpHandlerBuilder;
 
+import org.miaixz.bus.auth.guard.GuardEvaluator;
 import org.miaixz.bus.core.center.function.BiConsumerX;
 import org.miaixz.bus.core.center.function.PredicateX;
-import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Port;
@@ -61,20 +61,27 @@ import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.cortex.Assets;
 import org.miaixz.bus.cortex.Keying;
 import org.miaixz.bus.cortex.builtin.RegistryGenerator;
-import org.miaixz.bus.cortex.guard.GuardEvaluator;
 import org.miaixz.bus.errors.ErrorBoundary;
 import org.miaixz.bus.errors.transport.reactive.ReactiveErrorHandler;
 import org.miaixz.bus.errors.transport.reactive.ReactiveResponseGuard;
 import org.miaixz.bus.spring.boot.condition.ConditionalOnEnabled;
 import org.miaixz.bus.starter.GeniusBuilder;
-import org.miaixz.bus.starter.annotation.EnableCortex;
 import org.miaixz.bus.starter.annotation.EnableVortex;
+import org.miaixz.bus.starter.auth.AuthProperties;
 import org.miaixz.bus.starter.cortex.CortexConfiguration;
-import org.miaixz.bus.starter.cortex.CortexProperties;
 import org.miaixz.bus.starter.errors.ErrorsConfiguration;
 import org.miaixz.bus.starter.errors.ErrorsProperties;
 import org.miaixz.bus.starter.errors.ErrorsProperties.Target;
-import org.miaixz.bus.vortex.*;
+import org.miaixz.bus.vortex.Args;
+import org.miaixz.bus.vortex.Egress;
+import org.miaixz.bus.vortex.Executor;
+import org.miaixz.bus.vortex.Factory;
+import org.miaixz.bus.vortex.Filter;
+import org.miaixz.bus.vortex.Handler;
+import org.miaixz.bus.vortex.Holder;
+import org.miaixz.bus.vortex.Router;
+import org.miaixz.bus.vortex.Strategy;
+import org.miaixz.bus.vortex.Vortex;
 import org.miaixz.bus.vortex.filter.AdmissionFilter;
 import org.miaixz.bus.vortex.filter.PrimaryFilter;
 import org.miaixz.bus.vortex.guard.IdentityGuard;
@@ -86,7 +93,14 @@ import org.miaixz.bus.vortex.magic.Principal;
 import org.miaixz.bus.vortex.provider.AuthorizeProvider;
 import org.miaixz.bus.vortex.registry.AssetsRegistry;
 import org.miaixz.bus.vortex.registry.LimiterRegistry;
-import org.miaixz.bus.vortex.routing.*;
+import org.miaixz.bus.vortex.routing.GrpcRouter;
+import org.miaixz.bus.vortex.routing.LlmRouter;
+import org.miaixz.bus.vortex.routing.McpRouter;
+import org.miaixz.bus.vortex.routing.MqRouter;
+import org.miaixz.bus.vortex.routing.RestRouter;
+import org.miaixz.bus.vortex.routing.SdcRouter;
+import org.miaixz.bus.vortex.routing.SlugRouter;
+import org.miaixz.bus.vortex.routing.WsRouter;
 import org.miaixz.bus.vortex.routing.grpc.GrpcExecutor;
 import org.miaixz.bus.vortex.routing.llm.LlmExecutor;
 import org.miaixz.bus.vortex.routing.llm.LlmFactory;
@@ -697,12 +711,13 @@ public class VortexConfiguration {
      * Provides the REST vetting strategy bean. This strategy validates REST/API parameters and timestamps before route
      * assets are resolved.
      *
+     * @param auth bound request-signature and timestamp configuration
      * @return A new instance of RestVettingStrategy.
      */
     @Bean
     @ConditionalOnMissingBean(RestVettingStrategy.class)
-    public RestVettingStrategy restVettingStrategy() {
-        return new RestVettingStrategy();
+    public RestVettingStrategy restVettingStrategy(AuthProperties auth) {
+        return new RestVettingStrategy(auth.getGuard().getSigning());
     }
 
     /**
@@ -797,15 +812,15 @@ public class VortexConfiguration {
      * for the gateway audience and replaces the reserved service identity headers.
      *
      * @param identity    shared service identity evaluator
-     * @param cortex      bound Cortex settings for the configured gateway audience
+     * @param auth        bound Auth settings for the configured gateway audience
      * @param environment deployment configuration containing the gateway endpoint and response size limit
      * @return gateway client that sends signed requests without following redirects
      */
     @Bean
-    @ConditionalOnEnabled(annotation = EnableCortex.class, prefix = GeniusBuilder.CORTEX_GUARD, member = "guard", name = Normal.EMPTY)
-    @ConditionalOnProperty(prefix = GeniusBuilder.CORTEX_GUARD, name = "outbound.gateway-endpoint")
-    WebClient cortexGatewayWebClient(GuardEvaluator identity, CortexProperties cortex, Environment environment) {
-        String prefix = GeniusBuilder.CORTEX_GUARD + ".outbound.";
+    @ConditionalOnProperty(prefix = GeniusBuilder.AUTH_GUARD, name = "enabled", havingValue = "true")
+    @ConditionalOnProperty(prefix = GeniusBuilder.AUTH_GUARD, name = "outbound.gateway-endpoint")
+    WebClient cortexGatewayWebClient(GuardEvaluator identity, AuthProperties auth, Environment environment) {
+        String prefix = GeniusBuilder.AUTH_GUARD + ".outbound.";
         URI gateway = URI.create(environment.getRequiredProperty(prefix + "gateway-endpoint"));
         var transport = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(5))
                 .followRedirects(HttpClient.Redirect.NEVER).build();
@@ -825,7 +840,7 @@ public class VortexConfiguration {
                     }
                     String token = identity.outbound(
                             null,
-                            cortex.getGuard().outbound().gateway(),
+                            auth.getGuard().getOutbound().gateway(),
                             target.getPath(),
                             GuardEvaluator.Mode.REQUIRED,
                             null,
@@ -970,12 +985,13 @@ public class VortexConfiguration {
      *
      * @param strategyFactory The StrategyFactory instance.
      * @param identities      The service identity adapter for inbound and outbound requests.
+     * @param auth            The configuration of client Guard checks.
      * @return A new instance of PrimaryFilter.
      */
     @Bean
     @ConditionalOnMissingBean(PrimaryFilter.class)
-    public PrimaryFilter primaryFilter(StrategyFactory strategyFactory, IdentityGuard identities) {
-        return new PrimaryFilter(strategyFactory, identities);
+    public PrimaryFilter primaryFilter(StrategyFactory strategyFactory, IdentityGuard identities, AuthProperties auth) {
+        return new PrimaryFilter(strategyFactory, identities, auth.getGuard());
     }
 
 }

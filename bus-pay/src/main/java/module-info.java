@@ -40,7 +40,6 @@ module bus.pay {
     requires bus.logger;
 
     requires static lombok;
-    requires static org.bouncycastle.provider;
 
     exports org.miaixz.bus.pay;
     exports org.miaixz.bus.pay.cache;

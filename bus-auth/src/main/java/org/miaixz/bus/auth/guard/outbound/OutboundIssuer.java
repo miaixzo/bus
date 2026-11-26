@@ -17,7 +17,7 @@
  ~                                                                           ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.cortex.guard.outbound;
+package org.miaixz.bus.auth.guard.outbound;
 
 import java.time.Instant;
 import java.util.Arrays;
@@ -26,15 +26,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import org.miaixz.bus.auth.guard.GuardEvaluator.Mode;
+import org.miaixz.bus.auth.guard.GuardEvaluator.Rule;
+import org.miaixz.bus.auth.guard.GuardEvaluator.Verified;
+import org.miaixz.bus.auth.guard.token.ServiceKeyProvider;
+import org.miaixz.bus.auth.guard.token.ServiceTokenIssuer;
+import org.miaixz.bus.auth.guard.token.ServiceTokenProvider;
+import org.miaixz.bus.auth.guard.token.ServiceTokenVerifier;
 import org.miaixz.bus.auth.shared.jose.JwaAlgorithm;
 import org.miaixz.bus.auth.shared.jwt.JWT;
-import org.miaixz.bus.cortex.guard.GuardEvaluator.Mode;
-import org.miaixz.bus.cortex.guard.GuardEvaluator.Rule;
-import org.miaixz.bus.cortex.guard.GuardEvaluator.Verified;
-import org.miaixz.bus.cortex.guard.token.ServiceKeyProvider;
-import org.miaixz.bus.cortex.guard.token.ServiceTokenIssuer;
-import org.miaixz.bus.cortex.guard.token.ServiceTokenProvider;
-import org.miaixz.bus.cortex.guard.token.ServiceTokenVerifier;
 
 /**
  * Applies next-hop rules and signs and caches service tokens for approved destinations.
@@ -79,6 +79,15 @@ public final class OutboundIssuer {
         this.policy = Objects.requireNonNull(policy);
         this.keys = Objects.requireNonNull(keys);
         this.tokens = Objects.requireNonNull(tokens);
+    }
+
+    /**
+     * Reports whether the effective next-hop policy enables service token issuance.
+     *
+     * @return whether outbound issuance is enabled
+     */
+    public boolean enabled() {
+        return policy.enabled();
     }
 
     /**

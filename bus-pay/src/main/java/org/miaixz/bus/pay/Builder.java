@@ -39,9 +39,6 @@ import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.GCMParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
-import org.bouncycastle.asn1.gm.GMObjectIdentifiers;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
-
 import org.miaixz.bus.core.center.date.DateTime;
 import org.miaixz.bus.core.codec.binary.Base64;
 import org.miaixz.bus.core.io.resource.ClassPathResource;
@@ -55,6 +52,7 @@ import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.crypto.Holder;
 import org.miaixz.bus.crypto.builtin.Certificate;
+import org.miaixz.bus.crypto.nimble.BouncyCastleServiceProvider;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.pay.nimble.wechat.AuthType;
 import org.miaixz.bus.pay.nimble.wechat.WechatPayBuilder;
@@ -65,6 +63,8 @@ import org.miaixz.bus.pay.nimble.wechat.WechatPayBuilder;
  * @author Kimi Liu
  */
 public class Builder {
+
+    private static final String SM2_SIGNATURE_ALGORITHM = "SM3withSM2";
 
     /**
      * Constructs a new Builder instance.
@@ -144,8 +144,7 @@ public class Builder {
      */
     public static String sm2SignWithSm3(PrivateKey privateKey, String content) throws Exception {
         // Generate SM2sign with sm3 signature algorithm instance
-        Signature signature = Signature
-                .getInstance(GMObjectIdentifiers.sm2sign_with_sm3.toString(), bouncyCastleProvider());
+        Signature signature = Signature.getInstance(SM2_SIGNATURE_ALGORITHM, bouncyCastleProvider());
         // Initialize the signature instance with the private key
         signature.initSign(privateKey);
         // Original text to be signed
@@ -215,8 +214,7 @@ public class Builder {
      * @throws Exception If an error occurs.
      */
     public static boolean sm4Verify(PublicKey publicKey, String data, String originalSignature) throws Exception {
-        Signature signature = Signature
-                .getInstance(GMObjectIdentifiers.sm2sign_with_sm3.toString(), bouncyCastleProvider());
+        Signature signature = Signature.getInstance(SM2_SIGNATURE_ALGORITHM, bouncyCastleProvider());
         signature.initVerify(publicKey);
         // Update the algorithm with the original data to be verified
         signature.update(data.getBytes(Charset.UTF_8));
@@ -619,11 +617,7 @@ public class Builder {
         if (null != provider) {
             return provider;
         }
-        provider = Security.getProvider(BouncyCastleProvider.PROVIDER_NAME);
-        if (null != provider) {
-            return provider;
-        }
-        provider = new BouncyCastleProvider();
+        provider = new BouncyCastleServiceProvider().create();
         org.miaixz.bus.crypto.Builder.addProvider(provider);
         return provider;
     }

@@ -17,30 +17,31 @@
  ~                                                                           ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.cortex.guard;
+package org.miaixz.bus.auth.guard;
 
 import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
+import org.miaixz.bus.auth.guard.inbound.InboundDecision;
+import org.miaixz.bus.auth.guard.inbound.InboundEvaluator;
+import org.miaixz.bus.auth.guard.inbound.InboundEvaluator.Received;
+import org.miaixz.bus.auth.guard.inbound.InboundPolicy;
+import org.miaixz.bus.auth.guard.outbound.OutboundIssuer;
+import org.miaixz.bus.auth.guard.outbound.OutboundPolicy;
+import org.miaixz.bus.auth.guard.token.DerivedKeyProvider;
+import org.miaixz.bus.auth.guard.token.Hs256TokenProvider;
+import org.miaixz.bus.auth.guard.token.ServiceKeyProvider;
+import org.miaixz.bus.auth.guard.token.ServiceTokenProvider;
 import org.miaixz.bus.core.center.function.BiConsumerX;
 import org.miaixz.bus.core.center.function.ConsumerX;
 import org.miaixz.bus.core.center.function.FunctionX;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.net.Http;
-import org.miaixz.bus.cortex.guard.inbound.InboundDecision;
-import org.miaixz.bus.cortex.guard.inbound.InboundEvaluator;
-import org.miaixz.bus.cortex.guard.inbound.InboundEvaluator.Received;
-import org.miaixz.bus.cortex.guard.inbound.InboundPolicy;
-import org.miaixz.bus.cortex.guard.outbound.OutboundIssuer;
-import org.miaixz.bus.cortex.guard.outbound.OutboundPolicy;
-import org.miaixz.bus.cortex.guard.token.DerivedKeyProvider;
-import org.miaixz.bus.cortex.guard.token.Hs256TokenProvider;
-import org.miaixz.bus.cortex.guard.token.ServiceKeyProvider;
-import org.miaixz.bus.cortex.guard.token.ServiceTokenProvider;
-import org.miaixz.bus.cortex.registry.MetadataCodec;
+import org.miaixz.bus.core.xyz.StringKit;
 
 /**
  * Coordinates inbound service identity, outbound token issuance, and shared HTTP header handling.
@@ -48,16 +49,6 @@ import org.miaixz.bus.cortex.registry.MetadataCodec;
  * @author Kimi Liu
  */
 public final class GuardEvaluator {
-
-    /**
-     * Stable separation label shared by deployments without a custom value.
-     */
-    public static final String DEFAULT_LABEL = "miaixz-bus-anchor-v1:";
-
-    /**
-     * Request attribute holding the verified service identity.
-     */
-    public static final String VERIFIED_ATTRIBUTE = "org.miaixz.bus.cortex.guard.GuardEvaluator.verified";
 
     /**
      * Resolves inbound policy and verifies the service token.
@@ -70,21 +61,11 @@ public final class GuardEvaluator {
     private final OutboundIssuer outbound;
 
     /**
-     * Whether the shared inbound evaluator is enabled.
-     */
-    private final boolean inboundEnabled;
-
-    /**
-     * Whether the shared outbound issuer is enabled.
-     */
-    private final boolean outboundEnabled;
-
-    /**
      * Creates a shared identity configured for one or both directions.
      *
      * @param secret   Base64 deployment root
      * @param rotate   rotation period in seconds
-     * @param label    derivation label
+     * @param label    derivation label required when either direction is enabled
      * @param inbound  inbound service policy
      * @param outbound outbound service policy
      */
@@ -106,13 +87,11 @@ public final class GuardEvaluator {
             ServiceTokenProvider tokens) {
         this.inbound = new InboundEvaluator(inbound, keys, tokens);
         this.outbound = new OutboundIssuer(outbound, keys, tokens);
-        this.inboundEnabled = inbound.enabled();
-        this.outboundEnabled = outbound.enabled();
-        if (inboundEnabled || outboundEnabled) {
+        if (inbound.enabled() || outbound.enabled()) {
             Instant now = Instant.now();
             ServiceKeyProvider.Snapshot snapshot = Objects.requireNonNull(keys.keys(now));
-            if (inboundEnabled && snapshot.verification().stream().noneMatch(key -> key.active(now))
-                    || outboundEnabled && (snapshot.signing() == null || !snapshot.signing().active(now)))
+            if (inbound.enabled() && snapshot.verification().stream().noneMatch(key -> key.active(now))
+                    || outbound.enabled() && (snapshot.signing() == null || !snapshot.signing().active(now)))
                 throw new IllegalStateException("Required service identity is unavailable");
         }
     }
@@ -123,7 +102,7 @@ public final class GuardEvaluator {
      * @return identity suitable for an application without configured service trust
      */
     public static GuardEvaluator disabled() {
-        return new GuardEvaluator(null, Normal._1, DEFAULT_LABEL,
+        return new GuardEvaluator(null, Normal._1, null,
                 new InboundPolicy(false, null, Set.of(), Duration.ZERO, List.of()),
                 new OutboundPolicy(false, null, Duration.ZERO, List.of()));
     }
@@ -139,7 +118,7 @@ public final class GuardEvaluator {
      * @return header presence for sanitization and the values needed by the later authentication stage
      */
     public Received receive(String path, Mode fixed, boolean assetPending, FunctionX<String, List<String>> read) {
-        if (!inboundEnabled)
+        if (!inboundEnabled())
             return new Received(false, List.of());
         List<String> values = read.apply(Http.Auth.SERVICE_TOKEN_HEADER);
         if (values == null)
@@ -157,7 +136,7 @@ public final class GuardEvaluator {
      * @return the effective authentication decision
      */
     public InboundDecision acceptHeaders(String path, String header, FunctionX<String, List<String>> read) {
-        if (!inboundEnabled)
+        if (!inboundEnabled())
             return new InboundDecision(InboundDecision.Status.ACCEPTED, null);
         List<String> values = read.apply(headerName(header));
         return accept(path, values == null ? List.of() : values, null, null);
@@ -225,8 +204,76 @@ public final class GuardEvaluator {
      * @return decision and verified identity, if present
      */
     public InboundDecision accept(String path, List<String> tokens, Mode fixed, Asset asset) {
-        return inboundEnabled ? inbound.evaluate(path, tokens, fixed, asset)
+        return accept(path, tokens, fixed, asset, false);
+    }
+
+    /**
+     * Evaluates inbound identity for a route that may require a verified caller at the application's request.
+     *
+     * @param path           context-relative route path
+     * @param tokens         all supplied values of the service identity header
+     * @param fixed          route requirement, or null for configured policy selection
+     * @param asset          identity policy of the matched asset, if available
+     * @param callerRequired whether the application requires verification for the matched asset
+     * @return effective decision including the caller when verified
+     */
+    public InboundDecision accept(String path, List<String> tokens, Mode fixed, Asset asset, boolean callerRequired) {
+        return inboundEnabled() ? inbound.evaluate(path, tokens, callerRequired ? Mode.REQUIRED : fixed, asset)
                 : new InboundDecision(InboundDecision.Status.ACCEPTED, null);
+    }
+
+    /**
+     * Decides whether to forward service identity, resolving the target only when the channel and asset may use it.
+     * Fixed required channels need an asset identifier and, when inbound verification is enabled, a verified caller.
+     *
+     * @param route           original gateway path
+     * @param fixed           fixed channel requirement, or null for configured policy selection
+     * @param assetSelected   whether routing resolved an asset
+     * @param assetControlled whether issuance requires explicit asset opt-in
+     * @param assetPolicy     supplier of the selected identity policy
+     * @param target          supplier of the trusted target coordinates
+     * @param caller          verified inbound caller, if any
+     * @param assetId         identifier of the selected asset, if any
+     * @return forwarding disposition and the optional newly issued credential
+     */
+    public OutboundDecision forward(
+            String route,
+            Mode fixed,
+            boolean assetSelected,
+            boolean assetControlled,
+            Supplier<Asset> assetPolicy,
+            Supplier<Target> target,
+            Verified caller,
+            String assetId) {
+        if (!outboundEnabled() || fixed == Mode.OFF || !assetSelected && fixed == null) {
+            return new OutboundDecision(OutboundDecision.Status.READY, null);
+        }
+        Asset asset = assetPolicy.get();
+        Mode mode = asset == null ? null : asset.outbound();
+        if (assetControlled && mode != Mode.REQUIRED) {
+            return new OutboundDecision(OutboundDecision.Status.READY, null);
+        }
+        try {
+            Target destination = target.get();
+            if (fixed == Mode.REQUIRED && inboundEnabled() && caller == null) {
+                return new OutboundDecision(OutboundDecision.Status.REJECTED, null);
+            }
+            if (fixed == Mode.REQUIRED && StringKit.isBlank(assetId)) {
+                return new OutboundDecision(OutboundDecision.Status.UNAVAILABLE, null);
+            }
+            String token = outbound.issue(
+                    route,
+                    destination.audience(),
+                    destination.path(),
+                    fixed,
+                    mode,
+                    assetControlled,
+                    caller,
+                    caller == null ? null : assetId);
+            return new OutboundDecision(OutboundDecision.Status.READY, token);
+        } catch (IllegalArgumentException | IllegalStateException unavailable) {
+            return new OutboundDecision(OutboundDecision.Status.UNAVAILABLE, null);
+        }
     }
 
     /**
@@ -298,7 +345,7 @@ public final class GuardEvaluator {
             boolean assetControlled,
             Verified caller,
             String assetId) {
-        return outboundEnabled ? outbound.issue(route, audience, path, fixed, asset, assetControlled, caller, assetId)
+        return outboundEnabled() ? outbound.issue(route, audience, path, fixed, asset, assetControlled, caller, assetId)
                 : null;
     }
 
@@ -310,33 +357,29 @@ public final class GuardEvaluator {
      * @return compact service token, or null when outbound issuance is disabled
      */
     public String issue(String audience) {
-        return outboundEnabled ? outbound.issue(audience) : null;
+        return outboundEnabled() ? outbound.issue(audience) : null;
     }
 
     /**
-     * Reads the service identity policy from a registered asset's metadata.
+     * Reads service identity policy supplied by the calling application.
      *
-     * @param metadata registered asset JSON text
+     * @param policy selected service identity fields, or null when absent
      * @return explicit policy, or null when the asset has no identity settings
      */
-    public static Asset asset(String metadata) {
-        return asset(metadata, true, true);
+    public static Asset asset(Map<String, ?> policy) {
+        return asset(policy, true, true);
     }
 
     /**
      * Reads the registered identity rules only for the selected directions.
      *
-     * @param metadata     registered asset metadata
+     * @param policy       selected service identity fields, or null when absent
      * @param readInbound  whether to read inbound rules and caller restrictions
      * @param readOutbound whether to read outbound rules
      * @return rules for the selected directions, or null when no selected rules are present
      */
-    public static Asset asset(String metadata, boolean readInbound, boolean readOutbound) {
-        if (!readInbound && !readOutbound)
-            return null;
-        var cortex = section(MetadataCodec.root(metadata), MetadataCodec.ROOT);
-        var policy = section(cortex, "serviceIdentity");
-        if (policy == null)
+    public static Asset asset(Map<String, ?> policy, boolean readInbound, boolean readOutbound) {
+        if ((!readInbound && !readOutbound) || policy == null)
             return null;
         if (!policy.containsKey("inbound") && !policy.containsKey("outbound"))
             throw new IllegalArgumentException("Asset service identity policy requires a direction");
@@ -351,7 +394,7 @@ public final class GuardEvaluator {
      * @return whether inbound service token verification is enabled
      */
     public boolean inboundEnabled() {
-        return inboundEnabled;
+        return inbound.enabled();
     }
 
     /**
@@ -360,7 +403,7 @@ public final class GuardEvaluator {
      * @return whether outbound service token issuance is enabled
      */
     public boolean outboundEnabled() {
-        return outboundEnabled;
+        return outbound.enabled();
     }
 
     /**
@@ -370,11 +413,11 @@ public final class GuardEvaluator {
      * @param name   field name
      * @return nested object or null when absent
      */
-    private static Map<String, Object> section(Map<String, Object> parent, String name) {
+    private static Map<?, ?> section(Map<?, ?> parent, String name) {
         if (parent == null || !parent.containsKey(name))
             return null;
         if (parent.get(name) instanceof Map<?, ?> section)
-            return MetadataCodec.object(section);
+            return section;
         throw new IllegalArgumentException("Invalid asset service identity configuration");
     }
 
@@ -384,7 +427,7 @@ public final class GuardEvaluator {
      * @param direction registered direction fields
      * @return configured mode or null when the direction is absent
      */
-    private static Mode mode(Map<String, Object> direction) {
+    private static Mode mode(Map<?, ?> direction) {
         if (direction == null)
             return null;
         if (direction.get("mode") instanceof String text)
@@ -398,7 +441,7 @@ public final class GuardEvaluator {
      * @param direction registered inbound fields
      * @return caller codes, or the empty default
      */
-    private static Set<String> subjects(Map<String, Object> direction) {
+    private static Set<String> subjects(Map<?, ?> direction) {
         if (direction == null || !direction.containsKey("subjects"))
             return Set.of();
         if (!(direction.get("subjects") instanceof List<?> values) || values.isEmpty()
@@ -428,6 +471,56 @@ public final class GuardEvaluator {
             subjects = Set.copyOf(subjects);
             if (outbound == Mode.OPTIONAL)
                 throw new IllegalArgumentException("Invalid asset outbound service identity mode");
+        }
+
+        /**
+         * Reports whether the policy explicitly requires a caller from a nonempty subject allowlist.
+         *
+         * @return whether a restricted inbound caller is required
+         */
+        public boolean requiresRestrictedCaller() {
+            return inbound == Mode.REQUIRED && !subjects.isEmpty();
+        }
+
+    }
+
+    /**
+     * Trusted target coordinates supplied by a transport or routing adapter.
+     *
+     * @param audience resolved recipient service code, or null when unavailable
+     * @param path     downstream request path, or null when unavailable
+     */
+    public record Target(String audience, String path) {
+    }
+
+    /**
+     * Result of evaluating outbound identity for a matched route.
+     *
+     * @param status whether the request can proceed with the configured identity policy
+     * @param token  fresh credential, or null when the reserved header should be cleared
+     */
+    public record OutboundDecision(Status status, String token) {
+
+        /**
+         * Returns a diagnostic summary without the newly issued token.
+         *
+         * @return the forwarding disposition
+         */
+        @Override
+        public String toString() {
+            return "OutboundDecision[status=" + status + "]";
+        }
+
+        /**
+         * Transport-neutral forwarding disposition.
+         */
+        public enum Status {
+            /** Forward with the issued credential, if one was required. */
+            READY,
+            /** The channel requires a verified inbound caller. */
+            REJECTED,
+            /** The required target policy, coordinates, or signing material are unavailable. */
+            UNAVAILABLE
         }
 
     }

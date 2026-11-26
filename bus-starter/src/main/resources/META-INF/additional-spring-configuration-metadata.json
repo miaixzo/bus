@@ -51,6 +51,77 @@
       "defaultValue": "COMPATIBLE"
     },
     {
+      "name": "bus.auth.guard.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Installs the Servlet service identity filter and configured gateway clients.",
+      "defaultValue": false
+    },
+    {
+      "name": "bus.auth.guard.secret",
+      "type": "java.lang.String",
+      "description": "Base64-encoded root for service token key derivation. Supply it through the deployment environment when a Guard direction is enabled."
+    },
+    {
+      "name": "bus.auth.guard.rotate",
+      "type": "java.lang.Long",
+      "description": "Service token key rotation period in seconds.",
+      "defaultValue": 86400
+    },
+    {
+      "name": "bus.auth.guard.label",
+      "type": "java.lang.String",
+      "description": "Domain separation label used to derive service token signing keys.",
+      "defaultValue": "miaixz-bus-anchor-v1:"
+    },
+    {
+      "name": "bus.auth.guard.inbound.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Whether the Auth Guard reads and verifies inbound service tokens.",
+      "defaultValue": false
+    },
+    {
+      "name": "bus.auth.guard.outbound.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Whether the Auth Guard issues outbound service tokens.",
+      "defaultValue": false
+    },
+    {
+      "name": "bus.auth.guard.bearer.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Whether direct client Authorization Bearer authentication is enabled.",
+      "defaultValue": true
+    },
+    {
+      "name": "bus.auth.guard.bearer.max-length",
+      "type": "java.lang.Integer",
+      "description": "Maximum Bearer credential length for V1 request signing.",
+      "defaultValue": 8192
+    },
+    {
+      "name": "bus.auth.guard.api-key.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Whether client API key authentication is enabled.",
+      "defaultValue": true
+    },
+    {
+      "name": "bus.auth.guard.api-key.max-length",
+      "type": "java.lang.Integer",
+      "description": "Maximum API key credential length for V1 request signing.",
+      "defaultValue": 512
+    },
+    {
+      "name": "bus.auth.guard.signing.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Whether to verify client request signatures required by gateway assets.",
+      "defaultValue": true
+    },
+    {
+      "name": "bus.auth.guard.signing.skew-minutes",
+      "type": "java.lang.Integer",
+      "description": "Maximum allowed difference in minutes between the REST request timestamp and the server clock.",
+      "defaultValue": 30
+    },
+    {
       "name": "bus.cache.enabled",
       "type": "java.lang.Boolean",
       "description": "Whether Cache integration is enabled.",

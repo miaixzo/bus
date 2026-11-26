@@ -18,7 +18,15 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Defines reusable authentication-specific validation and replay guards.
+ * Defines reusable authentication checks, request signing, and service identity.
+ * <p>
+ * {@link org.miaixz.bus.auth.guard.GuardConfig} stores the independent request and service identity switches.
+ * {@link org.miaixz.bus.auth.guard.GuardEvaluator} coordinates service token issuance, verification, and reserved
+ * headers through the inbound, outbound, and token subpackages. {@link org.miaixz.bus.auth.guard.CallerValidator}
+ * selects enabled client credentials. {@link org.miaixz.bus.auth.guard.SignValidator} applies signing policy, derives
+ * request keys, verifies canonical inputs, and clears temporary key material. Adapters supply protocol fields, resolved
+ * policies, and target details.
+ * </p>
  * <p>
  * Algorithm, audience, issuer, redirect URI, scope, and time guards enforce constraints already selected by a concrete
  * registration and protocol profile. {@link org.miaixz.bus.auth.source.protocol.oauth2.server.ClientAuthenticator}

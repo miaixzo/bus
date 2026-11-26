@@ -30,21 +30,20 @@ import org.springframework.boot.autoconfigure.condition.*;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.context.properties.bind.Bindable;
 import org.springframework.boot.context.properties.bind.Binder;
-import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.Ordered;
 import org.springframework.core.env.Environment;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.http.client.JdkClientHttpRequestFactory;
 import org.springframework.web.client.RestClient;
 import org.springframework.web.util.DefaultUriBuilderFactory;
 
+import org.miaixz.bus.auth.guard.GuardEvaluator;
+import org.miaixz.bus.auth.guard.GuardEvaluator.Mode;
 import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.cache.Factory;
 import org.miaixz.bus.cache.Hybrid;
 import org.miaixz.bus.cache.Options;
-import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.cortex.*;
@@ -53,11 +52,6 @@ import org.miaixz.bus.cortex.bridge.VortexBridge;
 import org.miaixz.bus.cortex.builtin.RegistryGenerator;
 import org.miaixz.bus.cortex.builtin.SettingGenerator;
 import org.miaixz.bus.cortex.builtin.event.LoggingWatchListener;
-import org.miaixz.bus.cortex.guard.GuardEvaluator;
-import org.miaixz.bus.cortex.guard.GuardEvaluator.Mode;
-import org.miaixz.bus.cortex.guard.token.Hs256TokenProvider;
-import org.miaixz.bus.cortex.guard.token.ServiceKeyProvider;
-import org.miaixz.bus.cortex.guard.token.ServiceTokenProvider;
 import org.miaixz.bus.cortex.magic.AuditLogger;
 import org.miaixz.bus.cortex.magic.event.CortexChangeLogStore;
 import org.miaixz.bus.cortex.magic.watch.WatchManager;
@@ -100,6 +94,7 @@ import org.miaixz.bus.cortex.setting.watch.WatchStore;
 import org.miaixz.bus.spring.boot.condition.ConditionalOnEnabled;
 import org.miaixz.bus.starter.GeniusBuilder;
 import org.miaixz.bus.starter.annotation.EnableCortex;
+import org.miaixz.bus.starter.auth.AuthProperties;
 
 /**
  * Configures Bus Cortex clients, registries, watches, and optional embedded server integration.
@@ -1087,42 +1082,6 @@ public class CortexConfiguration {
     }
 
     /**
-     * Provides the default configured epoch keys when the host supplies no key provider.
-     *
-     * @return local key provider
-     */
-    @Bean
-    @org.springframework.context.annotation.Lazy
-    @ConditionalOnMissingBean(ServiceKeyProvider.class)
-    public ServiceKeyProvider serviceKeyProvider() {
-        return properties.getGuard().keyProvider();
-    }
-
-    /**
-     * Provides the default HS256 implementation when the host supplies no token provider.
-     *
-     * @return default cryptographic token provider
-     */
-    @Bean
-    @ConditionalOnMissingBean(ServiceTokenProvider.class)
-    public ServiceTokenProvider serviceTokenProvider() {
-        return new Hs256TokenProvider();
-    }
-
-    /**
-     * Creates the common evaluator with the configured rules and selected providers.
-     *
-     * @param keys   trusted key provider selected for this application
-     * @param tokens cryptographic token provider selected for this application
-     * @return the shared service identity evaluator
-     */
-    @Bean
-    @ConditionalOnMissingBean(GuardEvaluator.class)
-    public GuardEvaluator serviceIdentity(ServiceKeyProvider keys, ServiceTokenProvider tokens) {
-        return properties.getGuard().identity(keys, tokens);
-    }
-
-    /**
      * Builds a dedicated Servlet client that signs requests for the configured Cortex gateway.
      * <p>
      * Each request must match the configured scheme and authority. The interceptor requires a token for the gateway
@@ -1130,15 +1089,16 @@ public class CortexConfiguration {
      * outside the 2xx range as errors.
      *
      * @param identity    shared service identity evaluator
+     * @param auth        Auth settings for the gateway audience
      * @param environment deployment configuration containing the gateway endpoint and timeout
      * @return signed gateway client
      * @throws IllegalArgumentException if the configured gateway endpoint is invalid
      */
     @Bean
-    @ConditionalOnEnabled(annotation = EnableCortex.class, prefix = GeniusBuilder.CORTEX_GUARD, member = "guard", name = Normal.EMPTY)
-    @ConditionalOnProperty(prefix = GeniusBuilder.CORTEX_GUARD, name = "outbound.gateway-endpoint")
-    RestClient cortexGatewayClient(GuardEvaluator identity, Environment environment) {
-        String prefix = GeniusBuilder.CORTEX_GUARD + ".outbound.";
+    @ConditionalOnProperty(prefix = GeniusBuilder.AUTH_GUARD, name = "enabled", havingValue = "true")
+    @ConditionalOnProperty(prefix = GeniusBuilder.AUTH_GUARD, name = "outbound.gateway-endpoint")
+    RestClient cortexGatewayClient(GuardEvaluator identity, AuthProperties auth, Environment environment) {
+        String prefix = GeniusBuilder.AUTH_GUARD + ".outbound.";
         URI gateway = URI.create(environment.getRequiredProperty(prefix + "gateway-endpoint"));
         if (!("http".equalsIgnoreCase(gateway.getScheme()) || "https".equalsIgnoreCase(gateway.getScheme()))
                 || gateway.getHost() == null || gateway.getRawUserInfo() != null || gateway.getRawQuery() != null
@@ -1161,7 +1121,7 @@ public class CortexConfiguration {
                     }
                     String token = identity.outbound(
                             null,
-                            properties.getGuard().outbound().gateway(),
+                            auth.getGuard().getOutbound().gateway(),
                             target.getPath(),
                             Mode.REQUIRED,
                             null,
@@ -1180,13 +1140,14 @@ public class CortexConfiguration {
      * configured, it evaluates the outbound policy against the destination path and adds any issued token.
      *
      * @param identity shared service identity evaluator
+     * @param auth     Auth settings for the gateway audience
      * @return outbound service identity interceptor
      */
     @Bean
-    @ConditionalOnEnabled(annotation = EnableCortex.class, prefix = GeniusBuilder.CORTEX_GUARD, member = "guard", name = Normal.EMPTY)
-    @ConditionalOnProperty(prefix = GeniusBuilder.CORTEX_GUARD, name = "outbound.enabled", havingValue = "true")
-    ClientHttpRequestInterceptor serviceAnchorInterceptor(GuardEvaluator identity) {
-        String audience = properties.getGuard().outbound().gateway();
+    @ConditionalOnProperty(prefix = GeniusBuilder.AUTH_GUARD, name = { "enabled",
+            "outbound.enabled" }, havingValue = "true")
+    ClientHttpRequestInterceptor serviceAnchorInterceptor(GuardEvaluator identity, AuthProperties auth) {
+        String audience = auth.getGuard().getOutbound().gateway();
         return (request, body, execution) -> {
             URI target = request.getURI();
             var headers = request.getHeaders();
@@ -1195,34 +1156,6 @@ public class CortexConfiguration {
             identity.forwardHeaders(null, token, headers.headerNames(), headers::remove, headers::set);
             return execution.execute(request, body);
         };
-    }
-
-    /**
-     * Isolates Servlet filter registration from the shared Cortex configuration. Spring loads this configuration in
-     * Servlet web applications with the Servlet API on the classpath.
-     */
-    @Configuration(proxyBeanMethods = false)
-    @ConditionalOnClass(name = { "jakarta.servlet.Servlet", "jakarta.servlet.Filter" })
-    @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)
-    static class ServiceGuardConfig {
-
-        /**
-         * Registers the service identity filter across all Servlet URL patterns when the Cortex guard is enabled. The
-         * evaluator selects the policy for each path when inbound verification is enabled. With verification disabled,
-         * the filter still hides reserved identity headers.
-         *
-         * @param identity shared service identity evaluator
-         * @return Servlet filter registration
-         */
-        @Bean
-        @ConditionalOnEnabled(annotation = EnableCortex.class, prefix = GeniusBuilder.CORTEX_GUARD, member = "guard", name = Normal.EMPTY)
-        FilterRegistrationBean<ServiceGuardFilter> serviceGuardFilter(GuardEvaluator identity) {
-            var registration = new FilterRegistrationBean<>(new ServiceGuardFilter(identity));
-            registration.setOrder(Ordered.HIGHEST_PRECEDENCE + 20);
-            registration.addUrlPatterns(Symbol.SLASH + Symbol.STAR);
-            return registration;
-        }
-
     }
 
 }

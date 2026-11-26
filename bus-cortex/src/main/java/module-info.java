@@ -49,10 +49,6 @@ module bus.cortex {
     exports org.miaixz.bus.cortex.builtin.batch;
     exports org.miaixz.bus.cortex.builtin.event;
     exports org.miaixz.bus.cortex.builtin.graph;
-    exports org.miaixz.bus.cortex.guard;
-    exports org.miaixz.bus.cortex.guard.inbound;
-    exports org.miaixz.bus.cortex.guard.outbound;
-    exports org.miaixz.bus.cortex.guard.token;
     exports org.miaixz.bus.cortex.health;
     exports org.miaixz.bus.cortex.magic;
     exports org.miaixz.bus.cortex.magic.event;

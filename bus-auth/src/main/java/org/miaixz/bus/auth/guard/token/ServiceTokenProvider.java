@@ -17,7 +17,7 @@
  ~                                                                           ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.cortex.guard.token;
+package org.miaixz.bus.auth.guard.token;
 
 import java.time.Duration;
 
@@ -34,12 +34,12 @@ public interface ServiceTokenProvider {
     /**
      * Produces a compact HS256 JWT with the supplied service claims.
      *
-     * @param request claims and lifetime assigned by the service identity evaluator
-     * @param key     current trusted signing material
+     * @param issue claims and lifetime assigned by the service identity evaluator
+     * @param key   current trusted signing material
      * @return the signed compact token
      * @throws IllegalStateException if the provider cannot sign
      */
-    String issue(Issue request, ServiceKeyProvider.Key key);
+    String issue(Issue issue, ServiceKeyProvider.Key key);
 
     /**
      * Verifies a compact token cryptographically using the indicated key.

@@ -340,15 +340,6 @@ public class Performance {
     private int startupDelaySeconds = 10;
 
     /**
-     * The maximum allowed time difference (in minutes) between the client timestamp and the server time.
-     * <p>
-     * Requests with a timestamp outside this window will be rejected to prevent replay attacks. Default: 30 minutes.
-     * </p>
-     */
-    @Builder.Default
-    private int timestampToleranceMinutes = 30;
-
-    /**
      * Whether null-like request parameter values should be removed before they are stored and forwarded.
      * <p>
      * When enabled, parameters whose values are {@code null}, {@code "null"}, or {@code "undefined"} are discarded

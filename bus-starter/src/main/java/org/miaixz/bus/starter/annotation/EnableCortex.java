@@ -26,7 +26,7 @@ import org.springframework.context.annotation.Import;
 import org.miaixz.bus.starter.cortex.CortexConfiguration;
 
 /**
- * Enables the independently configured Cortex registry and Servlet service identity adapters.
+ * Enables the Cortex registry and its integration services.
  *
  * @author Kimi Liu
  */
@@ -43,13 +43,5 @@ public @interface EnableCortex {
      * @return whether registry services should be assembled
      */
     boolean registry() default true;
-
-    /**
-     * Enables the Servlet service identity adapter independently of {@link #registry()}. The inbound and outbound
-     * directions are configured under {@code bus.cortex.guard}.
-     *
-     * @return whether the Servlet service identity adapter should be installed
-     */
-    boolean guard() default false;
 
 }

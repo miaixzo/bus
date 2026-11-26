@@ -22,4 +22,4 @@
  *
  * @author Kimi Liu
  */
-package org.miaixz.bus.cortex.guard.inbound;
+package org.miaixz.bus.auth.guard.inbound;

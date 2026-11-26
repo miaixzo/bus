@@ -37,9 +37,10 @@ module bus.crypto {
     requires bus.errors;
     requires bus.logger;
 
+    requires org.bouncycastle.provider;
+
     requires static lombok;
     requires static org.bouncycastle.pkix;
-    requires static org.bouncycastle.provider;
 
     exports org.miaixz.bus.crypto;
     exports org.miaixz.bus.crypto.builtin;

@@ -17,9 +17,9 @@
  ~                                                                           ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.cortex.guard.inbound;
+package org.miaixz.bus.auth.guard.inbound;
 
-import org.miaixz.bus.cortex.guard.GuardEvaluator.Verified;
+import org.miaixz.bus.auth.guard.GuardEvaluator.Verified;
 
 /**
  * Result of inbound service authentication.
@@ -30,6 +30,11 @@ import org.miaixz.bus.cortex.guard.GuardEvaluator.Verified;
  * @author Kimi Liu
  */
 public record InboundDecision(Status status, Verified verified) {
+
+    /**
+     * Request attribute for the inbound decision, including a decision with no verified identity.
+     */
+    public static final String ATTRIBUTE = "org.miaixz.bus.auth.guard.inbound.InboundDecision";
 
     /**
      * Transport-neutral inbound result.

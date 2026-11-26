@@ -62,12 +62,6 @@ All properties below are under `bus.cortex`. Existing `cache` options select the
 | `bridge.url` | Empty | Required for `push+pull` mode |
 | `bridge.max-retries` | `3` | Positive bridge retry limit |
 | `bridge.source` | Empty | Bridge source marker |
-| `guard.inbound.enabled` | `false` | Enable inbound verification of `X-Service-Token` |
-| `guard.inbound.skew` | `5` | Accepted clock skew in seconds |
-| `guard.outbound.enabled` | `false` | Enable outbound signing of `X-Service-Token` |
-| `guard.outbound.ttl` | `300` | Lifetime of issued service tokens in seconds |
-| `guard.outbound.gateway` | Empty | Audience for dedicated gateway clients |
-| `guard.secret` | Empty | Shared Base64 root with at least 32 decoded bytes, required when either identity direction is enabled |
 | `audit.enabled` | `false` | Assemble the audit logger |
 | `release.enabled` | `false` | Assemble the read-only release registry when ReleaseStore exists |
 
@@ -77,7 +71,7 @@ Starter assembles setting services conditionally from host-provided Stores. Curr
 
 `SettingProvider` supplies invocation coordinates and current process data without authenticating callers. Host implementations enforce tenant isolation, process-session consistency, CAS and atomic commits. `FlowStore` validates flow policies and records stage decisions atomically with rollout state updates. `SettingStore` commits current definitions and relationships together; `RolloutStore.submit` atomically validates the frozen read-set; `PublicationStore` commits successful snapshots and publication state.
 
-The inbound and outbound settings independently control service identity verification and signing. Starter supplies `Hs256TokenProvider` as the default `ServiceTokenProvider` and `DerivedKeyProvider` as the default `ServiceKeyProvider`. Use `ServiceTokenIssuer` and `ServiceTokenVerifier` for direct signing and verification. Applications can register either provider as a Bean to replace its default. `GuardEvaluator` coordinates the `guard.inbound` and `guard.outbound` policies and handles shared token headers. The token and key provider APIs live in `org.miaixz.bus.cortex.guard.token`. A key provider should publish bounded, thread-safe snapshots and refresh any remote key source outside the request path.
+Service identity is configured under `bus.auth.guard`. Auth supplies service token signing, verification, and key rotation. Register custom `ServiceTokenProvider` or `ServiceKeyProvider` beans using the interfaces in `org.miaixz.bus.auth.guard.token`. Cortex extracts asset identity metadata from the registry for Auth to interpret.
 
 Applications own resource and operation permissions. Tenant matching, edition checks, flow state, frozen checksums, receipt idempotency, and secret protection are part of service execution. Idempotent mutations require a request, and recording a flow stage decision also requires an actor.
 

@@ -234,6 +234,35 @@ public final class ServiceRoutes {
     }
 
     /**
+     * Checks whether a configured service base URL uses a literal loopback HTTP listener.
+     *
+     * @param endpoint configured service base URL
+     * @return whether the endpoint is local and contains no credentials, query, or fragment
+     */
+    public static boolean isLoopbackHttp(URI endpoint) {
+        if (endpoint == null || endpoint.getHost() == null || endpoint.getRawUserInfo() != null
+                || endpoint.getRawQuery() != null || endpoint.getRawFragment() != null
+                || !(Protocol.HTTP.name.equalsIgnoreCase(endpoint.getScheme())
+                        || Protocol.HTTPS.name.equalsIgnoreCase(endpoint.getScheme()))) {
+            return false;
+        }
+        return isLoopbackHost(endpoint.getHost());
+    }
+
+    /**
+     * Recognizes literal loopback listener addresses without resolving host names.
+     *
+     * @param host configured host, with optional IPv6 brackets
+     * @return whether the host is the IPv4 or IPv6 loopback address
+     */
+    public static boolean isLoopbackHost(String host) {
+        return switch (host) {
+            case "127.0.0.1", "::1", "[::1]", "0:0:0:0:0:0:0:1", "[0:0:0:0:0:0:0:1]" -> true;
+            case null, default -> false;
+        };
+    }
+
+    /**
      * Resolves a complete registration URL into the existing instance coordinates. Explicit fields may be repeated when
      * they agree with the URL.
      *

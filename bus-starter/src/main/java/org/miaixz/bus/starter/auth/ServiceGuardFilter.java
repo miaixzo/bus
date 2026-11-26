@@ -17,11 +17,14 @@
  ~                                                                           ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.starter.cortex;
+package org.miaixz.bus.starter.auth;
 
 import java.io.IOException;
 import java.util.Collections;
 import java.util.Enumeration;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import jakarta.servlet.FilterChain;
@@ -36,19 +39,21 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.util.ServletRequestPathUtils;
 import org.springframework.web.util.WebUtils;
 
+import org.miaixz.bus.auth.guard.GuardConfig.Admission;
+import org.miaixz.bus.auth.guard.GuardEvaluator;
+import org.miaixz.bus.auth.guard.SignValidator;
+import org.miaixz.bus.auth.guard.inbound.InboundDecision;
+import org.miaixz.bus.auth.guard.inbound.InboundDecision.Status;
 import org.miaixz.bus.core.lang.exception.RelevantException;
 import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
-import org.miaixz.bus.cortex.guard.GuardEvaluator;
-import org.miaixz.bus.cortex.guard.inbound.InboundDecision.Status;
 import org.miaixz.bus.spring.web.wrapper.CachedBodyRequestWrapper;
-import org.miaixz.bus.vortex.guard.SignatureVerifier;
 
 /**
  * Applies the common service identity decision at the Servlet boundary.
  * <p>
- * Admitted requests expose any verified identity through {@link GuardEvaluator#VERIFIED_ATTRIBUTE}. The request wrapper
- * hides reserved service identity headers from the remaining filter chain.
+ * Admitted requests expose any verified identity through {@link InboundDecision#ATTRIBUTE}. The request wrapper hides
+ * reserved service identity headers from the remaining filter chain.
  *
  * @author Kimi Liu
  */
@@ -60,12 +65,35 @@ public class ServiceGuardFilter extends OncePerRequestFilter {
     private final GuardEvaluator identity;
 
     /**
+     * Whether the application explicitly binds the listener to a loopback address.
+     */
+    private final boolean loopbackListener;
+
+    /**
+     * Additional admission rules indexed by the exact Servlet path.
+     */
+    private final Map<String, Admission> admission;
+
+    /**
      * Creates the Servlet adapter.
      *
      * @param identity shared identity component
      */
     public ServiceGuardFilter(GuardEvaluator identity) {
+        this(identity, List.of(), null);
+    }
+
+    /**
+     * Creates the Servlet adapter with endpoint admission rules.
+     *
+     * @param identity        shared identity component
+     * @param admission       declared endpoint admission rules
+     * @param listenerAddress explicitly configured listener address, when present
+     */
+    public ServiceGuardFilter(GuardEvaluator identity, List<Admission> admission, String listenerAddress) {
         this.identity = identity;
+        this.admission = admission.stream().collect(Collectors.toUnmodifiableMap(Admission::path, Function.identity()));
+        this.loopbackListener = isLoopback(listenerAddress);
     }
 
     /**
@@ -94,18 +122,30 @@ public class ServiceGuardFilter extends OncePerRequestFilter {
             reject(response, status);
             return;
         }
-        request.setAttribute(GuardEvaluator.VERIFIED_ATTRIBUTE, decision.verified());
+        Admission rule = admission.get(path);
+        if (rule != null) {
+            boolean directRead = rule.directGetParameter() != null
+                    && Http.Method.GET.value().equals(request.getMethod())
+                    && request.getParameter(rule.directGetParameter()) != null;
+            boolean local = !identity.inboundEnabled() && loopbackListener && isLoopback(request.getLocalAddr())
+                    && isLoopback(request.getRemoteAddr());
+            if (!rule.admits(decision.verified(), directRead, local)) {
+                reject(response, Http.Status.UNAUTHORIZED);
+                return;
+            }
+        }
+        request.setAttribute(InboundDecision.ATTRIBUTE, decision);
         HttpServletRequest admitted = request;
         if (Http.Method.POST.value().equals(request.getMethod())
                 && MediaType.APPLICATION_JSON.equalsIgnoreCase(request.getContentType())
                 && request.getHeader(Http.Auth.FORWARD_PROOF_HEADER) != null
                 && WebUtils.getNativeRequest(request, CachedBodyRequestWrapper.class) == null) {
-            if (request.getContentLengthLong() > SignatureVerifier.FORWARD_BODY_LIMIT) {
+            if (request.getContentLengthLong() > SignValidator.FORWARD_BODY_LIMIT) {
                 reject(response, HttpStatus.CONTENT_TOO_LARGE.value());
                 return;
             }
             try {
-                admitted = new CachedBodyRequestWrapper(request, SignatureVerifier.FORWARD_BODY_LIMIT);
+                admitted = new CachedBodyRequestWrapper(request, SignValidator.FORWARD_BODY_LIMIT);
             } catch (RelevantException oversized) {
                 reject(response, HttpStatus.CONTENT_TOO_LARGE.value());
                 return;
@@ -148,6 +188,16 @@ public class ServiceGuardFilter extends OncePerRequestFilter {
             }
 
         }, response);
+    }
+
+    /**
+     * Recognizes the literal loopback endpoints used by Servlet listeners without resolving names.
+     *
+     * @param address configured or socket endpoint address
+     * @return whether it is a loopback literal
+     */
+    private static boolean isLoopback(String address) {
+        return "127.0.0.1".equals(address) || "::1".equals(address) || "0:0:0:0:0:0:0:1".equals(address);
     }
 
     /**

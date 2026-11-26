@@ -20,7 +20,6 @@
 package org.miaixz.bus.starter.cortex;
 
 import java.time.Duration;
-import java.util.List;
 
 import lombok.Getter;
 
@@ -31,10 +30,7 @@ import org.springframework.validation.annotation.Validated;
 
 import org.miaixz.bus.cache.Options;
 import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.StringKit;
-import org.miaixz.bus.cortex.guard.GuardConfig;
-import org.miaixz.bus.cortex.guard.GuardEvaluator;
 import org.miaixz.bus.starter.GeniusBuilder;
 
 /**
@@ -83,11 +79,6 @@ public class CortexProperties {
     private final Bridge bridge;
 
     /**
-     * Optional host access checks for Cortex operations; disabling them preserves business validation.
-     */
-    private final Guard guard;
-
-    /**
      * Audit event collection and retention settings.
      */
     private final Audit audit;
@@ -107,14 +98,13 @@ public class CortexProperties {
      * @param cache               optional cache backend options
      * @param watch               watch options
      * @param bridge              bridge options
-     * @param guard               guard options
      * @param audit               audit options
      * @param release             release-registry options
      */
     public CortexProperties(@DefaultValue(Normal.FALSE) boolean enabled, @DefaultValue("1000") int maxWatchesPerTenant,
             @DefaultValue("24h") Duration watchExpire, @DefaultValue("1h") Duration cacheExpire, Options cache,
-            @DefaultValue Watch watch, @DefaultValue Bridge bridge, @DefaultValue Guard guard,
-            @DefaultValue Audit audit, @DefaultValue Release release) {
+            @DefaultValue Watch watch, @DefaultValue Bridge bridge, @DefaultValue Audit audit,
+            @DefaultValue Release release) {
         if (maxWatchesPerTenant <= 0) {
             throw new IllegalArgumentException("Cortex watch limits must be greater than zero");
         }
@@ -129,7 +119,6 @@ public class CortexProperties {
         this.cache = cache;
         this.watch = watch == null ? new Watch(false) : watch;
         this.bridge = bridge == null ? new Bridge("pull-only", Normal.EMPTY, 3, Normal.EMPTY) : bridge;
-        this.guard = guard == null ? new Guard() : guard;
         this.audit = audit == null ? new Audit(false) : audit;
         this.release = release == null ? new Release(false) : release;
     }
@@ -169,7 +158,7 @@ public class CortexProperties {
     @Override
     public String toString() {
         return "CortexProperties[enabled=" + enabled + ", maxWatchesPerTenant=" + maxWatchesPerTenant + ", watchExpire="
-                + watchExpire + ", cacheExpire=" + cacheExpire + ", guard=***]";
+                + watchExpire + ", cacheExpire=" + cacheExpire + "]";
     }
 
     /**
@@ -255,80 +244,6 @@ public class CortexProperties {
          */
         public String resolveSource() {
             return source;
-        }
-
-    }
-
-    /**
-     * Binds the shared Cortex guard configuration under {@code bus.cortex.guard}.
-     */
-    public static final class Guard extends GuardConfig {
-
-        /**
-         * Creates default service identity settings.
-         */
-        public Guard() {
-            super();
-        }
-
-        /**
-         * Binds the two service identity directions and default key settings.
-         *
-         * @param inbound  inbound caller verification settings
-         * @param outbound outbound signing settings
-         * @param secret   shared Base64-encoded signing root
-         * @param rotate   derived-key rotation period in seconds
-         * @param label    domain separation label
-         */
-        @ConstructorBinding
-        public Guard(@DefaultValue Inbound inbound, @DefaultValue Outbound outbound,
-                @DefaultValue(Normal.EMPTY) String secret, @DefaultValue(DEFAULT_ROTATE) long rotate,
-                @DefaultValue(GuardEvaluator.DEFAULT_LABEL) String label) {
-            super(inbound, outbound, secret, rotate, label);
-        }
-
-        /**
-         * Binds application settings for the shared inbound policy.
-         */
-        public static final class Inbound extends GuardConfig.Inbound {
-
-            /**
-             * Configures the bound inbound verification settings.
-             *
-             * @param enabled  whether inbound caller verification is enabled
-             * @param subjects accepted subject codes separated by commas
-             * @param audience required audience for this application
-             * @param skew     accepted clock displacement in seconds
-             * @param rules    explicit inbound path rules
-             */
-            public Inbound(Boolean enabled, @DefaultValue(Normal.EMPTY) String subjects,
-                    @DefaultValue(Normal.EMPTY) String audience, @DefaultValue(Symbol.FIVE) int skew,
-                    List<Incoming> rules) {
-                super(enabled, subjects, audience, skew, rules);
-            }
-
-        }
-
-        /**
-         * Binds application settings for the shared outbound policy.
-         */
-        public static final class Outbound extends GuardConfig.Outbound {
-
-            /**
-             * Configures the bound outbound signing settings.
-             *
-             * @param enabled whether outbound signing is enabled
-             * @param subject subject attached to issued tokens
-             * @param ttl     token lifetime in seconds
-             * @param gateway destination of the configured gateway client
-             * @param rules   explicit outbound target rules
-             */
-            public Outbound(Boolean enabled, @DefaultValue(Normal.EMPTY) String subject,
-                    @DefaultValue(DEFAULT_TTL) int ttl, @DefaultValue(Normal.EMPTY) String gateway,
-                    List<Outgoing> rules) {
-                super(enabled, subject, ttl, gateway, rules);
-            }
-
         }
 
     }

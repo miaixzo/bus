@@ -28,12 +28,13 @@ import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.WebFilter;
 import org.springframework.web.server.WebFilterChain;
 
+import org.miaixz.bus.auth.guard.GuardConfig;
+import org.miaixz.bus.auth.guard.GuardEvaluator;
 import org.miaixz.bus.core.Order;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.xyz.DateKit;
-import org.miaixz.bus.cortex.guard.GuardEvaluator;
 import org.miaixz.bus.errors.transport.http.RouteFailure;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.vortex.Context;
@@ -63,6 +64,11 @@ public class PrimaryFilter extends AbstractFilter {
     private final IdentityGuard identities;
 
     /**
+     * Effective client request checks for this listener.
+     */
+    private final GuardConfig guard;
+
+    /**
      * Constructs a new {@code PrimaryFilter}.
      *
      * @param factory The strategy factory, which must not be {@code null}. It provides the appropriate chain of
@@ -79,9 +85,21 @@ public class PrimaryFilter extends AbstractFilter {
      * @param identities shared service identity adapter
      */
     public PrimaryFilter(StrategyFactory factory, IdentityGuard identities) {
+        this(factory, identities, new GuardConfig());
+    }
+
+    /**
+     * Creates the gateway request filter with its service identity adapter and client Guard configuration.
+     *
+     * @param factory    gateway strategy chain factory
+     * @param identities shared service identity adapter
+     * @param guard      client request check configuration
+     */
+    public PrimaryFilter(StrategyFactory factory, IdentityGuard identities, GuardConfig guard) {
         Assert.notNull(factory, "StrategyFactory must not be null");
         this.factory = factory;
         this.identities = identities;
+        this.guard = Assert.notNull(guard, "GuardConfig must not be null");
     }
 
     /**
@@ -132,7 +150,7 @@ public class PrimaryFilter extends AbstractFilter {
             if (strategies == null || strategies.isEmpty()) {
                 throw new RouteFailure(ErrorCode._BLOCKED, HttpStatus.NOT_FOUND, HttpHeaders.EMPTY);
             }
-            Context context = new Context();
+            Context context = new Context(guard.getBearer(), guard.getApiKey(), guard.isSigningEnabled());
             context.setX_request_id(sanitized.getRequest().getId());
             context.setTimestamp(DateKit.current());
             context.setHeaders(sanitized.getRequest().getHeaders().toSingleValueMap());

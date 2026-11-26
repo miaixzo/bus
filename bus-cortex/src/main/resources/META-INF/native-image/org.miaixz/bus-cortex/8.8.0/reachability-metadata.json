@@ -1,5 +1,4 @@
 {
-  "comment": "GuardEvaluator$ModeEditor records an intentional negative class lookup for the optional JavaBeans editor probed by Spring when binding service identity modes.",
   "reflection": [
     {
       "type": "org.miaixz.bus.cortex.Assets",
@@ -5521,37 +5520,6 @@
           ]
         }
       ]
-    },
-    {
-      "type": "org.miaixz.bus.cortex.guard.GuardConfig$Incoming",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "org.miaixz.bus.cortex.guard.GuardEvaluator$Mode",
-            "java.util.Set",
-            "java.util.Set"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.cortex.guard.GuardConfig$Outgoing",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String",
-            "org.miaixz.bus.cortex.guard.GuardEvaluator$Mode",
-            "java.util.Set"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.cortex.guard.GuardEvaluator$ModeEditor"
     },
     {
       "type": "org.miaixz.bus.cortex.magic.AuditLogger",

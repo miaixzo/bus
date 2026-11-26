@@ -125,8 +125,7 @@ public class VortexProperties {
                 || performance.getOutboundMaxIdleSeconds() <= 0 || performance.getOutboundMaxLifeMinutes() <= 0
                 || performance.getOutboundEvictSeconds() <= 0 || performance.getMaxProducerCacheSize() <= 0
                 || performance.getCacheSize() <= 0 || performance.getCacheExpireMs() <= 0
-                || performance.getSyncIntervalSeconds() <= 0 || performance.getStartupDelaySeconds() < 0
-                || performance.getTimestampToleranceMinutes() <= 0) {
+                || performance.getSyncIntervalSeconds() <= 0 || performance.getStartupDelaySeconds() < 0) {
             throw new IllegalArgumentException("bus.vortex performance limits and timeouts are invalid");
         }
         long logicalBufferedBytes = Math.addExact(

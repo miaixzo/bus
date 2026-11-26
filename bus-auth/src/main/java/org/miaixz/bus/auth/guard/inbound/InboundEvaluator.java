@@ -17,7 +17,7 @@
  ~                                                                           ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.cortex.guard.inbound;
+package org.miaixz.bus.auth.guard.inbound;
 
 import java.time.Instant;
 import java.util.HashSet;
@@ -28,8 +28,18 @@ import java.util.Set;
 
 import org.miaixz.bus.auth.FabricX;
 import org.miaixz.bus.auth.guard.AudienceValidator;
+import org.miaixz.bus.auth.guard.CallerValidator;
+import org.miaixz.bus.auth.guard.GuardEvaluator.Asset;
+import org.miaixz.bus.auth.guard.GuardEvaluator.Mode;
+import org.miaixz.bus.auth.guard.GuardEvaluator.Rule;
+import org.miaixz.bus.auth.guard.GuardEvaluator.Verified;
 import org.miaixz.bus.auth.guard.IssuerValidator;
 import org.miaixz.bus.auth.guard.TimeGuard;
+import org.miaixz.bus.auth.guard.inbound.InboundDecision.Status;
+import org.miaixz.bus.auth.guard.token.ServiceKeyProvider;
+import org.miaixz.bus.auth.guard.token.ServiceTokenIssuer;
+import org.miaixz.bus.auth.guard.token.ServiceTokenProvider;
+import org.miaixz.bus.auth.guard.token.ServiceTokenVerifier;
 import org.miaixz.bus.auth.shared.jose.JwaAlgorithm;
 import org.miaixz.bus.auth.shared.jwt.JWT;
 import org.miaixz.bus.auth.shared.jwt.JwtClaims;
@@ -37,15 +47,6 @@ import org.miaixz.bus.auth.shared.jwt.JwtValidator;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.core.lang.exception.ValidateException;
-import org.miaixz.bus.cortex.guard.GuardEvaluator.Asset;
-import org.miaixz.bus.cortex.guard.GuardEvaluator.Mode;
-import org.miaixz.bus.cortex.guard.GuardEvaluator.Rule;
-import org.miaixz.bus.cortex.guard.GuardEvaluator.Verified;
-import org.miaixz.bus.cortex.guard.inbound.InboundDecision.Status;
-import org.miaixz.bus.cortex.guard.token.ServiceKeyProvider;
-import org.miaixz.bus.cortex.guard.token.ServiceTokenIssuer;
-import org.miaixz.bus.cortex.guard.token.ServiceTokenProvider;
-import org.miaixz.bus.cortex.guard.token.ServiceTokenVerifier;
 import org.miaixz.bus.extra.json.JsonValue;
 
 /**
@@ -88,6 +89,15 @@ public final class InboundEvaluator {
         this.tokens = Objects.requireNonNull(tokens);
         this.claims = new JwtValidator(new IssuerValidator(), new AudienceValidator(),
                 new TimeGuard(FabricX.clock(), policy.skew()));
+    }
+
+    /**
+     * Reports whether the effective ingress policy enables service token verification.
+     *
+     * @return whether inbound verification is enabled
+     */
+    public boolean enabled() {
+        return policy.enabled();
     }
 
     /**
@@ -146,6 +156,7 @@ public final class InboundEvaluator {
             return new InboundDecision(Status.ACCEPTED, null);
         if (tokens.size() != Normal._1)
             return new InboundDecision(Status.REJECTED, null);
+        Set<String> origins = rule == null ? Set.of() : rule.origins();
         Instant now = Instant.now();
         String compact = tokens.getFirst();
         try {
@@ -156,8 +167,7 @@ public final class InboundEvaluator {
                 JWT verified = this.tokens.verify(compact, candidate);
                 if (verified != null) {
                     Verified caller = validate(compact, verified, subjects);
-                    if (caller == null || rule != null && !rule.origins().isEmpty() && (caller.origin() == null
-                            || caller.asset() == null || !rule.origins().contains(caller.origin()))) {
+                    if (!CallerValidator.matches(caller, Set.of(), origins, !origins.isEmpty())) {
                         return new InboundDecision(Status.REJECTED, null);
                     }
                     return new InboundDecision(Status.ACCEPTED, caller);

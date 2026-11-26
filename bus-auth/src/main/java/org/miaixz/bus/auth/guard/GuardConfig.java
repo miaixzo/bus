@@ -17,7 +17,7 @@
  ~                                                                           ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.cortex.guard;
+package org.miaixz.bus.auth.guard;
 
 import java.time.Duration;
 import java.util.Arrays;
@@ -25,38 +25,32 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.experimental.Accessors;
+import lombok.experimental.SuperBuilder;
 
+import org.miaixz.bus.auth.guard.GuardEvaluator.Mode;
+import org.miaixz.bus.auth.guard.GuardEvaluator.Rule;
+import org.miaixz.bus.auth.guard.inbound.InboundPolicy;
+import org.miaixz.bus.auth.guard.outbound.OutboundPolicy;
+import org.miaixz.bus.auth.guard.token.DerivedKeyProvider;
+import org.miaixz.bus.auth.guard.token.Hs256TokenProvider;
+import org.miaixz.bus.auth.guard.token.ServiceKeyProvider;
+import org.miaixz.bus.auth.guard.token.ServiceTokenProvider;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.cortex.guard.GuardEvaluator.Mode;
-import org.miaixz.bus.cortex.guard.GuardEvaluator.Rule;
-import org.miaixz.bus.cortex.guard.inbound.InboundPolicy;
-import org.miaixz.bus.cortex.guard.outbound.OutboundPolicy;
-import org.miaixz.bus.cortex.guard.token.DerivedKeyProvider;
-import org.miaixz.bus.cortex.guard.token.Hs256TokenProvider;
-import org.miaixz.bus.cortex.guard.token.ServiceKeyProvider;
-import org.miaixz.bus.cortex.guard.token.ServiceTokenProvider;
 
 /**
- * Transport-neutral configuration for service identity.
+ * Transport-neutral configuration for service identity and client request checks.
  *
  * @author Kimi Liu
  */
 @Getter
-@Accessors(fluent = true)
+@Setter
+@SuperBuilder
 public class GuardConfig {
-
-    /**
-     * Default rotation period in seconds, expressed as a property value.
-     */
-    protected static final String DEFAULT_ROTATE = "86400";
-
-    /**
-     * Default token lifetime in seconds, expressed as a property value.
-     */
-    protected static final String DEFAULT_TTL = "300";
 
     /**
      * Inbound caller verification settings.
@@ -67,6 +61,24 @@ public class GuardConfig {
      * Outbound identity signing settings.
      */
     private final Outbound outbound;
+
+    /**
+     * Direct client Bearer authentication settings.
+     */
+    @Builder.Default
+    private final Bearer bearer = new Bearer(true);
+
+    /**
+     * Client API key authentication settings.
+     */
+    @Builder.Default
+    private final ApiKey apiKey = new ApiKey(true);
+
+    /**
+     * Client request-signature verification settings.
+     */
+    @Builder.Default
+    private final Signing signing = new Signing(true);
 
     /**
      * Shared signing root encoded as Base64.
@@ -88,26 +100,32 @@ public class GuardConfig {
      */
     public GuardConfig() {
         this(new Inbound(false, Normal.EMPTY, Normal.EMPTY, Integer.parseInt(Symbol.FIVE), List.of()),
-                new Outbound(false, Normal.EMPTY, Integer.parseInt(DEFAULT_TTL), Normal.EMPTY, List.of()), Normal.EMPTY,
-                Long.parseLong(DEFAULT_ROTATE), GuardEvaluator.DEFAULT_LABEL);
+                new Outbound(false, Normal.EMPTY, 300, Normal.EMPTY, List.of()), Normal.EMPTY, 86_400L,
+                "miaixz-bus-anchor-v1:", new Bearer(true), new ApiKey(true), new Signing(true));
     }
 
     /**
-     * Configures the service identity directions and default key rotation.
+     * Configures service identity and the independent client request checks.
      *
-     * @param inbound  inbound caller verification settings
-     * @param outbound outbound signing settings
-     * @param secret   shared Base64-encoded signing root
+     * @param inbound  inbound service token settings
+     * @param outbound outbound service token settings
+     * @param secret   Base64-encoded service token derivation root
      * @param rotate   derived-key rotation period in seconds
      * @param label    domain separation label
+     * @param bearer   direct client Bearer authentication settings
+     * @param apiKey   client API key authentication settings
+     * @param signing  client request-signature verification settings
      */
-
-    public GuardConfig(Inbound inbound, Outbound outbound, String secret, long rotate, String label) {
+    public GuardConfig(Inbound inbound, Outbound outbound, String secret, long rotate, String label, Bearer bearer,
+            ApiKey apiKey, Signing signing) {
         this.inbound = inbound;
         this.outbound = outbound;
         this.secret = secret;
         this.rotate = rotate;
         this.label = label;
+        this.bearer = bearer;
+        this.apiKey = apiKey;
+        this.signing = signing;
     }
 
     /**
@@ -215,6 +233,132 @@ public class GuardConfig {
     }
 
     /**
+     * Direct client Bearer authentication settings.
+     */
+    @Getter
+    @Accessors(fluent = true)
+    public static class Bearer {
+
+        /**
+         * Whether direct client Bearer authentication is enabled.
+         */
+        private final boolean enabled;
+
+        /**
+         * Maximum Bearer credential length for V1 request-signing key derivation.
+         */
+        private final int maxLength;
+
+        /**
+         * Configures the Bearer authentication channel.
+         *
+         * @param enabled whether to accept direct client Bearer authentication
+         */
+        public Bearer(boolean enabled) {
+            this(enabled, Normal._8192);
+        }
+
+        /**
+         * Configures the Bearer channel and its V1 signing limit.
+         *
+         * @param enabled   whether to accept direct client Bearer authentication
+         * @param maxLength positive maximum number of characters accepted for V1 signing
+         */
+        public Bearer(boolean enabled, int maxLength) {
+            if (maxLength <= 0) {
+                throw new IllegalArgumentException("Bearer maximum length must be positive");
+            }
+            this.enabled = enabled;
+            this.maxLength = maxLength;
+        }
+
+    }
+
+    /**
+     * Client API key authentication settings.
+     */
+    @Getter
+    @Accessors(fluent = true)
+    public static class ApiKey {
+
+        /**
+         * Whether client API key authentication is enabled.
+         */
+        private final boolean enabled;
+
+        /**
+         * Maximum API key length for V1 request-signing key derivation.
+         */
+        private final int maxLength;
+
+        /**
+         * Configures the API key authentication channel.
+         *
+         * @param enabled whether to accept client API key authentication
+         */
+        public ApiKey(boolean enabled) {
+            this(enabled, Normal._512);
+        }
+
+        /**
+         * Configures the API key channel and its V1 signing limit.
+         *
+         * @param enabled   whether to accept client API key authentication
+         * @param maxLength positive maximum number of characters accepted for V1 signing
+         */
+        public ApiKey(boolean enabled, int maxLength) {
+            if (maxLength <= 0) {
+                throw new IllegalArgumentException("API key maximum length must be positive");
+            }
+            this.enabled = enabled;
+            this.maxLength = maxLength;
+        }
+
+    }
+
+    /**
+     * Client request-signature verification settings.
+     */
+    @Getter
+    @Accessors(fluent = true)
+    public static class Signing {
+
+        /**
+         * Whether the caller should apply an asset's request-signature requirement.
+         */
+        private final boolean enabled;
+
+        /**
+         * Maximum allowed timestamp difference between client and server, in minutes.
+         */
+        private final int skewMinutes;
+
+        /**
+         * Configures request-signature verification with the default timestamp window.
+         *
+         * @param enabled whether to verify a client signature when required by the asset
+         */
+        public Signing(boolean enabled) {
+            this(enabled, 30);
+        }
+
+        /**
+         * Configures request-signature verification and timestamp tolerance.
+         *
+         * @param enabled     whether to verify a client signature when required by the asset
+         * @param skewMinutes positive maximum timestamp difference in minutes
+         */
+        public Signing(boolean enabled, int skewMinutes) {
+            if (skewMinutes <= 0) {
+                throw new IllegalArgumentException("Signing timestamp tolerance must be positive");
+            }
+            this.enabled = enabled;
+            this.skewMinutes = skewMinutes;
+        }
+
+    }
+
+    /**
      * Configures one Servlet or Vortex ingress path.
      *
      * @param path     route path pattern
@@ -235,6 +379,46 @@ public class GuardConfig {
         public Incoming {
             subjects = subjects == null ? Set.of() : Set.copyOf(subjects);
             origins = origins == null ? Set.of() : Set.copyOf(origins);
+        }
+
+    }
+
+    /**
+     * Declares an endpoint that requires an admitted service caller in addition to the token policy.
+     *
+     * @param path                     exact context-relative request path
+     * @param origins                  allowed original callers when forwarded identity is required
+     * @param directGetParameter       parameter that permits a direct caller on a GET request
+     * @param localReadWithoutIdentity whether that same GET may read from an exclusively loopback listener
+     */
+    public record Admission(String path, Set<String> origins, String directGetParameter,
+            boolean localReadWithoutIdentity) {
+
+        /** Creates an endpoint admission rule with an immutable origin allowlist. */
+        public Admission {
+            if (path == null || !path.startsWith("/")) {
+                throw new IllegalArgumentException("Service admission requires a context-relative path");
+            }
+            if (localReadWithoutIdentity && (directGetParameter == null || directGetParameter.isBlank())) {
+                throw new IllegalArgumentException("Local read requires a GET selector");
+            }
+            origins = origins == null ? Set.of() : Set.copyOf(origins);
+        }
+
+        /**
+         * Evaluates admission using only verified service identity or confirmed listener and peer addresses.
+         *
+         * @param caller     verified service caller, if any
+         * @param directRead whether the request matches the configured GET selector
+         * @param local      whether both endpoints belong to the exclusively loopback listener
+         * @return whether the request can enter the endpoint
+         */
+        public boolean admits(GuardEvaluator.Verified caller, boolean directRead, boolean local) {
+            if (caller == null) {
+                return directRead && localReadWithoutIdentity && local;
+            }
+            return directRead && caller.origin() == null
+                    || CallerValidator.matches(caller, Set.of(), origins, !origins.isEmpty());
         }
 
     }
@@ -264,12 +448,57 @@ public class GuardConfig {
     }
 
     /**
+     * Reports the configured switch for inbound service token verification.
+     *
+     * @return whether inbound verification is explicitly enabled
+     */
+    public boolean inboundEnabled() {
+        return Boolean.TRUE.equals(inbound.enabled());
+    }
+
+    /**
+     * Reports the configured switch for outbound service token issuance.
+     *
+     * @return whether outbound issuance is explicitly enabled
+     */
+    public boolean outboundEnabled() {
+        return Boolean.TRUE.equals(outbound.enabled());
+    }
+
+    /**
+     * Reports whether direct client Bearer authentication is enabled.
+     *
+     * @return whether to use Bearer credentials for client authentication
+     */
+    public boolean isBearerEnabled() {
+        return bearer.enabled();
+    }
+
+    /**
+     * Reports whether client API key authentication is enabled.
+     *
+     * @return whether to use API keys for client authentication
+     */
+    public boolean isApiKeyEnabled() {
+        return apiKey.enabled();
+    }
+
+    /**
+     * Reports whether client request-signature verification is enabled.
+     *
+     * @return whether to verify client request signatures required by an asset
+     */
+    public boolean isSigningEnabled() {
+        return signing.enabled();
+    }
+
+    /**
      * Creates the shared identity evaluator from the two independently configured directions.
      *
      * @return service identity evaluator for the application
      */
     public GuardEvaluator identity() {
-        return identity(Boolean.TRUE.equals(inbound.enabled()), Boolean.TRUE.equals(outbound.enabled()));
+        return identity(inboundEnabled(), outboundEnabled());
     }
 
     /**
@@ -278,7 +507,7 @@ public class GuardConfig {
      * @return derived keys or an empty provider when both directions are disabled
      */
     public ServiceKeyProvider keyProvider() {
-        return defaultKeys(Boolean.TRUE.equals(inbound.enabled()) || Boolean.TRUE.equals(outbound.enabled()));
+        return defaultKeys(inboundEnabled() || outboundEnabled());
     }
 
     /**
@@ -289,7 +518,7 @@ public class GuardConfig {
      * @return service identity evaluator for the bound directions
      */
     public GuardEvaluator identity(ServiceKeyProvider keys, ServiceTokenProvider tokens) {
-        return identity(Boolean.TRUE.equals(inbound.enabled()), Boolean.TRUE.equals(outbound.enabled()), keys, tokens);
+        return identity(inboundEnabled(), outboundEnabled(), keys, tokens);
     }
 
     /**

@@ -17,14 +17,14 @@
  ~                                                                           ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.cortex.guard.inbound;
+package org.miaixz.bus.auth.guard.inbound;
 
 import java.time.Duration;
 import java.util.List;
 import java.util.Set;
 
-import org.miaixz.bus.cortex.guard.GuardEvaluator.Mode;
-import org.miaixz.bus.cortex.guard.GuardEvaluator.Rule;
+import org.miaixz.bus.auth.guard.GuardEvaluator.Mode;
+import org.miaixz.bus.auth.guard.GuardEvaluator.Rule;
 
 /**
  * Inbound service identity configuration.

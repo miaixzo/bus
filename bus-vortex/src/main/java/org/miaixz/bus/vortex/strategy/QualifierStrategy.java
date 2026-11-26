@@ -31,6 +31,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.server.ServerWebExchange;
 
+import org.miaixz.bus.auth.guard.GuardEvaluator;
 import org.miaixz.bus.core.Order;
 import org.miaixz.bus.core.basic.normal.Consts;
 import org.miaixz.bus.core.basic.normal.Errors;
@@ -44,7 +45,6 @@ import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.cortex.Assets;
 import org.miaixz.bus.cortex.Keying;
 import org.miaixz.bus.cortex.Type;
-import org.miaixz.bus.cortex.guard.GuardEvaluator;
 import org.miaixz.bus.errors.transport.http.RouteFailure;
 import org.miaixz.bus.errors.transport.reactive.ReactiveErrorHandler;
 import org.miaixz.bus.logger.Logger;
@@ -412,10 +412,11 @@ public class QualifierStrategy extends AbstractStrategy {
             return Mono.error(new ValidateException(ErrorCode._100160));
         }
 
-        return this.provider.authorize(
-                Principal.builder().channel(context.getChannel().getType()).context(context).type(credential.type())
-                        .value(credential.value()).build())
-                .flatMap(delegate -> {
+        return this.provider
+                .authorize(
+                        Principal.builder().channel(context.getChannel().getType()).context(context)
+                                .type(credential.type()).value(credential.value()).build())
+                .switchIfEmpty(Mono.error(new ValidateException(ErrorCode._100160))).flatMap(delegate -> {
                     if (delegate.isOk()) {
                         Map<String, Object> authMap = new HashMap<>();
                         BeanKit.beanToMap(
@@ -445,6 +446,9 @@ public class QualifierStrategy extends AbstractStrategy {
                     }
 
                     var message = delegate.getMessage();
+                    if (message == null) {
+                        return Mono.error(new ValidateException(ErrorCode._100160));
+                    }
                     Logger.error(
                             false,
                             "Vortex",
@@ -459,14 +463,14 @@ public class QualifierStrategy extends AbstractStrategy {
     }
 
     /**
-     * Selects the request credential. Bearer tokens have priority, API keys are used only when no token is present.
+     * Selects an enabled request credential. An enabled Bearer channel has priority over the API key channel.
      *
      * @param context current request context
      * @param policy  current route policy
      * @return selected credential, or {@code null} when no supported credential is present
      */
     protected Credential selectCredential(Context context, Integer policy) {
-        Http.Auth.Credential credential = Http.Auth.credential(context.getHeaders());
+        Http.Auth.Credential credential = context.clientCredential();
         if (credential == null) {
             return null;
         }

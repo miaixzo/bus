@@ -28,6 +28,8 @@ import lombok.Getter;
 
 import org.springframework.http.codec.multipart.Part;
 
+import org.miaixz.bus.auth.guard.CallerValidator;
+import org.miaixz.bus.auth.guard.GuardConfig;
 import org.miaixz.bus.core.basic.entity.Tracer;
 import org.miaixz.bus.core.center.function.BiFunctionX;
 import org.miaixz.bus.core.net.Http;
@@ -152,10 +154,70 @@ public class Context extends Tracer {
     private Http.Method httpMethod;
 
     /**
+     * Whether direct client Bearer authentication is enabled for this listener.
+     */
+    private final boolean bearerEnabled;
+
+    /**
+     * Whether client API key authentication is enabled for this listener.
+     */
+    private final boolean apiKeyEnabled;
+
+    /**
+     * Maximum Bearer credential length for V1 request signing.
+     */
+    private final int bearerMaxLength;
+
+    /**
+     * Maximum API key length for V1 request signing.
+     */
+    private final int apiKeyMaxLength;
+
+    /**
+     * Whether the client's request signature is verified when required by the asset.
+     */
+    private final boolean signingEnabled;
+
+    /**
      * Creates an empty request context.
      */
     public Context() {
-        // No initialization required.
+        this(true, true, true);
+    }
+
+    /**
+     * Creates an empty request context using the client's effective Guard switches.
+     *
+     * @param bearerEnabled  whether direct client Bearer authentication is enabled
+     * @param apiKeyEnabled  whether client API key authentication is enabled
+     * @param signingEnabled whether client request-signature verification is enabled
+     */
+    public Context(boolean bearerEnabled, boolean apiKeyEnabled, boolean signingEnabled) {
+        this(new GuardConfig.Bearer(bearerEnabled), new GuardConfig.ApiKey(apiKeyEnabled), signingEnabled);
+    }
+
+    /**
+     * Creates a request context with the listener's client credential and signing settings.
+     *
+     * @param bearerGuard    direct Bearer authentication settings
+     * @param apiKeyGuard    API key authentication settings
+     * @param signingEnabled whether client request-signature verification is enabled
+     */
+    public Context(GuardConfig.Bearer bearerGuard, GuardConfig.ApiKey apiKeyGuard, boolean signingEnabled) {
+        this.bearerEnabled = bearerGuard.enabled();
+        this.apiKeyEnabled = apiKeyGuard.enabled();
+        this.bearerMaxLength = bearerGuard.maxLength();
+        this.apiKeyMaxLength = apiKeyGuard.maxLength();
+        this.signingEnabled = signingEnabled;
+    }
+
+    /**
+     * Selects the first presented, enabled client authentication method.
+     *
+     * @return the enabled Bearer or API key credential, or {@code null} if neither is available
+     */
+    public Http.Auth.Credential clientCredential() {
+        return CallerValidator.credential(getHeaders(), bearerEnabled, apiKeyEnabled);
     }
 
     /**

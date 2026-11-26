@@ -1,5 +1,51 @@
 {
+  "comment": "GuardEvaluator$ModeEditor records the optional JavaBeans editor lookup that Spring probes when binding a service identity mode.",
   "reflection": [
+    {
+      "type": "org.miaixz.bus.auth.guard.GuardConfig$Incoming",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "org.miaixz.bus.auth.guard.GuardEvaluator$Mode",
+            "java.util.Set",
+            "java.util.Set"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.auth.guard.GuardConfig$Admission",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.util.Set",
+            "java.lang.String",
+            "boolean"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.auth.guard.GuardConfig$Outgoing",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "org.miaixz.bus.auth.guard.GuardEvaluator$Mode",
+            "java.util.Set"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.auth.guard.GuardEvaluator$ModeEditor"
+    },
     {
       "type": "org.miaixz.bus.auth.source.protocol.ldap.LdapConnector",
       "methods": [

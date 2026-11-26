@@ -17,9 +17,12 @@
  ~                                                                           ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
+
 /**
- * Selects outbound service identity policies and manages next-hop tokens.
+ * Provides service token signing, verification, and key rotation.
+ * <p>
+ * Key and token providers supply trusted key snapshots and perform cryptographic operations for the guard.
  *
  * @author Kimi Liu
  */
-package org.miaixz.bus.cortex.guard.outbound;
+package org.miaixz.bus.auth.guard.token;

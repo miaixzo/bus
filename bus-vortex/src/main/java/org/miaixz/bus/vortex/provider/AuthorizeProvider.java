@@ -103,24 +103,13 @@ public interface AuthorizeProvider {
      * <p>
      * Used when principal type is {@link Consts#ONE}.
      * <p>
-     * <strong>Warning:</strong> The default implementation of this method provides no security and always returns a
-     * successful result. It is a placeholder and **must be overridden** with actual validation logic, such as JWT
-     * signature verification, introspection against an OAuth2 server, or a database/cache lookup.
+     * The default implementation rejects the request. Override it to authenticate client Bearer credentials.
      *
      * @param principal The {@link Principal} object containing the token.
      * @return A {@code Mono<Delegate>} emitting the authorization result.
      */
     default Mono<Delegate> token(Principal principal) {
-        Logger.debug(
-                true,
-                "Vortex",
-                "Executing default credential validation method. This provides no security and should be overridden.");
-        return Mono.just(
-                Delegate.builder()
-                        .message(
-                                Message.<Void>builder().code(ErrorCode._SUCCESS.getKey())
-                                        .desc(ErrorCode._SUCCESS.getValue()).build())
-                        .authorize(Authorize.builder().build()).build());
+        return Mono.error(new ValidateException(ErrorCode._100160));
     }
 
     /**
@@ -128,24 +117,13 @@ public interface AuthorizeProvider {
      * <p>
      * Used when principal type is {@link Consts#TWO}.
      * <p>
-     * <strong>Warning:</strong> The default implementation of this method provides no security and always returns a
-     * successful result. It is a placeholder and **must be overridden** with actual validation logic, such as looking
-     * up the API key in a database and checking its permissions.
+     * The default implementation rejects the request. Override it to authenticate client API keys.
      *
      * @param principal The {@link Principal} object containing the API key.
      * @return A {@code Mono<Delegate>} emitting the authorization result.
      */
     default Mono<Delegate> apiKey(Principal principal) {
-        Logger.debug(
-                true,
-                "Vortex",
-                "Executing default `apiKey` method. This provides no security and should be overridden.");
-        return Mono.just(
-                Delegate.builder()
-                        .message(
-                                Message.<Void>builder().code(ErrorCode._SUCCESS.getKey())
-                                        .desc(ErrorCode._SUCCESS.getValue()).build())
-                        .authorize(Authorize.builder().build()).build());
+        return Mono.error(new ValidateException(ErrorCode._100160));
     }
 
     /**

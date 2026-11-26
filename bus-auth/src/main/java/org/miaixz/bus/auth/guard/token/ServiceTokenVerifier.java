@@ -17,7 +17,7 @@
  ~                                                                           ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.cortex.guard.token;
+package org.miaixz.bus.auth.guard.token;
 
 import java.time.Duration;
 import java.util.Set;
@@ -102,7 +102,7 @@ public final class ServiceTokenVerifier {
      * @param secret  trusted HS256 verification key
      * @return token with an authenticated signature, or null if the compact token is invalid
      */
-    public static JWT verifySignature(String compact, byte[] secret) {
+    public static JWT verify(String compact, byte[] secret) {
         var verifier = JwtService.hs256(secret);
         try {
             return verifier.verify(compact);

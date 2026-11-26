@@ -33,6 +33,13 @@ import org.springframework.beans.factory.config.BeanPostProcessor;
 public final class MapperSessionBinding implements BeanPostProcessor {
 
     /**
+     * Creates the mapper session post-processor.
+     */
+    public MapperSessionBinding() {
+        // No initialization required.
+    }
+
+    /**
      * Adapts a standard session after its factory properties are populated and before mapper initialization.
      *
      * @param bean     current bean, possibly a mapper factory

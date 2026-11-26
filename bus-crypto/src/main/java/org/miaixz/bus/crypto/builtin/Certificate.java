@@ -143,55 +143,61 @@ public class Certificate implements Serializable {
     /**
      * Builds and signs an X.509 certificate, typically for a Certificate Authority (CA). This method generates a
      * self-signed certificate or a certificate signed by a CA if issuer and subject are different.
+     * Requires the optional Bouncy Castle PKIX dependency at runtime.
      *
      * @return The generated {@link X509Certificate}.
      * @throws InternalException if any cryptographic operation or certificate building fails.
      */
     public X509Certificate build() {
-        // Create certificate issuer
-        X500NameBuilder issuer = new X500NameBuilder(BCStyle.INSTANCE);
-        issuer.addRDN(BCStyle.CN, this.issuerCN);
-        issuer.addRDN(BCStyle.O, this.issuerO);
+        return CertificateGenerator.build(this);
+    }
 
-        // Create certificate subject
-        X500NameBuilder subject = new X500NameBuilder(BCStyle.INSTANCE);
-        subject.addRDN(BCStyle.CN, this.subjectCN);
-        subject.addRDN(BCStyle.O, this.subjectO);
+    /**
+     * Loads the optional PKIX classes only when generating a certificate.
+     */
+    private static class CertificateGenerator {
 
-        // Generate public/private key pair for the certificate
-        KeyPair keyPair = Keeper.generateKeyPair("RSA");
-        // Public key associated with the certificate
-        PublicKey publicKey = keyPair.getPublic();
-        // Private key associated with the certificate
-        PrivateKey privateKey = keyPair.getPrivate();
-        // Subject Key Identifier
-        SubjectKeyIdentifier subjectKeyIdentifier = new SubjectKeyIdentifier(publicKey.getEncoded());
-        KeyUsage usage = new KeyUsage(KeyUsage.keyCertSign | KeyUsage.digitalSignature | KeyUsage.keyEncipherment
-                | KeyUsage.dataEncipherment | KeyUsage.cRLSign);
-        ASN1EncodableVector purposes = new ASN1EncodableVector();
-        purposes.add(KeyPurposeId.id_kp_serverAuth);
-        purposes.add(KeyPurposeId.id_kp_clientAuth);
-        purposes.add(KeyPurposeId.anyExtendedKeyUsage);
+        private static X509Certificate build(final Certificate certificate) {
+            X500NameBuilder issuer = new X500NameBuilder(BCStyle.INSTANCE);
+            issuer.addRDN(BCStyle.CN, certificate.issuerCN);
+            issuer.addRDN(BCStyle.O, certificate.issuerO);
 
-        X509v3CertificateBuilder certBuilder = new JcaX509v3CertificateBuilder(issuer.build(),
-                BigInteger.valueOf(Long.parseLong(serial)), this.notBefore, this.notAfter, subject.build(), publicKey);
-        try {
-            certBuilder.addExtension(Extension.basicConstraints, true, new BasicConstraints(true));
-            certBuilder.addExtension(Extension.subjectKeyIdentifier, false, subjectKeyIdentifier);
-            certBuilder.addExtension(Extension.keyUsage, false, usage);
-            certBuilder.addExtension(Extension.extendedKeyUsage, false, new DERSequence(purposes));
-            return new JcaX509CertificateConverter().getCertificate(
-                    certBuilder.build(new JcaContentSignerBuilder("SHA256WithRSAEncryption").build(privateKey)));
-        } catch (CertIOException | OperatorCreationException | CertificateException e) {
-            Logger.warn(
-                    false,
-                    "Crypto",
-                    e,
-                    "Crypto operation failed: provider={}, recoverable={}, exception={}",
-                    "Certificate",
-                    false,
-                    e.getClass().getSimpleName());
-            throw new InternalException(e);
+            X500NameBuilder subject = new X500NameBuilder(BCStyle.INSTANCE);
+            subject.addRDN(BCStyle.CN, certificate.subjectCN);
+            subject.addRDN(BCStyle.O, certificate.subjectO);
+
+            KeyPair keyPair = Keeper.generateKeyPair("RSA");
+            PublicKey publicKey = keyPair.getPublic();
+            PrivateKey privateKey = keyPair.getPrivate();
+            SubjectKeyIdentifier subjectKeyIdentifier = new SubjectKeyIdentifier(publicKey.getEncoded());
+            KeyUsage usage = new KeyUsage(KeyUsage.keyCertSign | KeyUsage.digitalSignature | KeyUsage.keyEncipherment
+                    | KeyUsage.dataEncipherment | KeyUsage.cRLSign);
+            ASN1EncodableVector purposes = new ASN1EncodableVector();
+            purposes.add(KeyPurposeId.id_kp_serverAuth);
+            purposes.add(KeyPurposeId.id_kp_clientAuth);
+            purposes.add(KeyPurposeId.anyExtendedKeyUsage);
+
+            X509v3CertificateBuilder certBuilder = new JcaX509v3CertificateBuilder(issuer.build(),
+                    BigInteger.valueOf(Long.parseLong(certificate.serial)), certificate.notBefore,
+                    certificate.notAfter, subject.build(), publicKey);
+            try {
+                certBuilder.addExtension(Extension.basicConstraints, true, new BasicConstraints(true));
+                certBuilder.addExtension(Extension.subjectKeyIdentifier, false, subjectKeyIdentifier);
+                certBuilder.addExtension(Extension.keyUsage, false, usage);
+                certBuilder.addExtension(Extension.extendedKeyUsage, false, new DERSequence(purposes));
+                return new JcaX509CertificateConverter().getCertificate(
+                        certBuilder.build(new JcaContentSignerBuilder("SHA256WithRSAEncryption").build(privateKey)));
+            } catch (CertIOException | OperatorCreationException | CertificateException e) {
+                Logger.warn(
+                        false,
+                        "Crypto",
+                        e,
+                        "Crypto operation failed: provider={}, recoverable={}, exception={}",
+                        "Certificate",
+                        false,
+                        e.getClass().getSimpleName());
+                throw new InternalException(e);
+            }
         }
     }
 

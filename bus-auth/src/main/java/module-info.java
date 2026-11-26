@@ -97,6 +97,9 @@ module bus.auth {
     exports org.miaixz.bus.auth.cache;
     exports org.miaixz.bus.auth.codec;
     exports org.miaixz.bus.auth.guard;
+    exports org.miaixz.bus.auth.guard.inbound;
+    exports org.miaixz.bus.auth.guard.outbound;
+    exports org.miaixz.bus.auth.guard.token;
     exports org.miaixz.bus.auth.registry;
     exports org.miaixz.bus.auth.resolver;
     exports org.miaixz.bus.auth.runtime;

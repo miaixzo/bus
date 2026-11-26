@@ -6227,6 +6227,18 @@
         "typeReached": "org.miaixz.bus.core.io.resource.ClassPathResource"
       },
       "glob": "config/mail.setting"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.io.resource.ClassPathResource"
+      },
+      "glob": "config/mailAccount.setting"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.io.resource.ClassPathResource"
+      },
+      "glob": "mail.setting"
     }
   ]
 }

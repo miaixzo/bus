@@ -1,5 +1,4 @@
 {
-  "comment": "The enum editor entries record intentional negative class lookups by Spring when binding starter configuration properties.",
   "reflection": [
     {
       "type": "org.miaixz.bus.starter.GeniusStarter",
@@ -46,6 +45,99 @@
             "boolean",
             "org.miaixz.bus.cache.Options",
             "org.miaixz.bus.starter.auth.AuthProperties$Jwt"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "boolean",
+            "org.miaixz.bus.cache.Options",
+            "org.miaixz.bus.starter.auth.AuthProperties$Jwt",
+            "org.miaixz.bus.starter.auth.AuthProperties$Guard"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.starter.auth.AuthProperties$Guard",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.starter.auth.AuthProperties$Guard$Inbound",
+            "org.miaixz.bus.starter.auth.AuthProperties$Guard$Outbound",
+            "java.lang.String",
+            "long",
+            "java.lang.String",
+            "org.miaixz.bus.starter.auth.AuthProperties$Guard$Bearer",
+            "org.miaixz.bus.starter.auth.AuthProperties$Guard$ApiKey",
+            "org.miaixz.bus.starter.auth.AuthProperties$Guard$Signing"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.starter.auth.AuthProperties$Guard$Bearer",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "boolean",
+            "java.lang.Integer"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.starter.auth.AuthProperties$Guard$ApiKey",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "boolean",
+            "java.lang.Integer"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.starter.auth.AuthProperties$Guard$Signing",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "boolean",
+            "java.lang.Integer"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.starter.auth.AuthProperties$Guard$Inbound",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.Boolean",
+            "java.lang.String",
+            "java.lang.String",
+            "int",
+            "java.util.List"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.starter.auth.AuthProperties$Guard$Outbound",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.Boolean",
+            "java.lang.String",
+            "int",
+            "java.lang.String",
+            "java.util.List"
           ]
         }
       ]
@@ -216,7 +308,6 @@
             "org.miaixz.bus.cache.Options",
             "org.miaixz.bus.starter.cortex.CortexProperties$Watch",
             "org.miaixz.bus.starter.cortex.CortexProperties$Bridge",
-            "org.miaixz.bus.starter.cortex.CortexProperties$Guard",
             "org.miaixz.bus.starter.cortex.CortexProperties$Audit",
             "org.miaixz.bus.starter.cortex.CortexProperties$Release"
           ]
@@ -253,55 +344,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.starter.cortex.CortexProperties$Guard",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "org.miaixz.bus.starter.cortex.CortexProperties$Guard$Inbound",
-            "org.miaixz.bus.starter.cortex.CortexProperties$Guard$Outbound",
-            "java.lang.String",
-            "long",
-            "java.lang.String"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.starter.cortex.CortexProperties$Guard$Inbound",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.Boolean",
-            "java.lang.String",
-            "java.lang.String",
-            "int",
-            "java.util.List"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.starter.cortex.CortexProperties$Guard$Outbound",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.Boolean",
-            "java.lang.String",
-            "int",
-            "java.lang.String",
-            "java.util.List"
-          ]
-        }
-      ]
-    },
-    {
       "type": "org.miaixz.bus.starter.cortex.CortexProperties$Release",
       "methods": [
         {
@@ -332,12 +374,12 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.starter.cortex.ServiceGuardFilter",
+      "type": "org.miaixz.bus.starter.auth.ServiceGuardFilter",
       "methods": [
         {
           "name": "<init>",
           "parameterTypes": [
-            "org.miaixz.bus.cortex.guard.GuardEvaluator"
+            "org.miaixz.bus.auth.guard.GuardEvaluator"
           ]
         }
       ]
