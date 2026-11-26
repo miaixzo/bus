@@ -65,7 +65,7 @@ const count = {
 const java = cp.spawnSync('java', [
     '-XshowSettings:properties',
     '-version'
-], { encoding: 'utf8' });
+], {encoding: 'utf8'});
 const javaHome = /java.home\s*=\s*(.+)/.exec(java.stderr)?.[1].trim();
 if (!javaHome)
     throw new Error('A JDK with jimage is required to distinguish platform types from third-party classes.');
@@ -174,7 +174,7 @@ function declarations(r) {
 function walk(dir, module) {
     if (!fs.existsSync(dir))
         return;
-    for (const e of fs.readdirSync(dir, { withFileTypes: true })) {
+    for (const e of fs.readdirSync(dir, {withFileTypes: true})) {
         const file = path.join(dir, e.name), relative = path.relative(root, file);
         if (e.isDirectory()) {
             walk(file, module);
@@ -193,8 +193,8 @@ function walk(dir, module) {
                 for (const match of text.matchAll(/--initialize-at-(?:build|run)-time=([^\s\\]+)/g))
                     for (const type of match[1].split(','))
                         if (owner(type) !== module.slice(4) && !platform(type)
-                                && !(module === 'bus-crypto' && /^org\.bouncycastle(?:\.|$)/.test(type)))
-                            errors.push(`${ relative }: foreign initialization ${ type }`);
+                            && !(module === 'bus-crypto' && /^org\.bouncycastle(?:\.|$)/.test(type)))
+                            errors.push(`${relative}: foreign initialization ${type}`);
         }
 
         // Ancillary non-JSON files are outside this audit. Parse JSON before
@@ -205,7 +205,7 @@ function walk(dir, module) {
         try {
             doc = JSON.parse(fs.readFileSync(file, 'utf8'));
         } catch (err) {
-            errors.push(`${ relative }: ${ err.message }`);
+            errors.push(`${relative}: ${err.message}`);
             continue;
         }
         // Indexes describe versions rather than registrations. Other JSON
@@ -218,24 +218,24 @@ function walk(dir, module) {
             continue;
         }
         if (e.name !== 'reachability-metadata.json') {
-            errors.push(`${ relative }: unexpected legacy metadata file`);
+            errors.push(`${relative}: unexpected legacy metadata file`);
             continue;
         }
         // Unified metadata represents serialization on reflection rows using
         // serializable=true; a legacy top-level serialization array is invalid.
         for (const section of Object.keys(doc))
             if (!['comment', 'reflection', 'resources', 'foreign'].includes(section))
-                errors.push(`${ relative }: unsupported unified metadata section ${ section }`);
+                errors.push(`${relative}: unsupported unified metadata section ${section}`);
         // Require the component's own org.miaixz resource directory. Lattice
         // types are application-specific and must not leak into published Bus
         // metadata, including within signatures or conditions.
         files.push(relative);
         if (module === 'bus-preset')
             layouts.push(relative);
-        if (module !== 'bus-preset' && !relative.includes(`native-image/org.miaixz/${ module }/`))
-            errors.push(`${ relative }: component metadata is outside its owner directory`);
+        if (module !== 'bus-preset' && !relative.includes(`native-image/org.miaixz/${module}/`))
+            errors.push(`${relative}: component metadata is outside its owner directory`);
         if (JSON.stringify(doc).includes('org.miaixz.lattice.'))
-            errors.push(`${ relative }: application-specific metadata`);
+            errors.push(`${relative}: application-specific metadata`);
         for (const [section, rows] of Object.entries(doc)) {
             if (!Array.isArray(rows))
                 continue;
@@ -253,26 +253,26 @@ function walk(dir, module) {
                 }
                 // Duplicate keys include the section and entire normalized row.
                 // Rows with different conditions remain distinct registrations.
-                const key = `${ section }:${ stringify(row) }`, locations = seen.get(key) || [];
+                const key = `${section}:${stringify(row)}`, locations = seen.get(key) || [];
                 locations.push(relative);
                 seen.set(key, locations);
                 if ([
-                        'reflection',
-                        'serialization',
-                        'jni'
-                    ].includes(section)) {
+                    'reflection',
+                    'serialization',
+                    'jni'
+                ].includes(section)) {
                     // A composite proxy involving this component's interface
                     // remains component-owned. Pure third-party declarations
                     // belong in bus-preset; Bus-owned declarations do not.
                     const types = declarations(row), ownTypes = types.filter(owner);
                     if (module === 'bus-preset') {
                         if (ownTypes.length)
-                            errors.push(`${ relative }: Bus-owned declaration ${ types.join(', ') }`);
+                            errors.push(`${relative}: Bus-owned declaration ${types.join(', ')}`);
                     } else if (ownTypes.length) {
                         if (!ownTypes.some(t => owner(t) === module.slice(4)))
-                            errors.push(`${ relative }: cross-component declaration ${ types.join(', ') }`);
+                            errors.push(`${relative}: cross-component declaration ${types.join(', ')}`);
                     } else if (types.some(t => !platform(t)))
-                        errors.push(`${ relative }: third-party declaration ${ types.join(', ') }`);
+                        errors.push(`${relative}: third-party declaration ${types.join(', ')}`);
                 }
                 // Keep Bus SPI files in their owning component. Also reject
                 // selected common third-party resource prefixes. This targeted
@@ -280,10 +280,10 @@ function walk(dir, module) {
                 if (section === 'resources') {
                     const glob = row.glob || '';
                     const spiOwner = /META-INF\/services\/org\.miaixz\.bus\.([^.]+)/.exec(glob)?.[1];
-                    if (spiOwner && (module === 'bus-preset' || `bus-${ spiOwner }` !== module))
-                        errors.push(`${ relative }: misplaced Bus SPI ${ glob }`);
+                    if (spiOwner && (module === 'bus-preset' || `bus-${spiOwner}` !== module))
+                        errors.push(`${relative}: misplaced Bus SPI ${glob}`);
                     if (module !== 'bus-preset' && /^(org\/apache|com\/google|io\/netty|org\/springframework)\//.test(glob))
-                        errors.push(`${ relative }: third-party resource ${ glob }`);
+                        errors.push(`${relative}: third-party resource ${glob}`);
                 }
             }
         }
@@ -316,7 +316,7 @@ for (const [key, locations] of seen) {
             reason: 'Both components can be consumed independently and each performs ImageIO SPI discovery.'
         });
     else
-        errors.push(`Duplicate ${ key.slice(0, 180) } in ${ locations.join(', ') }`);
+        errors.push(`Duplicate ${key.slice(0, 180)} in ${locations.join(', ')}`);
 }
 
 // Validate local index structure and version coverage without contacting Maven.
@@ -324,7 +324,7 @@ for (const [key, locations] of seen) {
 for (const {file, doc} of indexes) {
     const dir = path.dirname(file), versions = new Set();
     if (!Array.isArray(doc) || !doc.length) {
-        errors.push(`${ file }: empty index`);
+        errors.push(`${file}: empty index`);
         continue;
     }
     // The baseline must exist and appear in a unique, numerically sorted
@@ -333,17 +333,17 @@ for (const {file, doc} of indexes) {
         const version = entry['metadata-version'];
         versions.add(version);
         if (!fs.existsSync(path.join(dir, version || 'missing')))
-            errors.push(`${ file }: missing baseline ${ version }`);
+            errors.push(`${file}: missing baseline ${version}`);
         const tested = entry['tested-versions'];
         if (!Array.isArray(tested) || !tested.includes(version) || new Set(tested).size !== tested.length)
-            errors.push(`${ file }: invalid tested-versions`);
-        else if (JSON.stringify(tested) !== JSON.stringify([...tested].sort(new Intl.Collator('en', { numeric: true }).compare)))
-            errors.push(`${ file }: unsorted tested-versions`);
+            errors.push(`${file}: invalid tested-versions`);
+        else if (JSON.stringify(tested) !== JSON.stringify([...tested].sort(new Intl.Collator('en', {numeric: true}).compare)))
+            errors.push(`${file}: unsorted tested-versions`);
     }
     // Reject nonempty version directories lacking a corresponding index entry.
-    for (const e of fs.readdirSync(dir, { withFileTypes: true }))
+    for (const e of fs.readdirSync(dir, {withFileTypes: true}))
         if (e.isDirectory() && fs.readdirSync(path.join(dir, e.name)).length && !versions.has(e.name))
-            errors.push(`${ file }: unindexed version ${ e.name }`);
+            errors.push(`${file}: unindexed version ${e.name}`);
 }
 
 // Enforce group/artifact/version/file for each third-party payload, with an
@@ -352,19 +352,19 @@ const nativeRoot = path.join(root, 'bus-preset/src/main/resources/META-INF/nativ
 for (const relative of layouts) {
     const parts = path.relative(nativeRoot, path.join(root, relative)).split(path.sep);
     if (parts.length !== 4 || !fs.existsSync(path.join(nativeRoot, parts[0], parts[1], 'index.json')))
-        errors.push(`${ relative }: missing artifact index or invalid layout`);
+        errors.push(`${relative}: missing artifact index or invalid layout`);
 }
 
 // POMs, the aggregate module and the third-party container are exempt.
 // The remaining Bus components must provide their own metadata document.
 for (const module of modules.filter(m => ![
-        'bus-all',
-        'bus-bom',
-        'bus-parent',
-        'bus-preset'
-    ].includes(m)))
+    'bus-all',
+    'bus-bom',
+    'bus-parent',
+    'bus-preset'
+].includes(m)))
     if (!files.some(f => f.startsWith(module + '/')))
-        errors.push(`${ module }: missing component metadata`);
+        errors.push(`${module}: missing component metadata`);
 
 // Bus's custom SPI loaders read descriptors and instantiate providers through
 // ClassKit/ReflectKit, so Java ServiceLoader's native support alone is insufficient.
@@ -376,16 +376,16 @@ for (const module of modules) {
         continue;
     for (const service of fs.readdirSync(dir).filter(name => name.startsWith('org.miaixz.bus.'))) {
         spiDescriptors++;
-        const resource = `META-INF/services/${ service }`;
+        const resource = `META-INF/services/${service}`;
         if (!(resourceGlobs.get(module) || []).some(glob => matchesGlob(resource, glob)))
-            errors.push(`${ module }: missing SPI resource ${ resource }`);
+            errors.push(`${module}: missing SPI resource ${resource}`);
         const providers = fs.readFileSync(path.join(dir, service), 'utf8').split(/\r?\n/).map(line => line.split('#')[0].trim()).filter(Boolean);
         for (const provider of providers) {
             spiProviders++;
             const entries = reflection.get(provider) || [];
             const constructor = entries.some(row => row.allDeclaredConstructors || row.allPublicConstructors || (row.methods || []).some(method => method.name === '<init>' && Array.isArray(method.parameterTypes) && method.parameterTypes.length === 0));
             if (!constructor)
-                errors.push(`${ module }: missing SPI constructor ${ provider }`);
+                errors.push(`${module}: missing SPI constructor ${provider}`);
         }
     }
 }

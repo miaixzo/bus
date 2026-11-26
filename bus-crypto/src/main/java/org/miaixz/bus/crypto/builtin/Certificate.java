@@ -142,8 +142,8 @@ public class Certificate implements Serializable {
 
     /**
      * Builds and signs an X.509 certificate, typically for a Certificate Authority (CA). This method generates a
-     * self-signed certificate or a certificate signed by a CA if issuer and subject are different.
-     * Requires the optional Bouncy Castle PKIX dependency at runtime.
+     * self-signed certificate or a certificate signed by a CA if issuer and subject are different. Requires the
+     * optional Bouncy Castle PKIX dependency at runtime.
      *
      * @return The generated {@link X509Certificate}.
      * @throws InternalException if any cryptographic operation or certificate building fails.
@@ -178,8 +178,8 @@ public class Certificate implements Serializable {
             purposes.add(KeyPurposeId.anyExtendedKeyUsage);
 
             X509v3CertificateBuilder certBuilder = new JcaX509v3CertificateBuilder(issuer.build(),
-                    BigInteger.valueOf(Long.parseLong(certificate.serial)), certificate.notBefore,
-                    certificate.notAfter, subject.build(), publicKey);
+                    BigInteger.valueOf(Long.parseLong(certificate.serial)), certificate.notBefore, certificate.notAfter,
+                    subject.build(), publicKey);
             try {
                 certBuilder.addExtension(Extension.basicConstraints, true, new BasicConstraints(true));
                 certBuilder.addExtension(Extension.subjectKeyIdentifier, false, subjectKeyIdentifier);
@@ -199,6 +199,7 @@ public class Certificate implements Serializable {
                 throw new InternalException(e);
             }
         }
+
     }
 
 }

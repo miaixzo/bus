@@ -36,12 +36,12 @@ inputs:
       bus-spring
       bus-tempus
       bus-auth
-      bus-cortex
       bus-limiter
       bus-metrics
       bus-notify
       bus-pay
       bus-storage
+      bus-cortex
       bus-vortex
       bus-starter
       bus-all

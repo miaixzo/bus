@@ -93,6 +93,7 @@ dependencies {
 - `bus-cortex`：服务注册、发现与健康探测
 - `bus-crypto`：加密、证书与安全工具
 - `bus-extra`：扩展工具与集成能力
+- `bus-errors`：公共错误分类、HTTP 错误响应及诊断
 - `bus-fabric`：HTTP、Socket、WebSocket、SSE、STOMP 协议运行时
 - `bus-gitlab`：GitLab API 集成
 - `bus-health`：健康检查与诊断

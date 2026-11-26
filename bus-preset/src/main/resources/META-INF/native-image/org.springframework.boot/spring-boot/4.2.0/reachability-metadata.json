@@ -1,6 +1,12 @@
 {
   "reflection": [
     {
+      "type": "org.springframework.boot.WebApplicationTypeEditor"
+    },
+    {
+      "type": "org.springframework.boot.logging.LogLevelEditor"
+    },
+    {
       "condition": {
         "typeReached": "org.apache.logging.log4j.core.config.plugins.util.PluginRegistry"
       },

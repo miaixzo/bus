@@ -95,6 +95,7 @@ dependencies {
 - `bus-cortex`: service registry, discovery and health probing
 - `bus-crypto`: cryptography, certificate and security utilities
 - `bus-extra`: extended utilities and integrations
+- `bus-errors`: hared error classification, public HTTP responses and diagnostics
 - `bus-fabric`: HTTP, socket, WebSocket, SSE and STOMP protocol runtime
 - `bus-gitlab`: GitLab API integration
 - `bus-health`: health checks and diagnostics

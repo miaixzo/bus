@@ -9,7 +9,7 @@
     <img src="https://img.shields.io/badge/Java-25+-green.svg">
   </a>
   <a target="_blank" href="https://spring.io/projects/spring-boot">
-    <img src="https://img.shields.io/badge/Spring Boot-4.1.2-brightgreen.svg">
+    <img src="https://img.shields.io/badge/Spring Boot-4.2.0-brightgreen.svg">
   </a>
   <a target="_blank" href="https://www.postgresql.org">
     <img src="https://img.shields.io/badge/postgresql-17.x-blue.svg">
@@ -18,7 +18,7 @@
     <img src="https://img.shields.io/badge/dubbo-3.3.x-yellow.svg">
   </a>
   <a target="_blank" href="http://poi.apache.org">
-    <img src="https://img.shields.io/badge/poi-5.4.x-blue.svg">
+    <img src="https://img.shields.io/badge/poi-6.0.x-blue.svg">
   </a>
 </p>
 
@@ -62,7 +62,7 @@ Bus primarily has versions 3.x, 5.x, 6.x, and 8.x, as detailed below:
 | [√]    | [bus-core](bus-core)           | Core utility library, containing 20+ common utility classes for concurrency/reflection/date/collections                          |
 | [√]    | [bus-cortex](bus-cortex)       | Unified registry and configuration center for API/MCP/Prompt entries, with health probing and space isolation                    |
 | [√]    | [bus-crypto](bus-crypto)       | Encryption/decryption component, supporting AES/DES/SM4/MD5 algorithms and national cipher suites                                |
-| [√]    | [bus-errors](bus-errors)       | Shared error classification, public HTTP responses and diagnostics                                               |
+| [√]    | [bus-errors](bus-errors)       | Shared error classification, public HTTP responses and diagnostics                                                               |
 | [√]    | [bus-extra](bus-extra)         | Extended functionality package, integrating peripheral services like FTP/QR code/MQ/file processing                              |
 | [√]    | [bus-gitlab](bus-gitlab)       | Deep GitLab integration, providing full lifecycle management for CI/CD/repositories/issues                                       |
 | [√]    | [bus-health](bus-health)       | Health monitoring center, real-time collection of JVM/OS/container/middleware monitoring metrics                                 |
@@ -77,11 +77,11 @@ Bus primarily has versions 3.x, 5.x, 6.x, and 8.x, as detailed below:
 | [√]    | [bus-opencv](bus-opencv)       | Computer vision library, wrapping OpenCV to provide image recognition/face detection/video analysis capabilities                 |
 | [√]    | [bus-parent](bus-parent)       | Parent POM, unified management of dependency versions/build configurations/coding standards                                      |
 | [√]    | [bus-pay](bus-pay)             | Payment aggregation service, integrating 20+ payment channels including WeChat Pay/Alipay/UnionPay                               |
-| [√]    | [bus-preset](bus-preset)       | Third-party GraalVM reachability metadata and initialization settings, without third-party runtime dependencies |
+| [√]    | [bus-preset](bus-preset)       | Third-party GraalVM reachability metadata and initialization settings, without third-party runtime dependencies                  |
 | [√]    | [bus-proxy](bus-proxy)         | Dynamic proxy tool, simplifying JDK/CGLIB proxy implementation                                                                   |
 | [√]    | [bus-sensitive](bus-sensitive) | Sensitive data masking, providing annotation-based/rule-based data obfuscation solutions                                         |
 | [√]    | [bus-setting](bus-setting)     | Configuration management tool, supporting multi-environment configuration/dynamic refresh/encrypted storage                      |
-| [√]    | [bus-shade](bus-shade)         | Code generator, one-click generation of basic code like Entity/Service/Mapper                                                    |
+| [√]    | [bus-shade](bus-shade)         | Executable JAR protection: encrypts Spring Boot archives and launches them through custom loaders (executable JAR only, WAR is not supported yet) |
 | [√]    | [bus-spring](bus-spring)       | Shared Spring and Spring Boot integration infrastructure                                                                         |
 | [√]    | [bus-starter](bus-starter)     | SpringBoot starter, auto-assembly of core components and configurations                                                          |
 | [√]    | [bus-storage](bus-storage)     | Object storage service, supporting storage solutions like Alibaba Cloud OSS/Tencent Cloud COS/MinIO                              |
