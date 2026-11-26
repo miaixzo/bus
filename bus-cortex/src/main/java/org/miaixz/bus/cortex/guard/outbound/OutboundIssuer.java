@@ -110,11 +110,11 @@ public final class OutboundIssuer {
         if (fixed != Mode.REQUIRED && asset != Mode.REQUIRED && (candidate == null || candidate.mode() == Mode.OFF)) {
             if (audience == null && policy.rules().stream()
                     .anyMatch(rule -> rule.mode() == Mode.REQUIRED && rule.matches(route, path)))
-                throw unavailable();
+                throw new IllegalStateException("Required service identity is unavailable");
             return null;
         }
         if (!policy.enabled() || audience == null || candidate == null || candidate.mode() != Mode.REQUIRED)
-            throw unavailable();
+            throw new IllegalStateException("Required service identity is unavailable");
         return issue(audience, caller == null ? null : caller.subject(), assetId);
     }
 
@@ -139,17 +139,17 @@ public final class OutboundIssuer {
      */
     private synchronized String issue(String audience, String origin, String assetId) {
         if (!policy.enabled() || audience == null || audience.isBlank())
-            throw unavailable();
+            throw new IllegalStateException("Required service identity is unavailable");
         try {
             Instant now = Instant.now();
             ServiceKeyProvider.Key key = keys.keys(now).signing();
             if (key == null || !key.active(now))
-                throw unavailable();
+                throw new IllegalStateException("Required service identity is unavailable");
             if (currentKey == null || !key.version().equals(currentKey.version())) {
                 issued.clear();
                 currentKey = key;
             } else if (key != currentKey && !Arrays.equals(key.secret(), currentKey.secret())) {
-                throw unavailable();
+                throw new IllegalStateException("Required service identity is unavailable");
             }
             var destination = new Destination(audience, origin, assetId);
             Cached cached = issued.get(destination);
@@ -162,7 +162,7 @@ public final class OutboundIssuer {
             issued.put(destination, new Cached(compact, refresh.isBefore(expiration) ? refresh : expiration));
             return compact;
         } catch (RuntimeException failure) {
-            throw unavailable();
+            throw new IllegalStateException("Required service identity is unavailable");
         }
     }
 
@@ -189,17 +189,8 @@ public final class OutboundIssuer {
                         .equals(request.origin(), ServiceTokenVerifier.forwardingClaim(data, ServiceTokenIssuer.ORIGIN))
                 || !Objects
                         .equals(request.asset(), ServiceTokenVerifier.forwardingClaim(data, ServiceTokenIssuer.ASSET)))
-            throw unavailable();
+            throw new IllegalStateException("Required service identity is unavailable");
         return expiration;
-    }
-
-    /**
-     * Creates a safe error for a required outbound identity that could not be prepared.
-     *
-     * @return failure without credential material
-     */
-    private static IllegalStateException unavailable() {
-        return new IllegalStateException("Required service identity is unavailable");
     }
 
     /**

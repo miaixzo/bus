@@ -27,7 +27,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.server.ServerWebExchange;
 
+import org.miaixz.bus.core.center.function.BiConsumerX;
 import org.miaixz.bus.core.center.function.FunctionX;
+import org.miaixz.bus.core.center.function.PredicateX;
+import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.cortex.Assets;
 import org.miaixz.bus.cortex.guard.GuardEvaluator;
@@ -64,34 +67,73 @@ public final class IdentityGuard {
     private final FunctionX<String, String> resolver;
 
     /**
+     * Application policy that opts an asset into service identity verification when inbound Guard is enabled.
+     */
+    private final PredicateX<Assets> requiresIdentity;
+
+    /**
+     * Application admission policy for a resolved asset and its verified caller, if present.
+     */
+    private final BiConsumerX<Assets, GuardEvaluator.Verified> admission;
+
+    /**
      * Creates the gateway service identity adapter.
      *
      * @param identity shared service identity evaluator
      * @param resolver trusted application code directory
      */
     public IdentityGuard(GuardEvaluator identity, FunctionX<String, String> resolver) {
-        this.identity = Objects.requireNonNull(identity);
-        this.resolver = Objects.requireNonNull(resolver);
+        this(identity, resolver, asset -> false);
     }
 
     /**
-     * Selects the route's service identity requirement and removes the external credential from the request. REST
-     * retains the header values until the resolved asset can override the path rule.
+     * Creates the adapter with an application decision about assets requiring service identity.
+     *
+     * @param identity         shared service identity evaluator
+     * @param resolver         trusted application code directory
+     * @param requiresIdentity application decision to require inbound service verification
+     */
+    public IdentityGuard(GuardEvaluator identity, FunctionX<String, String> resolver,
+            PredicateX<Assets> requiresIdentity) {
+        this(identity, resolver, requiresIdentity, (asset, caller) -> {
+        });
+    }
+
+    /**
+     * Creates the adapter with an application admission policy applied after service identity evaluation.
+     *
+     * @param identity         shared service identity evaluator
+     * @param resolver         trusted application code directory
+     * @param requiresIdentity application decision to require inbound service verification
+     * @param admission        application policy called once per resolved asset with the verified identity or null
+     */
+    public IdentityGuard(GuardEvaluator identity, FunctionX<String, String> resolver,
+            PredicateX<Assets> requiresIdentity, BiConsumerX<Assets, GuardEvaluator.Verified> admission) {
+        this.identity = Objects.requireNonNull(identity);
+        this.resolver = Objects.requireNonNull(resolver);
+        this.requiresIdentity = Objects.requireNonNull(requiresIdentity);
+        this.admission = Objects.requireNonNull(admission);
+    }
+
+    /**
+     * Removes the external credential from the request and retains it only when inbound verification is enabled.
      *
      * @param exchange actual ingress exchange
      * @return exchange with the reserved header removed, or the original exchange when no header was supplied
      */
     public ServerWebExchange ingress(ServerWebExchange exchange) {
-        String path = exchange.getRequest().getPath().pathWithinApplication().value();
-        var received = identity
-                .receive(path, fixed(path), Args.isRestRequest(path), exchange.getRequest().getHeaders()::get);
-        if (!received.present())
+        var headers = exchange.getRequest().getHeaders();
+        if (!headers.containsHeader(Http.Auth.SERVICE_TOKEN_HEADER))
             return exchange;
-        if (!received.values().isEmpty())
-            exchange.getAttributes().put(TOKENS, received.values());
+        if (identity.inboundEnabled()) {
+            String path = exchange.getRequest().getPath().pathWithinApplication().value();
+            var received = identity.receive(path, fixed(path), true, headers::get);
+            if (!received.values().isEmpty())
+                exchange.getAttributes().put(TOKENS, received.values());
+        }
         return exchange.mutate().request(
                 request -> request
-                        .headers(headers -> identity.clearHeaders(null, headers.headerNames(), headers::remove)))
+                        .headers(mutable -> identity.clearHeaders(null, mutable.headerNames(), mutable::remove)))
                 .build();
     }
 
@@ -117,22 +159,49 @@ public final class IdentityGuard {
     }
 
     /**
-     * Applies the common service identity policy after the gateway attempts to resolve the asset.
+     * Evaluates service identity after route resolution, then applies application admission before business
+     * authorization. Admission also runs when inbound verification is disabled and receives no verified caller in that
+     * case. A route miss still obeys the ingress identity rules and has no asset to admit.
      *
      * @param exchange sanitized gateway exchange
      * @param assets   selected runtime asset, or null for an unsuccessful lookup
      * @throws ResponseStatusException if identity verification fails, the policy is unavailable, or the selected asset
-     *                                 is incompatible with the ingress route
+     *                                 is incompatible with the ingress route, or application admission rejects it
      */
     public void qualified(ServerWebExchange exchange, Assets assets) {
+        verifyRouteIdentity(exchange, assets);
+        if (assets != null) {
+            GuardEvaluator.Verified caller = identity.inboundEnabled()
+                    ? exchange.getAttribute(GuardEvaluator.VERIFIED_ATTRIBUTE)
+                    : null;
+            admission.accept(assets, caller);
+        }
+    }
+
+    /**
+     * Verifies service identity under the effective route policy and publishes the verified caller to the exchange.
+     * Protocol and asset compatibility is enforced even when inbound verification is disabled.
+     *
+     * @param exchange sanitized gateway exchange
+     * @param assets   resolved asset, or null for a route miss
+     */
+    private void verifyRouteIdentity(ServerWebExchange exchange, Assets assets) {
         String path = exchange.getRequest().getPath().pathWithinApplication().value();
         boolean control = Args.isSdcRequest(path);
         boolean rest = Args.isRestRequest(path);
-        List<String> tokens = takeTokens(exchange);
         boolean sdcAsset = assets != null && Integer.valueOf(Args.ROUTE_SDC).equals(assets.getProtocol());
-        if (!Args.isMcpRequest(path) && (!rest || assets == null)) {
-            GuardEvaluator.Asset policy = control && sdcAsset ? policy(assets) : null;
-            verify(exchange, path, tokens, policy);
+        if (!identity.inboundEnabled()) {
+            if (assets != null && control != sdcAsset)
+                throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+            return;
+        }
+        List<String> tokens = takeTokens(exchange);
+        boolean required = assets != null && requiresIdentity.test(assets);
+        if (!Args.isMcpRequest(path) && (!rest || assets == null) || required && !rest) {
+            GuardEvaluator.Asset policy = control && sdcAsset || required
+                    ? policy(assets, true, identity.outboundEnabled())
+                    : null;
+            verify(exchange, path, tokens, policy, required);
             if (control && sdcAsset
                     && (policy == null || policy.inbound() != Mode.REQUIRED || policy.subjects().isEmpty()))
                 throw new ResponseStatusException(HttpStatus.FORBIDDEN);
@@ -142,23 +211,25 @@ public final class IdentityGuard {
         if (control != sdcAsset)
             throw new ResponseStatusException(HttpStatus.FORBIDDEN);
         if (rest) {
-            GuardEvaluator.Asset policy = policy(assets);
-            if (policy != null)
+            GuardEvaluator.Asset policy = policy(assets, true, identity.outboundEnabled());
+            if (identity.outboundEnabled() && policy != null)
                 exchange.getAttributes().put(ASSET, policy);
-            verify(exchange, path, tokens, policy);
+            verify(exchange, path, tokens, policy, required);
         }
     }
 
     /**
      * Reads the registered asset policy and maps malformed configuration to an HTTP service error.
      *
-     * @param assets selected runtime asset
+     * @param assets   selected runtime asset
+     * @param inbound  whether to read inbound identity metadata
+     * @param outbound whether to read outbound identity metadata
      * @return declared service identity policy, or {@code null} when absent
      * @throws ResponseStatusException if the configured policy is invalid
      */
-    private static GuardEvaluator.Asset policy(Assets assets) {
+    private static GuardEvaluator.Asset policy(Assets assets, boolean inbound, boolean outbound) {
         try {
-            return GuardEvaluator.asset(assets.getMetadata());
+            return GuardEvaluator.asset(assets.getMetadata(), inbound, outbound);
         } catch (IllegalArgumentException invalid) {
             throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE);
         }
@@ -171,10 +242,16 @@ public final class IdentityGuard {
      * @param path     effective gateway route
      * @param tokens   all supplied service identity values
      * @param asset    optional policy from the resolved route asset
+     * @param required whether application policy requires a verified caller
      * @throws ResponseStatusException if authentication is rejected or a required direction is unavailable
      */
-    private void verify(ServerWebExchange exchange, String path, List<String> tokens, GuardEvaluator.Asset asset) {
-        var result = identity.accept(path, tokens, fixed(path), asset);
+    private void verify(
+            ServerWebExchange exchange,
+            String path,
+            List<String> tokens,
+            GuardEvaluator.Asset asset,
+            boolean required) {
+        var result = identity.accept(path, tokens, required ? Mode.REQUIRED : fixed(path), asset);
         switch (result.status()) {
             case REJECTED -> throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
             case UNAVAILABLE -> throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE);
@@ -194,12 +271,16 @@ public final class IdentityGuard {
      * @throws ResponseStatusException if a required caller or next-hop credential is unavailable
      */
     public ServerWebExchange outbound(ServerWebExchange exchange, Context context) {
+        if (!identity.outboundEnabled())
+            return forward(exchange, context, null);
         String route = exchange.getRequest().getPath().pathWithinApplication().value();
         Mode fixed = fixed(route);
         var asset = context.getAssets();
         if (fixed == Mode.OFF || asset == null && fixed == null)
             return forward(exchange, context, null);
-        GuardEvaluator.Asset policy = exchange.getAttribute(ASSET);
+        GuardEvaluator.Asset policy = !identity.inboundEnabled() && Args.isRestRequest(route) && asset != null
+                ? policy(asset, false, true)
+                : exchange.getAttribute(ASSET);
         Mode mode = policy == null ? null : policy.outbound();
         if (Args.isRestRequest(route) && mode != Mode.REQUIRED)
             return forward(exchange, context, null);
@@ -214,7 +295,7 @@ public final class IdentityGuard {
                 audience = resolver.apply(asset.getApp_id());
             }
             GuardEvaluator.Verified caller = exchange.getAttribute(GuardEvaluator.VERIFIED_ATTRIBUTE);
-            if (fixed == Mode.REQUIRED && caller == null)
+            if (fixed == Mode.REQUIRED && identity.inboundEnabled() && caller == null)
                 throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
             if (fixed == Mode.REQUIRED && (asset == null || StringKit.isBlank(asset.getId())))
                 throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE);

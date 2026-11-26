@@ -296,7 +296,21 @@ public class OpenIdClientDriver implements ProtocolDriver<OpenIdClientOptions> {
                 || !library.getId().equals(provider.getLibrary_id())) {
             throw new ValidateException("OpenID Connect Source driver requires a matching Source configuration");
         }
-        final OpenIdClientOptions options = prepared.options();
+        return client(prepared.options(), services, new JwkSetCodec());
+    }
+
+    /**
+     * Assembles the standard OIDC operations for a client or vendor driver with verified endpoints.
+     *
+     * @param options     verified OpenID client configuration
+     * @param services    execution dependencies for the selected Source
+     * @param jwkSetCodec decoder for the configured provider's JWK Set media types
+     * @return operations backed by the registered client endpoints
+     */
+    public static SourceWorker client(
+            final OpenIdClientOptions options,
+            final SourceServices services,
+            final JwkSetCodec jwkSetCodec) {
         validateAlgorithms(options, services);
 
         final OAuth2ClientOptions oauth = options.oauth2Options();
@@ -309,7 +323,7 @@ public class OpenIdClientDriver implements ProtocolDriver<OpenIdClientOptions> {
         final OpenIdClient client = new OpenIdClient(oauthClient, new AuthenticationRequestEncoder(),
                 new DiscoveryClient(options, services, new OpenIdProviderMetadataCodec()),
                 optionalUserInfo(options, services), optionalEndSession(options));
-        return new CompiledClient(manifest(options), client, new JwkSetOperation(options, services, new JwkSetCodec()));
+        return new CompiledClient(manifest(options), client, new JwkSetOperation(options, services, jwkSetCodec));
     }
 
     /**

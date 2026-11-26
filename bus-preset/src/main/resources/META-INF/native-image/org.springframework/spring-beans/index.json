@@ -5,7 +5,8 @@
     "description": "Spring Beans",
     "tested-versions": [
       "7.0.0",
-      "7.0.9"
+      "7.0.9",
+      "7.1.0"
     ]
   }
 ]

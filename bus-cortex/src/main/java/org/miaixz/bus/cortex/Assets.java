@@ -133,6 +133,12 @@ public class Assets extends Nature {
     private String scope;
 
     /**
+     * Network visibility. {@code 0} restricts access to authorized internal services and {@code 1} allows public access
+     * under the existing policy.
+     */
+    private Integer visible;
+
+    /**
      * Maximum number of automatic retry attempts for transient failures.
      */
     private Integer retries;

@@ -7,7 +7,8 @@
     "description": "Add-on module for Jackson (https://github.com/FasterXML/jackson) to support JDK 8 data types.",
     "tested-versions": [
       "2.21.0",
-      "2.21.5"
+      "2.21.5",
+      "2.21.8"
     ],
     "allowed-packages": [
       "com.fasterxml.jackson"

@@ -21,13 +21,7 @@ package org.miaixz.bus.cortex.guard;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Consumer;
 
 import org.miaixz.bus.core.center.function.BiConsumerX;
@@ -76,6 +70,16 @@ public final class GuardEvaluator {
     private final OutboundIssuer outbound;
 
     /**
+     * Whether the shared inbound evaluator is enabled.
+     */
+    private final boolean inboundEnabled;
+
+    /**
+     * Whether the shared outbound issuer is enabled.
+     */
+    private final boolean outboundEnabled;
+
+    /**
      * Creates a shared identity configured for one or both directions.
      *
      * @param secret   Base64 deployment root
@@ -102,12 +106,14 @@ public final class GuardEvaluator {
             ServiceTokenProvider tokens) {
         this.inbound = new InboundEvaluator(inbound, keys, tokens);
         this.outbound = new OutboundIssuer(outbound, keys, tokens);
-        if (inbound.enabled() || outbound.enabled()) {
+        this.inboundEnabled = inbound.enabled();
+        this.outboundEnabled = outbound.enabled();
+        if (inboundEnabled || outboundEnabled) {
             Instant now = Instant.now();
             ServiceKeyProvider.Snapshot snapshot = Objects.requireNonNull(keys.keys(now));
-            if (inbound.enabled() && snapshot.verification().stream().noneMatch(key -> key.active(now))
-                    || outbound.enabled() && (snapshot.signing() == null || !snapshot.signing().active(now)))
-                throw unavailable();
+            if (inboundEnabled && snapshot.verification().stream().noneMatch(key -> key.active(now))
+                    || outboundEnabled && (snapshot.signing() == null || !snapshot.signing().active(now)))
+                throw new IllegalStateException("Required service identity is unavailable");
         }
     }
 
@@ -123,18 +129,8 @@ public final class GuardEvaluator {
     }
 
     /**
-     * Determines the path-level inbound requirement without looking at any credential.
-     *
-     * @param path  context-relative ingress path
-     * @param fixed fixed route requirement, or null for configurable paths
-     * @return path-level requirement, before any asset override
-     */
-    public Mode inboundMode(String path, Mode fixed) {
-        return inbound.mode(path, fixed);
-    }
-
-    /**
-     * Collects the standard header values needed before a gateway can resolve the effective asset policy.
+     * Collects the standard header values needed before a gateway can resolve the effective asset policy. For an
+     * unresolved asset, supplied values are retained so its effective requirement can be evaluated after routing.
      *
      * @param path         context-relative ingress path
      * @param fixed        fixed route requirement, or null for configurable paths
@@ -143,10 +139,12 @@ public final class GuardEvaluator {
      * @return header presence for sanitization and the values needed by the later authentication stage
      */
     public Received receive(String path, Mode fixed, boolean assetPending, FunctionX<String, List<String>> read) {
+        if (!inboundEnabled)
+            return new Received(false, List.of());
         List<String> values = read.apply(Http.Auth.SERVICE_TOKEN_HEADER);
         if (values == null)
             return new Received(false, List.of());
-        boolean retain = assetPending || inboundMode(path, fixed) != Mode.OFF;
+        boolean retain = assetPending || inbound.mode(path, fixed) != Mode.OFF;
         return new Received(true, retain ? values : List.of());
     }
 
@@ -159,6 +157,8 @@ public final class GuardEvaluator {
      * @return the effective authentication decision
      */
     public InboundDecision acceptHeaders(String path, String header, FunctionX<String, List<String>> read) {
+        if (!inboundEnabled)
+            return new InboundDecision(InboundDecision.Status.ACCEPTED, null);
         List<String> values = read.apply(headerName(header));
         return accept(path, values == null ? List.of() : values, null, null);
     }
@@ -225,7 +225,8 @@ public final class GuardEvaluator {
      * @return decision and verified identity, if present
      */
     public InboundDecision accept(String path, List<String> tokens, Mode fixed, Asset asset) {
-        return inbound.evaluate(path, tokens, fixed, asset);
+        return inboundEnabled ? inbound.evaluate(path, tokens, fixed, asset)
+                : new InboundDecision(InboundDecision.Status.ACCEPTED, null);
     }
 
     /**
@@ -297,7 +298,8 @@ public final class GuardEvaluator {
             boolean assetControlled,
             Verified caller,
             String assetId) {
-        return outbound.issue(route, audience, path, fixed, asset, assetControlled, caller, assetId);
+        return outboundEnabled ? outbound.issue(route, audience, path, fixed, asset, assetControlled, caller, assetId)
+                : null;
     }
 
     /**
@@ -305,10 +307,10 @@ public final class GuardEvaluator {
      * {@link #outbound(String, String, String, Mode, Mode, boolean)} to select that destination.
      *
      * @param audience verified destination service code
-     * @return compact service token
+     * @return compact service token, or null when outbound issuance is disabled
      */
     public String issue(String audience) {
-        return outbound.issue(audience);
+        return outboundEnabled ? outbound.issue(audience) : null;
     }
 
     /**
@@ -318,15 +320,47 @@ public final class GuardEvaluator {
      * @return explicit policy, or null when the asset has no identity settings
      */
     public static Asset asset(String metadata) {
+        return asset(metadata, true, true);
+    }
+
+    /**
+     * Reads the registered identity rules only for the selected directions.
+     *
+     * @param metadata     registered asset metadata
+     * @param readInbound  whether to read inbound rules and caller restrictions
+     * @param readOutbound whether to read outbound rules
+     * @return rules for the selected directions, or null when no selected rules are present
+     */
+    public static Asset asset(String metadata, boolean readInbound, boolean readOutbound) {
+        if (!readInbound && !readOutbound)
+            return null;
         var cortex = section(MetadataCodec.root(metadata), MetadataCodec.ROOT);
         var policy = section(cortex, "serviceIdentity");
         if (policy == null)
             return null;
-        var inbound = section(policy, "inbound");
-        var outbound = section(policy, "outbound");
-        if (inbound == null && outbound == null)
+        if (!policy.containsKey("inbound") && !policy.containsKey("outbound"))
             throw new IllegalArgumentException("Asset service identity policy requires a direction");
-        return new Asset(mode(inbound), subjects(inbound), mode(outbound));
+        var inbound = readInbound ? section(policy, "inbound") : null;
+        var outbound = readOutbound ? section(policy, "outbound") : null;
+        return inbound == null && outbound == null ? null : new Asset(mode(inbound), subjects(inbound), mode(outbound));
+    }
+
+    /**
+     * Reports the global verification switch independently of route policy.
+     *
+     * @return whether inbound service token verification is enabled
+     */
+    public boolean inboundEnabled() {
+        return inboundEnabled;
+    }
+
+    /**
+     * Reports the global issuance switch independently of destination policy.
+     *
+     * @return whether outbound service token issuance is enabled
+     */
+    public boolean outboundEnabled() {
+        return outboundEnabled;
     }
 
     /**
@@ -371,15 +405,6 @@ public final class GuardEvaluator {
                 || values.stream().anyMatch(value -> !(value instanceof String code) || code.isBlank()))
             throw new IllegalArgumentException("Invalid asset service identity subjects");
         return Set.copyOf(values.stream().map(String.class::cast).toList());
-    }
-
-    /**
-     * Creates a safe error for a required outbound identity that could not be prepared.
-     *
-     * @return failure without credential material
-     */
-    private static IllegalStateException unavailable() {
-        return new IllegalStateException("Required service identity is unavailable");
     }
 
     /**

@@ -31,10 +31,11 @@ import reactor.netty.DisposableServer;
 import reactor.netty.http.server.HttpServer;
 
 /**
- * Manages the public and optional private Reactor Netty HTTP listeners for Vortex.
+ * Manages the Reactor Netty HTTP listener for Vortex.
  * <p>
- * The {@link SmartLifecycle} integration binds the configured listeners on Spring startup and disposes them on
- * shutdown.
+ * The {@link SmartLifecycle} integration binds the listener on Spring startup and disposes it on shutdown. Applications
+ * managing the lifecycle directly can call {@link #start()} and {@link #stop()} and use {@link #await()} to wait for
+ * the listener to close.
  *
  * @author Kimi Liu
  */
@@ -70,7 +71,7 @@ public class Vortex implements SmartLifecycle {
     }
 
     /**
-     * Binds the gateway listener during Spring startup.
+     * Binds the configured gateway listener to its port if it is not already running.
      *
      * @throws RuntimeException if the listener cannot be bound
      */
@@ -92,7 +93,20 @@ public class Vortex implements SmartLifecycle {
     }
 
     /**
-     * Disposes the gateway listener during Spring shutdown.
+     * Blocks the calling thread until the bound listener is disposed.
+     *
+     * @throws IllegalStateException if the listener has not been started
+     */
+    public void await() {
+        DisposableServer server = disposableServer;
+        if (server == null) {
+            throw new IllegalStateException("Vortex listener has not started");
+        }
+        server.onDispose().block();
+    }
+
+    /**
+     * Disposes the gateway listener and releases shared runtime resources.
      * <p>
      * Shutdown then closes the outbound HTTP resources, memory sampler, and byte budgets, which also ends any queued
      * capacity waits.

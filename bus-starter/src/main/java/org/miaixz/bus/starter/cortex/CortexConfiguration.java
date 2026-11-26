@@ -22,22 +22,11 @@ package org.miaixz.bus.starter.cortex;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
-import jakarta.servlet.Filter;
-import jakarta.servlet.Servlet;
+import java.util.*;
 
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
+import org.springframework.boot.autoconfigure.condition.*;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.context.properties.bind.Bindable;
 import org.springframework.boot.context.properties.bind.Binder;
@@ -59,6 +48,7 @@ import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.cortex.*;
+import org.miaixz.bus.cortex.Vector;
 import org.miaixz.bus.cortex.bridge.VortexBridge;
 import org.miaixz.bus.cortex.builtin.RegistryGenerator;
 import org.miaixz.bus.cortex.builtin.SettingGenerator;
@@ -88,12 +78,12 @@ import org.miaixz.bus.cortex.release.ReleaseStore;
 import org.miaixz.bus.cortex.setting.SettingProvider;
 import org.miaixz.bus.cortex.setting.SettingService;
 import org.miaixz.bus.cortex.setting.SettingStore;
-import org.miaixz.bus.cortex.setting.approval.ApprovalService;
-import org.miaixz.bus.cortex.setting.approval.ApprovalStore;
 import org.miaixz.bus.cortex.setting.curator.ItemEditor;
 import org.miaixz.bus.cortex.setting.curator.ItemService;
 import org.miaixz.bus.cortex.setting.delivery.ItemExportService;
 import org.miaixz.bus.cortex.setting.delivery.ItemQueryService;
+import org.miaixz.bus.cortex.setting.flow.FlowService;
+import org.miaixz.bus.cortex.setting.flow.FlowStore;
 import org.miaixz.bus.cortex.setting.item.ItemCodec;
 import org.miaixz.bus.cortex.setting.item.ItemStore;
 import org.miaixz.bus.cortex.setting.reference.ReferenceCodec;
@@ -536,17 +526,17 @@ public class CortexConfiguration {
     }
 
     /**
-     * Assembles immutable approval evidence using the host store.
+     * Assembles flow stage decision handling with the host store.
      *
-     * @param store approval evidence
-     * @return approval service
+     * @param flowStore flow records and decision transactions
+     * @return flow service
      */
     @Bean
     @ConditionalOnEnabled(annotation = EnableCortex.class, prefix = GeniusBuilder.CORTEX, member = "registry")
-    @ConditionalOnBean(ApprovalStore.class)
-    @ConditionalOnMissingBean(ApprovalService.class)
-    public ApprovalService approvalService(ApprovalStore store) {
-        return new ApprovalService(store);
+    @ConditionalOnBean(FlowStore.class)
+    @ConditionalOnMissingBean(FlowService.class)
+    public FlowService flowService(FlowStore flowStore) {
+        return new FlowService(flowStore);
     }
 
     /**
@@ -558,13 +548,13 @@ public class CortexConfiguration {
      * @param revisions  exact published snapshots
      * @param editor     definition verification
      * @param references relationship parser
-     * @param approvals  approval policy registry
+     * @param flowStore  flow policy validation
      * @return rollout service
      */
     @Bean
     @ConditionalOnEnabled(annotation = EnableCortex.class, prefix = GeniusBuilder.CORTEX, member = "registry")
     @ConditionalOnBean({ RolloutStore.class, SettingStore.class, ReleaseStore.class, RevisionStore.class,
-            ApprovalStore.class })
+            FlowStore.class })
     @ConditionalOnMissingBean(RolloutService.class)
     public RolloutService rolloutService(
             RolloutStore store,
@@ -573,8 +563,8 @@ public class CortexConfiguration {
             RevisionStore revisions,
             ItemEditor editor,
             ReferenceCodec references,
-            ApprovalStore approvals) {
-        return new RolloutService(store, settings, releases, revisions, editor, references, approvals);
+            FlowStore flowStore) {
+        return new RolloutService(store, settings, releases, revisions, editor, references, flowStore);
     }
 
     /**
@@ -1124,7 +1114,6 @@ public class CortexConfiguration {
      *
      * @param keys   trusted key provider selected for this application
      * @param tokens cryptographic token provider selected for this application
-     *
      * @return the shared service identity evaluator
      */
     @Bean
@@ -1134,29 +1123,16 @@ public class CortexConfiguration {
     }
 
     /**
-     * Installs the Servlet identity filter for hosts enabling the Cortex Servlet adapter. Protected paths fail closed
-     * while the inbound direction is disabled.
-     *
-     * @param identity shared service identity evaluator
-     * @return Servlet filter registration
-     */
-    @Bean
-    @ConditionalOnClass({ Servlet.class, Filter.class })
-    @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)
-    @ConditionalOnEnabled(annotation = EnableCortex.class, prefix = GeniusBuilder.CORTEX_GUARD, member = "guard", name = Normal.EMPTY)
-    FilterRegistrationBean<ServiceGuardFilter> serviceGuardFilter(GuardEvaluator identity) {
-        var registration = new FilterRegistrationBean<>(new ServiceGuardFilter(identity));
-        registration.setOrder(Ordered.HIGHEST_PRECEDENCE + 20);
-        registration.addUrlPatterns(Symbol.SLASH + Symbol.STAR);
-        return registration;
-    }
-
-    /**
      * Builds a dedicated Servlet client that signs requests for the configured Cortex gateway.
+     * <p>
+     * Each request must match the configured scheme and authority. The interceptor requires a token for the gateway
+     * audience and replaces any reserved service identity header. The client disables redirects and treats responses
+     * outside the 2xx range as errors.
      *
      * @param identity    shared service identity evaluator
-     * @param environment deployment configuration
-     * @return configured RestClient
+     * @param environment deployment configuration containing the gateway endpoint and timeout
+     * @return signed gateway client
+     * @throws IllegalArgumentException if the configured gateway endpoint is invalid
      */
     @Bean
     @ConditionalOnEnabled(annotation = EnableCortex.class, prefix = GeniusBuilder.CORTEX_GUARD, member = "guard", name = Normal.EMPTY)
@@ -1176,67 +1152,77 @@ public class CortexConfiguration {
         var uris = new DefaultUriBuilderFactory(gateway.getScheme() + "://" + gateway.getRawAuthority());
         uris.setEncodingMode(DefaultUriBuilderFactory.EncodingMode.NONE);
         return RestClient.builder().uriBuilderFactory(uris).requestFactory(transport)
-                .requestInterceptor(serviceAnchorInterceptor(identity, gateway))
-                .defaultStatusHandler(status -> !status.is2xxSuccessful(), (request, response) -> {
+                .requestInterceptor((request, body, execution) -> {
+                    URI target = request.getURI();
+                    var headers = request.getHeaders();
+                    if (!gateway.getScheme().equalsIgnoreCase(target.getScheme())
+                            || !gateway.getRawAuthority().equalsIgnoreCase(target.getRawAuthority())) {
+                        throw new IllegalArgumentException("The Cortex request must target the configured gateway");
+                    }
+                    String token = identity.outbound(
+                            null,
+                            properties.getGuard().outbound().gateway(),
+                            target.getPath(),
+                            Mode.REQUIRED,
+                            null,
+                            false);
+                    identity.forwardHeaders(null, token, headers.headerNames(), headers::remove, headers::set);
+                    return execution.execute(request, body);
+                }).defaultStatusHandler(status -> !status.is2xxSuccessful(), (request, response) -> {
                     throw new IllegalStateException("Cortex gateway returned HTTP " + response.getStatusCode().value());
                 }).build();
     }
 
     /**
-     * Provides a signing interceptor for the configured dedicated Servlet client.
+     * Provides the outbound service identity interceptor for Servlet clients.
+     * <p>
+     * The interceptor removes reserved identity headers before a request is sent. When a gateway audience is
+     * configured, it evaluates the outbound policy against the destination path and adds any issued token.
      *
      * @param identity shared service identity evaluator
-     * @return interceptor for the configured destination
+     * @return outbound service identity interceptor
      */
     @Bean
     @ConditionalOnEnabled(annotation = EnableCortex.class, prefix = GeniusBuilder.CORTEX_GUARD, member = "guard", name = Normal.EMPTY)
     @ConditionalOnProperty(prefix = GeniusBuilder.CORTEX_GUARD, name = "outbound.enabled", havingValue = "true")
     ClientHttpRequestInterceptor serviceAnchorInterceptor(GuardEvaluator identity) {
-        return serviceAnchorInterceptor(identity, null);
-    }
-
-    /**
-     * Creates an interceptor that replaces reserved identity headers before forwarding the request.
-     *
-     * @param identity shared service identity evaluator
-     * @param gateway  configured gateway endpoint, or {@code null} to use the configured audience
-     * @return outbound service identity interceptor
-     */
-    private ClientHttpRequestInterceptor serviceAnchorInterceptor(GuardEvaluator identity, URI gateway) {
         String audience = properties.getGuard().outbound().gateway();
         return (request, body, execution) -> {
             URI target = request.getURI();
             var headers = request.getHeaders();
-            String token = gateway != null ? gatewayToken(identity, gateway, target)
-                    : audience.isBlank() ? null
-                            : identity.outbound(null, audience, target.getPath(), null, null, false);
+            String token = audience.isBlank() ? null
+                    : identity.outbound(null, audience, target.getPath(), null, null, false);
             identity.forwardHeaders(null, token, headers.headerNames(), headers::remove, headers::set);
             return execution.execute(request, body);
         };
     }
 
     /**
-     * Signs an outbound request for the configured gateway authority.
-     *
-     * @param identity shared service identity evaluator
-     * @param gateway  configured gateway endpoint
-     * @param target   outgoing request URI
-     * @return the service identity token for the request
-     * @throws IllegalArgumentException if the request scheme or authority differs from the configured gateway
-     * @throws IllegalStateException    if a required service identity token cannot be issued
+     * Isolates Servlet filter registration from the shared Cortex configuration. Spring loads this configuration in
+     * Servlet web applications with the Servlet API on the classpath.
      */
-    public String gatewayToken(GuardEvaluator identity, URI gateway, URI target) {
-        if (!gateway.getScheme().equalsIgnoreCase(target.getScheme())
-                || !gateway.getRawAuthority().equalsIgnoreCase(target.getRawAuthority())) {
-            throw new IllegalArgumentException("The Cortex request must target the configured gateway");
+    @Configuration(proxyBeanMethods = false)
+    @ConditionalOnClass(name = { "jakarta.servlet.Servlet", "jakarta.servlet.Filter" })
+    @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)
+    static class ServiceGuardConfig {
+
+        /**
+         * Registers the service identity filter across all Servlet URL patterns when the Cortex guard is enabled. The
+         * evaluator selects the policy for each path when inbound verification is enabled. With verification disabled,
+         * the filter still hides reserved identity headers.
+         *
+         * @param identity shared service identity evaluator
+         * @return Servlet filter registration
+         */
+        @Bean
+        @ConditionalOnEnabled(annotation = EnableCortex.class, prefix = GeniusBuilder.CORTEX_GUARD, member = "guard", name = Normal.EMPTY)
+        FilterRegistrationBean<ServiceGuardFilter> serviceGuardFilter(GuardEvaluator identity) {
+            var registration = new FilterRegistrationBean<>(new ServiceGuardFilter(identity));
+            registration.setOrder(Ordered.HIGHEST_PRECEDENCE + 20);
+            registration.addUrlPatterns(Symbol.SLASH + Symbol.STAR);
+            return registration;
         }
-        return identity.outbound(
-                null,
-                properties.getGuard().outbound().gateway(),
-                target.getPath(),
-                Mode.REQUIRED,
-                null,
-                false);
+
     }
 
 }

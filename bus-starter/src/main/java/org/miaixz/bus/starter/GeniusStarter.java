@@ -39,6 +39,9 @@ import org.miaixz.bus.spring.context.task.ContextTaskDecorator;
  * Starter packages are excluded from component scanning because every Starter feature has an explicit
  * auto-configuration or {@code @EnableXxx} import entry. This prevents disabled feature configurations from being
  * discovered as ordinary components while retaining discovery for components owned by other Bus modules.
+ * <p>
+ * Request-body authorization advice and MVC public-message advice are also excluded so their respective feature
+ * configurations can register them with the required dependencies and activation conditions.
  *
  * @author Kimi Liu
  */
@@ -46,7 +49,8 @@ import org.miaixz.bus.spring.context.task.ContextTaskDecorator;
 @Configuration(proxyBeanMethods = false)
 @ComponentScan(value = "org.miaixz.**", excludeFilters = {
         @ComponentScan.Filter(type = FilterType.REGEX, pattern = "org\\.miaixz\\.bus\\.starter(?:\\..*)?"),
-        @ComponentScan.Filter(type = FilterType.REGEX, pattern = "org\\.miaixz\\.bus\\.spring\\.web\\.advice\\.AuthorizeRequestBodyAdvice") })
+        @ComponentScan.Filter(type = FilterType.REGEX, pattern = "org\\.miaixz\\.bus\\.spring\\.web\\.advice\\.AuthorizeRequestBodyAdvice"),
+        @ComponentScan.Filter(type = FilterType.REGEX, pattern = "org\\.miaixz\\.bus\\.errors\\.transport\\.mvc\\.MvcPublicMessageAdvice") })
 public class GeniusStarter {
 
     /**

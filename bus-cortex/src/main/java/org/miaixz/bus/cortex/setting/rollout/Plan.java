@@ -258,7 +258,7 @@ public final class Plan {
      *
      * @param applications explicitly selected apps
      * @param mode         publication track
-     * @param policy       registered approval policy
+     * @param policy       registered flow policy
      * @param rule         gray selector
      * @param notifyOwners owner notification option
      * @author Kimi Liu
@@ -270,7 +270,7 @@ public final class Plan {
          *
          * @param applications selected apps
          * @param mode         track
-         * @param policy       approval policy
+         * @param policy       flow policy
          * @param rule         gray selector
          * @param notifyOwners notification option
          */

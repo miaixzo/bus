@@ -296,7 +296,6 @@
             "java.lang.String",
             "int",
             "java.lang.String",
-            "java.lang.String",
             "java.util.List"
           ]
         }
@@ -1593,24 +1592,6 @@
     },
     {
       "type": "org.miaixz.bus.starter.vortex.VortexProperties$Assets",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.starter.vortex.VortexProperties$Sdc",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.starter.vortex.VortexProperties$Sdc$Bootstrap",
       "methods": [
         {
           "name": "<init>",

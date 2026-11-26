@@ -51,11 +51,14 @@ import org.springframework.web.server.WebHandler;
 import org.springframework.web.server.adapter.ForwardedHeaderTransformer;
 import org.springframework.web.server.adapter.WebHttpHandlerBuilder;
 
+import org.miaixz.bus.core.center.function.BiConsumerX;
+import org.miaixz.bus.core.center.function.PredicateX;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Port;
 import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.cortex.Assets;
 import org.miaixz.bus.cortex.Keying;
 import org.miaixz.bus.cortex.builtin.RegistryGenerator;
 import org.miaixz.bus.cortex.guard.GuardEvaluator;
@@ -67,6 +70,7 @@ import org.miaixz.bus.starter.GeniusBuilder;
 import org.miaixz.bus.starter.annotation.EnableCortex;
 import org.miaixz.bus.starter.annotation.EnableVortex;
 import org.miaixz.bus.starter.cortex.CortexConfiguration;
+import org.miaixz.bus.starter.cortex.CortexProperties;
 import org.miaixz.bus.starter.errors.ErrorsConfiguration;
 import org.miaixz.bus.starter.errors.ErrorsProperties;
 import org.miaixz.bus.starter.errors.ErrorsProperties.Target;
@@ -197,11 +201,14 @@ public class VortexConfiguration {
     }
 
     /**
-     * Configures the complete Vortex reactive server.
+     * Configures the Vortex request pipeline and returns a factory for unstarted listeners.
      * <p>
      * The codec limit follows the bounded-request limit, multipart parts spill to disk after their configured memory
      * threshold, and {@link AdmissionFilter} is installed before protocol filters. Inbound channels use the unified
      * allocator and configured write-buffer watermarks so downloads remain backpressure-aware.
+     * <p>
+     * Each call to {@link Factory#create()} wraps the configured Reactor Netty server in a new {@link Vortex} instance.
+     * The listening socket is bound when {@link Vortex#start()} runs.
      *
      * @param filters    A list of all available {@link Filter} beans, injected by Spring.
      * @param handlers   A list of all available {@link Handler} beans, injected by Spring.
@@ -213,11 +220,10 @@ public class VortexConfiguration {
      * @param llmRouter  The LLM router bean.
      * @param slugRouter The public slug forwarding router bean.
      * @param sdcRouter  The service discovery and configuration router bean.
-     * @return manager for the public and optional private gateway listeners
+     * @return factory for the gateway listener
      */
-    @Bean(initMethod = "start", destroyMethod = "stop")
-    @ConditionalOnMissingBean(Vortex.class)
-    public Vortex vortex(
+    @Bean
+    public Factory vortexServerFactory(
             List<Filter> filters,
             List<Handler> handlers,
             @Qualifier("http") Router<ServerRequest, ?> restRouter,
@@ -298,7 +304,24 @@ public class VortexConfiguration {
                 .port(this.properties.getPort() != 0 ? this.properties.getPort() : Port._8765.getPort())
                 .handle(adapter);
 
-        return new Vortex(server);
+        return () -> new Vortex(server);
+    }
+
+    /**
+     * Registers the listener with Spring-managed startup and shutdown.
+     * <p>
+     * The default listener is registered when {@code bus.vortex.auto-start} is {@code true} or omitted and the
+     * application supplies no {@link Vortex} bean. Setting the property to {@code false} lets the application use the
+     * factory to manage the listener lifecycle directly.
+     *
+     * @param factory gateway server factory
+     * @return listener for Spring to start and stop
+     */
+    @Bean(initMethod = "start", destroyMethod = "stop")
+    @ConditionalOnMissingBean(Vortex.class)
+    @ConditionalOnProperty(prefix = GeniusBuilder.VORTEX, name = "auto-start", havingValue = "true", matchIfMissing = true)
+    public Vortex vortex(Factory factory) {
+        return factory.create();
     }
 
     /**
@@ -747,30 +770,41 @@ public class VortexConfiguration {
     }
 
     /**
-     * Adapts gateway exchanges to the shared rules and resolves trusted audiences from the application directory.
+     * Wires the shared gateway identity adapter, including application admission for resolved assets when supplied.
      *
-     * @param identity shared identity evaluator
-     * @param registry runtime directory of applications and assets
+     * @param identity         shared identity evaluator
+     * @param registry         runtime directory of applications and assets
+     * @param requiresIdentity optional application policy for assets requiring service identity
+     * @param admission        optional application policy called before business authorization with a nullable caller
      * @return gateway service identity adapter
      */
     @Bean
     @ConditionalOnMissingBean(IdentityGuard.class)
-    public IdentityGuard vortexIdentityGuard(GuardEvaluator identity, AssetsRegistry registry) {
-        return new IdentityGuard(identity, registry::code);
+    public IdentityGuard vortexIdentityGuard(
+            GuardEvaluator identity,
+            AssetsRegistry registry,
+            ObjectProvider<PredicateX<Assets>> requiresIdentity,
+            ObjectProvider<BiConsumerX<Assets, GuardEvaluator.Verified>> admission) {
+        return new IdentityGuard(identity, registry::code, requiresIdentity.getIfAvailable(() -> asset -> false),
+                admission.getIfAvailable(() -> (asset, caller) -> {
+                }));
     }
 
     /**
      * Creates the reactive client for the configured Cortex gateway and signs each outbound request.
+     * <p>
+     * The request scheme and authority must match the configured endpoint before the client obtains the required token
+     * for the gateway audience and replaces the reserved service identity headers.
      *
      * @param identity    shared service identity evaluator
-     * @param cortex      configuration that validates the target authority and issues the token
+     * @param cortex      bound Cortex settings for the configured gateway audience
      * @param environment deployment configuration containing the gateway endpoint and response size limit
      * @return gateway client that sends signed requests without following redirects
      */
     @Bean
     @ConditionalOnEnabled(annotation = EnableCortex.class, prefix = GeniusBuilder.CORTEX_GUARD, member = "guard", name = Normal.EMPTY)
     @ConditionalOnProperty(prefix = GeniusBuilder.CORTEX_GUARD, name = "outbound.gateway-endpoint")
-    WebClient cortexGatewayWebClient(GuardEvaluator identity, CortexConfiguration cortex, Environment environment) {
+    WebClient cortexGatewayWebClient(GuardEvaluator identity, CortexProperties cortex, Environment environment) {
         String prefix = GeniusBuilder.CORTEX_GUARD + ".outbound.";
         URI gateway = URI.create(environment.getRequiredProperty(prefix + "gateway-endpoint"));
         var transport = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(5))
@@ -784,7 +818,18 @@ public class VortexConfiguration {
                                         Integer.class,
                                         16 * 1024 * 1024)))
                 .filter((request, next) -> {
-                    String token = cortex.gatewayToken(identity, gateway, request.url());
+                    URI target = request.url();
+                    if (!gateway.getScheme().equalsIgnoreCase(target.getScheme())
+                            || !gateway.getRawAuthority().equalsIgnoreCase(target.getRawAuthority())) {
+                        throw new IllegalArgumentException("The Cortex request must target the configured gateway");
+                    }
+                    String token = identity.outbound(
+                            null,
+                            cortex.getGuard().outbound().gateway(),
+                            target.getPath(),
+                            GuardEvaluator.Mode.REQUIRED,
+                            null,
+                            false);
                     var signed = ClientRequest.from(request).headers(
                             headers -> identity
                                     .forwardHeaders(null, token, headers.headerNames(), headers::remove, headers::set))

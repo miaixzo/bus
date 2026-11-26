@@ -335,8 +335,24 @@ public class MicrosoftRealmAdapter implements VendorAdapter {
                 ? (requiredBoolean(value, "accountEnabled") ? Realm.State.ACTIVE : Realm.State.INACTIVE)
                 : Realm.State.UNKNOWN;
         return new Realm.Resource(new Realm.Key(kind, requiredString(value, "id")),
-                Map.of("appId", requiredString(value, "appId")), requiredString(value, "displayName"), state,
+                Map.of("appId", requiredString(value, "appId")), directoryDisplayName(value), state,
                 new JsonValue.ObjectValue(attributes), at);
+    }
+
+    /**
+     * Normalizes the presentation label returned by Graph for an application or service principal. Graph can preserve
+     * surrounding spaces in this editable label. Realm requires a nonblank, trimmed display name, so normalize it at
+     * the directory boundary while preserving strict validation for stable keys and cursor values.
+     *
+     * @param object directory object containing the original Microsoft display name
+     * @return nonblank display name with surrounding whitespace removed
+     * @throws ValidateException if Graph omits the name or supplies a blank or non-string value
+     */
+    private static String directoryDisplayName(final JsonValue.ObjectValue object) {
+        if (!(object.values().get("displayName") instanceof JsonValue.StringValue name)) {
+            throw new ValidateException("displayName must be a JSON string");
+        }
+        return requireText(name.value().strip(), "displayName");
     }
 
     /**
@@ -630,7 +646,7 @@ public class MicrosoftRealmAdapter implements VendorAdapter {
      */
     private static ServiceAccount serviceAccount(final JsonValue.ObjectValue value) {
         return new ServiceAccount(requiredString(value, "id"), requiredString(value, "appId"),
-                requiredString(value, "displayName"), requiredBoolean(value, "accountEnabled"));
+                directoryDisplayName(value), requiredBoolean(value, "accountEnabled"));
     }
 
     /**
@@ -710,7 +726,8 @@ public class MicrosoftRealmAdapter implements VendorAdapter {
     }
 
     /**
-     * Maps one service principal to the implementation-neutral service-account resource category.
+     * Maps one service principal to the implementation-neutral service-account resource category. Retains the
+     * directory's enablement decision so delta consumers can revoke machine access on disablement.
      *
      * @param value      minimal service-principal projection
      * @param observedAt shared invocation observation instant
@@ -722,7 +739,7 @@ public class MicrosoftRealmAdapter implements VendorAdapter {
                 value.id(),
                 Map.of("appId", value.appId()),
                 value.name(),
-                Realm.State.UNKNOWN,
+                value.enabled() ? Realm.State.ACTIVE : Realm.State.INACTIVE,
                 observedAt);
     }
 

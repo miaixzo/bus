@@ -5,7 +5,8 @@
     "description": "gRPC: API",
     "tested-versions": [
       "1.83.0",
-      "1.83.1"
+      "1.83.1",
+      "1.84.1"
     ]
   }
 ]

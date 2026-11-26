@@ -50,6 +50,12 @@
  * own scheduling, durable checkpoints, reconciliation, and persistence.
  * </p>
  *
+ * <p>
+ * {@code oidc-global} and {@code oidc-china} provide tenant-specific OpenID Connect authorization and exchange,
+ * Discovery and JWKS. They require S256 and a nonce, keep client secrets as references, and leave one-time browser
+ * correlation and managed ID Token verification to the calling project.
+ * </p>
+ *
  * @author Kimi Liu
  */
 package org.miaixz.bus.auth.source.vendor.microsoft;

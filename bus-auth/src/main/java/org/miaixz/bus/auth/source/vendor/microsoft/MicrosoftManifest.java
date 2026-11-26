@@ -27,7 +27,10 @@ import java.util.Set;
 import org.miaixz.bus.auth.*;
 import org.miaixz.bus.auth.FabricX.Url;
 import org.miaixz.bus.auth.source.SourceWorkflow;
+import org.miaixz.bus.auth.source.protocol.oauth2.TokenEndpointResponse;
+import org.miaixz.bus.auth.source.protocol.oauth2.TokenRequest;
 import org.miaixz.bus.auth.source.protocol.oauth2.client.OAuth2ClientScheme;
+import org.miaixz.bus.auth.source.protocol.oidc.client.OpenIdClientScheme;
 import org.miaixz.bus.auth.source.vendor.Vendor;
 import org.miaixz.bus.auth.source.vendor.VendorDeviation;
 import org.miaixz.bus.auth.source.vendor.VendorManifest;
@@ -40,12 +43,11 @@ import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.net.tls.TlsClientAuth;
 
 /**
- * Declares Microsoft global-cloud and China-cloud login and enterprise Graph variants.
+ * Declares Microsoft global and China OAuth login, Graph directory and tenant-scoped Entra OIDC variants.
  * <p>
- * Both variants use tenant-scoped Microsoft identity platform endpoints for standard authorization and token
- * operations. Microsoft Graph current-user retrieval remains private Source-authentication behavior for the two login
- * variants. The independent enterprise variants use application permissions over fixed cloud-specific Graph hosts and
- * expose the implementation-neutral enterprise snapshot, change, and retrieval contracts.
+ * The Entra OIDC variants expose tenant-scoped authorization, code exchange, discovery and signing keys. The OAuth
+ * login variants use Microsoft Graph for private Source authentication. The enterprise variants use application
+ * permissions over fixed cloud-specific Graph hosts for directory snapshots, changes and retrieval.
  * </p>
  *
  * @author Kimi Liu
@@ -66,6 +68,45 @@ public class MicrosoftManifest implements VendorManifest<MicrosoftOptions> {
      * Microsoft China operated by 21Vianet service variant.
      */
     public static final Vendor.Variant CHINA = new Vendor.Variant("china");
+
+    /**
+     * Global tenant-scoped Entra OIDC variant.
+     */
+    public static final Vendor.Variant OIDC_GLOBAL = new Vendor.Variant("oidc-global");
+
+    /**
+     * China tenant-scoped Entra OIDC variant.
+     */
+    public static final Vendor.Variant OIDC_CHINA = new Vendor.Variant("oidc-china");
+
+    /**
+     * Authorization-code exchange on the Microsoft OIDC client.
+     */
+    public static final Capability<TokenRequest, TokenEndpointResponse> OIDC_TOKEN = new Capability<>(
+            Capability.Key.application("vendor.microsoft.oidc.token"), TokenRequest.class, TokenEndpointResponse.class,
+            Capability.Direction.CLIENT, Set.of(Capability.Interaction.DIRECT), Capability.Security.PUBLIC);
+
+    /**
+     * Default identity scopes for Entra OIDC.
+     */
+    static final List<String> OIDC_SCOPES = List.of("openid", "profile");
+
+    /**
+     * The tenant template shared by the global user, directory and OIDC variants.
+     */
+    private static final String GLOBAL_AUTHORITY = "https://login.microsoftonline.com/{tenant}";
+    /**
+     * The corresponding template for the separate Microsoft cloud operated by 21Vianet.
+     */
+    private static final String CHINA_AUTHORITY = "https://login.partner.microsoftonline.cn/{tenant}";
+    /**
+     * Microsoft v2 authorization path shared by both browser profiles.
+     */
+    private static final String AUTHORIZE_PATH = "/oauth2/v2.0/authorize";
+    /**
+     * Microsoft v2 token path shared by all credentialed profiles.
+     */
+    private static final String TOKEN_PATH = "/oauth2/v2.0/token";
 
     /**
      * Global Microsoft Graph application-permission enterprise variant.
@@ -146,8 +187,8 @@ public class MicrosoftManifest implements VendorManifest<MicrosoftOptions> {
      */
     private static final VendorManifest.Variant GLOBAL_VARIANT = variant(
             GLOBAL,
-            "https://login.microsoftonline.com/{tenant}/oauth2/v2.0/authorize",
-            "https://login.microsoftonline.com/{tenant}/oauth2/v2.0/token",
+            GLOBAL_AUTHORITY + AUTHORIZE_PATH,
+            GLOBAL_AUTHORITY + TOKEN_PATH,
             "https://graph.microsoft.com/v1.0/me");
 
     /**
@@ -155,8 +196,8 @@ public class MicrosoftManifest implements VendorManifest<MicrosoftOptions> {
      */
     private static final VendorManifest.Variant CHINA_VARIANT = variant(
             CHINA,
-            "https://login.partner.microsoftonline.cn/{tenant}/oauth2/v2.0/authorize",
-            "https://login.partner.microsoftonline.cn/{tenant}/oauth2/v2.0/token",
+            CHINA_AUTHORITY + AUTHORIZE_PATH,
+            CHINA_AUTHORITY + TOKEN_PATH,
             "https://microsoftgraph.chinacloudapi.cn/v1.0/me");
 
     /**
@@ -164,7 +205,7 @@ public class MicrosoftManifest implements VendorManifest<MicrosoftOptions> {
      */
     private static final VendorManifest.Variant REALM_GLOBAL_VARIANT = realm(
             ENTERPRISE_GLOBAL,
-            "https://login.microsoftonline.com/{tenant}/oauth2/v2.0/token",
+            GLOBAL_AUTHORITY + TOKEN_PATH,
             "https://graph.microsoft.com",
             GLOBAL_APPLICATION_SCOPE);
 
@@ -173,9 +214,80 @@ public class MicrosoftManifest implements VendorManifest<MicrosoftOptions> {
      */
     private static final VendorManifest.Variant REALM_CHINA_VARIANT = realm(
             ENTERPRISE_CHINA,
-            "https://login.partner.microsoftonline.cn/{tenant}/oauth2/v2.0/token",
+            CHINA_AUTHORITY + TOKEN_PATH,
             "https://microsoftgraph.chinacloudapi.cn",
             CHINA_APPLICATION_SCOPE);
+
+    /**
+     * Registered global Entra OIDC operations.
+     */
+    private static final VendorManifest.Variant OIDC_GLOBAL_VARIANT = oidc(OIDC_GLOBAL, GLOBAL_AUTHORITY);
+    /**
+     * Registered 21Vianet Entra OIDC operations.
+     */
+    private static final VendorManifest.Variant OIDC_CHINA_VARIANT = oidc(OIDC_CHINA, CHINA_AUTHORITY);
+
+    /**
+     * Builds the direct operations for an application-owned OIDC browser flow.
+     *
+     * @param variant   exact OIDC routing identifier
+     * @param authority fixed cloud authority with one tenant path variable
+     * @return immutable manifest requiring PKCE without declaring a Bus-owned redirect workflow
+     */
+    private static VendorManifest.Variant oidc(final Vendor.Variant variant, final String authority) {
+        return new VendorManifest.Variant(ID, variant, Protocol.OIDC, VendorManifest.Pkce.REQUIRED,
+                Credential.Type.CLIENT_SECRET, OIDC_SCOPES,
+                new VendorTargets(
+                        Optional.of(
+                                template(authority + AUTHORIZE_PATH, Http.Method.GET, Endpoint.Authentication.NONE)),
+                        Optional.of(
+                                template(
+                                        authority + TOKEN_PATH,
+                                        Http.Method.POST,
+                                        Endpoint.Authentication.CLIENT_SECRET_POST)),
+                        Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(),
+                        Optional.of(
+                                template(
+                                        authority + "/v2.0/.well-known/openid-configuration",
+                                        Http.Method.GET,
+                                        Endpoint.Authentication.NONE)),
+                        Optional.of(
+                                template(
+                                        authority + "/discovery/v2.0/keys",
+                                        Http.Method.GET,
+                                        Endpoint.Authentication.NONE)),
+                        Optional.empty()),
+                new Capability.Manifest(List.of(
+                        OpenIdClientScheme.AUTHENTICATION,
+                        OIDC_TOKEN,
+                        OpenIdClientScheme.DISCOVERY,
+                        OpenIdClientScheme.JWK_SET)),
+                List.of());
+    }
+
+    /**
+     * Identifies the Microsoft variants with the OIDC options contract.
+     *
+     * @param variant selected routing identifier
+     * @return whether the variant is tenant-scoped Entra OIDC
+     */
+    static boolean oidc(final Vendor.Variant variant) {
+        return OIDC_GLOBAL.equals(variant) || OIDC_CHINA.equals(variant);
+    }
+
+    /**
+     * Resolves the exact issuer for a validated tenant-scoped Microsoft OIDC registration.
+     *
+     * @param options validated Microsoft OIDC options
+     * @return fixed cloud and tenant issuer
+     */
+    public static String oidcIssuer(final MicrosoftOptions options) {
+        if (!oidc(options.variant())) {
+            throw new ValidateException("Microsoft OIDC issuer requires an OIDC variant");
+        }
+        String authority = OIDC_GLOBAL.equals(options.variant()) ? GLOBAL_AUTHORITY : CHINA_AUTHORITY;
+        return VendorTargets.resolveIdentifier(authority + "/v2.0", options);
+    }
 
     /**
      * Creates the stateless Microsoft manifest used by Vendor locator assembly.
@@ -348,13 +460,19 @@ public class MicrosoftManifest implements VendorManifest<MicrosoftOptions> {
     }
 
     /**
-     * Returns the two login variants followed by the two enterprise cloud variants.
+     * Returns the Microsoft login, enterprise directory and OIDC variants.
      *
-     * @return immutable four-Variant manifest list
+     * @return immutable Microsoft variant list
      */
     @Override
     public List<VendorManifest.Variant> variants() {
-        return List.of(GLOBAL_VARIANT, CHINA_VARIANT, REALM_GLOBAL_VARIANT, REALM_CHINA_VARIANT);
+        return List.of(
+                GLOBAL_VARIANT,
+                CHINA_VARIANT,
+                REALM_GLOBAL_VARIANT,
+                REALM_CHINA_VARIANT,
+                OIDC_GLOBAL_VARIANT,
+                OIDC_CHINA_VARIANT);
     }
 
     /**
@@ -362,7 +480,7 @@ public class MicrosoftManifest implements VendorManifest<MicrosoftOptions> {
      *
      * @param variant requested Microsoft cloud variant
      * @return immutable matching manifest
-     * @throws ValidateException if the variant is outside the four frozen Microsoft variants
+     * @throws ValidateException if the variant is outside the supported Microsoft variants
      */
     @Override
     public VendorManifest.Variant variant(final Vendor.Variant variant) {
@@ -377,6 +495,12 @@ public class MicrosoftManifest implements VendorManifest<MicrosoftOptions> {
         }
         if (ENTERPRISE_CHINA.equals(variant)) {
             return REALM_CHINA_VARIANT;
+        }
+        if (OIDC_GLOBAL.equals(variant)) {
+            return OIDC_GLOBAL_VARIANT;
+        }
+        if (OIDC_CHINA.equals(variant)) {
+            return OIDC_CHINA_VARIANT;
         }
         throw new ValidateException("Microsoft Vendor variant is not supported");
     }

@@ -79,11 +79,11 @@ public interface SettingProvider {
         }
 
         /**
-         * Requires an actor for immutable approval evidence without verifying an account or credential.
+         * Requires an actor identifier for auditing a flow stage decision. The caller verifies the actor's identity.
          */
         public void requireActor() {
             if (actor == null || actor.isBlank())
-                throw new IllegalArgumentException("Approval actor required");
+                throw new IllegalArgumentException("Setting actor required");
         }
 
     }

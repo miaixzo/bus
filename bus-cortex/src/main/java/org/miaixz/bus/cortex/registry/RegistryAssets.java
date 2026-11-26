@@ -210,6 +210,7 @@ public class RegistryAssets {
         target.setPolicy(source.getPolicy());
         target.setSigning(source.getSigning());
         target.setScope(source.getScope());
+        target.setVisible(source.getVisible());
         target.setRetries(source.getRetries());
         target.setTimeout(source.getTimeout());
         target.setThrottle(source.getThrottle());

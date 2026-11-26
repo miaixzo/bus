@@ -5,7 +5,8 @@
     "description": "The slf4j API",
     "tested-versions": [
       "2.0.0",
-      "2.0.18"
+      "2.0.18",
+      "2.0.20"
     ]
   }
 ]

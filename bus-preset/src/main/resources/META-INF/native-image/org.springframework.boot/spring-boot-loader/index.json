@@ -1,11 +1,12 @@
 [
   {
     "latest": true,
-    "metadata-version": "4.1.0",
+    "metadata-version": "4.2.0",
     "description": "Spring Boot Loader",
     "tested-versions": [
       "4.1.0",
-      "4.1.1"
+      "4.1.1",
+      "4.2.0"
     ]
   }
 ]

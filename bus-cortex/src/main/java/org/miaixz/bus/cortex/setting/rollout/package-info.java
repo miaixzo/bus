@@ -18,8 +18,8 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Editable publication selection, immutable approval candidates, workflow states, graph differences and
- * trusted-instance gray selectors. No formal version exists until atomic publication succeeds.
+ * Editable publication selection, immutable review candidates, workflow states, graph differences and trusted-instance
+ * gray selectors. No formal version exists until atomic publication succeeds.
  *
  * @author Kimi Liu
  */

@@ -30,6 +30,7 @@ import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.spring.context.ContextBuilder;
+import org.miaixz.bus.spring.web.RequestContext;
 import org.miaixz.bus.spring.web.wrapper.CachedBodyRequestWrapper;
 
 /**
@@ -74,7 +75,8 @@ public class SentinelRequestHandler implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         long start = System.nanoTime();
-        int parameterCount = request.getParameterMap().size();
+        // Counting Servlet parameters would parse a form reserved for the endpoint.
+        int parameterCount = RequestContext.preservesFormBody(request) ? -1 : request.getParameterMap().size();
         int bodyBytes = request instanceof CachedBodyRequestWrapper cached ? cached.getBody().length : 0;
         request.setAttribute(START_ATTRIBUTE, start);
         request.setAttribute(PARAMETER_COUNT_ATTRIBUTE, parameterCount);
@@ -143,10 +145,10 @@ public class SentinelRequestHandler implements HandlerInterceptor {
     }
 
     /**
-     * Parses a non-negative request measurement.
+     * Reads a recorded measurement. A parameter count of minus one means counting was skipped.
      *
      * @param value request attribute value
-     * @return parsed non-negative count, or zero when invalid
+     * @return recorded count, or zero when absent
      */
     private int count(Object value) {
         return value instanceof Integer count ? count : 0;

@@ -171,7 +171,8 @@ public class AuthorizationRequestEncoder implements Encoder<AuthorizationRequest
     }
 
     /**
-     * Appends one typed authorization request to the configured endpoint URL.
+     * Appends one typed authorization request to the configured endpoint URL. The PKCE challenge and method come from
+     * the typed request so that extensions cannot replace them.
      *
      * @param data validated standard authorization request
      * @return immutable absolute authorization request URL
@@ -187,6 +188,8 @@ public class AuthorizationRequestEncoder implements Encoder<AuthorizationRequest
         data.redirectUri().ifPresent(value -> url.query(OAuth2.Parameters.REDIRECT_URI, value));
         data.scope().ifPresent(value -> url.query(OAuth2.Parameters.SCOPE, value.format()));
         data.state().ifPresent(value -> url.query(OAuth2.Parameters.STATE, value));
+        data.codeChallenge().ifPresent(value -> url.query(OAuth2.Parameters.CODE_CHALLENGE, value));
+        data.codeChallengeMethod().ifPresent(value -> url.query(OAuth2.Parameters.CODE_CHALLENGE_METHOD, value));
         data.extensions().values().forEach((name, value) -> extension(url, name, value));
         return url.build();
     }

@@ -50,10 +50,24 @@ import org.miaixz.bus.extra.json.JsonValue;
 public class JwkSetCodec {
 
     /**
+     * Whether a fixed provider endpoint may return its JWK Set as application/json.
+     */
+    private final boolean acceptJson;
+
+    /**
      * Creates a strict JWK Set resource codec that processes JSON through {@link JsonKit}.
      */
     public JwkSetCodec() {
-        // No initialization required.
+        this(false);
+    }
+
+    /**
+     * Creates a decoder for a known provider's JWK Set media types while preserving the same document validation.
+     *
+     * @param acceptJson whether the configured provider publishes JWK Sets as application/json
+     */
+    public JwkSetCodec(final boolean acceptJson) {
+        this.acceptJson = acceptJson;
     }
 
     /**
@@ -116,8 +130,9 @@ public class JwkSetCodec {
                 throw new ValidateException("OpenID Connect JWK Set response exceeds one MiB");
             }
             final MediaType media = encoded.body().media();
-            if (!MediaType.APPLICATION_JWK_SET_JSON_TYPE.isCompatible(media)) {
-                throw new ValidateException("OpenID Connect JWK Set response must use application/jwk-set+json");
+            if (!MediaType.APPLICATION_JWK_SET_JSON_TYPE.isCompatible(media)
+                    && !(acceptJson && MediaType.APPLICATION_JSON_TYPE.isCompatible(media))) {
+                throw new ValidateException("OpenID Connect JWK Set response uses an unsupported media type");
             }
             final String charset = media.parameter(MediaType.CHARSET_PARAMETER);
             if (charset != null && !Charset.UTF_8.equals(media.charset())) {

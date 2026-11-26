@@ -66,10 +66,10 @@ module bus.cortex {
     exports org.miaixz.bus.cortex.release;
     exports org.miaixz.bus.cortex.setting;
     exports org.miaixz.bus.cortex.setting.app;
-    exports org.miaixz.bus.cortex.setting.approval;
     exports org.miaixz.bus.cortex.setting.curator;
     exports org.miaixz.bus.cortex.setting.delivery;
     exports org.miaixz.bus.cortex.setting.event;
+    exports org.miaixz.bus.cortex.setting.flow;
     exports org.miaixz.bus.cortex.setting.item;
     exports org.miaixz.bus.cortex.setting.reference;
     exports org.miaixz.bus.cortex.setting.revision;

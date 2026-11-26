@@ -7,7 +7,8 @@
     "description": "General data-binding functionality for Jackson: works on core streaming API",
     "tested-versions": [
       "2.21.0",
-      "2.21.5"
+      "2.21.5",
+      "2.21.8"
     ],
     "allowed-packages": [
       "com.fasterxml.jackson"

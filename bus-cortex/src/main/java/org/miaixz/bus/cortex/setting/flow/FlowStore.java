@@ -17,7 +17,7 @@
  ~                                                                           ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.cortex.setting.approval;
+package org.miaixz.bus.cortex.setting.flow;
 
 import java.util.List;
 
@@ -25,45 +25,41 @@ import org.miaixz.bus.cortex.setting.SettingProvider;
 import org.miaixz.bus.cortex.setting.rollout.Rollout;
 
 /**
- * Approval evidence and workflow decision share one host entity transaction.
+ * Persists flow stage decisions and rollout transitions in the same host transaction.
  *
  * @author Kimi Liu
  */
-public interface ApprovalStore {
+public interface FlowStore {
 
     /**
-     * Rejects an unknown or unsupported workflow policy independently of caller authentication.
+     * Rejects an unknown or unsupported flow policy independently of caller authentication.
      *
      * @param context operation coordinates
-     * @param policy  selected approval policy
+     * @param policy  selected flow policy
      */
     void validatePolicy(SettingProvider.Context context, String policy);
 
     /**
-     * Reads immutable approval evidence for the workflow.
+     * Reads the immutable history of stage decisions for a rollout.
      *
-     * @param tenant  exact tenant identifier
-     * @param rollout publication workflow identifier
-     * @return immutable decisions recorded for the workflow
+     * @param tenant    exact tenant identifier
+     * @param rolloutId exact rollout identifier
+     * @return stage decisions recorded for the rollout
      */
-    List<Approval> query(String tenant, String rollout);
+    List<Flow> query(String tenant, String rolloutId);
 
     /**
-     * Atomically rechecks audit actor, stage, policy, edition and frozen checksum, writes the decision and advances
-     * REVIEWING to the correct next state; identical request is idempotent.
+     * Atomically rechecks the actor, stage, flow policy, edition, and frozen checksum before recording the decision.
+     * The policy determines whether the rollout stays in REVIEWING or moves to APPROVED or REJECTED. Repeating the same
+     * request is idempotent.
      *
-     * @param context        operation-scoped reviewer and request identity
-     * @param rollout        exact workflow identifier
-     * @param edition        expected workflow concurrency counter
+     * @param context        operation-scoped actor and request identity
+     * @param rolloutId      exact rollout identifier
+     * @param edition        expected rollout edition
      * @param frozenChecksum checksum of the reviewed frozen plan
-     * @param decision       policy-stage decision to record
-     * @return workflow state resulting from the decision
+     * @param flow           stage decision to record
+     * @return rollout after recording the decision
      */
-    Rollout decide(
-            SettingProvider.Context context,
-            String rollout,
-            long edition,
-            String frozenChecksum,
-            Approval decision);
+    Rollout decide(SettingProvider.Context context, String rolloutId, long edition, String frozenChecksum, Flow flow);
 
 }

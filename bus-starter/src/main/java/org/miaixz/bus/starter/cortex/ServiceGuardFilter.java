@@ -46,6 +46,9 @@ import org.miaixz.bus.vortex.guard.SignatureVerifier;
 
 /**
  * Applies the common service identity decision at the Servlet boundary.
+ * <p>
+ * Admitted requests expose any verified identity through {@link GuardEvaluator#VERIFIED_ATTRIBUTE}. The request wrapper
+ * hides reserved service identity headers from the remaining filter chain.
  *
  * @author Kimi Liu
  */
@@ -66,7 +69,11 @@ public class ServiceGuardFilter extends OncePerRequestFilter {
     }
 
     /**
-     * Checks the context-relative route and exposes only the verified identity to downstream handlers.
+     * Checks the context-relative route before passing the request down the filter chain.
+     * <p>
+     * A rejected identity returns HTTP 401. If identity verification is unavailable, the filter returns HTTP 503. For
+     * an admitted {@code application/json} POST carrying a forwarding proof header, the filter caches the body if it
+     * has not already been wrapped and returns HTTP 413 if the cache limit is exceeded.
      *
      * @param request  current Servlet request
      * @param response current Servlet response
@@ -124,14 +131,14 @@ public class ServiceGuardFilter extends OncePerRequestFilter {
              * @return values with service identity credentials omitted
              */
             @Override
-            public java.util.Enumeration<String> getHeaders(String name) {
+            public Enumeration<String> getHeaders(String name) {
                 return identity.reservesHeader(null, name) ? Collections.emptyEnumeration() : super.getHeaders(name);
             }
 
             /**
              * Returns visible header names.
              *
-             * @return header names excluding the consumed service identity header
+             * @return header names excluding those reserved for service identity
              */
             @Override
             public Enumeration<String> getHeaderNames() {
@@ -144,7 +151,7 @@ public class ServiceGuardFilter extends OncePerRequestFilter {
     }
 
     /**
-     * Writes an uncached JSON response for an identity check that did not admit the request.
+     * Writes the rejection status as an uncached JSON response.
      *
      * @param response current Servlet response
      * @param status   HTTP status code to send

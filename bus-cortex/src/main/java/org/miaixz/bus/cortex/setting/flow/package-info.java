@@ -17,64 +17,9 @@
  ~                                                                           ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.cortex.setting.approval;
-
-import java.io.Serial;
-
-import lombok.Getter;
-import lombok.Setter;
-import lombok.experimental.SuperBuilder;
-
-import org.miaixz.bus.core.basic.entity.Tenant;
-
 /**
- * Immutable policy-stage decision bound to one frozen publication checksum.
+ * Flow policy validation and stage decisions for frozen configuration publication plans.
  *
  * @author Kimi Liu
  */
-@Getter
-@Setter
-@SuperBuilder
-public class Approval extends Tenant {
-
-    @Serial
-    private static final long serialVersionUID = 2558902800001L;
-
-    /**
-     * Identifier of the publication workflow under review.
-     */
-    private String rollout_id;
-
-    /**
-     * Principal receiving the approval assignment, independent of application relationships.
-     */
-    private String target_id;
-
-    /**
-     * Approval policy stage.
-     */
-    private String stage;
-
-    /**
-     * Checksum of the frozen plan bound to this decision.
-     */
-    private String checksum;
-
-    /**
-     * Stage decision permitted by the applicable approval policy.
-     */
-    private String decision;
-
-    /**
-     * Reviewer comment for the approval decision.
-     */
-    private String comment;
-
-    /**
-     * Creates an empty approval decision.
-     */
-    public Approval() {
-        // No initialization required.
-    }
-
-}
+package org.miaixz.bus.cortex.setting.flow;

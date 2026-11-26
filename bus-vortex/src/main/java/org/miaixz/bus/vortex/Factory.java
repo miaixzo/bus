@@ -17,9 +17,24 @@
  ~                                                                           ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
+package org.miaixz.bus.vortex;
+
 /**
- * Approval evidence and policy decisions coordinated with publication workflow transactions.
+ * Creates Vortex gateway listeners for Spring or application-managed startup.
+ * <p>
+ * When managing the lifecycle directly, call {@link Vortex#start()} to bind the listener and {@link Vortex#stop()} to
+ * release its resources. Call {@link Vortex#await()} after startup to block until the listener closes.
  *
  * @author Kimi Liu
  */
-package org.miaixz.bus.cortex.setting.approval;
+@FunctionalInterface
+public interface Factory {
+
+    /**
+     * Creates a gateway listener without binding a socket.
+     *
+     * @return unstarted Vortex listener
+     */
+    Vortex create();
+
+}

@@ -41,6 +41,9 @@
           "name": "scope"
         },
         {
+          "name": "visible"
+        },
+        {
           "name": "retries"
         },
         {
@@ -192,6 +195,10 @@
           "parameterTypes": []
         },
         {
+          "name": "getVisible",
+          "parameterTypes": []
+        },
+        {
           "name": "getRetries",
           "parameterTypes": []
         },
@@ -315,6 +322,12 @@
           "name": "setScope",
           "parameterTypes": [
             "java.lang.String"
+          ]
+        },
+        {
+          "name": "setVisible",
+          "parameterTypes": [
+            "java.lang.Integer"
           ]
         },
         {
@@ -457,6 +470,9 @@
           "name": "scope"
         },
         {
+          "name": "visible"
+        },
+        {
           "name": "throttle"
         },
         {
@@ -576,6 +592,12 @@
           "name": "scope",
           "parameterTypes": [
             "java.lang.String"
+          ]
+        },
+        {
+          "name": "visible",
+          "parameterTypes": [
+            "java.lang.Integer"
           ]
         },
         {
@@ -11503,7 +11525,7 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.cortex.setting.approval.Approval",
+      "type": "org.miaixz.bus.cortex.setting.flow.Flow",
       "fields": [
         {
           "name": "serialVersionUID"
@@ -11599,13 +11621,13 @@
         {
           "name": "<init>",
           "parameterTypes": [
-            "org.miaixz.bus.cortex.setting.approval.Approval$ApprovalBuilder"
+            "org.miaixz.bus.cortex.setting.flow.Flow$FlowBuilder"
           ]
         }
       ]
     },
     {
-      "type": "org.miaixz.bus.cortex.setting.approval.Approval$ApprovalBuilder",
+      "type": "org.miaixz.bus.cortex.setting.flow.Flow$FlowBuilder",
       "methods": [
         {
           "name": "rollout_id",
@@ -11658,7 +11680,7 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.cortex.setting.approval.Approval$ApprovalBuilderImpl",
+      "type": "org.miaixz.bus.cortex.setting.flow.Flow$FlowBuilderImpl",
       "methods": [
         {
           "name": "self",

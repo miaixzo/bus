@@ -27,8 +27,8 @@ import org.miaixz.bus.cortex.release.ReleaseCodec;
 import org.miaixz.bus.cortex.release.ReleaseStore;
 import org.miaixz.bus.cortex.setting.SettingProvider;
 import org.miaixz.bus.cortex.setting.SettingStore;
-import org.miaixz.bus.cortex.setting.approval.ApprovalStore;
 import org.miaixz.bus.cortex.setting.curator.ItemEditor;
+import org.miaixz.bus.cortex.setting.flow.FlowStore;
 import org.miaixz.bus.cortex.setting.item.Item;
 import org.miaixz.bus.cortex.setting.item.ItemCodec;
 import org.miaixz.bus.cortex.setting.item.ItemMerger;
@@ -69,9 +69,9 @@ public final class RolloutService {
      */
     private final ReferenceCodec references;
     /**
-     * Host approval policy registry, independent of access checks.
+     * Host flow store used to validate rollout policies.
      */
-    private final ApprovalStore approvals;
+    private final FlowStore flowStore;
 
     /**
      * Creates workflow management.
@@ -82,17 +82,17 @@ public final class RolloutService {
      * @param revisions  exact snapshots
      * @param editor     source verification
      * @param references option parser
-     * @param approvals  approval policy registry
+     * @param flowStore  flow policy validation
      */
     public RolloutService(RolloutStore store, SettingStore settings, ReleaseStore releases, RevisionStore revisions,
-            ItemEditor editor, ReferenceCodec references, ApprovalStore approvals) {
+            ItemEditor editor, ReferenceCodec references, FlowStore flowStore) {
         this.store = Objects.requireNonNull(store);
         this.settings = Objects.requireNonNull(settings);
         this.releases = Objects.requireNonNull(releases);
         this.revisions = Objects.requireNonNull(revisions);
         this.editor = Objects.requireNonNull(editor);
         this.references = Objects.requireNonNull(references);
-        this.approvals = Objects.requireNonNull(approvals);
+        this.flowStore = Objects.requireNonNull(flowStore);
     }
 
     /**
@@ -106,7 +106,7 @@ public final class RolloutService {
      */
     public Rollout create(SettingProvider.Context context, String title, String description, Plan.Selection selection) {
         context.requireRequest();
-        approvals.validatePolicy(context, selection.policy());
+        flowStore.validatePolicy(context, selection.policy());
         return store.saveDraft(
                 Rollout.builder().tenant_id(context.tenant()).id(ID.objectId()).title(title).description(description)
                         .status(Rollout.State.DRAFT.key()).manifest(Plan.selection(selection)).build(),
@@ -133,7 +133,7 @@ public final class RolloutService {
             Plan.Selection selection) {
         context.requireRequest();
         Rollout next = draft(context, rollout, edition);
-        approvals.validatePolicy(context, selection.policy());
+        flowStore.validatePolicy(context, selection.policy());
         next.setTitle(title);
         next.setDescription(description);
         next.setManifest(Plan.selection(selection));
@@ -194,7 +194,7 @@ public final class RolloutService {
         context.requireRequest();
         Rollout draft = draft(context, rollout, edition);
         Plan.Selection selection = Plan.selection(draft.getManifest());
-        approvals.validatePolicy(context, selection.policy());
+        flowStore.validatePolicy(context, selection.policy());
         SettingStore.View view = settings.read(context.tenant(), selection.applications());
         Set<String> apps = new HashSet<>();
         view.apps().forEach(app -> {

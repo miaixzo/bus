@@ -17,7 +17,7 @@
  ~                                                                           ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.cortex.setting.approval;
+package org.miaixz.bus.cortex.setting.flow;
 
 import java.util.List;
 import java.util.Objects;
@@ -26,66 +26,66 @@ import org.miaixz.bus.cortex.setting.SettingProvider;
 import org.miaixz.bus.cortex.setting.rollout.Rollout;
 
 /**
- * Approval decisions against exact frozen input, using the host's existing policy.
+ * Reads and records flow stage decisions against frozen publication plans.
  *
  * @author Kimi Liu
  */
-public final class ApprovalService {
+public final class FlowService {
 
     /**
-     * Atomic decision/workflow transaction.
+     * Host storage for flow records and atomic rollout transitions.
      */
-    private final ApprovalStore store;
+    private final FlowStore store;
 
     /**
-     * Creates approval handling.
+     * Creates the flow service.
      *
-     * @param store atomic decisions
+     * @param store flow records and decision transactions
      */
-    public ApprovalService(ApprovalStore store) {
+    public FlowService(FlowStore store) {
         this.store = Objects.requireNonNull(store);
     }
 
     /**
-     * Reads authorized approval evidence.
+     * Reads the recorded stage decisions for a tenant's rollout.
      *
-     * @param context operation coordinates
-     * @param rollout workflow
-     * @return immutable evidence
+     * @param context   operation coordinates
+     * @param rolloutId rollout identifier
+     * @return immutable list of flow records
      */
-    public List<Approval> query(SettingProvider.Context context, String rollout) {
-        return List.copyOf(store.query(context.tenant(), rollout));
+    public List<Flow> query(SettingProvider.Context context, String rolloutId) {
+        return List.copyOf(store.query(context.tenant(), rolloutId));
     }
 
     /**
-     * Applies a decision only to the frozen checksum; host transaction repeats policy/state checks.
+     * Records a stage decision for the frozen plan. The host transaction rechecks the policy and rollout state.
      *
      * @param context        operation coordinates
-     * @param rollout        workflow
-     * @param edition        expected CAS
-     * @param frozenChecksum reviewed digest
-     * @param stage          policy stage
-     * @param decision       policy decision
-     * @param recipient      optional delegation subject
-     * @param comment        opinion
-     * @return resulting workflow
+     * @param rolloutId      rollout identifier
+     * @param edition        expected rollout edition
+     * @param frozenChecksum checksum of the frozen publication plan
+     * @param stage          stage identifier in the flow policy
+     * @param decision       decision for the stage
+     * @param target         optional assignee for the stage
+     * @param comment        actor's comment
+     * @return rollout after recording the decision
      */
     public Rollout decide(
             SettingProvider.Context context,
-            String rollout,
+            String rolloutId,
             long edition,
             String frozenChecksum,
             String stage,
             String decision,
-            String recipient,
+            String target,
             String comment) {
         context.requireRequest();
         context.requireActor();
         if (frozenChecksum == null || stage == null || decision == null)
-            throw new IllegalArgumentException("Exact approval input required");
-        Approval evidence = Approval.builder().tenant_id(context.tenant()).rollout_id(rollout).target_id(recipient)
-                .stage(stage).checksum(frozenChecksum).decision(decision).comment(comment).build();
-        return store.decide(context, rollout, edition, frozenChecksum, evidence);
+            throw new IllegalArgumentException("Flow decision requires a frozen checksum, stage, and outcome");
+        Flow flow = Flow.builder().tenant_id(context.tenant()).rollout_id(rolloutId).target_id(target).stage(stage)
+                .checksum(frozenChecksum).decision(decision).comment(comment).build();
+        return store.decide(context, rolloutId, edition, frozenChecksum, flow);
     }
 
 }

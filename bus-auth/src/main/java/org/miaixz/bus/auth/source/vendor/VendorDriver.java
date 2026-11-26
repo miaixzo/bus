@@ -264,7 +264,11 @@ public class VendorDriver implements SourceDriver<VendorOptions<?>> {
             case CERTIFICATE -> WorkerSlots.Slot.CERTIFICATE;
             case PASSWORD, CLIENT_SECRET, SHARED_SECRET -> WorkerSlots.Slot.SECRET;
         });
-        if (variant.pkce().resolve(options)) {
+        // RedirectState stores a verifier only for a Bus-owned browser workflow. Direct PKCE operations receive
+        // the verifier from the caller and still enforce PKCE in the protocol client.
+        if (variant.pkce().resolve(options) && variant.capabilityManifest().capabilities().stream().anyMatch(
+                capability -> capability.key().equals(SourceWorkflow.INITIATE.key())
+                        || capability.key().equals(SourceWorkflow.COMPLETE.key()))) {
             slots.add(WorkerSlots.Slot.CREDENTIAL);
         }
         return new WorkerSlots(slots);

@@ -5,7 +5,8 @@
     "description": "Core Protocol Buffers library. Protocol Buffers are a way of encoding structured data in an efficient yet extensible format.",
     "tested-versions": [
       "4.35.0",
-      "4.35.1"
+      "4.35.1",
+      "4.36.2"
     ]
   }
 ]
