@@ -85,18 +85,53 @@ public class BootURLHandler extends Handler {
         Enumeration<URL> resources = classLoader.getResources(Builder.XJAR_INF_DIR + Builder.XJAR_INF_IDX);
         while (resources.hasMoreElements()) {
             URL resource = resources.nextElement();
-            String url = resource.toString();
-            String classpath = url.substring(0, url.lastIndexOf("!/") + 2);
             try (InputStream in = resource.openStream();
                     InputStreamReader isr = new InputStreamReader(in);
                     LineNumberReader lnr = new LineNumberReader(isr)) {
                 String name;
                 while (null != (name = lnr.readLine())) {
-                    indexes.add(classpath + name);
+                    indexes.add(normalize(name));
                 }
             }
         }
         Logger.debug(false, "Shade", "Boot URL handler initialized: encryptedResourceCount={}", indexes.size());
+    }
+
+    /**
+     * Resolves the archive entry name of a URL, supporting both the {@code jar:file:...!/entry} form and the nested
+     * {@code jar:nested:.../!entry!/entry} form used by Spring Boot 3.2 and later.
+     *
+     * @param url the resource URL
+     * @return the normalized entry name, or {@code null} when the URL does not point at an archive entry
+     */
+    private static String entryName(final URL url) {
+        String spec = url.toString();
+        int index = spec.indexOf("!/");
+        if (index < 0) {
+            return null;
+        }
+        String name = normalize(spec.substring(index + 2));
+        return name.isEmpty() || name.endsWith("/") ? null : name;
+    }
+
+    /**
+     * Normalizes an archive entry name by collapsing the nested marker and duplicate separators.
+     *
+     * @param value raw entry name
+     * @return normalized entry name
+     */
+    private static String normalize(final String value) {
+        if (null == value) {
+            return "";
+        }
+        String name = value.replace("!/", "/");
+        while (name.contains("//")) {
+            name = name.replace("//", "/");
+        }
+        while (name.startsWith("/")) {
+            name = name.substring(1);
+        }
+        return name;
     }
 
     /**
@@ -111,7 +146,8 @@ public class BootURLHandler extends Handler {
     @Override
     protected URLConnection openConnection(URL url) throws IOException {
         URLConnection urlConnection = super.openConnection(url);
-        if (indexes.contains(url.toString()) && urlConnection instanceof JarURLConnection) {
+        String name = entryName(url);
+        if (null != name && indexes.contains(name) && urlConnection instanceof JarURLConnection) {
             Logger.trace(
                     true,
                     "Shade",

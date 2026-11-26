@@ -23,10 +23,10 @@ import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Supplier;
 
+import org.miaixz.bus.core.center.function.ConsumerX;
+import org.miaixz.bus.core.center.function.FunctionX;
+import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.data.id.UUID;
 import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.lang.Assert;
@@ -67,7 +67,7 @@ public class StompSession implements Session {
     /**
      * Frame sender.
      */
-    private final Function<Buffer, Call<Void>> sender;
+    private final FunctionX<Buffer, Call<Void>> sender;
 
     /**
      * Close hook.
@@ -97,7 +97,7 @@ public class StompSession implements Session {
     /**
      * Default inbound message handler.
      */
-    private final Consumer<StompMessage> handler;
+    private final ConsumerX<StompMessage> handler;
 
     /**
      * Address used for guard and observe messages.
@@ -197,8 +197,8 @@ public class StompSession implements Session {
      * @param cancelHook cancel hook
      * @param handler    default message handler
      */
-    public StompSession(final Function<Buffer, Call<Void>> sender, final Runnable closeHook, final Runnable cancelHook,
-            final Consumer<StompMessage> handler) {
+    public StompSession(final FunctionX<Buffer, Call<Void>> sender, final Runnable closeHook, final Runnable cancelHook,
+            final ConsumerX<StompMessage> handler) {
         this(sender, closeHook, cancelHook, handler, null, null, EventObserver.noop(), null, null, Normal.MEBI_64);
     }
 
@@ -214,8 +214,8 @@ public class StompSession implements Session {
      * @param observer   observer receiving STOMP lifecycle events
      * @param listener   lifecycle listener
      */
-    StompSession(final Function<Buffer, Call<Void>> sender, final Runnable closeHook, final Runnable cancelHook,
-            final Consumer<StompMessage> handler, final Address address, final GuardRule guard,
+    StompSession(final FunctionX<Buffer, Call<Void>> sender, final Runnable closeHook, final Runnable cancelHook,
+            final ConsumerX<StompMessage> handler, final Address address, final GuardRule guard,
             final EventObserver observer, final Listener<? super StompSession> listener) {
         this(sender, closeHook, cancelHook, handler, address, guard, observer, null, listener, Normal.MEBI_64);
     }
@@ -234,8 +234,8 @@ public class StompSession implements Session {
      * @param listener            lifecycle listener
      * @param materializeMaxBytes materialize byte threshold
      */
-    StompSession(final Function<Buffer, Call<Void>> sender, final Runnable closeHook, final Runnable cancelHook,
-            final Consumer<StompMessage> handler, final Address address, final GuardRule guard,
+    StompSession(final FunctionX<Buffer, Call<Void>> sender, final Runnable closeHook, final Runnable cancelHook,
+            final ConsumerX<StompMessage> handler, final Address address, final GuardRule guard,
             final EventObserver observer, final Filter filter, final Listener<? super StompSession> listener,
             final long materializeMaxBytes) {
         this(sender, closeHook, cancelHook, handler, address, guard, observer, filter, listener, materializeMaxBytes,
@@ -262,8 +262,8 @@ public class StompSession implements Session {
      * @param timeout             complete transport timeout policy
      * @param state               negotiated STOMP state
      */
-    StompSession(final Function<Buffer, Call<Void>> sender, final Runnable closeHook, final Runnable cancelHook,
-            final Consumer<StompMessage> handler, final Address address, final GuardRule guard,
+    StompSession(final FunctionX<Buffer, Call<Void>> sender, final Runnable closeHook, final Runnable cancelHook,
+            final ConsumerX<StompMessage> handler, final Address address, final GuardRule guard,
             final EventObserver observer, final Filter filter, final Listener<? super StompSession> listener,
             final long materializeMaxBytes, final Dispatcher dispatcher, final Clock clock,
             final Cancellation cancellation, final Timeout timeout, final StompState state) {
@@ -291,11 +291,11 @@ public class StompSession implements Session {
      * @param state               negotiated STOMP state
      * @param ownsDispatcher      true when this session owns the dispatcher
      */
-    private StompSession(final Function<Buffer, Call<Void>> sender, final Runnable closeHook, final Runnable cancelHook,
-            final Consumer<StompMessage> handler, final Address address, final GuardRule guard,
-            final EventObserver observer, final Filter filter, final Listener<? super StompSession> listener,
-            final long materializeMaxBytes, final Dispatcher dispatcher, final Clock clock,
-            final Cancellation cancellation, final Timeout timeout, final StompState state,
+    private StompSession(final FunctionX<Buffer, Call<Void>> sender, final Runnable closeHook,
+            final Runnable cancelHook, final ConsumerX<StompMessage> handler, final Address address,
+            final GuardRule guard, final EventObserver observer, final Filter filter,
+            final Listener<? super StompSession> listener, final long materializeMaxBytes, final Dispatcher dispatcher,
+            final Clock clock, final Cancellation cancellation, final Timeout timeout, final StompState state,
             final boolean ownsDispatcher) {
         this.sender = require(sender, "STOMP sender");
         this.closeHook = closeHook == null ? () -> {
@@ -510,7 +510,7 @@ public class StompSession implements Session {
      * @param handler     message handler
      * @return topic
      */
-    public StompTopic subscribe(final String destination, final Consumer<StompMessage> handler) {
+    public StompTopic subscribe(final String destination, final ConsumerX<StompMessage> handler) {
         return subscribe(destination, Headers.empty(), handler);
     }
 
@@ -522,7 +522,10 @@ public class StompSession implements Session {
      * @param handler     message handler
      * @return topic
      */
-    public StompTopic subscribe(final String destination, final Headers headers, final Consumer<StompMessage> handler) {
+    public StompTopic subscribe(
+            final String destination,
+            final Headers headers,
+            final ConsumerX<StompMessage> handler) {
         ensureOpen();
         final String target = StompMessage.validateToken(destination, "STOMP destination");
         Assert.notNull(handler, () -> new ValidateException("STOMP subscription handler must not be null"));
@@ -574,7 +577,7 @@ public class StompSession implements Session {
      * @param handler     message handler
      * @return topic
      */
-    public StompTopic topic(final String destination, final Consumer<StompMessage> handler) {
+    public StompTopic topic(final String destination, final ConsumerX<StompMessage> handler) {
         return topic(destination, Headers.empty(), handler);
     }
 
@@ -586,7 +589,7 @@ public class StompSession implements Session {
      * @param handler     message handler
      * @return topic
      */
-    public StompTopic topic(final String destination, final Headers headers, final Consumer<StompMessage> handler) {
+    public StompTopic topic(final String destination, final Headers headers, final ConsumerX<StompMessage> handler) {
         return subscribeOnce(prefixed(Builder.STOMP_TOPIC_PREFIX, destination), headers, handler);
     }
 
@@ -597,7 +600,7 @@ public class StompSession implements Session {
      * @param handler     message handler
      * @return topic
      */
-    public StompTopic queue(final String destination, final Consumer<StompMessage> handler) {
+    public StompTopic queue(final String destination, final ConsumerX<StompMessage> handler) {
         return queue(destination, Headers.empty(), handler);
     }
 
@@ -609,7 +612,7 @@ public class StompSession implements Session {
      * @param handler     message handler
      * @return topic
      */
-    public StompTopic queue(final String destination, final Headers headers, final Consumer<StompMessage> handler) {
+    public StompTopic queue(final String destination, final Headers headers, final ConsumerX<StompMessage> handler) {
         return subscribeOnce(prefixed(Builder.STOMP_QUEUE_PREFIX, destination), headers, handler);
     }
 
@@ -890,7 +893,7 @@ public class StompSession implements Session {
      * @param consumer subscription callback to invoke safely
      * @param message  decoded message delivered to the callback
      */
-    private void accept(final Consumer<StompMessage> consumer, final StompMessage message) {
+    private void accept(final ConsumerX<StompMessage> consumer, final StompMessage message) {
         try {
             consumer.accept(message);
         } catch (final RuntimeException e) {
@@ -973,7 +976,7 @@ public class StompSession implements Session {
     private StompTopic subscribeOnce(
             final String destination,
             final Headers headers,
-            final Consumer<StompMessage> handler) {
+            final ConsumerX<StompMessage> handler) {
         final String target = StompMessage.validateToken(destination, "STOMP destination");
         synchronized (topics) {
             for (final Subscription subscription : topics.values()) {
@@ -1002,8 +1005,8 @@ public class StompSession implements Session {
      * @param frameSupplier frame factory
      * @return send Call
      */
-    private Call<Void> write(final Supplier<StompFrame> frameSupplier) {
-        final Supplier<StompFrame> current = require(frameSupplier, "STOMP frame supplier");
+    private Call<Void> write(final SupplierX<StompFrame> frameSupplier) {
+        final SupplierX<StompFrame> current = require(frameSupplier, "STOMP frame supplier");
         return MonoCall.<Void>create(
                 "stomp-session-write",
                 "stomp:session:write",
@@ -1489,7 +1492,7 @@ public class StompSession implements Session {
      * @param topic   subscription metadata and identifier
      * @param handler callback receiving matching messages
      */
-    private record Subscription(StompTopic topic, Consumer<StompMessage> handler) {
+    private record Subscription(StompTopic topic, ConsumerX<StompMessage> handler) {
 
     }
 

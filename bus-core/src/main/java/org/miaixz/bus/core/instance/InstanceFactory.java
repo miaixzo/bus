@@ -92,6 +92,11 @@ public class InstanceFactory implements Instance {
 
     /**
      * Singleton method.
+     *
+     * @param <T>       type of the requested instance
+     * @param clazz     The class type.
+     * @param groupName The group name.
+     * @return shared instance for the requested class and instance group
      */
     @Override
     public <T> T singleton(Class<T> clazz, String groupName) {
@@ -103,6 +108,10 @@ public class InstanceFactory implements Instance {
 
     /**
      * Singleton method.
+     *
+     * @param <T>   type of the requested instance
+     * @param clazz The class type.
+     * @return shared instance for the requested class and instance group
      */
     @Override
     public <T> T singleton(Class<T> clazz) {
@@ -212,6 +221,10 @@ public class InstanceFactory implements Instance {
 
     /**
      * Threadlocal method.
+     *
+     * @param <T>   type of the requested instance
+     * @param clazz The class type.
+     * @return instance associated with the current thread
      */
     @Override
     public <T> T threadLocal(Class<T> clazz) {
@@ -234,6 +247,10 @@ public class InstanceFactory implements Instance {
 
     /**
      * Multiple method.
+     *
+     * @param <T>   type of the requested instance
+     * @param clazz The class type.
+     * @return new instance of the requested class
      */
     @Override
     public <T> T multiple(Class<T> clazz) {
@@ -249,6 +266,10 @@ public class InstanceFactory implements Instance {
 
     /**
      * Threadsafe method.
+     *
+     * @param <T>   type of the requested instance
+     * @param clazz The class type.
+     * @return instance selected according to the class's thread-safety contract
      */
     @Override
     public <T> T threadSafe(Class<T> clazz) {
@@ -388,6 +409,7 @@ public class InstanceFactory implements Instance {
             }
             return completion.getNow(null);
         }
+
     }
 
     /**

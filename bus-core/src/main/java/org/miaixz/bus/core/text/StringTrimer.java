@@ -79,6 +79,7 @@ public class StringTrimer implements UnaryOperatorX<CharSequence>, Serializable 
     /**
      * Apply method.
      *
+     * @param text The character sequence to be processed.
      * @return the String value
      */
     @Override

@@ -59,7 +59,10 @@ public class FastStringWriter extends Writer {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Appends the specified character to this writer.
+     *
+     * @param c The character to append.
+     * @return This writer.
      */
     @Override
     public FastStringWriter append(final char c) {
@@ -68,7 +71,12 @@ public class FastStringWriter extends Writer {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Appends a subsequence of the specified character sequence to this writer.
+     *
+     * @param csq   The character sequence from which a subsequence will be appended.
+     * @param start The index of the first character in the subsequence.
+     * @param end   The index of the character following the last character in the subsequence.
+     * @return This writer.
      */
     @Override
     public FastStringWriter append(final CharSequence csq, final int start, final int end) {
@@ -77,7 +85,10 @@ public class FastStringWriter extends Writer {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Appends the specified character sequence to this writer.
+     *
+     * @param csq The character sequence to append.
+     * @return This writer.
      */
     @Override
     public FastStringWriter append(final CharSequence csq) {
@@ -86,7 +97,9 @@ public class FastStringWriter extends Writer {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Writes a single character.
+     *
+     * @param c The character to write.
      */
     @Override
     public void write(final int c) {
@@ -94,7 +107,9 @@ public class FastStringWriter extends Writer {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Writes a string.
+     *
+     * @param text The string to write.
      */
     @Override
     public void write(final String text) {
@@ -102,7 +117,11 @@ public class FastStringWriter extends Writer {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Writes a portion of a string.
+     *
+     * @param text The string to write.
+     * @param off  Offset from which to start writing characters.
+     * @param len  Number of characters to write.
      */
     @Override
     public void write(final String text, final int off, final int len) {
@@ -110,7 +129,9 @@ public class FastStringWriter extends Writer {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Writes an array of characters.
+     *
+     * @param c An array of characters.
      */
     @Override
     public void write(final char[] c) {
@@ -118,7 +139,11 @@ public class FastStringWriter extends Writer {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Writes a portion of an array of characters.
+     *
+     * @param c   An array of characters.
+     * @param off Offset from which to start writing characters.
+     * @param len Number of characters to write.
      */
     @Override
     public void write(final char[] c, final int off, final int len) {

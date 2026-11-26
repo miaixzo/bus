@@ -25,6 +25,7 @@ import java.util.Properties;
 import java.util.function.Supplier;
 
 import org.miaixz.bus.core.basic.entity.Audit;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
@@ -64,7 +65,7 @@ public class MapperPluginFactory {
     /**
      * Fallback namespace used when simplified YAML options are converted into handler properties.
      */
-    private static final String DEFAULT_KEY = "default";
+    private static final String DEFAULT_KEY = Normal.DEFAULT;
 
     /**
      * Initializes the factory that assembles mapper interceptors from immutable runtime options.

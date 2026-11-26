@@ -55,6 +55,12 @@ public record MiOptions(Vendor.Id vendor, Vendor.Variant variant, String clientI
     /**
      * Validates and freezes one Xiaomi registration without resolving its Client Secret.
      *
+     * @param vendor      exact Xiaomi platform identifier
+     * @param variant     exact default Xiaomi variant
+     * @param clientId    registered Xiaomi Client ID
+     * @param credential  external Client Secret reference
+     * @param redirectUri exact registered authorization callback URI
+     * @param scopes      ordered Xiaomi scopes, or empty to use manifest defaults
      * @throws IllegalArgumentException if a required component, container, or scope is {@code null} or blank
      * @throws ValidateException        if routing, credential, callback, scope vocabulary, or identity coverage is
      *                                  invalid

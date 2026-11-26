@@ -113,6 +113,8 @@ public class DataSourceHolder {
 
     /**
      * Lexical JDBC routing scope with idempotent parent-state restoration.
+     *
+     * @author Kimi Liu
      */
     public class Scope implements AutoCloseable {
 

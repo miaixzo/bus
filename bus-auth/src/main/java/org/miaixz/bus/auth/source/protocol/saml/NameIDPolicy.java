@@ -39,6 +39,9 @@ public record NameIDPolicy(Optional<String> format, Optional<String> spNameQuali
     /**
      * Normalizes optional attributes and validates the optional format URI.
      *
+     * @param format          optional requested Name Identifier format URI
+     * @param spNameQualifier optional service-provider qualifier
+     * @param allowCreate     optional lexical-presence value of {@code AllowCreate}
      * @throws IllegalArgumentException if an optional container is {@code null}
      * @throws ValidateException        if a present format is not absolute or a qualifier is empty
      */

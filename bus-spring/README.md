@@ -247,14 +247,16 @@ and must not be overwritten by request input.
 
 The converter package provides:
 
-- `AbstractHttpMessageConverter` as the common converter base;
-- `JsonMessageConverter` for the Bus JSON provider;
+- `JsonMessageValueConverter` for provider-backed JSON conversion;
+- `TextMessageValueConverter` for UTF-8 string conversion;
 - `JsonTypeMatcher` for supported JSON targets;
-- `MessageConverterRegistrar` for deterministic converter placement;
-- `JsonWebMvcConfigurer` and `TextWebMvcConfigurer` for MVC integration.
+- `MessageValueConverter` for HTTP body conversion and deterministic placement;
+- `MessageWebMvcConfigurer` for converter registration and MVC return-value handler installation;
+- `MessageReturnValueHandler` for explicit HTTP status, headers and byte output.
 
-`bus-spring` supplies these mechanics but does not automatically activate them. Starter's wrapper converter
-configuration owns activation and conditions.
+Bus Starter installs the return-value handler in Servlet MVC by default. Wrapper converter configuration controls JSON,
+text and application-contributed converter registration. Applications can contribute MVC converters through
+`Supplier<? extends MessageValueConverter<?>>` beans.
 
 ## Body caching
 
@@ -369,3 +371,11 @@ and `allPublic*` reflection grants are prohibited.
 
 Bus contains and runs no tests. Context, Bean service, Web, module-path, lifecycle, metadata, AOT, and Native Image
 tests are maintained in the sibling Abarth repository. Bus builds must skip tests explicitly.
+
+## Transactions and persistence failures
+
+Bus Core owns the implementation-independent declarations: `org.miaixz.bus.core.lang.annotation.Transactional`, its nested `Propagation` and `Isolation` enums, and `org.miaixz.bus.core.lang.annotation.AfterCommit`. `org.miaixz.bus.spring.jdbc` exposes immutable `Transactions` operations, `TransactionScope`, and `AfterCommitListenerProcessor`. Starter connects these APIs to the existing transaction manager and standard proxy infrastructure. Method, class, and inherited declarations retain their rollback rules. Configured operation variants do not mutate the shared bean.
+
+Callbacks return after commit or rollback and receive a thread-confined scope. A savepoint is created with `try (var point = scope.savepoint())`, recovered with `point.rollback()`, and released when closed. Declaratively advised operations may obtain their scope with `Transactions.current()`. `@AfterCommit` ignores events published outside a transaction or in a rolled-back transaction. Starter assembles listener discovery and adaptation in `JdbcConfiguration`, using Spring transaction event synchronization and registering AOT invocation hints. The annotation itself has no Spring dependency.
+
+Mapper Starter translates unique conflicts to `DuplicateException`, transient persistence failures to the general-purpose `RetryableException`, and other database or transaction failures to `MapperException`. The original cause is retained; the business owner decides whether to retry. Default sessions and standard mapper sessions created from explicit factories use this translation. Host session subclasses and custom translators retain their own contracts. Database operations continue to use Mapper; transaction APIs do not execute SQL.

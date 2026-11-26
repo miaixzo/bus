@@ -51,7 +51,7 @@ public interface AuthorizeProvider {
      * <ul>
      * <li>Type 1: Token-based authentication</li>
      * <li>Type 2: API key-based authentication</li>
-     * <li>Route policy 3: Includes license verification before the selected credential check</li>
+     * <li>Route policies 2 and 3: Retain downstream permission validation without a License prerequisite</li>
      * </ul>
      * <p>
      * This method can be overridden to handle custom credential types or more complex dispatching logic.
@@ -80,18 +80,10 @@ public interface AuthorizeProvider {
 
         final boolean isTokenBased = Consts.ONE.equals(type);
         final boolean isApiKeyBased = Consts.TWO.equals(type);
-        final boolean requiresLicense = Consts.THREE.equals(policy);
-
         if (isTokenBased) {
-            Mono<Delegate> chain = requiresLicense ? this.license(principal)
-                    .flatMap(delegate -> delegate.isOk() ? this.token(principal) : Mono.just(delegate)) : Mono.empty();
-
-            return chain.switchIfEmpty(this.token(principal));
+            return this.token(principal);
         } else if (isApiKeyBased) {
-            Mono<Delegate> chain = requiresLicense ? this.license(principal)
-                    .flatMap(delegate -> delegate.isOk() ? this.apiKey(principal) : Mono.just(delegate)) : Mono.empty();
-
-            return chain.switchIfEmpty(this.apiKey(principal));
+            return this.apiKey(principal);
         }
         Logger.warn(
                 false,
@@ -111,24 +103,13 @@ public interface AuthorizeProvider {
      * <p>
      * Used when principal type is {@link Consts#ONE}.
      * <p>
-     * <strong>Warning:</strong> The default implementation of this method provides no security and always returns a
-     * successful result. It is a placeholder and **must be overridden** with actual validation logic, such as JWT
-     * signature verification, introspection against an OAuth2 server, or a database/cache lookup.
+     * The default implementation rejects the request. Override it to authenticate client Bearer credentials.
      *
      * @param principal The {@link Principal} object containing the token.
      * @return A {@code Mono<Delegate>} emitting the authorization result.
      */
     default Mono<Delegate> token(Principal principal) {
-        Logger.debug(
-                true,
-                "Vortex",
-                "Executing default credential validation method. This provides no security and should be overridden.");
-        return Mono.just(
-                Delegate.builder()
-                        .message(
-                                Message.<Void>builder().code(ErrorCode._SUCCESS.getKey())
-                                        .desc(ErrorCode._SUCCESS.getValue()).build())
-                        .authorize(Authorize.builder().build()).build());
+        return Mono.error(new ValidateException(ErrorCode._100160));
     }
 
     /**
@@ -136,30 +117,19 @@ public interface AuthorizeProvider {
      * <p>
      * Used when principal type is {@link Consts#TWO}.
      * <p>
-     * <strong>Warning:</strong> The default implementation of this method provides no security and always returns a
-     * successful result. It is a placeholder and **must be overridden** with actual validation logic, such as looking
-     * up the API key in a database and checking its permissions.
+     * The default implementation rejects the request. Override it to authenticate client API keys.
      *
      * @param principal The {@link Principal} object containing the API key.
      * @return A {@code Mono<Delegate>} emitting the authorization result.
      */
     default Mono<Delegate> apiKey(Principal principal) {
-        Logger.debug(
-                true,
-                "Vortex",
-                "Executing default `apiKey` method. This provides no security and should be overridden.");
-        return Mono.just(
-                Delegate.builder()
-                        .message(
-                                Message.<Void>builder().code(ErrorCode._SUCCESS.getKey())
-                                        .desc(ErrorCode._SUCCESS.getValue()).build())
-                        .authorize(Authorize.builder().build()).build());
+        return Mono.error(new ValidateException(ErrorCode._100160));
     }
 
     /**
      * Asynchronously validates a license-based principal for enhanced security.
      * <p>
-     * Used before selected credential validation when route policy is {@link Consts#THREE}.
+     * Reserved for explicit License workflows; ordinary route authorization does not invoke this operation.
      * <p>
      * <strong>Warning:</strong> The default implementation of this method provides no security and always returns a
      * successful result. It is a placeholder and **must be overridden** with actual validation logic, such as license

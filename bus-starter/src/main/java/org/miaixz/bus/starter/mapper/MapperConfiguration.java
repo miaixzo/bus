@@ -146,6 +146,17 @@ public class MapperConfiguration implements InitializingBean {
     }
 
     /**
+     * Adapts standard mapper sessions created from explicitly selected factories.
+     *
+     * @return mapper session binding processor
+     */
+    @Bean
+    @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
+    public static MapperSessionBinding mapperSessionBinding() {
+        return new MapperSessionBinding();
+    }
+
+    /**
      * Registers the {@link BeanFactoryInitializationAotProcessor} that scans for {@link MapperFactoryBean} definitions
      * and registers runtime hints.
      * <p>
@@ -317,10 +328,13 @@ public class MapperConfiguration implements InitializingBean {
         ExecutorType executorType = this.properties.getExecutorType();
         SqlSessionTemplate template;
         if (executorType != null) {
-            template = new SqlSessionTemplate(sqlSessionFactory, executorType);
+            template = new SqlSessionTemplate(sqlSessionFactory, executorType, new MapperExceptionTranslator(
+                    sqlSessionFactory.getConfiguration().getEnvironment().getDataSource()));
             Logger.info(false, "Starter", "Created SqlSessionTemplate with executor type: {}", executorType);
         } else {
-            template = new SqlSessionTemplate(sqlSessionFactory);
+            template = new SqlSessionTemplate(sqlSessionFactory,
+                    sqlSessionFactory.getConfiguration().getDefaultExecutorType(), new MapperExceptionTranslator(
+                            sqlSessionFactory.getConfiguration().getEnvironment().getDataSource()));
             Logger.info(false, "Starter", "Created SqlSessionTemplate with default executor type");
         }
         return template;

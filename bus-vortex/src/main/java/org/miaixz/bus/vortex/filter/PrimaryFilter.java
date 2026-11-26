@@ -22,18 +22,24 @@ package org.miaixz.bus.vortex.filter;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.WebFilter;
 import org.springframework.web.server.WebFilterChain;
 
+import org.miaixz.bus.auth.guard.GuardConfig;
+import org.miaixz.bus.auth.guard.GuardEvaluator;
 import org.miaixz.bus.core.Order;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.xyz.DateKit;
+import org.miaixz.bus.errors.transport.http.RouteFailure;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.vortex.Context;
 import org.miaixz.bus.vortex.Strategy;
+import org.miaixz.bus.vortex.guard.IdentityGuard;
 import org.miaixz.bus.vortex.handler.ErrorsHandler;
 import org.miaixz.bus.vortex.magic.ErrorCode;
 import org.miaixz.bus.vortex.strategy.StrategyFactory;
@@ -53,14 +59,47 @@ import reactor.core.publisher.Mono;
 public class PrimaryFilter extends AbstractFilter {
 
     /**
+     * Gateway adapter for service identity.
+     */
+    private final IdentityGuard identities;
+
+    /**
+     * Effective client request checks for this listener.
+     */
+    private final GuardConfig guard;
+
+    /**
      * Constructs a new {@code PrimaryFilter}.
      *
      * @param factory The strategy factory, which must not be {@code null}. It provides the appropriate chain of
      *                strategies for each request.
      */
     public PrimaryFilter(StrategyFactory factory) {
+        this(factory, new IdentityGuard(GuardEvaluator.disabled(), appId -> null));
+    }
+
+    /**
+     * Creates the gateway request filter with its scoped identity evaluator.
+     *
+     * @param factory    gateway strategy chain factory
+     * @param identities shared service identity adapter
+     */
+    public PrimaryFilter(StrategyFactory factory, IdentityGuard identities) {
+        this(factory, identities, new GuardConfig());
+    }
+
+    /**
+     * Creates the gateway request filter with its service identity adapter and client Guard configuration.
+     *
+     * @param factory    gateway strategy chain factory
+     * @param identities shared service identity adapter
+     * @param guard      client request check configuration
+     */
+    public PrimaryFilter(StrategyFactory factory, IdentityGuard identities, GuardConfig guard) {
         Assert.notNull(factory, "StrategyFactory must not be null");
         this.factory = factory;
+        this.identities = identities;
+        this.guard = Assert.notNull(guard, "GuardConfig must not be null");
     }
 
     /**
@@ -86,49 +125,42 @@ public class PrimaryFilter extends AbstractFilter {
      */
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
-        String path = exchange.getRequest().getPath().value();
-        Logger.info(true, "Vortex", "Request received: clientIp=N/A, path={}", path);
-        Logger.debug(true, "Vortex", "Request header snapshot: clientIp=N/A, path={}", path);
-        Logger.debug(
-                true,
-                "Vortex",
-                "Request header names: clientIp=N/A, headerNames={}",
-                exchange.getRequest().getHeaders().headerNames());
-        Logger.debug(
-                true,
-                "Vortex",
-                "Request query field names: clientIp=N/A, fieldNames={}",
-                exchange.getRequest().getQueryParams().keySet());
-
-        if (isPathTraversalAttempt(path)) {
-            Logger.warn(false, "Vortex", "Path traversal attempt detected: clientIp=N/A, path={}", path);
-            throw new ValidateException(ErrorCode._LIMITER);
-        }
-
         return Mono.defer(() -> {
-            List<Strategy> strategies = factory.getStrategiesFor(exchange);
-            if (strategies == null || strategies.isEmpty()) {
-                Logger.warn(false, "Vortex", "Unknown path blocked: clientIp=N/A, path={}", path);
-                throw new ValidateException(ErrorCode._BLOCKED);
-            }
-            Context context = new Context();
-            context.setX_request_id(exchange.getRequest().getId());
-            context.setTimestamp(DateKit.current());
-            context.setHeaders(exchange.getRequest().getHeaders().toSingleValueMap());
-            try {
-                context.setHttpMethod(Http.Method.of(exchange.getRequest().getMethod().name()));
-            } catch (IllegalArgumentException e) {
-                Logger.warn(
-                        false,
-                        "Vortex",
-                        e,
-                        "HTTP method mapping failed: methodPresent={}, exception={}",
-                        exchange.getRequest().getMethod() != null,
-                        e.getClass().getSimpleName());
-                throw new ValidateException(ErrorCode._100802);
+            String path = exchange.getRequest().getPath().pathWithinApplication().value();
+            ServerWebExchange sanitized = identities.ingress(exchange);
+
+            Logger.info(true, "Vortex", "Request received: clientIp=N/A, path={}", path);
+            Logger.debug(true, "Vortex", "Request header snapshot: clientIp=N/A, path={}", path);
+            Logger.debug(
+                    true,
+                    "Vortex",
+                    "Request header names: clientIp=N/A, headerNames={}",
+                    sanitized.getRequest().getHeaders().headerNames());
+            Logger.debug(
+                    true,
+                    "Vortex",
+                    "Request query field names: clientIp=N/A, fieldNames={}",
+                    sanitized.getRequest().getQueryParams().keySet());
+
+            if (isPathTraversalAttempt(path)) {
+                throw new ValidateException(ErrorCode._LIMITER);
             }
 
-            exchange.getAttributes().put(Context.$, context);
+            List<Strategy> strategies = factory.getStrategiesFor(sanitized);
+            if (strategies == null || strategies.isEmpty()) {
+                throw new RouteFailure(ErrorCode._BLOCKED, HttpStatus.NOT_FOUND, HttpHeaders.EMPTY);
+            }
+            Context context = new Context(guard.getBearer(), guard.getApiKey(), guard.isSigningEnabled());
+            context.setX_request_id(sanitized.getRequest().getId());
+            context.setTimestamp(DateKit.current());
+            context.setHeaders(sanitized.getRequest().getHeaders().toSingleValueMap());
+            try {
+                context.setHttpMethod(Http.Method.of(sanitized.getRequest().getMethod().name()));
+            } catch (IllegalArgumentException e) {
+                throw new ValidateException(ErrorCode._100802.getKey(), ErrorCode._100802.getValue(), e);
+            }
+
+            sanitized.getAttributes().put(Context.$, context);
 
             Logger.info(
                     true,
@@ -139,8 +171,8 @@ public class PrimaryFilter extends AbstractFilter {
                     strategies.stream().map(strategy -> strategy.getClass().getSimpleName())
                             .collect(Collectors.joining(" -> ")));
 
-            return new Chain(strategies, chain).apply(exchange).contextWrite(ctx -> ctx.put(Context.class, context));
-        });
+            return new Chain(strategies, chain).apply(sanitized).contextWrite(ctx -> ctx.put(Context.class, context));
+        }).doOnTerminate(() -> identities.discard(exchange)).doOnCancel(() -> identities.discard(exchange));
     }
 
     /**
@@ -232,7 +264,10 @@ public class PrimaryFilter extends AbstractFilter {
                 Chain next = new Chain(this, this.index + 1);
                 return strategy.apply(exchange, next);
             }
-            return this.chain.filter(exchange);
+            return Mono.defer(() -> {
+                Context context = exchange.getRequiredAttribute(Context.$);
+                return this.chain.filter(identities.outbound(exchange, context));
+            });
         }
 
     }

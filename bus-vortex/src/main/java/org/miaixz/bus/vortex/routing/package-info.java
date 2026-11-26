@@ -19,13 +19,22 @@
 */
 /**
  * Provides concrete implementations of the {@link org.miaixz.bus.vortex.Router} and
- * {@link org.miaixz.bus.vortex.Executor} interfaces for different downstream protocols.
+ * {@link org.miaixz.bus.vortex.Executor} interfaces for outbound forwarding.
  * <p>
  * This package contains the routing layer for requests whose asset has already been resolved by the strategy chain.
- * Each router delegates protocol-specific execution to its executor while keeping protocol selection centralized.
+ * Each router delegates route-specific execution to its executor.
+ * <p>
+ * The HTTP outbound routes share {@link org.miaixz.bus.vortex.Egress.Http} and keep their own strategies and executors.
  * <ul>
- * <li>{@link org.miaixz.bus.vortex.routing.RestRouter}: Routes requests to standard HTTP/HTTPS endpoints.</li>
- * <li>{@link org.miaixz.bus.vortex.routing.rest.RestExecutor}: Executes requests to standard HTTP/HTTPS endpoints.</li>
+ * <li>{@link org.miaixz.bus.vortex.routing.RestRouter}: Standard HTTP forwarding.</li>
+ * <li>{@link org.miaixz.bus.vortex.routing.LlmRouter}: Forwards model requests through an HTTP provider.</li>
+ * <li>{@link org.miaixz.bus.vortex.routing.SlugRouter}: Resolves public slug paths and forwards their requests.</li>
+ * <li>{@link org.miaixz.bus.vortex.routing.SdcRouter}: Relays authenticated service discovery and configuration
+ * requests.</li>
+ * </ul>
+ * <p>
+ * Protocol and message broker adapters:
+ * <ul>
  * <li>{@link org.miaixz.bus.vortex.routing.McpRouter}: Routes standard {@code /router/mcp/**} requests.</li>
  * <li>{@link org.miaixz.bus.vortex.routing.mcp.McpExecutor}: Proxies registered MCP Streamable HTTP targets without
  * creating MCP servers or clients.</li>

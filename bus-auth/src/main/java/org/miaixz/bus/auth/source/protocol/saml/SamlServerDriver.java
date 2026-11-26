@@ -43,7 +43,6 @@ import javax.xml.transform.stream.StreamResult;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 import org.miaixz.bus.auth.*;
 import org.miaixz.bus.auth.Scheme.Options;
@@ -93,6 +92,7 @@ public class SamlServerDriver implements ProtocolDriver<SamlServerOptions> {
     private static Capability.Manifest manifest(final SamlServerOptions options) {
         final List<Capability<?, ?>> capabilities = new ArrayList<>();
         capabilities.add(SamlServerScheme.SINGLE_SIGN_ON);
+        capabilities.add(SamlServerScheme.PASSIVE_FAILURE);
         if (options.singleLogoutServiceEndpoint().isPresent()) {
             capabilities.add(SamlServerScheme.SINGLE_LOGOUT);
         }
@@ -323,22 +323,21 @@ public class SamlServerDriver implements ProtocolDriver<SamlServerOptions> {
             Assert.notNull(timeout, "SAML identity-provider timeout must not be null");
             if (!manifest.capabilities().contains(capability))
                 return missing();
-            if (capability == SamlServerScheme.SINGLE_SIGN_ON) {
+            if (capability == SamlServerScheme.SINGLE_SIGN_ON || capability == SamlServerScheme.PASSIVE_FAILURE) {
                 if (request == null || request.getClass() != AuthnRequest.class
                         || capability.requestType() != AuthnRequest.class
                         || capability.responseType() != Response.class)
                     return mismatch();
-                return narrow(
-                        provider.singleSignOn((AuthnRequest) request, context, timeout)
-                                .thenCompose(outcome -> switch (outcome) {
-                                    case Outcome.Succeeded<Response> success -> signer
-                                            .sign(success.value(), context, timeout);
-                                    case Outcome.Rejected<Response> rejected -> completed(
-                                            Outcome.rejected(rejected.failure()));
-                                    case Outcome.Failed<Response> failed -> completed(Outcome.failed(failed.failure()));
-                                    default -> throw new IllegalStateException("Unsupported Outcome implementation");
-                                }),
-                        capability.responseType());
+                final AuthnRequest authn = (AuthnRequest) request;
+                final var response = capability == SamlServerScheme.PASSIVE_FAILURE
+                        ? provider.passiveFailure(authn, context, timeout)
+                        : provider.singleSignOn(authn, context, timeout);
+                return narrow(response.thenCompose(outcome -> switch (outcome) {
+                    case Outcome.Succeeded<Response> success -> signer.sign(success.value(), context, timeout);
+                    case Outcome.Rejected<Response> rejected -> completed(Outcome.rejected(rejected.failure()));
+                    case Outcome.Failed<Response> failed -> completed(Outcome.failed(failed.failure()));
+                    default -> throw new IllegalStateException("Unsupported Outcome implementation");
+                }), capability.responseType());
             }
             if (capability == SamlServerScheme.SINGLE_LOGOUT) {
                 if (request == null || request.getClass() != LogoutRequest.class
@@ -782,11 +781,17 @@ public class SamlServerDriver implements ProtocolDriver<SamlServerOptions> {
                 signingContext.setDefaultNamespacePrefix("ds");
                 signingContext.setProperty("org.jcp.xml.dsig.secureValidation", Boolean.TRUE);
                 factory.newXMLSignature(signedInfo, null).sign(signingContext);
-                final NodeList signatures = root.getElementsByTagNameNS(XMLSignature.XMLNS, "Signature");
-                if (signatures.getLength() != 1) {
-                    throw new ValidateException("SAML signing produced an ambiguous Signature element");
+                Node signature = null;
+                for (Node child = root.getFirstChild(); child != null; child = child.getNextSibling()) {
+                    if (XMLSignature.XMLNS.equals(child.getNamespaceURI())
+                            && "Signature".equals(child.getLocalName())) {
+                        if (signature != null) {
+                            throw new ValidateException("SAML signing produced an ambiguous Signature element");
+                        }
+                        signature = child;
+                    }
                 }
-                return serialize(signatures.item(0));
+                return serialize(Assert.notNull(signature, "SAML signing produced no root Signature element"));
             } catch (ValidateException exception) {
                 throw exception;
             } catch (Exception exception) {

@@ -65,6 +65,12 @@ public record GitHubOptions(Vendor.Id vendor, Vendor.Variant variant, String cli
     /**
      * Validates and freezes one GitHub registration without resolving its external credential.
      *
+     * @param vendor      exact GitHub platform identifier
+     * @param variant     exact default login or Enterprise management Variant
+     * @param clientId    OAuth Client ID or Enterprise slug
+     * @param credential  external Client Secret or administrator Token reference
+     * @param redirectUri exact Authorization callback or empty for Enterprise management
+     * @param scopes      ordered OAuth scopes or empty for Enterprise management
      * @throws IllegalArgumentException if a required component, container, or scope is {@code null} or blank
      * @throws ValidateException        if routing, credential, callback, or scopes differ from the frozen manifest
      */

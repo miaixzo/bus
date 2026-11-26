@@ -17,6 +17,7 @@
 #############################################################################
 
 org.miaixz.bus.starter.GeniusStarter
+org.miaixz.bus.starter.errors.ErrorsConfiguration
 org.miaixz.bus.starter.context.TaskConfiguration
 org.miaixz.bus.starter.context.WebConfiguration
 org.miaixz.bus.starter.auth.AuthConfiguration

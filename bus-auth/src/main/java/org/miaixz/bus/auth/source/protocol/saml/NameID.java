@@ -42,6 +42,11 @@ public record NameID(String value, Optional<String> nameQualifier, Optional<Stri
     /**
      * Normalizes optional XML attributes and validates the optional format URI.
      *
+     * @param value           exact XML character content
+     * @param nameQualifier   optional security or administrative domain qualifier
+     * @param spNameQualifier optional service-provider qualifier
+     * @param format          optional absolute Name Identifier format URI
+     * @param spProvidedId    optional service-provider supplied identifier
      * @throws IllegalArgumentException if a component or optional container is {@code null}
      * @throws ValidateException        if a present format is not absolute or a present string attribute is empty
      */

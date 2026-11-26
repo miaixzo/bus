@@ -31,6 +31,8 @@ import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.RelevantException;
+import org.miaixz.bus.errors.ComponentFailure;
+import org.miaixz.bus.errors.ErrorType;
 import org.miaixz.bus.gitlab.support.JacksonJson;
 import org.miaixz.bus.logger.Logger;
 
@@ -42,6 +44,11 @@ import tools.jackson.databind.JsonNode;
  * @author Kimi Liu
  */
 public class GitLabFailure {
+
+    /**
+     * Reports normalized GitLab API failures while preserving the original exception and HTTP status.
+     */
+    private static final ComponentFailure FAILURES = new ComponentFailure("bus-gitlab", "api");
 
     /**
      * Creates a stateless GitLab failure-mapping entry point.
@@ -107,6 +114,13 @@ public class GitLabFailure {
         if (httpStatus > 0) {
             failure.setCode(Integer.toString(httpStatus));
         }
+        ErrorType type = switch (httpStatus) {
+            case 401 -> ErrorType.UNAUTHENTICATED;
+            case 403 -> ErrorType.FORBIDDEN;
+            case 429 -> ErrorType.RATE_LIMITED;
+            default -> httpStatus >= 500 ? ErrorType.DEPENDENCY_UNAVAILABLE : ErrorType.EXECUTION_FAILURE;
+        };
+        FAILURES.failed(type, httpStatus >= 400 && httpStatus <= 599 ? httpStatus : 0, cause);
         return failure;
     }
 
@@ -126,6 +140,7 @@ public class GitLabFailure {
                     message = resolveJsonMessage(message);
                 }
             } catch (Exception ignore) {
+                FAILURES.attempt(ErrorType.INVALID_DATA, ignore);
                 Logger.debug(
                         false,
                         "GitLab",
@@ -143,6 +158,7 @@ public class GitLabFailure {
      *
      * @param content raw JSON response content
      * @return resolved message, or the original content when no known field exists
+     * @throws IOException if the GitLab response cannot be read as a supported JSON error representation
      */
     private static String resolveJsonMessage(String content) throws IOException {
         JsonNode json = JacksonJson.toJsonNode(content);

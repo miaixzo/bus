@@ -67,6 +67,7 @@ public record GrantType(String value) {
     /**
      * Validates the RFC 6749 grant-name or URI-reference grammar.
      *
+     * @param value case-sensitive grant type wire value
      * @throws IllegalArgumentException if the value is {@code null} or empty
      * @throws ValidateException        if the value is neither a grant-name nor a valid URI-reference
      */

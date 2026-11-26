@@ -32,6 +32,7 @@
 module bus.base {
 
     requires bus.core;
+    requires bus.errors;
     requires bus.logger;
     requires bus.mapper;
     requires bus.validate;

@@ -69,6 +69,7 @@ public class FunctionProvider {
                                 () -> entity.idColumns().stream().map(column -> column.columnEqualsProperty("entity."))
                                         .collect(Collectors.joining(" AND ")));
             }
+
         });
     }
 
@@ -96,6 +97,7 @@ public class FunctionProvider {
                                 () -> entity.idColumns().stream().map(column -> column.columnEqualsProperty("entity."))
                                         .collect(Collectors.joining(" AND ")));
             }
+
         });
     }
 
@@ -126,6 +128,7 @@ public class FunctionProvider {
                         + entity.groupByColumn().orElse(Normal.EMPTY) + entity.havingColumn().orElse(Normal.EMPTY)
                         + entity.orderByColumn().orElse(Normal.EMPTY);
             }
+
         });
     }
 

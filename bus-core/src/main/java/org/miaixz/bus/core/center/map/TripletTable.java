@@ -453,6 +453,9 @@ public class TripletTable<L, M, R> implements Iterable<Triplet<L, M, R>>, Serial
         final int size = this.size();
         return new Iterator<>() {
 
+            /**
+             * Index of the most recently returned triplet, initially before the first entry.
+             */
             private int index = -1;
 
             /**
@@ -475,6 +478,7 @@ public class TripletTable<L, M, R> implements Iterable<Triplet<L, M, R>>, Serial
                 index++;
                 return new Triplet<>(getLeft(index), getMiddle(index), getRight(index));
             }
+
         };
     }
 

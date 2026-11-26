@@ -257,6 +257,7 @@ public final class ExifToDicom {
      * Prevents construction of the EXIF-to-DICOM mapping utility.
      */
     private ExifToDicom() {
+        // No initialization required.
     }
 
     /**

@@ -22,6 +22,7 @@ package org.miaixz.bus.fabric.protocol.http.retry;
 import java.io.IOException;
 import java.net.ConnectException;
 import java.time.Duration;
+import java.util.Set;
 
 import org.miaixz.bus.core.instance.Instances;
 import org.miaixz.bus.core.lang.Assert;
@@ -70,9 +71,19 @@ public class HttpRetryPolicy implements Policy {
     private final Duration baseDelay;
 
     /**
-     * Maximum retry delay used to saturate exponential backoff.
+     * Maximum backoff delay and upper bound for server-requested response-status retry waits.
      */
     private final Duration maxDelay;
+
+    /**
+     * Explicitly enabled response statuses; empty preserves the default behavior.
+     */
+    private final Set<Integer> retryStatuses;
+
+    /**
+     * Caller authorization to replay this operation after a response status.
+     */
+    private final boolean replaySafe;
 
     /**
      * Creates a retry policy.
@@ -86,12 +97,33 @@ public class HttpRetryPolicy implements Policy {
      */
     public HttpRetryPolicy(final int maxAttempts, final int maxStaleRetries, final int maxRedirects,
             final boolean retryOnConnectionFailure, final Duration baseDelay, final Duration maxDelay) {
+        this(maxAttempts, maxStaleRetries, maxRedirects, retryOnConnectionFailure, baseDelay, maxDelay, Set.of(),
+                false);
+    }
+
+    /**
+     * Creates a retry policy, including its status-based replay rules.
+     *
+     * @param maxAttempts              total retry limit
+     * @param maxStaleRetries          stale-connection recovery limit
+     * @param maxRedirects             redirect follow-up limit
+     * @param retryOnConnectionFailure whether recognized connection failures may be retried
+     * @param baseDelay                base delay for retry backoff
+     * @param maxDelay                 maximum retry backoff
+     * @param retryStatuses            HTTP statuses eligible for retry
+     * @param replaySafe               whether the caller authorizes replay after an HTTP status response
+     */
+    private HttpRetryPolicy(final int maxAttempts, final int maxStaleRetries, final int maxRedirects,
+            final boolean retryOnConnectionFailure, final Duration baseDelay, final Duration maxDelay,
+            final Set<Integer> retryStatuses, final boolean replaySafe) {
         this.maxAttempts = maxAttempts;
         this.maxStaleRetries = maxStaleRetries;
         this.maxRedirects = maxRedirects;
         this.retryOnConnectionFailure = retryOnConnectionFailure;
         this.baseDelay = baseDelay;
         this.maxDelay = maxDelay;
+        this.retryStatuses = Set.copyOf(retryStatuses);
+        this.replaySafe = replaySafe;
     }
 
     /**
@@ -266,10 +298,28 @@ public class HttpRetryPolicy implements Policy {
     /**
      * Returns the maximum retry delay.
      *
-     * @return maximum retry delay
+     * @return maximum backoff or accepted server-requested retry delay
      */
     public Duration maxDelay() {
         return maxDelay;
+    }
+
+    /**
+     * Returns the explicitly enabled response statuses.
+     *
+     * @return immutable status set, empty by default
+     */
+    public Set<Integer> retryStatuses() {
+        return retryStatuses;
+    }
+
+    /**
+     * Returns the caller's authorization for response-status replay, independently of the HTTP method.
+     *
+     * @return true only when status replay has been explicitly authorized
+     */
+    public boolean replaySafe() {
+        return replaySafe;
     }
 
     /**
@@ -308,6 +358,16 @@ public class HttpRetryPolicy implements Policy {
          * Maximum retry delay candidate.
          */
         private Duration maxDelay = Duration.ofSeconds(Long.MAX_VALUE);
+
+        /**
+         * Response-status retries are disabled unless explicitly configured.
+         */
+        private Set<Integer> retryStatuses = Set.of();
+
+        /**
+         * Response-status replay requires explicit operation-level authorization.
+         */
+        private boolean replaySafe;
 
         /**
          * Creates a builder.
@@ -393,7 +453,8 @@ public class HttpRetryPolicy implements Policy {
         }
 
         /**
-         * Sets the exponential-backoff base delay.
+         * Sets the exponential-backoff base delay, also used when a status retry has no valid Retry-After value. A zero
+         * base retains the one-second status fallback.
          *
          * @param delay non-negative base delay
          * @return this builder
@@ -404,13 +465,40 @@ public class HttpRetryPolicy implements Policy {
         }
 
         /**
-         * Sets the maximum retry delay.
+         * Sets the maximum backoff and accepted response-status retry delay. A longer server delay is not shortened.
          *
          * @param delay non-negative maximum delay
          * @return this builder
          */
         public Builder maxDelay(final Duration delay) {
             this.maxDelay = duration(delay, "Maximum delay");
+            return this;
+        }
+
+        /**
+         * Enables selected response statuses within the existing total attempt budget.
+         *
+         * @param statuses HTTP status codes from 100 through 599; empty disables status retries
+         * @return this builder
+         */
+        public Builder retryStatuses(final Set<Integer> statuses) {
+            final Set<Integer> checked = Assert
+                    .notNull(statuses, () -> new ValidateException("Retry statuses must not be null"));
+            if (checked.stream().anyMatch(status -> status == null || status < 100 || status > 599)) {
+                throw new ValidateException("Retry statuses must be HTTP status codes");
+            }
+            this.retryStatuses = Set.copyOf(checked);
+            return this;
+        }
+
+        /**
+         * Authorizes response-status replay for this operation; a repeatable body is still required.
+         *
+         * @param safe whether the operation can safely be replayed after a response
+         * @return this builder
+         */
+        public Builder replaySafe(final boolean safe) {
+            this.replaySafe = safe;
             return this;
         }
 
@@ -426,7 +514,7 @@ public class HttpRetryPolicy implements Policy {
                 throw new ValidateException("Maximum delay must not be less than base delay");
             }
             return new HttpRetryPolicy(maxAttempts, maxStaleRetries, maxRedirects, retryOnConnectionFailure,
-                    currentBase, currentMaximum);
+                    currentBase, currentMaximum, retryStatuses, replaySafe);
         }
 
     }

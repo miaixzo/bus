@@ -562,6 +562,11 @@ public class JwaAlgorithm {
         /**
          * Validates and freezes local registration metadata.
          *
+         * @param name           exact case-sensitive wire identifier
+         * @param kind           registered semantic operation kind
+         * @param keyTypes       compatible case-sensitive JWK {@code kty} values
+         * @param coreAlgorithm  exact bus-core Algorithm mapping when available
+         * @param minimumKeyBits minimum permitted key strength in bits
          * @throws IllegalArgumentException if a required component is {@code null} or blank
          * @throws ValidateException        if key strength is invalid for the registration kind
          */

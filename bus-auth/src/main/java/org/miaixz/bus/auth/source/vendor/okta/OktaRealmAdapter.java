@@ -50,6 +50,7 @@ import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.cache.nimble.MemoryCache;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.basic.normal.Errors;
+import org.miaixz.bus.core.center.function.FunctionX;
 import org.miaixz.bus.core.codec.binary.Base64;
 import org.miaixz.bus.core.lang.*;
 import org.miaixz.bus.core.lang.Optional;
@@ -60,6 +61,7 @@ import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.net.Port;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.net.url.RFC3986;
+import org.miaixz.bus.core.xyz.FunctionKit;
 import org.miaixz.bus.core.xyz.RandomKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.extra.json.JsonKit;
@@ -1512,7 +1514,7 @@ public class OktaRealmAdapter implements VendorAdapter {
     private <T> CompletionStage<Outcome<T>> authenticated(
             final Context context,
             final Timeout timeout,
-            final Function<Access, Outcome<T>> operation) {
+            final FunctionX<Access, Outcome<T>> operation) {
         return access(context, timeout).thenCompose(resolved -> switch (resolved) {
             case Outcome.Succeeded<Access> success -> execute(success.value(), timeout, operation)
                     .thenCompose(first -> {
@@ -1563,13 +1565,15 @@ public class OktaRealmAdapter implements VendorAdapter {
     private <T> CompletionStage<Outcome<T>> execute(
             final Access access,
             final Timeout timeout,
-            final Function<Access, Outcome<T>> operation) {
+            final FunctionX<Access, Outcome<T>> operation) {
         return CompletableFuture.<Outcome<T>>supplyAsync(() -> {
             if (timeout.expired()) {
                 return failed(ErrorCode._408, "Okta management operation has no remaining timeout");
             }
             try {
-                return Assert.notNull(operation.apply(access), "Okta management operation returned no outcome");
+                return Assert.notNull(
+                        FunctionKit.applyUnwrapped(operation, access),
+                        "Okta management operation returned no outcome");
             } catch (TimeoutException ignored) {
                 return failed(ErrorCode._408, "Okta management operation timed out");
             } catch (RuntimeException ignored) {
@@ -1831,7 +1835,7 @@ public class OktaRealmAdapter implements VendorAdapter {
             final Timeout timeout,
             final String operation,
             final boolean allowNotFound,
-            final Function<Response, T> reader) {
+            final FunctionX<Response, T> reader) {
         if (timeout.expired()) {
             return failed(ErrorCode._408, "Okta Management API request has no remaining timeout");
         }
@@ -1849,7 +1853,7 @@ public class OktaRealmAdapter implements VendorAdapter {
             if (!response.successful()) {
                 return adminHttpFailure(response, operation, allowNotFound);
             }
-            return Outcome.succeeded(reader.apply(response));
+            return Outcome.succeeded(FunctionKit.applyUnwrapped(reader, response));
         } catch (RuntimeException ignored) {
             return failed(ErrorCode._502, "Okta Management API returned an invalid response");
         }
@@ -1907,11 +1911,11 @@ public class OktaRealmAdapter implements VendorAdapter {
             final Timeout timeout,
             final String operation,
             final Phase phase,
-            final Function<JsonValue.ObjectValue, T> parser) {
+            final FunctionX<JsonValue.ObjectValue, T> parser) {
         return request(url, access, timeout, operation, false, response -> {
             final List<T> items = new ArrayList<>();
             for (JsonValue value : array(response)) {
-                items.add(parser.apply(requiredObject(value, "Okta collection item")));
+                items.add(FunctionKit.applyUnwrapped(parser, requiredObject(value, "Okta collection item")));
             }
             return new WirePage<>(items, nextLink(response.headers(), phase));
         });
@@ -2424,6 +2428,7 @@ public class OktaRealmAdapter implements VendorAdapter {
                 case GROUP_ROLES -> null;
             };
         }
+
     }
 
     /**
@@ -2484,6 +2489,7 @@ public class OktaRealmAdapter implements VendorAdapter {
             }
             return new CursorState(phase, ordered, Position.initial());
         }
+
     }
 
     /**
@@ -2595,6 +2601,7 @@ public class OktaRealmAdapter implements VendorAdapter {
             items = List.copyOf(Assert.notNull(items, "Okta page items must not be null"));
             next = Position.optional(next, "Okta next-page URL");
         }
+
     }
 
     /**
@@ -2622,6 +2629,7 @@ public class OktaRealmAdapter implements VendorAdapter {
             displayName = requireText(displayName, "Okta user display name");
             state = Assert.notNull(state, "Okta user state must not be null");
         }
+
     }
 
     /**
@@ -2643,6 +2651,7 @@ public class OktaRealmAdapter implements VendorAdapter {
             id = requireText(id, "Okta group identifier");
             name = requireText(name, "Okta group display name");
         }
+
     }
 
     /**
@@ -2661,6 +2670,7 @@ public class OktaRealmAdapter implements VendorAdapter {
         private Member {
             id = requireText(id, "Okta group-member identifier");
         }
+
     }
 
     /**
@@ -2682,6 +2692,7 @@ public class OktaRealmAdapter implements VendorAdapter {
             id = requireText(id, "Okta role identifier");
             label = requireText(label, "Okta role display label");
         }
+
     }
 
     /**
@@ -2703,6 +2714,7 @@ public class OktaRealmAdapter implements VendorAdapter {
             assignmentId = requireText(assignmentId, "Okta role-assignment identifier");
             role = Assert.notNull(role, "Okta role-assignment role must not be null");
         }
+
     }
 
     /**
@@ -2736,6 +2748,7 @@ public class OktaRealmAdapter implements VendorAdapter {
         public String toString() {
             return Builder.REDACTED_VALUE;
         }
+
     }
 
 }

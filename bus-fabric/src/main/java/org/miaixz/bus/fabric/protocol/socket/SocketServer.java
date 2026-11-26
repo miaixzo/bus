@@ -38,10 +38,10 @@ import java.util.concurrent.CompletionException;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.Consumer;
-import java.util.function.Function;
 
 import org.miaixz.bus.core.Lifecycle;
+import org.miaixz.bus.core.center.function.ConsumerX;
+import org.miaixz.bus.core.center.function.FunctionX;
 import org.miaixz.bus.core.io.sink.Sink;
 import org.miaixz.bus.core.io.source.Source;
 import org.miaixz.bus.core.lang.Assert;
@@ -1572,12 +1572,12 @@ public class SocketServer implements Lifecycle {
         /**
          * Open callback captured when the listener is composed.
          */
-        private final Consumer<SocketSession> openHandler;
+        private final ConsumerX<SocketSession> openHandler;
 
         /**
          * Failure callback captured when the listener is composed.
          */
-        private final Consumer<Throwable> errorHandler;
+        private final ConsumerX<Throwable> errorHandler;
 
         /**
          * Creates a forwarding listener.
@@ -1585,8 +1585,8 @@ public class SocketServer implements Lifecycle {
          * @param openHandler  open callback
          * @param errorHandler failure callback
          */
-        private HandlerSessionListener(final Consumer<SocketSession> openHandler,
-                final Consumer<Throwable> errorHandler) {
+        private HandlerSessionListener(final ConsumerX<SocketSession> openHandler,
+                final ConsumerX<Throwable> errorHandler) {
             this.openHandler = require(openHandler, "Session open handler");
             this.errorHandler = require(errorHandler, "Session error handler");
         }
@@ -1699,12 +1699,12 @@ public class SocketServer implements Lifecycle {
         /**
          * Open handler.
          */
-        private Consumer<SocketSession> openHandler;
+        private ConsumerX<SocketSession> openHandler;
 
         /**
          * Error handler.
          */
-        private Consumer<Throwable> errorHandler;
+        private ConsumerX<Throwable> errorHandler;
 
         /**
          * Whether this socket server uses the shared callback-driven AIO transport.
@@ -2015,7 +2015,7 @@ public class SocketServer implements Lifecycle {
          * @param resolver function deriving a channel value from each message
          * @return this builder
          */
-        public Builder resolver(final Function<Message, String> resolver) {
+        public Builder resolver(final FunctionX<Message, String> resolver) {
             demuxer().resolver(resolver);
             return this;
         }
@@ -2026,7 +2026,7 @@ public class SocketServer implements Lifecycle {
          * @param handler text handler
          * @return this builder
          */
-        public Builder onText(final Consumer<String> handler) {
+        public Builder onText(final ConsumerX<String> handler) {
             this.demuxer = null;
             this.handler = handler == null ? Demuxer.noop()
                     : (session, message) -> handler.accept(message.payload().text(Charset.UTF_8));
@@ -2039,7 +2039,7 @@ public class SocketServer implements Lifecycle {
          * @param handler open handler
          * @return this builder
          */
-        public Builder onOpen(final Consumer<SocketSession> handler) {
+        public Builder onOpen(final ConsumerX<SocketSession> handler) {
             this.openHandler = handler == null ? session -> {
             } : handler;
             return composeSessionListener();
@@ -2051,7 +2051,7 @@ public class SocketServer implements Lifecycle {
          * @param handler error handler
          * @return this builder
          */
-        public Builder onError(final Consumer<Throwable> handler) {
+        public Builder onError(final ConsumerX<Throwable> handler) {
             this.errorHandler = handler == null ? cause -> {
             } : handler;
             return composeSessionListener();

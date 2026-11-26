@@ -1,37 +1,54 @@
 {
   "reflection": [
     {
-      "type": "org.miaixz.bus.crypto.nimble.BouncyCastleServiceProvider",
+      "type": "org.miaixz.bus.crypto.Holder",
       "methods": [
         {
           "name": "<init>",
           "parameterTypes": []
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.crypto.builtin.asymmetric.AbstractCrypto",
-      "methods": [
+        },
         {
-          "name": "<init>",
+          "name": "_createProvider",
+          "parameterTypes": []
+        },
+        {
+          "name": "getProvider",
+          "parameterTypes": []
+        },
+        {
+          "name": "setUseCustomProvider",
           "parameterTypes": [
-            "java.lang.String",
-            "java.security.KeyPair"
+            "boolean"
           ]
         }
       ]
     },
     {
-      "type": "org.miaixz.bus.crypto.builtin.asymmetric.Asymmetric",
+      "type": "org.miaixz.bus.crypto.Padding",
       "fields": [
         {
-          "name": "lock"
+          "name": "ISO10126Padding"
         },
         {
-          "name": "privateKey"
+          "name": "NoPadding"
         },
         {
-          "name": "publicKey"
+          "name": "OAEPPadding"
+        },
+        {
+          "name": "PKCS1Padding"
+        },
+        {
+          "name": "PKCS5Padding"
+        },
+        {
+          "name": "PKCS7Padding"
+        },
+        {
+          "name": "SSL3Padding"
+        },
+        {
+          "name": "ZeroPadding"
         }
       ],
       "methods": [
@@ -39,270 +56,8 @@
           "name": "<init>",
           "parameterTypes": [
             "java.lang.String",
-            "java.security.KeyPair"
-          ]
-        },
-        {
-          "name": "getKeyByType",
-          "parameterTypes": [
-            "org.miaixz.bus.crypto.builtin.asymmetric.KeyType"
-          ]
-        },
-        {
-          "name": "getPrivateKey",
-          "parameterTypes": []
-        },
-        {
-          "name": "getPrivateKeyBase64",
-          "parameterTypes": []
-        },
-        {
-          "name": "getPublicKey",
-          "parameterTypes": []
-        },
-        {
-          "name": "getPublicKeyBase64",
-          "parameterTypes": []
-        },
-        {
-          "name": "init",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.security.KeyPair"
-          ]
-        },
-        {
-          "name": "initKeys",
-          "parameterTypes": []
-        },
-        {
-          "name": "setKey",
-          "parameterTypes": [
-            "java.security.Key"
-          ]
-        },
-        {
-          "name": "setLock",
-          "parameterTypes": [
-            "java.util.concurrent.locks.Lock"
-          ]
-        },
-        {
-          "name": "setPrivateKey",
-          "parameterTypes": [
-            "java.security.PrivateKey"
-          ]
-        },
-        {
-          "name": "setPublicKey",
-          "parameterTypes": [
-            "java.security.PublicKey"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.crypto.builtin.asymmetric.Crypto",
-      "fields": [
-        {
-          "name": "algorithmParameterSpec"
-        },
-        {
-          "name": "cipher"
-        },
-        {
-          "name": "decryptBlockSize"
-        },
-        {
-          "name": "encryptBlockSize"
-        },
-        {
-          "name": "random"
-        }
-      ],
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "byte[]",
-            "byte[]"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.security.KeyPair"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "org.miaixz.bus.core.lang.Algorithm"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "org.miaixz.bus.core.lang.Algorithm",
-            "byte[]",
-            "byte[]"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "org.miaixz.bus.core.lang.Algorithm",
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "org.miaixz.bus.core.lang.Algorithm",
-            "java.security.KeyPair"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "org.miaixz.bus.core.lang.Algorithm",
-            "java.security.PrivateKey",
-            "java.security.PublicKey"
-          ]
-        },
-        {
-          "name": "decrypt",
-          "parameterTypes": [
-            "byte[]",
-            "org.miaixz.bus.crypto.builtin.asymmetric.KeyType"
-          ]
-        },
-        {
-          "name": "doFinal",
-          "parameterTypes": [
-            "byte[]",
             "int"
           ]
-        },
-        {
-          "name": "doFinalWithBlock",
-          "parameterTypes": [
-            "byte[]",
-            "int"
-          ]
-        },
-        {
-          "name": "encrypt",
-          "parameterTypes": [
-            "byte[]",
-            "org.miaixz.bus.crypto.builtin.asymmetric.KeyType"
-          ]
-        },
-        {
-          "name": "getAlgorithmParameterSpec",
-          "parameterTypes": []
-        },
-        {
-          "name": "getCipher",
-          "parameterTypes": []
-        },
-        {
-          "name": "getDecryptBlockSize",
-          "parameterTypes": []
-        },
-        {
-          "name": "getEncryptBlockSize",
-          "parameterTypes": []
-        },
-        {
-          "name": "init",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.security.KeyPair"
-          ]
-        },
-        {
-          "name": "initCipher",
-          "parameterTypes": []
-        },
-        {
-          "name": "initMode",
-          "parameterTypes": [
-            "org.miaixz.bus.core.lang.Algorithm$Type",
-            "java.security.Key"
-          ]
-        },
-        {
-          "name": "setAlgorithmParameterSpec",
-          "parameterTypes": [
-            "java.security.spec.AlgorithmParameterSpec"
-          ]
-        },
-        {
-          "name": "setDecryptBlockSize",
-          "parameterTypes": [
-            "int"
-          ]
-        },
-        {
-          "name": "setEncryptBlockSize",
-          "parameterTypes": [
-            "int"
-          ]
-        },
-        {
-          "name": "setRandom",
-          "parameterTypes": [
-            "java.security.SecureRandom"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.crypto.builtin.asymmetric.KeyType",
-      "fields": [
-        {
-          "name": "PrivateKey"
-        },
-        {
-          "name": "PublicKey"
-        },
-        {
-          "name": "SecretKey"
-        },
-        {
-          "name": "value"
-        }
-      ],
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "int",
-            "int"
-          ]
-        },
-        {
-          "name": "getValue",
-          "parameterTypes": []
         },
         {
           "name": "valueOf",
@@ -313,6 +68,33 @@
         {
           "name": "values",
           "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.crypto.Registry",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "contains",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "require",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "register",
+          "parameterTypes": [
+            "org.miaixz.bus.crypto.Provider"
+          ]
         }
       ]
     },
@@ -619,6 +401,454 @@
         },
         {
           "name": "self",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.crypto.builtin.SaltMagic",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "addMagic",
+          "parameterTypes": [
+            "byte[]",
+            "byte[]"
+          ]
+        },
+        {
+          "name": "getData",
+          "parameterTypes": [
+            "byte[]"
+          ]
+        },
+        {
+          "name": "getSalt",
+          "parameterTypes": [
+            "byte[]"
+          ]
+        },
+        {
+          "name": "getSalt",
+          "parameterTypes": [
+            "java.io.InputStream"
+          ]
+        },
+        {
+          "name": "getSaltedMagic",
+          "parameterTypes": [
+            "byte[]"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.crypto.builtin.SaltParser",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.security.MessageDigest",
+            "int",
+            "int"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.security.MessageDigest",
+            "int",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getKeyAndIV",
+          "parameterTypes": [
+            "byte[]",
+            "byte[]"
+          ]
+        },
+        {
+          "name": "of",
+          "parameterTypes": [
+            "java.security.MessageDigest",
+            "int",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "ofMd5",
+          "parameterTypes": [
+            "int",
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.crypto.builtin.TlsHandshake",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "org.miaixz.bus.crypto.builtin.CertificateChain"
+          ]
+        },
+        {
+          "name": "cipher",
+          "parameterTypes": []
+        },
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "of",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "org.miaixz.bus.crypto.builtin.CertificateChain"
+          ]
+        },
+        {
+          "name": "peer",
+          "parameterTypes": []
+        },
+        {
+          "name": "protocol",
+          "parameterTypes": []
+        },
+        {
+          "name": "secure",
+          "parameterTypes": []
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "validateToken",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.crypto.builtin.asymmetric.AbstractCrypto",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.security.KeyPair"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.crypto.builtin.asymmetric.Asymmetric",
+      "fields": [
+        {
+          "name": "lock"
+        },
+        {
+          "name": "privateKey"
+        },
+        {
+          "name": "publicKey"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.security.KeyPair"
+          ]
+        },
+        {
+          "name": "getKeyByType",
+          "parameterTypes": [
+            "org.miaixz.bus.crypto.builtin.asymmetric.KeyType"
+          ]
+        },
+        {
+          "name": "getPrivateKey",
+          "parameterTypes": []
+        },
+        {
+          "name": "getPrivateKeyBase64",
+          "parameterTypes": []
+        },
+        {
+          "name": "getPublicKey",
+          "parameterTypes": []
+        },
+        {
+          "name": "getPublicKeyBase64",
+          "parameterTypes": []
+        },
+        {
+          "name": "init",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.security.KeyPair"
+          ]
+        },
+        {
+          "name": "initKeys",
+          "parameterTypes": []
+        },
+        {
+          "name": "setKey",
+          "parameterTypes": [
+            "java.security.Key"
+          ]
+        },
+        {
+          "name": "setLock",
+          "parameterTypes": [
+            "java.util.concurrent.locks.Lock"
+          ]
+        },
+        {
+          "name": "setPrivateKey",
+          "parameterTypes": [
+            "java.security.PrivateKey"
+          ]
+        },
+        {
+          "name": "setPublicKey",
+          "parameterTypes": [
+            "java.security.PublicKey"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.crypto.builtin.asymmetric.Crypto",
+      "fields": [
+        {
+          "name": "algorithmParameterSpec"
+        },
+        {
+          "name": "cipher"
+        },
+        {
+          "name": "decryptBlockSize"
+        },
+        {
+          "name": "encryptBlockSize"
+        },
+        {
+          "name": "random"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "byte[]",
+            "byte[]"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.security.KeyPair"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.core.lang.Algorithm"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.core.lang.Algorithm",
+            "byte[]",
+            "byte[]"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.core.lang.Algorithm",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.core.lang.Algorithm",
+            "java.security.KeyPair"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.core.lang.Algorithm",
+            "java.security.PrivateKey",
+            "java.security.PublicKey"
+          ]
+        },
+        {
+          "name": "decrypt",
+          "parameterTypes": [
+            "byte[]",
+            "org.miaixz.bus.crypto.builtin.asymmetric.KeyType"
+          ]
+        },
+        {
+          "name": "doFinal",
+          "parameterTypes": [
+            "byte[]",
+            "int"
+          ]
+        },
+        {
+          "name": "doFinalWithBlock",
+          "parameterTypes": [
+            "byte[]",
+            "int"
+          ]
+        },
+        {
+          "name": "encrypt",
+          "parameterTypes": [
+            "byte[]",
+            "org.miaixz.bus.crypto.builtin.asymmetric.KeyType"
+          ]
+        },
+        {
+          "name": "getAlgorithmParameterSpec",
+          "parameterTypes": []
+        },
+        {
+          "name": "getCipher",
+          "parameterTypes": []
+        },
+        {
+          "name": "getDecryptBlockSize",
+          "parameterTypes": []
+        },
+        {
+          "name": "getEncryptBlockSize",
+          "parameterTypes": []
+        },
+        {
+          "name": "init",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.security.KeyPair"
+          ]
+        },
+        {
+          "name": "initCipher",
+          "parameterTypes": []
+        },
+        {
+          "name": "initMode",
+          "parameterTypes": [
+            "org.miaixz.bus.core.lang.Algorithm$Type",
+            "java.security.Key"
+          ]
+        },
+        {
+          "name": "setAlgorithmParameterSpec",
+          "parameterTypes": [
+            "java.security.spec.AlgorithmParameterSpec"
+          ]
+        },
+        {
+          "name": "setDecryptBlockSize",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "setEncryptBlockSize",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "setRandom",
+          "parameterTypes": [
+            "java.security.SecureRandom"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.crypto.builtin.asymmetric.KeyType",
+      "fields": [
+        {
+          "name": "PrivateKey"
+        },
+        {
+          "name": "PublicKey"
+        },
+        {
+          "name": "SecretKey"
+        },
+        {
+          "name": "value"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "int",
+            "int"
+          ]
+        },
+        {
+          "name": "getValue",
+          "parameterTypes": []
+        },
+        {
+          "name": "valueOf",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "values",
           "parameterTypes": []
         }
       ]
@@ -932,89 +1162,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.crypto.builtin.SaltMagic",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "addMagic",
-          "parameterTypes": [
-            "byte[]",
-            "byte[]"
-          ]
-        },
-        {
-          "name": "getData",
-          "parameterTypes": [
-            "byte[]"
-          ]
-        },
-        {
-          "name": "getSalt",
-          "parameterTypes": [
-            "byte[]"
-          ]
-        },
-        {
-          "name": "getSalt",
-          "parameterTypes": [
-            "java.io.InputStream"
-          ]
-        },
-        {
-          "name": "getSaltedMagic",
-          "parameterTypes": [
-            "byte[]"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.crypto.builtin.SaltParser",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.security.MessageDigest",
-            "int",
-            "int"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.security.MessageDigest",
-            "int",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "getKeyAndIV",
-          "parameterTypes": [
-            "byte[]",
-            "byte[]"
-          ]
-        },
-        {
-          "name": "of",
-          "parameterTypes": [
-            "java.security.MessageDigest",
-            "int",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "ofMd5",
-          "parameterTypes": [
-            "int",
-            "java.lang.String"
-          ]
-        }
-      ]
-    },
-    {
       "type": "org.miaixz.bus.crypto.builtin.symmetric.Crypto",
       "fields": [
         {
@@ -1220,64 +1367,6 @@
           "name": "updateHex",
           "parameterTypes": [
             "byte[]"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.crypto.builtin.TlsHandshake",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String",
-            "org.miaixz.bus.crypto.builtin.CertificateChain"
-          ]
-        },
-        {
-          "name": "cipher",
-          "parameterTypes": []
-        },
-        {
-          "name": "equals",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "hashCode",
-          "parameterTypes": []
-        },
-        {
-          "name": "of",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String",
-            "org.miaixz.bus.crypto.builtin.CertificateChain"
-          ]
-        },
-        {
-          "name": "peer",
-          "parameterTypes": []
-        },
-        {
-          "name": "protocol",
-          "parameterTypes": []
-        },
-        {
-          "name": "secure",
-          "parameterTypes": []
-        },
-        {
-          "name": "toString",
-          "parameterTypes": []
-        },
-        {
-          "name": "validateToken",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String"
           ]
         }
       ]
@@ -1907,6 +1996,71 @@
       ]
     },
     {
+      "type": "org.miaixz.bus.crypto.center.MD5",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "byte[]"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "byte[]",
+            "int"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "byte[]",
+            "int",
+            "int"
+          ]
+        },
+        {
+          "name": "digestHex16",
+          "parameterTypes": [
+            "byte[]"
+          ]
+        },
+        {
+          "name": "digestHex16",
+          "parameterTypes": [
+            "java.io.File"
+          ]
+        },
+        {
+          "name": "digestHex16",
+          "parameterTypes": [
+            "java.io.InputStream"
+          ]
+        },
+        {
+          "name": "digestHex16",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "digestHex16",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.nio.charset.Charset"
+          ]
+        },
+        {
+          "name": "of",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
       "type": "org.miaixz.bus.crypto.center.Mac",
       "fields": [
         {
@@ -2029,71 +2183,6 @@
             "byte[]",
             "byte[]"
           ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.crypto.center.MD5",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "byte[]"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "byte[]",
-            "int"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "byte[]",
-            "int",
-            "int"
-          ]
-        },
-        {
-          "name": "digestHex16",
-          "parameterTypes": [
-            "byte[]"
-          ]
-        },
-        {
-          "name": "digestHex16",
-          "parameterTypes": [
-            "java.io.File"
-          ]
-        },
-        {
-          "name": "digestHex16",
-          "parameterTypes": [
-            "java.io.InputStream"
-          ]
-        },
-        {
-          "name": "digestHex16",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "digestHex16",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.nio.charset.Charset"
-          ]
-        },
-        {
-          "name": "of",
-          "parameterTypes": []
         }
       ]
     },
@@ -2223,6 +2312,146 @@
         {
           "name": "initCipher",
           "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.crypto.center.SM3",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "byte[]"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "byte[]",
+            "int"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "byte[]",
+            "int",
+            "int"
+          ]
+        },
+        {
+          "name": "of",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.crypto.center.SM4",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "byte[]"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "byte[]"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "byte[]",
+            "byte[]"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "javax.crypto.SecretKey"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "javax.crypto.SecretKey",
+            "javax.crypto.spec.IvParameterSpec"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.core.lang.Algorithm$Mode",
+            "org.miaixz.bus.crypto.Padding"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.core.lang.Algorithm$Mode",
+            "org.miaixz.bus.crypto.Padding",
+            "byte[]"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.core.lang.Algorithm$Mode",
+            "org.miaixz.bus.crypto.Padding",
+            "byte[]",
+            "byte[]"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.core.lang.Algorithm$Mode",
+            "org.miaixz.bus.crypto.Padding",
+            "javax.crypto.SecretKey"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.core.lang.Algorithm$Mode",
+            "org.miaixz.bus.crypto.Padding",
+            "javax.crypto.SecretKey",
+            "byte[]"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.core.lang.Algorithm$Mode",
+            "org.miaixz.bus.crypto.Padding",
+            "javax.crypto.SecretKey",
+            "javax.crypto.spec.IvParameterSpec"
+          ]
         }
       ]
     },
@@ -2364,146 +2593,6 @@
           "parameterTypes": [
             "byte[]",
             "byte[]"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.crypto.center.SM3",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "byte[]"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "byte[]",
-            "int"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "byte[]",
-            "int",
-            "int"
-          ]
-        },
-        {
-          "name": "of",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.crypto.center.SM4",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "byte[]"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String",
-            "byte[]"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String",
-            "byte[]",
-            "byte[]"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String",
-            "javax.crypto.SecretKey"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String",
-            "javax.crypto.SecretKey",
-            "javax.crypto.spec.IvParameterSpec"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "org.miaixz.bus.core.lang.Algorithm$Mode",
-            "org.miaixz.bus.crypto.Padding"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "org.miaixz.bus.core.lang.Algorithm$Mode",
-            "org.miaixz.bus.crypto.Padding",
-            "byte[]"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "org.miaixz.bus.core.lang.Algorithm$Mode",
-            "org.miaixz.bus.crypto.Padding",
-            "byte[]",
-            "byte[]"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "org.miaixz.bus.core.lang.Algorithm$Mode",
-            "org.miaixz.bus.crypto.Padding",
-            "javax.crypto.SecretKey"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "org.miaixz.bus.core.lang.Algorithm$Mode",
-            "org.miaixz.bus.crypto.Padding",
-            "javax.crypto.SecretKey",
-            "byte[]"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "org.miaixz.bus.core.lang.Algorithm$Mode",
-            "org.miaixz.bus.crypto.Padding",
-            "javax.crypto.SecretKey",
-            "javax.crypto.spec.IvParameterSpec"
           ]
         }
       ]
@@ -2908,29 +2997,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.crypto.Holder",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "_createProvider",
-          "parameterTypes": []
-        },
-        {
-          "name": "getProvider",
-          "parameterTypes": []
-        },
-        {
-          "name": "setUseCustomProvider",
-          "parameterTypes": [
-            "boolean"
-          ]
-        }
-      ]
-    },
-    {
       "type": "org.miaixz.bus.crypto.nimble.AESProvider",
       "methods": [
         {
@@ -2950,6 +3016,18 @@
             "java.lang.String",
             "byte[]"
           ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.crypto.nimble.BouncyCastleServiceProvider",
+      "condition": {
+        "typeReached": "org.bouncycastle.jce.provider.BouncyCastleProvider"
+      },
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
         }
       ]
     },
@@ -3064,81 +3142,6 @@
           "parameterTypes": [
             "java.lang.String",
             "byte[]"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.crypto.Padding",
-      "fields": [
-        {
-          "name": "ISO10126Padding"
-        },
-        {
-          "name": "NoPadding"
-        },
-        {
-          "name": "OAEPPadding"
-        },
-        {
-          "name": "PKCS1Padding"
-        },
-        {
-          "name": "PKCS5Padding"
-        },
-        {
-          "name": "PKCS7Padding"
-        },
-        {
-          "name": "SSL3Padding"
-        },
-        {
-          "name": "ZeroPadding"
-        }
-      ],
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "int"
-          ]
-        },
-        {
-          "name": "valueOf",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "values",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.crypto.Registry",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "contains",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "require",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "register",
-          "parameterTypes": [
-            "org.miaixz.bus.crypto.Provider"
           ]
         }
       ]

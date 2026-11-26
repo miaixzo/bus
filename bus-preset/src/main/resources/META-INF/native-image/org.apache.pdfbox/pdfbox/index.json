@@ -1,0 +1,12 @@
+[
+  {
+    "latest": true,
+    "metadata-version": "3.0.0",
+    "description": "Apache PDFBox resources for loading the Standard 14 font metrics by name.",
+    "tested-versions": [
+      "3.0.0",
+      "3.0.7",
+      "3.0.8"
+    ]
+  }
+]

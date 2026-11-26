@@ -58,6 +58,7 @@ enum BinaryValueType implements ValueType {
             b[off] = (byte) i;
             return b;
         }
+
     },
     /**
      * Represents a 2-byte signed short integer value.
@@ -93,6 +94,7 @@ enum BinaryValueType implements ValueType {
         protected byte[] toBytes(long l, byte[] b, int off, boolean bigEndian) {
             return toBytes((int) l, b, off, bigEndian);
         }
+
     },
     /**
      * Represents a 2-byte unsigned short integer value.
@@ -128,6 +130,7 @@ enum BinaryValueType implements ValueType {
         protected byte[] toBytes(long l, byte[] b, int off, boolean bigEndian) {
             return toBytes((int) l, b, off, bigEndian);
         }
+
     },
     /**
      * Represents a 4-byte signed integer value.
@@ -163,6 +166,7 @@ enum BinaryValueType implements ValueType {
         protected byte[] toBytes(long l, byte[] b, int off, boolean bigEndian) {
             return toBytes((int) l, b, off, bigEndian);
         }
+
     },
     /**
      * Represents a 4-byte unsigned integer value.
@@ -203,6 +207,7 @@ enum BinaryValueType implements ValueType {
         protected String toString(byte[] b, int off, boolean bigEndian) {
             return Integer.toUnsignedString(toInt(b, off, bigEndian));
         }
+
     },
     /**
      * Represents a DICOM tag, which is a 4-byte value (group and element numbers).
@@ -233,6 +238,7 @@ enum BinaryValueType implements ValueType {
         protected byte[] toBytes(int i, byte[] b, int off, boolean bigEndian) {
             return ByteKit.tagToBytes(i, b, off, bigEndian);
         }
+
     },
     /**
      * Represents an 8-byte signed long integer value.
@@ -268,6 +274,7 @@ enum BinaryValueType implements ValueType {
         protected byte[] toBytes(long l, byte[] b, int off, boolean bigEndian) {
             return ByteKit.longToBytes(l, b, off, bigEndian);
         }
+
     },
     /**
      * Represents an 8-byte unsigned long integer value.
@@ -313,6 +320,7 @@ enum BinaryValueType implements ValueType {
         protected String toString(byte[] b, int off, boolean bigEndian) {
             return Long.toUnsignedString(toLong(b, off, bigEndian));
         }
+
     },
     /**
      * Represents a 4-byte single-precision floating-point value.
@@ -353,6 +361,7 @@ enum BinaryValueType implements ValueType {
         protected byte[] toBytes(double d, byte[] b, int off, boolean bigEndian) {
             return ByteKit.floatToBytes((float) d, b, off, bigEndian);
         }
+
     },
     /**
      * Represents an 8-byte double-precision floating-point value.
@@ -393,6 +402,7 @@ enum BinaryValueType implements ValueType {
         protected byte[] toBytes(double d, byte[] b, int off, boolean bigEndian) {
             return ByteKit.doubleToBytes(d, b, off, bigEndian);
         }
+
     };
 
     /**

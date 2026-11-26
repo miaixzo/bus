@@ -107,8 +107,8 @@ public class JwtVerifier {
         Assert.notBlank(compact, "JWT compact value must not be blank");
         Assert.notNull(verification, "JWT verification input must not be null");
         return switch (verification) {
-            case Signed signed -> verifySigned(compact, signed);
-            case Encrypted encrypted -> verifyEncrypted(compact, encrypted);
+            case Signed signed -> verify(compact, signed);
+            case Encrypted encrypted -> verify(compact, encrypted);
             default -> throw new IllegalStateException("Unsupported protocol model implementation");
         };
     }
@@ -120,7 +120,7 @@ public class JwtVerifier {
      * @param verification signing key and critical extensions
      * @return verified JWT
      */
-    private JWT verifySigned(final String compact, final Signed verification) {
+    private JWT verify(final String compact, final Signed verification) {
         if (segments(compact) != 3) {
             throw new ValidateException("Signed JWT must contain three compact segments");
         }
@@ -137,7 +137,7 @@ public class JwtVerifier {
      * @param verification decryption and optional nested-signature inputs
      * @return verified outer JWT carrying final claims
      */
-    private JWT verifyEncrypted(final String compact, final Encrypted verification) {
+    private JWT verify(final String compact, final Encrypted verification) {
         if (segments(compact) != 5) {
             throw new ValidateException("Encrypted JWT must contain five compact segments");
         }
@@ -155,7 +155,7 @@ public class JwtVerifier {
             if (segments(inner) != 3) {
                 throw new ValidateException("Nested JWT plaintext must be a three-segment compact JWS");
             }
-            claims = verifySigned(inner, new Signed(signatureKey, verification.innerCritical())).claims();
+            claims = verify(inner, new Signed(signatureKey, verification.innerCritical())).claims();
         } else {
             claims = claims(plaintext);
         }
@@ -196,6 +196,9 @@ public class JwtVerifier {
 
         /**
          * Validates and freezes signed JWT verification inputs.
+         *
+         * @param key      public or symmetric JWS verification key
+         * @param critical critical extension names processed by the caller
          */
         public Signed {
             Assert.notNull(key, "Signed JWT verification key must not be null");
@@ -219,6 +222,11 @@ public class JwtVerifier {
 
         /**
          * Validates and freezes encrypted JWT verification inputs.
+         *
+         * @param decryptionKey      private or symmetric JWE recipient key
+         * @param nestedSignatureKey explicit nested JWS key when cty identifies JWT
+         * @param outerCritical      processed outer JWE critical extensions
+         * @param innerCritical      processed nested JWS critical extensions
          */
         public Encrypted {
             Assert.notNull(decryptionKey, "Encrypted JWT decryption key must not be null");

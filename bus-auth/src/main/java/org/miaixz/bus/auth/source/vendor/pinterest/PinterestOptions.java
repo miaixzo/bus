@@ -57,6 +57,12 @@ public record PinterestOptions(Vendor.Id vendor, Vendor.Variant variant, String 
     /**
      * Validates and freezes one Pinterest registration without resolving its secret.
      *
+     * @param vendor      exact Pinterest platform identifier
+     * @param variant     exact default Pinterest variant
+     * @param clientId    public client identifier issued by Pinterest
+     * @param credential  external client-secret reference
+     * @param redirectUri exact callback URI registered for the application
+     * @param scopes      ordered requested Pinterest scopes, or empty to use the manifest default
      * @throws IllegalArgumentException if a required component, container, or scope is {@code null} or blank
      * @throws ValidateException        if routing, credential type, callback, scope vocabulary, or uniqueness is
      *                                  invalid

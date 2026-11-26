@@ -75,7 +75,59 @@ public class Oracle extends AbstractDialect {
      */
     @Override
     public SqlTypeDescriptor resolveType(ColumnMeta column) {
-        return oracleType(column);
+        SqlTypeDescriptor type = oracleType(column);
+        if ("VARCHAR2".equals(type.typeName()) && type.nativeDefinition() == null) {
+            type.lengthUnit(SqlTypeDescriptor.LengthUnit.CHARACTER);
+        }
+        return type;
+    }
+
+    /**
+     * Reads generic JDBC columns and supplements character capacities from Oracle ALL_TAB_COLUMNS. CHAR_USED determines
+     * whether CHAR_LENGTH or DATA_LENGTH is authoritative; columns without native capacity evidence retain UNKNOWN
+     * rather than assuming that bytes equal characters.
+     *
+     * @param connection the active Oracle connection
+     * @param table      the mapped table whose owner and physical name are resolved using this connection
+     * @return column snapshots with native character/byte capacity information when available
+     * @throws java.sql.SQLException when JDBC or Oracle dictionary metadata cannot be read
+     */
+    @Override
+    public java.util.List<org.miaixz.bus.mapper.feature.schema.ColumnSnapshot> readColumns(
+            java.sql.Connection connection,
+            TableMeta table) throws java.sql.SQLException {
+        var columns = super.readColumns(connection, table);
+        var rules = org.miaixz.bus.mapper.feature.identifier.IdentifierValidator
+                .metadataRules(connection.getMetaData());
+        String owner = table.schema() == null || table.schema().isBlank() ? connection.getSchema()
+                : rules.key(table.schema());
+        var parts = rules.parts(table.table());
+        if (parts.size() > 1)
+            owner = rules.key(parts.get(parts.size() - 2));
+        for (var column : columns)
+            if (column.type().length() != null)
+                column.type().lengthUnit(SqlTypeDescriptor.LengthUnit.UNKNOWN);
+        try (var statement = connection.prepareStatement(
+                "SELECT COLUMN_NAME, CHAR_USED, CHAR_LENGTH, DATA_LENGTH FROM ALL_TAB_COLUMNS WHERE OWNER = ? AND TABLE_NAME = ?")) {
+            statement.setString(1, owner);
+            statement.setString(2, rules.key(parts.getLast()));
+            try (var rows = statement.executeQuery()) {
+                while (rows.next()) {
+                    for (var column : columns) {
+                        if (!column.name().equals(rows.getString("COLUMN_NAME")) || column.type().length() == null)
+                            continue;
+                        String unit = rows.getString("CHAR_USED");
+                        if ("C".equals(unit))
+                            column.type().length(rows.getInt("CHAR_LENGTH"))
+                                    .lengthUnit(SqlTypeDescriptor.LengthUnit.CHARACTER);
+                        else if ("B".equals(unit))
+                            column.type().length(rows.getInt("DATA_LENGTH"))
+                                    .lengthUnit(SqlTypeDescriptor.LengthUnit.BYTE);
+                    }
+                }
+            }
+        }
+        return columns;
     }
 
     /**

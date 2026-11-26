@@ -26,6 +26,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
 
+import org.miaixz.bus.core.center.function.RunnableX;
+import org.miaixz.bus.core.xyz.FunctionKit;
 import org.miaixz.bus.metrics.nimble.MetricDescriptor;
 import org.miaixz.bus.metrics.nimble.MetricRegistration;
 
@@ -212,6 +214,7 @@ public final class MetricFamilyRegistry {
             this.descriptor = descriptor;
             this.key = key;
         }
+
     }
 
     /**
@@ -234,7 +237,7 @@ public final class MetricFamilyRegistry {
         /**
          * Registry release action.
          */
-        private final Runnable releaser;
+        private final RunnableX releaser;
         /**
          * Idempotent close state.
          */
@@ -248,7 +251,7 @@ public final class MetricFamilyRegistry {
          * @param firstRegistration whether this acquisition created the entry
          * @param releaser          registry release action
          */
-        private Lease(MetricDescriptor descriptor, MetricFamilyKey key, boolean firstRegistration, Runnable releaser) {
+        private Lease(MetricDescriptor descriptor, MetricFamilyKey key, boolean firstRegistration, RunnableX releaser) {
             this.descriptor = descriptor;
             this.key = key;
             this.firstRegistration = firstRegistration;
@@ -282,12 +285,16 @@ public final class MetricFamilyRegistry {
             return firstRegistration;
         }
 
+        /**
+         * Releases this registration lease once.
+         */
         @Override
         public void close() {
             if (closed.compareAndSet(false, true)) {
-                releaser.run();
+                FunctionKit.runUnwrapped(releaser);
             }
         }
+
     }
 
 }

@@ -76,6 +76,13 @@ public class Archive {
          * {@code Collections$UnmodifiableMap}, because Java serialization resolves their {@code serialVersionUID}
          * reflectively and therefore requires implementation-specific Native Image metadata.
          * </p>
+         *
+         * @param segmentIndex  zero-based segment index
+         * @param segmentName   logical segment name
+         * @param totalRecords  total record count
+         * @param dataFileName  segment data file name
+         * @param indexFileName segment index file name
+         * @param attributes    optional segment attributes
          */
         public Segment {
             attributes = new LinkedHashMap<>(null == attributes ? Map.of() : attributes);

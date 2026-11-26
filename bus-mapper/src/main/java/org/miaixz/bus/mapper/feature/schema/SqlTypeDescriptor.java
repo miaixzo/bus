@@ -72,6 +72,11 @@ public class SqlTypeDescriptor {
     private String nativeDefinition;
 
     /**
+     * Capacity unit supplied by the mapping or metadata reader; UNKNOWN never authorizes byte/character conversion.
+     */
+    private LengthUnit lengthUnit = LengthUnit.UNKNOWN;
+
+    /**
      * Constructs a new SqlTypeDescriptor instance.
      */
     public SqlTypeDescriptor() {
@@ -107,7 +112,7 @@ public class SqlTypeDescriptor {
      */
     public static boolean supportsPrecision(String type) {
         String normalized = normalizeTypeName(type);
-        return normalized.contains("DECIMAL") || normalized.contains("NUMERIC");
+        return normalized.contains("DECIMAL") || normalized.contains("NUMERIC") || "NUMBER".equals(normalized);
     }
 
     /**
@@ -126,14 +131,18 @@ public class SqlTypeDescriptor {
             case "INT8" -> "BIGINT";
             case "BOOL" -> "BOOLEAN";
             case "CHARACTER VARYING", "VARCHAR2" -> "VARCHAR";
+            case "NUMBER", "DECIMAL" -> "NUMERIC";
             case "CHARACTER" -> "CHAR";
+            case "CHARACTER LARGE OBJECT" -> "CLOB";
+            case "BINARY LARGE OBJECT" -> "BLOB";
             case "DOUBLE PRECISION" -> "DOUBLE";
             default -> type;
         };
     }
 
     /**
-     * Builds the normalized SQL type definition.
+     * Builds the native SQL type definition without using comparison aliases. An explicit native definition takes
+     * precedence; otherwise declared length units, precision, and a zero scale are retained where supported.
      *
      * @return the SQL type definition
      */
@@ -141,9 +150,13 @@ public class SqlTypeDescriptor {
         if (nativeDefinition != null && !nativeDefinition.isBlank()) {
             return nativeDefinition;
         }
-        String normalized = normalizeTypeName(typeName);
+        String normalized = typeName == null ? Normal.EMPTY : typeName.trim();
         if (length != null && length > 0 && supportsLength(normalized)) {
-            return normalized + Symbol.PARENTHESE_LEFT + length + Symbol.PARENTHESE_RIGHT;
+            String unit = ("VARCHAR2".equalsIgnoreCase(normalized) || "CHAR".equalsIgnoreCase(normalized))
+                    ? lengthUnit == LengthUnit.CHARACTER ? " CHAR"
+                            : lengthUnit == LengthUnit.BYTE ? " BYTE" : Normal.EMPTY
+                    : Normal.EMPTY;
+            return normalized + Symbol.PARENTHESE_LEFT + length + unit + Symbol.PARENTHESE_RIGHT;
         }
         if (precision != null && precision > 0 && supportsPrecision(normalized)) {
             if (scale != null && scale >= 0) {
@@ -164,7 +177,8 @@ public class SqlTypeDescriptor {
     }
 
     /**
-     * Tests whether this descriptor is equivalent to another descriptor.
+     * Tests whether this descriptor has matching normalized type, capacity, precision, and scale values. A capacity
+     * with an unknown unit cannot establish equivalence; dialect-specific comparison belongs to SchemaBehavior.
      *
      * @param other the descriptor to compare
      * @return {@code true} when the descriptors are equivalent
@@ -176,8 +190,49 @@ public class SqlTypeDescriptor {
         if (!Objects.equals(normalizedTypeName(), other.normalizedTypeName())) {
             return false;
         }
-        return Objects.equals(length, other.length) && Objects.equals(precision, other.precision)
-                && Objects.equals(scale, other.scale);
+        return Objects.equals(length, other.length)
+                && (length == null || lengthUnit != LengthUnit.UNKNOWN && lengthUnit == other.lengthUnit)
+                && Objects.equals(precision, other.precision) && Objects.equals(scale, other.scale);
+    }
+
+    /**
+     * Unit used to interpret a declared or observed capacity, rather than a database column default.
+     */
+    public enum LengthUnit {
+        /**
+         * The capacity unit is unavailable or cannot be established safely.
+         */
+        UNKNOWN,
+
+        /**
+         * Capacity counts characters.
+         */
+        CHARACTER,
+
+        /**
+         * Capacity counts bytes.
+         */
+        BYTE
+    }
+
+    /**
+     * Comparison result that keeps insufficient evidence distinct from a confirmed difference.
+     */
+    public enum Comparison {
+        /**
+         * Available facts establish equivalence for the compared dimension.
+         */
+        SAME,
+
+        /**
+         * Available facts establish a difference for the compared dimension.
+         */
+        DIFFERENT,
+
+        /**
+         * Available facts do not establish either equivalence or a difference.
+         */
+        UNKNOWN
     }
 
 }

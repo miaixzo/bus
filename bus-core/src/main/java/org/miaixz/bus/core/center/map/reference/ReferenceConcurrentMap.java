@@ -447,6 +447,7 @@ public abstract class ReferenceConcurrentMap<K, V>
             public void clear() {
                 ReferenceConcurrentMap.this.clear();
             }
+
         };
     }
 
@@ -535,6 +536,7 @@ public abstract class ReferenceConcurrentMap<K, V>
                 Objects.requireNonNull(filter, "filter");
                 return removeEntries(entry -> filter.test(entry.getValue()), false);
             }
+
         };
     }
 
@@ -624,6 +626,7 @@ public abstract class ReferenceConcurrentMap<K, V>
             public boolean removeIf(Predicate<? super Entry<K, V>> filter) {
                 return removeEntries(Objects.requireNonNull(filter, "filter"), false);
             }
+
         };
     }
 
@@ -830,6 +833,7 @@ public abstract class ReferenceConcurrentMap<K, V>
                                 current = replacement;
                                 return previous;
                             }
+
                         };
                     }
                 }
@@ -862,6 +866,7 @@ public abstract class ReferenceConcurrentMap<K, V>
                 ReferenceConcurrentMap.this.remove(last.getKey());
                 last = null;
             }
+
         };
     }
 
@@ -944,6 +949,7 @@ public abstract class ReferenceConcurrentMap<K, V>
             public boolean equals(Object candidate) {
                 return candidate == this || candidate == keyReference;
             }
+
         };
         final MutableObject<Ref<V>> removed = new MutableObject<>();
         this.raw.computeIfPresent(identityKey, (key, current) -> {

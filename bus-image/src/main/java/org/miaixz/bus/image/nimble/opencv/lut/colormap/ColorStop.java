@@ -38,6 +38,11 @@ public record ColorStop(double position, Color color, Float alpha, Material mate
     /**
      * Validates the stop position and optional values.
      *
+     * @param position domain position of the stop
+     * @param color    color value, or null when the stop does not shape the color curve
+     * @param alpha    opacity in {@code [0, 1]}, or null when the stop does not shape the alpha curve
+     * @param material shading coefficients for volume rendering, or null
+     * @param group    optional editing label, ignored when compiling
      * @throws IllegalArgumentException if the position is not finite, neither color nor alpha is present, or alpha is
      *                                  outside {@code [0, 1]}
      */

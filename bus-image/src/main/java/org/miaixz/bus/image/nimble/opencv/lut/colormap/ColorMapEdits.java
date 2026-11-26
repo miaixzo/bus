@@ -34,11 +34,17 @@ public final class ColorMapEdits {
      * Prevents utility class instantiation.
      */
     private ColorMapEdits() {
+        // No initialization required.
     }
 
     /**
      * Moves every stop linearly from the map's default range onto {@code [newMin, newMax]}. A non-relative domain takes
      * the new range; a relative one keeps {@code [0, 1]} and the target is clamped into it.
+     *
+     * @param map    color map to sample or transform
+     * @param newMin new minimum domain value
+     * @param newMax new maximum domain value
+     * @return color map with stops rescaled onto the requested range
      */
     public static ColorMap rescaled(ColorMap map, double newMin, double newMax) {
         ColorMapDomain domain = map.domain();
@@ -60,6 +66,12 @@ public final class ColorMapEdits {
     /**
      * The map spread over the physical range {@code [min, max]} of an absolute domain in {@code
      * unit}; a map already anchored to values (absolute or fixed domain) is returned as is.
+     *
+     * @param map  color map to sample or transform
+     * @param unit measurement unit of the metric
+     * @param min  minimum physical domain value
+     * @param max  maximum physical domain value
+     * @return color map anchored to the supplied physical range and unit
      */
     public static ColorMap anchored(ColorMap map, String unit, double min, double max) {
         ColorMapDomain domain = map.domain();
@@ -72,6 +84,10 @@ public final class ColorMapEdits {
 
     /**
      * Samples the map at the center of {@code bands} equal bands and keeps one step per band.
+     *
+     * @param map   color map to sample or transform
+     * @param bands number of discrete color bands
+     * @return color map containing one sampled step per requested band
      */
     public static ColorMap discretized(ColorMap map, int bands) {
         if (bands < 2) {
@@ -101,6 +117,11 @@ public final class ColorMapEdits {
     /**
      * Replaces the alpha curve by a ramp from fully transparent at {@code transparentBelow} to fully opaque at
      * {@code opaqueFrom}; equal values make a hard edge. Colors are untouched.
+     *
+     * @param map              color map to sample or transform
+     * @param transparentBelow domain value at or below which opacity is zero
+     * @param opaqueFrom       domain value at or above which opacity is one
+     * @return color map with the replacement opacity threshold curve
      */
     public static ColorMap withThreshold(ColorMap map, double transparentBelow, double opaqueFrom) {
         if (opaqueFrom < transparentBelow) {
@@ -120,6 +141,10 @@ public final class ColorMapEdits {
     /**
      * Takes the color curve of {@code palette}, stretched over the map's default range, and keeps the map's alpha
      * curve, materials and metadata.
+     *
+     * @param map     color map to sample or transform
+     * @param palette color map supplying the replacement color curve
+     * @return color map using the palette's color curve and its existing opacity and material settings
      */
     public static ColorMap withPalette(ColorMap map, ColorMap palette) {
         Objects.requireNonNull(palette, "Palette cannot be null");
@@ -160,6 +185,11 @@ public final class ColorMapEdits {
 
     /**
      * Replaces the stop at {@code index} of the sorted stop list.
+     *
+     * @param map   color map to sample or transform
+     * @param index index of the sorted color stop to edit
+     * @param stop  replacement color stop
+     * @return color map with the selected stop replaced
      */
     public static ColorMap withStop(ColorMap map, int index, ColorStop stop) {
         var stops = new ArrayList<>(map.stops());
@@ -170,6 +200,9 @@ public final class ColorMapEdits {
     /**
      * Removes the stop at {@code index} of the sorted stop list.
      *
+     * @param map   color map to sample or transform
+     * @param index index of the sorted color stop to edit
+     * @return color map with the selected stop removed
      * @throws IllegalArgumentException when it is the last stop
      */
     public static ColorMap withoutStop(ColorMap map, int index) {
@@ -183,6 +216,9 @@ public final class ColorMapEdits {
 
     /**
      * Same stops, evenly spread over the default range; useful after pasting a color list.
+     *
+     * @param map color map to sample or transform
+     * @return color map with the existing stops evenly distributed across the default range
      */
     public static ColorMap evenlySpaced(ColorMap map) {
         List<ColorStop> stops = map.stops();

@@ -225,6 +225,7 @@ public class Context extends org.miaixz.bus.core.Context {
             public String getSuffix() {
                 return suffix;
             }
+
         };
         config.setAffix(
                 AffixRuleConfig.builder().provider(provider).prefixIgnore(prefixIgnore).suffixIgnore(suffixIgnore)

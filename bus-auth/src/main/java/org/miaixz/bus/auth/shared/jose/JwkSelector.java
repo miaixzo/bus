@@ -133,6 +133,12 @@ public class JwkSelector {
         /**
          * Validates optional values and preserves exact case-sensitive identifiers.
          *
+         * @param keyId        optional exact key identifier hint
+         * @param algorithm    mandatory exact JOSE algorithm already selected by the message
+         * @param kind         mandatory registered algorithm operation kind
+         * @param publicKeyUse optional expected JWK use value
+         * @param keyOperation optional expected JWK key_ops value
+         * @param keyType      optional exact JWK key type restriction
          * @throws IllegalArgumentException if a component is {@code null}
          * @throws ValidateException        if a present optional value or mandatory algorithm is blank
          */

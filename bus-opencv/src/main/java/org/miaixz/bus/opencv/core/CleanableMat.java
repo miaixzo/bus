@@ -59,4 +59,5 @@ public abstract class CleanableMat {
      * Opaque native handle retained by this wrapper and passed to JNI operations.
      */
     public final long nativeObj;
+
 }

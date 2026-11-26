@@ -39,6 +39,8 @@ import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.errors.ComponentFailure;
+import org.miaixz.bus.errors.ErrorType;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.storage.Builder;
 import org.miaixz.bus.storage.Context;
@@ -51,6 +53,11 @@ import org.miaixz.bus.storage.magic.ErrorCode;
  * @author Kimi Liu
  */
 public class LocalFileProvider extends AbstractProvider {
+
+    /**
+     * Reports local file failures without changing partial results, returned codes or stream ownership.
+     */
+    private static final ComponentFailure FAILURES = new ComponentFailure("bus-storage", "local-storage");
 
     /**
      * Constructs a local file storage provider, initializing the storage context.
@@ -133,6 +140,9 @@ public class LocalFileProvider extends AbstractProvider {
                                     .extend(extend).build())
                     .build();
         } catch (Exception e) {
+            FAILURES.failed(
+                    e instanceof IllegalArgumentException ? ErrorType.INVALID_REQUEST : ErrorType.IO_FAILURE,
+                    e);
             Errors error = e instanceof IllegalArgumentException ? ErrorCode._113006 : ErrorCode._113010;
             Logger.error(
                     false,
@@ -216,6 +226,9 @@ public class LocalFileProvider extends AbstractProvider {
                                     .type(Files.probeContentType(filePath)).extend(extend).build())
                     .build();
         } catch (Exception e) {
+            FAILURES.failed(
+                    e instanceof IllegalArgumentException ? ErrorType.INVALID_REQUEST : ErrorType.IO_FAILURE,
+                    e);
             Errors error = e instanceof IllegalArgumentException ? ErrorCode._113006 : ErrorCode._113010;
             Logger.error(
                     false,
@@ -273,6 +286,7 @@ public class LocalFileProvider extends AbstractProvider {
             return Message.<byte[]>builder().code(ErrorCode._SUCCESS.getKey()).desc(ErrorCode._SUCCESS.getValue())
                     .data(content).build();
         } catch (IOException e) {
+            FAILURES.failed(ErrorType.IO_FAILURE, e);
             Logger.error(
                     false,
                     "Storage",
@@ -331,6 +345,7 @@ public class LocalFileProvider extends AbstractProvider {
             return Message.<Void>builder().code(ErrorCode._SUCCESS.getKey()).desc(ErrorCode._SUCCESS.getValue())
                     .build();
         } catch (IOException e) {
+            FAILURES.failed(ErrorType.IO_FAILURE, e);
             Logger.error(
                     false,
                     "Storage",
@@ -366,12 +381,14 @@ public class LocalFileProvider extends AbstractProvider {
                         try {
                             extend.put("lastModified", Files.getLastModifiedTime(path).toInstant());
                         } catch (IOException e) {
+                            FAILURES.failed(ErrorType.IO_FAILURE, e);
                             extend.put("lastModified", null);
                         }
                         return Blob.builder().name(relativePath).size(StringKit.toString(path.toFile().length()))
                                 .extend(extend).build();
                     }).collect(Collectors.toList())).build();
         } catch (IOException e) {
+            FAILURES.failed(ErrorType.IO_FAILURE, e);
             Logger.error(
                     false,
                     "Storage",
@@ -438,6 +455,7 @@ public class LocalFileProvider extends AbstractProvider {
             return Message.<Void>builder().code(ErrorCode._SUCCESS.getKey()).desc(ErrorCode._SUCCESS.getValue())
                     .build();
         } catch (IOException e) {
+            FAILURES.failed(ErrorType.IO_FAILURE, e);
             Logger.error(
                     false,
                     "Storage",
@@ -542,6 +560,7 @@ public class LocalFileProvider extends AbstractProvider {
             return Message.<Blob>builder().code(ErrorCode._SUCCESS.getKey()).desc(ErrorCode._SUCCESS.getValue())
                     .data(Blob.builder().name(fileName).path(objectKey).build()).build();
         } catch (IOException e) {
+            FAILURES.failed(ErrorType.IO_FAILURE, e);
             Logger.error(
                     false,
                     "Storage",
@@ -600,6 +619,7 @@ public class LocalFileProvider extends AbstractProvider {
             return Message.<Void>builder().code(ErrorCode._SUCCESS.getKey()).desc(ErrorCode._SUCCESS.getValue())
                     .build();
         } catch (IOException e) {
+            FAILURES.failed(ErrorType.IO_FAILURE, e);
             Logger.error(
                     false,
                     "Storage",

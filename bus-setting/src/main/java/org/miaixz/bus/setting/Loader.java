@@ -39,6 +39,8 @@ import org.miaixz.bus.core.text.CharsBacker;
 import org.miaixz.bus.core.xyz.FileKit;
 import org.miaixz.bus.core.xyz.PatternKit;
 import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.errors.ComponentFailure;
+import org.miaixz.bus.errors.ErrorType;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.setting.format.*;
 import org.miaixz.bus.setting.magic.GroupedMap;
@@ -51,6 +53,11 @@ import org.miaixz.bus.setting.nimble.ini.*;
  * @author Kimi Liu
  */
 public class Loader {
+
+    /**
+     * Reports configuration load and store failures without changing the original exceptions.
+     */
+    private static final ComponentFailure FAILURES = new ComponentFailure("bus-setting", "configuration");
 
     /**
      * The character that indicates the beginning of a comment line.
@@ -151,6 +158,7 @@ public class Loader {
         try (InputStream settingStream = resource.getStream()) {
             groupedMap = load(settingStream);
         } catch (final Exception e) {
+            FAILURES.failed(ErrorType.CONFIGURATION_FAILURE, e);
             Logger.warn(
                     false,
                     "Setting",
@@ -293,6 +301,7 @@ public class Loader {
         try (PrintWriter writer = FileKit.getPrintWriter(file, charset, false)) {
             store(groupedMap, writer);
         } catch (final RuntimeException e) {
+            FAILURES.failed(ErrorType.IO_FAILURE, e);
             Logger.warn(
                     false,
                     "Setting",

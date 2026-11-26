@@ -1058,6 +1058,7 @@ public class DnsCodec {
      * @param message complete DNS message
      * @param offset  first record offset
      * @param count   record count
+     * @return offset immediately after the skipped DNS resource records
      */
     private static int skipRecords(final byte[] message, final int offset, final int count) {
         int cursor = offset;

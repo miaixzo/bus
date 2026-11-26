@@ -42,6 +42,8 @@ public class Timeout {
         /**
          * Returns the timeout for cache entries in milliseconds.
          *
+         * @param timeout The maximum time to wait.
+         * @param unit    The time unit of the {@code timeout} argument.
          * @return the timeout in milliseconds
          */
         @Override
@@ -52,6 +54,7 @@ public class Timeout {
         /**
          * Deadlinenanotime method.
          *
+         * @param deadlineNanoTime The deadline in nanoseconds.
          * @return the Timeout value
          */
         @Override
@@ -62,11 +65,11 @@ public class Timeout {
         /**
          * Throwifreached method.
          *
-         * @return the void value
          */
         @Override
         public void throwIfReached() {
         }
+
     };
 
     /**

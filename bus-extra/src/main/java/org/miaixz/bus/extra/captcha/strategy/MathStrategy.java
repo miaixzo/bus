@@ -72,11 +72,8 @@ public class MathStrategy implements CodeStrategy {
     }
 
     /**
-     * Description inherited from parent class or interface.
-     * <p>
      * Generates a random math expression CAPTCHA code with two numbers and an operator (+, -, or *). The numbers are
      * padded with spaces to the specified length for visual consistency.
-     * </p>
      *
      * @return a math expression string in the format "number1 operator number2="
      */
@@ -106,10 +103,7 @@ public class MathStrategy implements CodeStrategy {
     }
 
     /**
-     * Description inherited from parent class or interface.
-     * <p>
      * Verifies the user's mathematical answer by evaluating the expression and comparing it with the user's input.
-     * </p>
      *
      * @param code          the generated math expression (e.g., "1 + 2 =")
      * @param userInputCode the user's calculated answer

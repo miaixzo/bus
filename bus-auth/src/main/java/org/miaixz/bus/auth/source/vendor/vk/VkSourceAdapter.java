@@ -1012,6 +1012,11 @@ public class VkSourceAdapter implements VendorAdapter {
         /**
          * Validates one complete success or failure branch.
          *
+         * @param code             authorization code for success
+         * @param state            mandatory browser correlation value
+         * @param deviceId         mandatory VK device binding for success
+         * @param error            OAuth error for failure
+         * @param errorDescription mandatory VK error description for failure
          * @throws IllegalArgumentException if state is blank
          * @throws ValidateException        if members do not form one exact branch
          */

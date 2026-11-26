@@ -85,6 +85,7 @@ import org.miaixz.bus.mapper.provider.MapperProvider;
  *         // Custom slow SQL handling
  *         metricsService.increment("sql.slow.count");
  *     }
+ *
  * }
  * }</pre>
  *
@@ -110,6 +111,7 @@ import org.miaixz.bus.mapper.provider.MapperProvider;
  *         // Custom slow SQL handling
  *         metricsService.increment("sql.slow.count");
  *     }
+ *
  * }
  * }</pre>
  *
@@ -131,6 +133,7 @@ import org.miaixz.bus.mapper.provider.MapperProvider;
  *             return null; // Use configuration file for other environments
  *         }
  *     }
+ *
  * }
  * }</pre>
  *

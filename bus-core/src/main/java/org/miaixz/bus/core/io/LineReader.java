@@ -136,6 +136,7 @@ public class LineReader extends ReaderWrapper implements Iterable<String> {
                     throw new InternalException(e);
                 }
             }
+
         };
     }
 

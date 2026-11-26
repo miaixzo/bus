@@ -481,6 +481,9 @@ public class Ingress implements Connection, Conduit {
 
         /**
          * Creates the checked timeout while retaining the close-induced I/O failure.
+         *
+         * @param cause socket failure caused by closing the timed-out operation, possibly {@code null}
+         * @return checked timeout exception retaining the underlying I/O failure
          */
         @Override
         protected IOException newTimeoutException(final IOException cause) {
@@ -502,6 +505,7 @@ public class Ingress implements Connection, Conduit {
                 // Timeout has already won.
             }
         }
+
     }
 
     /**
@@ -531,6 +535,8 @@ public class Ingress implements Connection, Conduit {
 
         /**
          * Returns the physical channel read timeout.
+         *
+         * @return physical channel read timeout
          */
         @Override
         public Timeout timeout() {
@@ -579,6 +585,8 @@ public class Ingress implements Connection, Conduit {
 
         /**
          * Returns the physical channel write timeout.
+         *
+         * @return physical channel write timeout
          */
         @Override
         public Timeout timeout() {

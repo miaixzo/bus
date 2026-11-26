@@ -27,8 +27,9 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.LockSupport;
-import java.util.function.Supplier;
 
+import org.miaixz.bus.core.center.function.RunnableX;
+import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.*;
@@ -60,7 +61,7 @@ public class ConnectionPool implements AutoCloseable {
     /**
      * Shared unregister action for synchronous callers that cannot be cancelled.
      */
-    private static final Runnable NOOP_UNREGISTER = () -> {
+    private static final RunnableX NOOP_UNREGISTER = () -> {
     };
 
     /**
@@ -333,6 +334,8 @@ public class ConnectionPool implements AutoCloseable {
 
     /**
      * Aborts one connection after its lease has become terminally non-reusable.
+     *
+     * @param connection connection whose pending acquisition is aborted
      */
     private static void abortOne(final Connection connection) {
         try {
@@ -380,7 +383,7 @@ public class ConnectionPool implements AutoCloseable {
         if (value == null) {
             return true;
         }
-        if (value instanceof Context || value instanceof Supplier<?> || value instanceof Dispatcher
+        if (value instanceof Context || value instanceof SupplierX<?> || value instanceof Dispatcher
                 || value instanceof Collection<?> || value instanceof Map<?, ?> || value.getClass().isArray()) {
             return false;
         }
@@ -421,7 +424,7 @@ public class ConnectionPool implements AutoCloseable {
      * @param factory     connection factory
      * @return connection lease
      */
-    public ConnectionLease acquire(final Destination destination, final Supplier<Connection> factory) {
+    public ConnectionLease acquire(final Destination destination, final SupplierX<Connection> factory) {
         return acquire(destination, factory, Cancellation.create());
     }
 
@@ -435,7 +438,7 @@ public class ConnectionPool implements AutoCloseable {
      */
     public ConnectionLease acquire(
             final Destination destination,
-            final Supplier<Connection> factory,
+            final SupplierX<Connection> factory,
             final Cancellation cancellation) {
         final Destination target = require(destination, "Connection destination");
         if (target != lastValidatedDestination) {
@@ -511,10 +514,10 @@ public class ConnectionPool implements AutoCloseable {
      */
     public ConnectionLease acquireTransient(
             final Destination destination,
-            final Supplier<Connection> factory,
+            final SupplierX<Connection> factory,
             final Cancellation cancellation) {
         final Destination target = require(destination, "Connection destination");
-        final Supplier<Connection> source = require(factory, "Connection factory");
+        final SupplierX<Connection> source = require(factory, "Connection factory");
         final Cancellation scope = require(cancellation, "Cancellation");
         scope.throwIfCancelled();
         final Connection connection = require(source.get(), "Created connection");
@@ -1059,7 +1062,7 @@ public class ConnectionPool implements AutoCloseable {
      */
     private ConnectionLease createLease(
             final Destination destination,
-            final Supplier<Connection> factory,
+            final SupplierX<Connection> factory,
             final Cancellation cancellation) {
         final Cancellation scope = require(cancellation, "Cancellation");
         final Connection connection;
@@ -1263,6 +1266,8 @@ public class ConnectionPool implements AutoCloseable {
 
     /**
      * Keeps negotiation and multiplex destinations strict; widens only after a destination is proven HTTP/1.
+     *
+     * @return maximum number of acquisitions admitted while the connection mode is being established
      */
     private int admissionWindow() {
         final PoolWaiters.Waiter head = waiters.peekFirst();
@@ -1389,6 +1394,9 @@ public class ConnectionPool implements AutoCloseable {
 
     /**
      * Returns true when queue depth or sustained wait proves that a negotiated H1 service needs expansion.
+     *
+     * @param destination destination whose queued acquisition pressure is inspected
+     * @return whether queue depth or sustained wait justifies an additional HTTP/1 connection
      */
     private boolean sustainedWait(final Destination destination) {
         if (!multiplexCapacity.http1Destinations.contains(destination)) {

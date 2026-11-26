@@ -74,6 +74,8 @@ public class NativeRatePair implements RatePair {
 
     /**
      * Returns error.oneMinuteRate() / total.oneMinuteRate(); 0.0 if no events.
+     *
+     * @return one-minute error fraction, or zero when no events have been recorded
      */
     @Override
     public double errorRate() {
@@ -82,6 +84,8 @@ public class NativeRatePair implements RatePair {
 
     /**
      * Returns success.oneMinuteRate() / total.oneMinuteRate(); 1.0 if no events.
+     *
+     * @return one-minute success fraction, or one when no events have been recorded
      */
     @Override
     public double successRate() {
@@ -90,6 +94,8 @@ public class NativeRatePair implements RatePair {
 
     /**
      * Returns the combined total meter.
+     *
+     * @return combined total meter
      */
     @Override
     public Meter total() {
@@ -98,6 +104,8 @@ public class NativeRatePair implements RatePair {
 
     /**
      * Returns the error-only meter.
+     *
+     * @return meter tracking errors
      */
     @Override
     public Meter errors() {
@@ -106,6 +114,8 @@ public class NativeRatePair implements RatePair {
 
     /**
      * Returns the success-only meter.
+     *
+     * @return meter tracking successes
      */
     @Override
     public Meter successes() {

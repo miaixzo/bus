@@ -25,6 +25,7 @@ import java.util.List;
 
 import org.miaixz.bus.mapper.dialect.Dialect;
 import org.miaixz.bus.mapper.feature.schema.ColumnSnapshot;
+import org.miaixz.bus.mapper.feature.schema.SchemaDiff;
 import org.miaixz.bus.mapper.feature.schema.SqlTypeDescriptor;
 import org.miaixz.bus.mapper.feature.schema.TableSnapshot;
 import org.miaixz.bus.mapper.parsing.*;
@@ -35,6 +36,24 @@ import org.miaixz.bus.mapper.parsing.*;
  * @author Kimi Liu
  */
 public interface SchemaBehavior {
+
+    /**
+     * Identifies dialects that generate and introspect supported partial indexes.
+     *
+     * @return whether the supported index predicates are available
+     */
+    default boolean supportsPartialIndexes() {
+        return false;
+    }
+
+    /**
+     * Identifies dialects that enforce a conditional unique index through a native filter or equivalent expression.
+     *
+     * @return whether the mapped integer-equality uniqueness rule is supported
+     */
+    default boolean supportsConditionalUniqueIndexes() {
+        return supportsPartialIndexes();
+    }
 
     /**
      * Tests whether a table exists.
@@ -144,6 +163,115 @@ public interface SchemaBehavior {
      */
     default String createTable(TableMeta table) {
         throw unsupportedSchema("CREATE_TABLE", table);
+    }
+
+    /**
+     * Builds SQL to create a namespace for an explicitly requested schema migration.
+     *
+     * @param schema unqualified destination namespace
+     * @return generated schema creation SQL
+     */
+    default String createSchema(String schema) {
+        throw unsupportedSchema("CREATE_SCHEMA", null);
+    }
+
+    /**
+     * Builds SQL to move a table into another namespace using the same physical table name.
+     *
+     * @param table  current table coordinate
+     * @param schema unqualified destination namespace
+     * @return generated table move SQL
+     */
+    default String moveTable(TableMeta table, String schema) {
+        throw unsupportedSchema("MOVE_TABLE", table);
+    }
+
+    /**
+     * Builds a transaction-scoped exclusive lock for an explicitly selected table migration.
+     *
+     * @param table physical table coordinate
+     * @return generated table lock SQL
+     */
+    default String lockTable(TableMeta table) {
+        throw unsupportedSchema("LOCK_TABLE", table);
+    }
+
+    /**
+     * Builds SQL to restore an existing table check constraint during schema maintenance.
+     *
+     * @param table      replacement table coordinate
+     * @param name       existing constraint name
+     * @param definition complete check definition obtained from trusted database metadata
+     * @return generated schema SQL
+     */
+    default String restoreCheck(TableMeta table, String name, String definition) {
+        throw unsupportedSchema("RESTORE_CHECK", table);
+    }
+
+    /**
+     * Builds the operation that removes a persisted column default.
+     *
+     * @param table  physical table coordinate
+     * @param column physical column name
+     * @return generated schema SQL
+     */
+    default String dropColumnDefault(TableMeta table, String column) {
+        throw unsupportedSchema("DROP_COLUMN_DEFAULT", table);
+    }
+
+    /**
+     * Resolves the structural operation to remove a persisted column default. Dialects with named default constraints
+     * use the connection to identify the exact associated constraint.
+     *
+     * @param connection active connection for catalogue inspection
+     * @param table      physical table coordinate
+     * @param column     physical column name
+     * @return dialect-generated SQL, or null when the default is already absent
+     * @throws SQLException when metadata inspection fails
+     */
+    default String dropColumnDefault(Connection connection, TableMeta table, String column) throws SQLException {
+        return dropColumnDefault(table, column);
+    }
+
+    /**
+     * Generates one database statement that reorders the physical columns without changing their definitions.
+     *
+     * @param connection active connection for catalogue inspection
+     * @param table      target table with its requested ordered column metadata
+     * @return the generated schema SQL
+     * @throws SQLException when current column definitions cannot be read
+     */
+    default String reorderColumns(Connection connection, TableMeta table) throws SQLException {
+        throw unsupportedSchema("REORDER_COLUMNS", table);
+    }
+
+    /**
+     * Prepares a selected maintenance operation using native schema syntax. A dialect may supply a checked replacement
+     * when it cannot modify the table directly.
+     *
+     * @param connection active database connection
+     * @param diff       explicitly selected maintenance operation and its physical coordinates
+     * @throws SQLException when catalogue inspection fails
+     */
+    default void prepareMaintenance(Connection connection, SchemaDiff diff) throws SQLException {
+        String sql = switch (diff.type()) {
+            case DROP_COLUMN_DEFAULT -> dropColumnDefault(connection, diff.tableMeta(), diff.actualColumn().name());
+            case REORDER_COLUMNS -> reorderColumns(connection, diff.tableMeta());
+            default -> throw unsupportedSchema(diff.type().name(), diff.tableMeta());
+        };
+        if (sql != null && !sql.isBlank()) {
+            diff.preparation(List.of(sql));
+        }
+    }
+
+    /**
+     * Determines whether the database column has an explicitly defined effective default.
+     *
+     * @param column observed column metadata
+     * @return whether the dialect can see a default expression
+     */
+    default boolean hasColumnDefault(ColumnSnapshot column) {
+        return column.defaultExpression() != null;
     }
 
     /**
@@ -348,6 +476,91 @@ public interface SchemaBehavior {
         String database = this instanceof Dialect dialect ? dialect.getDatabase() : getClass().getName();
         return new UnsupportedOperationException("Schema operation is unsupported: database=" + database
                 + ", operation=" + operation + ", table=" + (table == null ? null : table.tableName()));
+    }
+
+    /**
+     * Compares a physical metadata identifier with a mapped identifier using this snapshot's connection rules. Customer
+     * dialects may override this comparison without changing shared entity metadata.
+     *
+     * @param snapshot the snapshot supplying database naming and quoting rules
+     * @param actual   the physical name returned by JDBC, without mapping delimiters
+     * @param mapped   the mapped name, which may contain explicit delimiters
+     * @return {@code true} when both names identify the same object
+     */
+    default boolean sameIdentifier(TableSnapshot snapshot, String actual, String mapped) {
+        return snapshot.matches(actual, mapped);
+    }
+
+    /**
+     * Compares semantic type names while leaving native SQL definitions unchanged. Missing descriptors, missing type
+     * names, and opaque native definitions produce {@code UNKNOWN}; customer dialects may refine that result.
+     *
+     * @param expected the resolved entity type descriptor, or {@code null} when unavailable
+     * @param actual   the database type descriptor, or {@code null} when unavailable
+     * @return the type-name comparison, independently of capacity and numeric precision
+     */
+    default SqlTypeDescriptor.Comparison compareType(SqlTypeDescriptor expected, SqlTypeDescriptor actual) {
+        if (expected == null || actual == null || expected.typeName() == null || actual.typeName() == null
+                || expected.nativeDefinition() != null && !expected.nativeDefinition().isBlank()) {
+            return SqlTypeDescriptor.Comparison.UNKNOWN;
+        }
+        return expected.normalizedTypeName().equals(actual.normalizedTypeName()) ? SqlTypeDescriptor.Comparison.SAME
+                : SqlTypeDescriptor.Comparison.DIFFERENT;
+    }
+
+    /**
+     * Compares capacities without assuming that bytes and characters are interchangeable. Two absent capacities mean no
+     * capacity comparison is required; missing values, unknown units, or different units remain {@code UNKNOWN}.
+     *
+     * @param expected the non-null resolved entity type descriptor
+     * @param actual   the non-null database type descriptor
+     * @return the capacity comparison after the caller has established compatible type names
+     */
+    default SqlTypeDescriptor.Comparison compareLength(SqlTypeDescriptor expected, SqlTypeDescriptor actual) {
+        if (expected.length() == null && actual.length() == null) {
+            return SqlTypeDescriptor.Comparison.SAME;
+        }
+        if (expected.length() == null || actual.length() == null
+                || expected.lengthUnit() == SqlTypeDescriptor.LengthUnit.UNKNOWN
+                || actual.lengthUnit() == SqlTypeDescriptor.LengthUnit.UNKNOWN) {
+            return SqlTypeDescriptor.Comparison.UNKNOWN;
+        }
+        if (expected.lengthUnit() != actual.lengthUnit()) {
+            return SqlTypeDescriptor.Comparison.UNKNOWN;
+        }
+        return expected.length().equals(actual.length()) ? SqlTypeDescriptor.Comparison.SAME
+                : SqlTypeDescriptor.Comparison.DIFFERENT;
+    }
+
+    /**
+     * Compares numeric precision and scale while preserving unavailable JDBC values. Two absent precisions mean no
+     * decimal comparison is required; a required but missing precision or scale remains {@code UNKNOWN}.
+     *
+     * @param expected the non-null resolved entity type descriptor
+     * @param actual   the non-null database type descriptor
+     * @return the numeric comparison after the caller has established compatible type names
+     */
+    default SqlTypeDescriptor.Comparison compareDecimal(SqlTypeDescriptor expected, SqlTypeDescriptor actual) {
+        if (expected.precision() == null && actual.precision() == null) {
+            return SqlTypeDescriptor.Comparison.SAME;
+        }
+        if (expected.precision() == null || actual.precision() == null || expected.scale() == null
+                || actual.scale() == null) {
+            return SqlTypeDescriptor.Comparison.UNKNOWN;
+        }
+        return expected.precision().equals(actual.precision()) && expected.scale().equals(actual.scale())
+                ? SqlTypeDescriptor.Comparison.SAME
+                : SqlTypeDescriptor.Comparison.DIFFERENT;
+    }
+
+    /**
+     * Indicates whether CREATE TABLE already includes a new table's primary key. The differ uses this capability to
+     * avoid generating a second ADD PRIMARY KEY operation; configuration still controls whether creation is allowed.
+     *
+     * @return {@code true} when this dialect renders the primary key inline; {@code false} by default
+     */
+    default boolean inlinePrimaryKey() {
+        return false;
     }
 
 }

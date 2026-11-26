@@ -677,6 +677,12 @@ public class WindowsOperatingSystem extends AbstractOperatingSystem {
     /**
      * Package-private methods for use by WindowsOSProcess to limit process memory queries to processes with same
      * bitness as the current one
+     *
+     * @param visibleOnly Whether to restrict the list to only windows visible to the user.
+     *                    <p>
+     *                    This is a best effort attempt at a reasonable definition of visibility. Visible windows may be
+     *                    completely transparent.
+     * @return desktop windows selected by the visibility filter
      */
     @Override
     public List<OSDesktopWindow> getDesktopWindows(boolean visibleOnly) {

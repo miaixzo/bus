@@ -31,6 +31,7 @@ import lombok.experimental.SuperBuilder;
 
 import org.miaixz.bus.core.basic.entity.Tenant;
 import org.miaixz.bus.core.lang.Charset;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.cortex.health.HealthInfo;
 import org.miaixz.bus.extra.json.JsonKit;
@@ -54,6 +55,21 @@ public class Instance extends Tenant {
      * Application identifier to which the runtime instance belongs.
      */
     private String app_id;
+
+    /**
+     * Runtime responsibility: CONFIGURATION sessions and SERVICE announcements have independent leases.
+     */
+    private String kind;
+
+    /**
+     * HTTP or HTTPS scheme advertised by a service instance.
+     */
+    private String scheme;
+
+    /**
+     * Runtime servlet or service context path, independent of the API's logical path.
+     */
+    private String path;
 
     /**
      * Human-readable process name.
@@ -203,7 +219,7 @@ public class Instance extends Tenant {
             return new JsonValue.ObjectValue(Map.of());
         JsonValue value;
         try {
-            value = JsonKit.readValue(text.getBytes(Charset.UTF_8), 64, true);
+            value = JsonKit.readValue(text.getBytes(Charset.UTF_8), Normal._64, true);
         } catch (InternalException error) {
             throw new IllegalArgumentException("Invalid instance JSON object", error);
         }

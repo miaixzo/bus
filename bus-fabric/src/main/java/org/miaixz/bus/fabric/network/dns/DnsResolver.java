@@ -407,6 +407,7 @@ public class DnsResolver {
          * Backend resolutions currently shared by callers of the same normalized host.
          */
         private final ConcurrentHashMap<String, CompletableFuture<DnsResult>> inFlight = new ConcurrentHashMap<>();
+
     }
 
     /**

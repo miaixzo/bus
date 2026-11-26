@@ -21,7 +21,10 @@ package org.miaixz.bus.health.linux.hardware;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.function.ToLongFunction;
 
@@ -40,6 +43,8 @@ import org.miaixz.bus.health.builtin.hardware.GpuStats;
 import org.miaixz.bus.health.builtin.hardware.GraphicsCard;
 import org.miaixz.bus.health.builtin.hardware.common.AbstractGraphicsCard;
 import org.miaixz.bus.health.builtin.hardware.common.AbstractHardwareAbstractionLayer;
+import org.miaixz.bus.health.linux.UdevData;
+import org.miaixz.bus.health.linux.driver.Devicetree;
 
 /**
  * Graphics card info obtained by lshw
@@ -100,6 +105,67 @@ final class LinuxGraphicsCard extends AbstractGraphicsCard {
         List<GraphicsCard> cardList = getGraphicsCardsFromLspci();
         if (cardList.isEmpty()) {
             cardList = getGraphicsCardsFromLshw();
+        }
+        if (cardList.isEmpty()) {
+            cardList = getGraphicsCardsFromDrm(LinuxGraphicsCard::createGraphicsCard, DRM_PATH, UdevData.RUN_UDEV_DATA);
+        }
+        return cardList;
+    }
+
+    /**
+     * Lists graphics cards directly from Linux DRM sysfs devices.
+     *
+     * @param factory     creates graphics-card instances from parsed attributes
+     * @param drmPath     the DRM class directory, ending with a slash
+     * @param udevDataDir the udev database directory, ending with a slash
+     * @return graphics cards driven by the DRM subsystem
+     */
+    static List<GraphicsCard> getGraphicsCardsFromDrm(
+            FunctionX<Attrs, GraphicsCard> factory,
+            String drmPath,
+            String udevDataDir) {
+        List<GraphicsCard> cardList = new ArrayList<>();
+        File[] cards = new File(drmPath).listFiles(file -> file.getName().matches("card\\d+"));
+        if (cards == null) {
+            return cardList;
+        }
+        Arrays.sort(cards, Comparator.comparingInt(file -> Parsing.getFirstIntValue(file.getName())));
+        for (File card : cards) {
+            String devicePath = card.getAbsolutePath() + "/device";
+            String driver = readDriverName(devicePath + "/driver");
+            if (driver.isEmpty() || "simple-framebuffer".equals(driver) || "simpledrm".equals(driver)) {
+                continue;
+            }
+            Map<String, String> uevent = Builder.getKeyValueMapFromFile(devicePath + "/uevent", Symbol.EQUAL);
+            String slot = uevent.getOrDefault("PCI_SLOT_NAME", Normal.EMPTY);
+            String name = Normal.UNKNOWN;
+            String deviceId = Normal.UNKNOWN;
+            String vendor = Normal.UNKNOWN;
+            String versionInfo = Normal.UNKNOWN;
+            if (!slot.isEmpty()) {
+                Map<String, String> udev = UdevData.queryDevice(udevDataDir, "pci", slot);
+                String vendorId = Builder.getStringFromFile(devicePath + "/vendor").trim();
+                deviceId = Parsing.getStringValueOrUnknown(Builder.getStringFromFile(devicePath + "/device").trim());
+                name = Parsing.getStringValueOrUnknown(udev.get("ID_MODEL_FROM_DATABASE"));
+                String vendorName = Parsing.getStringValueOrEmpty(udev.get("ID_VENDOR_FROM_DATABASE")).trim();
+                if (!vendorName.isEmpty()) {
+                    vendor = vendorId.isEmpty() ? vendorName
+                            : vendorName + Symbol.SPACE + Symbol.PARENTHESE_LEFT + vendorId + Symbol.PARENTHESE_RIGHT;
+                } else {
+                    vendor = Parsing.getStringValueOrUnknown(vendorId);
+                }
+                String revision = Builder.getStringFromFile(devicePath + "/revision").trim();
+                if (revision.startsWith("0x")) {
+                    versionInfo = "Rev:\t" + revision.substring(Normal._2);
+                }
+            } else {
+                String compatible = Parsing.getStringValueOrEmpty(uevent.get("OF_COMPATIBLE_0")).trim();
+                if (!compatible.isEmpty()) {
+                    name = compatible;
+                    vendor = Parsing.getStringValueOrUnknown(Devicetree.queryVendor(compatible));
+                }
+            }
+            cardList.add(factory.apply(new Attrs(name, deviceId, vendor, versionInfo, 0L, devicePath, driver, slot)));
         }
         return cardList;
     }

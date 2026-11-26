@@ -1131,6 +1131,7 @@ public class UserApi extends AbstractApi {
      * @param projectsLimit the maximum number of projects the user is allowed (optional)
      * @param password      the password, required when creating a new user
      * @param create        whether the form is being populated to create a new user
+     * @param resetPassword whether to request password reset when preparing the user form
      * @return the populated Form instance
      */
     Form userToForm(User user, Integer projectsLimit, CharSequence password, Boolean resetPassword, boolean create) {

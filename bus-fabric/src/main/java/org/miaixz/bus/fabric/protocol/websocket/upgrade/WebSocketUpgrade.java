@@ -28,8 +28,8 @@ import java.security.MessageDigest;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import java.util.function.Consumer;
 
+import org.miaixz.bus.core.center.function.ConsumerX;
 import org.miaixz.bus.core.codec.binary.Base64;
 import org.miaixz.bus.core.io.ByteString;
 import org.miaixz.bus.core.io.buffer.Buffer;
@@ -131,7 +131,7 @@ public class WebSocketUpgrade {
             final Ingress ingress,
             final String path,
             final Headers responseHeaders,
-            final Consumer<Headers> validator) {
+            final ConsumerX<Headers> validator) {
         final Ingress current = require(ingress, "WebSocket ingress");
         try {
             return upgrade(current.source(), current.sink(), path, responseHeaders, validator);
@@ -158,12 +158,12 @@ public class WebSocketUpgrade {
             final Sink sink,
             final String path,
             final Headers responseHeaders,
-            final Consumer<Headers> validator) {
+            final ConsumerX<Headers> validator) {
         final Source currentSource = require(source, "WebSocket upgrade source");
         final Sink currentSink = require(sink, "WebSocket upgrade sink");
         final String requiredPath = validatePath(path);
         final Headers configured = require(responseHeaders, "WebSocket response headers");
-        final Consumer<Headers> openingValidator = require(validator, "WebSocket opening validator");
+        final ConsumerX<Headers> openingValidator = require(validator, "WebSocket opening validator");
         try {
             final BufferSource buffered = IoKit.buffer(currentSource);
             final Request request = readRequest(buffered);

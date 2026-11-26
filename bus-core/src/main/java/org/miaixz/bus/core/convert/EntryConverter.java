@@ -78,7 +78,10 @@ public class EntryConverter extends ConverterWithRoot implements MatcherConverte
     /**
      * Convert method.
      *
+     * @param targetType The target type to convert to.
+     * @param value      The value to convert.
      * @return the Object value
+     * @throws ConvertException if the value cannot be converted to the requested target type
      */
     @Override
     public Object convert(Type targetType, final Object value) throws ConvertException {
@@ -127,6 +130,9 @@ public class EntryConverter extends ConverterWithRoot implements MatcherConverte
     /**
      * Match method.
      *
+     * @param targetType The target type.
+     * @param rawType    The raw class of the target type.
+     * @param value      The value to be converted.
      * @return the boolean value
      */
     @Override

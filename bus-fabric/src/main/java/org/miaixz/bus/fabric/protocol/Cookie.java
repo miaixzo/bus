@@ -208,6 +208,7 @@ public class Cookie {
      * Parses a Max-Age attribute.
      *
      * @param value Max-Age attribute value expressed as a signed number of seconds
+     * @param now   current time in milliseconds since the epoch
      * @return instant obtained by adding the supplied seconds to the current time
      */
     private static Instant parseMaxAge(final String value, final Instant now) {

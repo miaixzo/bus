@@ -86,6 +86,34 @@ public record AuthorizationServerMetadata(String issuer, Optional<String> author
     /**
      * Creates and validates immutable RFC 8414 metadata.
      *
+     * @param issuer                                             authorization server issuer identifier
+     * @param authorizationEndpoint                              optional authorization endpoint URL
+     * @param tokenEndpoint                                      optional token endpoint URL
+     * @param jwksUri                                            optional JWK Set document URL
+     * @param scopesSupported                                    supported OAuth scope values
+     * @param responseTypesSupported                             supported authorization response types
+     * @param responseModesSupported                             supported authorization response modes
+     * @param grantTypesSupported                                supported token endpoint grant types
+     * @param tokenEndpointAuthMethodsSupported                  supported token endpoint client-authentication methods
+     * @param tokenEndpointAuthSigningAlgValuesSupported         supported token endpoint client-assertion JWS
+     *                                                           algorithms
+     * @param serviceDocumentation                               optional human-readable service documentation URL
+     * @param uiLocalesSupported                                 supported BCP 47 user-interface language tags
+     * @param opPolicyUri                                        optional authorization server policy URL
+     * @param opTosUri                                           optional authorization server terms-of-service URL
+     * @param revocationEndpoint                                 optional RFC 7009 revocation endpoint URL
+     * @param revocationEndpointAuthMethodsSupported             supported revocation client-authentication methods
+     * @param revocationEndpointAuthSigningAlgValuesSupported    supported revocation client-assertion JWS algorithms
+     * @param introspectionEndpoint                              optional RFC 7662 introspection endpoint URL
+     * @param introspectionEndpointAuthMethodsSupported          supported introspection client-authentication methods
+     * @param introspectionEndpointAuthSigningAlgValuesSupported supported introspection client-assertion JWS algorithms
+     * @param codeChallengeMethodsSupported                      supported RFC 7636 code challenge methods
+     * @param signedMetadata                                     optional compact signed metadata JWT
+     * @param deviceAuthorizationEndpoint                        optional RFC 8628 device authorization endpoint URL
+     * @param authorizationResponseIssParameterSupported         optional RFC 9207 issuer-parameter support indicator
+     * @param dpopSigningAlgValuesSupported                      supported RFC 9449 DPoP proof JWS algorithms
+     * @param extensions                                         unknown metadata members that do not duplicate or
+     *                                                           enable excluded registered members
      * @throws IllegalArgumentException if a required component, optional container, list, or list entry is null
      * @throws ValidateException        if a URL, scope, locale, duplicate list entry, or extension member violates the
      *                                  applicable metadata specification

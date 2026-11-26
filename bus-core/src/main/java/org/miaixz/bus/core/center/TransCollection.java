@@ -79,11 +79,10 @@ public class TransCollection<F, T> extends AbstractCollection<T> {
     }
 
     /**
-     * Description inherited from parent class or interface.
-     *
-     * <p>
      * Returns an iterator that applies the transformation function to each element of the source collection as it is
      * being iterated.
+     *
+     * @return iterator over the transformed collection elements
      */
     @Override
     public Iterator<T> iterator() {
@@ -91,9 +90,6 @@ public class TransCollection<F, T> extends AbstractCollection<T> {
     }
 
     /**
-     * Description inherited from parent class or interface.
-     *
-     * <p>
      * This operation clears the underlying source collection, effectively clearing this collection as well.
      */
     @Override
@@ -102,10 +98,9 @@ public class TransCollection<F, T> extends AbstractCollection<T> {
     }
 
     /**
-     * Description inherited from parent class or interface.
-     *
-     * <p>
      * This operation checks if the underlying source collection is empty.
+     *
+     * @return whether the underlying source collection has no elements
      */
     @Override
     public boolean isEmpty() {
@@ -113,11 +108,10 @@ public class TransCollection<F, T> extends AbstractCollection<T> {
     }
 
     /**
-     * Description inherited from parent class or interface.
-     *
-     * <p>
      * The specified action is applied to each transformed element of the collection. The transformation is performed
      * before the action is consumed.
+     *
+     * @param action the action to perform
      */
     @Override
     public void forEach(final Consumer<? super T> action) {
@@ -126,11 +120,11 @@ public class TransCollection<F, T> extends AbstractCollection<T> {
     }
 
     /**
-     * Description inherited from parent class or interface.
-     *
-     * <p>
      * Removes elements from the underlying source collection if their transformed value matches the given predicate.
      * The transformation is applied before the predicate is tested.
+     *
+     * @param filter the predicate used to select elements for removal
+     * @return whether any matching elements were removed
      */
     @Override
     public boolean removeIf(final Predicate<? super T> filter) {
@@ -139,10 +133,9 @@ public class TransCollection<F, T> extends AbstractCollection<T> {
     }
 
     /**
-     * Description inherited from parent class or interface.
-     *
-     * <p>
      * Returns a {@link Spliterator} that applies the transformation function to each element on-demand.
+     *
+     * @return spliterator over the transformed collection elements
      */
     @Override
     public Spliterator<T> spliterator() {
@@ -150,10 +143,9 @@ public class TransCollection<F, T> extends AbstractCollection<T> {
     }
 
     /**
-     * Description inherited from parent class or interface.
-     *
-     * <p>
      * This operation returns the size of the underlying source collection.
+     *
+     * @return number of elements in the underlying source collection
      */
     @Override
     public int size() {

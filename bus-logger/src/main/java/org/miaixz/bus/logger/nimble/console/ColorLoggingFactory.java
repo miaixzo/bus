@@ -38,7 +38,10 @@ public class ColorLoggingFactory extends AbstractFactory {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Creates a new logger instance with the specified name.
+     *
+     * @param name the name of the logger.
+     * @return a new {@link Provider} instance.
      */
     @Override
     public Provider of(final String name) {
@@ -46,7 +49,10 @@ public class ColorLoggingFactory extends AbstractFactory {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Creates a new logger instance for the specified class.
+     *
+     * @param clazz the class for which to create the logger.
+     * @return a new {@link Provider} instance.
      */
     @Override
     public Provider of(final Class<?> clazz) {

@@ -21,8 +21,8 @@ package org.miaixz.bus.fabric.network.dns;
 
 import java.net.InetAddress;
 import java.util.List;
-import java.util.function.Function;
 
+import org.miaixz.bus.core.center.function.FunctionX;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.xyz.NetKit;
@@ -37,14 +37,14 @@ public class DnsResolverAdapter implements Resolver {
     /**
      * Caller-supplied lookup function that receives a host name and returns resolved addresses.
      */
-    private final Function<String, List<InetAddress>> lookup;
+    private final FunctionX<String, List<InetAddress>> lookup;
 
     /**
      * Creates an adapter.
      *
      * @param lookup lookup function
      */
-    public DnsResolverAdapter(final Function<String, List<InetAddress>> lookup) {
+    public DnsResolverAdapter(final FunctionX<String, List<InetAddress>> lookup) {
         this.lookup = Assert.notNull(lookup, () -> new ValidateException("DNS lookup must not be null"));
     }
 
@@ -54,7 +54,7 @@ public class DnsResolverAdapter implements Resolver {
      * @param lookup lookup function
      * @return resolver
      */
-    public static Resolver resolver(final Function<String, List<InetAddress>> lookup) {
+    public static Resolver resolver(final FunctionX<String, List<InetAddress>> lookup) {
         return new DnsResolverAdapter(lookup);
     }
 
@@ -64,7 +64,7 @@ public class DnsResolverAdapter implements Resolver {
      * @param lookup lookup function
      * @return DNS resolver
      */
-    public static DnsResolver dnsResolver(final Function<String, List<InetAddress>> lookup) {
+    public static DnsResolver dnsResolver(final FunctionX<String, List<InetAddress>> lookup) {
         return DnsResolver.of(resolver(lookup));
     }
 

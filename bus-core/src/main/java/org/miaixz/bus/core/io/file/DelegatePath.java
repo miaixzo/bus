@@ -407,6 +407,9 @@ public class DelegatePath extends SimpleWrapper<Path> implements Path, Resource 
     public Iterator<Path> iterator() {
         return new Iterator<>() {
 
+            /**
+             * Iterator over the wrapped path's name elements.
+             */
             private final Iterator<Path> itr = raw.iterator();
 
             /**
@@ -431,6 +434,7 @@ public class DelegatePath extends SimpleWrapper<Path> implements Path, Resource 
                 }
                 return new DelegatePath(itr.next());
             }
+
         };
     }
 

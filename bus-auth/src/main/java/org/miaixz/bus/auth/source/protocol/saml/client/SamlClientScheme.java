@@ -103,7 +103,7 @@ public class SamlClientScheme implements ProtocolScheme<SamlClientOptions> {
      */
     private static final Form FORM = new Form(List.of(
             new Form.Section("saml-service-provider", "SAML 2.0 Service Provider", List.of(
-                    field("entity_id", "Service provider entity ID", Form.Type.URL, true),
+                    field(Saml.Options.ENTITY_ID, "Service provider entity ID", Form.Type.URL, true),
                     field("identity_provider_entity_id", "Identity provider entity ID", Form.Type.URL, true),
                     field(
                             "identity_provider_metadata_endpoint",
@@ -111,15 +111,15 @@ public class SamlClientScheme implements ProtocolScheme<SamlClientOptions> {
                             Form.Type.URL,
                             true),
                     field(
-                            "single_sign_on_service_endpoint",
+                            Saml.Options.SINGLE_SIGN_ON_SERVICE_ENDPOINT,
                             "Identity provider Single Sign-On endpoint",
                             Form.Type.URL,
                             true),
                     field("assertion_consumer_service_url", "Assertion Consumer Service URL", Form.Type.URL, true),
                     field(Saml.Parameters.SINGLE_LOGOUT_SERVICE_URL, "Single Logout Service URL", Form.Type.URL, false),
                     field("signing_key_id", "Signing key identifier", Form.Type.SECRET, true),
-                    field("want_assertions_signed", "Require signed assertions", Form.Type.BOOLEAN, true),
-                    field("want_responses_signed", "Require signed responses", Form.Type.BOOLEAN, true)))));
+                    field(Saml.Options.WANT_ASSERTIONS_SIGNED, "Require signed assertions", Form.Type.BOOLEAN, true),
+                    field(Saml.Options.WANT_RESPONSES_SIGNED, "Require signed responses", Form.Type.BOOLEAN, true)))));
 
     /**
      * Creates the stateless SAML service-server scheme used to compile Source configurations.

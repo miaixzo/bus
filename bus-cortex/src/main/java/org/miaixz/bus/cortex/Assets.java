@@ -68,22 +68,7 @@ public class Assets extends Nature {
     private String icon;
 
     /**
-     * Hostname or IP address of the downstream service.
-     */
-    private String host;
-
-    /**
-     * Network port of the downstream service.
-     */
-    private Integer port;
-
-    /**
-     * Context path on the downstream service, prefixed when forwarding requests.
-     */
-    private String path;
-
-    /**
-     * Actual access address of the target application endpoint.
+     * API path relative to the registered service base URL, or an absolute URL for a standalone protocol route.
      */
     private String url;
 
@@ -113,8 +98,7 @@ public class Assets extends Nature {
      * <li>{@code 3}: file download with separate admission and progress protection</li>
      * </ul>
      */
-    @Builder.Default
-    private Integer stream = 1;
+    private Integer stream;
 
     /**
      * HTTP request method (verb). {@code 1}=GET, {@code 2}=POST, {@code 3}=HEAD, {@code 4}=PUT, {@code 5}=PATCH,
@@ -128,7 +112,7 @@ public class Assets extends Nature {
      * <li>{@code 0}: Public or authentication-bootstrap access without a user credential</li>
      * <li>{@code 1}: Credential authentication</li>
      * <li>{@code 2}: Credential authentication and permission validation</li>
-     * <li>{@code 3}: Credential authentication, permission validation, and license validation</li>
+     * <li>{@code 3}: Legacy credential and permission validation; License is handled by feature presentation</li>
      * </ul>
      */
     private Integer policy;
@@ -144,21 +128,25 @@ public class Assets extends Nature {
     private Integer signing;
 
     /**
-     * OAuth2 scope ID / permission level required to access this asset.
+     * Stable business action code required by this asset, such as read or remove.
      */
-    private Integer scope;
+    private String scope;
 
     /**
-     * Maximum number of automatic retry attempts for transient failures. Default: {@code 3}.
+     * Network visibility. {@code 0} restricts access to authorized internal services and {@code 1} allows public access
+     * under the existing policy.
      */
-    @Builder.Default
-    private Integer retries = 3;
+    private Integer visible;
 
     /**
-     * Request timeout in seconds. Default: {@code 60}.
+     * Maximum number of automatic retry attempts for transient failures.
      */
-    @Builder.Default
-    private Integer timeout = 60;
+    private Integer retries;
+
+    /**
+     * Request timeout in seconds.
+     */
+    private Integer timeout;
 
     /**
      * Per-minute request rate limit. {@code null} or {@code 0} disables rate limiting.
@@ -227,6 +215,13 @@ public class Assets extends Nature {
      */
     @Transient
     private Map<String, String> labels;
+
+    /**
+     * Detached service instances attached by the authoritative runtime projection. Null is a non-runtime asset; an
+     * empty list explicitly means that no service instance can receive traffic. Never persisted as API data.
+     */
+    @Transient
+    private List<Instance> instances;
 
     /**
      * Constructs a new {@code Assets} instance.

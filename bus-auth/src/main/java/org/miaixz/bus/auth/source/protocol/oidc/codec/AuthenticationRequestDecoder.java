@@ -51,11 +51,6 @@ import org.miaixz.bus.extra.json.JsonValue;
 public class AuthenticationRequestDecoder implements Decoder<Request, AuthenticationRequest> {
 
     /**
-     * Maximum accepted UTF-8 size of the claims parameter JSON document.
-     */
-    private static final int MAXIMUM_CLAIMS_BYTES = Math.toIntExact(64 * Normal.KIBI);
-
-    /**
      * Shared strict OAuth authorization request decoder.
      */
     private final AuthorizationRequestDecoder oauthDecoder;
@@ -210,7 +205,7 @@ public class AuthenticationRequestDecoder implements Decoder<Request, Authentica
      */
     private JsonValue.ObjectValue claims(final String value) {
         final byte[] bytes = value.getBytes(Charset.UTF_8);
-        if (bytes.length == 0 || bytes.length > MAXIMUM_CLAIMS_BYTES) {
+        if (bytes.length == 0 || bytes.length > 64 * Normal.KIBI) {
             throw new ValidateException("OpenID Connect claims parameter must contain one JSON object within 64 KiB");
         }
         final JsonValue decoded;

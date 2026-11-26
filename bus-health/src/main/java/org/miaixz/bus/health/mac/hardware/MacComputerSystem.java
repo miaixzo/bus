@@ -82,7 +82,9 @@ final class MacComputerSystem extends AbstractComputerSystem {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Get the computer system manufacturer.
+     *
+     * @return The manufacturer.
      */
     @Override
     public String getManufacturer() {
@@ -90,7 +92,9 @@ final class MacComputerSystem extends AbstractComputerSystem {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Get the computer system model.
+     *
+     * @return The model.
      */
     @Override
     public String getModel() {
@@ -98,7 +102,18 @@ final class MacComputerSystem extends AbstractComputerSystem {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Get the computer system serial number, if available.
+     * <p>
+     * Performs a best-effort attempt to retrieve a unique serial number from the computer system. This may originate
+     * from the baseboard, BIOS, processor, etc.
+     * <p>
+     * This value is provided for information only. Caution should be exercised if using this result to "fingerprint" a
+     * system for licensing or other purposes, as the result may change based on program permissions or installation of
+     * software packages. Specifically, on Linux and FreeBSD, this requires either root permissions, or installation of
+     * the (deprecated) HAL library (lshal command). Linux also attempts to read the dmi/id serial number files in
+     * sysfs, which are read-only root by default but may have permissions altered by the user.
+     *
+     * @return the System Serial Number, if available, otherwise returns "unknown"
      */
     @Override
     public String getSerialNumber() {
@@ -106,7 +121,11 @@ final class MacComputerSystem extends AbstractComputerSystem {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Get the computer system hardware UUID, if available.
+     * <p>
+     * Performs a best-effort attempt to retrieve the hardware UUID.
+     *
+     * @return the Hardware UUID, if available, otherwise returns "unknown"
      */
     @Override
     public String getHardwareUUID() {
@@ -114,7 +133,9 @@ final class MacComputerSystem extends AbstractComputerSystem {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Instantiates the platform-specific {@link Firmware} object
+     *
+     * @return platform-specific {@link Firmware} object
      */
     @Override
     public Firmware createFirmware() {
@@ -122,7 +143,9 @@ final class MacComputerSystem extends AbstractComputerSystem {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Instantiates the platform-specific {@link Baseboard} object
+     *
+     * @return platform-specific {@link Baseboard} object
      */
     @Override
     public Baseboard createBaseboard() {

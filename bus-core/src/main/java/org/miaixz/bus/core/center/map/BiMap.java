@@ -133,8 +133,10 @@ public class BiMap<K, V> extends MapWrapper<K, V> {
                     public int size() {
                         return inverseSize();
                     }
+
                 };
             }
+
         });
     }
 

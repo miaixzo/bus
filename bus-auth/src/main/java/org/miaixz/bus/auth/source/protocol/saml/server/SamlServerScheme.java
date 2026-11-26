@@ -57,6 +57,16 @@ public class SamlServerScheme implements ProtocolScheme<SamlServerOptions> {
             Capability.Security.SUBJECT_AUTHENTICATED);
 
     /**
+     * Returns only a signed NoPassive error for a verified passive request without an authenticated subject.
+     */
+    public static final Capability<AuthnRequest, Response> PASSIVE_FAILURE = capability(
+            Capability.Key.standard(Protocol.SAML, "passive_failure"),
+            AuthnRequest.class,
+            Response.class,
+            Capability.Interaction.REDIRECT,
+            Capability.Security.PUBLIC);
+
+    /**
      * Processes a SAML Single Logout Request.
      */
     public static final Capability<LogoutRequest, LogoutResponse> SINGLE_LOGOUT = capability(
@@ -80,7 +90,7 @@ public class SamlServerScheme implements ProtocolScheme<SamlServerOptions> {
      * Exact potential identity-provider operations before endpoint-specific runtime narrowing.
      */
     private static final Capability.Manifest MANIFEST = new Capability.Manifest(
-            List.of(SINGLE_SIGN_ON, SINGLE_LOGOUT, METADATA));
+            List.of(SINGLE_SIGN_ON, PASSIVE_FAILURE, SINGLE_LOGOUT, METADATA));
 
     /**
      * Formal specifications implemented by this identity-server scheme.
@@ -102,12 +112,12 @@ public class SamlServerScheme implements ProtocolScheme<SamlServerOptions> {
      */
     private static final Form FORM = new Form(List.of(
             new Form.Section("saml-identity-provider", "SAML 2.0 Identity Provider", List.of(
-                    field("entity_id", "Identity provider entity ID", Form.Type.URL, true),
+                    field(Saml.Options.ENTITY_ID, "Identity provider entity ID", Form.Type.URL, true),
                     field("single_sign_on_service_url", "Single Sign-On Service URL", Form.Type.URL, true),
                     field(Saml.Parameters.SINGLE_LOGOUT_SERVICE_URL, "Single Logout Service URL", Form.Type.URL, false),
-                    field("metadata_url", "Metadata URL", Form.Type.URL, true),
+                    field(Saml.Options.METADATA_URL, "Metadata URL", Form.Type.URL, true),
                     field("signing_key_id", "Signing key identifier", Form.Type.SECRET, true),
-                    field("signature_algorithm", "XML Signature algorithm", Form.Type.SELECT, true),
+                    field(Saml.Options.SIGNATURE_ALGORITHM, "XML Signature algorithm", Form.Type.SELECT, true),
                     field("assertions_signed", "Sign assertions", Form.Type.BOOLEAN, true),
                     field("responses_signed", "Sign responses", Form.Type.BOOLEAN, true)))));
 

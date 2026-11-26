@@ -64,6 +64,9 @@ public class KBeanConverter implements MatcherConverter, Serializable {
     /**
      * Match method.
      *
+     * @param targetType The target type.
+     * @param rawType    The raw class of the target type.
+     * @param value      The value to be converted.
      * @return the boolean value
      */
     @Override
@@ -74,7 +77,10 @@ public class KBeanConverter implements MatcherConverter, Serializable {
     /**
      * Convert method.
      *
+     * @param targetType The target type to convert to.
+     * @param value      The value to convert.
      * @return the Object value
+     * @throws ConvertException if the value cannot be converted to the requested target type
      */
     @Override
     public Object convert(final Type targetType, final Object value) throws ConvertException {

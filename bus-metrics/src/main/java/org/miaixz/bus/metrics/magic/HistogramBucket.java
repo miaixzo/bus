@@ -30,6 +30,9 @@ public record HistogramBucket(double upperBound, long cumulativeCount) {
 
     /**
      * Validates the bucket.
+     *
+     * @param upperBound      inclusive upper bound; positive infinity is allowed for the terminal bucket
+     * @param cumulativeCount cumulative number of observations in this and all lower buckets
      */
     public HistogramBucket {
         if (Double.isNaN(upperBound) || upperBound == Double.NEGATIVE_INFINITY) {

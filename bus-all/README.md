@@ -95,6 +95,7 @@ dependencies {
 - `bus-cortex`: service registry, discovery and health probing
 - `bus-crypto`: cryptography, certificate and security utilities
 - `bus-extra`: extended utilities and integrations
+- `bus-errors`: hared error classification, public HTTP responses and diagnostics
 - `bus-fabric`: HTTP, socket, WebSocket, SSE and STOMP protocol runtime
 - `bus-gitlab`: GitLab API integration
 - `bus-health`: health checks and diagnostics
@@ -132,8 +133,8 @@ artifact instead of receiving every internal module as a regular transitive depe
 
 Metadata continues to ship inside JARs. Bus registrations remain under `org.miaixz/<module>`; third-party registrations
 are maintained in `bus-preset` under each library's group, artifact and version. The relevant integration modules
-bring in this metadata-only JAR directly; `bus-all` includes its resources in the aggregate JAR. No additional
-third-party libraries are pulled in by `bus-preset`. Existing upstream metadata deduplication remains in effect.
+receive this metadata-only JAR through their dependency chains. `bus-all` includes its resources in the aggregate JAR.
+No additional third-party libraries are pulled in by `bus-preset`. Existing upstream metadata deduplication remains in effect.
 
 This makes `bus-all` convenient, but it also means the resulting classpath is intentionally broad. Choose direct module
 dependencies when startup time, dependency surface, native-image size or deployment footprint is important.

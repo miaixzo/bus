@@ -34,6 +34,9 @@ public record DoubleMetricPoint(Attributes attributes, double value) implements 
 
     /**
      * Validates the point.
+     *
+     * @param attributes resource attributes
+     * @param value      observed value
      */
     public DoubleMetricPoint {
         attributes = Objects.requireNonNull(attributes, "Metric attributes must not be null");

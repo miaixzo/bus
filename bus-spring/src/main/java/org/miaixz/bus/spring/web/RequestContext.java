@@ -20,7 +20,9 @@
 package org.miaixz.bus.spring.web;
 
 import java.util.*;
+import java.util.function.Predicate;
 
+import jakarta.servlet.ServletRequest;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.Part;
@@ -30,12 +32,14 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.servlet.HandlerMapping;
 
+import org.miaixz.bus.core.center.function.FunctionX;
 import org.miaixz.bus.core.center.map.CaseInsensitiveMap;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.EnumValue;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.Nullable;
 import org.miaixz.bus.core.net.MediaType;
+import org.miaixz.bus.core.xyz.FunctionKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.spring.web.wrapper.CachedBodyRequestWrapper;
@@ -63,6 +67,11 @@ public class RequestContext {
     private static final String PARAMETERS_ATTRIBUTE = ATTRIBUTE_PREFIX + "parameters";
 
     /**
+     * Request attribute marking forms whose original bytes belong to the endpoint.
+     */
+    private static final String RAW_FORM_ATTRIBUTE = ATTRIBUTE_PREFIX + "rawForm";
+
+    /**
      * Request attribute containing the parsed JSON body cache.
      */
     private static final String JSON_BODY_ATTRIBUTE = ATTRIBUTE_PREFIX + "jsonBody";
@@ -83,10 +92,54 @@ public class RequestContext {
     private static final Object EMPTY_BODY = new Object();
 
     /**
+     * Application rule selecting endpoints that consume raw form bytes.
+     */
+    private final Predicate<HttpServletRequest> rawForm;
+
+    /**
      * Initializes a request accessor that stores all derived values on the active Servlet request.
      */
     public RequestContext() {
-        // No initialization required.
+        this(request -> false);
+    }
+
+    /**
+     * Creates a request accessor with an application rule for original form access.
+     *
+     * @param rawForm rule that matches request coordinates without reading parameters or the body
+     */
+    public RequestContext(Predicate<HttpServletRequest> rawForm) {
+        this.rawForm = Objects.requireNonNull(rawForm, "rawForm");
+    }
+
+    /**
+     * Records the form access decision before Servlet parameter access can parse the original bytes.
+     *
+     * @param request original HTTP request at its first dispatch
+     */
+    public void prepareFormAccess(HttpServletRequest request) {
+        if (this.rawForm.test(request)) {
+            request.setAttribute(RAW_FORM_ATTRIBUTE, Boolean.TRUE);
+        }
+    }
+
+    /**
+     * Reports whether reading Servlet parameters would interfere with the endpoint's original form access.
+     *
+     * @param request current Servlet request
+     * @return whether the endpoint owns the original form bytes
+     */
+    public static boolean preservesFormBody(ServletRequest request) {
+        return Boolean.TRUE.equals(request.getAttribute(RAW_FORM_ATTRIBUTE));
+    }
+
+    /**
+     * Releases the form access decision when the request lifecycle completes.
+     *
+     * @param request completed Servlet request
+     */
+    public static void clearFormAccess(ServletRequest request) {
+        request.removeAttribute(RAW_FORM_ATTRIBUTE);
     }
 
     /**
@@ -584,34 +637,16 @@ public class RequestContext {
      * @param defaultValue fallback value
      * @return parsed number, or the supplied fallback
      */
-    private <T extends Number> T number(String key, Parser<T> parser, T defaultValue) {
+    private <T extends Number> T number(String key, FunctionX<String, T> parser, T defaultValue) {
         String value = getValue(key, EnumValue.Params.ALL);
         if (StringKit.isEmpty(value)) {
             return defaultValue;
         }
         try {
-            return parser.parse(value);
+            return FunctionKit.applyUnwrapped(parser, value);
         } catch (NumberFormatException ignored) {
             return defaultValue;
         }
-    }
-
-    /**
-     * Parses a numeric request value.
-     *
-     * @param <T> result type
-     */
-    @FunctionalInterface
-    private interface Parser<T extends Number> {
-
-        /**
-         * Parses a numeric string.
-         *
-         * @param value numeric text
-         * @return parsed number
-         */
-
-        T parse(String value) throws NumberFormatException;
     }
 
 }

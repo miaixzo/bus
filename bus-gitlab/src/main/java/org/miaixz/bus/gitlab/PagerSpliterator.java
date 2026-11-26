@@ -28,6 +28,7 @@ import java.util.function.Consumer;
 /**
  * The pager spliterator class.
  *
+ * @param <T> type of the elements traversed by the spliterator
  * @author Kimi Liu
  */
 class PagerSpliterator<T> implements Spliterator<T> {

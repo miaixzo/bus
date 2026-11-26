@@ -1,0 +1,17 @@
+[
+  {
+    "latest": true,
+    "metadata-version": "2.26.0",
+    "source-code-url": "https://repo.maven.apache.org/maven2/org/apache/logging/log4j/log4j-core/$version$/log4j-core-$version$-sources.jar",
+    "repository-url": "https://github.com/apache/logging-log4j2",
+    "documentation-url": "https://repo.maven.apache.org/maven2/org/apache/logging/log4j/log4j-core/$version$/log4j-core-$version$-javadoc.jar",
+    "description": "Apache Log4j Core, the reference implementation of the Log4j API.",
+    "tested-versions": [
+      "2.26.0",
+      "2.26.1"
+    ],
+    "allowed-packages": [
+      "org.apache.logging.log4j.core"
+    ]
+  }
+]

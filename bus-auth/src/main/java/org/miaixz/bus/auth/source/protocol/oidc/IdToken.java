@@ -38,6 +38,7 @@ public record IdToken(String compact) {
     /**
      * Creates an immutable ID Token after validating only compact serialization shape.
      *
+     * @param compact sensitive three-segment JWS or five-segment JWE representation
      * @throws IllegalArgumentException if {@code compact} is {@code null} or blank
      * @throws ValidateException        if compact serialization has an invalid segment count or base64url shape
      */

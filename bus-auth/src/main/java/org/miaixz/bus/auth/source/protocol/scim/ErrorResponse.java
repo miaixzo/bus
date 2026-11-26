@@ -39,6 +39,10 @@ public record ErrorResponse(List<String> schemas, String status, Optional<String
     /**
      * Enforces the standard Error schema and canonical status representation.
      *
+     * @param schemas  singleton standard Error schema URI
+     * @param status   decimal HTTP error status as a JSON string
+     * @param scimType registered SCIM error keyword when applicable
+     * @param detail   safe human-readable explanation when applicable
      * @throws IllegalArgumentException if a required value or optional container is {@code null}
      * @throws ValidateException        if the schema, status, or an optional text value is invalid
      */

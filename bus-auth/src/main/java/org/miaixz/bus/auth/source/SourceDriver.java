@@ -168,6 +168,13 @@ public interface SourceDriver<O extends Options<?>> {
 
         /**
          * Creates a complete immutable driver preparation.
+         *
+         * @param entry        complete Source Blueprint entry
+         * @param provider     resolved owning Provider
+         * @param library      resolved owning Library
+         * @param options      exact immutable narrowed options
+         * @param slots        exact project integration requirements
+         * @param dependencies exact framework infrastructure and state requirements
          */
         public Prepared {
             Assert.notNull(entry, "Prepared Source Blueprint entry must not be null");
@@ -190,6 +197,8 @@ public interface SourceDriver<O extends Options<?>> {
 
         /**
          * Creates an immutable dependency set.
+         *
+         * @param values required framework services
          */
         public Dependencies {
             Assert.notNull(values, "Source framework dependency set must not be null");

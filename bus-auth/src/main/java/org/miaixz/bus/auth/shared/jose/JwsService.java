@@ -846,6 +846,8 @@ public class JwsService {
         /**
          * Defensively copies payload and signatures.
          *
+         * @param payload    decoded JWS payload octets
+         * @param signatures non-empty signatures in JSON wire order
          * @throws IllegalArgumentException if a component or signature is {@code null}
          * @throws ValidateException        if the signature list is empty
          */
@@ -884,6 +886,9 @@ public class JwsService {
         /**
          * Defensively copies signature material while retaining the exact protected text.
          *
+         * @param header           validated combined JOSE Header
+         * @param encodedProtected original unpadded Base64URL protected-header segment, possibly empty for JSON form
+         * @param value            decoded signature or MAC bytes
          * @throws IllegalArgumentException if a component is {@code null}
          * @throws ValidateException        if the signature value is empty
          */

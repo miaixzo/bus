@@ -79,7 +79,7 @@ public final class HkdfJwtKeyDeriver implements JwtKeyDeriver {
      * Creates the stateless version-one derivation profile.
      */
     public HkdfJwtKeyDeriver() {
-        // No mutable state.
+        // No initialization required.
     }
 
     /**

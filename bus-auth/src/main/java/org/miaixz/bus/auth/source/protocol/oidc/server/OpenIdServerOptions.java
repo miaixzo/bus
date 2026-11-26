@@ -84,6 +84,20 @@ public record OpenIdServerOptions(OAuth2ServerOptions oauth2Options, Optional<En
     /**
      * Normalizes endpoints and enforces the OIDC code-flow, claim, algorithm, and lifetime profile.
      *
+     * @param oauth2Options                        validated OAuth authorization-server options
+     * @param discoveryEndpoint                    required OpenID Provider Metadata endpoint
+     * @param userInfoEndpoint                     optional UserInfo endpoint
+     * @param jwkSetEndpoint                       required public JWK Set endpoint
+     * @param endSessionEndpoint                   optional RP-Initiated Logout endpoint
+     * @param subjectTypesSupported                subject identifier types implemented by this OpenID Provider
+     * @param scopeClaims                          exact scope-to-claim mapping used by ID Token, UserInfo, and
+     *                                             discovery generation
+     * @param pairwisePolicy                       optional pairwise subject derivation policy
+     * @param idTokenEncryptionAlgorithmsSupported allowed ID Token JWE key-management algorithms
+     * @param idTokenEncryptionMethodsSupported    allowed ID Token JWE content-encryption methods
+     * @param idTokenSigningAlgorithm              exact ID Token JWS algorithm
+     * @param idTokenSigningKeyId                  exact public JWK {@code kid} used to resolve the signing key
+     * @param idTokenLifetime                      positive ID Token lifetime not exceeding one hour
      * @throws IllegalArgumentException if a required component, container, collection, or item is {@code null}
      * @throws ValidateException        if OAuth policy, endpoints, subject type, claims, algorithm, or lifetime is
      *                                  invalid

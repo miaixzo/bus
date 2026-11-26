@@ -60,6 +60,7 @@ import org.miaixz.bus.fabric.protocol.Mediator.Type;
 import org.miaixz.bus.fabric.protocol.http.auth.HttpAuth;
 import org.miaixz.bus.fabric.protocol.http.body.*;
 import org.miaixz.bus.fabric.protocol.http.calls.HttpCall;
+import org.miaixz.bus.fabric.protocol.http.retry.HttpRetryPolicy;
 import org.miaixz.bus.fabric.runtime.resource.Cancellation;
 
 /**
@@ -387,6 +388,11 @@ public class HttpX {
          * Optional explicit network address policy stored as a typed request tag.
          */
         private AddressPolicy addressPolicy;
+
+        /**
+         * Optional request-specific retry policy stored independently of application and address-policy tags.
+         */
+        private HttpRetryPolicy retryPolicy;
 
         /**
          * Observer.
@@ -1486,6 +1492,17 @@ public class HttpX {
         }
 
         /**
+         * Overrides the context HTTP retry policy for this request.
+         *
+         * @param policy request retry policy, or null to use the context policy
+         * @return this builder
+         */
+        public Builder retryPolicy(final HttpRetryPolicy policy) {
+            this.retryPolicy = policy;
+            return this;
+        }
+
+        /**
          * Sets request id as the tag.
          *
          * @param id request id
@@ -1703,6 +1720,7 @@ public class HttpX {
             if (cached != null && cached.context == context && cached.request.method() == method
                     && simpleTargetMatches(cached.request) && cached.request.headers() == requestHeaders
                     && cached.request.body() == payloadBody && cached.request.tag() == tag
+                    && cached.request.tag(HttpRetryPolicy.class) == retryPolicy
                     && cached.request.tag(AddressPolicy.class) == addressPolicy && cached.request.proxy().equals(proxy)
                     && cached.request.timeout().equals(timeout)) {
                 return cached.request;
@@ -1712,13 +1730,14 @@ public class HttpX {
                     && cached.request.url().toString().equals(target.toString())
                     && cached.request.headers() == requestHeaders && cached.request.body() == payloadBody
                     && cached.request.tag() == tag && cached.request.proxy().equals(proxy)
+                    && cached.request.tag(HttpRetryPolicy.class) == retryPolicy
                     && cached.request.tag(AddressPolicy.class) == addressPolicy
                     && cached.request.timeout().equals(timeout)) {
                 return cached.request;
             }
             final HttpRequest request = HttpRequest.builder().method(method).url(target).headers(requestHeaders)
-                    .body(payloadBody).tag(tag).tag(AddressPolicy.class, addressPolicy).proxy(proxy).timeout(timeout)
-                    .build();
+                    .body(payloadBody).tag(tag).tag(AddressPolicy.class, addressPolicy)
+                    .tag(HttpRetryPolicy.class, retryPolicy).proxy(proxy).timeout(timeout).build();
             final Protocol protocol = request.url().address().protocol();
             if (protocol != Protocol.HTTP && protocol != Protocol.HTTPS) {
                 throw new ProtocolException("HTTP exchange requires http or https URL");

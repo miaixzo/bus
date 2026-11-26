@@ -152,6 +152,7 @@ public class Transcoder implements Closeable {
         public void endDataset(ImageInputStream dis) {
 
         }
+
     };
 
     /**

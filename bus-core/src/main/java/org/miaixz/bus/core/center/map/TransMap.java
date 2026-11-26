@@ -328,6 +328,7 @@ public abstract class TransMap<K, V> extends MapWrapper<K, V> {
                     public void remove() {
                         iterator.remove();
                     }
+
                 };
             }
 
@@ -388,6 +389,7 @@ public abstract class TransMap<K, V> extends MapWrapper<K, V> {
                 Objects.requireNonNull(filter, "filter");
                 return entries.removeIf(entry -> filter.test(transformedEntry(entry)));
             }
+
         };
     }
 
@@ -433,6 +435,7 @@ public abstract class TransMap<K, V> extends MapWrapper<K, V> {
             public V setValue(final V value) {
                 return entry.setValue(customValue(value));
             }
+
         };
     }
 

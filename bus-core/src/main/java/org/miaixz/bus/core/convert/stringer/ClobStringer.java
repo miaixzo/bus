@@ -72,6 +72,7 @@ public class ClobStringer implements FunctionX<Object, String> {
     /**
      * Apply method.
      *
+     * @param o The input object.
      * @return the String value
      */
     @Override

@@ -50,6 +50,7 @@
     <artifactId>bus-opencv</artifactId>
     <version>8.x.x</version>
 </dependency>
+
 ```
 
 ### 加载 OpenCV 库

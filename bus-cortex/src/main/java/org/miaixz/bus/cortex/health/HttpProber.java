@@ -19,11 +19,16 @@
 */
 package org.miaixz.bus.cortex.health;
 
+import java.net.URI;
+
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.Port;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.xyz.DateKit;
 import org.miaixz.bus.cortex.*;
+import org.miaixz.bus.cortex.registry.ServiceRoutes;
 import org.miaixz.bus.logger.Logger;
 
 /**
@@ -51,40 +56,52 @@ public class HttpProber implements Prober {
      * @param timeoutMs timeout in milliseconds, clamped to at least 1
      */
     public HttpProber(long timeoutMs) {
-        this.timeoutMs = Math.max(1L, timeoutMs);
+        this.timeoutMs = Math.max((long) Normal._1, timeoutMs);
     }
 
     /**
      * Returns whether this prober can probe the supplied instance through HTTP.
      *
      * @param instance candidate instance
-     * @return true for a non-null instance and host whose scheme is not TCP, compared case-insensitively; endpoint
-     *         validity is not checked
+     * @return true for a SERVICE listener explicitly using HTTP/HTTPS; legacy instance kinds retain their non-TCP
+     *         eligibility check. Complete endpoint validity is checked before probing a SERVICE listener.
      */
     @Override
     public boolean supports(Instance instance) {
         return instance != null && instance.getHost() != null
-                && !Protocol.TCP.name.equalsIgnoreCase(instance.healthView().getScheme());
+                && (Builder.INSTANCE_KIND_SERVICE.equals(instance.getKind())
+                        || !Protocol.TCP.name.equalsIgnoreCase(instance.healthView().getScheme()));
     }
 
     /**
-     * Performs a GET using the instance host and port together with health.scheme and health.path. An absent scheme
-     * defaults to HTTP, an absent port to 80 even for HTTPS, and an absent health path to /health. No separate supports
-     * check is performed.
+     * Probes SERVICE instances using their explicit listener scheme and port, including the deployment context in the
+     * default health path. A separate health.scheme cannot downgrade a SERVICE listener. Other legacy instance kinds
+     * retain their existing health.scheme, port-80 and /health defaults.
      *
      * @param instance non-null instance defining the health endpoint
      * @return healthy status for a 2xx response without a reported call error; failed status for other responses or
      *         reported transport failures
-     * @throws NullPointerException if instance is null
+     * @throws NullPointerException     if instance is null
+     * @throws IllegalArgumentException if a SERVICE listener has incomplete or unsupported coordinates
      */
     @Override
     public Status check(Instance instance) {
         var health = instance.healthView();
+        boolean service = Builder.INSTANCE_KIND_SERVICE.equals(instance.getKind());
+        if (service)
+            ServiceRoutes.validate(instance);
+        URI address = service ? ServiceRoutes.address(instance) : null;
         String scheme = health.getScheme() != null ? health.getScheme() : Protocol.HTTP.name;
-        String host = instance.getHost();
-        int port = instance.getPort() != null ? instance.getPort() : Port._80.getPort();
-        String path = health.getPath() != null ? health.getPath() : Symbol.SLASH + "health";
-        String url = scheme + Symbol.COLON + Symbol.FORWARDSLASH + host + Symbol.COLON + port + path;
+        String host = service ? address.getHost() : instance.getHost();
+        if (host.contains(Symbol.COLON) && !host.startsWith(Symbol.BRACKET_LEFT))
+            host = Symbol.BRACKET_LEFT + host + Symbol.BRACKET_RIGHT;
+        int port = service ? address.getPort() : instance.getPort() != null ? instance.getPort() : Port._80.getPort();
+        String context = service ? address.getRawPath() : Normal.EMPTY;
+        String path = health.getPath() != null ? health.getPath()
+                : (context + Http.Path.HEALTH).replaceAll(Symbol.SLASH + Symbol.PLUS, Symbol.SLASH);
+        String origin = service ? ServiceRoutes.origin(address)
+                : scheme + Symbol.COLON + Symbol.FORWARDSLASH + host + Symbol.COLON + port;
+        String url = origin + path;
         long start = DateKit.current();
         Logger.debug(
                 true,

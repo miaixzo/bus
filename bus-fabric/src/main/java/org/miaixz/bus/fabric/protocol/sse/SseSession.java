@@ -25,9 +25,11 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
+import org.miaixz.bus.core.center.function.RunnableX;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.StatefulException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.core.xyz.FunctionKit;
 import org.miaixz.bus.fabric.*;
 import org.miaixz.bus.fabric.observe.EventObserver;
 import org.miaixz.bus.fabric.observe.ObservationMarker;
@@ -105,7 +107,7 @@ public class SseSession implements Session {
     /**
      * Replaceable factory-removal hook consumed by terminal cleanup.
      */
-    private final AtomicReference<Runnable> onClose;
+    private final AtomicReference<RunnableX> onClose;
 
     /**
      * One-way guard granting exactly one caller ownership of terminal cleanup.
@@ -396,16 +398,16 @@ public class SseSession implements Session {
      * @param hook callback that removes this session from its factory registry
      * @throws ValidateException if {@code hook} is {@code null}
      */
-    void onClose(final Runnable hook) {
-        final Runnable current = require(hook, "SSE close hook");
+    void onClose(final RunnableX hook) {
+        final RunnableX current = require(hook, "SSE close hook");
         if (terminated.get()) {
-            current.run();
+            FunctionKit.runUnwrapped(current);
             return;
         }
         onClose.set(current);
         if (terminated.get() && onClose.compareAndSet(current, () -> {
         })) {
-            current.run();
+            FunctionKit.runUnwrapped(current);
         }
     }
 
@@ -465,9 +467,9 @@ public class SseSession implements Session {
      * Atomically consumes and runs the current factory-removal hook, if one is installed.
      */
     private void notifyClose() {
-        final Runnable hook = onClose.getAndSet(null);
+        final RunnableX hook = onClose.getAndSet(null);
         if (hook != null) {
-            hook.run();
+            FunctionKit.runUnwrapped(hook);
         }
     }
 

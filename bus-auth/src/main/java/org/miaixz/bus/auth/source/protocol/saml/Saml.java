@@ -84,6 +84,82 @@ public class Saml {
     }
 
     /**
+     * Defines portable framework configuration keys, separate from protocol wire and discovery member names.
+     *
+     * @author Kimi Liu
+     */
+    public static class Options {
+
+        /**
+         * Configured local SAML entity identifier; distinct from the XML entityID attribute.
+         */
+        public static final String ENTITY_ID = "entity_id";
+
+        /**
+         * Configured peer identity provider entity identifier.
+         */
+        public static final String IDP_ENTITY_ID = "idp_entity_id";
+
+        /**
+         * Configured identity provider metadata document URL.
+         */
+        public static final String METADATA_URL = "metadata_url";
+
+        /**
+         * Configured peer SingleSignOnService destination.
+         */
+        public static final String SINGLE_SIGN_ON_SERVICE_ENDPOINT = "single_sign_on_service_endpoint";
+
+        /**
+         * Configured peer SingleLogoutService destination.
+         */
+        public static final String SINGLE_LOGOUT_SERVICE_ENDPOINT = "single_logout_service_endpoint";
+
+        /**
+         * Configured XML signature algorithm.
+         */
+        public static final String SIGNATURE_ALGORITHM = "signature_algorithm";
+
+        /**
+         * Configured requirement to sign outgoing authentication requests.
+         */
+        public static final String SIGN_REQUESTS = "sign_requests";
+
+        /**
+         * Configured requirement to verify signed assertions.
+         */
+        public static final String WANT_ASSERTIONS_SIGNED = "want_assertions_signed";
+
+        /**
+         * Configured requirement to verify signed responses.
+         */
+        public static final String WANT_RESPONSES_SIGNED = "want_responses_signed";
+
+        /**
+         * Configured permitted clock skew in seconds.
+         */
+        public static final String CLOCK_SKEW = "clock_skew";
+
+        /**
+         * Configured maximum accepted assertion age in seconds.
+         */
+        public static final String MAXIMUM_ASSERTION_AGE = "maximum_assertion_age";
+
+        /**
+         * Configured lifetime of issued assertions in seconds.
+         */
+        public static final String ASSERTION_LIFETIME = "assertion_lifetime";
+
+        /**
+         * Creates a configuration key holder with no retained state.
+         */
+        public Options() {
+            // No initialization required.
+        }
+
+    }
+
+    /**
      * Defines namespaces used by the SAML protocol, assertion, metadata, signature, and encryption vocabularies.
      *
      * @author Kimi Liu
@@ -186,6 +262,11 @@ public class Saml {
          * Policy-denied request status.
          */
         public static final String REQUEST_DENIED = "urn:oasis:names:tc:SAML:2.0:status:RequestDenied";
+
+        /**
+         * The identity provider could not authenticate the subject without user interaction.
+         */
+        public static final String NO_PASSIVE = "urn:oasis:names:tc:SAML:2.0:status:NoPassive";
 
         /**
          * Unknown principal status.

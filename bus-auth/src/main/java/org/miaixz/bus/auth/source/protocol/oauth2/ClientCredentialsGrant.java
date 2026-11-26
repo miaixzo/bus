@@ -37,6 +37,7 @@ public record ClientCredentialsGrant(Optional<Scope> scope) implements TokenRequ
     /**
      * Creates an immutable client-credentials grant.
      *
+     * @param scope optional scope requested for the client's own authorization
      * @throws IllegalArgumentException if the scope container is {@code null}
      */
     public ClientCredentialsGrant {

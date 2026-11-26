@@ -42,7 +42,10 @@ public class CommonsLoggingFactory extends AbstractFactory {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Creates a new logger instance with the specified name.
+     *
+     * @param name the name of the logger.
+     * @return a new {@link Provider} instance.
      */
     @Override
     public Provider of(final String name) {
@@ -50,7 +53,10 @@ public class CommonsLoggingFactory extends AbstractFactory {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Creates a new logger instance for the specified class.
+     *
+     * @param clazz the class for which to create the logger.
+     * @return a new {@link Provider} instance.
      */
     @Override
     public Provider of(final Class<?> clazz) {
@@ -58,7 +64,15 @@ public class CommonsLoggingFactory extends AbstractFactory {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Checks if the logging implementation exists.
+     * <p>
+     * This method is used to verify the presence of the required classes for a specific logging framework. It is called
+     * during the automatic detection process (e.g., in {@code detectLogFactory}). If the implementation class does not
+     * exist, this method should throw an exception (like {@code ClassNotFoundException}), which signals the detection
+     * mechanism to try the next available logging framework.
+     * </p>
+     *
+     * @param logClassName the logging implementation class to check.
      */
     @Override
     protected void exists(final Class<?> logClassName) {

@@ -32,6 +32,11 @@ public class GeniusBuilder {
     public static final String AUTH = "bus.auth";
 
     /**
+     * Configuration prefix for service identity policies.
+     */
+    public static final String AUTH_GUARD = AUTH + ".guard";
+
+    /**
      * Configuration prefix for cache.
      */
     public static final String CACHE = "bus.cache";
@@ -150,6 +155,16 @@ public class GeniusBuilder {
      * Configuration prefix for validate.
      */
     public static final String VALIDATE = "bus.validate";
+
+    /**
+     * Configuration root for shared Bus error handling.
+     */
+    public static final String ERRORS = "bus.errors";
+
+    /**
+     * Configuration prefix for the standard error logging subscription.
+     */
+    public static final String ERRORS_LOGGING = ERRORS + ".logging";
 
     /**
      * Configuration prefix for vortex.

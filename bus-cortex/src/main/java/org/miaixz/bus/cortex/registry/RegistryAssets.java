@@ -201,9 +201,7 @@ public class RegistryAssets {
         target.setModified(source.getModified());
         target.setName(source.getName());
         target.setIcon(source.getIcon());
-        target.setHost(source.getHost());
-        target.setPort(source.getPort());
-        target.setPath(source.getPath());
+        target.setInstances(source.getInstances());
         target.setUrl(source.getUrl());
         target.setMethod(source.getMethod());
         target.setProtocol(source.getProtocol());
@@ -212,6 +210,7 @@ public class RegistryAssets {
         target.setPolicy(source.getPolicy());
         target.setSigning(source.getSigning());
         target.setScope(source.getScope());
+        target.setVisible(source.getVisible());
         target.setRetries(source.getRetries());
         target.setTimeout(source.getTimeout());
         target.setThrottle(source.getThrottle());

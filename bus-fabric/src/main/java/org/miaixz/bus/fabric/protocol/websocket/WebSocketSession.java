@@ -30,8 +30,8 @@ import java.util.Map;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.Supplier;
 
+import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.io.ByteString;
 import org.miaixz.bus.core.io.sink.Sink;
 import org.miaixz.bus.core.io.source.Source;
@@ -1015,7 +1015,7 @@ public class WebSocketSession implements Session {
      * @param factory frame factory executed after Call start
      * @return lazy outbound Call
      */
-    private Call<Void> outboundCall(final String name, final EntryKind kind, final Supplier<WebSocketFrame> factory) {
+    private Call<Void> outboundCall(final String name, final EntryKind kind, final SupplierX<WebSocketFrame> factory) {
         return new OutboundCall(name, kind, factory);
     }
 
@@ -2050,7 +2050,7 @@ public class WebSocketSession implements Session {
         /**
          * Frame factory run only after Call start.
          */
-        private final Supplier<WebSocketFrame> factory;
+        private final SupplierX<WebSocketFrame> factory;
 
         /**
          * Entry created by the running Call.
@@ -2064,7 +2064,7 @@ public class WebSocketSession implements Session {
          * @param kind    entry kind
          * @param factory frame factory
          */
-        private OutboundCall(final String name, final EntryKind kind, final Supplier<WebSocketFrame> factory) {
+        private OutboundCall(final String name, final EntryKind kind, final SupplierX<WebSocketFrame> factory) {
             super(name, dispatcher, observer, timeout);
             this.kind = require(kind, "WebSocket entry kind");
             this.factory = require(factory, "WebSocket frame factory");

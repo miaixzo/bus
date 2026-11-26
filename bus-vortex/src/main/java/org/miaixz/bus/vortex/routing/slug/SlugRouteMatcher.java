@@ -19,17 +19,22 @@
 */
 package org.miaixz.bus.vortex.routing.slug;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
+import org.springframework.http.HttpMethod;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.server.ServerWebExchange;
 
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.core.xyz.UrlKit;
 import org.miaixz.bus.cortex.Assets;
 import org.miaixz.bus.cortex.Keying;
 import org.miaixz.bus.cortex.Type;
@@ -44,6 +49,11 @@ import org.miaixz.bus.vortex.registry.AssetsRegistry;
  * @author Kimi Liu
  */
 public class SlugRouteMatcher {
+
+    /**
+     * Passes the qualified route to the identity guard and executor through request-local state.
+     */
+    public static final String MATCH_ATTRIBUTE = SlugRouteMatcher.class.getName() + ".match";
 
     /**
      * Runtime registry used to resolve slug forwarding assets.
@@ -63,7 +73,7 @@ public class SlugRouteMatcher {
      */
     public SlugRouteMatcher(AssetsRegistry registry, String slugMethod) {
         this.registry = registry;
-        this.slugMethod = slugMethod == null ? null : slugMethod.trim();
+        this.slugMethod = StringKit.isBlank(slugMethod) ? null : slugMethod.trim();
     }
 
     /**
@@ -79,6 +89,83 @@ public class SlugRouteMatcher {
             return template;
         }
         return template.replace(placeholder, StringKit.toStringOrEmpty(slug));
+    }
+
+    /**
+     * Resolves the operation before the deployment prefix is applied, for identity checks and forwarding.
+     *
+     * @param match qualified slug route
+     * @param path  original request path
+     * @return rendered operation URI
+     */
+    public static URI operation(SlugRouteMatcher.Match match, String path) {
+        String rendered = SlugRouteMatcher.render(match.template(), match.slug());
+        URI template = UrlKit.toURI(rendered);
+        String operation = joinPath(stripQueryAndFragment(rendered), remaining(path, match));
+        if (template.getRawQuery() != null) {
+            operation += Symbol.QUESTION_MARK + template.getRawQuery();
+        }
+        return URI.create(operation);
+    }
+
+    /**
+     * Joins two path fragments without duplicating or losing the separator.
+     *
+     * @param base base path or URL
+     * @param path child path
+     * @return joined path
+     */
+    static String joinPath(String base, String path) {
+        if (StringKit.isBlank(path)) {
+            return base;
+        }
+        boolean baseEnds = base.endsWith(Symbol.SLASH);
+        boolean pathStarts = path.startsWith(Symbol.SLASH);
+        if (baseEnds && pathStarts) {
+            return base + path.substring(1);
+        }
+        if (!baseEnds && !pathStarts) {
+            return base + Symbol.SLASH + path;
+        }
+        return base + path;
+    }
+
+    /**
+     * Returns the path suffix after the matched public prefix and slug value.
+     *
+     * @param path  original request path
+     * @param match resolved slug match
+     * @return remaining path suffix, or an empty string
+     */
+    private static String remaining(String path, SlugRouteMatcher.Match match) {
+        if (StringKit.isBlank(path) || match == null) {
+            return Normal.EMPTY;
+        }
+        String matched = match.prefix() + Symbol.SLASH + match.slug();
+        if (path.length() <= matched.length() || !path.startsWith(matched)) {
+            return Normal.EMPTY;
+        }
+        String remaining = path.substring(matched.length());
+        return remaining.startsWith(Symbol.SLASH) ? remaining : Normal.EMPTY;
+    }
+
+    /**
+     * Removes query and fragment components from a rendered target string.
+     *
+     * @param value rendered target string
+     * @return path portion without query or fragment
+     */
+    static String stripQueryAndFragment(String value) {
+        int queryIndex = value.indexOf(Symbol.C_QUESTION_MARK);
+        int fragmentIndex = value.indexOf(Symbol.C_HASH);
+        int end = value.length();
+        if (queryIndex >= 0) {
+            end = Math.min(end, queryIndex);
+        }
+        if (fragmentIndex >= 0) {
+            end = Math.min(end, fragmentIndex);
+        }
+        return value.substring(0, end);
     }
 
     /**
@@ -110,7 +197,7 @@ public class SlugRouteMatcher {
      * @return route match, or {@code null} when no slug route matches
      */
     public Match match(ServerWebExchange exchange) {
-        if (exchange == null) {
+        if (slugMethod == null || exchange == null) {
             return null;
         }
         String appId = exchange.getRequest().getQueryParams().getFirst(Args.APP_ID);
@@ -121,13 +208,33 @@ public class SlugRouteMatcher {
     }
 
     /**
+     * Finds methods that actually own the same public slug path and registry scope.
+     *
+     * @param exchange request whose current method did not match
+     * @return visible alternate methods, empty if the path is unowned or ambiguous
+     */
+    public Set<HttpMethod> publicMethods(ServerWebExchange exchange) {
+        if (slugMethod == null) {
+            return Set.of();
+        }
+        var request = exchange.getRequest();
+        String appId = request.getQueryParams().getFirst(Args.APP_ID);
+        if (StringKit.isBlank(appId)) {
+            appId = request.getHeaders().getFirst(Args.APP_ID);
+        }
+        return this.registry.publicMethods(
+                spec(appId, request.getMethod().name()),
+                asset -> match(request.getPath().value(), asset) != null);
+    }
+
+    /**
      * Matches a functional server request to one public slug route.
      *
      * @param request current server request
      * @return route match, or {@code null} when no slug route matches
      */
     public Match match(ServerRequest request) {
-        if (request == null) {
+        if (slugMethod == null || request == null) {
             return null;
         }
         String appId = request.queryParam(Args.APP_ID).orElse(null);
@@ -175,7 +282,7 @@ public class SlugRouteMatcher {
      */
     private Match match(String path, Assets assets) {
         if (assets == null || !Objects.equals(Type.API.key(), assets.getType())
-                || !Objects.equals(Args.PROTOCOL_SLUG, assets.getProtocol())) {
+                || !Objects.equals(Args.ROUTE_SLUG, assets.getProtocol())) {
             return null;
         }
         Match best = null;

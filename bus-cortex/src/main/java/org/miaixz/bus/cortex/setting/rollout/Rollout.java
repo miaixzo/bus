@@ -30,8 +30,8 @@ import lombok.experimental.SuperBuilder;
 import org.miaixz.bus.core.basic.entity.Tenant;
 
 /**
- * Publication workflow selection or frozen approval material, concurrency state and exact execution receipt. The
- * inherited status property stores the explicit code returned by {@link State#key()}.
+ * Publication selection or frozen review material, concurrency state, and exact execution receipt. The inherited status
+ * property stores the explicit code returned by {@link State#key()}.
  *
  * @author Kimi Liu
  */
@@ -92,7 +92,7 @@ public class Rollout extends Tenant {
     }
 
     /**
-     * Approval and publication workflow states.
+     * Review and publication states of a rollout.
      *
      * @author Kimi Liu
      */
@@ -103,7 +103,7 @@ public class Rollout extends Tenant {
          */
         DRAFT,
         /**
-         * Frozen candidate awaiting approval.
+         * Frozen candidate undergoing flow review.
          */
         REVIEWING,
         /**

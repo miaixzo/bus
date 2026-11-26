@@ -22,7 +22,6 @@ package org.miaixz.bus.auth.worker.identity;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
-import java.util.function.Function;
 
 import org.miaixz.bus.auth.*;
 import org.miaixz.bus.auth.resolver.ClaimParser;
@@ -31,7 +30,10 @@ import org.miaixz.bus.auth.shared.claim.ClaimSet;
 import org.miaixz.bus.auth.worker.loader.ClaimLoader;
 import org.miaixz.bus.auth.worker.loader.IdentityLoader;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
+import org.miaixz.bus.core.center.function.FunctionX;
+import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.xyz.FunctionKit;
 import org.miaixz.bus.extra.json.JsonValue;
 
 /**
@@ -97,14 +99,14 @@ public class AuthenticationWorker {
      * @return normalized asynchronous outcome
      */
     private static <T> CompletionStage<Outcome<T>> invoke(
-            final StageSupplier<T> supplier,
+            final SupplierX<CompletionStage<Outcome<T>>> supplier,
             final Timeout timeout,
             final String failure) {
         if (timeout.expired()) {
             return completed(expired());
         }
         try {
-            final CompletionStage<Outcome<T>> stage = supplier.get();
+            final CompletionStage<Outcome<T>> stage = FunctionKit.getUnwrapped(supplier);
             if (stage == null) {
                 return completed(failed(failure));
             }
@@ -125,11 +127,11 @@ public class AuthenticationWorker {
      */
     private static <A, B> CompletionStage<Outcome<B>> flatMap(
             final CompletionStage<Outcome<A>> stage,
-            final Function<? super A, ? extends CompletionStage<Outcome<B>>> next) {
+            final FunctionX<? super A, ? extends CompletionStage<Outcome<B>>> next) {
         return stage.thenCompose(outcome -> switch (outcome) {
             case Outcome.Succeeded<A> success -> {
                 try {
-                    final CompletionStage<Outcome<B>> following = next.apply(success.value());
+                    final CompletionStage<Outcome<B>> following = FunctionKit.applyUnwrapped(next, success.value());
                     yield following == null ? completed(failed("Authentication worker step returned no stage"))
                             : following;
                 } catch (RuntimeException cause) {
@@ -243,24 +245,6 @@ public class AuthenticationWorker {
         } catch (RuntimeException cause) {
             return completed(failed("Authentication result construction failed"));
         }
-    }
-
-    /**
-     * Supplies one asynchronous project-port invocation.
-     *
-     * @param <T> successful project-port value type
-     * @author Kimi Liu
-     */
-    @FunctionalInterface
-    private interface StageSupplier<T> {
-
-        /**
-         * Starts the deferred project-port invocation.
-         *
-         * @return asynchronous project-port outcome
-         */
-        CompletionStage<Outcome<T>> get();
-
     }
 
 }

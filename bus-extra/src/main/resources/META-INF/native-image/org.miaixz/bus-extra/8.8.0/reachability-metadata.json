@@ -1179,467 +1179,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.extra.image.gif.AnimatedGifEncoder",
-      "fields": [
-        {
-          "name": "background"
-        },
-        {
-          "name": "delay"
-        },
-        {
-          "name": "dispose"
-        },
-        {
-          "name": "repeat"
-        },
-        {
-          "name": "started"
-        },
-        {
-          "name": "transparent"
-        }
-      ],
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "addFrame",
-          "parameterTypes": [
-            "java.awt.image.BufferedImage"
-          ]
-        },
-        {
-          "name": "analyzePixels",
-          "parameterTypes": []
-        },
-        {
-          "name": "findClosest",
-          "parameterTypes": [
-            "java.awt.Color"
-          ]
-        },
-        {
-          "name": "findExact",
-          "parameterTypes": [
-            "java.awt.Color"
-          ]
-        },
-        {
-          "name": "finish",
-          "parameterTypes": []
-        },
-        {
-          "name": "getImagePixels",
-          "parameterTypes": []
-        },
-        {
-          "name": "isColorUsed",
-          "parameterTypes": [
-            "java.awt.Color"
-          ]
-        },
-        {
-          "name": "isStarted",
-          "parameterTypes": []
-        },
-        {
-          "name": "setBackground",
-          "parameterTypes": [
-            "java.awt.Color"
-          ]
-        },
-        {
-          "name": "setDelay",
-          "parameterTypes": [
-            "int"
-          ]
-        },
-        {
-          "name": "setDispose",
-          "parameterTypes": [
-            "int"
-          ]
-        },
-        {
-          "name": "setFrameRate",
-          "parameterTypes": [
-            "float"
-          ]
-        },
-        {
-          "name": "setQuality",
-          "parameterTypes": [
-            "int"
-          ]
-        },
-        {
-          "name": "setRepeat",
-          "parameterTypes": [
-            "int"
-          ]
-        },
-        {
-          "name": "setSize",
-          "parameterTypes": [
-            "int",
-            "int"
-          ]
-        },
-        {
-          "name": "setTransparent",
-          "parameterTypes": [
-            "java.awt.Color"
-          ]
-        },
-        {
-          "name": "setTransparent",
-          "parameterTypes": [
-            "java.awt.Color",
-            "boolean"
-          ]
-        },
-        {
-          "name": "start",
-          "parameterTypes": [
-            "java.io.OutputStream"
-          ]
-        },
-        {
-          "name": "start",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "writeGraphicCtrlExt",
-          "parameterTypes": []
-        },
-        {
-          "name": "writeImageDesc",
-          "parameterTypes": []
-        },
-        {
-          "name": "writeLSD",
-          "parameterTypes": []
-        },
-        {
-          "name": "writeNetscapeExt",
-          "parameterTypes": []
-        },
-        {
-          "name": "writePalette",
-          "parameterTypes": []
-        },
-        {
-          "name": "writePixels",
-          "parameterTypes": []
-        },
-        {
-          "name": "writeShort",
-          "parameterTypes": [
-            "int"
-          ]
-        },
-        {
-          "name": "writeString",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.extra.image.gif.GifDecoder",
-      "fields": [
-        {
-          "name": "delay"
-        },
-        {
-          "name": "frameCount"
-        },
-        {
-          "name": "image"
-        },
-        {
-          "name": "loopCount"
-        },
-        {
-          "name": "pixels"
-        }
-      ],
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "decodeImageData",
-          "parameterTypes": []
-        },
-        {
-          "name": "err",
-          "parameterTypes": []
-        },
-        {
-          "name": "getDelay",
-          "parameterTypes": [
-            "int"
-          ]
-        },
-        {
-          "name": "getFrame",
-          "parameterTypes": [
-            "int"
-          ]
-        },
-        {
-          "name": "getFrameCount",
-          "parameterTypes": []
-        },
-        {
-          "name": "getFrameSize",
-          "parameterTypes": []
-        },
-        {
-          "name": "getImage",
-          "parameterTypes": []
-        },
-        {
-          "name": "getLoopCount",
-          "parameterTypes": []
-        },
-        {
-          "name": "init",
-          "parameterTypes": []
-        },
-        {
-          "name": "read",
-          "parameterTypes": []
-        },
-        {
-          "name": "read",
-          "parameterTypes": [
-            "java.io.BufferedInputStream"
-          ]
-        },
-        {
-          "name": "read",
-          "parameterTypes": [
-            "java.io.InputStream"
-          ]
-        },
-        {
-          "name": "read",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "readBlock",
-          "parameterTypes": []
-        },
-        {
-          "name": "readColorTable",
-          "parameterTypes": [
-            "int"
-          ]
-        },
-        {
-          "name": "readContents",
-          "parameterTypes": []
-        },
-        {
-          "name": "readGraphicControlExt",
-          "parameterTypes": []
-        },
-        {
-          "name": "readHeader",
-          "parameterTypes": []
-        },
-        {
-          "name": "readImage",
-          "parameterTypes": []
-        },
-        {
-          "name": "readLSD",
-          "parameterTypes": []
-        },
-        {
-          "name": "readNetscapeExt",
-          "parameterTypes": []
-        },
-        {
-          "name": "readShort",
-          "parameterTypes": []
-        },
-        {
-          "name": "resetFrame",
-          "parameterTypes": []
-        },
-        {
-          "name": "setPixels",
-          "parameterTypes": []
-        },
-        {
-          "name": "skip",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.extra.image.gif.GifDecoder$GifFrame",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.awt.image.BufferedImage",
-            "int"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.extra.image.gif.LZWEncoder",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "int",
-            "int",
-            "byte[]",
-            "int"
-          ]
-        },
-        {
-          "name": "char_out",
-          "parameterTypes": [
-            "byte",
-            "java.io.OutputStream"
-          ]
-        },
-        {
-          "name": "cl_block",
-          "parameterTypes": [
-            "java.io.OutputStream"
-          ]
-        },
-        {
-          "name": "cl_hash",
-          "parameterTypes": [
-            "int"
-          ]
-        },
-        {
-          "name": "compress",
-          "parameterTypes": [
-            "int",
-            "java.io.OutputStream"
-          ]
-        },
-        {
-          "name": "encode",
-          "parameterTypes": [
-            "java.io.OutputStream"
-          ]
-        },
-        {
-          "name": "flush_char",
-          "parameterTypes": [
-            "java.io.OutputStream"
-          ]
-        },
-        {
-          "name": "MAXCODE",
-          "parameterTypes": [
-            "int"
-          ]
-        },
-        {
-          "name": "nextPixel",
-          "parameterTypes": []
-        },
-        {
-          "name": "output",
-          "parameterTypes": [
-            "int",
-            "java.io.OutputStream"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.extra.image.gif.NeuQuant",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "byte[]",
-            "int",
-            "int"
-          ]
-        },
-        {
-          "name": "alterneigh",
-          "parameterTypes": [
-            "int",
-            "int",
-            "int",
-            "int",
-            "int"
-          ]
-        },
-        {
-          "name": "altersingle",
-          "parameterTypes": [
-            "int",
-            "int",
-            "int",
-            "int",
-            "int"
-          ]
-        },
-        {
-          "name": "colorMap",
-          "parameterTypes": []
-        },
-        {
-          "name": "contest",
-          "parameterTypes": [
-            "int",
-            "int",
-            "int"
-          ]
-        },
-        {
-          "name": "inxbuild",
-          "parameterTypes": []
-        },
-        {
-          "name": "learn",
-          "parameterTypes": []
-        },
-        {
-          "name": "map",
-          "parameterTypes": [
-            "int",
-            "int",
-            "int"
-          ]
-        },
-        {
-          "name": "process",
-          "parameterTypes": []
-        },
-        {
-          "name": "unbiasnet",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
       "type": "org.miaixz.bus.extra.image.ImageKit",
       "methods": [
         {
@@ -2882,6 +2421,175 @@
       ]
     },
     {
+      "type": "org.miaixz.bus.extra.image.ImageText",
+      "fields": [
+        {
+          "name": "alpha"
+        },
+        {
+          "name": "color"
+        },
+        {
+          "name": "font"
+        },
+        {
+          "name": "point"
+        },
+        {
+          "name": "pressText"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.awt.Color",
+            "java.awt.Font",
+            "java.awt.Point",
+            "float"
+          ]
+        },
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "getAlpha",
+          "parameterTypes": []
+        },
+        {
+          "name": "getColor",
+          "parameterTypes": []
+        },
+        {
+          "name": "getFont",
+          "parameterTypes": []
+        },
+        {
+          "name": "getPoint",
+          "parameterTypes": []
+        },
+        {
+          "name": "getPressText",
+          "parameterTypes": []
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "of",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.awt.Color",
+            "java.awt.Font",
+            "java.awt.Point",
+            "float"
+          ]
+        },
+        {
+          "name": "setAlpha",
+          "parameterTypes": [
+            "float"
+          ]
+        },
+        {
+          "name": "setColor",
+          "parameterTypes": [
+            "java.awt.Color"
+          ]
+        },
+        {
+          "name": "setFont",
+          "parameterTypes": [
+            "java.awt.Font"
+          ]
+        },
+        {
+          "name": "setPoint",
+          "parameterTypes": [
+            "java.awt.Point"
+          ]
+        },
+        {
+          "name": "setPressText",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.extra.image.ImageWriter",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.awt.Image",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "buildParam",
+          "parameterTypes": [
+            "java.awt.image.RenderedImage",
+            "javax.imageio.ImageWriter",
+            "float"
+          ]
+        },
+        {
+          "name": "flush",
+          "parameterTypes": []
+        },
+        {
+          "name": "of",
+          "parameterTypes": [
+            "java.awt.Image",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "of",
+          "parameterTypes": [
+            "java.awt.Image",
+            "java.lang.String",
+            "java.awt.Color"
+          ]
+        },
+        {
+          "name": "setQuality",
+          "parameterTypes": [
+            "float"
+          ]
+        },
+        {
+          "name": "write",
+          "parameterTypes": [
+            "java.io.File"
+          ]
+        },
+        {
+          "name": "write",
+          "parameterTypes": [
+            "java.io.OutputStream"
+          ]
+        },
+        {
+          "name": "write",
+          "parameterTypes": [
+            "javax.imageio.stream.ImageOutputStream"
+          ]
+        }
+      ]
+    },
+    {
       "type": "org.miaixz.bus.extra.image.Images",
       "fields": [
         {
@@ -3168,175 +2876,6 @@
           "parameterTypes": [
             "java.awt.Color",
             "java.awt.Stroke"
-          ]
-        },
-        {
-          "name": "write",
-          "parameterTypes": [
-            "java.io.File"
-          ]
-        },
-        {
-          "name": "write",
-          "parameterTypes": [
-            "java.io.OutputStream"
-          ]
-        },
-        {
-          "name": "write",
-          "parameterTypes": [
-            "javax.imageio.stream.ImageOutputStream"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.extra.image.ImageText",
-      "fields": [
-        {
-          "name": "alpha"
-        },
-        {
-          "name": "color"
-        },
-        {
-          "name": "font"
-        },
-        {
-          "name": "point"
-        },
-        {
-          "name": "pressText"
-        }
-      ],
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.awt.Color",
-            "java.awt.Font",
-            "java.awt.Point",
-            "float"
-          ]
-        },
-        {
-          "name": "equals",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "getAlpha",
-          "parameterTypes": []
-        },
-        {
-          "name": "getColor",
-          "parameterTypes": []
-        },
-        {
-          "name": "getFont",
-          "parameterTypes": []
-        },
-        {
-          "name": "getPoint",
-          "parameterTypes": []
-        },
-        {
-          "name": "getPressText",
-          "parameterTypes": []
-        },
-        {
-          "name": "hashCode",
-          "parameterTypes": []
-        },
-        {
-          "name": "of",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.awt.Color",
-            "java.awt.Font",
-            "java.awt.Point",
-            "float"
-          ]
-        },
-        {
-          "name": "setAlpha",
-          "parameterTypes": [
-            "float"
-          ]
-        },
-        {
-          "name": "setColor",
-          "parameterTypes": [
-            "java.awt.Color"
-          ]
-        },
-        {
-          "name": "setFont",
-          "parameterTypes": [
-            "java.awt.Font"
-          ]
-        },
-        {
-          "name": "setPoint",
-          "parameterTypes": [
-            "java.awt.Point"
-          ]
-        },
-        {
-          "name": "setPressText",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "toString",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.extra.image.ImageWriter",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.awt.Image",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "buildParam",
-          "parameterTypes": [
-            "java.awt.image.RenderedImage",
-            "javax.imageio.ImageWriter",
-            "float"
-          ]
-        },
-        {
-          "name": "flush",
-          "parameterTypes": []
-        },
-        {
-          "name": "of",
-          "parameterTypes": [
-            "java.awt.Image",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "of",
-          "parameterTypes": [
-            "java.awt.Image",
-            "java.lang.String",
-            "java.awt.Color"
-          ]
-        },
-        {
-          "name": "setQuality",
-          "parameterTypes": [
-            "float"
           ]
         },
         {
@@ -3816,6 +3355,467 @@
         },
         {
           "name": "values",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.extra.image.gif.AnimatedGifEncoder",
+      "fields": [
+        {
+          "name": "background"
+        },
+        {
+          "name": "delay"
+        },
+        {
+          "name": "dispose"
+        },
+        {
+          "name": "repeat"
+        },
+        {
+          "name": "started"
+        },
+        {
+          "name": "transparent"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "addFrame",
+          "parameterTypes": [
+            "java.awt.image.BufferedImage"
+          ]
+        },
+        {
+          "name": "analyzePixels",
+          "parameterTypes": []
+        },
+        {
+          "name": "findClosest",
+          "parameterTypes": [
+            "java.awt.Color"
+          ]
+        },
+        {
+          "name": "findExact",
+          "parameterTypes": [
+            "java.awt.Color"
+          ]
+        },
+        {
+          "name": "finish",
+          "parameterTypes": []
+        },
+        {
+          "name": "getImagePixels",
+          "parameterTypes": []
+        },
+        {
+          "name": "isColorUsed",
+          "parameterTypes": [
+            "java.awt.Color"
+          ]
+        },
+        {
+          "name": "isStarted",
+          "parameterTypes": []
+        },
+        {
+          "name": "setBackground",
+          "parameterTypes": [
+            "java.awt.Color"
+          ]
+        },
+        {
+          "name": "setDelay",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "setDispose",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "setFrameRate",
+          "parameterTypes": [
+            "float"
+          ]
+        },
+        {
+          "name": "setQuality",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "setRepeat",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "setSize",
+          "parameterTypes": [
+            "int",
+            "int"
+          ]
+        },
+        {
+          "name": "setTransparent",
+          "parameterTypes": [
+            "java.awt.Color"
+          ]
+        },
+        {
+          "name": "setTransparent",
+          "parameterTypes": [
+            "java.awt.Color",
+            "boolean"
+          ]
+        },
+        {
+          "name": "start",
+          "parameterTypes": [
+            "java.io.OutputStream"
+          ]
+        },
+        {
+          "name": "start",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "writeGraphicCtrlExt",
+          "parameterTypes": []
+        },
+        {
+          "name": "writeImageDesc",
+          "parameterTypes": []
+        },
+        {
+          "name": "writeLSD",
+          "parameterTypes": []
+        },
+        {
+          "name": "writeNetscapeExt",
+          "parameterTypes": []
+        },
+        {
+          "name": "writePalette",
+          "parameterTypes": []
+        },
+        {
+          "name": "writePixels",
+          "parameterTypes": []
+        },
+        {
+          "name": "writeShort",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "writeString",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.extra.image.gif.GifDecoder",
+      "fields": [
+        {
+          "name": "delay"
+        },
+        {
+          "name": "frameCount"
+        },
+        {
+          "name": "image"
+        },
+        {
+          "name": "loopCount"
+        },
+        {
+          "name": "pixels"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "decodeImageData",
+          "parameterTypes": []
+        },
+        {
+          "name": "err",
+          "parameterTypes": []
+        },
+        {
+          "name": "getDelay",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "getFrame",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "getFrameCount",
+          "parameterTypes": []
+        },
+        {
+          "name": "getFrameSize",
+          "parameterTypes": []
+        },
+        {
+          "name": "getImage",
+          "parameterTypes": []
+        },
+        {
+          "name": "getLoopCount",
+          "parameterTypes": []
+        },
+        {
+          "name": "init",
+          "parameterTypes": []
+        },
+        {
+          "name": "read",
+          "parameterTypes": []
+        },
+        {
+          "name": "read",
+          "parameterTypes": [
+            "java.io.BufferedInputStream"
+          ]
+        },
+        {
+          "name": "read",
+          "parameterTypes": [
+            "java.io.InputStream"
+          ]
+        },
+        {
+          "name": "read",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "readBlock",
+          "parameterTypes": []
+        },
+        {
+          "name": "readColorTable",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "readContents",
+          "parameterTypes": []
+        },
+        {
+          "name": "readGraphicControlExt",
+          "parameterTypes": []
+        },
+        {
+          "name": "readHeader",
+          "parameterTypes": []
+        },
+        {
+          "name": "readImage",
+          "parameterTypes": []
+        },
+        {
+          "name": "readLSD",
+          "parameterTypes": []
+        },
+        {
+          "name": "readNetscapeExt",
+          "parameterTypes": []
+        },
+        {
+          "name": "readShort",
+          "parameterTypes": []
+        },
+        {
+          "name": "resetFrame",
+          "parameterTypes": []
+        },
+        {
+          "name": "setPixels",
+          "parameterTypes": []
+        },
+        {
+          "name": "skip",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.extra.image.gif.GifDecoder$GifFrame",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.awt.image.BufferedImage",
+            "int"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.extra.image.gif.LZWEncoder",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "int",
+            "int",
+            "byte[]",
+            "int"
+          ]
+        },
+        {
+          "name": "char_out",
+          "parameterTypes": [
+            "byte",
+            "java.io.OutputStream"
+          ]
+        },
+        {
+          "name": "cl_block",
+          "parameterTypes": [
+            "java.io.OutputStream"
+          ]
+        },
+        {
+          "name": "cl_hash",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "compress",
+          "parameterTypes": [
+            "int",
+            "java.io.OutputStream"
+          ]
+        },
+        {
+          "name": "encode",
+          "parameterTypes": [
+            "java.io.OutputStream"
+          ]
+        },
+        {
+          "name": "flush_char",
+          "parameterTypes": [
+            "java.io.OutputStream"
+          ]
+        },
+        {
+          "name": "MAXCODE",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "nextPixel",
+          "parameterTypes": []
+        },
+        {
+          "name": "output",
+          "parameterTypes": [
+            "int",
+            "java.io.OutputStream"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.extra.image.gif.NeuQuant",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "byte[]",
+            "int",
+            "int"
+          ]
+        },
+        {
+          "name": "alterneigh",
+          "parameterTypes": [
+            "int",
+            "int",
+            "int",
+            "int",
+            "int"
+          ]
+        },
+        {
+          "name": "altersingle",
+          "parameterTypes": [
+            "int",
+            "int",
+            "int",
+            "int",
+            "int"
+          ]
+        },
+        {
+          "name": "colorMap",
+          "parameterTypes": []
+        },
+        {
+          "name": "contest",
+          "parameterTypes": [
+            "int",
+            "int",
+            "int"
+          ]
+        },
+        {
+          "name": "inxbuild",
+          "parameterTypes": []
+        },
+        {
+          "name": "learn",
+          "parameterTypes": []
+        },
+        {
+          "name": "map",
+          "parameterTypes": [
+            "int",
+            "int",
+            "int"
+          ]
+        },
+        {
+          "name": "process",
+          "parameterTypes": []
+        },
+        {
+          "name": "unbiasnet",
           "parameterTypes": []
         }
       ]
@@ -4812,6 +4812,49 @@
       ]
     },
     {
+      "type": "org.miaixz.bus.extra.mq.RawMessage",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "byte[]"
+          ]
+        },
+        {
+          "name": "content",
+          "parameterTypes": []
+        },
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "topic",
+          "parameterTypes": []
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.extra.mq.provider.activemq.ActiveMQProvider",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
       "type": "org.miaixz.bus.extra.mq.provider.kafka.KafkaProvider",
       "methods": [
         {
@@ -4902,6 +4945,15 @@
       ]
     },
     {
+      "type": "org.miaixz.bus.extra.mq.provider.rabbitmq.RabbitMQProvider",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
       "type": "org.miaixz.bus.extra.mq.provider.rocketmq.RocketMQProducer",
       "methods": [
         {
@@ -4917,35 +4969,10 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.extra.mq.RawMessage",
+      "type": "org.miaixz.bus.extra.mq.provider.rocketmq.RocketMQProvider",
       "methods": [
         {
           "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "byte[]"
-          ]
-        },
-        {
-          "name": "content",
-          "parameterTypes": []
-        },
-        {
-          "name": "equals",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "hashCode",
-          "parameterTypes": []
-        },
-        {
-          "name": "topic",
-          "parameterTypes": []
-        },
-        {
-          "name": "toString",
           "parameterTypes": []
         }
       ]
@@ -5036,6 +5063,24 @@
       ]
     },
     {
+      "type": "org.miaixz.bus.extra.nlp.provider.analysis.SmartcnProvider",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.extra.nlp.provider.ansj.AnsjProvider",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
       "type": "org.miaixz.bus.extra.nlp.provider.ansj.AnsjResult",
       "methods": [
         {
@@ -5076,6 +5121,10 @@
     {
       "type": "org.miaixz.bus.extra.nlp.provider.hanlp.HanLPProvider",
       "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
         {
           "name": "parse",
           "parameterTypes": [
@@ -5126,6 +5175,10 @@
       "type": "org.miaixz.bus.extra.nlp.provider.jcseg.JcsegProvider",
       "methods": [
         {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
           "name": "parse",
           "parameterTypes": [
             "java.lang.CharSequence"
@@ -5166,6 +5219,10 @@
     {
       "type": "org.miaixz.bus.extra.nlp.provider.jieba.JiebaProvider",
       "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
         {
           "name": "parse",
           "parameterTypes": [
@@ -5213,6 +5270,15 @@
       ]
     },
     {
+      "type": "org.miaixz.bus.extra.nlp.provider.mmseg.MmsegProvider",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
       "type": "org.miaixz.bus.extra.nlp.provider.mmseg.MmsegResult",
       "methods": [
         {
@@ -5245,6 +5311,10 @@
     {
       "type": "org.miaixz.bus.extra.nlp.provider.mynlp.MynlpProvider",
       "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
         {
           "name": "parse",
           "parameterTypes": [
@@ -5294,6 +5364,10 @@
     {
       "type": "org.miaixz.bus.extra.nlp.provider.word.WordProvider",
       "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
         {
           "name": "parse",
           "parameterTypes": [
@@ -5491,8 +5565,30 @@
       ]
     },
     {
+      "type": "org.miaixz.bus.extra.pinyin.provider.jpinyin.JPinyinProvider",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.extra.pinyin.provider.pinyin4j.Pinyin4JProvider",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
       "type": "org.miaixz.bus.extra.pinyin.provider.tinypinyin.TinyPinyinProvider",
       "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
         {
           "name": "getPinyin",
           "parameterTypes": [
@@ -5839,40 +5935,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.extra.template.provider.freemarker.SimpleStringTemplateLoader",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "closeTemplateSource",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "findTemplateSource",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "getLastModified",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "getReader",
-          "parameterTypes": [
-            "java.lang.Object",
-            "java.lang.String"
-          ]
-        }
-      ]
-    },
-    {
       "type": "org.miaixz.bus.extra.template.TemplateConfig",
       "fields": [
         {
@@ -6078,15 +6140,70 @@
           ]
         }
       ]
+    },
+    {
+      "type": "org.miaixz.bus.extra.template.provider.beetl.BeetlProvider",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.extra.template.provider.freemarker.FreemarkerProvider",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.extra.template.provider.freemarker.SimpleStringTemplateLoader",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "closeTemplateSource",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "findTemplateSource",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getLastModified",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "getReader",
+          "parameterTypes": [
+            "java.lang.Object",
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.extra.template.provider.thymeleaf.ThymeleafProvider",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
     }
   ],
   "resources": [
-    {
-      "condition": {
-        "typeReached": "org.miaixz.bus.core.io.resource.ClassPathResource"
-      },
-      "glob": "config/mail.setting"
-    },
     {
       "glob": "META-INF/extra/**"
     },
@@ -6104,6 +6221,24 @@
     },
     {
       "glob": "META-INF/services/org.miaixz.bus.extra.template.TemplateProvider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.io.resource.ClassPathResource"
+      },
+      "glob": "config/mail.setting"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.io.resource.ClassPathResource"
+      },
+      "glob": "config/mailAccount.setting"
+    },
+    {
+      "condition": {
+        "typeReached": "org.miaixz.bus.core.io.resource.ClassPathResource"
+      },
+      "glob": "mail.setting"
     }
   ]
 }

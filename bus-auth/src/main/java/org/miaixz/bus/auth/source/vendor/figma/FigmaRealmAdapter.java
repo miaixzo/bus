@@ -24,7 +24,6 @@ import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
-import java.util.function.Function;
 
 import org.miaixz.bus.auth.*;
 import org.miaixz.bus.auth.Credential;
@@ -38,6 +37,7 @@ import org.miaixz.bus.auth.source.vendor.VendorTargets;
 import org.miaixz.bus.auth.worker.loader.SecretLoader;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.basic.normal.Errors;
+import org.miaixz.bus.core.center.function.FunctionX;
 import org.miaixz.bus.core.codec.binary.Base64;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
@@ -47,6 +47,7 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.net.Protocol;
+import org.miaixz.bus.core.xyz.FunctionKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.extra.json.JsonValue;
@@ -972,7 +973,7 @@ public class FigmaRealmAdapter implements VendorAdapter {
     private <T> CompletionStage<Outcome<T>> withSecret(
             final Context context,
             final Timeout timeout,
-            final Function<SecretLease, Outcome<T>> operation) {
+            final FunctionX<SecretLease, Outcome<T>> operation) {
         final CompletionStage<Outcome<SecretLoader.Record>> loaded;
         try {
             loaded = services.secretLoader()
@@ -1008,7 +1009,7 @@ public class FigmaRealmAdapter implements VendorAdapter {
     private <T> CompletionStage<Outcome<T>> execute(
             final SecretLoader.Record loaded,
             final Timeout timeout,
-            final Function<SecretLease, Outcome<T>> operation) {
+            final FunctionX<SecretLease, Outcome<T>> operation) {
         final SecretLease raw = loaded == null ? null : loaded.lease();
         final SecretLease secret;
         try {
@@ -1025,7 +1026,9 @@ public class FigmaRealmAdapter implements VendorAdapter {
                     return failed(ErrorCode._408, "Figma SCIM operation has no remaining timeout");
                 }
                 try {
-                    return Assert.notNull(operation.apply(secret), "Figma SCIM operation returned no outcome");
+                    return Assert.notNull(
+                            FunctionKit.applyUnwrapped(operation, secret),
+                            "Figma SCIM operation returned no outcome");
                 } catch (TimeoutException ignored) {
                     return failed(ErrorCode._408, "Figma SCIM operation timed out");
                 } catch (RuntimeException ignored) {
@@ -1058,7 +1061,7 @@ public class FigmaRealmAdapter implements VendorAdapter {
             final int start,
             final Timeout timeout,
             final String operation,
-            final Function<JsonValue.ObjectValue, T> parser) {
+            final FunctionX<JsonValue.ObjectValue, T> parser) {
         final Url request = base.newBuilder().query("count", Integer.toString(count))
                 .query("startIndex", Integer.toString(start)).build();
         final Outcome<JsonValue.ObjectValue> fetched = get(request, secret, timeout, operation);
@@ -1080,7 +1083,7 @@ public class FigmaRealmAdapter implements VendorAdapter {
             }
             final List<T> items = new ArrayList<>(values.size());
             for (JsonValue value : values) {
-                items.add(parser.apply(requiredObject(value, "Figma SCIM resource")));
+                items.add(FunctionKit.applyUnwrapped(parser, requiredObject(value, "Figma SCIM resource")));
             }
             final int next = consumed < total ? start + values.size() : 0;
             return Outcome.succeeded(new ScimPage<>(items, next));
@@ -1398,6 +1401,7 @@ public class FigmaRealmAdapter implements VendorAdapter {
             }
             throw new ValidateException("Figma cursor phase is unknown");
         }
+
     }
 
     /**
@@ -1412,6 +1416,10 @@ public class FigmaRealmAdapter implements VendorAdapter {
 
         /**
          * Validates one cursor state.
+         *
+         * @param phase    snapshot phase represented by this cursor
+         * @param kinds    requested kinds
+         * @param position recoverable position
          */
         private CursorState {
             phase = Assert.notNull(phase, "Figma cursor phase must not be null");
@@ -1434,6 +1442,7 @@ public class FigmaRealmAdapter implements VendorAdapter {
             return new CursorState(ordered.contains(Realm.Kind.USER) ? Phase.USERS : Phase.GROUPS, ordered,
                     Position.initial());
         }
+
     }
 
     /**
@@ -1448,6 +1457,10 @@ public class FigmaRealmAdapter implements VendorAdapter {
 
         /**
          * Validates one position.
+         *
+         * @param start          one-based official start index
+         * @param parentId       current replay group identifier
+         * @param relationOffset next embedded member index
          */
         private Position {
             if (start <= 0 || relationOffset < 0) {
@@ -1501,6 +1514,7 @@ public class FigmaRealmAdapter implements VendorAdapter {
                 throw new ValidateException("Figma cursor position does not belong to its phase");
             }
         }
+
     }
 
     /**
@@ -1515,6 +1529,9 @@ public class FigmaRealmAdapter implements VendorAdapter {
 
         /**
          * Freezes one page.
+         *
+         * @param items minimal items
+         * @param next  next start index or zero
          */
         private ScimPage {
             items = List.copyOf(Assert.notNull(items, "Figma SCIM items must not be null"));
@@ -1522,6 +1539,7 @@ public class FigmaRealmAdapter implements VendorAdapter {
                 throw new ValidateException("Figma SCIM next index must not be negative");
             }
         }
+
     }
 
     /**
@@ -1538,6 +1556,12 @@ public class FigmaRealmAdapter implements VendorAdapter {
 
         /**
          * Validates one user.
+         *
+         * @param id          stable identifier
+         * @param userName    login identifier
+         * @param displayName display name
+         * @param active      active flag
+         * @param title       optional organization title
          */
         private User {
             id = requireText(id, "Figma user identifier");
@@ -1545,6 +1569,7 @@ public class FigmaRealmAdapter implements VendorAdapter {
             displayName = requireText(displayName, "Figma user display name");
             title = Assert.notNull(title, "Figma user title container must not be null");
         }
+
     }
 
     /**
@@ -1559,12 +1584,17 @@ public class FigmaRealmAdapter implements VendorAdapter {
 
         /**
          * Validates one group.
+         *
+         * @param id          stable identifier
+         * @param displayName display name
+         * @param members     embedded stable user identifiers
          */
         private Group {
             id = requireText(id, "Figma group identifier");
             displayName = requireText(displayName, "Figma group display name");
             members = List.copyOf(Assert.notNull(members, "Figma group members must not be null"));
         }
+
     }
 
 }

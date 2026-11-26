@@ -25,8 +25,8 @@ import java.time.Instant;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
-import java.util.function.Supplier;
 
+import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.Algorithm;
 import org.miaixz.bus.core.lang.Charset;
@@ -36,6 +36,7 @@ import org.miaixz.bus.core.lang.exception.CryptoException;
 import org.miaixz.bus.core.lang.exception.ForbiddenException;
 import org.miaixz.bus.core.lang.exception.UncheckedException;
 import org.miaixz.bus.core.net.Http;
+import org.miaixz.bus.core.xyz.FunctionKit;
 import org.miaixz.bus.core.xyz.HexKit;
 import org.miaixz.bus.core.xyz.PatternKit;
 import org.miaixz.bus.cortex.setting.secret.SecretContext;
@@ -72,7 +73,7 @@ public final class TencentSecretProvider implements SecretProvider {
     /**
      * Trusted factory of one native Fabric builder per attempt; does not own its runtime.
      */
-    private final Supplier<HttpX.Builder> http;
+    private final SupplierX<HttpX.Builder> http;
     /**
      * Clock used to produce deterministic UTC signing timestamps.
      */
@@ -128,7 +129,7 @@ public final class TencentSecretProvider implements SecretProvider {
      * @throws IllegalArgumentException if configuration values violate the documented constraints
      */
     TencentSecretProvider(String region, URI endpoint, long generation, CloudCredentials.Source credentials,
-            Supplier<HttpX.Builder> http) {
+            SupplierX<HttpX.Builder> http) {
         this(region, endpoint, generation, credentials, http, Clock.systemUTC());
     }
 
@@ -146,7 +147,7 @@ public final class TencentSecretProvider implements SecretProvider {
      * @throws IllegalArgumentException if configuration values violate the documented constraints
      */
     TencentSecretProvider(String region, URI endpoint, long generation, CloudCredentials.Source credentials,
-            Supplier<HttpX.Builder> http, Clock clock) {
+            SupplierX<HttpX.Builder> http, Clock clock) {
         if (region == null || !PatternKit.isMatch(Pattern.get("[a-z0-9-]+", 0), region) || generation < 0) {
             throw new IllegalArgumentException("Invalid Tencent connection");
         }
@@ -367,7 +368,7 @@ public final class TencentSecretProvider implements SecretProvider {
         byte[] body = JsonKit.toJsonString(Map.of("SecretName", name, "VersionId", version)).getBytes(Charset.UTF_8);
         try (CloudCredentials identity = credentials.acquire(context)) {
             Map<String, String> headers = sign(endpoint, region, body, identity, clock.instant());
-            HttpX.Builder request = http.get().to(endpoint.toString()).post().body(body);
+            HttpX.Builder request = FunctionKit.getUnwrapped(http).to(endpoint.toString()).post().body(body);
             headers.forEach(request::header);
             return request;
         }

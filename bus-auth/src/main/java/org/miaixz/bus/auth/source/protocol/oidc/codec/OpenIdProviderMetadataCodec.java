@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
 
 import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.FabricX.Body;
@@ -37,6 +36,7 @@ import org.miaixz.bus.auth.source.protocol.oauth2.GrantType;
 import org.miaixz.bus.auth.source.protocol.oauth2.OAuth2;
 import org.miaixz.bus.auth.source.protocol.oauth2.codec.AuthorizationServerMetadataCodec;
 import org.miaixz.bus.auth.source.protocol.oidc.*;
+import org.miaixz.bus.core.center.function.FunctionX;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
@@ -44,6 +44,7 @@ import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
+import org.miaixz.bus.core.xyz.FunctionKit;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.extra.json.JsonValue;
 
@@ -158,8 +159,8 @@ public class OpenIdProviderMetadataCodec {
             final Map<String, JsonValue> members,
             final String name,
             final List<T> values,
-            final Function<T, String> mapper) {
-        putStrings(members, name, values.stream().map(mapper).toList());
+            final FunctionX<T, String> mapper) {
+        putStrings(members, name, values.stream().map(value -> FunctionKit.applyUnwrapped(mapper, value)).toList());
     }
 
     /**
@@ -284,8 +285,8 @@ public class OpenIdProviderMetadataCodec {
      * @param mapper value constructor
      * @return immutable typed values
      */
-    private static <T> List<T> map(final List<String> values, final Function<String, T> mapper) {
-        return values.stream().map(mapper).toList();
+    private static <T> List<T> map(final List<String> values, final FunctionX<String, T> mapper) {
+        return values.stream().map(value -> FunctionKit.applyUnwrapped(mapper, value)).toList();
     }
 
     /**

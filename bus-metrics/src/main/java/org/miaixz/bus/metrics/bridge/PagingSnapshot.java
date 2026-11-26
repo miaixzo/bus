@@ -37,6 +37,12 @@ public record PagingSnapshot(long totalBytes, long usedBytes, long freeBytes, Op
 
     /**
      * Validates the paging invariant and optional values.
+     *
+     * @param totalBytes total paging space in bytes
+     * @param usedBytes  used paging space in bytes
+     * @param freeBytes  free paging space in bytes
+     * @param pageIns    cumulative page-in operations when available
+     * @param pageOuts   cumulative page-out operations when available
      */
     public PagingSnapshot {
         pageIns = checked(pageIns, "Page-in count");

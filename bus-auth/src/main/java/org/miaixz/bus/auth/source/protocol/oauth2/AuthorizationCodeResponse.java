@@ -38,6 +38,9 @@ public record AuthorizationCodeResponse(String code, Optional<String> state, Jso
     /**
      * Validates the standard success components and isolates extension parameters.
      *
+     * @param code       authorization code issued by the authorization server
+     * @param state      exact request state when the authorization request contained state
+     * @param extensions additional response parameters defined by compatible OAuth extensions
      * @throws IllegalArgumentException if a component or container is {@code null}
      * @throws ValidateException        if code/state syntax is invalid or an extension replaces a standard component
      */

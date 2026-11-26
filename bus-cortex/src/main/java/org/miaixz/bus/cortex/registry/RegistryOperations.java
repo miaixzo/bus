@@ -63,15 +63,6 @@ public interface RegistryOperations {
     Assets normalize(Assets asset);
 
     /**
-     * Applies registry guard.
-     *
-     * @param action guarded action
-     * @param type   registry type
-     * @param asset  asset
-     */
-    void enforce(String action, Type type, Assets asset);
-
-    /**
      * Resolves the existing asset for one entry.
      *
      * @param entry entry

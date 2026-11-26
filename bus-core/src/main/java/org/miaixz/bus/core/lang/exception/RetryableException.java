@@ -1,0 +1,147 @@
+/*
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~                                                                           ~
+ ~ Copyright (c) 2015-2026 miaixz.org and other contributors.                ~
+ ~                                                                           ~
+ ~ Licensed under the Apache License, Version 2.0 (the "License");           ~
+ ~ you may not use this file except in compliance with the License.          ~
+ ~ You may obtain a copy of the License at                                   ~
+ ~                                                                           ~
+ ~      https://www.apache.org/licenses/LICENSE-2.0                          ~
+ ~                                                                           ~
+ ~ Unless required by applicable law or agreed to in writing, software       ~
+ ~ distributed under the License is distributed on an "AS IS" BASIS,         ~
+ ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  ~
+ ~ See the License for the specific language governing permissions and       ~
+ ~ limitations under the License.                                            ~
+ ~                                                                           ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+*/
+package org.miaixz.bus.core.lang.exception;
+
+import java.io.Serial;
+
+import org.miaixz.bus.core.basic.normal.Errors;
+
+/**
+ * Indicates a transient operation failure that the caller may retry according to its own retry policy.
+ *
+ * @author Kimi Liu
+ */
+public class RetryableException extends UncheckedException {
+
+    @Serial
+    private static final long serialVersionUID = 2536802151502L;
+
+    /**
+     * Constructs a new RetryableException with no detail message.
+     */
+    public RetryableException() {
+        super();
+    }
+
+    /**
+     * Constructs a new RetryableException with the specified cause.
+     *
+     * @param e The cause (which is saved for later retrieval by the {@link Throwable#getCause()} method).
+     */
+    public RetryableException(final Throwable e) {
+        super(e);
+    }
+
+    /**
+     * Constructs a new RetryableException with the specified detail message.
+     *
+     * @param desc The detail message.
+     */
+    public RetryableException(final String desc) {
+        super(desc);
+    }
+
+    /**
+     * Constructs a new RetryableException with the specified error object.
+     *
+     * @param errors The error object containing error code and message.
+     */
+    public RetryableException(final Errors errors) {
+        super(errors);
+    }
+
+    /**
+     * Constructs a new RetryableException with the specified error object and detail message.
+     *
+     * @param errors The error object containing error code.
+     * @param desc   The detail message.
+     */
+    public RetryableException(final Errors errors, final String desc) {
+        super(errors, desc);
+    }
+
+    /**
+     * Constructs a new RetryableException with the specified detail message and arguments for formatting.
+     *
+     * @param format The format string for the detail message.
+     * @param args   The arguments referenced by the format specifiers in the format string.
+     */
+    public RetryableException(final String format, final Object... args) {
+        super(format, args);
+    }
+
+    /**
+     * Constructs a new RetryableException with the specified error code and detail message.
+     *
+     * @param code The error code.
+     * @param desc The detail message.
+     */
+    public RetryableException(final String code, final String desc) {
+        super(code, desc);
+    }
+
+    /**
+     * Constructs a new RetryableException with the specified detail message and cause.
+     *
+     * @param desc  The detail message.
+     * @param cause The cause (which is saved for later retrieval by the {@link Throwable#getCause()} method).
+     */
+    public RetryableException(final String desc, final Throwable cause) {
+        super(desc, cause);
+    }
+
+    /**
+     * Constructs a new RetryableException with the specified cause, detail message, and arguments for formatting.
+     *
+     * @param cause  The cause (which is saved for later retrieval by the {@link Throwable#getCause()} method).
+     * @param format The format string for the detail message.
+     * @param args   The arguments referenced by the format specifiers in the format string.
+     */
+    public RetryableException(final Throwable cause, final String format, final Object... args) {
+        super(cause, format, args);
+    }
+
+    /**
+     * Constructs a new RetryableException with the specified error code, detail message, and cause.
+     *
+     * @param code  The error code.
+     * @param desc  The detail message.
+     * @param cause The cause (which is saved for later retrieval by the {@link Throwable#getCause()} method).
+     */
+    public RetryableException(final String code, final String desc, final Throwable cause) {
+        super(code, desc, cause);
+    }
+
+    /**
+     * Constructs a new RetryableException with the specified detail message, cause, suppression enabled or disabled,
+     * and writable stack trace enabled or disabled.
+     *
+     * @param desc               The detail message.
+     * @param cause              The cause (which is saved for later retrieval by the {@link Throwable#getCause()}
+     *                           method).
+     * @param enableSuppression  Whether or not suppression is enabled or disabled.
+     * @param writableStackTrace Whether or not the stack trace should be writable.
+     */
+    public RetryableException(final String desc, final Throwable cause, final boolean enableSuppression,
+            final boolean writableStackTrace) {
+        super(desc, cause, enableSuppression, writableStackTrace);
+    }
+
+}

@@ -27,8 +27,10 @@ import java.util.concurrent.Executor;
 
 import org.miaixz.bus.auth.Roster;
 import org.miaixz.bus.auth.worker.RosterListener;
+import org.miaixz.bus.core.center.function.ConsumerX;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.xyz.FunctionKit;
 import org.miaixz.bus.logger.Logger;
 
 /**
@@ -55,7 +57,7 @@ final class RosterNotifier {
     /**
      * Bounded pending notification queue guarded by this instance monitor.
      */
-    private final Queue<Notification> pending = new ArrayDeque<>();
+    private final Queue<ConsumerX<RosterListener>> pending = new ArrayDeque<>();
 
     /**
      * Whether one queue-draining task is currently scheduled or running.
@@ -120,7 +122,7 @@ final class RosterNotifier {
      *
      * @param notification callback to enqueue
      */
-    private void enqueue(final Notification notification) {
+    private void enqueue(final ConsumerX<RosterListener> notification) {
         if (!closed && !listeners.isEmpty()) {
             if (pending.size() == Normal._256) {
                 pending.poll();
@@ -178,7 +180,7 @@ final class RosterNotifier {
     private void drain() {
         while (true) {
             deliverOverflow();
-            final Notification notification;
+            final ConsumerX<RosterListener> notification;
             synchronized (this) {
                 notification = pending.poll();
                 if (notification == null) {
@@ -230,10 +232,10 @@ final class RosterNotifier {
      *
      * @param notification callback
      */
-    private void deliver(final Notification notification) {
+    private void deliver(final ConsumerX<RosterListener> notification) {
         for (RosterListener listener : listeners) {
             try {
-                notification.deliver(listener);
+                FunctionKit.acceptUnwrapped(notification, listener);
             } catch (RuntimeException cause) {
                 Logger.warn(
                         false,
@@ -253,23 +255,6 @@ final class RosterNotifier {
         closed = true;
         pending.clear();
         Logger.debug(false, "Auth", "Roster notifier closed: listeners={}", listeners.size());
-    }
-
-    /**
-     * Represents one isolated listener callback.
-     *
-     * @author Kimi Liu
-     */
-    @FunctionalInterface
-    private interface Notification {
-
-        /**
-         * Delivers this observation to one listener.
-         *
-         * @param listener destination listener
-         */
-        void deliver(RosterListener listener);
-
     }
 
 }

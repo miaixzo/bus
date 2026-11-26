@@ -39,6 +39,7 @@ import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.cache.nimble.MemoryCache;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.basic.normal.Errors;
+import org.miaixz.bus.core.center.function.FunctionX;
 import org.miaixz.bus.core.codec.binary.Base64;
 import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.lang.Assert;
@@ -50,6 +51,7 @@ import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.net.Protocol;
+import org.miaixz.bus.core.xyz.FunctionKit;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.extra.json.JsonValue;
 import org.miaixz.bus.fabric.Payload;
@@ -214,7 +216,10 @@ public class DingTalkRealmAdapter implements VendorAdapter {
      * @return immutable user resource
      */
     private static Realm.Resource userResource(final User user, final Instant observedAt) {
-        return new Realm.Resource(new Realm.Key(Realm.Kind.USER, user.id()), Map.of("userid", user.id()), user.name(),
+        final Map<String, String> identifiers = new LinkedHashMap<>();
+        identifiers.put("userid", user.id());
+        user.mail().ifPresent(mail -> identifiers.put("mail", mail));
+        return new Realm.Resource(new Realm.Key(Realm.Kind.USER, user.id()), identifiers, user.name(),
                 user.active() ? Realm.State.ACTIVE : Realm.State.INACTIVE, EMPTY_ATTRIBUTES, observedAt);
     }
 
@@ -500,7 +505,8 @@ public class DingTalkRealmAdapter implements VendorAdapter {
             departmentIds.add(identifier(department, "DingTalk user department identifier"));
         }
         return new User(requiredString(value, "userid"), requiredString(value, "name"),
-                requiredBoolean(value, "active"), departmentIds, optionalText(value, "manager_userid"));
+                requiredBoolean(value, "active"), departmentIds, optionalText(value, "manager_userid"),
+                optionalText(value, "org_email").or(() -> optionalText(value, "email")));
     }
 
     /**
@@ -1553,7 +1559,7 @@ public class DingTalkRealmAdapter implements VendorAdapter {
     private <T> CompletionStage<Outcome<T>> authenticated(
             final Context context,
             final Timeout timeout,
-            final Function<Access, Outcome<T>> operation) {
+            final FunctionX<Access, Outcome<T>> operation) {
         return access(context, timeout).thenCompose(resolved -> switch (resolved) {
             case Outcome.Succeeded<Access> success -> execute(success.value(), timeout, operation)
                     .thenCompose(first -> {
@@ -1604,13 +1610,15 @@ public class DingTalkRealmAdapter implements VendorAdapter {
     private <T> CompletionStage<Outcome<T>> execute(
             final Access access,
             final Timeout timeout,
-            final Function<Access, Outcome<T>> operation) {
+            final FunctionX<Access, Outcome<T>> operation) {
         return CompletableFuture.<Outcome<T>>supplyAsync(() -> {
             if (timeout.expired()) {
                 return failed(ErrorCode._408, "DingTalk Realm operation has no remaining timeout");
             }
             try {
-                return Assert.notNull(operation.apply(access), "DingTalk Realm operation returned no outcome");
+                return Assert.notNull(
+                        FunctionKit.applyUnwrapped(operation, access),
+                        "DingTalk Realm operation returned no outcome");
             } catch (TimeoutException ignored) {
                 return failed(ErrorCode._408, "DingTalk Realm operation timed out");
             } catch (RuntimeException ignored) {
@@ -1864,7 +1872,7 @@ public class DingTalkRealmAdapter implements VendorAdapter {
             final String operation,
             final boolean allowNotFound,
             final Map<String, JsonValue> fields,
-            final Function<Response, JsonValue.ObjectValue> reader) {
+            final FunctionX<Response, JsonValue.ObjectValue> reader) {
         if (timeout.expired()) {
             return failed(ErrorCode._408, "DingTalk management API request has no remaining timeout");
         }
@@ -1885,7 +1893,7 @@ public class DingTalkRealmAdapter implements VendorAdapter {
                 if (!response.successful()) {
                     return httpFailure(response, operation);
                 }
-                final JsonValue.ObjectValue envelope = reader.apply(response);
+                final JsonValue.ObjectValue envelope = FunctionKit.applyUnwrapped(reader, response);
                 final long code = requiredLong(envelope, "errcode");
                 if (code == Normal._0) {
                     return Outcome.succeeded(envelope);
@@ -2481,6 +2489,7 @@ public class DingTalkRealmAdapter implements VendorAdapter {
         private int code() {
             return code;
         }
+
     }
 
     /**
@@ -2538,6 +2547,7 @@ public class DingTalkRealmAdapter implements VendorAdapter {
                     : ordered.contains(Realm.Kind.USER) ? Phase.USERS : Phase.ROLES;
             return new CursorState(phase, ordered, Position.initial(phase));
         }
+
     }
 
     /**
@@ -2705,6 +2715,7 @@ public class DingTalkRealmAdapter implements VendorAdapter {
                 }
             }
         }
+
     }
 
     /**
@@ -2732,6 +2743,7 @@ public class DingTalkRealmAdapter implements VendorAdapter {
             items = List.copyOf(copy);
             next = Position.optionalText(next, "DingTalk wire numeric offset");
         }
+
     }
 
     /**
@@ -2758,6 +2770,7 @@ public class DingTalkRealmAdapter implements VendorAdapter {
             }
             fingerprint = Position.optionalText(fingerprint, "DingTalk replay fingerprint");
         }
+
     }
 
     /**
@@ -2869,6 +2882,7 @@ public class DingTalkRealmAdapter implements VendorAdapter {
             }
             return Outcome.succeeded(Optional.empty());
         }
+
     }
 
     /**
@@ -2931,6 +2945,7 @@ public class DingTalkRealmAdapter implements VendorAdapter {
         private String parentId() {
             return parentId;
         }
+
     }
 
     /**
@@ -2958,6 +2973,7 @@ public class DingTalkRealmAdapter implements VendorAdapter {
                 throw new ValidateException("DingTalk department must not be its own parent");
             }
         }
+
     }
 
     /**
@@ -2967,11 +2983,12 @@ public class DingTalkRealmAdapter implements VendorAdapter {
      * @param name          exact user display name
      * @param active        official activation state
      * @param departmentIds stable department identifiers in canonical order
+     * @param mail          optional provider-supplied email, preferring the enterprise mailbox
      * @param managerId     stable manager user identifier, or empty
      * @author Kimi Liu
      */
-    private record User(String id, String name, boolean active, List<String> departmentIds,
-            Optional<String> managerId) {
+    private record User(String id, String name, boolean active, List<String> departmentIds, Optional<String> managerId,
+            Optional<String> mail) {
 
         /**
          * Validates and normalizes one minimal user projection.
@@ -2980,6 +2997,7 @@ public class DingTalkRealmAdapter implements VendorAdapter {
          * @param name          exact display name
          * @param active        official activation state
          * @param departmentIds stable department identifiers
+         * @param mail          optional provider-supplied email, preferring the enterprise mailbox
          * @param managerId     stable manager identifier
          */
         private User {
@@ -2997,10 +3015,12 @@ public class DingTalkRealmAdapter implements VendorAdapter {
             ordered.sort(String::compareTo);
             departmentIds = List.copyOf(ordered);
             managerId = Position.optionalText(managerId, "DingTalk user manager identifier");
+            mail = Position.optionalText(mail, "DingTalk user mail");
             if (managerId.isPresent() && id.equals(managerId.getOrNull())) {
                 throw new ValidateException("DingTalk user must not manage itself");
             }
         }
+
     }
 
     /**
@@ -3022,6 +3042,7 @@ public class DingTalkRealmAdapter implements VendorAdapter {
             id = requireText(id, "DingTalk role identifier");
             name = requireText(name, "DingTalk role name");
         }
+
     }
 
     /**
@@ -3040,6 +3061,7 @@ public class DingTalkRealmAdapter implements VendorAdapter {
         private RoleMember {
             id = requireText(id, "DingTalk role member identifier");
         }
+
     }
 
     /**
@@ -3073,6 +3095,7 @@ public class DingTalkRealmAdapter implements VendorAdapter {
         public String toString() {
             return Builder.REDACTED_VALUE;
         }
+
     }
 
 }

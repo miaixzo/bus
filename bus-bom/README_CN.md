@@ -72,6 +72,7 @@
         <groupId>org.miaixz</groupId>
         <artifactId>bus-mapper</artifactId>
     </dependency>
+    
 </dependencies>
 ```
 

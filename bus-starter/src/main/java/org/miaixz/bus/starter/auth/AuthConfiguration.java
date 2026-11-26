@@ -26,12 +26,22 @@ import java.util.concurrent.Executors;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.boot.context.properties.bind.Bindable;
+import org.springframework.boot.context.properties.bind.Binder;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.*;
+import org.springframework.core.Ordered;
 import org.springframework.core.env.Environment;
 import org.springframework.core.type.AnnotatedTypeMetadata;
 
 import org.miaixz.bus.auth.FabricX;
+import org.miaixz.bus.auth.guard.GuardConfig;
+import org.miaixz.bus.auth.guard.GuardEvaluator;
+import org.miaixz.bus.auth.guard.token.Hs256TokenProvider;
+import org.miaixz.bus.auth.guard.token.ServiceKeyProvider;
+import org.miaixz.bus.auth.guard.token.ServiceTokenProvider;
 import org.miaixz.bus.auth.shared.jwt.JwtService;
 import org.miaixz.bus.auth.source.SourceAggregate;
 import org.miaixz.bus.auth.source.SourceSuite;
@@ -41,6 +51,7 @@ import org.miaixz.bus.cache.nimble.MemoryCache;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
@@ -53,8 +64,8 @@ import org.miaixz.bus.starter.annotation.EnableAuth;
  * <p>
  * The configuration freezes one Source registration snapshot, creates one atomic authentication cache, and supplies
  * both to {@link AuthService}. When {@code bus.auth.jwt.secret} is present it also creates one reusable
- * {@link JwtService}. It is active by default when bus-auth is present, can be disabled with
- * {@code bus.auth.enabled=false}, and can always be enabled explicitly with {@link EnableAuth}.
+ * {@link JwtService}. The Source integration is enabled by default and follows {@code bus.auth.enabled} and
+ * {@link EnableAuth}. The service token Guard is configured independently through {@code bus.auth.guard}.
  * </p>
  *
  * @author Kimi Liu
@@ -62,7 +73,6 @@ import org.miaixz.bus.starter.annotation.EnableAuth;
 @EnableConfigurationProperties(AuthProperties.class)
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnClass(name = "org.miaixz.bus.auth.cache.AuthCache")
-@ConditionalOnEnabled(annotation = EnableAuth.class, prefix = GeniusBuilder.AUTH, matchIfMissing = true)
 public class AuthConfiguration {
 
     /**
@@ -91,6 +101,7 @@ public class AuthConfiguration {
      */
     @Bean
     @ConditionalOnMissingBean(AuthMethodResolver.class)
+    @ConditionalOnEnabled(annotation = EnableAuth.class, prefix = GeniusBuilder.AUTH, matchIfMissing = true)
     public AuthMethodResolver authMethodResolver() {
         return new AuthMethodResolver();
     }
@@ -105,6 +116,7 @@ public class AuthConfiguration {
      */
     @Bean(name = "authExecutor", destroyMethod = "shutdown")
     @ConditionalOnMissingBean(name = "authExecutor")
+    @ConditionalOnEnabled(annotation = EnableAuth.class, prefix = GeniusBuilder.AUTH, matchIfMissing = true)
     public ExecutorService authExecutor() {
         return Executors.newVirtualThreadPerTaskExecutor();
     }
@@ -116,6 +128,7 @@ public class AuthConfiguration {
      */
     @Bean
     @ConditionalOnMissingBean(SourceAggregate.class)
+    @ConditionalOnEnabled(annotation = EnableAuth.class, prefix = GeniusBuilder.AUTH, matchIfMissing = true)
     public SourceAggregate authSources() {
         return SourceSuite.load().freeze();
     }
@@ -131,6 +144,7 @@ public class AuthConfiguration {
      */
     @Bean
     @ConditionalOnMissingBean(AuthService.class)
+    @ConditionalOnEnabled(annotation = EnableAuth.class, prefix = GeniusBuilder.AUTH, matchIfMissing = true)
     public AuthService authService(
             Environment environment,
             @Qualifier("authCache") CacheX<String, Object> cache,
@@ -152,6 +166,7 @@ public class AuthConfiguration {
     @Bean
     @ConditionalOnMissingBean(JwtService.class)
     @Conditional(JwtSecretCondition.class)
+    @ConditionalOnEnabled(annotation = EnableAuth.class, prefix = GeniusBuilder.AUTH, matchIfMissing = true)
     public JwtService jwtService() {
         final AuthProperties.Jwt jwt = Assert.notNull(properties.getJwt(), "JWT settings must not be null");
         final String secret = Assert.notEmpty(jwt.secret(), "JWT String secret must not be empty");
@@ -180,11 +195,48 @@ public class AuthConfiguration {
      */
     @Bean(name = "authCache")
     @ConditionalOnMissingBean(name = "authCache")
+    @ConditionalOnEnabled(annotation = EnableAuth.class, prefix = GeniusBuilder.AUTH, matchIfMissing = true)
     public CacheX<String, Object> authCache(@Qualifier("authExecutor") Executor executor) {
         if (hasAuthBackend()) {
             return new Factory().initialize(properties.getCache(), executor);
         }
         return new MemoryCache<>(FabricX.clock()::millis);
+    }
+
+    /**
+     * Supplies the default local key provider for the configured service identity directions.
+     *
+     * @return service identity key provider
+     */
+    @Bean
+    @Lazy
+    @ConditionalOnMissingBean(ServiceKeyProvider.class)
+    public ServiceKeyProvider authGuardKeyProvider() {
+        return properties.getGuard().keyProvider();
+    }
+
+    /**
+     * Supplies the default HS256 service token implementation.
+     *
+     * @return service token cryptographic provider
+     */
+    @Bean
+    @ConditionalOnMissingBean(ServiceTokenProvider.class)
+    public ServiceTokenProvider authGuardTokenProvider() {
+        return new Hs256TokenProvider();
+    }
+
+    /**
+     * Creates the service token evaluator with the bound Auth Guard settings and effective providers.
+     *
+     * @param keys   trusted service identity key source
+     * @param tokens service token cryptographic provider
+     * @return shared service token evaluator for the application context
+     */
+    @Bean
+    @ConditionalOnMissingBean(GuardEvaluator.class)
+    public GuardEvaluator authGuardEvaluator(ServiceKeyProvider keys, ServiceTokenProvider tokens) {
+        return properties.getGuard().identity(keys, tokens);
     }
 
     /**
@@ -218,6 +270,43 @@ public class AuthConfiguration {
         @Override
         public boolean matches(final ConditionContext context, final AnnotatedTypeMetadata metadata) {
             return context.getEnvironment().containsProperty(JWT_SECRET_PROPERTY);
+        }
+
+    }
+
+    /**
+     * Isolates Servlet filter registration from the shared Auth configuration. Spring loads this configuration in
+     * Servlet web applications with the Servlet API on the classpath.
+     */
+    @Configuration(proxyBeanMethods = false)
+    @ConditionalOnClass(name = { "jakarta.servlet.Servlet", "jakarta.servlet.Filter" })
+    @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)
+    static class ServiceGuardConfig {
+
+        /**
+         * Registers the service identity filter across all Servlet URL patterns when the service identity guard is
+         * enabled. The evaluator selects the policy for each path when inbound verification is enabled. With
+         * verification disabled, the filter still hides reserved identity headers.
+         *
+         * @param identity    shared service identity evaluator
+         * @param environment configured endpoint policies and listener address
+         * @return Servlet filter registration
+         */
+        @Bean
+        FilterRegistrationBean<ServiceGuardFilter> serviceGuardFilter(
+                GuardEvaluator identity,
+                Environment environment) {
+            var admission = Binder.get(environment)
+                    .bind(GeniusBuilder.AUTH_GUARD + ".inbound.admission", Bindable.listOf(GuardConfig.Admission.class))
+                    .orElseGet(java.util.List::of);
+            var registration = new FilterRegistrationBean<>(
+                    new ServiceGuardFilter(identity, admission, environment.getProperty("server.address")));
+            registration.setEnabled(
+                    !admission.isEmpty()
+                            || environment.getProperty(GeniusBuilder.AUTH_GUARD + ".enabled", Boolean.class, false));
+            registration.setOrder(Ordered.HIGHEST_PRECEDENCE + 20);
+            registration.addUrlPatterns(Symbol.SLASH + Symbol.STAR);
+            return registration;
         }
 
     }

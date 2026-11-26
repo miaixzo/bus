@@ -74,7 +74,7 @@ public interface RolloutStore {
      * @param context  operation-scoped submitter and request identity
      * @param rollout  exact draft workflow identifier
      * @param edition  expected workflow concurrency counter
-     * @param frozen   protected candidate plan to freeze for approval
+     * @param frozen   protected candidate plan to freeze for flow review
      * @param expected complete source graph and active baseline expectations
      * @return workflow containing the frozen plan in the REVIEWING state
      */
@@ -86,8 +86,9 @@ public interface RolloutStore {
             Plan.ReadSet expected);
 
     /**
-     * Atomically verifies approvals and identical intent, claims or reuses the exact publication receipt and enters
-     * PUBLISHING. Same request returns the original intent/result; different input conflicts.
+     * Atomically verifies that the flow policy permits publication and the intent matches. Claims or reuses the exact
+     * publication receipt and enters PUBLISHING. The same request returns the original intent or result. Different
+     * input conflicts with the original request.
      *
      * @param context        operation-scoped publisher and idempotent request identity
      * @param rollout        exact approved workflow identifier

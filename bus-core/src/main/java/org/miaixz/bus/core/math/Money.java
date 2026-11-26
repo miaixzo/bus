@@ -652,6 +652,8 @@ public class Money implements Serializable, Comparable<Money> {
 
     /**
      * Generates the default string representation of this object.
+     *
+     * @return formatted monetary amount
      */
     @Override
     public String toString() {

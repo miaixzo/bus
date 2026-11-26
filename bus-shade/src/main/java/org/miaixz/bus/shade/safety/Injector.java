@@ -58,24 +58,30 @@ public class Injector {
      */
     public static void inject(JarArchiveOutputStream zos) throws IOException {
         Set<String> directories = new HashSet<>();
-        Enumeration<Resource> resources = Loaders.ant().load(Builder.XJAR_SRC_DIR + "**");
-        while (resources.hasMoreElements()) {
-            Resource resource = resources.nextElement();
-            String name = resource.getName();
-            String directory = name.substring(0, name.lastIndexOf(Symbol.SLASH) + 1);
-            if (directories.add(directory)) {
-                JarArchiveEntry xDirEntry = new JarArchiveEntry(directory);
-                xDirEntry.setTime(System.currentTimeMillis());
-                zos.putArchiveEntry(xDirEntry);
+        Set<String> entries = new HashSet<>();
+        for (String pkg : Builder.XJAR_INJECT_PACKAGES) {
+            Enumeration<Resource> resources = Loaders.ant().load(pkg + "**");
+            while (resources.hasMoreElements()) {
+                Resource resource = resources.nextElement();
+                String name = resource.getName();
+                if (!entries.add(name)) {
+                    continue;
+                }
+                String directory = name.substring(0, name.lastIndexOf(Symbol.SLASH) + 1);
+                if (directories.add(directory)) {
+                    JarArchiveEntry xDirEntry = new JarArchiveEntry(directory);
+                    xDirEntry.setTime(System.currentTimeMillis());
+                    zos.putArchiveEntry(xDirEntry);
+                    zos.closeArchiveEntry();
+                }
+                JarArchiveEntry xJarEntry = new JarArchiveEntry(name);
+                xJarEntry.setTime(System.currentTimeMillis());
+                zos.putArchiveEntry(xJarEntry);
+                try (InputStream ris = resource.getStream()) {
+                    Builder.transfer(ris, zos);
+                }
                 zos.closeArchiveEntry();
             }
-            JarArchiveEntry xJarEntry = new JarArchiveEntry(name);
-            xJarEntry.setTime(System.currentTimeMillis());
-            zos.putArchiveEntry(xJarEntry);
-            try (InputStream ris = resource.getStream()) {
-                Builder.transfer(ris, zos);
-            }
-            zos.closeArchiveEntry();
         }
     }
 

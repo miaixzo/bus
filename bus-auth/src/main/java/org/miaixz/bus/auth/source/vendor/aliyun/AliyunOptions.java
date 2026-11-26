@@ -61,6 +61,12 @@ public record AliyunOptions(Vendor.Id vendor, Vendor.Variant variant, String cli
     /**
      * Validates and freezes one Alibaba Cloud Source configuration without resolving its external secret.
      *
+     * @param vendor      exact Alibaba Cloud identifier
+     * @param variant     exact default login or RAM Variant
+     * @param clientId    OpenID Connect client identifier or RAM AccessKey ID
+     * @param credential  external client-secret or AccessKey Secret reference
+     * @param redirectUri login redirect URI or empty for RAM
+     * @param scopes      ordered login scopes or empty for RAM
      * @throws IllegalArgumentException if a required component, container, or collection member is null or blank
      * @throws ValidateException        if routing, credential type, scope vocabulary, scope uniqueness, or required
      *                                  OpenID Connect scope coverage is invalid

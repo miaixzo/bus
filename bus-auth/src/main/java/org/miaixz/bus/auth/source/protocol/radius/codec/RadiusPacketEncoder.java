@@ -39,11 +39,6 @@ import org.miaixz.bus.core.lang.exception.ProtocolException;
 public class RadiusPacketEncoder implements Encoder<RadiusPacket, byte[]> {
 
     /**
-     * Number of reserved octets after the RADIUS/1.1 Token.
-     */
-    private static final int RADIUS11_RESERVED_BYTES = Radius.AUTHENTICATOR_BYTES - Radius.TOKEN_BYTES;
-
-    /**
      * Configured packet size ceiling.
      */
     private final int maximumPacketBytes;
@@ -125,7 +120,7 @@ public class RadiusPacketEncoder implements Encoder<RadiusPacket, byte[]> {
             output.put((byte) 0);
             output.putShort((short) length);
             output.put(radius11.token());
-            output.put(new byte[RADIUS11_RESERVED_BYTES]);
+            output.put(new byte[Radius.AUTHENTICATOR_BYTES - Radius.TOKEN_BYTES]);
         } else {
             throw new ProtocolException("Unsupported RADIUS packet header");
         }

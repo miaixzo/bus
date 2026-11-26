@@ -76,6 +76,8 @@ public class StringConverter extends AbstractConverter {
     /**
      * Convertinternal method.
      *
+     * @param targetClass The target class to convert to.
+     * @param value       The non-null value to be converted.
      * @return the String value
      */
     @Override

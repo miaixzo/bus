@@ -46,6 +46,13 @@ public record VendorDeviation(String operation, Location location, String vendor
     /**
      * Validates and freezes one exact platform deviation declaration.
      *
+     * @param operation    exact standard or platform-scoped operation affected by the deviation
+     * @param location     wire location of the platform field or envelope
+     * @param vendorName   exact platform field name
+     * @param standardName corresponding standard field name when one exists
+     * @param mediaType    exact media type when the deviation changes representation
+     * @param method       exact HTTP method used by the platform operation
+     * @param enveloped    whether the platform wraps the operation response in a non-standard envelope
      * @throws IllegalArgumentException if required text is blank or a component container is null
      */
     public VendorDeviation {

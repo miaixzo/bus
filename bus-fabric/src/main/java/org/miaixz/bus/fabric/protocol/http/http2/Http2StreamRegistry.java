@@ -22,10 +22,11 @@ package org.miaixz.bus.fabric.protocol.http.http2;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReferenceArray;
-import java.util.function.BiConsumer;
 
+import org.miaixz.bus.core.center.function.BiConsumerX;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.core.xyz.FunctionKit;
 
 /**
  * Segmented registry addressed directly by the HTTP/2 stream identifier.
@@ -299,7 +300,7 @@ final class Http2StreamRegistry {
      *
      * @param consumer entry consumer
      */
-    private void forEach(final BiConsumer<Integer, Http2Stream> consumer) {
+    private void forEach(final BiConsumerX<Integer, Http2Stream> consumer) {
         final AtomicReferenceArray<Http2Stream>[] snapshot = segments;
         for (int segmentIndex = 0; segmentIndex < snapshot.length; segmentIndex++) {
             final AtomicReferenceArray<Http2Stream> segment = snapshot[segmentIndex];
@@ -309,7 +310,7 @@ final class Http2StreamRegistry {
             for (int slot = 0; slot < segment.length(); slot++) {
                 final Http2Stream stream = segment.get(slot);
                 if (stream != null) {
-                    consumer.accept((segmentIndex << SEGMENT_SHIFT) + slot + 1, stream);
+                    FunctionKit.acceptUnwrapped(consumer, (segmentIndex << SEGMENT_SHIFT) + slot + 1, stream);
                 }
             }
         }

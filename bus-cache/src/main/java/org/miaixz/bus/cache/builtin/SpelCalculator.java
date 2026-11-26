@@ -287,6 +287,10 @@ public class SpelCalculator {
 
     /**
      * Locate an operator string outside string literals. Returns -1 if not found.
+     *
+     * @param expr expression to inspect without treating quoted text as operators
+     * @param op   operator token to locate outside quoted strings
+     * @return index of the unquoted operator, or {@code -1} if it is absent
      */
     private static int indexOfOperator(String expr, String op) {
         boolean inStr = false;
@@ -308,6 +312,9 @@ public class SpelCalculator {
 
     /**
      * Split on {@code +} outside string literals.
+     *
+     * @param expr expression to inspect without treating quoted text as operators
+     * @return expression segments separated by unquoted plus operators
      */
     private static List<String> splitOnPlus(String expr) {
         List<String> parts = new ArrayList<>();

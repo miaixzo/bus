@@ -19,10 +19,12 @@
 */
 package org.miaixz.bus.vortex.strategy.vetting;
 
-import java.util.concurrent.TimeUnit;
+import java.util.Objects;
 
 import org.springframework.web.server.ServerWebExchange;
 
+import org.miaixz.bus.auth.guard.GuardConfig.Signing;
+import org.miaixz.bus.auth.guard.SignValidator;
 import org.miaixz.bus.core.Order;
 import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.lang.exception.ValidateException;
@@ -32,7 +34,6 @@ import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.vortex.Args;
 import org.miaixz.bus.vortex.Context;
 import org.miaixz.bus.vortex.Formats;
-import org.miaixz.bus.vortex.Holder;
 import org.miaixz.bus.vortex.magic.ErrorCode;
 import org.miaixz.bus.vortex.strategy.VettingStrategy;
 
@@ -50,10 +51,17 @@ import reactor.core.publisher.Mono;
 public class RestVettingStrategy extends VettingStrategy {
 
     /**
-     * Creates a REST vetting strategy.
+     * Auth Guard settings for the REST request timestamp window.
      */
-    public RestVettingStrategy() {
-        super();
+    private final Signing signing;
+
+    /**
+     * Creates a REST vetting strategy using the Auth Guard configuration.
+     *
+     * @param signing request-signature and timestamp settings
+     */
+    public RestVettingStrategy(Signing signing) {
+        this.signing = Objects.requireNonNull(signing);
     }
 
     /**
@@ -113,32 +121,20 @@ public class RestVettingStrategy extends VettingStrategy {
             String timestampStr = value(context, Args.TIMESTAMP);
             long clientTimestampMs = Long.parseLong(timestampStr);
             long currentTimestampMs = DateKit.current();
-            long absoluteDifferenceMs = Math.abs(currentTimestampMs - clientTimestampMs);
+            int skewMinutes = signing.skewMinutes();
 
-            if (absoluteDifferenceMs > TimeUnit.MINUTES.toMillis(Holder.getTimestampToleranceMinutes())) {
-                logTimestampMismatch(clientTimestampMs, currentTimestampMs, absoluteDifferenceMs);
+            if (!SignValidator.isTimestampWithinMinutes(clientTimestampMs, currentTimestampMs, skewMinutes)) {
+                Logger.warn(
+                        false,
+                        "Vortex",
+                        "Timestamp validation failed: strategy=rest-vetting, clientTimestampMs={}, serverTimestampMs={}, skewMinutes={}",
+                        clientTimestampMs,
+                        currentTimestampMs,
+                        skewMinutes);
                 throw new ValidateException(ErrorCode._100111);
             }
             return (Void) null;
         }).onErrorMap(NumberFormatException.class, ex -> new ValidateException(ErrorCode._100111));
-    }
-
-    /**
-     * Logs timestamp mismatches for replay-window troubleshooting.
-     *
-     * @param clientTime client timestamp in milliseconds
-     * @param serverTime server timestamp in milliseconds
-     * @param difference absolute difference in milliseconds
-     */
-    private void logTimestampMismatch(long clientTime, long serverTime, long difference) {
-        Logger.warn(
-                false,
-                "Vortex",
-                "Timestamp validation failed: strategy=rest-vetting, clientTimestampMs={}, serverTimestampMs={}, differenceMs={}, toleranceMinutes={}",
-                clientTime,
-                serverTime,
-                difference,
-                Holder.getTimestampToleranceMinutes());
     }
 
 }

@@ -90,6 +90,52 @@ public class OAuth2 {
     }
 
     /**
+     * Defines portable framework configuration keys, separate from protocol wire and discovery member names.
+     *
+     * @author Kimi Liu
+     */
+    public static class Options {
+
+        /**
+         * Configured action or identity scope set; the OAuth wire parameter remains Parameters.SCOPE.
+         */
+        public static final String SCOPES = "scopes";
+
+        /**
+         * Configured endpoint for an OAuth provider profile adapter; not an RFC metadata member.
+         */
+        public static final String PROFILE_ENDPOINT = "profile_endpoint";
+
+        /**
+         * Configured provider logout adapter endpoint; not an RFC metadata member.
+         */
+        public static final String LOGOUT_ENDPOINT = "logout_endpoint";
+
+        /**
+         * Configured authorization code lifetime in seconds.
+         */
+        public static final String AUTHORIZATION_CODE_LIFETIME = "authorization_code_lifetime";
+
+        /**
+         * Configured access token lifetime in seconds.
+         */
+        public static final String ACCESS_TOKEN_LIFETIME = "access_token_lifetime";
+
+        /**
+         * Configured refresh token lifetime in seconds.
+         */
+        public static final String REFRESH_TOKEN_LIFETIME = "refresh_token_lifetime";
+
+        /**
+         * Creates a configuration key holder with no retained state.
+         */
+        public Options() {
+            // No initialization required.
+        }
+
+    }
+
+    /**
      * Defines standard OAuth request and response member names used on the wire.
      *
      * @author Kimi Liu
@@ -316,6 +362,32 @@ public class OAuth2 {
          * Creates an OAuth response-mode constant holder.
          */
         public ResponseModes() {
+            // No initialization required.
+        }
+
+    }
+
+    /**
+     * Defines client registration metadata member names from RFC 7591.
+     *
+     * @author Kimi Liu
+     */
+    public static class ClientMetadata {
+
+        /**
+         * Registered redirect URI array defined by RFC 7591 section 2.
+         */
+        public static final String REDIRECT_URIS = "redirect_uris";
+
+        /**
+         * Registered token endpoint authentication method defined by RFC 7591 section 2.
+         */
+        public static final String TOKEN_ENDPOINT_AUTH_METHOD = "token_endpoint_auth_method";
+
+        /**
+         * Creates a client registration metadata constant holder with no retained state.
+         */
+        public ClientMetadata() {
             // No initialization required.
         }
 

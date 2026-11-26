@@ -441,6 +441,9 @@ final class RedirectState {
 
         /**
          * Validates the consumed callback material transferred to orchestration.
+         *
+         * @param correlation consumed one-time callback correlation
+         * @param verifier    optional caller-owned PKCE verifier lease
          */
         Consumed {
             Assert.notNull(correlation, "Consumed Vendor callback correlation must not be null");

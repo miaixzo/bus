@@ -498,6 +498,9 @@ public class ImageioReader extends ImageReader implements Closeable {
     /**
      * Gets the stream metadata. May not contain post pixel data unless there are no images or the getStreamMetadata has
      * been called with the post pixel data node being specified.
+     *
+     * @return stream metadata restricted to the requested format and nodes when supplied
+     * @throws IOException if an underlying input or output operation fails
      */
     @Override
     public ImageioMetaData getStreamMetadata() throws IOException {
@@ -509,6 +512,11 @@ public class ImageioReader extends ImageReader implements Closeable {
      * Gets the stream metadata. If nodeNames contains POST_PIXEL_DATA constant "postPixelData" then read the post pixel
      * data as well. In an InputStream instance that can only safely be done after all pixel data is read. On
      * imageInputStream it may be slow for large multiframes, but can safely be done at any time.
+     *
+     * @param formatName metadata format name requested from the image reader
+     * @param nodeNames  metadata node names to include in the result
+     * @return stream metadata restricted to the requested format and nodes when supplied
+     * @throws IOException if an underlying input or output operation fails
      */
     @Override
     public ImageioMetaData getStreamMetadata(String formatName, Set<String> nodeNames) throws IOException {
@@ -1195,6 +1203,9 @@ public class ImageioReader extends ImageReader implements Closeable {
 
     /**
      * Initializes the pixel data reading from an image input stream
+     *
+     * @param dis DICOM input stream positioned for pixel-data initialization
+     * @throws IOException if an underlying input or output operation fails
      */
     private void initPixelDataIIS(ImageInputStream dis) throws IOException {
         if (pixelDataLength == 0)

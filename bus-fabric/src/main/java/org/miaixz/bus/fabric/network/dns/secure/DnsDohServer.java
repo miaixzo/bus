@@ -912,6 +912,7 @@ public class DnsDohServer implements AutoCloseable, Lifecycle {
      * @param header        frame header
      * @param payload       frame payload
      * @param clientAddress client address
+     * @param hpack         HPACK decoder used for the HTTP/2 header block
      * @throws IOException if the socket cannot be written
      */
     private void handleHttp2Data(

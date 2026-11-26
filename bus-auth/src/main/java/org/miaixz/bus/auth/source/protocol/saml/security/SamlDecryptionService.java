@@ -680,6 +680,11 @@ public class SamlDecryptionService {
         /**
          * Validates required values and takes defensive ownership of secret byte sequences.
          *
+         * @param keyName          explicit private-key identifier
+         * @param keyAlgorithm     RSA-OAEP algorithm URI
+         * @param contentAlgorithm AES-GCM algorithm URI
+         * @param encryptedKey     RSA-wrapped AES key bytes
+         * @param ciphertext       XML Encryption AES-GCM IV, ciphertext, and tag bytes
          * @throws IllegalArgumentException if text is blank or a byte sequence is null
          * @throws ValidateException        if a byte sequence is empty
          */

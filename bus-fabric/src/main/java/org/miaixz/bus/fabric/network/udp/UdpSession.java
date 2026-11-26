@@ -27,6 +27,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.miaixz.bus.core.center.function.RunnableX;
 import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
@@ -35,6 +36,7 @@ import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.StatefulException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Protocol;
+import org.miaixz.bus.core.xyz.FunctionKit;
 import org.miaixz.bus.core.xyz.NetKit;
 import org.miaixz.bus.fabric.*;
 import org.miaixz.bus.fabric.guard.route.AddressGuard;
@@ -95,7 +97,7 @@ public class UdpSession implements Session {
     /**
      * Owner cleanup hook invoked once after channel close is attempted.
      */
-    private final Runnable onClose;
+    private final RunnableX onClose;
 
     /**
      * Guard ensuring one terminal owner releases the channel.
@@ -135,7 +137,7 @@ public class UdpSession implements Session {
      * @param onClose    non-null owner cleanup hook invoked during termination
      */
     UdpSession(final Address remote, final UdpChannel channel, final Listener<Object> listener,
-            final Dispatcher dispatcher, final Runnable onClose) {
+            final Dispatcher dispatcher, final RunnableX onClose) {
         this(remote, channel, listener, dispatcher, onClose, null);
     }
 
@@ -150,7 +152,7 @@ public class UdpSession implements Session {
      * @param codec      logical datagram relay codec, or {@code null} for direct transport
      */
     UdpSession(final Address remote, final UdpChannel channel, final Listener<Object> listener,
-            final Dispatcher dispatcher, final Runnable onClose, final UdpDatagramCodec codec) {
+            final Dispatcher dispatcher, final RunnableX onClose, final UdpDatagramCodec codec) {
         this(remote, null, null, channel, listener, dispatcher, onClose, codec);
     }
 
@@ -167,7 +169,7 @@ public class UdpSession implements Session {
      */
     UdpSession(final Address remote, final Address pinnedPeer, final AddressPolicy addressPolicy,
             final UdpChannel channel, final Listener<Object> listener, final Dispatcher dispatcher,
-            final Runnable onClose) {
+            final RunnableX onClose) {
         this(remote, pinnedPeer, addressPolicy, channel, listener, dispatcher, onClose, null);
     }
 
@@ -185,7 +187,7 @@ public class UdpSession implements Session {
      */
     private UdpSession(final Address remote, final Address pinnedPeer, final AddressPolicy addressPolicy,
             final UdpChannel channel, final Listener<Object> listener, final Dispatcher dispatcher,
-            final Runnable onClose, final UdpDatagramCodec codec) {
+            final RunnableX onClose, final UdpDatagramCodec codec) {
         this.remote = Assert.notNull(remote, () -> new ValidateException("UDP remote address must not be null"));
         this.codec = codec;
         if (pinnedPeer == null) {
@@ -496,7 +498,7 @@ public class UdpSession implements Session {
             failure = e;
         }
         try {
-            onClose.run();
+            FunctionKit.runUnwrapped(onClose);
         } catch (final RuntimeException e) {
             if (failure == null) {
                 failure = e;

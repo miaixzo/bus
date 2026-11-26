@@ -34,6 +34,8 @@ public record CertificateChain(List<Certificate> certificates) {
 
     /**
      * Creates a certificate chain.
+     *
+     * @param certificates certificate snapshot
      */
     public CertificateChain {
         if (certificates == null || certificates.stream().anyMatch(certificate -> certificate == null)) {

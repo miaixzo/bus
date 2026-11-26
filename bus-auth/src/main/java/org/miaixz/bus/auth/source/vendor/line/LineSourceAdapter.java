@@ -89,11 +89,6 @@ public class LineSourceAdapter implements VendorAdapter {
     private static final String ISSUER = "https://access.line.me";
 
     /**
-     * Maximum access-token lifetime registered by LINE Login, in seconds.
-     */
-    private static final long MAXIMUM_ACCESS_TOKEN_SECONDS = 30L * 24L * 60L * 60L;
-
-    /**
      * Standard OAuth errors representing rejected LINE token requests.
      */
     private static final Set<OAuth2ErrorCode> REJECTED_TOKEN_ERRORS = Set.of(
@@ -988,8 +983,7 @@ public class LineSourceAdapter implements VendorAdapter {
                         Optional.of(requiredString(object, OAuth2.Parameters.REFRESH_TOKEN)),
                         Optional.of(Scope.parse(requiredString(object, OAuth2.Parameters.SCOPE))),
                         new JsonValue.ObjectValue(extensions));
-                if (!TokenType.BEARER.equals(token.tokenType())
-                        || token.expiresIn().getOrNull() > MAXIMUM_ACCESS_TOKEN_SECONDS
+                if (!TokenType.BEARER.equals(token.tokenType()) || token.expiresIn().getOrNull() > 30L * 24L * 60L * 60L
                         || !options.scopes().equals(token.scope().getOrNull().values())) {
                     throw new ValidateException("LINE token success does not match the registered manifest");
                 }
@@ -1583,6 +1577,14 @@ public class LineSourceAdapter implements VendorAdapter {
 
         /**
          * Retains callback values after transport and multiplicity validation.
+         *
+         * @param code             authorization code on the success branch
+         * @param error            registered callback error on the error branch
+         * @param errorDescription optional callback error description
+         * @param state            browser correlation state
+         * @param memberCount      exact number of received parameters
+         * @param knownMembers     whether every received name belongs to the callback contract
+         * @param blank            whether any received value is blank
          */
         private CallbackWire {
             // No initialization required.

@@ -28,6 +28,8 @@ import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.xyz.ExceptionKit;
 import org.miaixz.bus.core.xyz.MapKit;
 import org.miaixz.bus.core.xyz.ThreadKit;
+import org.miaixz.bus.errors.ComponentFailure;
+import org.miaixz.bus.errors.ErrorType;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.tempus.temporal.notifier.CallbackNotifier;
@@ -52,6 +54,11 @@ import io.temporal.failure.CanceledFailure;
  */
 public abstract class AbstractActivityHandler<R, C>
         implements ActivityContextFactory<R, C>, ActivityExecutorResolver<R, C>, ActivityResultSerializer {
+
+    /**
+     * Reports activity and notifier failures without changing Temporal completion or callback ordering.
+     */
+    private static final ComponentFailure FAILURES = new ComponentFailure("bus-tempus", "activity");
 
     /**
      * Shared scheduler for activity heartbeats to avoid creating one thread per invocation.
@@ -129,6 +136,7 @@ public abstract class AbstractActivityHandler<R, C>
             }
             return buildSuccessResponse(taskId, result);
         } catch (Exception e) {
+            FAILURES.failed(ErrorType.EXECUTION_FAILURE, e);
             Logger.error(
                     false,
                     "Tempus",
@@ -147,6 +155,7 @@ public abstract class AbstractActivityHandler<R, C>
                     notifier.failure(request, e.getMessage());
                     Logger.debug(false, "Tempus", "Inline failure notifier completed: taskId={}", taskId);
                 } catch (Exception notifierError) {
+                    FAILURES.failed(ErrorType.CALLBACK_FAILURE, notifierError);
                     Logger.error(
                             false,
                             "Tempus",

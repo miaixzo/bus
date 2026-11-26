@@ -368,6 +368,7 @@ final class SseRunner {
                             spec.address().port(),
                             retryDelay);
                 }
+
             });
             closeReader(reader);
             if (spec.autoReconnect()) {

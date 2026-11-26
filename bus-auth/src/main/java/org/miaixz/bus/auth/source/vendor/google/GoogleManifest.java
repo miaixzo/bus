@@ -182,6 +182,7 @@ public class GoogleManifest implements VendorManifest<GoogleOptions> {
      * Creates the stateless Google manifest used by Vendor locator assembly.
      */
     public GoogleManifest() {
+        // No initialization required.
     }
 
     /**

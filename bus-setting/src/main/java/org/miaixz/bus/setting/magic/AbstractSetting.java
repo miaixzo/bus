@@ -172,6 +172,7 @@ public abstract class AbstractSetting
             public boolean containsKey(final String key) {
                 return null != getObjectByGroup(key, group);
             }
+
         }, CopyOptions.of());
     }
 

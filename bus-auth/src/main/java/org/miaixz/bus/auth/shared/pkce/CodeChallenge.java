@@ -35,6 +35,8 @@ public record CodeChallenge(String value, PkceMethod method) {
     /**
      * Validates method-specific challenge grammar.
      *
+     * @param value  encoded challenge value
+     * @param method registered derivation method
      * @throws IllegalArgumentException if a component is {@code null} or value is blank
      * @throws ValidateException        if method is unknown or value violates its registered grammar
      */

@@ -309,7 +309,7 @@ public class OGNL {
      *
      * @param fn The functional interface instance.
      * @return The field information object, containing the entity class and field name.
-     * @throws ReflectiveOperationException if reflection fails during field extraction.
+     * @throws RuntimeException if reflection fails during field extraction.
      */
     private static ClassField extractFieldInfo(Fn<?, ?> fn) {
         try {

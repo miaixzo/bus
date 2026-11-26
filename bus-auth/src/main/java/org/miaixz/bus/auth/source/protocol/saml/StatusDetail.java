@@ -39,6 +39,7 @@ public record StatusDetail(List<byte[]> elements) {
     /**
      * Deep-copies all wildcard elements.
      *
+     * @param elements ordered complete XML element serializations
      * @throws IllegalArgumentException if the list or an element is {@code null}
      */
     public StatusDetail {

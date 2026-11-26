@@ -27,9 +27,9 @@ import java.net.URISyntaxException;
 import java.time.Duration;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Consumer;
-import java.util.function.Function;
 
+import org.miaixz.bus.core.center.function.ConsumerX;
+import org.miaixz.bus.core.center.function.FunctionX;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
@@ -418,12 +418,12 @@ public class SocketX {
         /**
          * Open handler.
          */
-        private Consumer<SocketSession> openHandler;
+        private ConsumerX<SocketSession> openHandler;
 
         /**
          * Error handler.
          */
-        private Consumer<Throwable> errorHandler;
+        private ConsumerX<Throwable> errorHandler;
 
         /**
          * Creates a builder.
@@ -778,7 +778,7 @@ public class SocketX {
          * @param resolver function that resolves a channel identifier from each message
          * @return this builder
          */
-        public Builder resolver(final Function<Message, String> resolver) {
+        public Builder resolver(final FunctionX<Message, String> resolver) {
             demuxer().resolver(resolver);
             return this;
         }
@@ -789,7 +789,7 @@ public class SocketX {
          * @param handler UTF-8 text consumer, or {@code null} to install a no-op handler
          * @return this builder
          */
-        public Builder onText(final Consumer<String> handler) {
+        public Builder onText(final ConsumerX<String> handler) {
             this.demuxer = null;
             if (handler == null) {
                 this.handler = Demuxer.noop();
@@ -805,7 +805,7 @@ public class SocketX {
          * @param handler consumer invoked after a session opens, or {@code null} for no action
          * @return this builder
          */
-        public Builder onOpen(final Consumer<SocketSession> handler) {
+        public Builder onOpen(final ConsumerX<SocketSession> handler) {
             this.openHandler = handler == null ? session -> {
             } : handler;
             return composeCallback();
@@ -817,7 +817,7 @@ public class SocketX {
          * @param handler consumer invoked when opening fails, or {@code null} for no action
          * @return this builder
          */
-        public Builder onError(final Consumer<Throwable> handler) {
+        public Builder onError(final ConsumerX<Throwable> handler) {
             this.errorHandler = handler == null ? cause -> {
             } : handler;
             return composeCallback();
@@ -1079,12 +1079,12 @@ public class SocketX {
             /**
              * Success handler captured when the callback is composed.
              */
-            private final Consumer<SocketSession> openHandler;
+            private final ConsumerX<SocketSession> openHandler;
 
             /**
              * Failure handler captured when the callback is composed.
              */
-            private final Consumer<Throwable> errorHandler;
+            private final ConsumerX<Throwable> errorHandler;
 
             /**
              * Creates a callback from the builder's current handlers.
@@ -1092,7 +1092,8 @@ public class SocketX {
              * @param openHandler  success handler
              * @param errorHandler failure handler
              */
-            private HandlerCallback(final Consumer<SocketSession> openHandler, final Consumer<Throwable> errorHandler) {
+            private HandlerCallback(final ConsumerX<SocketSession> openHandler,
+                    final ConsumerX<Throwable> errorHandler) {
                 this.openHandler = openHandler;
                 this.errorHandler = errorHandler;
             }

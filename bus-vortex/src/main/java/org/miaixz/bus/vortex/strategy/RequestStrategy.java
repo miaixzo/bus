@@ -281,6 +281,7 @@ public class RequestStrategy extends AbstractStrategy {
                     return Flux.defer(() -> Mono.just(exchange.getResponse().bufferFactory().wrap(body.bytes())))
                             .doFinally(signal -> body.discardBytes());
                 }
+
             };
 
             Logger.info(
@@ -402,6 +403,7 @@ public class RequestStrategy extends AbstractStrategy {
                 public Flux<DataBuffer> getBody() {
                     return Flux.defer(() -> Mono.just(exchange.getResponse().bufferFactory().wrap(body.bytes())));
                 }
+
             };
 
             FormHttpMessageReader reader = new FormHttpMessageReader();
@@ -412,15 +414,26 @@ public class RequestStrategy extends AbstractStrategy {
                     Map.of()).defaultIfEmpty(new LinkedMultiValueMap<>()).cache();
             ServerWebExchange newExchange = new ServerWebExchangeDecorator(exchange) {
 
+                /**
+                 * Exposes the decorated request that carries the replayable body.
+                 *
+                 * @return the request used by the remaining strategies
+                 */
                 @Override
                 public ServerHttpRequest getRequest() {
                     return newRequest;
                 }
 
+                /**
+                 * Exposes the form data parsed during request preparation.
+                 *
+                 * @return the parsed form fields
+                 */
                 @Override
                 public Mono<MultiValueMap<String, String>> getFormData() {
                     return formData;
                 }
+
             };
 
             return formData.flatMap(params -> {

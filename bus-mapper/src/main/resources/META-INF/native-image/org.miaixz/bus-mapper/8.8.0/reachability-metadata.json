@@ -1,15 +1,6 @@
 {
   "reflection": [
     {
-      "type": "org.miaixz.bus.mapper.feature.keygen.KeySqlRegistry",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
       "type": "org.miaixz.bus.mapper.Args",
       "methods": [
         {
@@ -19,11 +10,766 @@
       ]
     },
     {
-      "type": {
-        "proxy": [
-          "org.miaixz.bus.mapper.binding.basic.ClassMapper"
-        ]
-      }
+      "type": "org.miaixz.bus.mapper.Caching",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "cache",
+          "parameterTypes": [
+            "org.apache.ibatis.builder.annotation.ProviderContext",
+            "org.miaixz.bus.mapper.parsing.TableMeta",
+            "org.miaixz.bus.core.center.function.SupplierX"
+          ]
+        },
+        {
+          "name": "cacheDynamic",
+          "parameterTypes": [
+            "org.apache.ibatis.builder.annotation.ProviderContext",
+            "org.miaixz.bus.mapper.parsing.TableMeta",
+            "org.miaixz.bus.core.center.function.FunctionX"
+          ]
+        },
+        {
+          "name": "clear",
+          "parameterTypes": [
+            "org.apache.ibatis.session.Configuration"
+          ]
+        },
+        {
+          "name": "clearAll",
+          "parameterTypes": []
+        },
+        {
+          "name": "createSqlSource",
+          "parameterTypes": [
+            "org.apache.ibatis.session.Configuration",
+            "java.lang.String",
+            "java.lang.Class"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.mapper.Charter",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.mapper.Charter$Behavior",
+      "fields": [
+        {
+          "name": "ADD_COLUMN"
+        },
+        {
+          "name": "CREATE_FOREIGN_KEY"
+        },
+        {
+          "name": "CREATE_INDEX"
+        },
+        {
+          "name": "CREATE_PRIMARY_KEY"
+        },
+        {
+          "name": "CREATE_TABLE"
+        },
+        {
+          "name": "CREATE_UNIQUE"
+        },
+        {
+          "name": "DROP_COLUMN"
+        },
+        {
+          "name": "DROP_FOREIGN_KEY"
+        },
+        {
+          "name": "DROP_INDEX"
+        },
+        {
+          "name": "DROP_PRIMARY_KEY"
+        },
+        {
+          "name": "DROP_UNIQUE"
+        },
+        {
+          "name": "INSERT_ON_CONFLICT"
+        },
+        {
+          "name": "INSERT_ON_DUPLICATE"
+        },
+        {
+          "name": "INSERT_OR_REPLACE"
+        },
+        {
+          "name": "MERGE_INTO_KEY"
+        },
+        {
+          "name": "MERGE_USING_DUAL"
+        },
+        {
+          "name": "MERGE_USING_VALUES"
+        },
+        {
+          "name": "MODIFY_COLUMN_DECIMAL"
+        },
+        {
+          "name": "MODIFY_COLUMN_LENGTH"
+        },
+        {
+          "name": "MODIFY_COLUMN_NULLABLE"
+        },
+        {
+          "name": "MODIFY_COLUMN_TYPE"
+        },
+        {
+          "name": "NONE"
+        },
+        {
+          "name": "READ_COLUMN_METADATA"
+        },
+        {
+          "name": "READ_FOREIGN_KEY_METADATA"
+        },
+        {
+          "name": "READ_INDEX_METADATA"
+        },
+        {
+          "name": "READ_PRIMARY_KEY_METADATA"
+        },
+        {
+          "name": "READ_TABLE_METADATA"
+        },
+        {
+          "name": "RENAME_COLUMN"
+        },
+        {
+          "name": "UPDATE_OR_INSERT"
+        },
+        {
+          "name": "MODIFY_TABLE_COMMENT"
+        },
+        {
+          "name": "MODIFY_COLUMN_COMMENT"
+        },
+        {
+          "name": "group"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "int",
+            "org.miaixz.bus.mapper.Charter$Group"
+          ]
+        },
+        {
+          "name": "group",
+          "parameterTypes": []
+        },
+        {
+          "name": "valueOf",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "values",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.mapper.Charter$Group",
+      "fields": [
+        {
+          "name": "METADATA"
+        },
+        {
+          "name": "SCHEMA"
+        },
+        {
+          "name": "UPSERT"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "int"
+          ]
+        },
+        {
+          "name": "valueOf",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "values",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.mapper.Charter$Handler",
+      "fields": [
+        {
+          "name": "GET_BOUND_SQL"
+        },
+        {
+          "name": "PREPARE"
+        },
+        {
+          "name": "QUERY"
+        },
+        {
+          "name": "UPDATE"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "int"
+          ]
+        },
+        {
+          "name": "valueOf",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "values",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.mapper.Charter$Isolation",
+      "fields": [
+        {
+          "name": "COLUMN"
+        },
+        {
+          "name": "DATASOURCE"
+        },
+        {
+          "name": "description"
+        },
+        {
+          "name": "name"
+        },
+        {
+          "name": "SCHEMA"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "int",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getDescription",
+          "parameterTypes": []
+        },
+        {
+          "name": "getName",
+          "parameterTypes": []
+        },
+        {
+          "name": "needRewriteSql",
+          "parameterTypes": []
+        },
+        {
+          "name": "needTenantColumn",
+          "parameterTypes": []
+        },
+        {
+          "name": "valueOf",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "values",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.mapper.Charter$Modify",
+      "fields": [
+        {
+          "name": "ALTER_COLUMN"
+        },
+        {
+          "name": "ALTER_COLUMN_TYPE"
+        },
+        {
+          "name": "MODIFY"
+        },
+        {
+          "name": "MODIFY_PARENTHESES"
+        },
+        {
+          "name": "SET_DATA_TYPE"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "int"
+          ]
+        },
+        {
+          "name": "valueOf",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "values",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.mapper.Charter$Risk",
+      "fields": [
+        {
+          "name": "CAUTION"
+        },
+        {
+          "name": "DANGEROUS"
+        },
+        {
+          "name": "SAFE"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "int"
+          ]
+        },
+        {
+          "name": "valueOf",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "values",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.mapper.Charter$Schema",
+      "fields": [
+        {
+          "name": "CREATE"
+        },
+        {
+          "name": "NONE"
+        },
+        {
+          "name": "SCRIPT"
+        },
+        {
+          "name": "UPDATE"
+        },
+        {
+          "name": "VALIDATE"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "int"
+          ]
+        },
+        {
+          "name": "valueOf",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "values",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.mapper.Context",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "clearMapperConfig",
+          "parameterTypes": []
+        },
+        {
+          "name": "getMapperConfig",
+          "parameterTypes": []
+        },
+        {
+          "name": "runWith",
+          "parameterTypes": [
+            "org.miaixz.bus.mapper.Context$MapperConfig",
+            "java.lang.Runnable"
+          ]
+        },
+        {
+          "name": "runWith",
+          "parameterTypes": [
+            "org.miaixz.bus.mapper.Context$MapperConfig",
+            "org.miaixz.bus.core.center.function.SupplierX"
+          ]
+        },
+        {
+          "name": "setMapperConfig",
+          "parameterTypes": [
+            "org.miaixz.bus.mapper.Context$MapperConfig"
+          ]
+        },
+        {
+          "name": "setAffix",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String[]"
+          ]
+        },
+        {
+          "name": "setAffix",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.util.List",
+            "java.lang.String",
+            "java.util.List"
+          ]
+        },
+        {
+          "name": "setTenantId",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String[]"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.mapper.Context$MapperConfig",
+      "fields": [
+        {
+          "name": "affix"
+        },
+        {
+          "name": "audit"
+        },
+        {
+          "name": "populate"
+        },
+        {
+          "name": "tenant"
+        },
+        {
+          "name": "visible"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "builder",
+          "parameterTypes": []
+        },
+        {
+          "name": "getAffix",
+          "parameterTypes": []
+        },
+        {
+          "name": "getAudit",
+          "parameterTypes": []
+        },
+        {
+          "name": "getPopulate",
+          "parameterTypes": []
+        },
+        {
+          "name": "getTenant",
+          "parameterTypes": []
+        },
+        {
+          "name": "getVisible",
+          "parameterTypes": []
+        },
+        {
+          "name": "setAffix",
+          "parameterTypes": [
+            "org.miaixz.bus.mapper.feature.affix.AffixRuleConfig"
+          ]
+        },
+        {
+          "name": "setAudit",
+          "parameterTypes": [
+            "org.miaixz.bus.mapper.feature.audit.AuditConfig"
+          ]
+        },
+        {
+          "name": "setPopulate",
+          "parameterTypes": [
+            "org.miaixz.bus.mapper.feature.populate.PopulateConfig"
+          ]
+        },
+        {
+          "name": "setTenant",
+          "parameterTypes": [
+            "org.miaixz.bus.mapper.feature.tenant.TenantConfig"
+          ]
+        },
+        {
+          "name": "setVisible",
+          "parameterTypes": [
+            "org.miaixz.bus.mapper.feature.visible.VisibleConfig"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.mapper.Context$MapperConfig$Builder",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "affix",
+          "parameterTypes": [
+            "org.miaixz.bus.mapper.feature.affix.AffixRuleConfig"
+          ]
+        },
+        {
+          "name": "audit",
+          "parameterTypes": [
+            "org.miaixz.bus.mapper.feature.audit.AuditConfig"
+          ]
+        },
+        {
+          "name": "build",
+          "parameterTypes": []
+        },
+        {
+          "name": "populate",
+          "parameterTypes": [
+            "org.miaixz.bus.mapper.feature.populate.PopulateConfig"
+          ]
+        },
+        {
+          "name": "tenant",
+          "parameterTypes": [
+            "org.miaixz.bus.mapper.feature.tenant.TenantConfig"
+          ]
+        },
+        {
+          "name": "visible",
+          "parameterTypes": [
+            "org.miaixz.bus.mapper.feature.visible.VisibleConfig"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.mapper.OGNL",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.mapper.OGNL$CacheStats",
+      "fields": [
+        {
+          "name": "classCacheSize"
+        },
+        {
+          "name": "lambdaCacheSize"
+        },
+        {
+          "name": "methodCacheSize"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "int",
+            "int",
+            "int"
+          ]
+        },
+        {
+          "name": "getClassCacheSize",
+          "parameterTypes": []
+        },
+        {
+          "name": "getLambdaCacheSize",
+          "parameterTypes": []
+        },
+        {
+          "name": "getMethodCacheSize",
+          "parameterTypes": []
+        },
+        {
+          "name": "getTotalSize",
+          "parameterTypes": []
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.mapper.Order",
+      "methods": [
+        {
+          "name": "ascending",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "descending",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "directionOnly",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "of",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "of",
+          "parameterTypes": [
+            "java.lang.String",
+            "org.miaixz.bus.core.lang.EnumValue$Sort"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.mapper.Order$SimpleOrder",
+      "fields": [
+        {
+          "name": "direction"
+        },
+        {
+          "name": "property"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.core.lang.EnumValue$Sort",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "getDirection",
+          "parameterTypes": []
+        },
+        {
+          "name": "getDirectionCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "getProperty",
+          "parameterTypes": []
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "hasProperty",
+          "parameterTypes": []
+        },
+        {
+          "name": "isAscending",
+          "parameterTypes": []
+        },
+        {
+          "name": "isDescending",
+          "parameterTypes": []
+        },
+        {
+          "name": "order",
+          "parameterTypes": []
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "withDirection",
+          "parameterTypes": [
+            "org.miaixz.bus.core.lang.EnumValue$Sort"
+          ]
+        },
+        {
+          "name": "withProperty",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ]
     },
     {
       "type": "org.miaixz.bus.mapper.annotation.ColumnOrder",
@@ -43,6 +789,238 @@
       ]
     },
     {
+      "type": "org.miaixz.bus.mapper.behavior.SchemaBehavior",
+      "methods": [
+        {
+          "name": "sameIdentifier",
+          "parameterTypes": [
+            "org.miaixz.bus.mapper.feature.schema.TableSnapshot",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "compareType",
+          "parameterTypes": [
+            "org.miaixz.bus.mapper.feature.schema.SqlTypeDescriptor",
+            "org.miaixz.bus.mapper.feature.schema.SqlTypeDescriptor"
+          ]
+        },
+        {
+          "name": "compareLength",
+          "parameterTypes": [
+            "org.miaixz.bus.mapper.feature.schema.SqlTypeDescriptor",
+            "org.miaixz.bus.mapper.feature.schema.SqlTypeDescriptor"
+          ]
+        },
+        {
+          "name": "compareDecimal",
+          "parameterTypes": [
+            "org.miaixz.bus.mapper.feature.schema.SqlTypeDescriptor",
+            "org.miaixz.bus.mapper.feature.schema.SqlTypeDescriptor"
+          ]
+        },
+        {
+          "name": "inlinePrimaryKey",
+          "parameterTypes": []
+        },
+        {
+          "name": "existsTable",
+          "parameterTypes": [
+            "java.sql.Connection",
+            "org.miaixz.bus.mapper.parsing.TableMeta"
+          ]
+        },
+        {
+          "name": "readTable",
+          "parameterTypes": [
+            "java.sql.Connection",
+            "org.miaixz.bus.mapper.parsing.TableMeta"
+          ]
+        },
+        {
+          "name": "readColumns",
+          "parameterTypes": [
+            "java.sql.Connection",
+            "org.miaixz.bus.mapper.parsing.TableMeta"
+          ]
+        },
+        {
+          "name": "readIndexes",
+          "parameterTypes": [
+            "java.sql.Connection",
+            "org.miaixz.bus.mapper.parsing.TableMeta"
+          ]
+        },
+        {
+          "name": "readPrimaryKey",
+          "parameterTypes": [
+            "java.sql.Connection",
+            "org.miaixz.bus.mapper.parsing.TableMeta"
+          ]
+        },
+        {
+          "name": "readForeignKeys",
+          "parameterTypes": [
+            "java.sql.Connection",
+            "org.miaixz.bus.mapper.parsing.TableMeta"
+          ]
+        },
+        {
+          "name": "acquireSchemaInitializationLock",
+          "parameterTypes": [
+            "java.sql.Connection",
+            "org.miaixz.bus.mapper.parsing.TableMeta"
+          ]
+        },
+        {
+          "name": "resolveType",
+          "parameterTypes": [
+            "org.miaixz.bus.mapper.parsing.ColumnMeta"
+          ]
+        },
+        {
+          "name": "createTable",
+          "parameterTypes": [
+            "org.miaixz.bus.mapper.parsing.TableMeta"
+          ]
+        },
+        {
+          "name": "modifyTableComment",
+          "parameterTypes": [
+            "org.miaixz.bus.mapper.parsing.TableMeta"
+          ]
+        },
+        {
+          "name": "addColumn",
+          "parameterTypes": [
+            "org.miaixz.bus.mapper.parsing.TableMeta",
+            "org.miaixz.bus.mapper.parsing.ColumnMeta"
+          ]
+        },
+        {
+          "name": "modifyColumnComment",
+          "parameterTypes": [
+            "org.miaixz.bus.mapper.parsing.TableMeta",
+            "org.miaixz.bus.mapper.parsing.ColumnMeta"
+          ]
+        },
+        {
+          "name": "modifyColumnType",
+          "parameterTypes": [
+            "org.miaixz.bus.mapper.parsing.TableMeta",
+            "org.miaixz.bus.mapper.parsing.ColumnMeta",
+            "org.miaixz.bus.mapper.feature.schema.ColumnSnapshot"
+          ]
+        },
+        {
+          "name": "modifyColumnLength",
+          "parameterTypes": [
+            "org.miaixz.bus.mapper.parsing.TableMeta",
+            "org.miaixz.bus.mapper.parsing.ColumnMeta",
+            "org.miaixz.bus.mapper.feature.schema.ColumnSnapshot"
+          ]
+        },
+        {
+          "name": "modifyColumnDecimal",
+          "parameterTypes": [
+            "org.miaixz.bus.mapper.parsing.TableMeta",
+            "org.miaixz.bus.mapper.parsing.ColumnMeta",
+            "org.miaixz.bus.mapper.feature.schema.ColumnSnapshot"
+          ]
+        },
+        {
+          "name": "modifyColumnNullable",
+          "parameterTypes": [
+            "org.miaixz.bus.mapper.parsing.TableMeta",
+            "org.miaixz.bus.mapper.parsing.ColumnMeta",
+            "org.miaixz.bus.mapper.feature.schema.ColumnSnapshot"
+          ]
+        },
+        {
+          "name": "renameColumn",
+          "parameterTypes": [
+            "org.miaixz.bus.mapper.parsing.TableMeta",
+            "java.lang.String",
+            "org.miaixz.bus.mapper.parsing.ColumnMeta"
+          ]
+        },
+        {
+          "name": "dropColumn",
+          "parameterTypes": [
+            "org.miaixz.bus.mapper.parsing.TableMeta",
+            "org.miaixz.bus.mapper.feature.schema.ColumnSnapshot"
+          ]
+        },
+        {
+          "name": "createIndex",
+          "parameterTypes": [
+            "org.miaixz.bus.mapper.parsing.TableMeta",
+            "org.miaixz.bus.mapper.parsing.IndexMeta"
+          ]
+        },
+        {
+          "name": "dropIndex",
+          "parameterTypes": [
+            "org.miaixz.bus.mapper.parsing.TableMeta",
+            "org.miaixz.bus.mapper.parsing.IndexMeta"
+          ]
+        },
+        {
+          "name": "createUnique",
+          "parameterTypes": [
+            "org.miaixz.bus.mapper.parsing.TableMeta",
+            "org.miaixz.bus.mapper.parsing.IndexMeta"
+          ]
+        },
+        {
+          "name": "dropUnique",
+          "parameterTypes": [
+            "org.miaixz.bus.mapper.parsing.TableMeta",
+            "org.miaixz.bus.mapper.parsing.IndexMeta"
+          ]
+        },
+        {
+          "name": "createPrimaryKey",
+          "parameterTypes": [
+            "org.miaixz.bus.mapper.parsing.TableMeta",
+            "org.miaixz.bus.mapper.parsing.PrimaryKeyMeta"
+          ]
+        },
+        {
+          "name": "dropPrimaryKey",
+          "parameterTypes": [
+            "org.miaixz.bus.mapper.parsing.TableMeta",
+            "org.miaixz.bus.mapper.parsing.PrimaryKeyMeta"
+          ]
+        },
+        {
+          "name": "createForeignKey",
+          "parameterTypes": [
+            "org.miaixz.bus.mapper.parsing.TableMeta",
+            "org.miaixz.bus.mapper.parsing.ForeignKeyMeta"
+          ]
+        },
+        {
+          "name": "dropForeignKey",
+          "parameterTypes": [
+            "org.miaixz.bus.mapper.parsing.TableMeta",
+            "org.miaixz.bus.mapper.parsing.ForeignKeyMeta"
+          ]
+        },
+        {
+          "name": "unsupportedSchema",
+          "parameterTypes": [
+            "java.lang.String",
+            "org.miaixz.bus.mapper.parsing.TableMeta"
+          ]
+        }
+      ],
+      "condition": {
+        "typeReached": "org.miaixz.bus.mapper.behavior.SchemaBehavior"
+      }
+    },
+    {
       "type": "org.miaixz.bus.mapper.binding.basic.ClassMapper$CachingEntityClass",
       "methods": [
         {
@@ -56,27 +1034,6 @@
           ]
         }
       ]
-    },
-    {
-      "type": {
-        "proxy": [
-          "org.miaixz.bus.mapper.binding.basic.EntityMapper"
-        ]
-      }
-    },
-    {
-      "type": {
-        "proxy": [
-          "org.miaixz.bus.mapper.binding.BasicMapper"
-        ]
-      }
-    },
-    {
-      "type": {
-        "proxy": [
-          "org.miaixz.bus.mapper.binding.batch.BatchMapper"
-        ]
-      }
     },
     {
       "type": "org.miaixz.bus.mapper.binding.condition.Condition",
@@ -394,13 +1351,6 @@
       ]
     },
     {
-      "type": {
-        "proxy": [
-          "org.miaixz.bus.mapper.binding.condition.ConditionMapper"
-        ]
-      }
-    },
-    {
       "type": "org.miaixz.bus.mapper.binding.condition.ConditionWrapper",
       "methods": [
         {
@@ -431,13 +1381,6 @@
           ]
         }
       ]
-    },
-    {
-      "type": {
-        "proxy": [
-          "org.miaixz.bus.mapper.binding.cursor.CursorMapper"
-        ]
-      }
     },
     {
       "type": "org.miaixz.bus.mapper.binding.function.Fn",
@@ -542,27 +1485,6 @@
           "parameterTypes": []
         }
       ]
-    },
-    {
-      "type": {
-        "proxy": [
-          "org.miaixz.bus.mapper.binding.function.FunctionMapper"
-        ]
-      }
-    },
-    {
-      "type": {
-        "proxy": [
-          "org.miaixz.bus.mapper.binding.list.ListMapper"
-        ]
-      }
-    },
-    {
-      "type": {
-        "proxy": [
-          "org.miaixz.bus.mapper.binding.logical.LogicalMapper"
-        ]
-      }
     },
     {
       "type": "org.miaixz.bus.mapper.builder.CachingTableSchemaBuilder",
@@ -1208,595 +2130,6 @@
           "name": "createTable",
           "parameterTypes": [
             "java.lang.Class"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.mapper.Caching",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "cache",
-          "parameterTypes": [
-            "org.apache.ibatis.builder.annotation.ProviderContext",
-            "org.miaixz.bus.mapper.parsing.TableMeta",
-            "org.miaixz.bus.core.center.function.SupplierX"
-          ]
-        },
-        {
-          "name": "cacheDynamic",
-          "parameterTypes": [
-            "org.apache.ibatis.builder.annotation.ProviderContext",
-            "org.miaixz.bus.mapper.parsing.TableMeta",
-            "org.miaixz.bus.core.center.function.FunctionX"
-          ]
-        },
-        {
-          "name": "clear",
-          "parameterTypes": [
-            "org.apache.ibatis.session.Configuration"
-          ]
-        },
-        {
-          "name": "clearAll",
-          "parameterTypes": []
-        },
-        {
-          "name": "createSqlSource",
-          "parameterTypes": [
-            "org.apache.ibatis.session.Configuration",
-            "java.lang.String",
-            "java.lang.Class"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.mapper.Charter",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.mapper.Charter$Behavior",
-      "fields": [
-        {
-          "name": "ADD_COLUMN"
-        },
-        {
-          "name": "CREATE_FOREIGN_KEY"
-        },
-        {
-          "name": "CREATE_INDEX"
-        },
-        {
-          "name": "CREATE_PRIMARY_KEY"
-        },
-        {
-          "name": "CREATE_TABLE"
-        },
-        {
-          "name": "CREATE_UNIQUE"
-        },
-        {
-          "name": "DROP_COLUMN"
-        },
-        {
-          "name": "DROP_FOREIGN_KEY"
-        },
-        {
-          "name": "DROP_INDEX"
-        },
-        {
-          "name": "DROP_PRIMARY_KEY"
-        },
-        {
-          "name": "DROP_UNIQUE"
-        },
-        {
-          "name": "INSERT_ON_CONFLICT"
-        },
-        {
-          "name": "INSERT_ON_DUPLICATE"
-        },
-        {
-          "name": "INSERT_OR_REPLACE"
-        },
-        {
-          "name": "MERGE_INTO_KEY"
-        },
-        {
-          "name": "MERGE_USING_DUAL"
-        },
-        {
-          "name": "MERGE_USING_VALUES"
-        },
-        {
-          "name": "MODIFY_COLUMN_DECIMAL"
-        },
-        {
-          "name": "MODIFY_COLUMN_LENGTH"
-        },
-        {
-          "name": "MODIFY_COLUMN_NULLABLE"
-        },
-        {
-          "name": "MODIFY_COLUMN_TYPE"
-        },
-        {
-          "name": "NONE"
-        },
-        {
-          "name": "READ_COLUMN_METADATA"
-        },
-        {
-          "name": "READ_FOREIGN_KEY_METADATA"
-        },
-        {
-          "name": "READ_INDEX_METADATA"
-        },
-        {
-          "name": "READ_PRIMARY_KEY_METADATA"
-        },
-        {
-          "name": "READ_TABLE_METADATA"
-        },
-        {
-          "name": "RENAME_COLUMN"
-        },
-        {
-          "name": "UPDATE_OR_INSERT"
-        }
-      ],
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "int",
-            "org.miaixz.bus.mapper.Charter$Group"
-          ]
-        },
-        {
-          "name": "group",
-          "parameterTypes": []
-        },
-        {
-          "name": "valueOf",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "values",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.mapper.Charter$Group",
-      "fields": [
-        {
-          "name": "METADATA"
-        },
-        {
-          "name": "SCHEMA"
-        },
-        {
-          "name": "UPSERT"
-        }
-      ],
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "int"
-          ]
-        },
-        {
-          "name": "valueOf",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "values",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.mapper.Charter$Handler",
-      "fields": [
-        {
-          "name": "GET_BOUND_SQL"
-        },
-        {
-          "name": "PREPARE"
-        },
-        {
-          "name": "QUERY"
-        },
-        {
-          "name": "UPDATE"
-        }
-      ],
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "int"
-          ]
-        },
-        {
-          "name": "valueOf",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "values",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.mapper.Charter$Isolation",
-      "fields": [
-        {
-          "name": "COLUMN"
-        },
-        {
-          "name": "DATASOURCE"
-        },
-        {
-          "name": "description"
-        },
-        {
-          "name": "name"
-        },
-        {
-          "name": "SCHEMA"
-        }
-      ],
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "int",
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "getDescription",
-          "parameterTypes": []
-        },
-        {
-          "name": "getName",
-          "parameterTypes": []
-        },
-        {
-          "name": "needRewriteSql",
-          "parameterTypes": []
-        },
-        {
-          "name": "needTenantColumn",
-          "parameterTypes": []
-        },
-        {
-          "name": "valueOf",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "values",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.mapper.Charter$Modify",
-      "fields": [
-        {
-          "name": "ALTER_COLUMN"
-        },
-        {
-          "name": "ALTER_COLUMN_TYPE"
-        },
-        {
-          "name": "MODIFY"
-        },
-        {
-          "name": "MODIFY_PARENTHESES"
-        },
-        {
-          "name": "SET_DATA_TYPE"
-        }
-      ],
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "int"
-          ]
-        },
-        {
-          "name": "valueOf",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "values",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.mapper.Charter$Risk",
-      "fields": [
-        {
-          "name": "CAUTION"
-        },
-        {
-          "name": "DANGEROUS"
-        },
-        {
-          "name": "SAFE"
-        }
-      ],
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "int"
-          ]
-        },
-        {
-          "name": "valueOf",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "values",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.mapper.Charter$Schema",
-      "fields": [
-        {
-          "name": "CREATE"
-        },
-        {
-          "name": "NONE"
-        },
-        {
-          "name": "SCRIPT"
-        },
-        {
-          "name": "UPDATE"
-        },
-        {
-          "name": "VALIDATE"
-        }
-      ],
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "int"
-          ]
-        },
-        {
-          "name": "valueOf",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "values",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.mapper.Context",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "clearMapperConfig",
-          "parameterTypes": []
-        },
-        {
-          "name": "getMapperConfig",
-          "parameterTypes": []
-        },
-        {
-          "name": "runWith",
-          "parameterTypes": [
-            "org.miaixz.bus.mapper.Context$MapperConfig",
-            "java.lang.Runnable"
-          ]
-        },
-        {
-          "name": "runWith",
-          "parameterTypes": [
-            "org.miaixz.bus.mapper.Context$MapperConfig",
-            "org.miaixz.bus.core.center.function.SupplierX"
-          ]
-        },
-        {
-          "name": "setMapperConfig",
-          "parameterTypes": [
-            "org.miaixz.bus.mapper.Context$MapperConfig"
-          ]
-        },
-        {
-          "name": "setAffix",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String[]"
-          ]
-        },
-        {
-          "name": "setAffix",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.util.List",
-            "java.lang.String",
-            "java.util.List"
-          ]
-        },
-        {
-          "name": "setTenantId",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String[]"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.mapper.Context$MapperConfig",
-      "fields": [
-        {
-          "name": "affix"
-        },
-        {
-          "name": "audit"
-        },
-        {
-          "name": "populate"
-        },
-        {
-          "name": "tenant"
-        },
-        {
-          "name": "visible"
-        }
-      ],
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "builder",
-          "parameterTypes": []
-        },
-        {
-          "name": "getAffix",
-          "parameterTypes": []
-        },
-        {
-          "name": "getAudit",
-          "parameterTypes": []
-        },
-        {
-          "name": "getPopulate",
-          "parameterTypes": []
-        },
-        {
-          "name": "getTenant",
-          "parameterTypes": []
-        },
-        {
-          "name": "getVisible",
-          "parameterTypes": []
-        },
-        {
-          "name": "setAffix",
-          "parameterTypes": [
-            "org.miaixz.bus.mapper.feature.affix.AffixRuleConfig"
-          ]
-        },
-        {
-          "name": "setAudit",
-          "parameterTypes": [
-            "org.miaixz.bus.mapper.feature.audit.AuditConfig"
-          ]
-        },
-        {
-          "name": "setPopulate",
-          "parameterTypes": [
-            "org.miaixz.bus.mapper.feature.populate.PopulateConfig"
-          ]
-        },
-        {
-          "name": "setTenant",
-          "parameterTypes": [
-            "org.miaixz.bus.mapper.feature.tenant.TenantConfig"
-          ]
-        },
-        {
-          "name": "setVisible",
-          "parameterTypes": [
-            "org.miaixz.bus.mapper.feature.visible.VisibleConfig"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.mapper.Context$MapperConfig$Builder",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "affix",
-          "parameterTypes": [
-            "org.miaixz.bus.mapper.feature.affix.AffixRuleConfig"
-          ]
-        },
-        {
-          "name": "audit",
-          "parameterTypes": [
-            "org.miaixz.bus.mapper.feature.audit.AuditConfig"
-          ]
-        },
-        {
-          "name": "build",
-          "parameterTypes": []
-        },
-        {
-          "name": "populate",
-          "parameterTypes": [
-            "org.miaixz.bus.mapper.feature.populate.PopulateConfig"
-          ]
-        },
-        {
-          "name": "tenant",
-          "parameterTypes": [
-            "org.miaixz.bus.mapper.feature.tenant.TenantConfig"
-          ]
-        },
-        {
-          "name": "visible",
-          "parameterTypes": [
-            "org.miaixz.bus.mapper.feature.visible.VisibleConfig"
           ]
         }
       ]
@@ -2901,18 +3234,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.mapper.dialect.AbstractDialect",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        }
-      ]
-    },
-    {
       "type": "org.miaixz.bus.mapper.dialect.AS400",
       "methods": [
         {
@@ -2954,6 +3275,18 @@
         {
           "name": "types",
           "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.mapper.dialect.AbstractDialect",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
         }
       ]
     },
@@ -3573,6 +3906,13 @@
         {
           "name": "types",
           "parameterTypes": []
+        },
+        {
+          "name": "readColumns",
+          "parameterTypes": [
+            "java.sql.Connection",
+            "org.miaixz.bus.mapper.parsing.TableMeta"
+          ]
         }
       ]
     },
@@ -3956,6 +4296,16 @@
         {
           "name": "types",
           "parameterTypes": []
+        },
+        {
+          "name": "inlinePrimaryKey",
+          "parameterTypes": []
+        },
+        {
+          "name": "createTable",
+          "parameterTypes": [
+            "org.miaixz.bus.mapper.parsing.TableMeta"
+          ]
         }
       ]
     },
@@ -4071,6 +4421,137 @@
         {
           "name": "types",
           "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.mapper.feature.affix.AffixRuleConfig",
+      "fields": [
+        {
+          "name": "prefixIgnore"
+        },
+        {
+          "name": "provider"
+        },
+        {
+          "name": "suffixIgnore"
+        }
+      ],
+      "methods": [
+        {
+          "name": "$default$prefixIgnore",
+          "parameterTypes": []
+        },
+        {
+          "name": "$default$suffixIgnore",
+          "parameterTypes": []
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.mapper.feature.affix.AffixValueProvider",
+            "java.util.List"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.mapper.feature.affix.AffixValueProvider",
+            "java.util.List",
+            "java.util.List"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.mapper.feature.affix.AffixRuleConfig$AffixRuleConfigBuilder"
+          ]
+        },
+        {
+          "name": "builder",
+          "parameterTypes": []
+        },
+        {
+          "name": "getPrefixIgnore",
+          "parameterTypes": []
+        },
+        {
+          "name": "getProvider",
+          "parameterTypes": []
+        },
+        {
+          "name": "getSuffixIgnore",
+          "parameterTypes": []
+        },
+        {
+          "name": "of",
+          "parameterTypes": [
+            "org.miaixz.bus.mapper.feature.affix.AffixValueProvider"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.mapper.feature.affix.AffixRuleConfig$AffixRuleConfigBuilder",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "prefixIgnore",
+          "parameterTypes": [
+            "java.util.List"
+          ]
+        },
+        {
+          "name": "provider",
+          "parameterTypes": [
+            "org.miaixz.bus.mapper.feature.affix.AffixValueProvider"
+          ]
+        },
+        {
+          "name": "suffixIgnore",
+          "parameterTypes": [
+            "java.util.List"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.mapper.feature.affix.AffixRuleConfig$AffixRuleConfigBuilderImpl",
+      "methods": [
+        {
+          "name": "build",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.mapper.feature.affix.AffixSqlRewriter",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.util.List"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.util.List",
+            "java.lang.String",
+            "java.util.List"
+          ]
+        },
+        {
+          "name": "apply",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
         }
       ]
     },
@@ -4324,13 +4805,6 @@
       ]
     },
     {
-      "type": {
-        "proxy": [
-          "org.miaixz.bus.mapper.feature.audit.AuditProvider"
-        ]
-      }
-    },
-    {
       "type": "org.miaixz.bus.mapper.feature.audit.AuditRecord",
       "fields": [
         {
@@ -4494,6 +4968,95 @@
       ]
     },
     {
+      "type": "org.miaixz.bus.mapper.feature.identifier.IdentifierValidator",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.util.Properties"
+          ]
+        },
+        {
+          "name": "create",
+          "parameterTypes": [
+            "org.miaixz.bus.mapper.runtime.MapperOptions"
+          ]
+        },
+        {
+          "name": "createDefault",
+          "parameterTypes": []
+        },
+        {
+          "name": "isEnabled",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "validate",
+          "parameterTypes": [
+            "javax.sql.DataSource",
+            "java.lang.String",
+            "java.util.Collection",
+            "org.miaixz.bus.mapper.feature.affix.AffixRuleConfig"
+          ]
+        },
+        {
+          "name": "validateSort",
+          "parameterTypes": [
+            "java.sql.Connection",
+            "java.lang.String",
+            "org.miaixz.bus.mapper.feature.paging.Sort"
+          ]
+        },
+        {
+          "name": "metadataRules",
+          "parameterTypes": [
+            "java.sql.DatabaseMetaData"
+          ]
+        },
+        {
+          "name": "unquoteIdentifier",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.mapper.feature.identifier.IdentifierValidator$MetadataRules",
+      "methods": [
+        {
+          "name": "parts",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "key",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "actualKey",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "matches",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        }
+      ],
+      "condition": {
+        "typeReached": "org.miaixz.bus.mapper.feature.identifier.IdentifierValidator"
+      }
+    },
+    {
       "type": "org.miaixz.bus.mapper.feature.keygen.GenId$NULL",
       "methods": [
         {
@@ -4604,6 +5167,24 @@
           "parameterTypes": [
             "java.lang.Object"
           ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.mapper.feature.keygen.KeySqlRegistry",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.mapper.feature.keygen.PrimaryKeyEnhancer",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
         }
       ]
     },
@@ -4750,177 +5331,6 @@
           "name": "total",
           "parameterTypes": [
             "long"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.mapper.feature.paging.Pageable",
-      "methods": [
-        {
-          "name": "of",
-          "parameterTypes": [
-            "int",
-            "int"
-          ]
-        },
-        {
-          "name": "of",
-          "parameterTypes": [
-            "int",
-            "int",
-            "org.miaixz.bus.mapper.feature.paging.Sort"
-          ]
-        },
-        {
-          "name": "unpaged",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.mapper.feature.paging.Pageable$PageRequest",
-      "fields": [
-        {
-          "name": "pageNo"
-        },
-        {
-          "name": "pageSize"
-        },
-        {
-          "name": "sort"
-        }
-      ],
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "int",
-            "int",
-            "org.miaixz.bus.mapper.feature.paging.Sort"
-          ]
-        },
-        {
-          "name": "equals",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "first",
-          "parameterTypes": []
-        },
-        {
-          "name": "getPageNo",
-          "parameterTypes": []
-        },
-        {
-          "name": "getPageSize",
-          "parameterTypes": []
-        },
-        {
-          "name": "getSort",
-          "parameterTypes": []
-        },
-        {
-          "name": "hashCode",
-          "parameterTypes": []
-        },
-        {
-          "name": "isUnpaged",
-          "parameterTypes": []
-        },
-        {
-          "name": "next",
-          "parameterTypes": []
-        },
-        {
-          "name": "of",
-          "parameterTypes": [
-            "int",
-            "int"
-          ]
-        },
-        {
-          "name": "of",
-          "parameterTypes": [
-            "int",
-            "int",
-            "org.miaixz.bus.mapper.feature.paging.Sort"
-          ]
-        },
-        {
-          "name": "previous",
-          "parameterTypes": []
-        },
-        {
-          "name": "toString",
-          "parameterTypes": []
-        },
-        {
-          "name": "unpaged",
-          "parameterTypes": []
-        },
-        {
-          "name": "withPage",
-          "parameterTypes": [
-            "int"
-          ]
-        },
-        {
-          "name": "withPageSize",
-          "parameterTypes": [
-            "int"
-          ]
-        },
-        {
-          "name": "withSort",
-          "parameterTypes": [
-            "org.miaixz.bus.mapper.feature.paging.Sort"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.mapper.feature.identifier.IdentifierValidator",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.util.Properties"
-          ]
-        },
-        {
-          "name": "create",
-          "parameterTypes": [
-            "org.miaixz.bus.mapper.runtime.MapperOptions"
-          ]
-        },
-        {
-          "name": "createDefault",
-          "parameterTypes": []
-        },
-        {
-          "name": "isEnabled",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "validate",
-          "parameterTypes": [
-            "javax.sql.DataSource",
-            "java.lang.String",
-            "java.util.Collection",
-            "org.miaixz.bus.mapper.feature.affix.AffixRuleConfig"
-          ]
-        },
-        {
-          "name": "validateSort",
-          "parameterTypes": [
-            "java.sql.Connection",
-            "java.lang.String",
-            "org.miaixz.bus.mapper.feature.paging.Sort"
           ]
         }
       ]
@@ -5200,6 +5610,133 @@
         {
           "name": "hashCode",
           "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.mapper.feature.paging.Pageable",
+      "methods": [
+        {
+          "name": "of",
+          "parameterTypes": [
+            "int",
+            "int"
+          ]
+        },
+        {
+          "name": "of",
+          "parameterTypes": [
+            "int",
+            "int",
+            "org.miaixz.bus.mapper.feature.paging.Sort"
+          ]
+        },
+        {
+          "name": "unpaged",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.mapper.feature.paging.Pageable$PageRequest",
+      "fields": [
+        {
+          "name": "pageNo"
+        },
+        {
+          "name": "pageSize"
+        },
+        {
+          "name": "sort"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "int",
+            "int",
+            "org.miaixz.bus.mapper.feature.paging.Sort"
+          ]
+        },
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "first",
+          "parameterTypes": []
+        },
+        {
+          "name": "getPageNo",
+          "parameterTypes": []
+        },
+        {
+          "name": "getPageSize",
+          "parameterTypes": []
+        },
+        {
+          "name": "getSort",
+          "parameterTypes": []
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "isUnpaged",
+          "parameterTypes": []
+        },
+        {
+          "name": "next",
+          "parameterTypes": []
+        },
+        {
+          "name": "of",
+          "parameterTypes": [
+            "int",
+            "int"
+          ]
+        },
+        {
+          "name": "of",
+          "parameterTypes": [
+            "int",
+            "int",
+            "org.miaixz.bus.mapper.feature.paging.Sort"
+          ]
+        },
+        {
+          "name": "previous",
+          "parameterTypes": []
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "unpaged",
+          "parameterTypes": []
+        },
+        {
+          "name": "withPage",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "withPageSize",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "withSort",
+          "parameterTypes": [
+            "org.miaixz.bus.mapper.feature.paging.Sort"
+          ]
         }
       ]
     },
@@ -5510,151 +6047,6 @@
       ]
     },
     {
-      "type": {
-        "proxy": [
-          "org.miaixz.bus.mapper.feature.populate.PopulateProvider"
-        ]
-      }
-    },
-    {
-      "type": "org.miaixz.bus.mapper.feature.affix.AffixSqlRewriter",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String",
-            "java.util.List"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.util.List",
-            "java.lang.String",
-            "java.util.List"
-          ]
-        },
-        {
-          "name": "apply",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.mapper.feature.affix.AffixRuleConfig",
-      "fields": [
-        {
-          "name": "prefixIgnore"
-        },
-        {
-          "name": "provider"
-        },
-        {
-          "name": "suffixIgnore"
-        }
-      ],
-      "methods": [
-        {
-          "name": "$default$prefixIgnore",
-          "parameterTypes": []
-        },
-        {
-          "name": "$default$suffixIgnore",
-          "parameterTypes": []
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "org.miaixz.bus.mapper.feature.affix.AffixValueProvider",
-            "java.util.List"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "org.miaixz.bus.mapper.feature.affix.AffixValueProvider",
-            "java.util.List",
-            "java.util.List"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "org.miaixz.bus.mapper.feature.affix.AffixRuleConfig$AffixRuleConfigBuilder"
-          ]
-        },
-        {
-          "name": "builder",
-          "parameterTypes": []
-        },
-        {
-          "name": "getPrefixIgnore",
-          "parameterTypes": []
-        },
-        {
-          "name": "getProvider",
-          "parameterTypes": []
-        },
-        {
-          "name": "getSuffixIgnore",
-          "parameterTypes": []
-        },
-        {
-          "name": "of",
-          "parameterTypes": [
-            "org.miaixz.bus.mapper.feature.affix.AffixValueProvider"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.mapper.feature.affix.AffixRuleConfig$AffixRuleConfigBuilder",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "prefixIgnore",
-          "parameterTypes": [
-            "java.util.List"
-          ]
-        },
-        {
-          "name": "provider",
-          "parameterTypes": [
-            "org.miaixz.bus.mapper.feature.affix.AffixValueProvider"
-          ]
-        },
-        {
-          "name": "suffixIgnore",
-          "parameterTypes": [
-            "java.util.List"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.mapper.feature.affix.AffixRuleConfig$AffixRuleConfigBuilderImpl",
-      "methods": [
-        {
-          "name": "build",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
-      "type": {
-        "proxy": [
-          "org.miaixz.bus.mapper.feature.affix.AffixValueProvider"
-        ]
-      }
-    },
-    {
       "type": "org.miaixz.bus.mapper.feature.schema.ColumnOrderResolver",
       "methods": [
         {
@@ -5812,18 +6204,6 @@
           ]
         },
         {
-          "name": "handleDiff",
-          "parameterTypes": [
-            "java.sql.Connection",
-            "org.miaixz.bus.mapper.dialect.Dialect",
-            "org.miaixz.bus.mapper.behavior.SchemaBehavior",
-            "org.miaixz.bus.mapper.feature.schema.SchemaConfig",
-            "org.miaixz.bus.mapper.feature.schema.SchemaReport",
-            "java.util.List",
-            "org.miaixz.bus.mapper.feature.schema.SchemaDiff"
-          ]
-        },
-        {
           "name": "hasDefault",
           "parameterTypes": [
             "org.miaixz.bus.mapper.parsing.ColumnMeta"
@@ -5918,6 +6298,15 @@
         },
         {
           "name": "TABLE"
+        },
+        {
+          "name": "COMMENT"
+        },
+        {
+          "name": "FOREIGN_KEY_REMOVAL"
+        },
+        {
+          "name": "INDEX_REMOVAL"
         }
       ],
       "methods": [
@@ -6536,32 +6925,15 @@
           ]
         },
         {
-          "name": "sameDecimal",
-          "parameterTypes": [
-            "org.miaixz.bus.mapper.feature.schema.SqlTypeDescriptor",
-            "org.miaixz.bus.mapper.feature.schema.SqlTypeDescriptor"
-          ]
-        },
-        {
-          "name": "sameLength",
-          "parameterTypes": [
-            "org.miaixz.bus.mapper.feature.schema.SqlTypeDescriptor",
-            "org.miaixz.bus.mapper.feature.schema.SqlTypeDescriptor"
-          ]
-        },
-        {
-          "name": "sameType",
-          "parameterTypes": [
-            "org.miaixz.bus.mapper.feature.schema.SqlTypeDescriptor",
-            "org.miaixz.bus.mapper.feature.schema.SqlTypeDescriptor"
-          ]
-        },
-        {
           "name": "sourceColumn",
           "parameterTypes": [
             "java.lang.String",
             "org.miaixz.bus.mapper.parsing.TableMeta"
           ]
+        },
+        {
+          "name": "unknowns",
+          "parameterTypes": []
         }
       ]
     },
@@ -6623,13 +6995,6 @@
       ]
     },
     {
-      "type": {
-        "proxy": [
-          "org.miaixz.bus.mapper.feature.schema.SchemaProvider"
-        ]
-      }
-    },
-    {
       "type": "org.miaixz.bus.mapper.feature.schema.SchemaReport",
       "methods": [
         {
@@ -6665,8 +7030,221 @@
           "parameterTypes": [
             "java.util.List"
           ]
+        },
+        {
+          "name": "diagnose",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "org.miaixz.bus.mapper.feature.schema.SchemaReport$Stage",
+            "org.miaixz.bus.mapper.feature.schema.SchemaReport$Status",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "unresolvedDiffs",
+          "parameterTypes": []
+        },
+        {
+          "name": "unknowns",
+          "parameterTypes": []
+        },
+        {
+          "name": "diagnostics",
+          "parameterTypes": []
+        },
+        {
+          "name": "verified",
+          "parameterTypes": []
+        },
+        {
+          "name": "unresolvedDiffs",
+          "parameterTypes": [
+            "java.util.List"
+          ]
+        },
+        {
+          "name": "unknowns",
+          "parameterTypes": [
+            "java.util.List"
+          ]
+        },
+        {
+          "name": "diagnostics",
+          "parameterTypes": [
+            "java.util.List"
+          ]
+        },
+        {
+          "name": "verified",
+          "parameterTypes": [
+            "boolean"
+          ]
+        }
+      ],
+      "fields": [
+        {
+          "name": "unresolvedDiffs"
+        },
+        {
+          "name": "unknowns"
+        },
+        {
+          "name": "diagnostics"
+        },
+        {
+          "name": "verified"
+        },
+        {
+          "name": "executedSqls"
+        },
+        {
+          "name": "skippedSqls"
+        },
+        {
+          "name": "failedDiffs"
         }
       ]
+    },
+    {
+      "type": "org.miaixz.bus.mapper.feature.schema.SchemaReport$Diagnostic",
+      "fields": [
+        {
+          "name": "table"
+        },
+        {
+          "name": "operation"
+        },
+        {
+          "name": "stage"
+        },
+        {
+          "name": "status"
+        },
+        {
+          "name": "reason"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "org.miaixz.bus.mapper.feature.schema.SchemaReport$Stage",
+            "org.miaixz.bus.mapper.feature.schema.SchemaReport$Status",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "table",
+          "parameterTypes": []
+        },
+        {
+          "name": "operation",
+          "parameterTypes": []
+        },
+        {
+          "name": "stage",
+          "parameterTypes": []
+        },
+        {
+          "name": "status",
+          "parameterTypes": []
+        },
+        {
+          "name": "reason",
+          "parameterTypes": []
+        }
+      ],
+      "condition": {
+        "typeReached": "org.miaixz.bus.mapper.feature.schema.SchemaReport"
+      }
+    },
+    {
+      "type": "org.miaixz.bus.mapper.feature.schema.SchemaReport$Stage",
+      "fields": [
+        {
+          "name": "READ"
+        },
+        {
+          "name": "PREPARE"
+        },
+        {
+          "name": "EXECUTE"
+        },
+        {
+          "name": "VERIFY"
+        }
+      ],
+      "methods": [
+        {
+          "name": "values",
+          "parameterTypes": []
+        },
+        {
+          "name": "valueOf",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ],
+      "condition": {
+        "typeReached": "org.miaixz.bus.mapper.feature.schema.SchemaReport"
+      }
+    },
+    {
+      "type": "org.miaixz.bus.mapper.feature.schema.SchemaReport$Status",
+      "fields": [
+        {
+          "name": "EXCLUDED"
+        },
+        {
+          "name": "NOT_CHECKED"
+        },
+        {
+          "name": "VALIDATED"
+        },
+        {
+          "name": "PROPOSED"
+        },
+        {
+          "name": "CONFIGURATION_BLOCKED"
+        },
+        {
+          "name": "UNSUPPORTED"
+        },
+        {
+          "name": "DEPENDENCY_BLOCKED"
+        },
+        {
+          "name": "UNRESOLVED"
+        },
+        {
+          "name": "FAILED"
+        },
+        {
+          "name": "APPLIED"
+        },
+        {
+          "name": "UNKNOWN"
+        }
+      ],
+      "methods": [
+        {
+          "name": "values",
+          "parameterTypes": []
+        },
+        {
+          "name": "valueOf",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ],
+      "condition": {
+        "typeReached": "org.miaixz.bus.mapper.feature.schema.SchemaReport"
+      }
     },
     {
       "type": "org.miaixz.bus.mapper.feature.schema.SqlTypeDescriptor",
@@ -6674,8 +7252,197 @@
         {
           "name": "<init>",
           "parameterTypes": []
+        },
+        {
+          "name": "of",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "supportsLength",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "supportsPrecision",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "normalizeTypeName",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "definition",
+          "parameterTypes": []
+        },
+        {
+          "name": "normalizedTypeName",
+          "parameterTypes": []
+        },
+        {
+          "name": "equivalent",
+          "parameterTypes": [
+            "org.miaixz.bus.mapper.feature.schema.SqlTypeDescriptor"
+          ]
+        },
+        {
+          "name": "jdbcType",
+          "parameterTypes": []
+        },
+        {
+          "name": "typeName",
+          "parameterTypes": []
+        },
+        {
+          "name": "length",
+          "parameterTypes": []
+        },
+        {
+          "name": "lengthUnit",
+          "parameterTypes": []
+        },
+        {
+          "name": "precision",
+          "parameterTypes": []
+        },
+        {
+          "name": "scale",
+          "parameterTypes": []
+        },
+        {
+          "name": "nativeDefinition",
+          "parameterTypes": []
+        },
+        {
+          "name": "jdbcType",
+          "parameterTypes": [
+            "org.apache.ibatis.type.JdbcType"
+          ]
+        },
+        {
+          "name": "typeName",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "length",
+          "parameterTypes": [
+            "java.lang.Integer"
+          ]
+        },
+        {
+          "name": "lengthUnit",
+          "parameterTypes": [
+            "org.miaixz.bus.mapper.feature.schema.SqlTypeDescriptor$LengthUnit"
+          ]
+        },
+        {
+          "name": "precision",
+          "parameterTypes": [
+            "java.lang.Integer"
+          ]
+        },
+        {
+          "name": "scale",
+          "parameterTypes": [
+            "java.lang.Integer"
+          ]
+        },
+        {
+          "name": "nativeDefinition",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ],
+      "fields": [
+        {
+          "name": "jdbcType"
+        },
+        {
+          "name": "typeName"
+        },
+        {
+          "name": "length"
+        },
+        {
+          "name": "lengthUnit"
+        },
+        {
+          "name": "precision"
+        },
+        {
+          "name": "scale"
+        },
+        {
+          "name": "nativeDefinition"
         }
       ]
+    },
+    {
+      "type": "org.miaixz.bus.mapper.feature.schema.SqlTypeDescriptor$Comparison",
+      "fields": [
+        {
+          "name": "SAME"
+        },
+        {
+          "name": "DIFFERENT"
+        },
+        {
+          "name": "UNKNOWN"
+        }
+      ],
+      "methods": [
+        {
+          "name": "values",
+          "parameterTypes": []
+        },
+        {
+          "name": "valueOf",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ],
+      "condition": {
+        "typeReached": "org.miaixz.bus.mapper.feature.schema.SqlTypeDescriptor"
+      }
+    },
+    {
+      "type": "org.miaixz.bus.mapper.feature.schema.SqlTypeDescriptor$LengthUnit",
+      "fields": [
+        {
+          "name": "UNKNOWN"
+        },
+        {
+          "name": "CHARACTER"
+        },
+        {
+          "name": "BYTE"
+        }
+      ],
+      "methods": [
+        {
+          "name": "values",
+          "parameterTypes": []
+        },
+        {
+          "name": "valueOf",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ],
+      "condition": {
+        "typeReached": "org.miaixz.bus.mapper.feature.schema.SqlTypeDescriptor"
+      }
     },
     {
       "type": "org.miaixz.bus.mapper.feature.schema.TableSnapshot",
@@ -6812,6 +7579,106 @@
           "name": "sameTable",
           "parameterTypes": [
             "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "key",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "actualKey",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "matches",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "matchesColumns",
+          "parameterTypes": [
+            "java.util.List",
+            "java.util.List"
+          ]
+        },
+        {
+          "name": "matchesIndex",
+          "parameterTypes": [
+            "org.miaixz.bus.mapper.parsing.IndexMeta",
+            "org.miaixz.bus.mapper.parsing.IndexMeta"
+          ]
+        },
+        {
+          "name": "matchesTable",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "catalog",
+          "parameterTypes": []
+        },
+        {
+          "name": "schema",
+          "parameterTypes": []
+        },
+        {
+          "name": "identifierRules",
+          "parameterTypes": []
+        },
+        {
+          "name": "issues",
+          "parameterTypes": []
+        },
+        {
+          "name": "incompleteIndexes",
+          "parameterTypes": []
+        },
+        {
+          "name": "comment",
+          "parameterTypes": []
+        },
+        {
+          "name": "catalog",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "schema",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "identifierRules",
+          "parameterTypes": [
+            "org.miaixz.bus.mapper.feature.identifier.IdentifierValidator$MetadataRules"
+          ]
+        },
+        {
+          "name": "issues",
+          "parameterTypes": [
+            "java.util.List"
+          ]
+        },
+        {
+          "name": "incompleteIndexes",
+          "parameterTypes": [
+            "java.util.Set"
+          ]
+        },
+        {
+          "name": "comment",
+          "parameterTypes": [
             "java.lang.String"
           ]
         }
@@ -7043,6 +7910,9 @@
         },
         {
           "name": "affixSuffix"
+        },
+        {
+          "name": "required"
         }
       ],
       "methods": [
@@ -7134,6 +8004,16 @@
           "name": "removeAffixes",
           "parameterTypes": [
             "java.lang.String"
+          ]
+        },
+        {
+          "name": "isRequired",
+          "parameterTypes": []
+        },
+        {
+          "name": "setRequired",
+          "parameterTypes": [
+            "boolean"
           ]
         }
       ]
@@ -7278,13 +8158,6 @@
           ]
         }
       ]
-    },
-    {
-      "type": {
-        "proxy": [
-          "org.miaixz.bus.mapper.feature.tenant.TenantProvider"
-        ]
-      }
     },
     {
       "type": "org.miaixz.bus.mapper.feature.visible.VisibleBuilder",
@@ -7571,11 +8444,51 @@
       ]
     },
     {
-      "type": {
-        "proxy": [
-          "org.miaixz.bus.mapper.feature.visible.VisibleProvider"
-        ]
-      }
+      "type": "org.miaixz.bus.mapper.handler.AbstractSqlHandler",
+      "fields": [
+        {
+          "name": "DEFAULT_REFLECTOR_FACTORY"
+        },
+        {
+          "name": "DELEGATE_BOUNDSQL"
+        },
+        {
+          "name": "DELEGATE_BOUNDSQL_SQL"
+        },
+        {
+          "name": "DELEGATE_MAPPEDSTATEMENT"
+        },
+        {
+          "name": "MAPPEDSTATEMENT"
+        }
+      ],
+      "methods": [
+        {
+          "name": "getMetaObject",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "mapperBoundSql",
+          "parameterTypes": [
+            "org.apache.ibatis.mapping.BoundSql"
+          ]
+        },
+        {
+          "name": "mapperStatementHandler",
+          "parameterTypes": [
+            "org.apache.ibatis.executor.statement.StatementHandler"
+          ]
+        },
+        {
+          "name": "setAdditionalParameter",
+          "parameterTypes": [
+            "org.apache.ibatis.mapping.BoundSql",
+            "java.util.Map"
+          ]
+        }
+      ]
     },
     {
       "type": "org.miaixz.bus.mapper.handler.ConditionHandler$DerivedConfigKey",
@@ -7883,177 +8796,6 @@
           "name": "put",
           "parameterTypes": [
             "java.lang.String",
-            "java.lang.String"
-          ]
-        }
-      ]
-    },
-    {
-      "type": {
-        "proxy": [
-          "org.miaixz.bus.mapper.Mapper"
-        ]
-      }
-    },
-    {
-      "type": "org.miaixz.bus.mapper.OGNL",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.mapper.OGNL$CacheStats",
-      "fields": [
-        {
-          "name": "classCacheSize"
-        },
-        {
-          "name": "lambdaCacheSize"
-        },
-        {
-          "name": "methodCacheSize"
-        }
-      ],
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "int",
-            "int",
-            "int"
-          ]
-        },
-        {
-          "name": "getClassCacheSize",
-          "parameterTypes": []
-        },
-        {
-          "name": "getLambdaCacheSize",
-          "parameterTypes": []
-        },
-        {
-          "name": "getMethodCacheSize",
-          "parameterTypes": []
-        },
-        {
-          "name": "getTotalSize",
-          "parameterTypes": []
-        },
-        {
-          "name": "toString",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.mapper.Order",
-      "methods": [
-        {
-          "name": "ascending",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "descending",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "directionOnly",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "of",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "of",
-          "parameterTypes": [
-            "java.lang.String",
-            "org.miaixz.bus.core.lang.EnumValue$Sort"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.mapper.Order$SimpleOrder",
-      "fields": [
-        {
-          "name": "direction"
-        },
-        {
-          "name": "property"
-        }
-      ],
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "org.miaixz.bus.core.lang.EnumValue$Sort",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "equals",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "getDirection",
-          "parameterTypes": []
-        },
-        {
-          "name": "getDirectionCode",
-          "parameterTypes": []
-        },
-        {
-          "name": "getProperty",
-          "parameterTypes": []
-        },
-        {
-          "name": "hashCode",
-          "parameterTypes": []
-        },
-        {
-          "name": "hasProperty",
-          "parameterTypes": []
-        },
-        {
-          "name": "isAscending",
-          "parameterTypes": []
-        },
-        {
-          "name": "isDescending",
-          "parameterTypes": []
-        },
-        {
-          "name": "order",
-          "parameterTypes": []
-        },
-        {
-          "name": "toString",
-          "parameterTypes": []
-        },
-        {
-          "name": "withDirection",
-          "parameterTypes": [
-            "org.miaixz.bus.core.lang.EnumValue$Sort"
-          ]
-        },
-        {
-          "name": "withProperty",
-          "parameterTypes": [
             "java.lang.String"
           ]
         }
@@ -9276,6 +10018,93 @@
       ]
     },
     {
+      "type": "org.miaixz.bus.mapper.runtime.MapperOptions$AffixOptions",
+      "fields": [
+        {
+          "name": "enabled"
+        },
+        {
+          "name": "prefix"
+        },
+        {
+          "name": "suffix"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "getPrefix",
+          "parameterTypes": []
+        },
+        {
+          "name": "getSuffix",
+          "parameterTypes": []
+        },
+        {
+          "name": "isEnabled",
+          "parameterTypes": []
+        },
+        {
+          "name": "setEnabled",
+          "parameterTypes": [
+            "boolean"
+          ]
+        },
+        {
+          "name": "setPrefix",
+          "parameterTypes": [
+            "org.miaixz.bus.mapper.runtime.MapperOptions$AffixPartOptions"
+          ]
+        },
+        {
+          "name": "setSuffix",
+          "parameterTypes": [
+            "org.miaixz.bus.mapper.runtime.MapperOptions$AffixPartOptions"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.mapper.runtime.MapperOptions$AffixPartOptions",
+      "fields": [
+        {
+          "name": "ignore"
+        },
+        {
+          "name": "value"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "getIgnore",
+          "parameterTypes": []
+        },
+        {
+          "name": "getValue",
+          "parameterTypes": []
+        },
+        {
+          "name": "setIgnore",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setValue",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
       "type": "org.miaixz.bus.mapper.runtime.MapperOptions$AuditOptions",
       "fields": [
         {
@@ -9502,93 +10331,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.mapper.runtime.MapperOptions$AffixOptions",
-      "fields": [
-        {
-          "name": "enabled"
-        },
-        {
-          "name": "prefix"
-        },
-        {
-          "name": "suffix"
-        }
-      ],
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "getPrefix",
-          "parameterTypes": []
-        },
-        {
-          "name": "getSuffix",
-          "parameterTypes": []
-        },
-        {
-          "name": "isEnabled",
-          "parameterTypes": []
-        },
-        {
-          "name": "setEnabled",
-          "parameterTypes": [
-            "boolean"
-          ]
-        },
-        {
-          "name": "setPrefix",
-          "parameterTypes": [
-            "org.miaixz.bus.mapper.runtime.MapperOptions$AffixPartOptions"
-          ]
-        },
-        {
-          "name": "setSuffix",
-          "parameterTypes": [
-            "org.miaixz.bus.mapper.runtime.MapperOptions$AffixPartOptions"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.mapper.runtime.MapperOptions$AffixPartOptions",
-      "fields": [
-        {
-          "name": "ignore"
-        },
-        {
-          "name": "value"
-        }
-      ],
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "getIgnore",
-          "parameterTypes": []
-        },
-        {
-          "name": "getValue",
-          "parameterTypes": []
-        },
-        {
-          "name": "setIgnore",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setValue",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        }
-      ]
-    },
-    {
       "type": "org.miaixz.bus.mapper.runtime.MapperOptions$SchemaOptions",
       "fields": [
         {
@@ -9689,6 +10431,9 @@
         },
         {
           "name": "scriptLocation"
+        },
+        {
+          "name": "allowModifyComment"
         }
       ],
       "methods": [
@@ -10025,6 +10770,16 @@
           "parameterTypes": [
             "java.lang.String"
           ]
+        },
+        {
+          "name": "isAllowModifyComment",
+          "parameterTypes": []
+        },
+        {
+          "name": "setAllowModifyComment",
+          "parameterTypes": [
+            "boolean"
+          ]
         }
       ]
     },
@@ -10042,6 +10797,15 @@
         },
         {
           "name": "ignoreMappers"
+        },
+        {
+          "name": "required"
+        },
+        {
+          "name": "mode"
+        },
+        {
+          "name": "enableSqlCache"
         }
       ],
       "methods": [
@@ -10087,6 +10851,36 @@
           "name": "setIgnoreMappers",
           "parameterTypes": [
             "java.lang.String"
+          ]
+        },
+        {
+          "name": "isRequired",
+          "parameterTypes": []
+        },
+        {
+          "name": "getMode",
+          "parameterTypes": []
+        },
+        {
+          "name": "isEnableSqlCache",
+          "parameterTypes": []
+        },
+        {
+          "name": "setRequired",
+          "parameterTypes": [
+            "boolean"
+          ]
+        },
+        {
+          "name": "setMode",
+          "parameterTypes": [
+            "org.miaixz.bus.mapper.Charter$Isolation"
+          ]
+        },
+        {
+          "name": "setEnableSqlCache",
+          "parameterTypes": [
+            "boolean"
           ]
         }
       ]
@@ -10341,54 +11135,122 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.mapper.handler.AbstractSqlHandler",
-      "fields": [
-        {
-          "name": "DEFAULT_REFLECTOR_FACTORY"
-        },
-        {
-          "name": "DELEGATE_BOUNDSQL"
-        },
-        {
-          "name": "DELEGATE_BOUNDSQL_SQL"
-        },
-        {
-          "name": "DELEGATE_MAPPEDSTATEMENT"
-        },
-        {
-          "name": "MAPPEDSTATEMENT"
-        }
-      ],
-      "methods": [
-        {
-          "name": "getMetaObject",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "mapperBoundSql",
-          "parameterTypes": [
-            "org.apache.ibatis.mapping.BoundSql"
-          ]
-        },
-        {
-          "name": "mapperStatementHandler",
-          "parameterTypes": [
-            "org.apache.ibatis.executor.statement.StatementHandler"
-          ]
-        },
-        {
-          "name": "setAdditionalParameter",
-          "parameterTypes": [
-            "org.apache.ibatis.mapping.BoundSql",
-            "java.util.Map"
-          ]
-        }
-      ]
+      "type": {
+        "proxy": [
+          "org.miaixz.bus.mapper.Mapper"
+        ]
+      }
+    },
+    {
+      "type": {
+        "proxy": [
+          "org.miaixz.bus.mapper.binding.BasicMapper"
+        ]
+      }
+    },
+    {
+      "type": {
+        "proxy": [
+          "org.miaixz.bus.mapper.binding.basic.ClassMapper"
+        ]
+      }
+    },
+    {
+      "type": {
+        "proxy": [
+          "org.miaixz.bus.mapper.binding.basic.EntityMapper"
+        ]
+      }
+    },
+    {
+      "type": {
+        "proxy": [
+          "org.miaixz.bus.mapper.binding.batch.BatchMapper"
+        ]
+      }
+    },
+    {
+      "type": {
+        "proxy": [
+          "org.miaixz.bus.mapper.binding.condition.ConditionMapper"
+        ]
+      }
+    },
+    {
+      "type": {
+        "proxy": [
+          "org.miaixz.bus.mapper.binding.cursor.CursorMapper"
+        ]
+      }
+    },
+    {
+      "type": {
+        "proxy": [
+          "org.miaixz.bus.mapper.binding.function.FunctionMapper"
+        ]
+      }
+    },
+    {
+      "type": {
+        "proxy": [
+          "org.miaixz.bus.mapper.binding.list.ListMapper"
+        ]
+      }
+    },
+    {
+      "type": {
+        "proxy": [
+          "org.miaixz.bus.mapper.binding.logical.LogicalMapper"
+        ]
+      }
+    },
+    {
+      "type": {
+        "proxy": [
+          "org.miaixz.bus.mapper.feature.affix.AffixValueProvider"
+        ]
+      }
+    },
+    {
+      "type": {
+        "proxy": [
+          "org.miaixz.bus.mapper.feature.audit.AuditProvider"
+        ]
+      }
+    },
+    {
+      "type": {
+        "proxy": [
+          "org.miaixz.bus.mapper.feature.populate.PopulateProvider"
+        ]
+      }
+    },
+    {
+      "type": {
+        "proxy": [
+          "org.miaixz.bus.mapper.feature.schema.SchemaProvider"
+        ]
+      }
+    },
+    {
+      "type": {
+        "proxy": [
+          "org.miaixz.bus.mapper.feature.tenant.TenantProvider"
+        ]
+      }
+    },
+    {
+      "type": {
+        "proxy": [
+          "org.miaixz.bus.mapper.feature.visible.VisibleProvider"
+        ]
+      }
     }
   ],
   "resources": [
+    {
+      "glob": "META-INF/services/org.miaixz.bus.mapper.Registry"
+    },
     {
       "glob": "META-INF/services/org.miaixz.bus.mapper.builder.ClassMetaResolver"
     },
@@ -10403,9 +11265,6 @@
     },
     {
       "glob": "META-INF/services/org.miaixz.bus.mapper.parsing.SqlSourceEnhancer"
-    },
-    {
-      "glob": "META-INF/services/org.miaixz.bus.mapper.Registry"
     }
   ]
 }

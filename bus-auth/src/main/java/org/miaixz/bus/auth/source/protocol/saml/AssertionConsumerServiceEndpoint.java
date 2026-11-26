@@ -47,6 +47,13 @@ public record AssertionConsumerServiceEndpoint(SamlBinding binding, String locat
     /**
      * Validates IndexedEndpointType fields and takes deep immutable ownership of extensions.
      *
+     * @param binding          required binding URI
+     * @param location         required endpoint URI
+     * @param responseLocation optional response endpoint URI
+     * @param extensions       ordered foreign child elements
+     * @param attributes       ordered foreign attributes keyed by expanded QName
+     * @param index            required unsigned-short endpoint index
+     * @param defaultEndpoint  optional lexical-presence value of {@code isDefault}
      * @throws IllegalArgumentException if a component, item, key, value, or optional container is {@code null}
      * @throws ValidateException        if a URI, index, or extension value is invalid
      */

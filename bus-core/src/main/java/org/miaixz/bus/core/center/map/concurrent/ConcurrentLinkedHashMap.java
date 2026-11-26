@@ -33,11 +33,13 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 import org.miaixz.bus.core.center.function.BiConsumerX;
+import org.miaixz.bus.core.center.function.RunnableX;
 import org.miaixz.bus.core.center.queue.DiscardingQueue;
 import org.miaixz.bus.core.center.queue.Linked;
 import org.miaixz.bus.core.center.queue.LinkedDeque;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.xyz.FunctionKit;
 import org.miaixz.bus.core.xyz.RuntimeKit;
 
 /**
@@ -81,6 +83,9 @@ import org.miaixz.bus.core.xyz.RuntimeKit;
  */
 public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements ConcurrentMap<K, V>, Serializable {
 
+    /**
+     * Serialization version identifier.
+     */
     @Serial
     private static final long serialVersionUID = 2535885800001L;
 
@@ -168,7 +173,7 @@ public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements 
     /**
      * A buffer for pending write operations.
      */
-    final Queue<Runnable> writeBuffer;
+    final Queue<RunnableX> writeBuffer;
 
     /**
      *
@@ -381,7 +386,7 @@ public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements 
      *
      * @param task the pending operation to be applied
      */
-    void afterWrite(final Runnable task) {
+    void afterWrite(final RunnableX task) {
         writeBuffer.add(task);
         drainStatus.lazySet(DrainStatus.REQUIRED);
         tryToDrainBuffers();
@@ -461,11 +466,11 @@ public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements 
      */
     void drainWriteBuffer() {
         for (int i = 0; i < WRITE_BUFFER_DRAIN_THRESHOLD; i++) {
-            final Runnable task = writeBuffer.poll();
+            final RunnableX task = writeBuffer.poll();
             if (task == null) {
                 break;
             }
-            task.run();
+            FunctionKit.runUnwrapped(task);
         }
     }
 
@@ -619,9 +624,9 @@ public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements 
             }
 
             // Apply all pending writes
-            Runnable task;
+            RunnableX task;
             while ((task = writeBuffer.poll()) != null) {
-                task.run();
+                FunctionKit.runUnwrapped(task);
             }
         } finally {
             evictionLock.unlock();
@@ -1169,6 +1174,7 @@ public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements 
             boolean shouldDrainBuffers(final boolean delayable) {
                 return !delayable;
             }
+
         },
 
         /**
@@ -1186,6 +1192,7 @@ public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements 
             boolean shouldDrainBuffers(final boolean delayable) {
                 return true;
             }
+
         },
 
         /**
@@ -1203,6 +1210,7 @@ public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements 
             boolean shouldDrainBuffers(final boolean delayable) {
                 return false;
             }
+
         };
 
         /**
@@ -1319,6 +1327,9 @@ public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements 
      */
     static final class Node<K, V> extends AtomicReference<WeightedValue<V>> implements Linked<Node<K, V>> {
 
+        /**
+         * Serialization version identifier.
+         */
         @Serial
         private static final long serialVersionUID = 2535888961801L;
 
@@ -1413,6 +1424,9 @@ public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements 
      */
     static final class BoundedEntryWeigher<K, V> implements EntryWeigher<K, V>, Serializable {
 
+        /**
+         * Serialization version identifier.
+         */
         @Serial
         private static final long serialVersionUID = 2535891203266L;;
 
@@ -1469,6 +1483,9 @@ public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements 
      */
     static final class SerializationProxy<K, V> implements Serializable {
 
+        /**
+         * Serialization version identifier.
+         */
         @Serial
         private static final long serialVersionUID = 2535895000001L;;
 
@@ -1679,7 +1696,7 @@ public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements 
      *
      * @author Kimi Liu
      */
-    final class AddTask implements Runnable {
+    final class AddTask implements RunnableX {
 
         /**
          * Node being added to the eviction policy.
@@ -1700,7 +1717,7 @@ public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements 
          */
         @Override
 
-        public void run() {
+        public void running() {
             if (reconcileWeight(node)) {
                 if (!evictionDeque.contains(node)) {
                     evictionDeque.add(node);
@@ -1716,7 +1733,7 @@ public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements 
      *
      * @author Kimi Liu
      */
-    final class RemovalTask implements Runnable {
+    final class RemovalTask implements RunnableX {
 
         /**
          * Node being removed from the eviction policy.
@@ -1737,7 +1754,7 @@ public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements 
          */
         @Override
 
-        public void run() {
+        public void running() {
             // add may not have been processed yet
             evictionDeque.remove(node);
             makeDead(node);
@@ -1751,7 +1768,7 @@ public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements 
      *
      * @author Kimi Liu
      */
-    final class UpdateTask implements Runnable {
+    final class UpdateTask implements RunnableX {
 
         /**
          * Node whose weight and recency changed.
@@ -1772,7 +1789,7 @@ public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements 
          */
         @Override
 
-        public void run() {
+        public void running() {
             if (reconcileWeight(node)) {
                 if (evictionDeque.contains(node)) {
                     applyRead(node);
@@ -2173,6 +2190,9 @@ public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements 
      */
     final class WriteThroughEntry extends SimpleEntry<K, V> {
 
+        /**
+         * Serialization version identifier.
+         */
         @Serial
         private static final long serialVersionUID = 2535898150001L;
 

@@ -20,6 +20,7 @@
 package org.miaixz.bus.cortex.registry;
 
 import java.util.List;
+import java.util.Map;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -85,6 +86,12 @@ public class RegistrySnapshot {
      * Assets carried by this snapshot.
      */
     private List<Assets> assets = List.of();
+
+    /**
+     * Authoritative platform application codes indexed by their canonical App primary keys. Used to resolve configured
+     * service identities without placing database IDs in deployment configuration.
+     */
+    private Map<String, String> applications = Map.of();
 
     /**
      * Creates an empty registry snapshot.

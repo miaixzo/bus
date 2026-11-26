@@ -43,6 +43,9 @@ public record BulkRequest(List<String> schemas, Optional<Integer> failOnErrors, 
     /**
      * Enforces the BulkRequest schema, fail-on-error bound, operation order, and POST bulkId uniqueness.
      *
+     * @param schemas      singleton standard BulkRequest schema URI
+     * @param failOnErrors positive error count after which further operations are not attempted
+     * @param operations   non-empty operations in execution order
      * @throws IllegalArgumentException if a collection, optional container, or operation is {@code null}
      * @throws ValidateException        if the schema, error bound, operation sequence, or bulkId is invalid
      */
@@ -158,6 +161,11 @@ public record BulkRequest(List<String> schemas, Optional<Integer> failOnErrors, 
         /**
          * Enforces method-specific bulkId, target, version, and data requirements.
          *
+         * @param method  standard POST, PUT, PATCH, or DELETE operation method
+         * @param bulkId  request-local identifier required for POST resource creation
+         * @param target  typed SCIM resource collection or individual-resource target
+         * @param version complete HTTP entity-tag used as the operation If-Match value
+         * @param data    typed resource or PatchOp data required by body-bearing methods
          * @throws IllegalArgumentException if a required value or optional container is {@code null}
          * @throws ValidateException        if a method, target, entity-tag, bulkId, or data combination is invalid
          */
@@ -219,6 +227,7 @@ public record BulkRequest(List<String> schemas, Optional<Integer> failOnErrors, 
         /**
          * Restricts writable bulk resource data to User and Group.
          *
+         * @param resource standard User or Group resource
          * @throws IllegalArgumentException if {@code resource} is {@code null}
          * @throws ValidateException        if the value is a discovery resource
          */
@@ -251,6 +260,8 @@ public record BulkRequest(List<String> schemas, Optional<Integer> failOnErrors, 
 
         /**
          * Requires a non-null PatchOp.
+         *
+         * @param patch standard PatchOp
          */
         public PatchData {
             patch = Assert.notNull(patch, "SCIM bulk patch data must not be null");

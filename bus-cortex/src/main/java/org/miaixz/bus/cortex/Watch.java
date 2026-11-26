@@ -43,14 +43,14 @@ public class Watch<T> implements Change<T> {
     private String tenant_id;
 
     /**
+     * Identifier of the watch subscription receiving this event.
+     */
+    private String watch_id;
+
+    /**
      * Asset type scope of the subscription that produced this event, when restricted to one type.
      */
     private Type type;
-
-    /**
-     * Identifier of the watch subscription receiving this event.
-     */
-    private String watchId;
 
     /**
      * Original watch criteria used to create the subscription.
@@ -76,9 +76,9 @@ public class Watch<T> implements Change<T> {
     private List<T> updated = List.of();
 
     /**
-     * Logical event type such as snapshot, update, delete or error.
+     * Logical event name such as snapshot, update, delete or error.
      */
-    private String eventType;
+    private String event;
 
     /**
      * Source component that emitted the watch event.
@@ -88,7 +88,7 @@ public class Watch<T> implements Change<T> {
     /**
      * Optional error message attached to failure notifications.
      */
-    private String errorMessage;
+    private String error;
 
     /**
      * Human-readable event summary for logs and diagnostics.
@@ -98,12 +98,7 @@ public class Watch<T> implements Change<T> {
     /**
      * Previous emitted sequence used for consumers that enforce ordering.
      */
-    private long previousSequence;
-
-    /**
-     * Whether the event represents a synthetic snapshot instead of a live delta.
-     */
-    private boolean snapshot;
+    private long previous;
 
     /**
      * Ordering sequence assigned to this watch event.
@@ -114,6 +109,11 @@ public class Watch<T> implements Change<T> {
      * Creation time of this watch event in epoch milliseconds.
      */
     private long timestamp;
+
+    /**
+     * Whether the event represents a synthetic snapshot instead of a live delta.
+     */
+    private boolean snapshot;
 
     /**
      * Creates an empty watch event.

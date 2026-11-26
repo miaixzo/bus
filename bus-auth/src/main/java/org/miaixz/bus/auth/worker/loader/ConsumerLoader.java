@@ -47,6 +47,9 @@ public interface ConsumerLoader extends Loader<ConsumerLoader.Request, ConsumerL
 
         /**
          * Validates one complete consumer-loading request.
+         *
+         * @param source     exact Source Blueprint entry requesting the data
+         * @param consumerId exact external consumer identifier
          */
         public Request {
             Assert.notNull(source, "Consumer source must not be null");

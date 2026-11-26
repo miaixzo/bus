@@ -223,7 +223,10 @@ public class FileTailer implements Serializable {
                 /**
                  * Ondelete method.
                  *
-                 * @return the void value
+                 * @param event The {@link WatchEvent} that occurred. The deleted file or directory name can be obtained
+                 *              via {@link WatchEvent#context()}.
+                 * @param key   The {@link WatchKey} on which the event occurred. The monitored path can be obtained via
+                 *              {@link WatchKey#watchable()}.
                  */
                 @Override
                 public void onDelete(final WatchEvent<?> event, final WatchKey key) {
@@ -231,6 +234,7 @@ public class FileTailer implements Serializable {
                     stop();
                     throw new InternalException("{} has been deleted", filePath);
                 }
+
             });
             fileWatchMonitor.start();
         }
@@ -341,6 +345,8 @@ public class FileTailer implements Serializable {
 
         /**
          * Accepting method.
+         *
+         * @param line line of text to consume
          */
         @Override
         public void accepting(final String line) {

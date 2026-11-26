@@ -39,6 +39,8 @@ public record TokenRequest(Grant grant, JsonValue.ObjectValue extensions) {
     /**
      * Creates an immutable token request and rejects registered fields from its extension container.
      *
+     * @param grant      exactly one supported standard grant parameter set
+     * @param extensions unknown token request parameters that do not duplicate registered components
      * @throws IllegalArgumentException if the grant or extensions object is {@code null}
      * @throws ValidateException        if extensions duplicate a registered token request parameter
      */

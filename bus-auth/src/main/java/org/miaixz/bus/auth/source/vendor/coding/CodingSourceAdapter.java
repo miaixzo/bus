@@ -738,6 +738,11 @@ public class CodingSourceAdapter implements VendorAdapter {
         /**
          * Validates one exact success or rejection branch.
          *
+         * @param code  authorization code on success
+         * @param state mandatory browser correlation value
+         * @param team  team binding on success
+         * @param scope comma-delimited scope binding on success
+         * @param error OAuth error on rejection
          * @throws IllegalArgumentException if state is blank
          * @throws ValidateException        if branch fields are inconsistent
          */
@@ -764,6 +769,8 @@ public class CodingSourceAdapter implements VendorAdapter {
         /**
          * Validates one typed private profile.
          *
+         * @param subject    positive CODING user identifier
+         * @param attributes validated scalar profile attributes
          * @throws IllegalArgumentException if a component is absent or blank
          */
         private Profile {
@@ -831,6 +838,8 @@ public class CodingSourceAdapter implements VendorAdapter {
         /**
          * Validates one private token result.
          *
+         * @param accessToken sensitive bearer access token
+         * @param expiresIn   positive token lifetime in seconds
          * @throws IllegalArgumentException if the token is blank
          * @throws ValidateException        if the lifetime is not positive
          */

@@ -216,6 +216,8 @@ final class WindowsCentralProcessor extends AbstractCentralProcessor {
 
     /**
      * Initializes Class variables
+     *
+     * @return processor identity and capability information
      */
     @Override
     protected CentralProcessor.ProcessorIdentifier queryProcessorId() {

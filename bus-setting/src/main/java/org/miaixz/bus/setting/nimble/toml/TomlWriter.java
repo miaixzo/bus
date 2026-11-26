@@ -278,6 +278,7 @@ public class TomlWriter {
      * @param table        the table to write
      * @param simpleValues true to write only the simple values and arrays of simple values; false to write only nested
      *                     tables and arrays of tables.
+     * @throws InternalException if a table value cannot be serialized or written
      */
     private void writeTableContent(final Map<String, Object> table, final boolean simpleValues)
             throws InternalException {

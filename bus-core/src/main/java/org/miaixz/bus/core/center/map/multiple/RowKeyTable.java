@@ -479,6 +479,7 @@ public class RowKeyTable<R, C, V> extends AbstractTable<R, C, V> {
                             public V setValue(final V value) {
                                 return entry.getValue().put(columnKey, value);
                             }
+
                         };
                     }
                 }

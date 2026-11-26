@@ -753,6 +753,12 @@ public class TwitterSourceAdapter implements VendorAdapter {
 
         /**
          * Validates one exact success or OAuth error callback.
+         *
+         * @param code             authorization code
+         * @param state            browser correlation value
+         * @param error            OAuth error
+         * @param errorDescription OAuth error description
+         * @param errorUri         OAuth error documentation URI
          */
         private CallbackWire {
             Assert.notBlank(state, "Twitter callback state must not be blank");
@@ -784,6 +790,8 @@ public class TwitterSourceAdapter implements VendorAdapter {
 
         /**
          * Validates one private token value.
+         *
+         * @param accessToken sensitive bearer token
          */
         private Access {
             Assert.notBlank(accessToken, "Twitter private access token must not be blank");

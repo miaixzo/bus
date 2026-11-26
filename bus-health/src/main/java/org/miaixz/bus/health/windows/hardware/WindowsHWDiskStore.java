@@ -23,7 +23,6 @@ import static org.miaixz.bus.health.windows.driver.wmi.MSFTStorage.PD_OBJECT_ID;
 import static org.miaixz.bus.health.windows.driver.wmi.MSFTStorage.VD_OBJECT_ID;
 
 import java.util.*;
-import java.util.function.UnaryOperator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -38,11 +37,14 @@ import com.sun.jna.platform.win32.WinDef;
 import com.sun.jna.platform.win32.WinNT;
 import com.sun.jna.platform.win32.WinNT.HANDLE;
 
+import org.miaixz.bus.core.center.function.FunctionX;
 import org.miaixz.bus.core.center.function.SupplierX;
+import org.miaixz.bus.core.center.function.UnaryOperatorX;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.tuple.Pair;
+import org.miaixz.bus.core.xyz.FunctionKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.health.Memoizer;
 import org.miaixz.bus.health.Parsing;
@@ -305,7 +307,7 @@ public class WindowsHWDiskStore extends AbstractHWDiskStore {
      * @param mountOf Resolves a path to its volume mount point.
      * @return Backing stores keyed by physical drive name.
      */
-    private static Map<String, List<String>> queryBackingStores(WmiQueryHandler h, UnaryOperator<String> mountOf) {
+    private static Map<String, List<String>> queryBackingStores(WmiQueryHandler h, UnaryOperatorX<String> mountOf) {
         return buildBackingStores(
                 MSFTStorage.queryDisks(h),
                 MSFTStorage.queryVirtualDiskIds(h),
@@ -329,7 +331,7 @@ public class WindowsHWDiskStore extends AbstractHWDiskStore {
             WmiResult<VirtualDiskIdProperty> vds,
             WmiResult<VirtualDiskToPhysicalDiskProperty> vdpd,
             WmiResult<PhysicalDiskIdProperty> pds,
-            UnaryOperator<String> mountOf) {
+            UnaryOperatorX<String> mountOf) {
         try {
             Map<String, String> deviceIdByPd = new HashMap<>();
             for (int i = Normal._0; i < pds.getResultCount(); i++) {
@@ -358,7 +360,8 @@ public class WindowsHWDiskStore extends AbstractHWDiskStore {
                 int busType = WmiKit.getUint16(disks, DiskProperty.BUSTYPE, i);
                 if (busType == Normal._15) {
                     String location = WmiKit.getString(disks, DiskProperty.LOCATION, i);
-                    String mount = location.isEmpty() ? Normal.EMPTY : mountOf.apply(location);
+                    String mount = location.isEmpty() ? Normal.EMPTY
+                            : FunctionKit.applyUnaryUnwrapped(mountOf, location);
                     if (!mount.isEmpty()) {
                         result.put(name, Collections.singletonList(StoreKind.FILE.entry(mount)));
                     }
@@ -719,11 +722,13 @@ public class WindowsHWDiskStore extends AbstractHWDiskStore {
      * @param resolver The native storage property resolver.
      * @return A disk type for each query result.
      */
-    private static String[] classifyDiskTypes(WmiResult<DiskDriveProperty> disks, StoragePropertiesResolver resolver) {
+    private static String[] classifyDiskTypes(
+            WmiResult<DiskDriveProperty> disks,
+            FunctionX<String, StorageProperties> resolver) {
         String[] diskTypes = new String[disks.getResultCount()];
         for (int i = Normal._0; i < diskTypes.length; i++) {
             diskTypes[i] = classifyDiskType(
-                    resolver.resolve(WmiKit.getString(disks, DiskDriveProperty.NAME, i)),
+                    FunctionKit.applyUnwrapped(resolver, WmiKit.getString(disks, DiskDriveProperty.NAME, i)),
                     WmiKit.getString(disks, DiskDriveProperty.MEDIATYPE, i));
         }
         return diskTypes;
@@ -762,21 +767,6 @@ public class WindowsHWDiskStore extends AbstractHWDiskStore {
                 diskTypes[i] = diskTypeMap.getOrDefault(deviceId, DISK_TYPE_UNKNOWN);
             }
         }
-    }
-
-    /**
-     * Resolves native storage properties for a physical drive.
-     */
-    @FunctionalInterface
-    private interface StoragePropertiesResolver {
-
-        /**
-         * Reads a drive's storage properties.
-         *
-         * @param name The physical drive path.
-         * @return The properties, or {@code null} when unavailable.
-         */
-        StorageProperties resolve(String name);
     }
 
     /**
@@ -834,6 +824,7 @@ public class WindowsHWDiskStore extends AbstractHWDiskStore {
         private Boolean getIncursSeekPenalty() {
             return incursSeekPenalty;
         }
+
     }
 
     /**

@@ -357,6 +357,7 @@ final class Http2WriteScheduler implements AutoCloseable {
          * @param failure command-handler failure
          */
         void failed(RuntimeException failure);
+
     }
 
     /**
@@ -459,6 +460,7 @@ final class Http2WriteScheduler implements AutoCloseable {
         private boolean isEmpty() {
             return slots[(int) (consumer % slots.length)].sequenceAcquire() != consumer + 1L;
         }
+
     }
 
     /**
@@ -535,6 +537,7 @@ final class Http2WriteScheduler implements AutoCloseable {
         private void sequenceRelease(final long value) {
             SEQUENCE.setRelease(this, value);
         }
+
     }
 
 }

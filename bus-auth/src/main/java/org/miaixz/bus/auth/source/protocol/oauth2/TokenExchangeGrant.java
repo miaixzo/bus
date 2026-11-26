@@ -59,6 +59,14 @@ public record TokenExchangeGrant(List<String> resource, List<String> audience, S
     /**
      * Creates and validates an immutable token-exchange grant parameter set.
      *
+     * @param resource           ordered absolute target resource URIs
+     * @param audience           ordered logical target service names
+     * @param subjectToken       opaque token representing the exchange subject
+     * @param subjectTokenType   absolute URI identifying the subject token representation
+     * @param requestedTokenType optional absolute URI identifying the requested token representation
+     * @param actorToken         optional opaque token representing the acting party
+     * @param actorTokenType     optional absolute URI identifying the actor token representation
+     * @param scope              optional requested scope
      * @throws IllegalArgumentException if a required component, list entry, or optional container is {@code null}
      * @throws ValidateException        if a resource or token type is not an allowed URI, a value is empty, or actor
      *                                  fields are not paired

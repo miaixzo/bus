@@ -549,6 +549,11 @@ public class WorkflowSubscriberManager implements Subscriber, AutoCloseable {
 
     /**
      * Reads a Temporal SDK field needed by the native-friendly worker creation path.
+     *
+     * @param target object that owns the field
+     * @param name   field name
+     * @return value of the requested SDK field
+     * @throws ReflectiveOperationException if the required SDK method or field cannot be located or accessed
      */
     private Object field(Object target, String name) throws ReflectiveOperationException {
         Field field = target.getClass().getDeclaredField(name);

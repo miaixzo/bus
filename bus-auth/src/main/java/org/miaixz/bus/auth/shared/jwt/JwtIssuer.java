@@ -114,6 +114,10 @@ public class JwtIssuer {
         /**
          * Validates and freezes the issue profile.
          *
+         * @param issuer          exact issuer StringOrURI
+         * @param audiences       non-empty, duplicate-free audiences in output order
+         * @param lifetime        positive validity duration
+         * @param subjectRequired whether caller claims must contain {@code sub}
          * @throws IllegalArgumentException if a required component or audience is {@code null}
          * @throws ValidateException        if issuer/audience is blank, audiences repeat, or lifetime is not positive
          */
@@ -149,6 +153,9 @@ public class JwtIssuer {
         /**
          * Validates and freezes caller-owned issue inputs.
          *
+         * @param profile immutable generated-claim profile
+         * @param header  JOSE Header containing an allowed protected signing algorithm
+         * @param claims  subject, optional not-before, and protocol/application extension claims
          * @throws IllegalArgumentException if a component is {@code null}
          */
         public Request {

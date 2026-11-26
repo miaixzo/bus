@@ -189,11 +189,15 @@ public final class Attributes {
 
         /**
          * Validates descriptor and value.
+         *
+         * @param descriptor attribute descriptor
+         * @param value      attribute value
          */
         public Value {
             descriptor = Objects.requireNonNull(descriptor, "Attribute descriptor must not be null");
             descriptor.validateValue(value);
         }
+
     }
 
     /**
@@ -242,6 +246,7 @@ public final class Attributes {
             }
             return new Attributes(Collections.unmodifiableList(new ArrayList<>(values.values())));
         }
+
     }
 
 }

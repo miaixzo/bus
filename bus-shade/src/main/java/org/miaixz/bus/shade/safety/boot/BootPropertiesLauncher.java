@@ -19,6 +19,9 @@
 */
 package org.miaixz.bus.shade.safety.boot;
 
+import java.net.URL;
+import java.util.Collection;
+
 import org.springframework.boot.loader.launch.PropertiesLauncher;
 
 import org.miaixz.bus.shade.safety.Launcher;
@@ -55,6 +58,20 @@ public class BootPropertiesLauncher extends PropertiesLauncher {
      */
     public static void main(String[] args) throws Exception {
         new BootPropertiesLauncher(args).launch();
+    }
+
+    /**
+     * Creates the class loader used to launch the application, replacing the Spring Boot default with the decrypting
+     * {@link BootClassLoader} so that encrypted classes and resources can be read.
+     *
+     * @param urls the class path URLs resolved from the archive
+     * @return the decrypting class loader
+     * @throws Exception if the class loader cannot be created
+     */
+    @Override
+    protected ClassLoader createClassLoader(Collection<URL> urls) throws Exception {
+        return new BootClassLoader(urls.toArray(new URL[0]), getClass().getClassLoader(),
+                this.launcher.decryptorProvider, this.launcher.encryptorProvider, this.launcher.key);
     }
 
     /**

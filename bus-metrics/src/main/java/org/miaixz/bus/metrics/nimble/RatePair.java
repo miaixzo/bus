@@ -104,6 +104,7 @@ public interface RatePair {
             public Meter successes() {
                 return checkedSuccesses;
             }
+
         };
     }
 

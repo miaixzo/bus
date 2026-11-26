@@ -101,6 +101,7 @@ public class LFUFileCache extends AbstractFileCache {
             protected void onRemove(final File key, final byte[] cachedObject) {
                 usedSize -= cachedObject.length;
             }
+
         };
     }
 

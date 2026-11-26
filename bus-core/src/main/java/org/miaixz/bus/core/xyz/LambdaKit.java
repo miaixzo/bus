@@ -161,6 +161,11 @@ public class LambdaKit {
     /**
      * Resolves an unbound getter reference directly, for example {@code getFieldName(User::getName)}. The Serializable
      * entry remains available for existing getter, setter and supplier references.
+     *
+     * @param <T>    bean type accepted by the getter
+     * @param <R>    property value type returned by the getter
+     * @param getter serializable bean getter reference
+     * @return property name identified by the getter reference
      */
     public static <T, R> String getFieldName(final FunctionX<T, R> getter) {
         return getFieldName((Serializable) getter);

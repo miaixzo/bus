@@ -63,6 +63,17 @@ public record LdapClientOptions(String host, int port, SecurityMode securityMode
     /**
      * Validates protected transport, search mapping, external credential pairing, and local positive limits.
      *
+     * @param host                remote LDAP server host name or address
+     * @param port                remote LDAP server port in the registered TCP port range
+     * @param securityMode        mandatory protected-transport establishment mode
+     * @param searchBase          base distinguished name for locating the authenticating user
+     * @param usernameAttribute   RFC 4512 attribute description matched against the supplied principal hint
+     * @param attributes          ordered, case-insensitively unique attributes returned to identity mapping
+     * @param bindDn              optional service-account distinguished name used before the user search
+     * @param bindCredential      optional external password reference paired with {@code bindDn}
+     * @param timeLimitSeconds    positive LDAP search time limit in seconds
+     * @param maximumMessageBytes positive maximum encoded LDAP message size
+     * @param maximumBerDepth     positive maximum nested BER depth
      * @throws IllegalArgumentException if a required component or optional container is {@code null}
      * @throws ValidateException        if a host, port, attribute, credential type, or numeric limit is invalid
      */

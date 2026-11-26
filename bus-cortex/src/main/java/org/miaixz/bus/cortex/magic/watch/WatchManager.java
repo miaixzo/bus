@@ -40,6 +40,8 @@ import org.miaixz.bus.cortex.magic.runtime.CortexLifecycle;
 import org.miaixz.bus.cortex.magic.runtime.DiagnosticsSnapshot;
 import org.miaixz.bus.cortex.registry.RegistryChange;
 import org.miaixz.bus.cortex.registry.RegistryIdentity;
+import org.miaixz.bus.errors.ComponentFailure;
+import org.miaixz.bus.errors.ErrorType;
 import org.miaixz.bus.logger.Logger;
 
 /**
@@ -48,6 +50,11 @@ import org.miaixz.bus.logger.Logger;
  * @author Kimi Liu
  */
 public class WatchManager implements AutoCloseable, CortexLifecycle, CortexDiagnostics {
+
+    /**
+     * Reports listener failures and dispatch rejections independently of subscription recovery.
+     */
+    private static final ComponentFailure FAILURES = new ComponentFailure("bus-cortex", "watch");
 
     /**
      * Default source name for setting-domain watch events.
@@ -666,7 +673,7 @@ public class WatchManager implements AutoCloseable, CortexLifecycle, CortexDiagn
             String source,
             long now) {
         Watch<T> event = new Watch<>();
-        event.setWatchId(watchId);
+        event.setWatch_id(watchId);
         event.setVector(subscription.getVector());
         event.setTenant_id(subscription.getTenant_id());
         event.setType(
@@ -675,7 +682,7 @@ public class WatchManager implements AutoCloseable, CortexLifecycle, CortexDiagn
         event.setAdded(List.of());
         event.setRemoved(List.of());
         event.setUpdated(List.of());
-        event.setEventType(eventType);
+        event.setEvent(eventType);
         event.setSource(source);
         event.setTimestamp(now);
         return event;
@@ -692,6 +699,7 @@ public class WatchManager implements AutoCloseable, CortexLifecycle, CortexDiagn
             try {
                 listener.onEvent((Watch<Object>) event);
             } catch (Exception e) {
+                FAILURES.failed(ErrorType.CALLBACK_FAILURE, e);
                 listener.onError((Watch<Object>) event, e);
                 Logger.warn(false, "Cortex", "Global watch listener execution failed: {}", e.getMessage());
             }
@@ -712,7 +720,7 @@ public class WatchManager implements AutoCloseable, CortexLifecycle, CortexDiagn
     private <T> void dispatch(String watchId, WatchSubscription<T> subscription, Watch<T> event) {
         synchronized (subscription) {
             long sequence = nextSequence(partitionKey(subscription.getTenant_id()) + ":watch");
-            event.setPreviousSequence(subscription.getLastSequence());
+            event.setPrevious(subscription.getLastSequence());
             subscription.setLastSequence(sequence);
             event.setSequence(sequence);
             long now = DateKit.current();
@@ -728,12 +736,14 @@ public class WatchManager implements AutoCloseable, CortexLifecycle, CortexDiagn
                         subscription.setLastEventAt(deliveredAt);
                         subscription.getListener().onEvent(event);
                     } catch (Exception e) {
+                        FAILURES.failed(ErrorType.CALLBACK_FAILURE, e);
                         subscription.setFailureCount(subscription.getFailureCount() + 1);
                         subscription.setLastError(e.getMessage());
-                        event.setErrorMessage(e.getMessage());
+                        event.setError(e.getMessage());
                         try {
                             subscription.getListener().onError(event, e);
                         } catch (Exception errorHandlerFailure) {
+                            FAILURES.failed(ErrorType.CALLBACK_FAILURE, errorHandlerFailure);
                             Logger.warn(
                                     false,
                                     "Cortex",
@@ -748,9 +758,10 @@ public class WatchManager implements AutoCloseable, CortexLifecycle, CortexDiagn
                     dispatchGlobal(event);
                 }, dispatcher);
             } catch (RejectedExecutionException e) {
+                FAILURES.failed(ErrorType.GATEWAY_OVERLOADED, e);
                 subscription.releasePending();
                 subscription.recordDrop(now, e.getMessage());
-                event.setErrorMessage(e.getMessage());
+                event.setError(e.getMessage());
                 Logger.warn(false, "Cortex", "Watch dispatch rejected {}: {}", watchId, e.getMessage());
             }
         }
@@ -768,7 +779,7 @@ public class WatchManager implements AutoCloseable, CortexLifecycle, CortexDiagn
     private <T> void handleOverflow(String watchId, WatchSubscription<T> subscription, Watch<T> event, long now) {
         String reason = "Watch backlog limit exceeded";
         subscription.recordDrop(now, reason);
-        event.setErrorMessage(reason);
+        event.setError(reason);
         if (overflowStrategy == OverflowStrategy.DROP_LATEST) {
             Logger.warn(false, "Cortex", "Watch event dropped {}: {}", watchId, reason);
         }

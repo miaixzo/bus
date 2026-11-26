@@ -88,10 +88,6 @@
             <groupId>org.miaixz</groupId>
             <artifactId>bus-crypto</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.miaixz</groupId>
-            <artifactId>bus-extra</artifactId>
-        </dependency>
 
         <dependency>
             <groupId>com.alibaba.csp</groupId>

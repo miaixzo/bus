@@ -32,10 +32,12 @@
 module bus.cortex {
 
     requires transitive bus.cache;
+    requires bus.auth;
     requires bus.core;
     requires bus.crypto;
+    requires bus.errors;
     requires bus.extra;
-    requires transitive bus.fabric;
+    requires bus.fabric;
     requires bus.logger;
 
     requires static jakarta.persistence;
@@ -47,8 +49,6 @@ module bus.cortex {
     exports org.miaixz.bus.cortex.builtin.batch;
     exports org.miaixz.bus.cortex.builtin.event;
     exports org.miaixz.bus.cortex.builtin.graph;
-    exports org.miaixz.bus.cortex.guard;
-    exports org.miaixz.bus.cortex.guard.token;
     exports org.miaixz.bus.cortex.health;
     exports org.miaixz.bus.cortex.magic;
     exports org.miaixz.bus.cortex.magic.event;
@@ -59,19 +59,19 @@ module bus.cortex {
     exports org.miaixz.bus.cortex.registry.api;
     exports org.miaixz.bus.cortex.registry.mcp;
     exports org.miaixz.bus.cortex.registry.prompt;
+    exports org.miaixz.bus.cortex.release;
     exports org.miaixz.bus.cortex.setting;
     exports org.miaixz.bus.cortex.setting.app;
-    exports org.miaixz.bus.cortex.setting.approval;
     exports org.miaixz.bus.cortex.setting.curator;
     exports org.miaixz.bus.cortex.setting.delivery;
+    exports org.miaixz.bus.cortex.setting.event;
+    exports org.miaixz.bus.cortex.setting.flow;
     exports org.miaixz.bus.cortex.setting.item;
-    exports org.miaixz.bus.cortex.setting.revision;
     exports org.miaixz.bus.cortex.setting.reference;
+    exports org.miaixz.bus.cortex.setting.revision;
     exports org.miaixz.bus.cortex.setting.rollout;
     exports org.miaixz.bus.cortex.setting.secret;
     exports org.miaixz.bus.cortex.setting.secret.provider;
-    exports org.miaixz.bus.cortex.setting.event;
     exports org.miaixz.bus.cortex.setting.watch;
-    exports org.miaixz.bus.cortex.release;
 
 }

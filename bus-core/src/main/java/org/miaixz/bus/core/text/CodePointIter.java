@@ -80,6 +80,7 @@ public record CodePointIter(String text) implements Iterable<Integer> {
             public void remove() {
                 throw new UnsupportedOperationException();
             }
+
         };
     }
 

@@ -37,6 +37,9 @@ public record Lighting(boolean shade, float specularPower, GradientOpacity gradi
     /**
      * Validates the specular exponent.
      *
+     * @param shade           whether lighting-based shading is enabled
+     * @param specularPower   exponent controlling specular-highlight tightness
+     * @param gradientOpacity opacity factor by gradient magnitude, or null for none
      * @throws IllegalArgumentException if the exponent is not positive
      */
     public Lighting {

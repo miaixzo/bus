@@ -32,6 +32,8 @@ import org.miaixz.bus.core.basic.normal.Errors;
 import org.miaixz.bus.core.lang.exception.NoSuchException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.xyz.ObjectKit;
+import org.miaixz.bus.errors.ComponentFailure;
+import org.miaixz.bus.errors.ErrorType;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.validate.magic.Criterion;
 import org.miaixz.bus.validate.magic.ErrorCode;
@@ -44,6 +46,11 @@ import org.miaixz.bus.validate.magic.annotation.Complex;
  * @author Kimi Liu
  */
 public class Provider {
+
+    /**
+     * Reports custom validation-exception configuration failures without replacing the existing error type.
+     */
+    private static final ComponentFailure FAILURES = new ComponentFailure("bus-validate", "exception-factory");
 
     /**
      * Constructs a new Provider instance.
@@ -255,6 +262,7 @@ public class Provider {
                     criterion.getName());
             return exception;
         } catch (NoSuchMethodException e) {
+            FAILURES.failed(ErrorType.CONFIGURATION_FAILURE, e);
             Logger.warn(
                     false,
                     "Validate",
@@ -264,6 +272,7 @@ public class Provider {
             throw new NoSuchException("Illegal custom validation exception, no constructor(String, String) found: "
                     + exceptionClass.getName());
         } catch (IllegalAccessException e) {
+            FAILURES.failed(ErrorType.CONFIGURATION_FAILURE, e);
             Logger.warn(
                     false,
                     "Validate",
@@ -273,6 +282,7 @@ public class Provider {
             throw new NoSuchException(
                     "Unable to access constructor of custom validation exception: " + exceptionClass.getName());
         } catch (InstantiationException | InvocationTargetException e) {
+            FAILURES.failed(ErrorType.CONFIGURATION_FAILURE, e);
             Logger.warn(
                     false,
                     "Validate",

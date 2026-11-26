@@ -150,6 +150,10 @@ public interface Scheme<O extends Scheme.Options<?>> {
         /**
          * Validates and freezes formal conformance metadata.
          *
+         * @param protocol  existing Bus protocol identifier
+         * @param version   formal protocol version
+         * @param citations non-empty set of normative standard locations
+         * @param profile   exact formal standard profile name
          * @throws IllegalArgumentException if a component or citation is {@code null} or text is blank
          * @throws ValidateException        if no normative citation is supplied
          */
@@ -180,6 +184,8 @@ public interface Scheme<O extends Scheme.Options<?>> {
             /**
              * Validates the stable formal-standard location and section identifier.
              *
+             * @param standardUrl absolute stable HTTP(S) specification URL without query or fragment
+             * @param section     exact normative section identifier
              * @throws IllegalArgumentException if text is blank
              * @throws ValidateException        if the URL is not an absolute credential-free HTTP(S) specification URL
              */
@@ -217,6 +223,10 @@ public interface Scheme<O extends Scheme.Options<?>> {
 
         /**
          * Validates one immutable presentation metadata value without interpreting its icon reference.
+         *
+         * @param name        non-blank display name
+         * @param description non-null human-readable description, which may be empty
+         * @param icon        non-null stable icon reference, which may be empty
          */
         public Metadata {
             Assert.notBlank(name, "Scheme metadata name must not be blank");
@@ -298,6 +308,10 @@ public interface Scheme<O extends Scheme.Options<?>> {
 
             /**
              * Validates and freezes one management form section.
+             *
+             * @param key    stable section key
+             * @param title  section title
+             * @param fields ordered fields
              */
             public Section {
                 Assert.notBlank(key, "Form section key must not be blank");
@@ -328,6 +342,13 @@ public interface Scheme<O extends Scheme.Options<?>> {
 
             /**
              * Validates and freezes one management input description.
+             *
+             * @param key          formal protocol or Vendor field key
+             * @param label        display label
+             * @param type         presentation type
+             * @param required     whether input is required
+             * @param defaultValue optional non-sensitive default value
+             * @param constraints  ordered validation declarations
              */
             public Field {
                 Assert.notBlank(key, "Form field key must not be blank");
@@ -356,6 +377,9 @@ public interface Scheme<O extends Scheme.Options<?>> {
 
             /**
              * Validates and detaches one management field constraint.
+             *
+             * @param validator stable external validator identifier
+             * @param arguments immutable validator arguments
              */
             public Constraint {
                 Assert.notBlank(validator, "Form constraint validator must not be blank");

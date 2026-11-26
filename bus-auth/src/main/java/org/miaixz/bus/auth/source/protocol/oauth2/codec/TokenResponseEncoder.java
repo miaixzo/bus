@@ -51,6 +51,7 @@ public class TokenResponseEncoder {
      * Creates a standard token response encoder that serializes JSON through {@link JsonKit}.
      */
     public TokenResponseEncoder() {
+        // No initialization required.
     }
 
     /**

@@ -45,6 +45,11 @@ public interface FederationLoader extends Loader<FederationLoader.Request, Feder
 
         /**
          * Validates one complete federation-loading request.
+         *
+         * @param source          exact Source Blueprint entry requesting the relation
+         * @param consumerId      public consumer identifier
+         * @param assertedIssuer  verified external assertion issuer
+         * @param assertedSubject verified external assertion subject
          */
         public Request {
             Assert.notNull(source, "Federation source must not be null");

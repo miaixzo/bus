@@ -213,6 +213,24 @@ try (HttpResponse response = call.await(Duration.ofSeconds(5))) {
 }
 ```
 
+也可以将尚未启动的 Call 一次性桥接到独立的 `CompletableFuture`：
+
+```java
+try (ExecutorService executor = Executors.newVirtualThreadPerTaskExecutor()) {
+    CompletableFuture<HttpResponse> future = Fabric.http(context)
+            .get("https://example.com/data")
+            .call()
+            .toFuture(executor);
+    try (HttpResponse response = future.get()) {
+        // 消费响应后关闭，归还连接。
+    }
+}
+```
+
+Future 取消会传递给 Call；执行器接纳任务后才启动执行。交付失败时自动关闭未移交的 `AutoCloseable` 结果，
+特殊结果可使用带回收函数的重载。不要再对同一 Call 调用 `execute()`、`enqueue()` 或重复桥接。
+带异常映射函数的重载仅用于适配外部 API 的异常契约，不改变默认异常类型。
+
 ### HTTP 缓存
 
 HTTP 缓存通过自身的类型化选项挂载到 `Context`。
@@ -248,6 +266,30 @@ TLS 连接）会降级为本地可复用状态检查。直接交接 给等待请
 自动传输重试要求请求体可以重复发送，并且 HTTP 方法具有幂等性，包括 `GET`、`HEAD`、`PUT`、
 `DELETE`、`OPTIONS` 和 `TRACE`。`POST` 及其他非幂等请求在发生不明确的网络故障后不会被自动重放。
 复用前校验可以在支持主动探测时减少陈旧连接故障，但无法保证非幂等请求不会遇到并发发生的对端断连。
+
+HTTP 响应状态重试默认关闭，必须显式指定状态集合并声明操作可安全重放，请求体仍须可重复发送：
+
+```java
+HttpRetryPolicy policy = HttpRetryPolicy.builder()
+        .maxAttempts(1).maxStaleRetries(0).maxRedirects(0)
+        .retryOnConnectionFailure(false)
+        .retryStatuses(Set.of(429)).replaySafe(true)
+        .maxDelay(Duration.ofSeconds(2))
+        .build();
+
+try (HttpResponse response = Fabric.http(context)
+        .get("https://example.com/data")
+        .retryPolicy(policy)
+        .execute()) {
+    // 处理最终响应。
+}
+```
+
+请求级 `retryPolicy` 覆盖 Context 策略，应用标签和地址策略标签保留。状态、连接和陈旧连接重试共用
+`maxAttempts` 总预算。`Retry-After` 支持正秒数和未来 HTTP 日期；缺失或无效值优先使用显式 `baseDelay` 退避，否则等待 1 秒。
+服务端等待时间超过 `maxDelay`、读取超时或剩余 Call 预算时返回原响应，不提前重发。
+等待前关闭上次响应，取消或中断会终止等待。`replaySafe(true)` 是调用方对操作语义的授权，
+不能仅依据请求体可重复或 HTTP 方法推断业务写操作可重放。
 
 ### Cookie
 

@@ -177,6 +177,9 @@ public class FreeBsdUsbDevice extends AbstractUsbDevice {
 
     /**
      * Parses plug-and-play fields from one device line.
+     *
+     * @param fields plug-and-play device fields to parse
+     * @return plug-and-play field names and values parsed from the device line
      */
     private static Map<String, String> parseFields(String fields) {
         Map<String, String> values = new HashMap<>();
@@ -194,6 +197,10 @@ public class FreeBsdUsbDevice extends AbstractUsbDevice {
 
     /**
      * Adds a hexadecimal USB identifier when present.
+     *
+     * @param values values to apply
+     * @param key    property name receiving the normalized identifier
+     * @param hex    hexadecimal identifier text to normalize
      */
     private static void putHexId(Map<String, String> values, String key, String hex) {
         if (hex != null && hex.startsWith("0x")) {

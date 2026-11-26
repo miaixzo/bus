@@ -126,6 +126,11 @@ public class Builder {
     public static final String REALM_SERVICE_ACCOUNTS = "service-accounts";
 
     /**
+     * Application registration collection target.
+     */
+    public static final String REALM_APPLICATIONS = "applications";
+
+    /**
      * Management target key for reading a recoverable Realm change feed.
      */
     public static final String REALM_CHANGES = "changes";

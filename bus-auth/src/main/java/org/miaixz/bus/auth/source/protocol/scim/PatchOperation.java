@@ -40,6 +40,9 @@ public record PatchOperation(Op op, Optional<Path> path, Optional<Value> value) 
     /**
      * Enforces operation-specific path and value requirements.
      *
+     * @param op    standard add, remove, or replace operation
+     * @param path  RFC 7644 patch path when the operation targets selected attributes
+     * @param value operation value, required for add and replace and prohibited for remove
      * @throws IllegalArgumentException if an operation or optional container is {@code null}
      * @throws ValidateException        if the path syntax or operation-specific value shape is invalid
      */
@@ -189,6 +192,7 @@ public record PatchOperation(Op op, Optional<Path> path, Optional<Value> value) 
         /**
          * Validates the structural PATCH-path grammar without resolving a resource schema.
          *
+         * @param value exact path lexical value
          * @throws ValidateException if the path is malformed
          */
         public Path {
@@ -225,6 +229,8 @@ public record PatchOperation(Op op, Optional<Path> path, Optional<Value> value) 
 
         /**
          * Requires a non-null JSON value.
+         *
+         * @param value immutable implementation-neutral JSON value
          */
         public JsonData {
             value = Assert.notNull(value, "SCIM patch JSON value must not be null");
@@ -250,6 +256,8 @@ public record PatchOperation(Op op, Optional<Path> path, Optional<Value> value) 
 
         /**
          * Requires a non-null password lease.
+         *
+         * @param secret erasable password lease
          */
         public SecretData {
             secret = Assert.notNull(secret, "SCIM patch password lease must not be null");

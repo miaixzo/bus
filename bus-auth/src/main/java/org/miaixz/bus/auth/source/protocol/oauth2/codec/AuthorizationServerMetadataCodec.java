@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
 
 import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.FabricX.Body;
@@ -32,12 +31,14 @@ import org.miaixz.bus.auth.FabricX.Response;
 import org.miaixz.bus.auth.shared.jose.JwaAlgorithm;
 import org.miaixz.bus.auth.shared.pkce.PkceMethod;
 import org.miaixz.bus.auth.source.protocol.oauth2.*;
+import org.miaixz.bus.core.center.function.FunctionX;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
+import org.miaixz.bus.core.xyz.FunctionKit;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.extra.json.JsonValue;
 
@@ -56,6 +57,7 @@ public class AuthorizationServerMetadataCodec {
      * Creates a strict RFC 8414 metadata codec that processes JSON through {@link JsonKit}.
      */
     public AuthorizationServerMetadataCodec() {
+        // No initialization required.
     }
 
     /**
@@ -105,7 +107,7 @@ public class AuthorizationServerMetadataCodec {
             final Map<String, JsonValue> members,
             final String name,
             final List<T> values,
-            final Function<T, String> mapper) {
+            final FunctionX<T, String> mapper) {
         if (!values.isEmpty()) {
             members.put(name, array(values, mapper));
         }
@@ -129,9 +131,9 @@ public class AuthorizationServerMetadataCodec {
      * @param mapper exact wire-value mapper
      * @return immutable JSON array
      */
-    private static <T> JsonValue.ArrayValue array(final List<T> values, final Function<T, String> mapper) {
-        return new JsonValue.ArrayValue(
-                values.stream().map(mapper).map(JsonValue.StringValue::new).map(JsonValue.class::cast).toList());
+    private static <T> JsonValue.ArrayValue array(final List<T> values, final FunctionX<T, String> mapper) {
+        return new JsonValue.ArrayValue(values.stream().map(value -> FunctionKit.applyUnwrapped(mapper, value))
+                .map(JsonValue.StringValue::new).map(JsonValue.class::cast).toList());
     }
 
     /**
@@ -250,8 +252,8 @@ public class AuthorizationServerMetadataCodec {
      * @param mapper value constructor or factory
      * @return immutable ordered typed values
      */
-    private static <T> List<T> map(final List<String> values, final Function<String, T> mapper) {
-        return values.stream().map(mapper).toList();
+    private static <T> List<T> map(final List<String> values, final FunctionX<String, T> mapper) {
+        return values.stream().map(value -> FunctionKit.applyUnwrapped(mapper, value)).toList();
     }
 
     /**
@@ -310,7 +312,7 @@ public class AuthorizationServerMetadataCodec {
         put(members, OAuth2.Metadata.AUTHORIZATION_ENDPOINT, metadata.authorizationEndpoint());
         put(members, OAuth2.Metadata.TOKEN_ENDPOINT, metadata.tokenEndpoint());
         put(members, OAuth2.Metadata.JWKS_URI, metadata.jwksUri());
-        putList(members, OAuth2.Metadata.SCOPES_SUPPORTED, metadata.scopesSupported(), Function.identity());
+        putList(members, OAuth2.Metadata.SCOPES_SUPPORTED, metadata.scopesSupported(), FunctionX.identity());
         members.put(
                 OAuth2.Metadata.RESPONSE_TYPES_SUPPORTED,
                 array(metadata.responseTypesSupported(), ResponseType::value));
@@ -318,7 +320,7 @@ public class AuthorizationServerMetadataCodec {
                 members,
                 OAuth2.Metadata.RESPONSE_MODES_SUPPORTED,
                 metadata.responseModesSupported(),
-                Function.identity());
+                FunctionX.identity());
         putList(members, OAuth2.Metadata.GRANT_TYPES_SUPPORTED, metadata.grantTypesSupported(), GrantType::value);
         putList(
                 members,
@@ -331,7 +333,7 @@ public class AuthorizationServerMetadataCodec {
                 metadata.tokenEndpointAuthSigningAlgValuesSupported(),
                 JwaAlgorithm::name);
         put(members, OAuth2.Metadata.SERVICE_DOCUMENTATION, metadata.serviceDocumentation());
-        putList(members, OAuth2.Metadata.UI_LOCALES_SUPPORTED, metadata.uiLocalesSupported(), Function.identity());
+        putList(members, OAuth2.Metadata.UI_LOCALES_SUPPORTED, metadata.uiLocalesSupported(), FunctionX.identity());
         put(members, OAuth2.Metadata.OP_POLICY_URI, metadata.opPolicyUri());
         put(members, OAuth2.Metadata.OP_TOS_URI, metadata.opTosUri());
         put(members, OAuth2.Metadata.REVOCATION_ENDPOINT, metadata.revocationEndpoint());

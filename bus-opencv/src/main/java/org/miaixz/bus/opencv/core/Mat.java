@@ -1532,7 +1532,6 @@ public class Mat extends CleanableMat {
      * @return a typed accessor bound to the supplied matrix indices
      * @throws RuntimeException if clazz is not one of the supported boxed numeric element classes
      */
-    @SuppressWarnings("unchecked")
     public <T> Atable<T> at(Class<T> clazz, int row, int col) {
         if (clazz == Byte.class || clazz == byte.class) {
             return (Atable<T>) new AtableByte(this, row, col);
@@ -1558,7 +1557,6 @@ public class Mat extends CleanableMat {
      * @return a typed accessor bound to the supplied matrix indices
      * @throws RuntimeException if clazz is not one of the supported boxed numeric element classes
      */
-    @SuppressWarnings("unchecked")
     public <T> Atable<T> at(Class<T> clazz, int[] idx) {
         if (clazz == Byte.class || clazz == byte.class) {
             return (Atable<T>) new AtableByte(this, idx);
@@ -1619,6 +1617,7 @@ public class Mat extends CleanableMat {
          * Channel value at tuple position 1.
          */
         private final T _1;
+
     }
 
     /**
@@ -1680,6 +1679,7 @@ public class Mat extends CleanableMat {
          * Channel value at tuple position 2.
          */
         private final T _2;
+
     }
 
     /**
@@ -1756,6 +1756,7 @@ public class Mat extends CleanableMat {
          * Channel value at tuple position 3.
          */
         private final T _3;
+
     }
 
     /**
@@ -1820,6 +1821,7 @@ public class Mat extends CleanableMat {
          * @param v value assigned to or compared with this object
          */
         void setV4c(Tuple4<T> v);
+
     }
 
     /**
@@ -1860,6 +1862,7 @@ public class Mat extends CleanableMat {
          * Indices of the matrix element accessed by this adapter.
          */
         protected final int[] indices;
+
     }
 
     /**
@@ -1982,6 +1985,7 @@ public class Mat extends CleanableMat {
             byte[] data = new byte[] { v._0, v._1, v._2, v._3 };
             mat.put(indices, data);
         }
+
     }
 
     /**
@@ -2104,6 +2108,7 @@ public class Mat extends CleanableMat {
             double[] data = new double[] { v._0, v._1, v._2, v._3 };
             mat.put(indices, data);
         }
+
     }
 
     /**
@@ -2226,6 +2231,7 @@ public class Mat extends CleanableMat {
             double[] data = new double[] { v._0, v._1, v._2, v._3 };
             mat.put(indices, data);
         }
+
     }
 
     /**
@@ -2348,6 +2354,7 @@ public class Mat extends CleanableMat {
             int[] data = new int[] { v._0, v._1, v._2, v._3 };
             mat.put(indices, data);
         }
+
     }
 
     /**
@@ -2470,6 +2477,7 @@ public class Mat extends CleanableMat {
             short[] data = new short[] { v._0, v._1, v._2, v._3 };
             mat.put(indices, data);
         }
+
     }
 
     /**
@@ -3589,4 +3597,5 @@ public class Mat extends CleanableMat {
      * @return a formatted representation of the matrix element values
      */
     private static native String nDump(long self);
+
 }

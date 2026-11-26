@@ -255,7 +255,8 @@ public class Festival extends Loops {
     /**
      * Resolves the solar day for a solar-day-based festival rule.
      *
-     * @param year year
+     * @param year  year
+     * @param lunar lunar date used to resolve the solar occurrence
      * @return solar day, or {@code null} if not applicable
      */
     private SolarDay getSolarDayByDay(int year, boolean lunar) {

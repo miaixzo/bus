@@ -63,7 +63,7 @@ public class CstRequestStrategy extends RequestStrategy {
             boolean rawJson = prepared.getRequest().getMethod() != HttpMethod.GET && contentType != null
                     && org.miaixz.bus.core.net.MediaType.isJson(contentType.toString());
             if (rawJson) {
-                prepared.getAttributes().put(Context.RAW_JSON_PASSTHROUGH_ATTRIBUTE, Boolean.TRUE);
+                prepared.getAttributes().put(Context.RAW_BODY_PASSTHROUGH_ATTRIBUTE, Boolean.TRUE);
                 return chain.apply(prepared);
             }
             return parse(prepared, chain, context);

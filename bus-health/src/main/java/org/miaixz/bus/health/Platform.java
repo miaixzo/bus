@@ -25,15 +25,16 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
-import java.util.function.Function;
 import java.util.regex.Pattern;
 
+import org.miaixz.bus.core.center.function.FunctionX;
 import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.convert.Convert;
 import org.miaixz.bus.core.lang.Keys;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
+import org.miaixz.bus.core.xyz.FunctionKit;
 import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.health.builtin.hardware.HardwareAbstractionLayer;
@@ -556,28 +557,32 @@ public class Platform {
      * @param getenv   the environment lookup function
      * @return the ordered library search directories
      */
-    static List<String> nativeLibrarySearchDirectories(OS platform, Function<String, String> getenv) {
+    static List<String> nativeLibrarySearchDirectories(OS platform, FunctionX<String, String> getenv) {
         List<String> directories = new ArrayList<>();
         switch (platform) {
             case SOLARIS:
-                String path64 = getenv.apply("LD_LIBRARY_PATH_64");
-                addPathEntries(directories, path64 != null ? path64 : getenv.apply("LD_LIBRARY_PATH"));
+                String path64 = FunctionKit.applyUnwrapped(getenv, "LD_LIBRARY_PATH_64");
+                addPathEntries(
+                        directories,
+                        path64 != null ? path64 : FunctionKit.applyUnwrapped(getenv, "LD_LIBRARY_PATH"));
                 directories.addAll(Arrays.asList("/lib/64", "/usr/lib/64"));
                 break;
 
             case AIX:
-                String libpath = getenv.apply("LIBPATH");
-                addPathEntries(directories, libpath != null ? libpath : getenv.apply("LD_LIBRARY_PATH"));
+                String libpath = FunctionKit.applyUnwrapped(getenv, "LIBPATH");
+                addPathEntries(
+                        directories,
+                        libpath != null ? libpath : FunctionKit.applyUnwrapped(getenv, "LD_LIBRARY_PATH"));
                 directories.addAll(Arrays.asList("/usr/lib", "/lib"));
                 break;
 
             case OPENBSD:
-                addPathEntries(directories, getenv.apply("LD_LIBRARY_PATH"));
+                addPathEntries(directories, FunctionKit.applyUnwrapped(getenv, "LD_LIBRARY_PATH"));
                 directories.addAll(Arrays.asList("/usr/lib", "/usr/X11R6/lib", "/usr/local/lib"));
                 break;
 
             case DRAGONFLYBSD:
-                addPathEntries(directories, getenv.apply("LD_LIBRARY_PATH"));
+                addPathEntries(directories, FunctionKit.applyUnwrapped(getenv, "LD_LIBRARY_PATH"));
                 directories.addAll(Arrays.asList("/lib", "/usr/lib", "/usr/local/lib", "/usr/local/lib/compat/pkg"));
                 break;
 
@@ -623,6 +628,10 @@ public class Platform {
 
     /**
      * Returns whether a file exists in one of the supplied directories.
+     *
+     * @param fileName    library or file name to locate
+     * @param directories directories to inspect
+     * @return whether the file exists in at least one of the supplied directories
      */
     private static boolean isFilePresent(String fileName, List<String> directories) {
         for (String directory : directories) {
@@ -635,6 +644,10 @@ public class Platform {
 
     /**
      * Returns whether JNA mapped the request to an AIX archive that cannot be loaded without a member name.
+     *
+     * @param platform detected native platform
+     * @param fileName library or file name to locate
+     * @return whether the requested native library is an AIX archive requiring a member name
      */
     private static boolean isAixArchive(OS platform, String fileName) {
         return platform == OS.AIX && fileName.endsWith(".a");
@@ -642,6 +655,9 @@ public class Platform {
 
     /**
      * Adds non-empty entries from a native library path.
+     *
+     * @param directories directories to inspect
+     * @param path        search-path text whose entries are added to the directory set
      */
     private static void addPathEntries(List<String> directories, String path) {
         if (path != null) {

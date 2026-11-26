@@ -693,6 +693,10 @@ public class AnnotatedElements {
 
         /**
          * Getannotation method.
+         *
+         * @param <T>             annotation type to retrieve
+         * @param annotationClass The Class object corresponding to the annotation type.
+         * @return matching annotation, or null if this element exposes no annotation of the requested type
          */
         @Override
         public <T extends Annotation> T getAnnotation(final Class<T> annotationClass) {
@@ -737,6 +741,10 @@ public class AnnotatedElements {
 
         /**
          * Getannotation method.
+         *
+         * @param <T>             annotation type to retrieve
+         * @param annotationClass The Class object corresponding to the annotation type.
+         * @return null because this element does not expose annotations
          */
         @Override
         public <T extends Annotation> T getAnnotation(final Class<T> annotationClass) {

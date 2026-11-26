@@ -1,0 +1,96 @@
+{
+  "reflection": [
+    {
+      "type": "org.springframework.boot.WebApplicationTypeEditor"
+    },
+    {
+      "type": "org.springframework.boot.logging.LogLevelEditor"
+    },
+    {
+      "condition": {
+        "typeReached": "org.apache.logging.log4j.core.config.plugins.util.PluginRegistry"
+      },
+      "type": "org.springframework.boot.logging.log4j2.ColorConverter"
+    },
+    {
+      "condition": {
+        "typeReached": "org.apache.logging.log4j.core.config.plugins.util.PluginRegistry"
+      },
+      "type": "org.springframework.boot.logging.log4j2.CorrelationIdConverter"
+    },
+    {
+      "condition": {
+        "typeReached": "org.apache.logging.log4j.core.config.plugins.util.PluginRegistry"
+      },
+      "type": "org.springframework.boot.logging.log4j2.EnclosedInSquareBracketsConverter"
+    },
+    {
+      "condition": {
+        "typeReached": "org.apache.logging.log4j.core.config.plugins.util.PluginRegistry"
+      },
+      "type": "org.springframework.boot.logging.log4j2.ExtendedWhitespaceThrowablePatternConverter"
+    },
+    {
+      "condition": {
+        "typeReached": "org.apache.logging.log4j.core.config.plugins.util.PluginRegistry"
+      },
+      "type": "org.springframework.boot.logging.log4j2.SpringBootConfigurationFactory",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.apache.logging.log4j.util.PropertiesUtil"
+      },
+      "type": "org.springframework.boot.logging.log4j2.SpringBootPropertySource"
+    },
+    {
+      "condition": {
+        "typeReached": "org.apache.logging.log4j.core.config.plugins.util.PluginRegistry"
+      },
+      "type": "org.springframework.boot.logging.log4j2.SpringBootTriggeringPolicy"
+    },
+    {
+      "condition": {
+        "typeReached": "org.apache.logging.log4j.core.config.plugins.util.PluginRegistry"
+      },
+      "type": "org.springframework.boot.logging.log4j2.SpringEnvironmentLookup",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "condition": {
+        "typeReached": "org.apache.logging.log4j.core.config.plugins.util.PluginRegistry"
+      },
+      "type": "org.springframework.boot.logging.log4j2.SpringProfileArbiter"
+    },
+    {
+      "condition": {
+        "typeReached": "org.apache.logging.log4j.core.config.plugins.util.PluginRegistry"
+      },
+      "type": "org.springframework.boot.logging.log4j2.StructuredLogLayout"
+    },
+    {
+      "condition": {
+        "typeReached": "org.apache.logging.log4j.core.config.plugins.util.PluginRegistry"
+      },
+      "type": "org.springframework.boot.logging.log4j2.WhitespaceThrowablePatternConverter"
+    }
+  ],
+  "resources": [
+    {
+      "glob": "logback-spring.groovy"
+    },
+    {
+      "glob": "logback-spring.xml"
+    }
+  ]
+}

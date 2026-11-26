@@ -55,6 +55,12 @@ public record JdOptions(Vendor.Id vendor, Vendor.Variant variant, String clientI
     /**
      * Validates and freezes one JD application registration without resolving its secret.
      *
+     * @param vendor      exact JD platform identifier
+     * @param variant     exact default JD variant
+     * @param clientId    registered JD application key
+     * @param credential  external application-secret reference
+     * @param redirectUri exact registered callback URI
+     * @param scopes      ordered JD authorization scopes
      * @throws IllegalArgumentException if a required component, container, or scope is {@code null} or blank
      * @throws ValidateException        if routing, credential type, callback, or scopes differ from the frozen manifest
      */

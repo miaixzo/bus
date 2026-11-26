@@ -54,8 +54,10 @@ public class AsciiArtRender implements BitMatrixRender {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Renders the given {@link BitMatrix} to the specified {@link OutputStream}.
      *
+     * @param matrix The {@link BitMatrix} to render.
+     * @param out    The {@link OutputStream} to write the rendered output to.
      */
     @Override
     public void render(final BitMatrix matrix, final OutputStream out) {

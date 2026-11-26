@@ -21,8 +21,8 @@ package org.miaixz.bus.fabric.protocol.sse;
 
 import java.net.URI;
 import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 
+import org.miaixz.bus.core.center.function.ConsumerX;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.fabric.*;
@@ -54,7 +54,7 @@ import org.miaixz.bus.fabric.protocol.sse.retry.SseRetryPolicy;
  */
 record SseSpec(Context context, URI uri, Address address, Headers headers, Timeout timeout, SseRetryPolicy retryPolicy,
         ProxyPlan proxy, String lastEventId, boolean autoReconnect, BiConsumer<Integer, Headers> responseHandler,
-        GuardRule guard, Filter filter, EventObserver observer, Consumer<SseEvent> handler,
+        GuardRule guard, Filter filter, EventObserver observer, ConsumerX<SseEvent> handler,
         Listener<? super SseSession> listener) {
 
     /**

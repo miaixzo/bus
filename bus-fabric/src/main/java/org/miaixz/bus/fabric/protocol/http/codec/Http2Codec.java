@@ -568,6 +568,7 @@ public class Http2Codec implements HttpCodec {
         public boolean repeatable() {
             return false;
         }
+
     }
 
     /**
@@ -644,6 +645,7 @@ public class Http2Codec implements HttpCodec {
         public void close() throws IOException {
             delegate.close();
         }
+
     }
 
 }

@@ -296,7 +296,7 @@ public class MybatisInterceptor extends AbstractSqlHandler implements Intercepto
                 "Mapper",
                 "MyBatis query completed: method={}, resultType={}",
                 ms.getId(),
-                result == null ? "null" : result.getClass().getName());
+                result == null ? Normal.NULL : result.getClass().getName());
         return result;
     }
 

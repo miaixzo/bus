@@ -34,6 +34,9 @@ public record NetworkSnapshot(List<InterfaceSnapshot> interfaces, List<Connectio
 
     /**
      * Defensively copies and orders the snapshot.
+     *
+     * @param interfaces  interface counters
+     * @param connections connection aggregates
      */
     public NetworkSnapshot {
         if (interfaces == null || connections == null) {
@@ -64,6 +67,16 @@ public record NetworkSnapshot(List<InterfaceSnapshot> interfaces, List<Connectio
 
         /**
          * Validates interface identity and counters.
+         *
+         * @param name                      interface name
+         * @param bytesReceived             cumulative received bytes
+         * @param bytesTransmitted          cumulative transmitted bytes
+         * @param packetsReceived           cumulative received packets
+         * @param packetsTransmitted        cumulative transmitted packets
+         * @param packetsDroppedReceived    cumulative receive drops
+         * @param packetsDroppedTransmitted cumulative transmit drops
+         * @param errorsReceived            cumulative receive errors
+         * @param errorsTransmitted         cumulative transmit errors
          */
         public InterfaceSnapshot {
             if (name == null || name.isBlank()) {
@@ -78,6 +91,7 @@ public record NetworkSnapshot(List<InterfaceSnapshot> interfaces, List<Connectio
                 }
             }
         }
+
     }
 
     /**
@@ -112,12 +126,17 @@ public record NetworkSnapshot(List<InterfaceSnapshot> interfaces, List<Connectio
 
         /**
          * Validates normalized connection dimensions.
+         *
+         * @param transport normalized transport
+         * @param state     normalized connection state
+         * @param count     matching connection count
          */
         public ConnectionSnapshot {
             if (!TRANSPORTS.contains(transport) || !STATES.contains(state) || count < 0) {
                 throw new IllegalArgumentException("Invalid network connection snapshot");
             }
         }
+
     }
 
 }

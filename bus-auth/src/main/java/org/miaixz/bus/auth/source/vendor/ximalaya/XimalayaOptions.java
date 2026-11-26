@@ -66,6 +66,15 @@ public record XimalayaOptions(Vendor.Id vendor, Vendor.Variant variant, String c
     /**
      * Validates and freezes one Ximalaya registration without resolving its secret.
      *
+     * @param vendor       exact Ximalaya platform identifier
+     * @param variant      exact {@code default} variant
+     * @param clientId     Ximalaya application key
+     * @param credential   external application-secret reference
+     * @param redirectUri  exact callback registered for the application
+     * @param scopes       empty list because the frozen authorization request has no scope parameter
+     * @param deviceId     actual device identifier registered for this Source
+     * @param clientOsType official client type: {@code 1}, {@code 2}, or {@code 3}
+     * @param packageId    package name or bundle identifier sent as {@code pack_id}
      * @throws IllegalArgumentException if a required component or container is {@code null} or blank
      * @throws ValidateException        if routing, credential type, callback, scope, or a selector violates the frozen
      *                                  manifest

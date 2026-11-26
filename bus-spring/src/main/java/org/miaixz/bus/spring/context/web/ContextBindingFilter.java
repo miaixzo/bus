@@ -168,6 +168,7 @@ public final class ContextBindingFilter implements Filter {
     private static void cleanup(ServletRequest request) {
         request.removeAttribute(STATE_ATTRIBUTE);
         request.removeAttribute(ASYNC_LISTENER_ATTRIBUTE);
+        RequestContext.clearFormAccess(request);
     }
 
     /**
@@ -201,6 +202,9 @@ public final class ContextBindingFilter implements Filter {
         request.setAttribute(FILTERED_ATTRIBUTE, Boolean.TRUE);
         boolean completed = false;
         try {
+            if (httpRequest.getDispatcherType() == DispatcherType.REQUEST) {
+                this.requestContext.prepareFormAccess(httpRequest);
+            }
             ContextState state = resolveState(httpRequest);
             try (ContextScope ignored = ContextTransfer.install(state)) {
                 try {
@@ -235,7 +239,8 @@ public final class ContextBindingFilter implements Filter {
         Http.Auth.Credential tokenCredential = Http.Auth.bearerCredential(headers);
         Http.Auth.Credential apiKeyCredential = Http.Auth.apiKeyCredential(headers);
         ContextState state = this.resolver.resolve(ID.objectId(), tokenCredential, apiKeyCredential);
-        if (state.getAuthorize() == null && this.metadataLimit > 0) {
+        // Parameter access would consume a form whose original bytes are owned by the endpoint.
+        if (state.getAuthorize() == null && this.metadataLimit > 0 && !RequestContext.preservesFormBody(request)) {
             Map<String, Object> metadata = new CaseInsensitiveMap<>();
             metadata.putAll(this.requestContext.getParameters(request));
             metadata.putAll(this.requestContext.getJsonBody(request));

@@ -78,7 +78,7 @@ public class VortexProperties {
     private Assets assets = new Assets();
 
     /**
-     * Initializes Vortex properties with the documented transport and asset-refresh defaults.
+     * Initializes Vortex properties with the documented transport and asset refresh defaults.
      */
     public VortexProperties() {
         // No initialization required.
@@ -125,8 +125,7 @@ public class VortexProperties {
                 || performance.getOutboundMaxIdleSeconds() <= 0 || performance.getOutboundMaxLifeMinutes() <= 0
                 || performance.getOutboundEvictSeconds() <= 0 || performance.getMaxProducerCacheSize() <= 0
                 || performance.getCacheSize() <= 0 || performance.getCacheExpireMs() <= 0
-                || performance.getSyncIntervalSeconds() <= 0 || performance.getStartupDelaySeconds() < 0
-                || performance.getTimestampToleranceMinutes() <= 0) {
+                || performance.getSyncIntervalSeconds() <= 0 || performance.getStartupDelaySeconds() < 0) {
             throw new IllegalArgumentException("bus.vortex performance limits and timeouts are invalid");
         }
         long logicalBufferedBytes = Math.addExact(
@@ -140,9 +139,8 @@ public class VortexProperties {
         }
         if (assets == null || assets.getIncrementalRefreshIntervalSeconds() <= 0
                 || assets.getFullCalibrationIntervalSeconds() <= 0 || assets.getModifiedOverlapMs() <= 0
-                || assets.getRefreshStartupDelaySeconds() < 0 || assets.getSlugMethod() == null
-                || assets.getSlugMethod().isBlank()) {
-            throw new IllegalArgumentException("bus.vortex.assets refresh limits and slug-method are invalid");
+                || assets.getRefreshStartupDelaySeconds() < 0) {
+            throw new IllegalArgumentException("bus.vortex.assets refresh limits are invalid");
         }
     }
 
@@ -186,9 +184,10 @@ public class VortexProperties {
         private int refreshStartupDelaySeconds = 10;
 
         /**
-         * Registry method used to resolve public slug forwarding assets.
+         * Registry method used to resolve public slug forwarding assets. Blank disables registry-backed slug
+         * forwarding.
          */
-        private String slugMethod = Args.VORTEX_SLUG_GET;
+        private String slugMethod;
 
         /**
          * Initializes asset refresh settings with refresh enabled and the default interval.

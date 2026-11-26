@@ -34,12 +34,12 @@ module bus.pay {
     requires bus.cache;
     requires bus.core;
     requires bus.crypto;
+    requires bus.errors;
     requires bus.extra;
     requires bus.fabric;
     requires bus.logger;
 
     requires static lombok;
-    requires static org.bouncycastle.provider;
 
     exports org.miaixz.bus.pay;
     exports org.miaixz.bus.pay.cache;

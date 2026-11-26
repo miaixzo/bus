@@ -28,10 +28,11 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
-import java.util.function.Supplier;
 import java.util.function.ToDoubleFunction;
 
 import org.miaixz.bus.core.center.function.ConsumerX;
+import org.miaixz.bus.core.center.function.SupplierX;
+import org.miaixz.bus.core.xyz.FunctionKit;
 import org.miaixz.bus.metrics.Builder;
 import org.miaixz.bus.metrics.Provider;
 import org.miaixz.bus.metrics.guard.CardinalityGuard;
@@ -274,6 +275,9 @@ public class MicrometerProvider implements Provider {
             }
             return Optional.of(new ScrapeSupport() {
 
+                /**
+                 * {@inheritDoc}
+                 */
                 @Override
                 public String scrape() {
                     try {
@@ -283,10 +287,14 @@ public class MicrometerProvider implements Provider {
                     }
                 }
 
+                /**
+                 * {@inheritDoc}
+                 */
                 @Override
                 public String contentType() {
                     return Builder.PROMETHEUS_CONTENT_TYPE;
                 }
+
             });
         } catch (NoSuchMethodException exception) {
             return Optional.empty();
@@ -305,6 +313,9 @@ public class MicrometerProvider implements Provider {
         NativeTimer mirror = new NativeTimer(name, tags);
         return new Timer() {
 
+            /**
+             * {@inheritDoc}
+             */
             @Override
             public Sample start() {
                 long start = System.nanoTime();
@@ -315,6 +326,9 @@ public class MicrometerProvider implements Provider {
                 };
             }
 
+            /**
+             * {@inheritDoc}
+             */
             @Override
             public void record(long amount, TimeUnit unit) {
                 if (amount < 0) {
@@ -325,31 +339,49 @@ public class MicrometerProvider implements Provider {
                 mirror.record(amount, unit);
             }
 
+            /**
+             * {@inheritDoc}
+             */
             @Override
             public long count() {
                 return mirror.count();
             }
 
+            /**
+             * {@inheritDoc}
+             */
             @Override
             public double totalTime(TimeUnit unit) {
                 return mirror.totalTime(unit);
             }
 
+            /**
+             * {@inheritDoc}
+             */
             @Override
             public double max(TimeUnit unit) {
                 return mirror.max(unit);
             }
 
+            /**
+             * {@inheritDoc}
+             */
             @Override
             public double percentile(double percentile, TimeUnit unit) {
                 return mirror.percentile(percentile, unit);
             }
 
+            /**
+             * {@inheritDoc}
+             */
             @Override
             public double percentile(double percentile, TimeUnit unit, Window window) {
                 return mirror.percentile(percentile, unit, window);
             }
 
+            /**
+             * {@inheritDoc}
+             */
             @Override
             public Timer onViolation(
                     double percentile,
@@ -361,10 +393,14 @@ public class MicrometerProvider implements Provider {
                 return this;
             }
 
+            /**
+             * {@inheritDoc}
+             */
             @Override
             public TimerSnapshot snapshot() {
                 return mirror.snapshot();
             }
+
         };
     }
 
@@ -380,6 +416,9 @@ public class MicrometerProvider implements Provider {
         NativeHistogram mirror = new NativeHistogram(name, tags);
         return new Histogram() {
 
+            /**
+             * {@inheritDoc}
+             */
             @Override
             public void record(double value) {
                 if (!Double.isFinite(value)) {
@@ -389,33 +428,52 @@ public class MicrometerProvider implements Provider {
                 mirror.record(value);
             }
 
+            /**
+             * {@inheritDoc}
+             */
             @Override
             public long count() {
                 return mirror.count();
             }
 
+            /**
+             * {@inheritDoc}
+             */
             @Override
             public double totalAmount() {
                 return mirror.totalAmount();
             }
 
+            /**
+             * {@inheritDoc}
+             */
             @Override
             public double max() {
                 return mirror.max();
             }
 
+            /**
+             * {@inheritDoc}
+             */
             @Override
             public double percentile(double percentile) {
                 return mirror.percentile(percentile);
             }
 
+            /**
+             * {@inheritDoc}
+             */
             @Override
             public TimerSnapshot snapshot() {
                 return mirror.snapshot();
             }
+
         };
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Counter counter(String name, Tag... tags) {
         Tag[] guarded = cardinalityGuard.enforce(name, tags);
@@ -423,6 +481,9 @@ public class MicrometerProvider implements Provider {
         return counter(MetricDescriptor.counter(name, attributes), attributes);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Counter counter(MetricDescriptor descriptor, Attributes attributes) {
         validate(descriptor, InstrumentKind.COUNTER, NumberKind.LONG);
@@ -434,11 +495,17 @@ public class MicrometerProvider implements Provider {
             ownedMeters.add(meter);
             Counter counter = new Counter() {
 
+                /**
+                 * {@inheritDoc}
+                 */
                 @Override
                 public void increment() {
                     meter.increment();
                 }
 
+                /**
+                 * {@inheritDoc}
+                 */
                 @Override
                 public void increment(long amount) {
                     if (amount < 0) {
@@ -447,15 +514,22 @@ public class MicrometerProvider implements Provider {
                     meter.increment(amount);
                 }
 
+                /**
+                 * {@inheritDoc}
+                 */
                 @Override
                 public long count() {
                     return (long) meter.count();
                 }
+
             };
             return new Created<>(counter, meter);
         });
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Meter meter(String name, Tag... tags) {
         ensureOpen();
@@ -469,6 +543,9 @@ public class MicrometerProvider implements Provider {
         });
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public RatePair ratePair(String name, Tag... tags) {
         ensureOpen();
@@ -476,6 +553,9 @@ public class MicrometerProvider implements Provider {
         return ratePairs.computeIfAbsent(key(name, guarded), ignored -> RatePair.create(this, name, guarded));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public <T> Gauge gauge(String name, T stateObj, ToDoubleFunction<T> fn, Tag... tags) {
         Tag[] guarded = cardinalityGuard.enforce(name, tags);
@@ -483,6 +563,9 @@ public class MicrometerProvider implements Provider {
         return gauge(MetricDescriptor.gauge(name, attributes), attributes, stateObj, fn);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public <T> Gauge gauge(MetricDescriptor descriptor, Attributes attributes, T stateObj, ToDoubleFunction<T> fn) {
         validate(descriptor, InstrumentKind.GAUGE, NumberKind.DOUBLE);
@@ -500,6 +583,9 @@ public class MicrometerProvider implements Provider {
         });
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Timer timer(String name, Tag... tags) {
         Tag[] guarded = cardinalityGuard.enforce(name, tags);
@@ -507,6 +593,9 @@ public class MicrometerProvider implements Provider {
         return timer(MetricDescriptor.timer(name, attributes), attributes);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Timer timer(MetricDescriptor descriptor, Attributes attributes) {
         validate(descriptor, InstrumentKind.TIMER, NumberKind.DOUBLE);
@@ -521,6 +610,9 @@ public class MicrometerProvider implements Provider {
         });
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Histogram histogram(String name, Tag... tags) {
         Tag[] guarded = cardinalityGuard.enforce(name, tags);
@@ -528,6 +620,9 @@ public class MicrometerProvider implements Provider {
         return histogram(MetricDescriptor.histogram(name, attributes), attributes);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Histogram histogram(MetricDescriptor descriptor, Attributes attributes) {
         validate(descriptor, InstrumentKind.HISTOGRAM, NumberKind.DOUBLE);
@@ -542,6 +637,9 @@ public class MicrometerProvider implements Provider {
         });
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public LlmTimer llmTimer(String name, Tag... tags) {
         ensureOpen();
@@ -549,6 +647,9 @@ public class MicrometerProvider implements Provider {
         return llmTimers.computeIfAbsent(key(name, guarded), ignored -> new NativeLlmTimer(name, guarded, this));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public MetricRegistration registerObservable(MetricDescriptor descriptor, ObservableCallback callback) {
         ensureOpen();
@@ -568,51 +669,81 @@ public class MicrometerProvider implements Provider {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public MetricDiagnostics diagnostics() {
         return diagnostics;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public ProviderCapabilities capabilities() {
         return capabilities;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public SloTracker sloTracker() {
         return sloTracker;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Iterable<Counter> counters() {
         return counters.values().stream().map(ActiveMetric::instrument).toList();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Iterable<Meter> meters() {
         return List.copyOf(meters.values());
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Iterable<Gauge> gauges() {
         return List.copyOf(gauges.values());
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Iterable<Timer> timers() {
         return timers.values().stream().map(ActiveMetric::instrument).toList();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Iterable<Histogram> histograms() {
         return histograms.values().stream().map(ActiveMetric::instrument).toList();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Iterable<LlmTimer> llmTimers() {
         return List.copyOf(llmTimers.values());
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void close() {
         if (!closed.compareAndSet(false, true)) {
@@ -651,12 +782,12 @@ public class MicrometerProvider implements Provider {
             MetricDescriptor descriptor,
             Attributes attributes,
             ConcurrentHashMap<String, ActiveMetric<T>> values,
-            Supplier<Created<T>> creator) {
+            SupplierX<Created<T>> creator) {
         ensureOpen();
         return values.computeIfAbsent(activeKey(descriptor, attributes), ignored -> {
             MetricFamilyRegistry.Lease lease = familyRegistry.acquire(descriptor);
             try {
-                Created<T> created = creator.get();
+                Created<T> created = FunctionKit.getUnwrapped(creator);
                 return new ActiveMetric<>(created.instrument(), created.meter(), lease);
             } catch (RuntimeException exception) {
                 lease.close();
@@ -720,11 +851,17 @@ public class MicrometerProvider implements Provider {
             this.counter = counter;
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public void increment() {
             increment(1);
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public void increment(long amount) {
             if (amount < 0) {
@@ -734,26 +871,41 @@ public class MicrometerProvider implements Provider {
             rates.increment(amount);
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public long count() {
             return rates.count();
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public double oneMinuteRate() {
             return rates.oneMinuteRate();
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public double fiveMinuteRate() {
             return rates.fiveMinuteRate();
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public double fifteenMinuteRate() {
             return rates.fifteenMinuteRate();
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public double meanRate() {
             return rates.meanRate();
@@ -765,6 +917,7 @@ public class MicrometerProvider implements Provider {
         private void tick() {
             rates.tick();
         }
+
     }
 
     /**
@@ -814,6 +967,9 @@ public class MicrometerProvider implements Provider {
             this.lease = lease;
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public double value() {
             return meter.value();
@@ -825,6 +981,7 @@ public class MicrometerProvider implements Provider {
         private void close() {
             lease.close();
         }
+
     }
 
     /**
@@ -943,6 +1100,9 @@ public class MicrometerProvider implements Provider {
             return measurement;
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public void close() {
             if (registrationClosed.compareAndSet(false, true)) {
@@ -954,6 +1114,7 @@ public class MicrometerProvider implements Provider {
                 lease.close();
             }
         }
+
     }
 
     /**
@@ -985,6 +1146,9 @@ public class MicrometerProvider implements Provider {
             this.allowed = allowed;
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public void recordLong(long value, Attributes attributes) {
             if (descriptor.numberKind() != NumberKind.LONG) {
@@ -997,6 +1161,9 @@ public class MicrometerProvider implements Provider {
             record(attributes, value);
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public void recordDouble(double value, Attributes attributes) {
             if (descriptor.numberKind() != NumberKind.DOUBLE || !Double.isFinite(value)) {
@@ -1026,6 +1193,7 @@ public class MicrometerProvider implements Provider {
                 diagnostics.collectionError("micrometer", "invalid_point");
             }
         }
+
     }
 
 }

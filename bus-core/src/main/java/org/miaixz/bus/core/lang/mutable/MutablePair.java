@@ -70,6 +70,8 @@ public class MutablePair<L, R> extends Pair<L, R> implements Mutable<MutablePair
 
     /**
      * Set method.
+     *
+     * @param value replacement value
      */
     @Override
     public void set(final MutablePair<L, R> value) {

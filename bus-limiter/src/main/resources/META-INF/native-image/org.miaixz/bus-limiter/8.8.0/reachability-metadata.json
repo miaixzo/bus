@@ -180,6 +180,53 @@
       ]
     },
     {
+      "type": "org.miaixz.bus.limiter.Registry",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "register",
+          "parameterTypes": [
+            "org.miaixz.bus.limiter.magic.annotation.Downgrade",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "register",
+          "parameterTypes": [
+            "org.miaixz.bus.limiter.magic.annotation.Hotspot",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "register",
+          "parameterTypes": [
+            "org.miaixz.bus.limiter.magic.annotation.Limiting",
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.limiter.Supplier",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "intercept",
+          "parameterTypes": [
+            "java.lang.Object",
+            "java.lang.reflect.Method",
+            "java.lang.Object[]"
+          ]
+        }
+      ]
+    },
+    {
       "type": "org.miaixz.bus.limiter.magic.FlowGrade",
       "fields": [
         {
@@ -430,53 +477,6 @@
         },
         {
           "name": "invoke",
-          "parameterTypes": [
-            "java.lang.Object",
-            "java.lang.reflect.Method",
-            "java.lang.Object[]"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.limiter.Registry",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "register",
-          "parameterTypes": [
-            "org.miaixz.bus.limiter.magic.annotation.Downgrade",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "register",
-          "parameterTypes": [
-            "org.miaixz.bus.limiter.magic.annotation.Hotspot",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "register",
-          "parameterTypes": [
-            "org.miaixz.bus.limiter.magic.annotation.Limiting",
-            "java.lang.String"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.limiter.Supplier",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "intercept",
           "parameterTypes": [
             "java.lang.Object",
             "java.lang.reflect.Method",

@@ -21,6 +21,7 @@ package org.miaixz.bus.mapper.dialect;
 
 import java.util.EnumSet;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.mapper.Charter.Behavior;
 import org.miaixz.bus.mapper.feature.paging.Pageable;
 import org.miaixz.bus.mapper.feature.schema.ColumnSnapshot;
@@ -65,6 +66,40 @@ public class H2 extends AbstractDialect {
     @Override
     public EnumSet<Behavior> types() {
         return schemaTypes(getUpsertType());
+    }
+
+    /**
+     * Reports the native column default removal supported by this dialect.
+     *
+     * @return true when an ALTER COLUMN DROP DEFAULT statement can be generated
+     */
+    @Override
+    protected boolean supportsStandardColumnDefault() {
+        return true;
+    }
+
+    /**
+     * Restores a named check constraint from a single catalogue definition in this dialect.
+     *
+     * @param table      physical table receiving the check
+     * @param name       actual constraint name
+     * @param definition complete CHECK clause from the database catalogue
+     * @return native DDL for the named constraint
+     */
+    @Override
+    public String restoreCheck(TableMeta table, String name, String definition) {
+        return standardRestoreCheck(table, name, definition);
+    }
+
+    /**
+     * Creates an H2 schema if it does not already exist.
+     *
+     * @param schema physical destination schema
+     * @return native schema creation SQL
+     */
+    @Override
+    public String createSchema(String schema) {
+        return CREATE_SCHEMA_IF_ABSENT + Symbol.SPACE + quotePhysicalIdentifier(schema, schemaQuote());
     }
 
     /**

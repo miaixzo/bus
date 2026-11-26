@@ -54,6 +54,145 @@ import org.miaixz.bus.mapper.runtime.MapperOptions;
 public class IdentifierValidator {
 
     /**
+     * Immutable JDBC naming rules owned by one metadata read, never by the shared entity cache.
+     */
+    public static final class MetadataRules {
+
+        /**
+         * Quote delimiters reused from the validator parser; reserved-word validation is not performed by these lookup
+         * rules.
+         */
+        private final Policy policy;
+        /**
+         * Storage folding flags for unquoted and quoted names, plus fully case-insensitive physical-name comparison.
+         * These flags belong to this metadata read and must not be cached on shared entity mappings.
+         */
+        private final boolean upper, lower, quotedUpper, quotedLower, insensitive;
+
+        /**
+         * Captures the current driver's quote and case rules without retaining its connection.
+         *
+         * @param metadata the metadata for the active lookup connection
+         * @throws SQLException when quote or case capabilities cannot be read
+         */
+        private MetadataRules(DatabaseMetaData metadata) throws SQLException {
+            List<Quote> quotes = new ArrayList<>();
+            String quote = metadata.getIdentifierQuoteString();
+            if (quote != null && !quote.isBlank()) {
+                quotes.add(new Quote(quote, quote, quote + quote));
+            }
+            if (metadata.getDatabaseProductName().toLowerCase(java.util.Locale.ROOT).contains("sql server")) {
+                quotes.add(new Quote(Symbol.BRACKET_LEFT, Symbol.BRACKET_RIGHT, "]]"));
+            }
+            policy = new Policy(metadata.getDatabaseProductName(), Set.of(), List.copyOf(quotes));
+            upper = metadata.storesUpperCaseIdentifiers();
+            lower = metadata.storesLowerCaseIdentifiers();
+            quotedUpper = metadata.storesUpperCaseQuotedIdentifiers();
+            quotedLower = metadata.storesLowerCaseQuotedIdentifiers();
+            insensitive = !upper && !lower && !metadata.supportsMixedCaseIdentifiers()
+                    && !metadata.supportsMixedCaseQuotedIdentifiers();
+        }
+
+        /**
+         * Splits a qualified mapping name while preserving delimiters and dots inside quoted components.
+         *
+         * @param name the optionally qualified mapped name
+         * @return ordered components retaining their delimiters; a singleton null component for a null input
+         */
+        public List<String> parts(String name) {
+            return IdentifierValidator.split(policy, name);
+        }
+
+        /**
+         * Converts one mapped component into its physical comparison key. Quoted content is unescaped and follows
+         * quoted-name storage rules; unquoted content follows ordinary storage folding. This does not render SQL.
+         *
+         * @param mapped one mapped component, optionally quoted
+         * @return the physical comparison key, or an empty string for null
+         * @throws IllegalArgumentException when a supported delimiter is unclosed, empty, or incorrectly escaped
+         */
+        public String key(String mapped) {
+            if (mapped == null)
+                return Normal.EMPTY;
+            String value = mapped.trim();
+            boolean quoted = false;
+            for (Quote quote : policy.quotes()) {
+                if (value.startsWith(quote.start()) || value.endsWith(quote.end())) {
+                    if (!value.startsWith(quote.start()) || !value.endsWith(quote.end())
+                            || value.length() <= quote.start().length() + quote.end().length()) {
+                        throw new IllegalArgumentException("Unclosed or empty identifier: " + mapped);
+                    }
+                    String content = value.substring(quote.start().length(), value.length() - quote.end().length());
+                    if (!IdentifierValidator.escaped(content, quote)) {
+                        throw new IllegalArgumentException("Invalid identifier escaping: " + mapped);
+                    }
+                    value = content.replace(quote.escapedEnd(), quote.end());
+                    quoted = true;
+                    break;
+                }
+            }
+            return (quoted ? quotedUpper : upper) ? value.toUpperCase(java.util.Locale.ROOT)
+                    : (quoted ? quotedLower : lower) || insensitive ? value.toLowerCase(java.util.Locale.ROOT) : value;
+        }
+
+        /**
+         * Builds a key for an already physical JDBC name without applying mapping-side case folding again. Only
+         * databases that report fully insensitive identifiers receive case-insensitive comparison.
+         *
+         * @param actual the physical component returned by JDBC
+         * @return the comparison key, or an empty string for null
+         */
+        public String actualKey(String actual) {
+            return actual == null ? Normal.EMPTY : insensitive ? actual.toLowerCase(java.util.Locale.ROOT) : actual;
+        }
+
+        /**
+         * Compares a physical JDBC component against one mapped component using their respective rules.
+         *
+         * @param actual the physical name returned by JDBC
+         * @param mapped the mapped name, possibly quoted
+         * @return true when both non-null names resolve to the same physical comparison key
+         */
+        public boolean matches(String actual, String mapped) {
+            return actual != null && mapped != null && actualKey(actual).equals(key(mapped));
+        }
+
+    }
+
+    /**
+     * Captures immutable lookup rules for the active metadata connection. The returned value contains no connection
+     * handle and must not be used as a substitute for reserved-word validation.
+     *
+     * @param metadata the active JDBC metadata
+     * @return immutable naming rules for this metadata read
+     * @throws SQLException when the driver cannot supply the required rules
+     */
+    public static MetadataRules metadataRules(DatabaseMetaData metadata) throws SQLException {
+        return new MetadataRules(metadata);
+    }
+
+    /**
+     * Removes one complete outer pair of double quotes, backticks, or brackets and unescapes its closing delimiter.
+     * Internal quotes and qualified-name separators are retained; this helper does not validate identifier syntax.
+     *
+     * @param value the optionally delimited component
+     * @return the unwrapped component, the trimmed unquoted input, or null when input is null
+     */
+    public static String unquoteIdentifier(String value) {
+        if (value == null)
+            return null;
+        String v = value.trim();
+        if (v.length() >= 2) {
+            String start = v.substring(0, 1), end = v.substring(v.length() - 1);
+            if ((start.equals(Symbol.DOUBLE_QUOTES) || start.equals(Symbol.BACKTICK)) && start.equals(end)
+                    || start.equals(Symbol.BRACKET_LEFT) && end.equals(Symbol.BRACKET_RIGHT)) {
+                return v.substring(1, v.length() - 1).replace(end + end, end);
+            }
+        }
+        return v;
+    }
+
+    /**
      * Portable unquoted SQL identifier syntax.
      */
     private static final Pattern IDENTIFIER_PATTERN = Pattern.compile("[A-Za-z_][A-Za-z0-9_]*");
@@ -763,7 +902,7 @@ public class IdentifierValidator {
      * @param quote   the quote rule defining escaped closing sequences
      * @return {@code true} if every closing quote inside the content is escaped
      */
-    private boolean escaped(String content, Quote quote) {
+    private static boolean escaped(String content, Quote quote) {
         int index = 0;
         while (index < content.length()) {
             int end = content.indexOf(quote.end(), index);
@@ -785,7 +924,7 @@ public class IdentifierValidator {
      * @param identifier the qualified identifier to split
      * @return the qualified parts retaining quotes, or a singleton null entry for a null identifier
      */
-    private List<String> split(Policy policy, String identifier) {
+    private static List<String> split(Policy policy, String identifier) {
         if (identifier == null) {
             return Collections.singletonList(null);
         }
@@ -828,7 +967,7 @@ public class IdentifierValidator {
      * @param index      the character offset at which to check for an opening quote
      * @return the first matching quote rule, or {@code null} when none matches
      */
-    private Quote opening(Policy policy, String identifier, int index) {
+    private static Quote opening(Policy policy, String identifier, int index) {
         return policy.quotes().stream().filter(quote -> identifier.startsWith(quote.start(), index)).findFirst()
                 .orElse(null);
     }

@@ -748,6 +748,8 @@ public class FigmaSourceAdapter implements VendorAdapter {
         /**
          * Validates the mandatory success callback values.
          *
+         * @param code  authorization code
+         * @param state browser correlation value
          * @throws IllegalArgumentException if code or state is blank
          */
         private CallbackWire {
@@ -770,6 +772,9 @@ public class FigmaSourceAdapter implements VendorAdapter {
         /**
          * Validates one private Figma token success value.
          *
+         * @param userId      durable Figma user identifier returned with the token
+         * @param accessToken sensitive access token
+         * @param expiresIn   positive access-token lifetime in seconds
          * @throws IllegalArgumentException if an identifier or token is blank
          * @throws ValidateException        if the lifetime is not positive
          */

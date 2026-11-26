@@ -344,6 +344,7 @@ public class StringJoiner implements Appendable, Serializable {
     /**
      * Append method.
      *
+     * @param csq The character sequence to append.
      * @return the StringJoiner value
      */
     @Override
@@ -354,6 +355,9 @@ public class StringJoiner implements Appendable, Serializable {
     /**
      * Append method.
      *
+     * @param csq          The character sequence from which a subsequence will be appended.
+     * @param startInclude inclusive first character index
+     * @param endExclude   exclusive final character index
      * @return the StringJoiner value
      */
     @Override
@@ -391,6 +395,7 @@ public class StringJoiner implements Appendable, Serializable {
     /**
      * Append method.
      *
+     * @param c The character to append.
      * @return the StringJoiner value
      */
     @Override

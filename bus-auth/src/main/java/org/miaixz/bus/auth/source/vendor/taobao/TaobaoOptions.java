@@ -49,6 +49,12 @@ public record TaobaoOptions(Vendor.Id vendor, Vendor.Variant variant, String cli
     /**
      * Validates and freezes one Taobao registration without resolving its secret.
      *
+     * @param vendor      exact Taobao platform identifier
+     * @param variant     exact default Taobao variant
+     * @param clientId    public client identifier issued by Taobao
+     * @param credential  external client-secret reference
+     * @param redirectUri exact callback URI registered for the application
+     * @param scopes      empty list because the historical Taobao flow does not send a scope parameter
      * @throws IllegalArgumentException if a required component or container is {@code null} or blank
      * @throws ValidateException        if routing, credential, callback, or scope state is invalid
      */

@@ -215,11 +215,17 @@ public class MetricsConfiguration {
      * @param status         host integration status
      * @param missingClasses required classes that could not be linked
      * @param reason         stable diagnostic explanation
+     *
+     * @author Kimi Liu
      */
     static record HostMetricsAvailability(Status status, List<String> missingClasses, String reason) {
 
         /**
          * Defensively copies the result.
+         *
+         * @param status         host integration status
+         * @param missingClasses required classes that could not be linked
+         * @param reason         stable diagnostic explanation
          */
         HostMetricsAvailability {
             missingClasses = List.copyOf(missingClasses == null ? List.of() : missingClasses);
@@ -277,6 +283,8 @@ public class MetricsConfiguration {
 
         /**
          * Host integration state.
+         *
+         * @author Kimi Liu
          */
         enum Status {
             /**
@@ -291,26 +299,36 @@ public class MetricsConfiguration {
              * Host collection was requested but required classes are absent.
              */
             FAILED
+
         }
+
     }
 
     /**
      * Always contributes the lazy native candidate.
+     *
+     * @author Kimi Liu
      */
     @Configuration(proxyBeanMethods = false)
     static class NativeBackendConfiguration {
 
         /**
          * Creates the native candidate without constructing the provider yet.
+         *
+         * @param scope cardinality scope used to bound emitted metric labels
+         * @return lazy metrics backend candidate including its availability state
          */
         @Bean
         Candidate nativeMetricsProviderCandidate(CardinalityGuard.Scope scope) {
             return Candidate.available(Type.NATIVE, false, () -> new NativeProvider(scope));
         }
+
     }
 
     /**
      * Isolates Micrometer linkage in one nested configuration class.
+     *
+     * @author Kimi Liu
      */
     @Configuration(proxyBeanMethods = false)
     @ConditionalOnClass(name = MICROMETER_REGISTRY_TYPE)
@@ -318,6 +336,10 @@ public class MetricsConfiguration {
 
         /**
          * Describes Micrometer availability without constructing an adapter.
+         *
+         * @param applicationContext current application context used to discover an available metrics backend
+         * @param scope              cardinality scope used to bound emitted metric labels
+         * @return lazy metrics backend candidate including its availability state
          */
         @Bean
         Candidate micrometerMetricsProviderCandidate(
@@ -335,10 +357,13 @@ public class MetricsConfiguration {
                     true,
                     () -> MicrometerProvider.fromRegistry(applicationContext.getBean(beanNames[0]), scope));
         }
+
     }
 
     /**
      * Isolates OpenTelemetry API linkage and keeps SDK ownership external.
+     *
+     * @author Kimi Liu
      */
     @Configuration(proxyBeanMethods = false)
     @ConditionalOnClass(name = OPEN_TELEMETRY_TYPE)
@@ -346,6 +371,10 @@ public class MetricsConfiguration {
 
         /**
          * Describes OpenTelemetry availability using the API interface only.
+         *
+         * @param applicationContext current application context used to discover an available metrics backend
+         * @param scope              cardinality scope used to bound emitted metric labels
+         * @return lazy metrics backend candidate including its availability state
          */
         @Bean
         Candidate openTelemetryMetricsProviderCandidate(
@@ -363,10 +392,13 @@ public class MetricsConfiguration {
                     true,
                     () -> OpenTelemetryProvider.fromOpenTelemetry(applicationContext.getBean(beanNames[0]), scope));
         }
+
     }
 
     /**
      * Isolates Prometheus core linkage and registry ownership.
+     *
+     * @author Kimi Liu
      */
     @Configuration(proxyBeanMethods = false)
     @ConditionalOnClass(name = PROMETHEUS_REGISTRY_TYPE)
@@ -374,6 +406,11 @@ public class MetricsConfiguration {
 
         /**
          * Describes a private, reused, or ambiguous Prometheus registry.
+         *
+         * @param applicationContext current application context used to discover an available metrics backend
+         * @param properties         validated metrics configuration for the requested component
+         * @param scope              cardinality scope used to bound emitted metric labels
+         * @return lazy metrics backend candidate including its availability state
          */
         @Bean
         Candidate prometheusMetricsProviderCandidate(
@@ -402,10 +439,13 @@ public class MetricsConfiguration {
                     "no PrometheusRegistry bean was provided; select bus.metrics.provider=prometheus explicitly "
                             + "to use a private registry");
         }
+
     }
 
     /**
      * Independently binds JVM metrics.
+     *
+     * @author Kimi Liu
      */
     @Configuration(proxyBeanMethods = false)
     @ConditionalOnProperty(prefix = GeniusBuilder.METRICS, name = "jvm", havingValue = "true", matchIfMissing = true)
@@ -413,6 +453,9 @@ public class MetricsConfiguration {
 
         /**
          * Creates and binds one closeable JVM binder after the provider lease exists.
+         *
+         * @param lease lifecycle lease of the selected metrics provider
+         * @return configured JVM metrics collector
          */
         @Bean(destroyMethod = "close")
         JvmMetrics jvmMetrics(ProviderLease lease) {
@@ -420,10 +463,13 @@ public class MetricsConfiguration {
             binder.bind(lease.provider());
             return binder;
         }
+
     }
 
     /**
      * Isolates bus-health and JNA linkage from the root configuration.
+     *
+     * @author Kimi Liu
      */
     @Configuration(proxyBeanMethods = false)
     @ConditionalOnClass(name = { "org.miaixz.bus.health.Collector", "com.sun.jna.Native",
@@ -455,6 +501,11 @@ public class MetricsConfiguration {
 
         /**
          * Creates host metrics only after the dependency decision and provider lease are available.
+         *
+         * @param properties   validated metrics configuration for the requested component
+         * @param availability resolved availability of the host metrics collector and its required classes
+         * @param lease        lifecycle lease of the selected metrics provider
+         * @return configured host health metrics collector
          */
         @Bean(destroyMethod = "close")
         @ConditionalOnExpression("${bus.metrics.host.enabled:true}")
@@ -485,10 +536,13 @@ public class MetricsConfiguration {
                 return disabled;
             }
         }
+
     }
 
     /**
      * Independently exposes the servlet scrape endpoint.
+     *
+     * @author Kimi Liu
      */
     @Configuration(proxyBeanMethods = false)
     @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)
@@ -496,6 +550,10 @@ public class MetricsConfiguration {
 
         /**
          * Creates an endpoint only when explicitly enabled and scrape capability is present.
+         *
+         * @param properties validated metrics configuration for the requested component
+         * @param lease      lifecycle lease of the selected metrics provider
+         * @return metrics endpoint backed by the configured registry
          */
         @Bean
         @ConditionalOnProperty(prefix = GeniusBuilder.METRICS + ".endpoint", name = "enabled", havingValue = "true")
@@ -505,10 +563,13 @@ public class MetricsConfiguration {
             }
             return new MetricsEndpoint(properties, lease.provider());
         }
+
     }
 
     /**
      * Independently starts and closes the Cortex snapshot exporter.
+     *
+     * @author Kimi Liu
      */
     @Configuration(proxyBeanMethods = false)
     @ConditionalOnClass(name = "org.miaixz.bus.cache.CacheX")
@@ -516,6 +577,11 @@ public class MetricsConfiguration {
 
         /**
          * Creates Cortex export only when explicitly enabled and one cache store exists.
+         *
+         * @param properties validated metrics configuration for the requested component
+         * @param lease      lifecycle lease of the selected metrics provider
+         * @param stores     resource rows or identifiers selected for this operation
+         * @return Cortex metrics exporter for the configured backend
          */
         @Bean(destroyMethod = "close")
         @ConditionalOnProperty(prefix = GeniusBuilder.METRICS + ".cortex", name = "enabled", havingValue = "true")
@@ -534,6 +600,7 @@ public class MetricsConfiguration {
             exporter.start();
             return exporter;
         }
+
     }
 
 }

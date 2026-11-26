@@ -44,6 +44,9 @@ public interface SecretLoader extends Loader<SecretLoader.Request, SecretLoader.
 
         /**
          * Validates one complete secret-loading request.
+         *
+         * @param source    exact Source Blueprint entry requesting the secret
+         * @param reference exact project credential reference
          */
         public Request {
             Assert.notNull(source, "Secret source must not be null");

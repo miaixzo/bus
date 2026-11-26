@@ -154,251 +154,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.tempus.crontab.CronCrontab",
-      "fields": [
-        {
-          "name": "id"
-        },
-        {
-          "name": "pattern"
-        }
-      ],
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "org.miaixz.bus.tempus.pattern.CronPattern",
-            "org.miaixz.bus.tempus.crontab.Crontab"
-          ]
-        },
-        {
-          "name": "execute",
-          "parameterTypes": []
-        },
-        {
-          "name": "getId",
-          "parameterTypes": []
-        },
-        {
-          "name": "getPattern",
-          "parameterTypes": []
-        },
-        {
-          "name": "getRaw",
-          "parameterTypes": []
-        },
-        {
-          "name": "setPattern",
-          "parameterTypes": [
-            "org.miaixz.bus.tempus.pattern.CronPattern"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.tempus.crontab.CrontabFactory",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "of",
-          "parameterTypes": [
-            "org.miaixz.bus.tempus.Configure"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.tempus.crontab.InvokeCrontab",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "execute",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.tempus.crontab.MatchCrontab",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "int"
-          ]
-        },
-        {
-          "name": "execute",
-          "parameterTypes": [
-            "org.miaixz.bus.tempus.Scheduler",
-            "long"
-          ]
-        },
-        {
-          "name": "executeTaskIfMatchInternal",
-          "parameterTypes": [
-            "org.miaixz.bus.tempus.Scheduler",
-            "long"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.tempus.crontab.RunnableCrontab",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.Runnable"
-          ]
-        },
-        {
-          "name": "execute",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.tempus.crontab.TimerCrontab",
-      "fields": [
-        {
-          "name": "delayMs"
-        },
-        {
-          "name": "task"
-        }
-      ],
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.Runnable",
-            "long"
-          ]
-        },
-        {
-          "name": "getDelayMs",
-          "parameterTypes": []
-        },
-        {
-          "name": "getTask",
-          "parameterTypes": []
-        },
-        {
-          "name": "toString",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.tempus.crontab.TriggerCrontab",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "int"
-          ]
-        },
-        {
-          "name": "add",
-          "parameterTypes": [
-            "java.lang.String",
-            "org.miaixz.bus.tempus.pattern.CronPattern",
-            "org.miaixz.bus.tempus.crontab.Crontab"
-          ]
-        },
-        {
-          "name": "execute",
-          "parameterTypes": [
-            "org.miaixz.bus.tempus.Scheduler",
-            "long"
-          ]
-        },
-        {
-          "name": "executeTaskBeforeInternal",
-          "parameterTypes": [
-            "org.miaixz.bus.tempus.Scheduler",
-            "long"
-          ]
-        },
-        {
-          "name": "getCronTask",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "remove",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "updatePattern",
-          "parameterTypes": [
-            "java.lang.String",
-            "org.miaixz.bus.tempus.pattern.CronPattern"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.tempus.crontab.TriggerCrontab$TriggerTime",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "long"
-          ]
-        },
-        {
-          "name": "compareTo",
-          "parameterTypes": [
-            "org.miaixz.bus.tempus.crontab.TriggerCrontab$TriggerTime"
-          ]
-        },
-        {
-          "name": "equals",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "hashCode",
-          "parameterTypes": []
-        },
-        {
-          "name": "id",
-          "parameterTypes": []
-        },
-        {
-          "name": "timestamp",
-          "parameterTypes": []
-        },
-        {
-          "name": "toString",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
       "type": "org.miaixz.bus.tempus.CronTimer",
       "methods": [
         {
@@ -731,6 +486,577 @@
       ]
     },
     {
+      "type": "org.miaixz.bus.tempus.Manager",
+      "fields": [
+        {
+          "name": "executors"
+        },
+        {
+          "name": "launchers"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.tempus.Scheduler"
+          ]
+        },
+        {
+          "name": "getExecutors",
+          "parameterTypes": []
+        },
+        {
+          "name": "getLaunchers",
+          "parameterTypes": []
+        },
+        {
+          "name": "notifyExecutorCompleted",
+          "parameterTypes": [
+            "org.miaixz.bus.tempus.Executor"
+          ]
+        },
+        {
+          "name": "notifyLauncherCompleted",
+          "parameterTypes": [
+            "org.miaixz.bus.tempus.Launcher"
+          ]
+        },
+        {
+          "name": "spawnExecutor",
+          "parameterTypes": [
+            "org.miaixz.bus.tempus.crontab.CronCrontab"
+          ]
+        },
+        {
+          "name": "spawnLauncher",
+          "parameterTypes": [
+            "long"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.tempus.Repertoire",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "add",
+          "parameterTypes": [
+            "java.lang.String",
+            "org.miaixz.bus.tempus.pattern.CronPattern",
+            "org.miaixz.bus.tempus.crontab.Crontab"
+          ]
+        },
+        {
+          "name": "getIds",
+          "parameterTypes": []
+        },
+        {
+          "name": "getPattern",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "getPattern",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getPatterns",
+          "parameterTypes": []
+        },
+        {
+          "name": "getTask",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "getTask",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getTasks",
+          "parameterTypes": []
+        },
+        {
+          "name": "isEmpty",
+          "parameterTypes": []
+        },
+        {
+          "name": "remove",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "size",
+          "parameterTypes": []
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "updatePattern",
+          "parameterTypes": [
+            "java.lang.String",
+            "org.miaixz.bus.tempus.pattern.CronPattern"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.tempus.Scheduler",
+      "fields": [
+        {
+          "name": "repertoire"
+        },
+        {
+          "name": "started"
+        },
+        {
+          "name": "threadExecutor"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.tempus.Configure"
+          ]
+        },
+        {
+          "name": "addListener",
+          "parameterTypes": [
+            "org.miaixz.bus.tempus.listener.TaskListener"
+          ]
+        },
+        {
+          "name": "checkStarted",
+          "parameterTypes": []
+        },
+        {
+          "name": "clear",
+          "parameterTypes": []
+        },
+        {
+          "name": "deschedule",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "descheduleWithStatus",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "execute",
+          "parameterTypes": [
+            "long"
+          ]
+        },
+        {
+          "name": "getPattern",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getRepertoire",
+          "parameterTypes": []
+        },
+        {
+          "name": "getTask",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "isEmpty",
+          "parameterTypes": []
+        },
+        {
+          "name": "isStarted",
+          "parameterTypes": []
+        },
+        {
+          "name": "removeListener",
+          "parameterTypes": [
+            "org.miaixz.bus.tempus.listener.TaskListener"
+          ]
+        },
+        {
+          "name": "schedule",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.Runnable"
+          ]
+        },
+        {
+          "name": "schedule",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "org.miaixz.bus.tempus.crontab.Crontab"
+          ]
+        },
+        {
+          "name": "schedule",
+          "parameterTypes": [
+            "java.lang.String",
+            "org.miaixz.bus.tempus.crontab.Crontab"
+          ]
+        },
+        {
+          "name": "schedule",
+          "parameterTypes": [
+            "java.lang.String",
+            "org.miaixz.bus.tempus.pattern.CronPattern",
+            "org.miaixz.bus.tempus.crontab.Crontab"
+          ]
+        },
+        {
+          "name": "schedule",
+          "parameterTypes": [
+            "org.miaixz.bus.setting.Setting"
+          ]
+        },
+        {
+          "name": "setMatchSecond",
+          "parameterTypes": [
+            "boolean"
+          ]
+        },
+        {
+          "name": "setThreadExecutor",
+          "parameterTypes": [
+            "java.util.concurrent.ExecutorService"
+          ]
+        },
+        {
+          "name": "size",
+          "parameterTypes": []
+        },
+        {
+          "name": "start",
+          "parameterTypes": []
+        },
+        {
+          "name": "start",
+          "parameterTypes": [
+            "boolean"
+          ]
+        },
+        {
+          "name": "stop",
+          "parameterTypes": []
+        },
+        {
+          "name": "stop",
+          "parameterTypes": [
+            "boolean"
+          ]
+        },
+        {
+          "name": "updatePattern",
+          "parameterTypes": [
+            "java.lang.String",
+            "org.miaixz.bus.tempus.pattern.CronPattern"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.tempus.Supervisor",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.tempus.Scheduler"
+          ]
+        },
+        {
+          "name": "notifyLauncherCompleted",
+          "parameterTypes": [
+            "org.miaixz.bus.tempus.Launcher"
+          ]
+        },
+        {
+          "name": "spawnLauncher",
+          "parameterTypes": [
+            "long"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.tempus.crontab.CronCrontab",
+      "fields": [
+        {
+          "name": "id"
+        },
+        {
+          "name": "pattern"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "org.miaixz.bus.tempus.pattern.CronPattern",
+            "org.miaixz.bus.tempus.crontab.Crontab"
+          ]
+        },
+        {
+          "name": "execute",
+          "parameterTypes": []
+        },
+        {
+          "name": "getId",
+          "parameterTypes": []
+        },
+        {
+          "name": "getPattern",
+          "parameterTypes": []
+        },
+        {
+          "name": "getRaw",
+          "parameterTypes": []
+        },
+        {
+          "name": "setPattern",
+          "parameterTypes": [
+            "org.miaixz.bus.tempus.pattern.CronPattern"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.tempus.crontab.CrontabFactory",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "of",
+          "parameterTypes": [
+            "org.miaixz.bus.tempus.Configure"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.tempus.crontab.InvokeCrontab",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "execute",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.tempus.crontab.MatchCrontab",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "execute",
+          "parameterTypes": [
+            "org.miaixz.bus.tempus.Scheduler",
+            "long"
+          ]
+        },
+        {
+          "name": "executeTaskIfMatchInternal",
+          "parameterTypes": [
+            "org.miaixz.bus.tempus.Scheduler",
+            "long"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.tempus.crontab.RunnableCrontab",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.Runnable"
+          ]
+        },
+        {
+          "name": "execute",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.tempus.crontab.TimerCrontab",
+      "fields": [
+        {
+          "name": "delayMs"
+        },
+        {
+          "name": "task"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.Runnable",
+            "long"
+          ]
+        },
+        {
+          "name": "getDelayMs",
+          "parameterTypes": []
+        },
+        {
+          "name": "getTask",
+          "parameterTypes": []
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.tempus.crontab.TriggerCrontab",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "add",
+          "parameterTypes": [
+            "java.lang.String",
+            "org.miaixz.bus.tempus.pattern.CronPattern",
+            "org.miaixz.bus.tempus.crontab.Crontab"
+          ]
+        },
+        {
+          "name": "execute",
+          "parameterTypes": [
+            "org.miaixz.bus.tempus.Scheduler",
+            "long"
+          ]
+        },
+        {
+          "name": "executeTaskBeforeInternal",
+          "parameterTypes": [
+            "org.miaixz.bus.tempus.Scheduler",
+            "long"
+          ]
+        },
+        {
+          "name": "getCronTask",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "remove",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "updatePattern",
+          "parameterTypes": [
+            "java.lang.String",
+            "org.miaixz.bus.tempus.pattern.CronPattern"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.tempus.crontab.TriggerCrontab$TriggerTime",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "long"
+          ]
+        },
+        {
+          "name": "compareTo",
+          "parameterTypes": [
+            "org.miaixz.bus.tempus.crontab.TriggerCrontab$TriggerTime"
+          ]
+        },
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "id",
+          "parameterTypes": []
+        },
+        {
+          "name": "timestamp",
+          "parameterTypes": []
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
       "type": "org.miaixz.bus.tempus.listener.SimpleTaskListener",
       "methods": [
         {
@@ -794,57 +1120,6 @@
           "name": "removeListener",
           "parameterTypes": [
             "org.miaixz.bus.tempus.listener.TaskListener"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.tempus.Manager",
-      "fields": [
-        {
-          "name": "executors"
-        },
-        {
-          "name": "launchers"
-        }
-      ],
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "org.miaixz.bus.tempus.Scheduler"
-          ]
-        },
-        {
-          "name": "getExecutors",
-          "parameterTypes": []
-        },
-        {
-          "name": "getLaunchers",
-          "parameterTypes": []
-        },
-        {
-          "name": "notifyExecutorCompleted",
-          "parameterTypes": [
-            "org.miaixz.bus.tempus.Executor"
-          ]
-        },
-        {
-          "name": "notifyLauncherCompleted",
-          "parameterTypes": [
-            "org.miaixz.bus.tempus.Launcher"
-          ]
-        },
-        {
-          "name": "spawnExecutor",
-          "parameterTypes": [
-            "org.miaixz.bus.tempus.crontab.CronCrontab"
-          ]
-        },
-        {
-          "name": "spawnLauncher",
-          "parameterTypes": [
-            "long"
           ]
         }
       ]
@@ -1036,6 +1311,87 @@
             "org.miaixz.bus.tempus.pattern.Part",
             "int[]"
           ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.tempus.pattern.Part",
+      "fields": [
+        {
+          "name": "calendarField"
+        },
+        {
+          "name": "DAY_OF_MONTH"
+        },
+        {
+          "name": "DAY_OF_WEEK"
+        },
+        {
+          "name": "HOUR"
+        },
+        {
+          "name": "max"
+        },
+        {
+          "name": "min"
+        },
+        {
+          "name": "MINUTE"
+        },
+        {
+          "name": "MONTH"
+        },
+        {
+          "name": "SECOND"
+        },
+        {
+          "name": "YEAR"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "int",
+            "int",
+            "int",
+            "int"
+          ]
+        },
+        {
+          "name": "checkValue",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "getCalendarField",
+          "parameterTypes": []
+        },
+        {
+          "name": "getMax",
+          "parameterTypes": []
+        },
+        {
+          "name": "getMin",
+          "parameterTypes": []
+        },
+        {
+          "name": "of",
+          "parameterTypes": [
+            "int"
+          ]
+        },
+        {
+          "name": "valueOf",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "values",
+          "parameterTypes": []
         }
       ]
     },
@@ -1359,362 +1715,6 @@
           "name": "parseSingle",
           "parameterTypes": [
             "java.lang.String"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.tempus.pattern.Part",
-      "fields": [
-        {
-          "name": "calendarField"
-        },
-        {
-          "name": "DAY_OF_MONTH"
-        },
-        {
-          "name": "DAY_OF_WEEK"
-        },
-        {
-          "name": "HOUR"
-        },
-        {
-          "name": "max"
-        },
-        {
-          "name": "min"
-        },
-        {
-          "name": "MINUTE"
-        },
-        {
-          "name": "MONTH"
-        },
-        {
-          "name": "SECOND"
-        },
-        {
-          "name": "YEAR"
-        }
-      ],
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "int",
-            "int",
-            "int",
-            "int"
-          ]
-        },
-        {
-          "name": "checkValue",
-          "parameterTypes": [
-            "int"
-          ]
-        },
-        {
-          "name": "getCalendarField",
-          "parameterTypes": []
-        },
-        {
-          "name": "getMax",
-          "parameterTypes": []
-        },
-        {
-          "name": "getMin",
-          "parameterTypes": []
-        },
-        {
-          "name": "of",
-          "parameterTypes": [
-            "int"
-          ]
-        },
-        {
-          "name": "valueOf",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "values",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.tempus.Repertoire",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "int"
-          ]
-        },
-        {
-          "name": "add",
-          "parameterTypes": [
-            "java.lang.String",
-            "org.miaixz.bus.tempus.pattern.CronPattern",
-            "org.miaixz.bus.tempus.crontab.Crontab"
-          ]
-        },
-        {
-          "name": "getIds",
-          "parameterTypes": []
-        },
-        {
-          "name": "getPattern",
-          "parameterTypes": [
-            "int"
-          ]
-        },
-        {
-          "name": "getPattern",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "getPatterns",
-          "parameterTypes": []
-        },
-        {
-          "name": "getTask",
-          "parameterTypes": [
-            "int"
-          ]
-        },
-        {
-          "name": "getTask",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "getTasks",
-          "parameterTypes": []
-        },
-        {
-          "name": "isEmpty",
-          "parameterTypes": []
-        },
-        {
-          "name": "remove",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "size",
-          "parameterTypes": []
-        },
-        {
-          "name": "toString",
-          "parameterTypes": []
-        },
-        {
-          "name": "updatePattern",
-          "parameterTypes": [
-            "java.lang.String",
-            "org.miaixz.bus.tempus.pattern.CronPattern"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.tempus.Scheduler",
-      "fields": [
-        {
-          "name": "repertoire"
-        },
-        {
-          "name": "started"
-        },
-        {
-          "name": "threadExecutor"
-        }
-      ],
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "org.miaixz.bus.tempus.Configure"
-          ]
-        },
-        {
-          "name": "addListener",
-          "parameterTypes": [
-            "org.miaixz.bus.tempus.listener.TaskListener"
-          ]
-        },
-        {
-          "name": "checkStarted",
-          "parameterTypes": []
-        },
-        {
-          "name": "clear",
-          "parameterTypes": []
-        },
-        {
-          "name": "deschedule",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "descheduleWithStatus",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "execute",
-          "parameterTypes": [
-            "long"
-          ]
-        },
-        {
-          "name": "getPattern",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "getRepertoire",
-          "parameterTypes": []
-        },
-        {
-          "name": "getTask",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "isEmpty",
-          "parameterTypes": []
-        },
-        {
-          "name": "isStarted",
-          "parameterTypes": []
-        },
-        {
-          "name": "removeListener",
-          "parameterTypes": [
-            "org.miaixz.bus.tempus.listener.TaskListener"
-          ]
-        },
-        {
-          "name": "schedule",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.Runnable"
-          ]
-        },
-        {
-          "name": "schedule",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String",
-            "org.miaixz.bus.tempus.crontab.Crontab"
-          ]
-        },
-        {
-          "name": "schedule",
-          "parameterTypes": [
-            "java.lang.String",
-            "org.miaixz.bus.tempus.crontab.Crontab"
-          ]
-        },
-        {
-          "name": "schedule",
-          "parameterTypes": [
-            "java.lang.String",
-            "org.miaixz.bus.tempus.pattern.CronPattern",
-            "org.miaixz.bus.tempus.crontab.Crontab"
-          ]
-        },
-        {
-          "name": "schedule",
-          "parameterTypes": [
-            "org.miaixz.bus.setting.Setting"
-          ]
-        },
-        {
-          "name": "setMatchSecond",
-          "parameterTypes": [
-            "boolean"
-          ]
-        },
-        {
-          "name": "setThreadExecutor",
-          "parameterTypes": [
-            "java.util.concurrent.ExecutorService"
-          ]
-        },
-        {
-          "name": "size",
-          "parameterTypes": []
-        },
-        {
-          "name": "start",
-          "parameterTypes": []
-        },
-        {
-          "name": "start",
-          "parameterTypes": [
-            "boolean"
-          ]
-        },
-        {
-          "name": "stop",
-          "parameterTypes": []
-        },
-        {
-          "name": "stop",
-          "parameterTypes": [
-            "boolean"
-          ]
-        },
-        {
-          "name": "updatePattern",
-          "parameterTypes": [
-            "java.lang.String",
-            "org.miaixz.bus.tempus.pattern.CronPattern"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.tempus.Supervisor",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "org.miaixz.bus.tempus.Scheduler"
-          ]
-        },
-        {
-          "name": "notifyLauncherCompleted",
-          "parameterTypes": [
-            "org.miaixz.bus.tempus.Launcher"
-          ]
-        },
-        {
-          "name": "spawnLauncher",
-          "parameterTypes": [
-            "long"
           ]
         }
       ]
@@ -2141,85 +2141,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.tempus.temporal.workflow.publisher.WorkflowPublisherManager",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "org.miaixz.bus.tempus.temporal.worker.WorkflowConnector",
-            "org.miaixz.bus.tempus.temporal.workflow.WorkflowOptionsFactory",
-            "org.miaixz.bus.tempus.temporal.workflow.publisher.WorkflowPublisherBinding",
-            "org.miaixz.bus.tempus.temporal.workflow.WorkflowBindingOptions"
-          ]
-        },
-        {
-          "name": "completeOptions",
-          "parameterTypes": [
-            "org.miaixz.bus.tempus.temporal.workflow.WorkflowBindingOptions",
-            "org.miaixz.bus.tempus.temporal.workflow.publisher.WorkflowPublisherBinding"
-          ]
-        },
-        {
-          "name": "doPublish",
-          "parameterTypes": [
-            "java.lang.Object[]"
-          ]
-        },
-        {
-          "name": "extractGrpcStatusCode",
-          "parameterTypes": [
-            "java.lang.Throwable"
-          ]
-        },
-        {
-          "name": "extractString",
-          "parameterTypes": [
-            "java.lang.Object",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "isConnectionError",
-          "parameterTypes": [
-            "java.lang.Throwable"
-          ]
-        },
-        {
-          "name": "publish",
-          "parameterTypes": [
-            "java.lang.Object[]"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.tempus.temporal.workflow.subscriber.WorkflowSubscriberManager",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "org.miaixz.bus.tempus.temporal.workflow.subscriber.WorkflowSubscriberBinding",
-            "org.miaixz.bus.tempus.temporal.worker.WorkflowTransport",
-            "org.miaixz.bus.tempus.temporal.workflow.WorkflowOptionsFactory",
-            "org.miaixz.bus.tempus.temporal.workflow.WorkflowBindingOptions"
-          ]
-        },
-        {
-          "name": "shutdown",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.tempus.temporal.workflow.subscriber.WorkflowSubscriberRuntime",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
       "type": "org.miaixz.bus.tempus.temporal.workflow.WorkflowBindingOptions",
       "fields": [
         {
@@ -2590,6 +2511,9 @@
         },
         {
           "name": "namespace"
+        },
+        {
+          "name": "proxyEnabled"
         }
       ],
       "methods": [
@@ -2625,6 +2549,16 @@
           "name": "setNamespace",
           "parameterTypes": [
             "java.lang.String"
+          ]
+        },
+        {
+          "name": "isProxyEnabled",
+          "parameterTypes": []
+        },
+        {
+          "name": "setProxyEnabled",
+          "parameterTypes": [
+            "boolean"
           ]
         }
       ]
@@ -3034,6 +2968,85 @@
           "parameterTypes": [
             "java.lang.String"
           ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.tempus.temporal.workflow.publisher.WorkflowPublisherManager",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.tempus.temporal.worker.WorkflowConnector",
+            "org.miaixz.bus.tempus.temporal.workflow.WorkflowOptionsFactory",
+            "org.miaixz.bus.tempus.temporal.workflow.publisher.WorkflowPublisherBinding",
+            "org.miaixz.bus.tempus.temporal.workflow.WorkflowBindingOptions"
+          ]
+        },
+        {
+          "name": "completeOptions",
+          "parameterTypes": [
+            "org.miaixz.bus.tempus.temporal.workflow.WorkflowBindingOptions",
+            "org.miaixz.bus.tempus.temporal.workflow.publisher.WorkflowPublisherBinding"
+          ]
+        },
+        {
+          "name": "doPublish",
+          "parameterTypes": [
+            "java.lang.Object[]"
+          ]
+        },
+        {
+          "name": "extractGrpcStatusCode",
+          "parameterTypes": [
+            "java.lang.Throwable"
+          ]
+        },
+        {
+          "name": "extractString",
+          "parameterTypes": [
+            "java.lang.Object",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "isConnectionError",
+          "parameterTypes": [
+            "java.lang.Throwable"
+          ]
+        },
+        {
+          "name": "publish",
+          "parameterTypes": [
+            "java.lang.Object[]"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.tempus.temporal.workflow.subscriber.WorkflowSubscriberManager",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.tempus.temporal.workflow.subscriber.WorkflowSubscriberBinding",
+            "org.miaixz.bus.tempus.temporal.worker.WorkflowTransport",
+            "org.miaixz.bus.tempus.temporal.workflow.WorkflowOptionsFactory",
+            "org.miaixz.bus.tempus.temporal.workflow.WorkflowBindingOptions"
+          ]
+        },
+        {
+          "name": "shutdown",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.tempus.temporal.workflow.subscriber.WorkflowSubscriberRuntime",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
         }
       ]
     },

@@ -35,6 +35,8 @@ public record DeviceAuthorizationRequest(String clientId, Optional<Scope> scope)
     /**
      * Creates and validates an immutable device authorization request.
      *
+     * @param clientId client identifier issued to the device client
+     * @param scope    optional authorization scope requested for the device flow
      * @throws IllegalArgumentException if the client identifier is {@code null} or empty, or scope is {@code null}
      * @throws ValidateException        if the client identifier contains a character outside RFC 6749 {@code VSCHAR}
      */

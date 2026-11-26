@@ -611,15 +611,6 @@ public class Holder {
     }
 
     /**
-     * Gets the maximum allowed time difference (in minutes) between the client timestamp and the server time.
-     *
-     * @return The timestamp tolerance in minutes
-     */
-    public static int getTimestampToleranceMinutes() {
-        return get().getTimestampToleranceMinutes();
-    }
-
-    /**
      * Gets the trusted origin list for MCP Streamable HTTP ingress requests.
      *
      * @return configured trusted origins, or an empty list for same-host only validation

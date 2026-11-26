@@ -4156,6 +4156,7 @@ public class Core {
             minLoc = new Point();
             maxLoc = new Point();
         }
+
     }
 
     /**

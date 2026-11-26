@@ -9,14 +9,15 @@ Cortex provides service registration and discovery, and application-qualified de
 | Registry | Service definitions, route associations, instance discovery and health |
 | Item / ItemEditor / ItemService | Current configuration, sensitive protection, management reads and editing concurrency |
 | Reference | Application associations, aliases, overlays and pins to published Revisions |
-| Rollout / Approval | Publication selection, frozen approval material and workflow state |
+| Rollout | Publication selection, frozen plans and the publication lifecycle |
+| Flow | Flow policy validation and stage decisions bound to a frozen plan |
 | Revision / Release | Immutable snapshots of successful publications, release records and publication transactions |
 | Delivery / Watch | Published reads, instance-session checks, subscriptions and delivery evidence |
 | Starter | Conditional assembly, dependency wiring and lifecycle binding |
 
-Saving an Item creates neither a version nor an edit history. Reference `revision_id` pins a successfully published snapshot; Item `edition` controls editing concurrency. Rollout drafts belong to the approval workflow.
+Saving an Item creates neither a version nor an edit history. Reference `revision_id` pins a successfully published snapshot; Item `edition` controls editing concurrency. Rollout drafts belong to the publication workflow.
 
-`ItemCodec`, `ReferenceCodec` and `Plan` parse configuration content, relationship options and approval material respectively. `ReleaseCodec` encodes, decodes and verifies published graphs using protocol `services-release-v3`.
+`ItemCodec`, `ReferenceCodec` and `Plan` parse configuration content, relationship options and frozen publication material respectively. `ReleaseCodec` encodes, decodes and verifies published graphs using protocol `services-release-v3`.
 
 ## Spring Boot setup
 
@@ -61,20 +62,20 @@ All properties below are under `bus.cortex`. Existing `cache` options select the
 | `bridge.url` | Empty | Required for `push+pull` mode |
 | `bridge.max-retries` | `3` | Positive bridge retry limit |
 | `bridge.source` | Empty | Bridge source marker |
-| `guard.enabled` | `true` | Enable optional Cortex access checks and TokenGuard pre-validation |
-| `guard.token` | TokenGuardConfig defaults | Token transport pre-validation options |
 | `audit.enabled` | `false` | Assemble the audit logger |
 | `release.enabled` | `false` | Assemble the read-only release registry when ReleaseStore exists |
 
 ## Host wiring and transactions
 
-Starter assembles setting services conditionally from host-provided Stores. Current-state operations use `ItemStore`, `ReferenceStore`, `SettingStore` and related services. Approval and publication use `RolloutStore`, `ApprovalStore`, `PublicationStore`, `ReleaseStore` and `RevisionStore`. Runtime delivery also requires `WatchStore` and `SettingProvider`. Each Bean's `ConditionalOnBean` declares its exact dependency set.
+Starter assembles setting services conditionally from host-provided Stores. Current-state operations use `ItemStore`, `ReferenceStore`, `SettingStore` and related services. The publication flow uses `RolloutStore`, `FlowStore`, `PublicationStore`, `ReleaseStore` and `RevisionStore`. Runtime delivery also requires `WatchStore` and `SettingProvider`. Each Bean's `ConditionalOnBean` declares its exact dependency set.
 
-`SettingProvider` supplies invocation coordinates and current process data without authenticating callers. Host implementations enforce tenant isolation, process-session consistency, CAS and atomic commits. Approval policy validation belongs to `ApprovalStore`. `SettingStore` commits current definitions and relationships together; `RolloutStore.submit` atomically validates the frozen read-set; `PublicationStore` commits successful snapshots and publication state.
+`SettingProvider` supplies invocation coordinates and current process data without authenticating callers. Host implementations enforce tenant isolation, process-session consistency, CAS and atomic commits. `FlowStore` validates flow policies and records stage decisions atomically with rollout state updates. `SettingStore` commits current definitions and relationships together; `RolloutStore.submit` atomically validates the frozen read-set; `PublicationStore` commits successful snapshots and publication state.
 
-Set `bus.cortex.guard.enabled=false` when an upstream gateway handles access policy. This bypasses optional guard checks for both registry and setting services, including host-supplied guards; it never bypasses tenant matching, edition checks, approval state, frozen checksums, receipt idempotency or secret protection. With guards enabled, host `GuardStrategy` implementations supply access decisions; Cortex does not authenticate accounts or credentials. Reads need no audit actor or request; idempotent mutations require a request, and approval evidence also requires an actor.
+Service identity is configured under `bus.auth.guard`. Auth supplies service token signing, verification, and key rotation. Register custom `ServiceTokenProvider` or `ServiceKeyProvider` beans using the interfaces in `org.miaixz.bus.auth.guard.token`. Cortex extracts asset identity metadata from the registry for Auth to interpret.
 
-The default `NoOpSecretCodec` rejects sensitive content. Hosts must provide real protection; there is no silent plaintext fallback. TokenGuard only pre-validates credential presence and transport; authentication, permission and license checks remain host responsibilities.
+Applications own resource and operation permissions. Tenant matching, edition checks, flow state, frozen checksums, receipt idempotency, and secret protection are part of service execution. Idempotent mutations require a request, and recording a flow stage decision also requires an actor.
+
+The default `NoOpSecretCodec` rejects sensitive content. Hosts must provide a codec that protects sensitive values.
 
 Registry Beans can be injected directly. The static Cortex facade requires a bound Runtime. Starter creates registry-only Runtime when Curator is absent; configuration facade access then fails explicitly. RuntimeHandle releases the binding when the application context closes.
 
@@ -149,8 +150,8 @@ Dynamic attributes follow existing protected storage, masking and immutable publ
 ## Publication flow
 
 1. Prepare current edits with ItemService and save definitions with References through SettingService.
-2. Create publication selection with RolloutService; submission validates the current read-set and freezes approval material.
-3. Record approval decisions with ApprovalService; submitted material cannot be edited arbitrarily.
+2. Create publication selection with RolloutService; submission validates the current read-set and freezes the publication plan.
+3. Record each flow stage decision through `FlowService.decide`. The host policy determines which stages must finish before the rollout can be published.
 4. Publish approved material with ReleasePublisher; only successful publication creates Revision / Release data.
 5. Curator reads stable or matching gray published content, without consulting editable Items or live References.
 
@@ -162,14 +163,19 @@ All Watch event types share a tenant-scoped sequence, preserving monotonic mixed
 
 ## Packages
 
+Import `Flow`, `FlowService` and `FlowStore` from `org.miaixz.bus.cortex.setting.flow`. Implement `FlowStore.decide` in the host and use `flowService` for name-based bean injection.
+
 ```text
 org.miaixz.bus.cortex
 ├── Cortex / Registry / Curator / Nature / Assets / Instance
 ├── registry/    api, mcp, prompt, routing, queries and batch operations
-├── setting/     item, curator, reference, rollout, approval, revision, delivery, watch, secret
+├── setting/     item, curator, reference, rollout, flow, revision, delivery, watch, secret
 ├── release/     Release, ReleaseCodec, ReleasePublisher, publication stores and read-only registry
 ├── bridge/      Vortex integration
-├── guard/       authorization pre-validation
+├── guard/       service identity configuration and coordination
+│   ├── inbound/  ingress policies, verification and decisions
+│   ├── outbound/ next-hop policies, signing and token caching
+│   └── token/    key and token providers, signing and verification
 ├── health/      health probers
 ├── builtin/     key generation, selectors and batch models
 └── magic/       identity, event, watch and runtime infrastructure

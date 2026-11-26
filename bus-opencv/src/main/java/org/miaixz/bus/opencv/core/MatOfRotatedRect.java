@@ -169,4 +169,5 @@ public class MatOfRotatedRect extends Mat {
         RotatedRect[] ar = toArray();
         return Arrays.asList(ar);
     }
+
 }

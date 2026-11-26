@@ -59,6 +59,20 @@ public record UserInfoResponse(Subject subject, Optional<Name> name, Optional<Ad
     /**
      * Validates and freezes the standard UserInfo claim groups.
      *
+     * @param subject    required subject identifier
+     * @param name       optional person-name claims
+     * @param address    optional structured postal address
+     * @param phone      optional telephone claims
+     * @param email      optional email claims
+     * @param profile    optional profile page URL
+     * @param picture    optional profile picture URL
+     * @param website    optional website URL
+     * @param gender     optional gender claim
+     * @param birthdate  optional birthdate claim
+     * @param zoneInfo   optional time-zone database name
+     * @param locale     optional BCP 47 locale tag
+     * @param updatedAt  optional profile update NumericDate
+     * @param extensions additional claims not represented by standard components
      * @throws IllegalArgumentException if a component container is {@code null}
      * @throws ValidateException        if a URL or NumericDate component is invalid
      */
@@ -264,6 +278,7 @@ public record UserInfoResponse(Subject subject, Optional<Name> name, Optional<Ad
         /**
          * Validates JWT StringOrURI syntax.
          *
+         * @param value subject StringOrURI
          * @throws IllegalArgumentException if value is {@code null} or blank
          * @throws ValidateException        if a colon-containing value is not a valid URI
          */
@@ -297,6 +312,13 @@ public record UserInfoResponse(Subject subject, Optional<Name> name, Optional<Ad
 
         /**
          * Validates and normalizes person-name claims.
+         *
+         * @param formatted         full display name
+         * @param givenName         given name
+         * @param familyName        family name
+         * @param middleName        middle name
+         * @param nickname          casual name
+         * @param preferredUsername preferred username
          */
         public Name {
             formatted = text(formatted, "OpenID Connect UserInfo formatted name");
@@ -325,6 +347,13 @@ public record UserInfoResponse(Subject subject, Optional<Name> name, Optional<Ad
 
         /**
          * Validates and normalizes structured address claims.
+         *
+         * @param formatted     complete mailing address
+         * @param streetAddress street address
+         * @param locality      city or locality
+         * @param region        state, province, or region
+         * @param postalCode    postal code
+         * @param country       country name
          */
         public Address {
             formatted = text(formatted, "OpenID Connect UserInfo formatted address");
@@ -348,6 +377,9 @@ public record UserInfoResponse(Subject subject, Optional<Name> name, Optional<Ad
 
         /**
          * Validates and normalizes telephone claims.
+         *
+         * @param number   telephone number
+         * @param verified whether control of the number was verified
          */
         public Phone {
             number = text(number, "OpenID Connect UserInfo telephone number");
@@ -368,6 +400,9 @@ public record UserInfoResponse(Subject subject, Optional<Name> name, Optional<Ad
 
         /**
          * Validates and normalizes email claims.
+         *
+         * @param address  email address
+         * @param verified whether control of the address was verified
          */
         public Email {
             address = text(address, "OpenID Connect UserInfo email address");

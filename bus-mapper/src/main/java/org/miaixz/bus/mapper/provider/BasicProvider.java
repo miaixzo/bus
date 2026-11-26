@@ -592,10 +592,12 @@ public abstract class BasicProvider {
             String on = entity.idColumns().stream()
                     .map(column -> "target." + column.column() + " = " + column.variables())
                     .collect(Collectors.joining(" AND "));
-            String columns = selective ? buildDynamicColumnListSingle(entity) : "(" + insertColumnList(entity) + ")";
-            String values = selective ? buildDynamicValuesListSingle(entity) : "(" + insertValues(entity, null) + ")";
-            return "MERGE INTO " + entity.tableName() + " target USING RDB$DATABASE source ON (" + on + ")" + Symbol.LF
-                    + "WHEN MATCHED THEN UPDATE SET "
+            String columns = selective ? buildDynamicColumnListSingle(entity)
+                    : Symbol.PARENTHESE_LEFT + insertColumnList(entity) + Symbol.PARENTHESE_RIGHT;
+            String values = selective ? buildDynamicValuesListSingle(entity)
+                    : Symbol.PARENTHESE_LEFT + insertValues(entity, null) + Symbol.PARENTHESE_RIGHT;
+            return "MERGE INTO " + entity.tableName() + " target USING RDB$DATABASE source ON (" + on
+                    + Symbol.PARENTHESE_RIGHT + Symbol.LF + "WHEN MATCHED THEN UPDATE SET "
                     + buildUpdateAssignments(entity, "PARAMETER", Normal.EMPTY, selective) + Symbol.LF
                     + "WHEN NOT MATCHED THEN INSERT " + columns + " VALUES " + values;
         }
@@ -666,15 +668,16 @@ public abstract class BasicProvider {
     protected static String buildMergeUsingValues(TableMeta entity, boolean selective) {
         String targetAlias = "target";
         String sourceAlias = "source";
-        String columns = selective ? buildDynamicColumnListSingle(entity) : "(" + insertColumnList(entity) + ")";
+        String columns = selective ? buildDynamicColumnListSingle(entity)
+                : Symbol.PARENTHESE_LEFT + insertColumnList(entity) + Symbol.PARENTHESE_RIGHT;
         String values = buildSourceReferenceList(entity, sourceAlias, selective);
         return "MERGE INTO " + entity.tableName() + Symbol.SPACE + targetAlias + Symbol.LF + "USING (VALUES "
                 + buildMergeSource(entity, Normal.EMPTY, true) + ") " + sourceAlias + Symbol.SPACE
                 + buildMergeSource(entity, Normal.EMPTY, false) + Symbol.LF + "ON ("
-                + buildMergeOnClause(entity, targetAlias, sourceAlias) + ")" + Symbol.LF
+                + buildMergeOnClause(entity, targetAlias, sourceAlias) + Symbol.PARENTHESE_RIGHT + Symbol.LF
                 + "WHEN MATCHED THEN UPDATE SET " + buildUpdateAssignments(entity, "SOURCE", sourceAlias, selective)
                 + Symbol.LF + "WHEN NOT MATCHED THEN INSERT " + columns + " VALUES "
-                + (selective ? values : "(" + values + ")");
+                + (selective ? values : Symbol.PARENTHESE_LEFT + values + Symbol.PARENTHESE_RIGHT);
     }
 
     /**

@@ -93,6 +93,7 @@ dependencies {
 - `bus-cortex`：服务注册、发现与健康探测
 - `bus-crypto`：加密、证书与安全工具
 - `bus-extra`：扩展工具与集成能力
+- `bus-errors`：公共错误分类、HTTP 错误响应及诊断
 - `bus-fabric`：HTTP、Socket、WebSocket、SSE、STOMP 协议运行时
 - `bus-gitlab`：GitLab API 集成
 - `bus-health`：健康检查与诊断
@@ -127,7 +128,7 @@ Bus 总配置。发布 POM 会被规范化处理，使用方以
 `bus-all` 作为单一入口，而不是把每个内部模块都作为普通传递依赖展开。
 
 元数据继续随 JAR 发布：Bus 自身注册位于 `org.miaixz/<模块>`，第三方注册按第三方的 group、artifact 和 version
-统一存放在 `bus-preset` 中。需要第三方原生配置的集成模块直接引入该配置 JAR，
+统一存放在 `bus-preset` 中。需要第三方原生配置的集成模块通过依赖链获得该配置 JAR，
 `bus-all` 则将其资源包含在聚合 JAR 中。`bus-preset` 不引入任何第三方库；此前对官方配置的去重结果继续保留。
 
 这种方式使用方便，但类路径范围会更大。对启动耗时、依赖面、native-image 体积或部署包大小敏感的项目，应优先选择按需引入单独模块。

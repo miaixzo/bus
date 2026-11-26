@@ -228,6 +228,7 @@ public class StoreSCU implements AutoCloseable {
                     progress.setAttributes(cmd);
                 }
             }
+
         };
     }
 

@@ -28,6 +28,7 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.errors.transport.reactive.ReactiveErrorHandler;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.vortex.Context;
 import org.miaixz.bus.vortex.Holder;
@@ -85,6 +86,7 @@ public class GrpcRouter implements Router<ServerRequest, ServerResponse> {
     public Mono<ServerResponse> route(ServerRequest input) {
         return Mono.deferContextual(contextView -> {
             final Context context = contextView.get(Context.class);
+            ReactiveErrorHandler.verifyJsonContentType(input.exchange());
 
             Logger.info(
                     true,
@@ -100,9 +102,9 @@ public class GrpcRouter implements Router<ServerRequest, ServerResponse> {
             Logger.debug(
                     true,
                     "Vortex",
-                    "Request headers: protocol=grpc, clientIp={}, headers={}",
+                    "Request header names: protocol=grpc, clientIp={}, headerNames={}",
                     context.getX_request_ip(),
-                    input.headers().asHttpHeaders().toSingleValueMap());
+                    input.headers().asHttpHeaders().headerNames());
 
             return Octets
                     .readForParsing(
@@ -129,13 +131,7 @@ public class GrpcRouter implements Router<ServerRequest, ServerResponse> {
                                 context.getX_request_ip(),
                                 Map.of("body", body));
                         return executor.execute(context, body).doFinally(signal -> bufferedBody.close());
-                    }).doOnError(
-                            error -> Logger.error(
-                                    true,
-                                    "Vortex",
-                                    "GRPC routing failed: protocol=grpc, event=GRPC_ROUTER_ERROR, service={}, exception={}",
-                                    context.getAssets().getMethod(),
-                                    error.getMessage()));
+                    });
         });
     }
 

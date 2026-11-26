@@ -22,8 +22,8 @@ package org.miaixz.bus.fabric.protocol.sse.event;
 import java.io.IOException;
 import java.time.Duration;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.Consumer;
 
+import org.miaixz.bus.core.center.function.ConsumerX;
 import org.miaixz.bus.core.io.ByteString;
 import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.io.source.Source;
@@ -234,7 +234,7 @@ public class SseReader implements AutoCloseable {
      *
      * @param handler non-null consumer invoked for each assembled event
      */
-    public void readLoop(final Consumer<SseEvent> handler) {
+    public void readLoop(final ConsumerX<SseEvent> handler) {
         Assert.notNull(handler, () -> new ValidateException("SSE event handler must not be null"));
         try {
             SseEvent event;

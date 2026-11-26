@@ -52,6 +52,17 @@ public record Response(String id, Optional<String> inResponseTo, String version,
     /**
      * Validates status-response attributes and freezes the repeated assertion choice.
      *
+     * @param id           required XML ID
+     * @param inResponseTo optional correlated request NCName
+     * @param version      required protocol version, fixed to {@code 2.0}
+     * @param issueInstant required issue instant
+     * @param destination  optional destination URI
+     * @param consent      optional consent URI
+     * @param issuer       optional issuer child
+     * @param signature    optional complete {@code ds:Signature} element bytes
+     * @param extensions   ordered complete children of {@code samlp:Extensions}
+     * @param status       required protocol status
+     * @param assertions   ordered plain or encrypted assertion children
      * @throws IllegalArgumentException if a required component, item, or optional container is {@code null}
      * @throws ValidateException        if a protocol version, NCName, URI, or XML byte element is invalid
      */
@@ -209,6 +220,7 @@ public record Response(String id, Optional<String> inResponseTo, String version,
         /**
          * Requires a non-null typed assertion.
          *
+         * @param assertion typed assertion
          * @throws IllegalArgumentException if {@code assertion} is {@code null}
          */
         public PlainAssertion {
@@ -228,6 +240,7 @@ public record Response(String id, Optional<String> inResponseTo, String version,
         /**
          * Takes ownership through defensive copying.
          *
+         * @param xml secure namespace-aware XML serialization
          * @throws IllegalArgumentException if {@code xml} is {@code null}
          * @throws ValidateException        if {@code xml} is empty
          */

@@ -22,8 +22,8 @@ package org.miaixz.bus.fabric.runtime.dispatch;
 import java.time.Duration;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.function.Supplier;
 
+import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.fabric.observe.EventObserver;
 import org.miaixz.bus.fabric.runtime.Activity;
 
@@ -72,7 +72,7 @@ public interface Dispatcher extends AutoCloseable {
      * @param <T>      result type
      * @return result future
      */
-    default <T> CompletableFuture<T> supply(final String key, final Supplier<T> supplier) {
+    default <T> CompletableFuture<T> supply(final String key, final SupplierX<T> supplier) {
         final CompletableFuture<T> result = new CompletableFuture<>();
         final DispatchHandle handle = submit(key, Activity.of(key, () -> result.complete(supplier.get())));
         handle.future().whenComplete((ignored, cause) -> {
@@ -97,7 +97,7 @@ public interface Dispatcher extends AutoCloseable {
      * @param <T>      result type
      * @return independently cancellable result
      */
-    default <T> CompletableFuture<T> backgroundSupply(final String key, final Object tag, final Supplier<T> supplier) {
+    default <T> CompletableFuture<T> backgroundSupply(final String key, final Object tag, final SupplierX<T> supplier) {
         final CompletableFuture<T> result = new CompletableFuture<>();
         final DispatchHandle handle = background(key, tag, Activity.of(key, () -> result.complete(supplier.get())));
         handle.future().whenComplete((ignored, cause) -> {

@@ -121,6 +121,7 @@ public class WmiKit {
             public int getCIMType(T property) {
                 return Wbemcli.CIM_EMPTY;
             }
+
         };
     }
 
@@ -237,6 +238,7 @@ public class WmiKit {
      * @param result   the result
      * @param property the property
      * @param index    the index
+     * @param <T>      enumeration defining the WMI query properties
      * @return the get str result
      */
     private static <T extends Enum<T>> String getStr(WmiResult<T> result, T property, int index) {
@@ -383,6 +385,7 @@ public class WmiKit {
      * @param result   the result
      * @param property the property
      * @param index    the index
+     * @param <T>      enumeration defining the WMI query properties
      * @return the get int result
      */
     private static <T extends Enum<T>> int getInt(WmiResult<T> result, T property, int index) {

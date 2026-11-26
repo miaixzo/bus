@@ -970,6 +970,9 @@ public class KujialeSourceAdapter implements VendorAdapter {
         /**
          * Validates one private Kujiale token success value.
          *
+         * @param accessToken  sensitive access token
+         * @param refreshToken sensitive refresh token retained only for token-success validation
+         * @param expiresIn    positive access-token lifetime in seconds
          * @throws IllegalArgumentException if either token is blank
          * @throws ValidateException        if the lifetime is not positive
          */
@@ -1011,6 +1014,14 @@ public class KujialeSourceAdapter implements VendorAdapter {
 
         /**
          * Retains callback values after transport and multiplicity validation.
+         *
+         * @param code             authorization code on the success branch
+         * @param error            OAuth error on the error branch
+         * @param errorDescription optional OAuth error description
+         * @param state            browser correlation state
+         * @param memberCount      exact number of received parameters
+         * @param knownMembers     whether every received name belongs to the callback contract
+         * @param blank            whether any received value is blank
          */
         private CallbackWire {
             // No initialization required.

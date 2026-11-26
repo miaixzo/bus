@@ -137,7 +137,7 @@ bus:
     performance:
       max-connections: 5000
       pending-acquire-timeout-seconds: 45
-      pending-acquire-max-count: 0  # 0 derives max-connections * 2
+      pending-acquire-max-count: 0  # 0 uses max-connections
       sanitize-null-like-parameters: true
 ```
 
@@ -370,13 +370,42 @@ putQueryParameter("lang","en");
 | Property                                               | Type    | Default      | Description                                                                         |
 |:-------------------------------------------------------|:--------|:-------------|:------------------------------------------------------------------------------------|
 | bus.vortex.port                                        | int     | 8765         | Gateway server port                                                                 |
-| bus.vortex.path                                        | String  | /router/rest | Gateway routing path                                                                |
+| bus.vortex.path | String | Unset | Gateway route prefix. An unset value or `/` listens on all paths. |
 | bus.vortex.condition                                   | boolean | false        | Enable custom Spring MVC condition bridge                                           |
 | bus.vortex.limit.enabled                               | boolean | false        | Enable rate limiting                                                                |
 | bus.vortex.performance.max-connections                 | int     | 5000         | Maximum outbound HTTP connection pool size                                          |
-| bus.vortex.performance.pending-acquire-timeout-seconds | int     | 45           | Maximum time to wait for a pooled outbound connection                               |
-| bus.vortex.performance.pending-acquire-max-count       | int     | 0            | Maximum pending outbound connection acquisitions; `0` derives `max-connections * 2` |
+| bus.vortex.performance.pending-acquire-timeout-seconds | int     | 5            | Maximum time to wait for a pooled outbound connection                               |
+| bus.vortex.performance.pending-acquire-max-count | int | 5000 | Outbound connection queue limit. A value of `0` uses `max-connections`. |
 | bus.vortex.performance.sanitize-null-like-parameters   | boolean | true         | Remove `null` / `"null"` / `"undefined"` parameters before routing                  |
+
+### Gateway error responses
+
+`bus-errors` handles local failures and upstream HTTP errors. Enable `bus.errors.routing` to select empty native
+HTTP responses for matching verified statuses. The `vortex` target selects the gateway port, and `/` includes
+`/router/rest` and the other gateway paths.
+
+```yaml
+bus:
+  errors:
+    routing:
+      enabled: true
+      targets: [vortex]
+      path-prefixes: [/]
+      statuses: [404, 405, 415, 429]
+```
+
+| Status | When the REST route returns it |
+|---|---|
+| `400` | REST request validation fails before lookup, for example when the required `timestamp` is missing or invalid. |
+| `404` | Lookup cannot confirm a visible route for the request's route coordinates. |
+| `405` | The gateway confirms a visible route for another method. An otherwise valid `GET` request to a public route registered for `POST` receives `Allow: POST`. Protected or signed routes do not contribute methods to `Allow`. |
+| `415` | The REST upstream returns `415`, and the gateway uses the verified status and approved headers. Local REST routing has no universal media-type rule. |
+| `429` | The configured limiter rejects the request, or the upstream returns this status. |
+| `503` | The admission filter can return an empty `503` with `Retry-After: 1`, independently of the routing status list. An upstream `503` uses its approved status and available retry hint. |
+
+Unmatched failures use the applicable protocol or legacy response. Public error mapping also applies when routing
+selection is disabled. MCP JSON-RPC errors and recognized SSE error frames are normalized even if the HTTP status
+is `200`. For all properties and defaults, see the [Starter configuration](../bus-starter/README.md#shared-http-error-responses).
 
 -----
 

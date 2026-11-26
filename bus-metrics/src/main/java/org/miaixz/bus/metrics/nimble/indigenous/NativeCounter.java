@@ -65,6 +65,8 @@ public class NativeCounter implements Counter {
 
     /**
      * Returns the cumulative count since creation.
+     *
+     * @return cumulative count since creation
      */
     @Override
     public long count() {

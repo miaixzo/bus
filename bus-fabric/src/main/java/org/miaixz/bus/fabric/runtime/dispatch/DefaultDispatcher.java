@@ -23,10 +23,10 @@ import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import org.miaixz.bus.core.Lifecycle.State;
+import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
@@ -306,8 +306,8 @@ final class DefaultDispatcher implements Dispatcher {
      * @return result future
      */
     @Override
-    public <T> CompletableFuture<T> supply(final String key, final Supplier<T> supplier) {
-        final Supplier<T> current = require(supplier, "Supplier");
+    public <T> CompletableFuture<T> supply(final String key, final SupplierX<T> supplier) {
+        final SupplierX<T> current = require(supplier, "Supplier");
         final CompletableFuture<T> result = new CompletableFuture<>();
         final DispatchHandle handle = enqueue(key, Activity.of(key, () -> result.complete(current.get())));
         handle.future().whenComplete((ignored, cause) -> {
@@ -335,8 +335,8 @@ final class DefaultDispatcher implements Dispatcher {
      * @return independently cancellable result future
      */
     @Override
-    public <T> CompletableFuture<T> backgroundSupply(final String key, final Object tag, final Supplier<T> supplier) {
-        final Supplier<T> current = require(supplier, "Background supplier");
+    public <T> CompletableFuture<T> backgroundSupply(final String key, final Object tag, final SupplierX<T> supplier) {
+        final SupplierX<T> current = require(supplier, "Background supplier");
         final CompletableFuture<T> result = new CompletableFuture<>();
         final DispatchHandle handle = background(key, tag, Activity.of(key, () -> result.complete(current.get())));
         handle.future().whenComplete((ignored, cause) -> {

@@ -31,6 +31,7 @@ import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.reflection.MetaObject;
 import org.apache.ibatis.reflection.SystemMetaObject;
 
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.FieldKit;
 import org.miaixz.bus.core.xyz.StringKit;
@@ -150,7 +151,7 @@ public abstract class ConditionHandler<T, C> extends AbstractSqlHandler implemen
             refreshDerivedConfigCache(currentProperties);
             String key = getDatasourceKey();
             if (StringKit.isEmpty(key)) {
-                key = "default";
+                key = Normal.DEFAULT;
             }
 
             String datasourceKey = key;

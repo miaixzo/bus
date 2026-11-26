@@ -508,7 +508,9 @@ final class MacCentralProcessor extends AbstractCentralProcessor {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Updates logical and physical processor counts and arrays
+     *
+     * @return An array of initialized Logical Processors
      */
     @Override
     protected CentralProcessor.ProcessorIdentifier queryProcessorId() {
@@ -562,7 +564,9 @@ final class MacCentralProcessor extends AbstractCentralProcessor {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Initializes logical and physical processor lists and feature flags.
+     *
+     * @return Lists of initialized Logical Processors, Physical Processors, Processor Caches, and Feature Flags.
      */
     @Override
     protected Tuple initProcessorCounts() {
@@ -663,7 +667,9 @@ final class MacCentralProcessor extends AbstractCentralProcessor {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Get the system CPU load ticks
+     *
+     * @return The system CPU load ticks
      */
     @Override
     public long[] querySystemCpuLoadTicks() {
@@ -692,7 +698,26 @@ final class MacCentralProcessor extends AbstractCentralProcessor {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Returns the system load average for the number of elements specified, up to 3, representing 1, 5, and 15 minutes.
+     * The system load average is the sum of the number of runnable entities queued to the available processors and the
+     * number of runnable entities running on the available processors averaged over a period of time.
+     * <p>
+     * This method is designed to provide a hint about the system load and may be queried frequently.
+     * <p>
+     * The way in which the load average is calculated is operating system specific but is typically a damped
+     * time-dependent average. Linux includes processes waiting for system resources such as disks, while macOS and Unix
+     * consider only processes waiting for CPU.
+     * <p>
+     * Windows does not provide a load average. Users may set the configuration property
+     * {@code bus.health.windows.loadaverage} to {@code true} to start a daemon thread which will provide a similar
+     * metric.
+     * <p>
+     * The load average may be unavailable on some platforms (e.g., Windows without the above configuration). If the
+     * load average is not available, a negative value is returned.
+     *
+     * @param nelem Number of elements to return.
+     * @return an array of the system load averages for 1, 5, and 15 minutes with the size of the array specified by
+     *         nelem; or negative values if not available.
      */
     @Override
     public double[] getSystemLoadAverage(int nelem) {
@@ -708,7 +733,9 @@ final class MacCentralProcessor extends AbstractCentralProcessor {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Get processor current frequency.
+     *
+     * @return The current frequency.
      */
     @Override
     public long[] queryCurrentFreq() {
@@ -843,7 +870,9 @@ final class MacCentralProcessor extends AbstractCentralProcessor {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Get number of context switches
+     *
+     * @return The context switches
      */
     @Override
     public long queryContextSwitches() {
@@ -854,7 +883,9 @@ final class MacCentralProcessor extends AbstractCentralProcessor {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Get number of interrupts
+     *
+     * @return The interrupts
      */
     @Override
     public long queryInterrupts() {
@@ -865,7 +896,9 @@ final class MacCentralProcessor extends AbstractCentralProcessor {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Get processor max frequency.
+     *
+     * @return The max frequency.
      */
     @Override
     public long queryMaxFreq() {
@@ -876,7 +909,9 @@ final class MacCentralProcessor extends AbstractCentralProcessor {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Get the processor CPU load ticks
+     *
+     * @return The processor CPU load ticks
      */
     @Override
     public long[][] queryProcessorCpuLoadTicks() {

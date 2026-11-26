@@ -44,6 +44,11 @@ public record AuthorizationErrorResponse(OAuth2ErrorCode error, Optional<String>
     /**
      * Validates standard error components and isolates extension parameters.
      *
+     * @param error            authorization error code
+     * @param errorDescription optional human-readable NQSCHAR diagnostic
+     * @param errorUri         optional explanatory URI-reference
+     * @param state            exact request state when the authorization request contained state
+     * @param extensions       additional authorization response parameters
      * @throws IllegalArgumentException if a component or container is {@code null}
      * @throws ValidateException        if a component violates RFC 6749 or an extension replaces it
      */

@@ -154,6 +154,9 @@ public class AuthorizationResponseValidator {
         /**
          * Validates and normalizes response binding inputs.
          *
+         * @param response       decoded successful OIDC authentication response
+         * @param expectedIssuer trusted OpenID Provider issuer
+         * @param expectedState  optional state stored for the originating request
          * @throws IllegalArgumentException if a required component or optional container is {@code null}
          * @throws ValidateException        if a present expected state value is empty
          */

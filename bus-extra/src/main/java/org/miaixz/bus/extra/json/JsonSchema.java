@@ -757,6 +757,7 @@ public final class JsonSchema {
                 findings.add(new Violation(path, keyword));
             return passed;
         }
+
     }
 
 }

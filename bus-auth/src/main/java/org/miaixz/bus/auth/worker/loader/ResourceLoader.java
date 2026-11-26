@@ -48,6 +48,11 @@ public interface ResourceLoader extends Loader<ResourceLoader.Request, ResourceL
 
         /**
          * Validates and freezes one protected-resource lookup request.
+         *
+         * @param source   exact Source Blueprint entry requesting the resource
+         * @param tenantId owning Library tenant identifier, independent of the Source Blueprint entry identifier
+         * @param audience requested token audiences
+         * @param resource requested resource indicators
          */
         public Request {
             Assert.notNull(source, "Resource source must not be null");

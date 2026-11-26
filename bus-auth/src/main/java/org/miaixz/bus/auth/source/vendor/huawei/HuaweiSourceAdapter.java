@@ -1274,6 +1274,12 @@ public class HuaweiSourceAdapter implements VendorAdapter {
 
         /**
          * Validates private token data without copying it into public Vendor models.
+         *
+         * @param accessToken  sensitive bearer access token
+         * @param expiresIn    positive access-token lifetime in seconds
+         * @param refreshToken optional sensitive refresh token
+         * @param idToken      compact signed ID Token
+         * @param scope        exact effective standard scope
          */
         private PrivateToken {
             Assert.notBlank(accessToken, "Huawei access token must not be blank");
@@ -1314,6 +1320,12 @@ public class HuaweiSourceAdapter implements VendorAdapter {
 
         /**
          * Retains already validated wire values without additional initialization.
+         *
+         * @param code             authorization code on the success branch
+         * @param error            standard OAuth error on the error branch
+         * @param errorDescription optional provider error description
+         * @param state            mandatory browser correlation value
+         * @param issuer           optional authorization-response issuer
          */
         private CallbackWire {
             // No initialization required.

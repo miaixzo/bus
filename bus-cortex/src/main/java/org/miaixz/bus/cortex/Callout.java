@@ -26,6 +26,7 @@ import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.miaixz.bus.core.center.function.RunnableX;
 import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
@@ -35,6 +36,7 @@ import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.xyz.DateKit;
 import org.miaixz.bus.core.xyz.ExceptionKit;
+import org.miaixz.bus.core.xyz.FunctionKit;
 import org.miaixz.bus.cortex.magic.runtime.DiagnosticsSnapshot;
 import org.miaixz.bus.fabric.*;
 import org.miaixz.bus.fabric.codec.DataCodec;
@@ -127,7 +129,7 @@ public class Callout {
      * after detachment belong to the next pool and are not closed by this operation.
      */
     public static void shutdown() {
-        shutdownTask().run();
+        FunctionKit.runUnwrapped(shutdownTask());
     }
 
     /**
@@ -136,7 +138,7 @@ public class Callout {
      *
      * @return cleanup task for only the detached clients; the caller must execute it once
      */
-    static Runnable shutdownTask() {
+    static RunnableX shutdownTask() {
         List<Client> clients;
         synchronized (CLIENTS) {
             clients = new ArrayList<>(CLIENTS.values());

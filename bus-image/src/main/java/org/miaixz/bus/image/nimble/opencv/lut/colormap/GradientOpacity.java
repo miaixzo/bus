@@ -42,6 +42,7 @@ public record GradientOpacity(List<Point> points) {
     /**
      * Validates, sorts, and defensively copies the control points.
      *
+     * @param points sorted by magnitude; a magnitude below the first or above the last point clamps
      * @throws NullPointerException     if the point list is null
      * @throws IllegalArgumentException if the point list is empty
      */
@@ -58,6 +59,9 @@ public record GradientOpacity(List<Point> points) {
     /**
      * Two-point curve for an emphasis in {@code [0, 1]}: homogeneous regions keep {@code 1 -
      * emphasis} of their opacity, edges keep all of it.
+     *
+     * @param emphasis fraction of homogeneous-region opacity removed, from zero to one
+     * @return two-point gradient-opacity curve with the requested edge emphasis
      */
     public static GradientOpacity edgeEmphasis(float emphasis) {
         float kept = 1f - Math.max(0f, Math.min(1f, emphasis));
@@ -66,6 +70,8 @@ public record GradientOpacity(List<Point> points) {
 
     /**
      * The emphasis a two-point curve was built with: what homogeneous regions lose.
+     *
+     * @return edge emphasis represented by a two-point opacity curve
      */
     public float emphasis() {
         return 1f - points.get(0).factor();
@@ -96,6 +102,9 @@ public record GradientOpacity(List<Point> points) {
 
     /**
      * {@code n} factors sampled evenly over the magnitude range, for a shader uniform.
+     *
+     * @param n number of samples in the opacity table
+     * @return opacity factors sampled evenly over the magnitude range
      */
     public float[] table(int n) {
         if (n < 2) {
@@ -120,6 +129,8 @@ public record GradientOpacity(List<Point> points) {
         /**
          * Validates the normalized magnitude and opacity factor.
          *
+         * @param magnitude the normalized gradient magnitude.
+         * @param factor    the opacity factor.
          * @throws IllegalArgumentException if either component is outside {@code [0, 1]} or the factor is NaN
          */
         public Point {
@@ -130,6 +141,7 @@ public record GradientOpacity(List<Point> points) {
                 throw new IllegalArgumentException("Factor must be in [0, 1]: " + factor);
             }
         }
+
     }
 
 }

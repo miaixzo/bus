@@ -42,8 +42,8 @@ import org.miaixz.bus.logger.Logger;
  * <p>
  * Every call captures one expected runtime container before loading. A candidate becomes visible only through a
  * successful compare-and-set replacement, so validation, compilation, timeout, revision, and concurrency failures
- * preserve the complete previous view. A successful commit changes the protocol-state generation for every Source to
- * the candidate revision, making Code, Token, Session, State, Nonce, and related cache entries from older revisions
+ * preserve the complete previous view. A successful commit changes the protocol-state epoch for every Source to the
+ * candidate revision, making Code, Token, Session, State, Nonce, and related cache entries from older revisions
  * unreachable to new invocations. Listener failures are isolated after the commit or validation decision.
  * </p>
  *

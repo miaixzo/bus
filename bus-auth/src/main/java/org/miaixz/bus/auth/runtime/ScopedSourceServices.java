@@ -66,47 +66,47 @@ final class ScopedSourceServices implements SourceServices {
     private final SourceDriver.Dependencies dependencies;
 
     /**
-     * Callback correlation cache isolated to this Source configuration generation.
+     * Callback correlation cache isolated to this Source configuration epoch.
      */
     private final StateCache stateCache;
 
     /**
-     * Nonce cache isolated to this Source configuration generation.
+     * Nonce cache isolated to this Source configuration epoch.
      */
     private final NonceCache nonceCache;
 
     /**
-     * Authorization-code cache isolated to this Source configuration generation.
+     * Authorization-code cache isolated to this Source configuration epoch.
      */
     private final AuthorizationCodeCache authorizationCodeCache;
 
     /**
-     * Device-code cache isolated to this Source configuration generation.
+     * Device-code cache isolated to this Source configuration epoch.
      */
     private final DeviceCodeCache deviceCodeCache;
 
     /**
-     * Authorization lifecycle cache isolated to this Source configuration generation.
+     * Authorization lifecycle cache isolated to this Source configuration epoch.
      */
     private final AuthorizationCache authorizationCache;
 
     /**
-     * Access-token cache isolated to this Source configuration generation.
+     * Access-token cache isolated to this Source configuration epoch.
      */
     private final AccessTokenCache accessTokenCache;
 
     /**
-     * Refresh-token cache isolated to this Source configuration generation.
+     * Refresh-token cache isolated to this Source configuration epoch.
      */
     private final RefreshTokenCache refreshTokenCache;
 
     /**
-     * Session cache isolated to this Source configuration generation.
+     * Session cache isolated to this Source configuration epoch.
      */
     private final SessionCache sessionCache;
 
     /**
-     * ID Token binding cache isolated to this Source configuration generation.
+     * ID Token binding cache isolated to this Source configuration epoch.
      */
     private final IdTokenCache idTokenCache;
 
@@ -117,26 +117,26 @@ final class ScopedSourceServices implements SourceServices {
      * @param entry           exact Source Blueprint entry
      * @param slots           declared project data slots
      * @param dependencies    declared framework dependencies
-     * @param generation      security-state generation assigned during Source compilation
+     * @param epoch           security-state epoch assigned during Source compilation
      */
     ScopedSourceServices(final RuntimeServices runtimeServices, final Blueprint.SourceEntry entry,
-            final WorkerSlots slots, final SourceDriver.Dependencies dependencies, final long generation) {
+            final WorkerSlots slots, final SourceDriver.Dependencies dependencies, final long epoch) {
         this.runtimeServices = Assert.notNull(runtimeServices, "Runtime services must not be null");
         this.entry = Assert.notNull(entry, "Scoped Source Blueprint entry must not be null");
         this.slots = Assert.notNull(slots, "Source service slots must not be null");
         this.dependencies = Assert.notNull(dependencies, "Source framework dependencies must not be null");
-        Assert.isTrue(generation >= 0L, "Scoped Source generation must not be negative");
+        Assert.isTrue(epoch >= 0L, "Scoped Source epoch must not be negative");
         final String sourceId = Assert
                 .notBlank(this.entry.resource().getId(), "Scoped Source Blueprint entry id must not be blank");
-        this.stateCache = runtimeServices.stateCache(sourceId, generation);
-        this.nonceCache = runtimeServices.nonceCache(sourceId, generation);
-        this.authorizationCodeCache = runtimeServices.authorizationCodeCache(sourceId, generation);
-        this.deviceCodeCache = runtimeServices.deviceCodeCache(sourceId, generation);
-        this.authorizationCache = runtimeServices.authorizationCache(sourceId, generation);
-        this.accessTokenCache = runtimeServices.accessTokenCache(sourceId, generation);
-        this.refreshTokenCache = runtimeServices.refreshTokenCache(sourceId, generation);
-        this.sessionCache = runtimeServices.sessionCache(sourceId, generation);
-        this.idTokenCache = runtimeServices.idTokenCache(sourceId, generation);
+        this.stateCache = runtimeServices.stateCache(sourceId, epoch);
+        this.nonceCache = runtimeServices.nonceCache(sourceId, epoch);
+        this.authorizationCodeCache = runtimeServices.authorizationCodeCache(sourceId, epoch);
+        this.deviceCodeCache = runtimeServices.deviceCodeCache(sourceId, epoch);
+        this.authorizationCache = runtimeServices.authorizationCache(sourceId, epoch);
+        this.accessTokenCache = runtimeServices.accessTokenCache(sourceId, epoch);
+        this.refreshTokenCache = runtimeServices.refreshTokenCache(sourceId, epoch);
+        this.sessionCache = runtimeServices.sessionCache(sourceId, epoch);
+        this.idTokenCache = runtimeServices.idTokenCache(sourceId, epoch);
     }
 
     /**
@@ -370,7 +370,7 @@ final class ScopedSourceServices implements SourceServices {
     }
 
     /**
-     * Returns the generation-scoped state cache only when explicitly declared.
+     * Returns the epoch-scoped state cache only when explicitly declared.
      *
      * @return callback state cache
      */
@@ -381,7 +381,7 @@ final class ScopedSourceServices implements SourceServices {
     }
 
     /**
-     * Returns the generation-scoped nonce cache only when explicitly declared.
+     * Returns the epoch-scoped nonce cache only when explicitly declared.
      *
      * @return nonce cache
      */
@@ -392,7 +392,7 @@ final class ScopedSourceServices implements SourceServices {
     }
 
     /**
-     * Returns the generation-scoped authorization-code cache only when explicitly declared.
+     * Returns the epoch-scoped authorization-code cache only when explicitly declared.
      *
      * @return authorization-code cache
      */
@@ -403,7 +403,7 @@ final class ScopedSourceServices implements SourceServices {
     }
 
     /**
-     * Returns the generation-scoped device-code cache only when explicitly declared.
+     * Returns the epoch-scoped device-code cache only when explicitly declared.
      *
      * @return device-code cache
      */
@@ -414,7 +414,7 @@ final class ScopedSourceServices implements SourceServices {
     }
 
     /**
-     * Returns the generation-scoped authorization cache only when explicitly declared.
+     * Returns the epoch-scoped authorization cache only when explicitly declared.
      *
      * @return authorization cache
      */
@@ -425,7 +425,7 @@ final class ScopedSourceServices implements SourceServices {
     }
 
     /**
-     * Returns the generation-scoped access-token cache only when explicitly declared.
+     * Returns the epoch-scoped access-token cache only when explicitly declared.
      *
      * @return access-token cache
      */
@@ -436,7 +436,7 @@ final class ScopedSourceServices implements SourceServices {
     }
 
     /**
-     * Returns the generation-scoped refresh-token cache only when explicitly declared.
+     * Returns the epoch-scoped refresh-token cache only when explicitly declared.
      *
      * @return refresh-token cache
      */
@@ -447,7 +447,7 @@ final class ScopedSourceServices implements SourceServices {
     }
 
     /**
-     * Returns the generation-scoped session cache only when explicitly declared.
+     * Returns the epoch-scoped session cache only when explicitly declared.
      *
      * @return session cache
      */
@@ -458,7 +458,7 @@ final class ScopedSourceServices implements SourceServices {
     }
 
     /**
-     * Returns the generation-scoped ID Token cache only when explicitly declared.
+     * Returns the epoch-scoped ID Token cache only when explicitly declared.
      *
      * @return ID Token cache
      */

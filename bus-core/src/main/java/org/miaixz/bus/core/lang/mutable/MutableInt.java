@@ -95,6 +95,8 @@ public class MutableInt extends Number implements Comparable<MutableInt>, Mutabl
 
     /**
      * Set method.
+     *
+     * @param value replacement value
      */
     @Override
     public void set(final Number value) {

@@ -24,6 +24,8 @@ import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
 import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.errors.ErrorType;
+import org.miaixz.bus.errors.transport.reactive.ReactiveErrorHandler;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.vortex.Args;
 import org.miaixz.bus.vortex.Context;
@@ -79,11 +81,15 @@ public class LlmRouter implements Router<ServerRequest, ServerResponse> {
             final String modelName = extractModelName(path);
 
             if (StringKit.isBlank(modelName)) {
-                Logger.warn(false, "Vortex", "{} Model name is missing in path: {}", context.getX_request_ip(), path);
-                return ServerResponse.status(HttpStatus.BAD_REQUEST).bodyValue(
-                        "{\"error\":{\"message\":\"Model name is required in path: /router/llm/{model}\",\"type\":\"invalid_request_error\",\"code\":\"model_name_missing\"}}");
+                return LlmExecutor.error(
+                        HttpStatus.BAD_REQUEST,
+                        ErrorType.INVALID_REQUEST,
+                        null,
+                        "model_name_missing",
+                        "Model name is required in path: /router/llm/{model}");
             }
 
+            ReactiveErrorHandler.verifyJsonContentType(input.exchange());
             context.getParameters().put("modelName", modelName);
             context.getParameters().put("serverRequest", input);
 
@@ -97,9 +103,9 @@ public class LlmRouter implements Router<ServerRequest, ServerResponse> {
             Logger.debug(
                     true,
                     "Vortex",
-                    "Request headers: clientIp={}, headers={}",
+                    "Request header names: clientIp={}, headerNames={}",
                     context.getX_request_ip(),
-                    input.headers().asHttpHeaders().toSingleValueMap());
+                    input.headers().asHttpHeaders().headerNames());
             Logger.debug(
                     true,
                     "Vortex",

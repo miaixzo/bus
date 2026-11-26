@@ -49,6 +49,13 @@ import org.miaixz.bus.starter.annotation.EnableHealth;
 public class HealthConfiguration {
 
     /**
+     * Creates the health configuration.
+     */
+    public HealthConfiguration() {
+        // No initialization required.
+    }
+
+    /**
      * Creates the observer for Spring Boot availability state changes.
      *
      * @return availability event observer

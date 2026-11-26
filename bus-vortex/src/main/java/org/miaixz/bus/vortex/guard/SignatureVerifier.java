@@ -19,9 +19,7 @@
 */
 package org.miaixz.bus.vortex.guard;
 
-import java.security.MessageDigest;
 import java.util.*;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.springframework.core.io.buffer.DataBuffer;
@@ -30,24 +28,19 @@ import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpRequestDecorator;
 import org.springframework.web.server.ServerWebExchange;
 
-import org.miaixz.bus.core.codec.binary.Base64;
-import org.miaixz.bus.core.lang.Charset;
+import org.miaixz.bus.auth.guard.CallerValidator;
+import org.miaixz.bus.auth.guard.SignValidator;
+import org.miaixz.bus.auth.guard.SignValidator.RequestMode;
+import org.miaixz.bus.core.basic.normal.Consts;
+import org.miaixz.bus.core.center.function.FunctionX;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.SignatureException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Http;
-import org.miaixz.bus.core.net.url.UrlEncoder;
-import org.miaixz.bus.core.xyz.CharKit;
-import org.miaixz.bus.core.xyz.MapKit;
 import org.miaixz.bus.core.xyz.StringKit;
-import org.miaixz.bus.core.xyz.UnicodeKit;
 import org.miaixz.bus.cortex.Assets;
 import org.miaixz.bus.cortex.Signing;
-import org.miaixz.bus.crypto.Builder;
-import org.miaixz.bus.crypto.center.HMac;
-import org.miaixz.bus.extra.json.JsonKit;
-import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.vortex.Args;
 import org.miaixz.bus.vortex.Context;
 import org.miaixz.bus.vortex.Holder;
@@ -59,12 +52,8 @@ import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 
 /**
- * Verifies REST, MCP, and Slug request signatures selected by resolved route assets.
- * <p>
- * This class is the single signature-verification boundary for bus-vortex. It preserves each protocol's canonical input
- * and credential rules while centralizing signing-mode dispatch, credential selection, bounded credential validation,
- * key derivation, HMAC calculation, constant-time comparison, replay-body ownership, and temporary key cleanup. It
- * validates request integrity only; credential authenticity remains the responsibility of the authorization provider.
+ * Adapts resolved REST, MCP, and Slug requests to the Auth signature validator. It extracts protocol fields, maps
+ * verification outcomes to gateway errors, and owns the read and replay lifecycle of signed MCP bodies.
  *
  * @author Kimi Liu
  */
@@ -90,34 +79,7 @@ public class SignatureVerifier {
      * @return verification completion signal
      */
     public static Mono<Void> verifyRest(Context context, Assets assets) {
-        if (assets == null) {
-            return Mono.empty();
-        }
-        Signing signing = Signing.of(assets.getSigning());
-        if (!signing.required()) {
-            return Mono.empty();
-        }
-        if (StringKit.isBlank(value(context, Args.SIGN))) {
-            return Mono.error(new ValidateException(ErrorCode._100108));
-        }
-        return Mono.fromCallable(() -> {
-            Map<String, Object> parameters = context.getParameters();
-            KeyBinding binding = resolve(context, signing);
-            try {
-                if (!matches(
-                        binding.key(),
-                        context.getHttpMethod().value(),
-                        parameters,
-                        signing,
-                        binding.credentialType(),
-                        "rest")) {
-                    throw new SignatureException(ErrorCode._100109);
-                }
-            } finally {
-                Arrays.fill(binding.key(), (byte) 0);
-            }
-            return (Void) null;
-        }).subscribeOn(Schedulers.boundedElastic());
+        return verifyParameters(context, assets, true);
     }
 
     /**
@@ -128,35 +90,51 @@ public class SignatureVerifier {
      * @return verification completion signal
      */
     public static Mono<Void> verifySlug(Context context, Assets assets) {
+        return verifyParameters(context, assets, false);
+    }
+
+    /**
+     * Verifies a signed parameter request through Auth while retaining the gateway's error mapping and scheduler.
+     *
+     * @param context    current request context
+     * @param assets     resolved route asset
+     * @param supportsV1 whether the protocol supports credential-bound signatures
+     * @return verification completion signal
+     */
+    private static Mono<Void> verifyParameters(Context context, Assets assets, boolean supportsV1) {
         if (assets == null) {
             return Mono.empty();
         }
-        Signing signing = Signing.of(assets.getSigning());
-        if (signing == Signing.NONE) {
+        RequestMode mode = SignValidator
+                .requestMode(context.isSigningEnabled(), () -> Signing.of(assets.getSigning()).key(), supportsV1);
+        if (mode == RequestMode.DISABLED || mode == RequestMode.SKIP) {
             return Mono.empty();
         }
-        if (signing != Signing.LEGACY) {
+        if (mode == RequestMode.UNSUPPORTED) {
             return Mono.error(new ValidateException(ErrorCode._116000));
         }
         if (StringKit.isBlank(value(context, Args.SIGN))) {
             return Mono.error(new ValidateException(ErrorCode._100108));
         }
         return Mono.fromCallable(() -> {
-            KeyBinding binding = resolve(context, signing);
-            try {
-                if (!matches(
-                        binding.key(),
-                        context.getHttpMethod().value(),
-                        context.getParameters(),
-                        signing,
-                        binding.credentialType(),
-                        "slug")) {
-                    throw new SignatureException(ErrorCode._100109);
-                }
-            } finally {
-                Arrays.fill(binding.key(), (byte) 0);
-            }
-            return (Void) null;
+            var result = SignValidator.verifyRequest(
+                    mode,
+                    context.getHttpMethod(),
+                    context.getParameters(),
+                    name -> value(context, name),
+                    () -> value(context.getParameters(), Args.SIGN),
+                    // Public routes still accept a signing credential independently of authentication switches.
+                    () -> Consts.ZERO.equals(assets.getPolicy())
+                            ? CallerValidator.credential(context.getHeaders(), true, true)
+                            : context.clientCredential(),
+                    context.getBearerMaxLength(),
+                    context.getApiKeyMaxLength());
+            return switch (result) {
+                case MISSING_CREDENTIAL -> throw new ValidateException(ErrorCode._116001);
+                case INVALID_CREDENTIAL -> throw new ValidateException(ErrorCode._100109);
+                case INVALID_SIGNATURE -> throw new SignatureException(ErrorCode._100109);
+                case VALID -> (Void) null;
+            };
         }).subscribeOn(Schedulers.boundedElastic());
     }
 
@@ -174,9 +152,22 @@ public class SignatureVerifier {
             ServerWebExchange exchange,
             Context context,
             Assets assets,
-            Function<ServerWebExchange, Mono<Void>> continuation) {
+            FunctionX<ServerWebExchange, Mono<Void>> continuation) {
         Objects.requireNonNull(continuation, "Continuation cannot be null");
-        return verifyMcpExchange(exchange, context, assets).flatMap(
+        if (assets == null) {
+            return Mono.error(new ValidateException(ErrorCode._100800));
+        }
+        RequestMode mode = SignValidator
+                .requestMode(context.isSigningEnabled(), () -> Signing.of(assets.getSigning()).key(), false);
+        if (mode == RequestMode.DISABLED) {
+            return Mono.defer(() -> continuation.apply(exchange));
+        }
+        if (mode == RequestMode.UNSUPPORTED) {
+            return Mono.error(new ValidateException(ErrorCode._116000));
+        }
+        Mono<ServerWebExchange> verified = mode == RequestMode.SKIP ? Mono.just(exchange)
+                : verifyMcpExchange(exchange, context, assets);
+        return verified.flatMap(
                 validatedExchange -> Mono.defer(() -> continuation.apply(validatedExchange))
                         .doFinally(signal -> releaseMcpBody(validatedExchange)));
     }
@@ -193,16 +184,6 @@ public class SignatureVerifier {
             ServerWebExchange exchange,
             Context context,
             Assets assets) {
-        if (assets == null) {
-            return Mono.error(new ValidateException(ErrorCode._100800));
-        }
-        Signing signing = Signing.of(assets.getSigning());
-        if (signing == Signing.NONE) {
-            return Mono.just(exchange);
-        }
-        if (signing != Signing.LEGACY) {
-            return Mono.error(new ValidateException(ErrorCode._116000));
-        }
         if (context.getHttpMethod() != Http.Method.POST) {
             return Mono
                     .fromRunnable(
@@ -238,7 +219,7 @@ public class SignatureVerifier {
     }
 
     /**
-     * Builds and verifies the MCP canonical signature payload.
+     * Extracts MCP canonical fields and delegates body signature verification to Auth.
      *
      * @param request current HTTP request
      * @param context request context
@@ -246,30 +227,24 @@ public class SignatureVerifier {
      * @param body    cached request bytes, or an empty array
      */
     private static void verifyMcpRequest(ServerHttpRequest request, Context context, Assets assets, byte[] body) {
-        String timestamp = request.getHeaders().getFirst(Args.X_TIMESTAMP);
-        String nonce = request.getHeaders().getFirst(Args.X_NONCE);
-        String signature = request.getHeaders().getFirst(Args.X_SIGN);
+        String timestamp = request.getHeaders().getFirst(Http.Auth.TIMESTAMP_HEADER);
+        String nonce = request.getHeaders().getFirst(Http.Auth.NONCE_HEADER);
+        String signature = request.getHeaders().getFirst(Http.Auth.SIGNATURE_HEADER);
         if (StringKit.isBlank(timestamp) || StringKit.isBlank(nonce) || StringKit.isBlank(signature)) {
             throw new SignatureException(ErrorCode._100109);
         }
         String canonical = request.getMethod().name() + Symbol.LF + request.getURI().getRawPath() + Symbol.LF
                 + canonicalMcpQuery(request) + Symbol.LF + timestamp + Symbol.LF + nonce + Symbol.LF
                 + StringKit.toStringOrEmpty(request.getHeaders().getFirst(Args.MCP_PROTOCOL_VERSION)) + Symbol.LF
-                + StringKit.toStringOrEmpty(request.getHeaders().getFirst(Args.MCP_SESSION_ID)) + Symbol.LF
-                + Builder.sha256().digestHex(body == null ? Normal.EMPTY_BYTE_ARRAY : body);
-        String secret = StringKit.isNotBlank(context.getBearer()) ? context.getBearer()
-                : Http.Auth.bearerToken(context.getHeaders());
-        if (StringKit.isNotBlank(secret)) {
-            context.setBearer(secret);
-        } else {
-            secret = assets.getMethod();
-        }
-        if (StringKit.isBlank(secret)) {
-            throw new SignatureException(ErrorCode._100109);
-        }
-        HMac hmac = Builder.hmacSha256(secret);
-        String expected = Base64.encode(hmac.digest(canonical.getBytes(Charset.UTF_8)));
-        if (!constantTimeEquals(hmac, expected, signature)) {
+                + StringKit.toStringOrEmpty(request.getHeaders().getFirst(Args.MCP_SESSION_ID)) + Symbol.LF;
+        boolean valid = SignValidator.verifyBody(() -> {
+            String credential = CallerValidator.signingCredential(context.getBearer(), context.getHeaders());
+            if (StringKit.isNotBlank(credential) && context.isBearerEnabled()) {
+                context.setBearer(credential);
+            }
+            return credential;
+        }, assets.getMethod(), canonical, body, signature);
+        if (!valid) {
             throw new SignatureException(ErrorCode._100109);
         }
     }
@@ -314,260 +289,6 @@ public class SignatureVerifier {
     }
 
     /**
-     * Resolves the one signing key allowed by the asset-selected mode.
-     *
-     * @param context request context
-     * @param signing asset-selected signing mode
-     * @return isolated per-request key binding
-     */
-    private static KeyBinding resolve(Context context, Signing signing) {
-        String method = value(context, Args.METHOD);
-        String timestamp = value(context, Args.TIMESTAMP);
-        if (signing == Signing.LEGACY) {
-            return new KeyBinding((method + timestamp).getBytes(Charset.UTF_8), signing.key());
-        }
-        if (signing != Signing.V1) {
-            throw new IllegalArgumentException("Unsupported REST signing mode: " + signing);
-        }
-
-        String token = Http.Auth.bearerToken(context.getHeaders());
-        if (StringKit.isNotBlank(token)) {
-            validateJwt(token);
-            return new KeyBinding(derive(Signing.Credential.TOKEN, token, method, timestamp),
-                    Signing.Credential.TOKEN.key());
-        }
-
-        String apiKey = Http.Auth.apiKey(context.getHeaders());
-        if (StringKit.isNotBlank(apiKey)) {
-            validateApiKey(apiKey);
-            return new KeyBinding(derive(Signing.Credential.API_KEY, apiKey, method, timestamp),
-                    Signing.Credential.API_KEY.key());
-        }
-
-        throw new ValidateException(ErrorCode._116001);
-    }
-
-    /**
-     * Derives a fixed-size v1 HMAC key without constructing a credential-sized concatenated string.
-     *
-     * @param credentialType credential domain
-     * @param credential     raw Bearer JWT or API key
-     * @param method         logical API method
-     * @param timestamp      request timestamp
-     * @return 32-byte SHA-256 key material
-     */
-    private static byte[] derive(
-            Signing.Credential credentialType,
-            String credential,
-            String method,
-            String timestamp) {
-        MessageDigest digest = Builder.sha256().getRaw();
-        update(digest, Signing.V1.key());
-        update(digest, credentialType.key());
-        update(digest, credential);
-        update(digest, method);
-        update(digest, timestamp);
-        return digest.digest();
-    }
-
-    /**
-     * Recalculates and compares one parameter-based REST or Slug request signature.
-     *
-     * @param key            binary HMAC key
-     * @param httpMethod     current HTTP method name
-     * @param parameters     complete request parameters
-     * @param signing        asset-selected signing mode
-     * @param credentialType selected credential type for diagnostics
-     * @param protocol       signature protocol label for diagnostics
-     * @return {@code true} when the request signature matches
-     */
-    private static boolean matches(
-            byte[] key,
-            String httpMethod,
-            Map<String, Object> parameters,
-            Signing signing,
-            String credentialType,
-            String protocol) {
-        if (parameters == null) {
-            return false;
-        }
-        String clientSignature = value(parameters, Args.SIGN);
-        if (clientSignature == null) {
-            return false;
-        }
-
-        Logger.debug(
-                true,
-                "Vortex",
-                "Signature validation started: protocol={}, httpMethod={}, parameterCount={}, clientSignatureLength={}",
-                protocol,
-                httpMethod,
-                parameters.size(),
-                clientSignature.length());
-
-        Map<String, Object> signedParameters = MapKit.removeIf(
-                new TreeMap<>(parameters),
-                entry -> entry.getKey() == null || Args.SIGN.equalsIgnoreCase(entry.getKey()));
-        HMac hmac = Builder.hmacSha256(key);
-        String serverSignature = generate(hmac, httpMethod, signedParameters);
-        boolean matched = constantTimeEquals(hmac, clientSignature, serverSignature);
-        Logger.info(
-                false,
-                "Vortex",
-                "Signature validation completed: protocol={}, signing={}, credentialType={}, httpMethod={}, signedParameterCount={}, matched={}, serverSignatureLength={}",
-                protocol,
-                signing,
-                credentialType,
-                httpMethod,
-                signedParameters.size(),
-                matched,
-                serverSignature.length());
-        return matched;
-    }
-
-    /**
-     * Generates one parameter-based REST or Slug request signature using HMAC-SHA256 and Base64.
-     *
-     * @param hmac       initialized HMAC-SHA256 engine
-     * @param httpMethod current HTTP method name
-     * @param parameters request parameters excluding the signature field
-     * @return Base64-encoded signature
-     */
-    private static String generate(HMac hmac, String httpMethod, Map<String, Object> parameters) {
-        if (hmac == null || httpMethod == null || parameters == null) {
-            throw new IllegalArgumentException("HMAC, http method, and params cannot be null.");
-        }
-
-        String encodedParameters = parameters.entrySet().stream()
-                .map(entry -> Map.entry(entry.getKey(), normalize(entry.getValue())))
-                .filter(entry -> StringKit.isNotEmpty(entry.getValue())).sorted(Map.Entry.comparingByKey())
-                .map(
-                        entry -> UrlEncoder.encodeAll(entry.getKey(), Charset.UTF_8)
-                                + UrlEncoder.encodeAll(entry.getValue(), Charset.UTF_8))
-                .collect(Collectors.joining());
-        String stringToSign = httpMethod + Symbol.LF + encodedParameters;
-        return Base64.encode(hmac.digest(stringToSign.getBytes(Charset.UTF_8)));
-    }
-
-    /**
-     * Converts one request parameter value to its stable signature representation.
-     *
-     * @param value source parameter value
-     * @return canonical parameter value
-     */
-    private static String normalize(Object value) {
-        String text = value instanceof Map || value instanceof Collection
-                || (value != null && value.getClass().isArray()) ? JsonKit.toJsonString(value) : String.valueOf(value);
-        return UnicodeKit.toString(text);
-    }
-
-    /**
-     * Writes one UTF-8 protocol field followed by one LF byte.
-     *
-     * @param digest target digest
-     * @param value  protocol field
-     */
-    private static void update(MessageDigest digest, String value) {
-        byte[] bytes = value.getBytes(Charset.UTF_8);
-        try {
-            digest.update(bytes);
-            digest.update((byte) '\n');
-        } finally {
-            Arrays.fill(bytes, (byte) 0);
-        }
-    }
-
-    /**
-     * Validates the bounded canonical three-segment representation required for v1 Bearer JWTs.
-     *
-     * @param token raw Bearer JWT
-     */
-    private static void validateJwt(String token) {
-        if (!isAsciiWithin(token, Normal._8192)) {
-            throw new ValidateException(ErrorCode._100109);
-        }
-        int first = token.indexOf(Symbol.DOT);
-        int second = first < 0 ? -1 : token.indexOf(Symbol.DOT, first + 1);
-        if (first <= 0 || second <= first + 1 || second >= token.length() - 1
-                || token.indexOf(Symbol.DOT, second + 1) >= 0 || !isBase64Url(token, 0, first)
-                || !isBase64Url(token, first + 1, second) || !isBase64Url(token, second + 1, token.length())) {
-            throw new ValidateException(ErrorCode._100109);
-        }
-    }
-
-    /**
-     * Tests whether one compact JWT segment contains only unpadded Base64URL characters.
-     *
-     * @param value source JWT
-     * @param start inclusive segment start
-     * @param end   exclusive segment end
-     * @return {@code true} when the segment is valid
-     */
-    private static boolean isBase64Url(String value, int start, int end) {
-        for (int index = start; index < end; index++) {
-            char character = value.charAt(index);
-            if (!(character >= 'A' && character <= 'Z') && !(character >= 'a' && character <= 'z')
-                    && !(character >= '0' && character <= '9') && character != '-' && character != '_') {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    /**
-     * Validates a bounded ASCII API key before v1 key derivation.
-     *
-     * @param apiKey raw API key
-     */
-    private static void validateApiKey(String apiKey) {
-        if (!isAsciiWithin(apiKey, Normal._512)) {
-            throw new ValidateException(ErrorCode._100109);
-        }
-    }
-
-    /**
-     * Tests whether a value is non-empty ASCII within an inclusive character limit.
-     *
-     * @param value   value to inspect
-     * @param maximum inclusive maximum length
-     * @return {@code true} when the value satisfies the protocol boundary
-     */
-    private static boolean isAsciiWithin(String value, int maximum) {
-        if (StringKit.isEmpty(value) || value.length() > maximum) {
-            return false;
-        }
-        for (int index = 0; index < value.length(); index++) {
-            char character = value.charAt(index);
-            if (!CharKit.isAsciiPrintable(character) || Character.isWhitespace(character)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    /**
-     * Compares two signature strings without returning early on the first differing byte.
-     *
-     * @param hmac  HMAC engine providing constant-time digest comparison
-     * @param left  first signature
-     * @param right second signature
-     * @return {@code true} when both signatures are identical
-     */
-    private static boolean constantTimeEquals(HMac hmac, String left, String right) {
-        if (hmac == null || left == null || right == null) {
-            return false;
-        }
-        byte[] leftBytes = left.getBytes(Charset.UTF_8);
-        byte[] rightBytes = right.getBytes(Charset.UTF_8);
-        try {
-            return hmac.verify(leftBytes, rightBytes);
-        } finally {
-            Arrays.fill(leftBytes, (byte) 0);
-            Arrays.fill(rightBytes, (byte) 0);
-        }
-    }
-
-    /**
      * Resolves one request parameter from the parsed parameter and query maps.
      *
      * @param context current request context
@@ -609,16 +330,6 @@ public class SignatureVerifier {
             }
         }
         return matchedValue;
-    }
-
-    /**
-     * Binds isolated per-request key material to its non-sensitive credential label.
-     *
-     * @param key            binary HMAC key
-     * @param credentialType selected credential type
-     */
-    private record KeyBinding(byte[] key, String credentialType) {
-
     }
 
 }

@@ -37,6 +37,8 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.ArrayKit;
 import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.errors.ComponentFailure;
+import org.miaixz.bus.errors.ErrorType;
 import org.miaixz.bus.extra.mail.MailAuthenticator;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.notify.Context;
@@ -50,6 +52,11 @@ import org.miaixz.bus.notify.nimble.AbstractProvider;
  * @author Kimi Liu
  */
 public class GenericEmailProvider extends AbstractProvider<GenericNotice, Context> {
+
+    /**
+     * Reports SMTP failure or uncertain delivery without replaying messages or changing the legacy result.
+     */
+    private static final ComponentFailure FAILURES = new ComponentFailure("bus-notify", "smtp");
 
     /**
      * Constructs a {@code GenericEmailProvider} with the given context.
@@ -80,6 +87,7 @@ public class GenericEmailProvider extends AbstractProvider<GenericNotice, Contex
         try {
             Transport.send(build(entity));
         } catch (MessagingException e) {
+            FAILURES.failed(ErrorType.OUTCOME_UNKNOWN, e);
             String message = e.getMessage();
             if (e instanceof SendFailedException) {
                 // When the address is invalid, display more detailed invalid address information

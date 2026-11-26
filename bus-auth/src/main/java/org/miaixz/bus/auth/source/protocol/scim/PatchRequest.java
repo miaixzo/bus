@@ -37,6 +37,9 @@ public record PatchRequest(ResourceTarget target, PatchOp patch, Optional<String
     /**
      * Validates the individual target and optional HTTP precondition.
      *
+     * @param target  exact individual-resource target selected by the route
+     * @param patch   standard RFC 7644 PatchOp request body
+     * @param ifMatch optional complete HTTP entity-tag from If-Match
      * @throws IllegalArgumentException if a component or optional container is {@code null}
      * @throws ValidateException        if the target is a collection or If-Match is not a complete entity-tag
      */

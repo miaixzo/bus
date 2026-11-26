@@ -19,8 +19,7 @@
 */
 package org.miaixz.bus.fabric.protocol.http.cache;
 
-import java.util.function.Consumer;
-
+import org.miaixz.bus.core.center.function.ConsumerX;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
@@ -51,10 +50,10 @@ final class HttpCachePurge {
      * @param removed callback invoked after each selected key is removed
      * @throws ValidateException if a required argument is {@code null}
      */
-    static void remove(final CacheStore store, final HttpRequest request, final Consumer<String> removed) {
+    static void remove(final CacheStore store, final HttpRequest request, final ConsumerX<String> removed) {
         final CacheStore cacheStore = require(store, "Cache store");
         final HttpRequest targetRequest = require(request, "HTTP request");
-        final Consumer<String> removeListener = require(removed, "Removed key callback");
+        final ConsumerX<String> removeListener = require(removed, "Removed key callback");
         final String prefix = HttpCacheKey.baseKey(targetRequest);
         final String uri = targetRequest.url().toUri().toString();
         final boolean unsafe = targetRequest.method() != Http.Method.GET && targetRequest.method() != Http.Method.HEAD;
@@ -75,10 +74,10 @@ final class HttpCachePurge {
      * @param removed callback invoked after the store removal returns
      * @throws ValidateException if a required argument is {@code null}
      */
-    static void removeKey(final CacheStore store, final String key, final Consumer<String> removed) {
+    static void removeKey(final CacheStore store, final String key, final ConsumerX<String> removed) {
         final CacheStore cacheStore = require(store, "Cache store");
         final String cacheKey = require(key, "Cache key");
-        final Consumer<String> removeListener = require(removed, "Removed key callback");
+        final ConsumerX<String> removeListener = require(removed, "Removed key callback");
         cacheStore.remove(cacheKey);
         removeListener.accept(cacheKey);
     }

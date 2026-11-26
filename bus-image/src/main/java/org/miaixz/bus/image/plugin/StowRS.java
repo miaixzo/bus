@@ -46,12 +46,14 @@ import jakarta.json.stream.JsonGenerator;
 
 import org.xml.sax.SAXException;
 
+import org.miaixz.bus.core.center.function.ConsumerX;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
+import org.miaixz.bus.core.xyz.FunctionKit;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.image.Tag;
@@ -852,7 +854,7 @@ public class StowRS {
             try (FileOutputStream out = new FileOutputStream(tmpFile)) {
                 if (requestContentType.equals(MediaType.APPLICATION_DICOM))
                     for (String file : files)
-                        applyFunctionToFile(file, true, path -> writeDicomFile(out, path, stowChunk));
+                        visitFiles(file, true, path -> writeDicomFile(out, path, stowChunk));
                 else
                     writeMetadataAndBulkData(out, files, createStaticMetadata(), stowChunk);
             }
@@ -886,7 +888,7 @@ public class StowRS {
                 if (requestContentType.equals(MediaType.APPLICATION_DICOM))
                     fPR.forEach(f -> {
                         try {
-                            applyFunctionToFile(f, true, path -> writeDicomFile(out, path, stowChunk));
+                            visitFiles(f, true, path -> writeDicomFile(out, path, stowChunk));
                         } catch (Exception e) {
                             Logger.warn(
                                     false,
@@ -1071,6 +1073,7 @@ public class StowRS {
              */
             public void checkServerTrusted(X509Certificate[] certs, String authType) {
             }
+
         } };
     }
 
@@ -1194,7 +1197,7 @@ public class StowRS {
                     }
 
                     for (String file : files)
-                        applyFunctionToFile(file, true, path -> {
+                        visitFiles(file, true, path -> {
                             if (!ignoreNonMatchingFileContentTypes(path))
                                 new JSONWriter(gen)
                                         .write(supplementMetadataFromFile(path, createMetadata(staticMetadata)));
@@ -1231,7 +1234,7 @@ public class StowRS {
         }
 
         for (String file : files)
-            applyFunctionToFile(file, true, path -> writeXMLMetadataAndBulkdata(out, staticMetadata, path, stowChunk));
+            visitFiles(file, true, path -> writeXMLMetadataAndBulkdata(out, staticMetadata, path, stowChunk));
     }
 
     /**
@@ -1354,20 +1357,19 @@ public class StowRS {
     }
 
     /**
-     * Applies a function to a file or all files in a directory.
+     * Invokes a consumer for a file or for the files visited in a directory.
      *
      * @param file          The file or directory path.
-     * @param continueVisit A flag to continue visiting files in a directory even after an error.
-     * @param function      The function to apply to each file.
+     * @param continueVisit Whether to continue after visiting the first file in a directory.
+     * @param consumer      The consumer to invoke for each file.
      * @throws IOException if an I/O error occurs.
      */
-    private void applyFunctionToFile(String file, boolean continueVisit, final StowRSFileFunction<Path> function)
-            throws IOException {
+    private void visitFiles(String file, boolean continueVisit, final ConsumerX<Path> consumer) throws IOException {
         Path path = Paths.get(file);
         if (Files.isDirectory(path)) {
-            Files.walkFileTree(path, new StowRSFileVisitor(function::apply, continueVisit));
+            Files.walkFileTree(path, new StowRSFileVisitor(consumer, continueVisit));
         } else
-            function.apply(path);
+            FunctionKit.acceptUnwrapped(consumer, path);
     }
 
     /**
@@ -1585,30 +1587,42 @@ public class StowRS {
          */
         JPEG {
 
+            /**
+             * {@inheritDoc}
+             */
             @Override
             void parse(SeekableByteChannel channel) throws IOException {
                 setParser(new JPEGParser(channel));
             }
+
         },
         /**
          * The mpeg value.
          */
         MPEG {
 
+            /**
+             * {@inheritDoc}
+             */
             @Override
             void parse(SeekableByteChannel channel) throws IOException {
                 setParser(new MPEG2Parser(channel));
             }
+
         },
         /**
          * The mp4 value.
          */
         MP4 {
 
+            /**
+             * {@inheritDoc}
+             */
             @Override
             void parse(SeekableByteChannel channel) throws IOException {
                 setParser(new MP4Parser(channel));
             }
+
         };
 
         /**
@@ -1654,42 +1668,6 @@ public class StowRS {
         void setParser(XPEGParser parser) {
             this.parser = parser;
         }
-
-    }
-
-    /**
-     * A functional interface for consuming a file path, allowing for exceptions.
-     *
-     * @param <Path> the generic type used by this operation
-     * @author Kimi Liu
-     */
-    interface StowRSFileConsumer<Path> {
-
-        /**
-         * Executes the accept operation.
-         *
-         * @param path the path.
-         * @throws IOException if the operation cannot be completed.
-         */
-        void accept(Path path) throws IOException;
-
-    }
-
-    /**
-     * A functional interface for applying a function to a file path, allowing for exceptions.
-     *
-     * @param <Path> the generic type used by this operation
-     * @author Kimi Liu
-     */
-    interface StowRSFileFunction<Path> {
-
-        /**
-         * Executes the apply operation.
-         *
-         * @param path the path.
-         * @throws IOException if the operation cannot be completed.
-         */
-        void apply(Path path) throws IOException;
 
     }
 
@@ -1873,7 +1851,7 @@ public class StowRS {
         /**
          * The consumer value.
          */
-        private final StowRSFileConsumer<Path> consumer;
+        private final ConsumerX<Path> consumer;
 
         /**
          * The continue visit value.
@@ -1886,7 +1864,7 @@ public class StowRS {
          * @param consumer      the consumer.
          * @param continueVisit the continue visit.
          */
-        StowRSFileVisitor(StowRSFileConsumer<Path> consumer, boolean continueVisit) {
+        StowRSFileVisitor(ConsumerX<Path> consumer, boolean continueVisit) {
             this.consumer = consumer;
             this.continueVisit = continueVisit;
         }
@@ -1901,7 +1879,7 @@ public class StowRS {
          */
         @Override
         public FileVisitResult visitFile(Path path, BasicFileAttributes attrs) throws IOException {
-            consumer.accept(path);
+            FunctionKit.acceptUnwrapped(consumer, path);
             return continueVisit ? FileVisitResult.CONTINUE : FileVisitResult.TERMINATE;
         }
 

@@ -22,7 +22,6 @@ package org.miaixz.bus.cortex.setting;
 import java.util.Map;
 import java.util.Objects;
 
-import org.miaixz.bus.cortex.guard.CortexGuard;
 import org.miaixz.bus.cortex.setting.curator.ItemService;
 import org.miaixz.bus.cortex.setting.item.Item;
 import org.miaixz.bus.cortex.setting.reference.ReferenceService;
@@ -46,10 +45,6 @@ public final class SettingService {
      * Host joint transaction.
      */
     private final SettingStore store;
-    /**
-     * Optional host access policy.
-     */
-    private final CortexGuard guard;
 
     /**
      * Creates current management orchestration.
@@ -57,13 +52,11 @@ public final class SettingService {
      * @param items      definition preparation
      * @param references relation preparation
      * @param store      atomic host boundary
-     * @param guard      optional host access policy
      */
-    public SettingService(ItemService items, ReferenceService references, SettingStore store, CortexGuard guard) {
+    public SettingService(ItemService items, ReferenceService references, SettingStore store) {
         this.items = Objects.requireNonNull(items);
         this.references = Objects.requireNonNull(references);
         this.store = Objects.requireNonNull(store);
-        this.guard = guard;
     }
 
     /**
@@ -75,7 +68,6 @@ public final class SettingService {
      */
     public SettingStore.Result save(SettingProvider.Context context, SettingStore.Change change) {
         context.requireRequest();
-        context.check(guard, "save", "item", change.item());
         Item expected = items.find(context, change.item());
         if (expected == null ? change.expectedEdition() != null
                 : !Objects.equals(expected.getEdition(), change.expectedEdition()))
@@ -117,7 +109,6 @@ public final class SettingService {
             long edition,
             Map<String, Long> expectedReferences) {
         context.requireRequest();
-        context.check(guard, "delete", "item", item);
         store.delete(context, item, edition, Map.copyOf(expectedReferences));
     }
 

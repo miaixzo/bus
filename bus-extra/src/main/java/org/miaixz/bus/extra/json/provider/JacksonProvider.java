@@ -398,6 +398,7 @@ public class JacksonProvider extends AbstractJsonProvider {
             public Type getType() {
                 return type;
             }
+
         };
         try {
             return objectMapper.readValue(json, typeReference);
@@ -559,6 +560,7 @@ public class JacksonProvider extends AbstractJsonProvider {
                 output.writeNull();
             }
         }
+
     }
 
 }

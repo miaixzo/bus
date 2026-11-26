@@ -39,16 +39,6 @@ import org.miaixz.bus.core.lang.Symbol;
 public record VendorSpecificAttribute(long vendorId, byte[] value) {
 
     /**
-     * Largest 24-bit Vendor-Id permitted when the high-order wire octet is zero.
-     */
-    private static final long MAXIMUM_VENDOR_ID = 0x00ff_ffffL;
-
-    /**
-     * Maximum vendor String length after the four-octet Vendor-Id.
-     */
-    private static final int MAXIMUM_VALUE_BYTES = Radius.MAXIMUM_ATTRIBUTE_VALUE_BYTES - Normal._4;
-
-    /**
      * Validates the unsigned Vendor-Id and detaches the opaque value.
      *
      * @param vendorId 24-bit Vendor-Id from 0 through 16777215
@@ -57,11 +47,11 @@ public record VendorSpecificAttribute(long vendorId, byte[] value) {
      */
     public VendorSpecificAttribute {
         Assert.isTrue(
-                vendorId >= 0 && vendorId <= MAXIMUM_VENDOR_ID,
+                vendorId >= 0 && vendorId <= 0x00ff_ffffL,
                 "RADIUS Vendor-Id must fit 24 bits with a zero high-order octet");
         Assert.notNull(value, "RADIUS vendor-specific value must not be null");
         Assert.isTrue(
-                value.length >= 1 && value.length <= MAXIMUM_VALUE_BYTES,
+                value.length >= 1 && value.length <= Radius.MAXIMUM_ATTRIBUTE_VALUE_BYTES - Normal._4,
                 "RADIUS vendor-specific value must contain between 1 and 249 octets");
         value = value.clone();
     }

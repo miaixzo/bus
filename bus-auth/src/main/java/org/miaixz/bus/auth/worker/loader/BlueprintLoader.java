@@ -51,6 +51,8 @@ public interface BlueprintLoader extends Loader<BlueprintLoader.Request, Bluepri
 
         /**
          * Validates one Blueprint-loading request.
+         *
+         * @param currentRevision current committed Roster revision
          */
         public Request {
             if (currentRevision < 0L) {
@@ -71,6 +73,9 @@ public interface BlueprintLoader extends Loader<BlueprintLoader.Request, Bluepri
 
         /**
          * Creates an immutable externally loaded Blueprint snapshot.
+         *
+         * @param revision monotonically increasing external data revision
+         * @param entries  complete desired Blueprint entries
          */
         public Snapshot {
             if (revision < 0L) {

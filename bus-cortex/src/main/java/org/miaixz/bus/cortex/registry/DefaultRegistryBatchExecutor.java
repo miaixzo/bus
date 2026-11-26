@@ -24,7 +24,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
-import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.cortex.Assets;
 import org.miaixz.bus.cortex.Type;
 import org.miaixz.bus.cortex.builtin.batch.BatchOperation;
@@ -118,11 +117,6 @@ public class DefaultRegistryBatchExecutor implements RegistryBatchExecutor {
                 entry = Objects.requireNonNull(
                         operations.prepareEntry(operation, source),
                         "Prepared batch entry must not be null");
-                operations.enforce(
-                        operation.getOperationType() == null ? "batch"
-                                : StringKit.toLowerCase(operation.getOperationType().name()),
-                        RegistryIdentity.type(entry),
-                        entry);
                 applyBatchEntry(operation, entry, result, operations, lookup);
             } catch (Exception e) {
                 Assets failed = entry == null ? source : entry;

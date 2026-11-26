@@ -266,11 +266,14 @@ public class Crypto extends AbstractCrypto<Crypto> {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Initializes the object.
      *
-     * @param algorithm Description inherited from parent class or interface.
-     * @param keyPair   Description inherited from parent class or interface.
-     * @return Description inherited from parent class or interface.
+     * If both private and public keys in the key pair are null, a new key pair is generated. If only one key is
+     * provided, it can only be used for encryption (signing) or decryption (verification) with that specific key.
+     *
+     * @param algorithm The algorithm to use.
+     * @param keyPair   The key pair, which includes the private and public key.
+     * @return this instance.
      */
     @Override
     public Crypto init(final String algorithm, final KeyPair keyPair) {
@@ -280,11 +283,12 @@ public class Crypto extends AbstractCrypto<Crypto> {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Encrypts the given byte array using the specified key type.
      *
-     * @param data    Description inherited from parent class or interface.
-     * @param keyType Description inherited from parent class or interface.
-     * @return Description inherited from parent class or interface.
+     * @param data    The byte array to be encrypted.
+     * @param keyType The type of key to use for encryption (e.g., {@link KeyType#PrivateKey} or
+     *                {@link KeyType#PublicKey}).
+     * @return The encrypted content as a byte array.
      */
     @Override
     public byte[] encrypt(final byte[] data, final KeyType keyType) {
@@ -320,11 +324,12 @@ public class Crypto extends AbstractCrypto<Crypto> {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Decrypts the given byte array using the specified key type.
      *
-     * @param data    Description inherited from parent class or interface.
-     * @param keyType Description inherited from parent class or interface.
-     * @return Description inherited from parent class or interface.
+     * @param data    The byte array to be decrypted.
+     * @param keyType The type of key to use for decryption (e.g., {@link KeyType#PrivateKey} or
+     *                {@link KeyType#PublicKey}).
+     * @return The decrypted content as a byte array.
      */
     @Override
     public byte[] decrypt(final byte[] data, final KeyType keyType) {

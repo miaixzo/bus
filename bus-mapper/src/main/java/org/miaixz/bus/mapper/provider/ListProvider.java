@@ -73,6 +73,7 @@ public class ListProvider {
                                         () -> entity.insertColumns().stream().map(column -> column.variables("entity."))
                                                 .collect(Collectors.joining(Symbol.COMMA))));
             }
+
         });
     }
 
@@ -127,6 +128,7 @@ public class ListProvider {
                                         + Symbol.PARENTHESE_RIGHT);
                 return sql;
             }
+
         });
     }
 
@@ -193,6 +195,7 @@ public class ListProvider {
                         );
                 return sql;
             }
+
         });
     }
 

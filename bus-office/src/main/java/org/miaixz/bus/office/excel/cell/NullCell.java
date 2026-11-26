@@ -58,6 +58,8 @@ public class NullCell implements Cell {
     }
 
     /**
+     * Returns the zero-based column index of this null cell.
+     *
      * @return The 0-based column index.
      */
     @Override
@@ -66,6 +68,8 @@ public class NullCell implements Cell {
     }
 
     /**
+     * Returns the zero-based index of the containing row.
+     *
      * @return The 0-based row index.
      */
     @Override
@@ -74,6 +78,8 @@ public class NullCell implements Cell {
     }
 
     /**
+     * Returns the containing sheet.
+     *
      * @return The sheet this cell belongs to.
      */
     @Override
@@ -82,6 +88,8 @@ public class NullCell implements Cell {
     }
 
     /**
+     * Returns the containing row.
+     *
      * @return The row this cell belongs to.
      */
     @Override
@@ -100,6 +108,8 @@ public class NullCell implements Cell {
     }
 
     /**
+     * Returns no cell type for this null cell.
+     *
      * @return {@code null} always.
      */
     @Override
@@ -119,6 +129,8 @@ public class NullCell implements Cell {
     }
 
     /**
+     * Returns no cached formula result type for this null cell.
+     *
      * @return {@code null} always.
      */
     @Override
@@ -196,6 +208,8 @@ public class NullCell implements Cell {
      * This operation is not supported for a NullCell.
      *
      * @throws UnsupportedOperationException always
+     * @throws IllegalStateException         not thrown by this implementation because the operation always raises
+     *                                       UnsupportedOperationException
      */
     @Override
     public void removeFormula() throws IllegalStateException {
@@ -203,6 +217,8 @@ public class NullCell implements Cell {
     }
 
     /**
+     * Returns no formula for this null cell.
+     *
      * @return {@code null} always.
      */
     @Override
@@ -215,6 +231,10 @@ public class NullCell implements Cell {
      *
      * @param formula The formula to set.
      * @throws UnsupportedOperationException always
+     * @throws FormulaParseException         not thrown by this implementation because the operation always raises
+     *                                       UnsupportedOperationException
+     * @throws IllegalStateException         not thrown by this implementation because the operation always raises
+     *                                       UnsupportedOperationException
      */
     @Override
     public void setCellFormula(final String formula) throws FormulaParseException, IllegalStateException {
@@ -233,6 +253,8 @@ public class NullCell implements Cell {
     }
 
     /**
+     * Returns no date value for this null cell.
+     *
      * @return {@code null} always.
      */
     @Override
@@ -241,6 +263,8 @@ public class NullCell implements Cell {
     }
 
     /**
+     * Returns no local date-time value for this null cell.
+     *
      * @return {@code null} always.
      */
     @Override
@@ -249,6 +273,8 @@ public class NullCell implements Cell {
     }
 
     /**
+     * Returns no rich-text value for this null cell.
+     *
      * @return {@code null} always.
      */
     @Override
@@ -257,6 +283,8 @@ public class NullCell implements Cell {
     }
 
     /**
+     * Returns no string value for this null cell.
+     *
      * @return {@code null} always.
      */
     @Override
@@ -309,6 +337,8 @@ public class NullCell implements Cell {
     }
 
     /**
+     * Returns no style for this null cell.
+     *
      * @return {@code null} always.
      */
     @Override
@@ -338,6 +368,8 @@ public class NullCell implements Cell {
     }
 
     /**
+     * Returns no address object for this null cell.
+     *
      * @return {@code null} always.
      */
     @Override
@@ -346,6 +378,8 @@ public class NullCell implements Cell {
     }
 
     /**
+     * Returns no comment for this null cell.
+     *
      * @return {@code null} always.
      */
     @Override
@@ -375,6 +409,8 @@ public class NullCell implements Cell {
     }
 
     /**
+     * Returns no hyperlink for this null cell.
+     *
      * @return {@code null} always.
      */
     @Override
@@ -404,6 +440,8 @@ public class NullCell implements Cell {
     }
 
     /**
+     * Returns no array-formula range for this null cell.
+     *
      * @return {@code null} always.
      */
     @Override

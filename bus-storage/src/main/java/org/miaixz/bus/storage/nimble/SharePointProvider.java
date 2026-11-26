@@ -288,7 +288,6 @@ public class SharePointProvider extends AbstractProvider {
      * <p>
      * <strong>Note:</strong> This method loads the entire file into memory. For large files, consider using
      * {@link #download(String, String, File)} to stream directly to disk.
-     * </p>
      *
      * @param bucket   The name of the storage bucket.
      * @param fileName The name of the file to download.
@@ -352,7 +351,6 @@ public class SharePointProvider extends AbstractProvider {
      * <strong>Recommended for large files:</strong> This method uses streaming to transfer file content, making it
      * memory-efficient and suitable for files of any size. The file is written directly to disk without loading the
      * entire content into memory.
-     * </p>
      *
      * @param bucket   The name of the storage bucket.
      * @param fileName The name of the file to download.
@@ -578,7 +576,6 @@ public class SharePointProvider extends AbstractProvider {
      * <p>
      * <strong>Note:</strong> This method supports files of any size. All uploads use the chunked upload strategy for
      * consistency and reliability. Microsoft Graph API handles the optimization internally.
-     * </p>
      *
      * @param bucket   The name of the storage bucket.
      * @param path     The target path for the file.
@@ -921,7 +918,6 @@ public class SharePointProvider extends AbstractProvider {
      * <li>Upload each chunk sequentially with proper Content-Range headers</li>
      * <li>Microsoft Graph API automatically assembles the chunks</li>
      * </ol>
-     * </p>
      *
      * @param bucket    The bucket name.
      * @param objectKey The object key.

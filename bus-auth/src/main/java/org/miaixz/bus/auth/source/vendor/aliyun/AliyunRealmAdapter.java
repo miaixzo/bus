@@ -26,8 +26,6 @@ import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
-import java.util.function.Function;
-import java.util.function.Supplier;
 
 import org.miaixz.bus.auth.*;
 import org.miaixz.bus.auth.Credential;
@@ -41,6 +39,8 @@ import org.miaixz.bus.auth.source.vendor.VendorTargets;
 import org.miaixz.bus.auth.worker.loader.SecretLoader;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.basic.normal.Errors;
+import org.miaixz.bus.core.center.function.FunctionX;
+import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.codec.binary.Base64;
 import org.miaixz.bus.core.lang.*;
 import org.miaixz.bus.core.lang.Optional;
@@ -51,6 +51,7 @@ import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.net.url.RFC3986;
 import org.miaixz.bus.core.net.url.UrlDecoder;
+import org.miaixz.bus.core.xyz.FunctionKit;
 import org.miaixz.bus.core.xyz.RandomKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.extra.json.JsonKit;
@@ -579,15 +580,15 @@ public class AliyunRealmAdapter implements VendorAdapter {
     private static String fallback(
             final JsonValue.ObjectValue object,
             final String name,
-            final Supplier<String> fallback) {
+            final SupplierX<String> fallback) {
         final JsonValue value = object.values().get(name);
         if (value == null || value instanceof JsonValue.NullValue) {
-            return fallback.get();
+            return FunctionKit.getUnwrapped(fallback);
         }
         if (!(value instanceof JsonValue.StringValue text)) {
             throw new ValidateException(name + " must be a string or null");
         }
-        return StringKit.hasText(text.value()) ? requireText(text.value(), name) : fallback.get();
+        return StringKit.hasText(text.value()) ? requireText(text.value(), name) : FunctionKit.getUnwrapped(fallback);
     }
 
     /**
@@ -1176,7 +1177,7 @@ public class AliyunRealmAdapter implements VendorAdapter {
     private <T> CompletionStage<Outcome<T>> withSecret(
             final Context context,
             final Timeout timeout,
-            final Function<SecretLease, Outcome<T>> operation) {
+            final FunctionX<SecretLease, Outcome<T>> operation) {
         final CompletionStage<Outcome<SecretLoader.Record>> loaded;
         try {
             loaded = services.secretLoader()
@@ -1215,7 +1216,7 @@ public class AliyunRealmAdapter implements VendorAdapter {
     private <T> CompletionStage<Outcome<T>> execute(
             final SecretLoader.Record loaded,
             final Timeout timeout,
-            final Function<SecretLease, Outcome<T>> operation) {
+            final FunctionX<SecretLease, Outcome<T>> operation) {
         final SecretLease raw = loaded == null ? null : loaded.lease();
         final SecretLease secret;
         try {
@@ -1232,7 +1233,9 @@ public class AliyunRealmAdapter implements VendorAdapter {
                     return failed(ErrorCode._408, "Alibaba Cloud Realm operation has no remaining timeout");
                 }
                 try {
-                    return Assert.notNull(operation.apply(secret), "Alibaba Cloud Realm operation returned no outcome");
+                    return Assert.notNull(
+                            FunctionKit.applyUnwrapped(operation, secret),
+                            "Alibaba Cloud Realm operation returned no outcome");
                 } catch (TimeoutException ignored) {
                     return failed(ErrorCode._408, "Alibaba Cloud Realm operation timed out");
                 } catch (ValidateException ignored) {
@@ -1387,7 +1390,7 @@ public class AliyunRealmAdapter implements VendorAdapter {
             final SecretLease secret,
             final Timeout timeout,
             final String operation,
-            final Function<JsonValue.ObjectValue, T> parser) {
+            final FunctionX<JsonValue.ObjectValue, T> parser) {
         final Outcome<Optional<JsonValue.ObjectValue>> fetched = rpc(
                 action,
                 targetName,
@@ -1404,7 +1407,8 @@ public class AliyunRealmAdapter implements VendorAdapter {
             final JsonValue.ObjectValue container = requiredObject(response, containerName);
             final List<T> items = new ArrayList<>();
             for (JsonValue value : requiredArray(container, itemName)) {
-                items.add(parser.apply(requiredObject(value, "Alibaba Cloud RAM collection item")));
+                items.add(
+                        FunctionKit.applyUnwrapped(parser, requiredObject(value, "Alibaba Cloud RAM collection item")));
             }
             final boolean truncated = requiredBoolean(response, "IsTruncated");
             final Optional<String> marker = optionalString(response, "Marker");
@@ -2275,6 +2279,7 @@ public class AliyunRealmAdapter implements VendorAdapter {
                 case ROLE_TRUST -> null;
             };
         }
+
     }
 
     /**
@@ -2290,6 +2295,7 @@ public class AliyunRealmAdapter implements VendorAdapter {
          * @return stable RAM identifier
          */
         String id();
+
     }
 
     /**
@@ -2304,6 +2310,10 @@ public class AliyunRealmAdapter implements VendorAdapter {
 
         /**
          * Validates one cursor state.
+         *
+         * @param phase    snapshot phase represented by this cursor
+         * @param kinds    requested kinds
+         * @param position recoverable position
          */
         private CursorState {
             phase = Assert.notNull(phase, "Alibaba Cloud cursor phase must not be null");
@@ -2327,6 +2337,7 @@ public class AliyunRealmAdapter implements VendorAdapter {
                     : ordered.contains(Realm.Kind.GROUP) ? Phase.GROUPS : Phase.ROLES;
             return new CursorState(initial, ordered, Position.initial());
         }
+
     }
 
     /**
@@ -2341,6 +2352,10 @@ public class AliyunRealmAdapter implements VendorAdapter {
 
         /**
          * Validates one position.
+         *
+         * @param next           optional official page marker
+         * @param parentId       current replay group identifier
+         * @param relationOffset emitted relation offset for one Role
          */
         private Position {
             next = Assert.notNull(next, "Alibaba Cloud cursor marker container must not be null");
@@ -2421,6 +2436,7 @@ public class AliyunRealmAdapter implements VendorAdapter {
                 throw new ValidateException("Alibaba Cloud cursor position does not belong to its phase");
             }
         }
+
     }
 
     /**
@@ -2435,6 +2451,9 @@ public class AliyunRealmAdapter implements VendorAdapter {
 
         /**
          * Freezes one page.
+         *
+         * @param items minimal items
+         * @param next  optional official continuation marker
          */
         private WirePage {
             items = List.copyOf(Assert.notNull(items, "Alibaba Cloud collection items must not be null"));
@@ -2442,6 +2461,7 @@ public class AliyunRealmAdapter implements VendorAdapter {
             next = next.isPresent() ? Optional.of(requireText(next.getOrNull(), "Alibaba Cloud collection marker"))
                     : Optional.empty();
         }
+
     }
 
     /**
@@ -2457,6 +2477,10 @@ public class AliyunRealmAdapter implements VendorAdapter {
 
         /**
          * Freezes and validates one replay result.
+         *
+         * @param items  replayed parent projections
+         * @param index  selected index or negative at natural exhaustion
+         * @param parent selected projection or empty at natural exhaustion
          */
         private ParentPage {
             items = List.copyOf(Assert.notNull(items, "Alibaba Cloud replay parents must not be null"));
@@ -2466,6 +2490,7 @@ public class AliyunRealmAdapter implements VendorAdapter {
                 throw new ValidateException("Alibaba Cloud replay parent state is inconsistent");
             }
         }
+
     }
 
     /**
@@ -2480,12 +2505,17 @@ public class AliyunRealmAdapter implements VendorAdapter {
 
         /**
          * Validates one RAM User projection.
+         *
+         * @param id          stable UserId
+         * @param name        exact UserName
+         * @param displayName DisplayName with UserName fallback
          */
         private User {
             id = requireText(id, "Alibaba Cloud RAM UserId");
             name = requireText(name, "Alibaba Cloud RAM UserName");
             displayName = requireText(displayName, "Alibaba Cloud RAM User display name");
         }
+
     }
 
     /**
@@ -2499,11 +2529,15 @@ public class AliyunRealmAdapter implements VendorAdapter {
 
         /**
          * Validates one RAM Group projection.
+         *
+         * @param id   stable GroupId
+         * @param name exact GroupName
          */
         private Group {
             id = requireText(id, "Alibaba Cloud RAM GroupId");
             name = requireText(name, "Alibaba Cloud RAM GroupName");
         }
+
     }
 
     /**
@@ -2517,11 +2551,15 @@ public class AliyunRealmAdapter implements VendorAdapter {
 
         /**
          * Validates one RAM Role projection.
+         *
+         * @param id   stable RoleId
+         * @param name exact RoleName
          */
         private Role {
             id = requireText(id, "Alibaba Cloud RAM RoleId");
             name = requireText(name, "Alibaba Cloud RAM RoleName");
         }
+
     }
 
     /**
@@ -2535,6 +2573,9 @@ public class AliyunRealmAdapter implements VendorAdapter {
 
         /**
          * Freezes and validates one Role trust projection.
+         *
+         * @param role       Role projection or empty when retrieval reports EntityNotExist
+         * @param principals ordered unique Principal values
          */
         private RoleTrust {
             role = Assert.notNull(role, "Alibaba Cloud RAM Role container must not be null");
@@ -2544,6 +2585,7 @@ public class AliyunRealmAdapter implements VendorAdapter {
                 throw new ValidateException("Alibaba Cloud RAM absent Role must not expose principals");
             }
         }
+
     }
 
 }

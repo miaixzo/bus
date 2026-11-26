@@ -56,17 +56,17 @@ public class IdTokenCache extends AuthCache<IdTokenCache.Entry> {
     }
 
     /**
-     * Creates a Source-generation-scoped ID Token binding cache view for compiled runtime use.
+     * Creates a Source-epoch-scoped ID Token binding cache view for compiled runtime use.
      *
      * @param cache      shared bus-cache backend
      * @param deployment deployment-unique cache scope
      * @param sourceId   exact Source identifier
-     * @param generation non-negative Source configuration generation
+     * @param epoch      non-negative Source configuration epoch
      * @param clock      shared runtime clock used to derive entry lifetimes
      */
     public IdTokenCache(final CacheX<String, Object> cache, final String deployment, final String sourceId,
-            final long generation, final Clock clock) {
-        super(cache, deployment, PURPOSE, Entry.class, sourceId, generation, clock);
+            final long epoch, final Clock clock) {
+        super(cache, deployment, PURPOSE, Entry.class, sourceId, epoch, clock);
     }
 
     /**
@@ -132,6 +132,11 @@ public class IdTokenCache extends AuthCache<IdTokenCache.Entry> {
 
         /**
          * Validates and freezes non-secret logout facts.
+         *
+         * @param sourceId   Source that issued the token
+         * @param consumerId relying-party consumer identifier
+         * @param subject    issued wire subject
+         * @param sessionId  optional issued Session identifier
          */
         public Entry {
             Assert.notBlank(sourceId, "ID Token Source id must not be blank");

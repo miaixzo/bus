@@ -45,6 +45,9 @@ public record IntrospectionResponse(boolean active, Optional<TokenMetadata> meta
     /**
      * Validates active/inactive response structure and isolates extension members.
      *
+     * @param active     whether the token is currently active at the authorization server
+     * @param metadata   optional token metadata, permitted only for an active token
+     * @param extensions additional introspection response members
      * @throws IllegalArgumentException if a component container is {@code null}
      * @throws ValidateException        if an inactive response contains metadata or extensions
      */
@@ -109,6 +112,17 @@ public record IntrospectionResponse(boolean active, Optional<TokenMetadata> meta
         /**
          * Validates and freezes all RFC 7662 token metadata components.
          *
+         * @param scope     optional token scope
+         * @param clientId  optional client identifier associated with the token
+         * @param username  optional resource owner username
+         * @param tokenType optional registered access-token type
+         * @param exp       optional expiration NumericDate in seconds
+         * @param iat       optional issuance NumericDate in seconds
+         * @param nbf       optional not-before NumericDate in seconds
+         * @param subject   optional token subject StringOrURI
+         * @param audience  ordered token audience StringOrURI values
+         * @param issuer    optional token issuer StringOrURI
+         * @param jwtId     optional token JWT identifier
          * @throws IllegalArgumentException if a container, list, or list entry is {@code null}
          * @throws ValidateException        if a StringOrURI value is malformed
          */

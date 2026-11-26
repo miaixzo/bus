@@ -31,6 +31,10 @@ public record MemorySnapshot(long totalBytes, long usedBytes, long freeBytes) {
 
     /**
      * Validates the memory invariant.
+     *
+     * @param totalBytes total physical memory in bytes
+     * @param usedBytes  used physical memory in bytes
+     * @param freeBytes  available physical memory in bytes
      */
     public MemorySnapshot {
         if (totalBytes < 0 || usedBytes < 0 || freeBytes < 0 || saturatedAdd(usedBytes, freeBytes) != totalBytes) {

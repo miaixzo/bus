@@ -630,6 +630,15 @@ public class Jwk {
         /**
          * Validates and freezes common parameters and their consistency constraints.
          *
+         * @param publicKeyUse                optional intended public-key use
+         * @param keyOperations               ordered intended key operations
+         * @param algorithm                   optional intended JOSE algorithm
+         * @param keyId                       optional key identifier
+         * @param certificateUrl              optional certificate-chain URL
+         * @param certificateChain            ordered base64 DER certificate chain
+         * @param certificateThumbprint       optional SHA-1 certificate thumbprint
+         * @param certificateThumbprintSha256 optional SHA-256 certificate thumbprint
+         * @param extensions                  unregistered common extension parameters
          * @throws IllegalArgumentException if a component or container is {@code null}
          * @throws ValidateException        if use, operation, certificate, or extension semantics are invalid
          */
@@ -748,6 +757,16 @@ public class Jwk {
 
         /**
          * Validates and freezes RSA integer parameters.
+         *
+         * @param modulus         public modulus
+         * @param exponent        public exponent
+         * @param privateExponent optional private exponent
+         * @param firstPrime      optional first prime factor
+         * @param secondPrime     optional second prime factor
+         * @param firstExponent   optional first CRT exponent
+         * @param secondExponent  optional second CRT exponent
+         * @param coefficient     optional first CRT coefficient
+         * @param otherPrimes     optional additional-prime information
          */
         public Rsa {
             validateBase64Url(modulus);
@@ -849,6 +868,10 @@ public class Jwk {
 
         /**
          * Validates all encoded unsigned integers.
+         *
+         * @param prime       additional prime factor
+         * @param exponent    CRT exponent for the factor
+         * @param coefficient CRT coefficient for the factor
          */
         public OtherPrime {
             validateBase64Url(prime);
@@ -881,6 +904,11 @@ public class Jwk {
 
         /**
          * Validates and freezes EC curve and coordinate parameters.
+         *
+         * @param curve        registered curve name
+         * @param x            x coordinate
+         * @param y            y coordinate
+         * @param privateValue optional private scalar
          */
         public Ec {
             Assert.notBlank(curve, "EC JWK curve must not be blank");
@@ -947,6 +975,8 @@ public class Jwk {
 
         /**
          * Validates the encoded symmetric key value.
+         *
+         * @param value encoded symmetric key bytes
          */
         public Oct {
             validateBase64Url(value);
@@ -1007,6 +1037,10 @@ public class Jwk {
 
         /**
          * Validates and freezes OKP parameters.
+         *
+         * @param curve        registered curve name
+         * @param x            encoded public key
+         * @param privateValue optional encoded private key
          */
         public Okp {
             Assert.notBlank(curve, "OKP JWK curve must not be blank");
@@ -1072,6 +1106,9 @@ public class Jwk {
 
         /**
          * Validates and freezes extension key material.
+         *
+         * @param keyType    registered or collision-resistant extension key type
+         * @param parameters extension-defined key parameters
          */
         public Extension {
             Assert.notBlank(keyType, "Extension JWK key type must not be blank");
@@ -1113,6 +1150,9 @@ public class Jwk {
 
         /**
          * Validates the completed decode result.
+         *
+         * @param common   decoded common parameters
+         * @param material decoded key-type material
          */
         private Decoded {
             Assert.notNull(common, "Decoded JWK common parameters must not be null");

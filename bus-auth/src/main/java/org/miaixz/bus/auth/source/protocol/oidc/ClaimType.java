@@ -49,6 +49,7 @@ public record ClaimType(String value) {
     /**
      * Validates the extensible registration-name grammar without changing case.
      *
+     * @param value exact case-sensitive claim-type wire value
      * @throws IllegalArgumentException if {@code value} is {@code null} or empty
      * @throws ValidateException        if a character is outside the OAuth registration-name grammar
      */

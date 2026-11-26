@@ -78,6 +78,7 @@ public class GuavaCache<K, V> implements CacheX<K, V> {
                     public V load(Object key) {
                         return null; // By default, does not load anything on miss.
                     }
+
                 });
     }
 
@@ -122,6 +123,7 @@ public class GuavaCache<K, V> implements CacheX<K, V> {
                     public Object load(Object key) {
                         return null;
                     }
+
                 });
     }
 

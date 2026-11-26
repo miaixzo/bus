@@ -558,6 +558,8 @@ public class DiskStore implements CacheStore {
 
         /**
          * Flushes the sink.
+         *
+         * @throws IOException if an underlying input or output operation fails
          */
         @Override
         public void flush() throws IOException {
@@ -577,6 +579,8 @@ public class DiskStore implements CacheStore {
 
         /**
          * Closes the sink.
+         *
+         * @throws IOException if an underlying input or output operation fails
          */
         @Override
         public void close() throws IOException {
@@ -816,6 +820,8 @@ public class DiskStore implements CacheStore {
 
         /**
          * Closes source and snapshot.
+         *
+         * @throws IOException if an underlying input or output operation fails
          */
         @Override
         public void close() throws IOException {

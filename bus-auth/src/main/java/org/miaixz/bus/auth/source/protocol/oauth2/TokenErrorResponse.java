@@ -42,6 +42,10 @@ public record TokenErrorResponse(OAuth2ErrorCode error, Optional<String> errorDe
     /**
      * Validates standard error members and isolates extension values.
      *
+     * @param error            token endpoint error code
+     * @param errorDescription optional human-readable NQSCHAR diagnostic
+     * @param errorUri         optional explanatory URI-reference
+     * @param extensions       additional token error members
      * @throws IllegalArgumentException if a component or container is {@code null}
      * @throws ValidateException        if a value violates RFC 6749 or an extension replaces a standard member
      */

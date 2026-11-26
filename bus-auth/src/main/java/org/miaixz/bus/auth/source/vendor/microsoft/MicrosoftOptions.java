@@ -24,6 +24,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.miaixz.bus.auth.Builder;
 import org.miaixz.bus.auth.Credential;
@@ -39,7 +40,7 @@ import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * Carries externally managed Microsoft login or enterprise application and tenant values.
+ * Carries externally managed Microsoft OAuth login, directory or Entra OIDC registration values.
  * <p>
  * Official cloud hosts and endpoint paths remain manifest-owned. Login variants retain an exact registered callback and
  * delegated scopes. Enterprise variants retain no callback and accept only their cloud-specific {@code .default}
@@ -65,16 +66,26 @@ public record MicrosoftOptions(Vendor.Id vendor, Vendor.Variant variant, String 
     private static final String USER_READ = "User.Read";
 
     /**
-     * Validates and freezes one Microsoft Source configuration without resolving its Client Secret.
+     * Validates and freezes one Microsoft Source configuration without resolving its Client Secret. The OIDC profiles
+     * require a tenant GUID and identity scopes because their identity comes from a signed ID Token bound to an exact
+     * issuer. The Graph login and directory profiles retain their own scope contracts.
      *
+     * @param vendor      exact Microsoft platform identifier
+     * @param variant     selected login or enterprise cloud variant
+     * @param clientId    registered Application (client) ID
+     * @param credential  external Client Secret reference
+     * @param redirectUri exact registered login callback, empty for enterprise
+     * @param scopes      delegated login scopes or the sole enterprise application scope
+     * @param tenant      Microsoft tenant GUID, verified domain, or login-only audience alias
      * @throws IllegalArgumentException if a required component, container, or scope is {@code null} or blank
      * @throws ValidateException        if routing, identifiers, credential type, callback, scopes, or tenant are
      *                                  invalid
      */
     public MicrosoftOptions {
+        final boolean oidc = MicrosoftManifest.oidc(variant);
         if (!MicrosoftManifest.ID.equals(vendor) || !MicrosoftManifest.GLOBAL.equals(variant)
                 && !MicrosoftManifest.CHINA.equals(variant) && !MicrosoftManifest.ENTERPRISE_GLOBAL.equals(variant)
-                && !MicrosoftManifest.ENTERPRISE_CHINA.equals(variant)) {
+                && !MicrosoftManifest.ENTERPRISE_CHINA.equals(variant) && !oidc) {
             throw new ValidateException("Microsoft options must select one frozen Microsoft cloud variant");
         }
         final boolean enterprise = MicrosoftManifest.ENTERPRISE_GLOBAL.equals(variant)
@@ -97,7 +108,21 @@ public record MicrosoftOptions(Vendor.Id vendor, Vendor.Variant variant, String 
             copy.add(checked);
         }
         scopes = List.copyOf(copy);
-        tenant = tenant(tenant);
+        if (oidc) {
+            tenant = applicationId(tenant);
+            if (redirectUri.isEmpty()) {
+                throw new ValidateException("Microsoft OIDC options require a registered redirect URI");
+            }
+            redirect(redirectUri.getOrNull());
+            scopes = scopes.isEmpty() ? MicrosoftManifest.OIDC_SCOPES : scopes;
+            if (!scopes.containsAll(MicrosoftManifest.OIDC_SCOPES)
+                    || !Set.of("openid", "profile", "email").containsAll(scopes)) {
+                throw new ValidateException(
+                        "Microsoft OIDC options require openid and profile and only allow optional email");
+            }
+        } else {
+            tenant = tenant(tenant);
+        }
         if (enterprise) {
             if (redirectUri.isPresent()) {
                 throw new ValidateException("Microsoft enterprise options prohibit a redirect URI");
@@ -111,7 +136,7 @@ public record MicrosoftOptions(Vendor.Id vendor, Vendor.Variant variant, String 
             if (tenantAlias(tenant)) {
                 throw new ValidateException("Microsoft enterprise options require a concrete tenant");
             }
-        } else {
+        } else if (!oidc) {
             if (redirectUri.isEmpty()) {
                 throw new ValidateException("Microsoft login options require a registered redirect URI");
             }

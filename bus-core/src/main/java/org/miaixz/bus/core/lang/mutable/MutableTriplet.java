@@ -74,6 +74,8 @@ public class MutableTriplet<L, M, R> extends Triplet<L, M, R> implements Mutable
 
     /**
      * Set method.
+     *
+     * @param value replacement value
      */
     @Override
     public void set(final MutableTriplet<L, M, R> value) {

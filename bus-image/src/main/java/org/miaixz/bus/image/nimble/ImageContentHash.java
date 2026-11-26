@@ -21,6 +21,8 @@ package org.miaixz.bus.image.nimble;
 
 import java.util.Objects;
 
+import org.miaixz.bus.core.center.function.SupplierX;
+import org.miaixz.bus.core.xyz.FunctionKit;
 import org.miaixz.bus.opencv.core.Mat;
 import org.miaixz.bus.opencv.img_hash.*;
 
@@ -71,14 +73,14 @@ public enum ImageContentHash {
     /**
      * The algorithm factory value.
      */
-    private final AlgorithmFactory algorithmFactory;
+    private final SupplierX<ImgHashBase> algorithmFactory;
 
     /**
      * Creates a new instance.
      *
      * @param algorithmFactory the algorithm factory.
      */
-    ImageContentHash(AlgorithmFactory algorithmFactory) {
+    ImageContentHash(SupplierX<ImgHashBase> algorithmFactory) {
         this.algorithmFactory = algorithmFactory;
     }
 
@@ -88,7 +90,7 @@ public enum ImageContentHash {
      * @return the algorithm.
      */
     public ImgHashBase getAlgorithm() {
-        return algorithmFactory.create();
+        return FunctionKit.getUnwrapped(algorithmFactory);
     }
 
     /**
@@ -117,23 +119,6 @@ public enum ImageContentHash {
             inHash.release();
             outHash.release();
         }
-    }
-
-    /**
-     * Defines the AlgorithmFactory contract.
-     *
-     * @author Kimi Liu
-     */
-    @FunctionalInterface
-    private interface AlgorithmFactory {
-
-        /**
-         * Executes the create operation.
-         *
-         * @return the operation result.
-         */
-        ImgHashBase create();
-
     }
 
 }

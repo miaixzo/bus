@@ -51,6 +51,16 @@ public record LogoutResponse(String id, Optional<String> inResponseTo, String ve
     /**
      * Validates status-response attributes and takes immutable ownership of XML elements.
      *
+     * @param id           required XML ID
+     * @param inResponseTo optional request correlation NCName
+     * @param version      required protocol version, fixed to {@code 2.0}
+     * @param issueInstant required issue instant
+     * @param destination  optional destination URI
+     * @param consent      optional consent URI
+     * @param issuer       optional issuer child
+     * @param signature    optional complete {@code ds:Signature} element bytes
+     * @param extensions   ordered complete protocol extension elements
+     * @param status       required protocol status
      * @throws IllegalArgumentException if a required component, item, or optional container is {@code null}
      * @throws ValidateException        if version, NCName, URI, or retained XML is invalid
      */

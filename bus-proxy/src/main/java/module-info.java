@@ -32,6 +32,7 @@
 module bus.proxy {
 
     requires bus.core;
+    requires bus.errors;
     requires bus.logger;
 
     requires static org.aspectj.weaver;

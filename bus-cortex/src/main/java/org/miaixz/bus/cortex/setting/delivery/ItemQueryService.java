@@ -30,7 +30,6 @@ import org.miaixz.bus.cortex.Keying.SettingSpec;
 import org.miaixz.bus.cortex.Type;
 import org.miaixz.bus.cortex.Vector;
 import org.miaixz.bus.cortex.builtin.SettingGenerator;
-import org.miaixz.bus.cortex.guard.CortexGuard;
 import org.miaixz.bus.cortex.magic.watch.WatchManager;
 import org.miaixz.bus.cortex.release.Release;
 import org.miaixz.bus.cortex.release.ReleaseCodec;
@@ -88,10 +87,6 @@ public final class ItemQueryService implements Curator {
      * Invocation and current process data, independent of authentication.
      */
     private final SettingProvider provider;
-    /**
-     * Optional host access policy, independent of invocation and process data.
-     */
-    private final CortexGuard guard;
 
     /**
      * Creates governed delivery.
@@ -104,11 +99,9 @@ public final class ItemQueryService implements Curator {
      * @param watches   durable subscriptions
      * @param transport notifications
      * @param provider  invocation and current process data
-     * @param guard     optional host access policy
      */
     public ItemQueryService(ReleaseStore releases, RevisionStore revisions, ItemEditor editor, ItemCodec codec,
-            GrayRuleMatcher matcher, WatchStore watches, WatchManager transport, SettingProvider provider,
-            CortexGuard guard) {
+            GrayRuleMatcher matcher, WatchStore watches, WatchManager transport, SettingProvider provider) {
         this.releases = Objects.requireNonNull(releases);
         this.revisions = Objects.requireNonNull(revisions);
         this.editor = Objects.requireNonNull(editor);
@@ -117,7 +110,6 @@ public final class ItemQueryService implements Curator {
         this.watches = Objects.requireNonNull(watches);
         this.transport = Objects.requireNonNull(transport);
         this.provider = Objects.requireNonNull(provider);
-        this.guard = guard;
     }
 
     /**
@@ -179,7 +171,6 @@ public final class ItemQueryService implements Curator {
     public String watch(ItemQuery query, ConsumerX<String> listener) {
         SettingProvider.Context context = provider.current();
         validate(context, query);
-        context.check(guard, "subscribe", "app", query.getApp_id());
         Objects.requireNonNull(listener);
         ItemQuery captured = ItemQuery.builder().tenant_id(query.getTenant_id()).app_id(query.getApp_id())
                 .id(query.getId()).code(query.getCode()).requestId(query.getRequestId()).build();
@@ -223,7 +214,6 @@ public final class ItemQueryService implements Curator {
     @Override
     public void unwatch(String watch_id) {
         SettingProvider.Context context = provider.current();
-        context.check(guard, "unsubscribe", "watch", watch_id);
         var entry = transport.entries().get(watch_id);
         if (entry != null && !context.tenant().equals(entry.getTenant_id()))
             throw new IllegalArgumentException("Watch tenant mismatch");
@@ -269,9 +259,6 @@ public final class ItemQueryService implements Curator {
                 ReleaseCodec.Binding binding = binding(state, query);
                 if (binding != null) {
                     Revision snapshot = state.snapshots().get(binding.source());
-                    context.check(guard, "deliver", "item", snapshot.getItem_id());
-                    if (Integer.valueOf(1).equals(snapshot.getEncrypted()))
-                        context.check(guard, "deliver-secret", "item", snapshot.getItem_id());
                     ItemCodec.Document parsed = state.definitions().computeIfAbsent(
                             snapshot.getId(),
                             ignored -> editor.open(ReleaseCodec.definition(snapshot).item(context.tenant())));
@@ -297,7 +284,7 @@ public final class ItemQueryService implements Curator {
 
     /**
      * Reads current process coordinates for selection and subscription evidence. This checks data scope and the current
-     * heartbeat lease; credentials and principal-to-process access belong to the host guard. The provider must not
+     * heartbeat lease; the host authenticates the caller and authorizes access to the process. The provider must not
      * return retired sessions as active process data.
      *
      * @param context invocation coordinates
@@ -386,7 +373,6 @@ public final class ItemQueryService implements Curator {
                 || (query.getId() == null || query.getId().isBlank())
                         && (query.getCode() == null || query.getCode().isBlank()))
             throw new IllegalArgumentException("Exact runtime application query required");
-        context.check(guard, "deliver", "app", query.getApp_id());
     }
 
     /**

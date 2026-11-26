@@ -760,6 +760,12 @@ public class GitHubSourceAdapter implements VendorAdapter {
 
         /**
          * Validates one exact success or OAuth error callback.
+         *
+         * @param code             authorization code
+         * @param state            browser correlation value
+         * @param error            OAuth error
+         * @param errorDescription OAuth error description
+         * @param errorUri         OAuth error documentation URI
          */
         private CallbackWire {
             Assert.notBlank(state, "GitHub callback state must not be blank");
@@ -791,6 +797,8 @@ public class GitHubSourceAdapter implements VendorAdapter {
 
         /**
          * Validates one private token value.
+         *
+         * @param accessToken sensitive bearer token
          */
         private Access {
             Assert.notBlank(accessToken, "GitHub private access token must not be blank");

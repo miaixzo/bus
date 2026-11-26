@@ -101,11 +101,8 @@ public class ShearProvider extends AbstractProvider {
     }
 
     /**
-     * Description inherited from parent class or interface.
-     * <p>
      * Creates a CAPTCHA image with shear distortion and interference lines. The image is rendered with the code drawn
      * first, then shear transformation is applied, followed by a random interference line.
-     * </p>
      *
      * @param code the CAPTCHA code to render
      * @return the generated CAPTCHA image with shear distortion

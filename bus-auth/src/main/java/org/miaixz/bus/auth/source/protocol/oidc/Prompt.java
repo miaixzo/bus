@@ -59,6 +59,7 @@ public record Prompt(List<String> values) {
     /**
      * Creates and validates an immutable prompt sequence.
      *
+     * @param values ordered unique prompt registration names
      * @throws IllegalArgumentException if values or an entry is {@code null}, or the list is empty
      * @throws ValidateException        if a value has invalid syntax, is duplicated, or none is combined with another
      *                                  value

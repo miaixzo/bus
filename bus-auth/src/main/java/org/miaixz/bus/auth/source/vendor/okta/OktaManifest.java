@@ -168,6 +168,7 @@ public class OktaManifest implements VendorManifest<OktaOptions> {
      * Creates the stateless Okta manifest used by Vendor locator assembly.
      */
     public OktaManifest() {
+        // No initialization required.
     }
 
     /**

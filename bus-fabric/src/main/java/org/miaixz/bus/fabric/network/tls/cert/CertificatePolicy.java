@@ -721,6 +721,7 @@ public class CertificatePolicy implements Policy {
          *
          * @param chain    presented client certificate chain
          * @param authType auth type
+         * @throws CertificateException if the certificate chain fails validation against the configured trust roots
          */
         @Override
         public void checkClientTrusted(final X509Certificate[] chain, final String authType)
@@ -733,6 +734,7 @@ public class CertificatePolicy implements Policy {
          *
          * @param chain    presented server certificate chain
          * @param authType auth type
+         * @throws CertificateException if the certificate chain fails validation against the configured trust roots
          */
         @Override
         public void checkServerTrusted(final X509Certificate[] chain, final String authType)

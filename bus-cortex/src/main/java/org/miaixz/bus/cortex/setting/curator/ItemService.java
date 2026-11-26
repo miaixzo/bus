@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import org.miaixz.bus.cortex.guard.CortexGuard;
 import org.miaixz.bus.cortex.release.ReleaseCodec;
 import org.miaixz.bus.cortex.setting.SettingProvider;
 import org.miaixz.bus.cortex.setting.SettingStore;
@@ -53,10 +52,6 @@ public final class ItemService {
      * Sensitive member editor.
      */
     private final ItemEditor editor;
-    /**
-     * Optional host access policy.
-     */
-    private final CortexGuard guard;
 
     /**
      * Creates management preparation.
@@ -64,13 +59,11 @@ public final class ItemService {
      * @param store     current state
      * @param revisions published content
      * @param editor    sensitive editor
-     * @param guard     optional host access policy
      */
-    public ItemService(ItemStore store, RevisionStore revisions, ItemEditor editor, CortexGuard guard) {
+    public ItemService(ItemStore store, RevisionStore revisions, ItemEditor editor) {
         this.store = Objects.requireNonNull(store);
         this.revisions = Objects.requireNonNull(revisions);
         this.editor = Objects.requireNonNull(editor);
-        this.guard = guard;
     }
 
     /**
@@ -81,7 +74,6 @@ public final class ItemService {
      * @return protected entity or absent
      */
     public Item find(SettingProvider.Context context, String item) {
-        context.check(guard, "read", "item", item);
         Item found = store.find(context.tenant(), item);
         if (found != null && (!context.tenant().equals(found.getTenant_id()) || !item.equals(found.getId())))
             throw new IllegalStateException("Source identity mismatch");
@@ -96,7 +88,6 @@ public final class ItemService {
      * @return protected current entities
      */
     public List<Item> query(SettingProvider.Context context, ItemScope scope) {
-        context.check(guard, "read", "item", scope.getId());
         if (!context.tenant().equals(scope.getTenant_id()) || scope.getLimit() < 1 || scope.getLimit() > 1000
                 || scope.getOffset() < 0)
             throw new IllegalArgumentException("Invalid management scope");
@@ -135,11 +126,8 @@ public final class ItemService {
             Item candidate,
             Map<String, ItemEditor.SecretAction> actions,
             ItemCodec.ValidationLevel level) {
-        context.check(guard, "save", "item", candidate.getId());
         if (!context.tenant().equals(candidate.getTenant_id()))
             throw new IllegalArgumentException("Tenant mismatch");
-        if (actions != null && !actions.isEmpty())
-            context.check(guard, "secret-edit", "item", candidate.getId());
         return editor.prepare(expected, candidate, actions, level);
     }
 
@@ -157,7 +145,6 @@ public final class ItemService {
             String item,
             long edition,
             String publishedRevision) {
-        context.check(guard, "restore", "item", item);
         Item current = find(context, item);
         if (current == null || !Objects.equals(current.getEdition(), edition))
             throw new IllegalStateException("Current edition changed");
@@ -165,8 +152,6 @@ public final class ItemService {
         if (revision == null || !context.tenant().equals(revision.getTenant_id()) || !item.equals(revision.getItem_id())
                 || revision.getRelease_id() == null)
             throw new IllegalArgumentException("Published source snapshot required");
-        if (Integer.valueOf(1).equals(current.getEncrypted()) || Integer.valueOf(1).equals(revision.getEncrypted()))
-            context.check(guard, "secret-edit", "item", item);
         ItemEditor.Restoration restored = editor
                 .restore(current, ReleaseCodec.definition(revision).item(context.tenant()));
         return new SettingStore.Change(item, restored.candidate(), edition, restored.actions(),

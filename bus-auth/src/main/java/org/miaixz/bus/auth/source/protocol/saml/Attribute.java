@@ -45,6 +45,11 @@ public record Attribute(String name, Optional<String> nameFormat, Optional<Strin
     /**
      * Validates required and optional attributes and takes deep immutable ownership of XML values.
      *
+     * @param name         required attribute name
+     * @param nameFormat   optional attribute-name format URI
+     * @param friendlyName optional human-readable attribute name
+     * @param attributes   ordered foreign XML attributes keyed by expanded QName
+     * @param values       ordered complete {@code AttributeValue} element bytes
      * @throws IllegalArgumentException if a component, item, key, or value is {@code null}
      * @throws ValidateException        if a present URI/attribute or XML value is invalid
      */

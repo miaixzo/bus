@@ -38,6 +38,14 @@ public record FileSystemSnapshot(String device, String mountpoint, String type, 
 
     /**
      * Validates and normalizes filesystem identity and sizes.
+     *
+     * @param device      filesystem device
+     * @param mountpoint  mounted path
+     * @param type        filesystem type
+     * @param mode        access mode
+     * @param totalBytes  total capacity in bytes
+     * @param freeBytes   free capacity in bytes
+     * @param usableBytes capacity usable by the current process in bytes
      */
     public FileSystemSnapshot {
         device = normalized(device, "unknown");

@@ -65,6 +65,16 @@ public record DingTalkOptions(Vendor.Id vendor, Vendor.Variant variant, String c
     /**
      * Validates and freezes one DingTalk registration without resolving credential material.
      *
+     * @param vendor          exact DingTalk platform identifier
+     * @param variant         exact {@code oauth2}, {@code account}, or {@code enterprise} variant
+     * @param clientId        registered client identifier, app id, access key, or AppKey
+     * @param credential      external client-secret or shared-secret reference selected by the Variant
+     * @param redirectUri     exact registered callback URI, empty for enterprise
+     * @param scopes          ordered requested login scopes, empty for enterprise
+     * @param orgType         optional official organization type for delegated login
+     * @param corpId          optional organization identifier for delegated login
+     * @param exclusiveLogin  whether delegated login is restricted to one organization
+     * @param exclusiveCorpId optional required organization identifier for exclusive delegated login
      * @throws IllegalArgumentException if a required component or collection member is {@code null} or blank
      * @throws ValidateException        if routing, credential type, scopes, or organization selectors violate the
      *                                  variant

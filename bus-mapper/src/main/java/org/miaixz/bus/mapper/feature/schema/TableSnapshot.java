@@ -20,15 +20,18 @@
 package org.miaixz.bus.mapper.feature.schema;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
 import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.mapper.feature.identifier.IdentifierValidator;
 import org.miaixz.bus.mapper.parsing.ForeignKeyMeta;
 import org.miaixz.bus.mapper.parsing.IndexMeta;
 import org.miaixz.bus.mapper.parsing.PrimaryKeyMeta;
@@ -47,6 +50,16 @@ public class TableSnapshot {
      * Database table name.
      */
     private String name;
+
+    /**
+     * Physical owning schema used to resolve unqualified references; null for catalog-only databases.
+     */
+    private String schema;
+
+    /**
+     * Physical owning catalog used to resolve unqualified references; null when the driver has no catalog scope.
+     */
+    private String catalog;
 
     /**
      * Database table comment.
@@ -79,6 +92,22 @@ public class TableSnapshot {
     private List<ForeignKeyMeta> foreignKeys = new ArrayList<>();
 
     /**
+     * Connection-specific quote and case rules; null for legacy or custom snapshots without captured JDBC rules.
+     */
+    private IdentifierValidator.MetadataRules identifierRules;
+
+    /**
+     * Metadata limitations that prevent complete verification and must not be treated as confirmed equality.
+     */
+    private List<String> issues = new ArrayList<>();
+
+    /**
+     * Physical comparison keys of indexes whose full definition cannot be represented; excluded from automatic
+     * replacement.
+     */
+    private Set<String> incompleteIndexes = new HashSet<>();
+
+    /**
      * Constructs a new TableSnapshot instance.
      */
     public TableSnapshot() {
@@ -97,7 +126,8 @@ public class TableSnapshot {
             return false;
         }
         return normalizeIdentifier(actual.name()).equals(normalizeIdentifier(expected.name()))
-                && actual.unique() == expected.unique() && sameColumns(actual.columns(), expected.columns());
+                && actual.unique() == expected.unique() && Objects.equals(actual.predicate(), expected.predicate())
+                && sameColumns(actual.columns(), expected.columns());
     }
 
     /**
@@ -132,7 +162,7 @@ public class TableSnapshot {
     }
 
     /**
-     * Tests whether two table names match after identifier normalization.
+     * Tests exact normalized table names without inferring an owning namespace or accepting suffix matches.
      *
      * @param actual   the database table name
      * @param expected the expected table name
@@ -141,8 +171,7 @@ public class TableSnapshot {
     public static boolean sameTable(String actual, String expected) {
         String normalizedActual = normalizeIdentifier(actual);
         String normalizedExpected = normalizeIdentifier(expected);
-        return normalizedActual.equals(normalizedExpected) || normalizedActual.endsWith(Symbol.DOT + normalizedExpected)
-                || normalizedExpected.endsWith(Symbol.DOT + normalizedActual);
+        return normalizedActual.equals(normalizedExpected);
     }
 
     /**
@@ -165,15 +194,17 @@ public class TableSnapshot {
     }
 
     /**
-     * Normalizes an identifier for case-insensitive snapshot matching.
+     * Applies the compatibility normalization used when no JDBC naming context was captured. Unquoted names are
+     * lowercased; a complete outer delimiter is removed while preserving the quoted content's case.
      *
      * @param value the identifier value
      * @return the normalized identifier
      */
     public static String normalizeIdentifier(String value) {
-        return value == null ? Normal.EMPTY
-                : StringKit.toLowerCase(
-                        value.replace(Symbol.BACKTICK, Normal.EMPTY).replace(Symbol.DOUBLE_QUOTES, Normal.EMPTY));
+        if (value == null)
+            return Normal.EMPTY;
+        String plain = IdentifierValidator.unquoteIdentifier(value);
+        return plain.equals(value.trim()) ? StringKit.toLowerCase(plain) : plain;
     }
 
     /**
@@ -183,9 +214,7 @@ public class TableSnapshot {
      * @return the matched column snapshot, or {@code null}
      */
     public ColumnSnapshot column(String name) {
-        String normalized = normalizeIdentifier(name);
-        return columns.stream().filter(column -> normalizeIdentifier(column.name()).equals(normalized)).findFirst()
-                .orElse(null);
+        return columns.stream().filter(column -> matches(column.name(), name)).findFirst().orElse(null);
     }
 
     /**
@@ -195,9 +224,7 @@ public class TableSnapshot {
      * @return the matched index metadata, or {@code null}
      */
     public IndexMeta index(String name) {
-        String normalized = normalizeIdentifier(name);
-        return indexes.stream().filter(index -> normalizeIdentifier(index.name()).equals(normalized)).findFirst()
-                .orElse(null);
+        return indexes.stream().filter(index -> matches(index.name(), name)).findFirst().orElse(null);
     }
 
     /**
@@ -228,6 +255,101 @@ public class TableSnapshot {
      */
     public boolean hasForeignKey(ForeignKeyMeta expected) {
         return foreignKeys.stream().anyMatch(actual -> sameForeignKey(actual, expected));
+    }
+
+    /**
+     * Returns the comparison key of a mapped component using captured rules or the legacy normalization fallback.
+     *
+     * @param mapped the mapped component, optionally quoted
+     * @return its physical comparison key
+     */
+    public String key(String mapped) {
+        return identifierRules == null ? normalizeIdentifier(mapped) : identifierRules.key(mapped);
+    }
+
+    /**
+     * Returns the comparison key of an already physical component without repeating mapping-side folding.
+     *
+     * @param actual the physical JDBC component
+     * @return its physical comparison key
+     */
+    public String actualKey(String actual) {
+        return identifierRules == null ? normalizeIdentifier(actual) : identifierRules.actualKey(actual);
+    }
+
+    /**
+     * Compares a physical component with its mapped counterpart in this snapshot's naming context.
+     *
+     * @param actual the physical JDBC component
+     * @param mapped the mapped component, optionally quoted
+     * @return true when both components match under the captured rules or legacy fallback
+     */
+    public boolean matches(String actual, String mapped) {
+        return identifierRules == null ? normalizeIdentifier(actual).equals(normalizeIdentifier(mapped))
+                : identifierRules.matches(actual, mapped);
+    }
+
+    /**
+     * Compares ordered physical and mapped column lists; column order is significant for keys and indexes.
+     *
+     * @param actual   the ordered physical column names
+     * @param expected the ordered mapped column names
+     * @return true when both non-null lists have the same size and matching components
+     */
+    public boolean matchesColumns(List<String> actual, List<String> expected) {
+        if (actual == null || expected == null || actual.size() != expected.size())
+            return false;
+        for (int i = 0; i < actual.size(); i++)
+            if (!matches(actual.get(i), expected.get(i)))
+                return false;
+        return true;
+    }
+
+    /**
+     * Compares an index's name, uniqueness, predicate and ordered columns using this snapshot's naming rules. The
+     * caller must separately reject indexes listed as incomplete.
+     *
+     * @param actual   the observed index
+     * @param expected the mapped index
+     * @return true when both non-null definitions match in the represented dimensions
+     */
+    public boolean matchesIndex(IndexMeta actual, IndexMeta expected) {
+        return actual != null && expected != null && matches(actual.name(), expected.name())
+                && actual.unique() == expected.unique() && Objects.equals(actual.predicate(), expected.predicate())
+                && matchesColumns(actual.columns(), expected.columns());
+    }
+
+    /**
+     * Compares table identities after resolving omitted qualifiers against this snapshot's owning namespace. Without
+     * captured rules, comparison uses the exact legacy normalized name rather than a suffix match.
+     *
+     * @param actual   the observed qualified table name, retaining delimiters around physical components
+     * @param expected the mapped table reference
+     * @return true when the resolved catalog, schema and table identities agree
+     */
+    public boolean matchesTable(String actual, String expected) {
+        if (identifierRules == null)
+            return sameTable(actual, expected);
+        return qualifiedKey(actual).equals(qualifiedKey(expected));
+    }
+
+    /**
+     * Resolves one-, two-, or three-component references into catalog/schema/table comparison keys. Two components mean
+     * catalog/table when this snapshot has no schema; otherwise they mean schema/table.
+     *
+     * @param name the qualified or unqualified reference
+     * @return three comparison components with absent qualifiers represented by empty strings
+     */
+    private List<String> qualifiedKey(String name) {
+        List<String> parts = identifierRules.parts(name).stream().map(identifierRules::key).toList();
+        String c = catalog == null ? Normal.EMPTY : identifierRules.actualKey(catalog);
+        String s = schema == null ? Normal.EMPTY : identifierRules.actualKey(schema);
+        if (parts.size() == 3)
+            return parts;
+        if (parts.size() == 2)
+            return schema == null ? List.of(parts.getFirst(), Normal.EMPTY, parts.getLast())
+                    : List.of(c, parts.getFirst(), parts.getLast());
+        return List.of(c, s, parts.getFirst());
     }
 
 }

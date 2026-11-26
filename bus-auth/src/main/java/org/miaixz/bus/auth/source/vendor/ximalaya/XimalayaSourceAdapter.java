@@ -1000,6 +1000,8 @@ public class XimalayaSourceAdapter implements VendorAdapter {
         /**
          * Validates private Ximalaya access material.
          *
+         * @param accessToken sensitive access token
+         * @param userId      token-bound Ximalaya user identifier
          * @throws IllegalArgumentException if a component is blank
          */
         private Access {

@@ -1,6 +1,39 @@
 {
   "properties": [
     {
+      "name": "bus.errors.logging.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Whether the standard Bus error log subscription sends records to bus-logger. Public response handling is independent of this setting. Independent diagnostics can use the JDK logging fallback.",
+      "defaultValue": true
+    },
+    {
+      "name": "bus.errors.routing.cache-control",
+      "type": "java.lang.String",
+      "description": "Optional Cache-Control override for matching native HTTP errors. An empty value preserves an approved header if present.",
+      "defaultValue": ""
+    },
+    {
+      "name": "bus.errors.routing.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Whether to use the verified status, approved headers and an empty body for matching listener, path and status rules. Other errors use their protocol or legacy format.",
+      "defaultValue": false
+    },
+    {
+      "name": "bus.errors.routing.path-prefixes",
+      "type": "java.util.List<java.lang.String>",
+      "description": "Required when enabled. Use literal slash-terminated listener-relative prefixes or / for the entire listener. Omit the context and Servlet mapping prefixes for MVC."
+    },
+    {
+      "name": "bus.errors.routing.statuses",
+      "type": "java.util.Set<java.lang.Integer>",
+      "description": "Required when enabled. Explicit numeric HTTP statuses from 400 through 599 that are eligible for native rendering when verified."
+    },
+    {
+      "name": "bus.errors.routing.targets",
+      "type": "java.util.Set<org.miaixz.bus.starter.errors.ErrorsProperties$Target>",
+      "description": "Required when enabled. Select mvc, vortex, or both for the same route policy. Vortex selects the reactive gateway port. A Servlet management port is an mvc target."
+    },
+    {
       "name": "bus.auth.enabled",
       "type": "java.lang.Boolean",
       "description": "Whether bus-auth Source discovery, Vendor configuration, and Runtime integration are enabled.",
@@ -16,6 +49,77 @@
       "type": "org.miaixz.bus.starter.auth.AuthProperties$SecretPolicy",
       "description": "Whether short JWT String key material is accepted with a warning or rejected during startup.",
       "defaultValue": "COMPATIBLE"
+    },
+    {
+      "name": "bus.auth.guard.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Installs the Servlet service identity filter and configured gateway clients.",
+      "defaultValue": false
+    },
+    {
+      "name": "bus.auth.guard.secret",
+      "type": "java.lang.String",
+      "description": "Base64-encoded root for service token key derivation. Supply it through the deployment environment when a Guard direction is enabled."
+    },
+    {
+      "name": "bus.auth.guard.rotate",
+      "type": "java.lang.Long",
+      "description": "Service token key rotation period in seconds.",
+      "defaultValue": 86400
+    },
+    {
+      "name": "bus.auth.guard.label",
+      "type": "java.lang.String",
+      "description": "Domain separation label used to derive service token signing keys.",
+      "defaultValue": "miaixz-bus-anchor-v1:"
+    },
+    {
+      "name": "bus.auth.guard.inbound.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Whether the Auth Guard reads and verifies inbound service tokens.",
+      "defaultValue": false
+    },
+    {
+      "name": "bus.auth.guard.outbound.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Whether the Auth Guard issues outbound service tokens.",
+      "defaultValue": false
+    },
+    {
+      "name": "bus.auth.guard.bearer.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Whether direct client Authorization Bearer authentication is enabled.",
+      "defaultValue": true
+    },
+    {
+      "name": "bus.auth.guard.bearer.max-length",
+      "type": "java.lang.Integer",
+      "description": "Maximum Bearer credential length for V1 request signing.",
+      "defaultValue": 8192
+    },
+    {
+      "name": "bus.auth.guard.api-key.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Whether client API key authentication is enabled.",
+      "defaultValue": true
+    },
+    {
+      "name": "bus.auth.guard.api-key.max-length",
+      "type": "java.lang.Integer",
+      "description": "Maximum API key credential length for V1 request signing.",
+      "defaultValue": 512
+    },
+    {
+      "name": "bus.auth.guard.signing.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Whether to verify client request signatures required by gateway assets.",
+      "defaultValue": true
+    },
+    {
+      "name": "bus.auth.guard.signing.skew-minutes",
+      "type": "java.lang.Integer",
+      "description": "Maximum allowed difference in minutes between the REST request timestamp and the server clock.",
+      "defaultValue": 30
     },
     {
       "name": "bus.cache.enabled",

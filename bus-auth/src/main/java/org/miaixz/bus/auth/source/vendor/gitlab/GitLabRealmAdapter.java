@@ -25,8 +25,6 @@ import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
-import java.util.function.Function;
-import java.util.function.Supplier;
 
 import org.miaixz.bus.auth.*;
 import org.miaixz.bus.auth.Credential;
@@ -41,6 +39,8 @@ import org.miaixz.bus.auth.source.vendor.VendorTargets;
 import org.miaixz.bus.auth.worker.loader.SecretLoader;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.basic.normal.Errors;
+import org.miaixz.bus.core.center.function.FunctionX;
+import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.codec.binary.Base64;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Charset;
@@ -52,6 +52,7 @@ import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.net.url.RFC3986;
+import org.miaixz.bus.core.xyz.FunctionKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.extra.json.JsonValue;
@@ -548,15 +549,15 @@ public class GitLabRealmAdapter implements VendorAdapter {
     private static String fallback(
             final JsonValue.ObjectValue object,
             final String name,
-            final Supplier<String> fallback) {
+            final SupplierX<String> fallback) {
         final JsonValue value = object.values().get(name);
         if (value == null || value instanceof JsonValue.NullValue) {
-            return fallback.get();
+            return FunctionKit.getUnwrapped(fallback);
         }
         if (!(value instanceof JsonValue.StringValue text)) {
             throw new ValidateException(name + " must be a string or null");
         }
-        return StringKit.hasText(text.value()) ? requireText(text.value(), name) : fallback.get();
+        return StringKit.hasText(text.value()) ? requireText(text.value(), name) : FunctionKit.getUnwrapped(fallback);
     }
 
     /**
@@ -1133,7 +1134,7 @@ public class GitLabRealmAdapter implements VendorAdapter {
     private <T> CompletionStage<Outcome<T>> withSecret(
             final Context context,
             final Timeout timeout,
-            final Function<SecretLease, Outcome<T>> operation) {
+            final FunctionX<SecretLease, Outcome<T>> operation) {
         final CompletionStage<Outcome<SecretLoader.Record>> loaded;
         try {
             loaded = services.secretLoader()
@@ -1169,7 +1170,7 @@ public class GitLabRealmAdapter implements VendorAdapter {
     private <T> CompletionStage<Outcome<T>> execute(
             final SecretLoader.Record loaded,
             final Timeout timeout,
-            final Function<SecretLease, Outcome<T>> operation) {
+            final FunctionX<SecretLease, Outcome<T>> operation) {
         final SecretLease raw = loaded == null ? null : loaded.lease();
         final SecretLease secret;
         try {
@@ -1186,7 +1187,9 @@ public class GitLabRealmAdapter implements VendorAdapter {
                     return failed(ErrorCode._408, "GitLab Enterprise operation has no remaining timeout");
                 }
                 try {
-                    return Assert.notNull(operation.apply(secret), "GitLab Enterprise operation returned no outcome");
+                    return Assert.notNull(
+                            FunctionKit.applyUnwrapped(operation, secret),
+                            "GitLab Enterprise operation returned no outcome");
                 } catch (TimeoutException ignored) {
                     return failed(ErrorCode._408, "GitLab Enterprise operation timed out");
                 } catch (ValidateException ignored) {
@@ -1333,11 +1336,11 @@ public class GitLabRealmAdapter implements VendorAdapter {
             final SecretLease secret,
             final Timeout timeout,
             final String operation,
-            final Function<JsonValue.ObjectValue, T> parser) {
+            final FunctionX<JsonValue.ObjectValue, T> parser) {
         return request(url, secret, timeout, operation, response -> {
             final List<T> items = new ArrayList<>();
             for (JsonValue value : array(response)) {
-                items.add(parser.apply(requiredObject(value, "GitLab collection item")));
+                items.add(FunctionKit.applyUnwrapped(parser, requiredObject(value, "GitLab collection item")));
             }
             return new WirePage<>(items, nextPage(response.headers(), page));
         });
@@ -1376,7 +1379,7 @@ public class GitLabRealmAdapter implements VendorAdapter {
             final SecretLease secret,
             final Timeout timeout,
             final String operation,
-            final Function<Response, T> reader) {
+            final FunctionX<Response, T> reader) {
         if (timeout.expired()) {
             return failed(ErrorCode._408, "GitLab Enterprise request has no remaining timeout");
         }
@@ -1394,7 +1397,7 @@ public class GitLabRealmAdapter implements VendorAdapter {
             if (!response.successful()) {
                 return httpFailure(response, operation);
             }
-            return Outcome.succeeded(reader.apply(response));
+            return Outcome.succeeded(FunctionKit.applyUnwrapped(reader, response));
         } catch (RuntimeException ignored) {
             return failed(ErrorCode._502, "GitLab Enterprise returned an invalid response");
         }
@@ -1736,6 +1739,7 @@ public class GitLabRealmAdapter implements VendorAdapter {
                 case ALL_MEMBERS -> null;
             };
         }
+
     }
 
     /**
@@ -1750,6 +1754,10 @@ public class GitLabRealmAdapter implements VendorAdapter {
 
         /**
          * Validates one cursor state.
+         *
+         * @param phase    snapshot phase represented by this cursor
+         * @param kinds    requested kinds
+         * @param position recoverable position
          */
         private CursorState {
             phase = Assert.notNull(phase, "GitLab cursor phase must not be null");
@@ -1772,6 +1780,7 @@ public class GitLabRealmAdapter implements VendorAdapter {
             final Phase initial = ordered.contains(Realm.Kind.ORGANIZATION) ? Phase.ROOT : Phase.DIRECT_MEMBERS;
             return new CursorState(initial, ordered, Position.initial());
         }
+
     }
 
     /**
@@ -1786,6 +1795,10 @@ public class GitLabRealmAdapter implements VendorAdapter {
 
         /**
          * Validates one position.
+         *
+         * @param start          one-based descendant page
+         * @param parentId       current replay group identifier
+         * @param relationOffset one-based member page or zero
          */
         private Position {
             if (start <= 0 || relationOffset < 0) {
@@ -1840,6 +1853,7 @@ public class GitLabRealmAdapter implements VendorAdapter {
                 throw new ValidateException("GitLab cursor position does not belong to its phase");
             }
         }
+
     }
 
     /**
@@ -1854,6 +1868,9 @@ public class GitLabRealmAdapter implements VendorAdapter {
 
         /**
          * Freezes one page.
+         *
+         * @param items minimal items
+         * @param next  next page or zero
          */
         private WirePage {
             items = List.copyOf(Assert.notNull(items, "GitLab collection items must not be null"));
@@ -1861,6 +1878,7 @@ public class GitLabRealmAdapter implements VendorAdapter {
                 throw new ValidateException("GitLab collection next page must not be negative");
             }
         }
+
     }
 
     /**
@@ -1876,6 +1894,11 @@ public class GitLabRealmAdapter implements VendorAdapter {
 
         /**
          * Freezes and validates one replay result.
+         *
+         * @param items  groups on the official replay page
+         * @param index  selected group index or negative at natural exhaustion
+         * @param next   following outer page or zero
+         * @param parent selected group or empty at natural exhaustion
          */
         private ParentPage {
             items = List.copyOf(Assert.notNull(items, "GitLab replay groups must not be null"));
@@ -1885,6 +1908,7 @@ public class GitLabRealmAdapter implements VendorAdapter {
                 throw new ValidateException("GitLab replay parent state is inconsistent");
             }
         }
+
     }
 
     /**
@@ -1900,6 +1924,11 @@ public class GitLabRealmAdapter implements VendorAdapter {
 
         /**
          * Validates one user.
+         *
+         * @param id       stable identifier
+         * @param username login identifier
+         * @param name     display name
+         * @param state    normalized state
          */
         private User {
             id = requireText(id, "GitLab user identifier");
@@ -1907,6 +1936,7 @@ public class GitLabRealmAdapter implements VendorAdapter {
             name = requireText(name, "GitLab user display name");
             state = Assert.notNull(state, "GitLab user state must not be null");
         }
+
     }
 
     /**
@@ -1922,6 +1952,11 @@ public class GitLabRealmAdapter implements VendorAdapter {
 
         /**
          * Validates one group.
+         *
+         * @param id       stable identifier
+         * @param fullPath stable full path
+         * @param name     display name
+         * @param parentId optional stable parent identifier
          */
         private Group {
             id = requireText(id, "GitLab group identifier");
@@ -1929,6 +1964,7 @@ public class GitLabRealmAdapter implements VendorAdapter {
             name = requireText(name, "GitLab group name");
             parentId = Assert.notNull(parentId, "GitLab group parent container must not be null");
         }
+
     }
 
     /**
@@ -1942,6 +1978,9 @@ public class GitLabRealmAdapter implements VendorAdapter {
 
         /**
          * Validates one membership.
+         *
+         * @param user        stable user projection
+         * @param accessLevel official access level
          */
         private Member {
             user = Assert.notNull(user, "GitLab member user must not be null");
@@ -1949,6 +1988,7 @@ public class GitLabRealmAdapter implements VendorAdapter {
                 throw new ValidateException("GitLab member access level must not be negative");
             }
         }
+
     }
 
 }

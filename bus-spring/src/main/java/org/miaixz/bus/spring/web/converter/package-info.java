@@ -18,7 +18,8 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Reusable Spring MVC HTTP message converters. This package must not select starter features.
+ * Reusable Spring MVC HTTP message converters and return-value handlers. Starter configuration selects optional
+ * features.
  *
  * @author Kimi Liu
  */

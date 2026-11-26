@@ -1306,7 +1306,9 @@ class instead of introducing an inverse dependency from `bus-core.Audit`. The ex
 ordering rules, without a separate switch for common property placement.
 Sorting uses schema-local metadata copies and does not change cached CRUD mappings or the order within composite
 keys, indexes, and foreign keys. Direct dialect `createTable` calls retain the supplied metadata order.
-Existing tables are never reordered, and later added columns are not guaranteed to precede common properties.
+By default, column order differences on existing tables do not trigger a migration, and later added columns
+are not guaranteed to precede common properties. To reorder an existing table, select it explicitly in the
+configuration example below and use a dialect that supports column reordering.
 Dry runs, scripts, and execution share the same ordering.
 
 Focused offline verification uses the actual Lattice `Assets` mapping, the `dp_` prefix, and `dp_infra_assets` as the table
@@ -1339,6 +1341,23 @@ keeps its existing pagination and UPSERT behavior while exposing schema and meta
 the corresponding dialect class under `org.miaixz.bus.mapper.dialect`, so MySQL DDL is in `MySql`, PostgreSQL DDL is in
 `PostgreSql`, and H2 DDL is in `H2`.
 
+MySQL 8.4 InnoDB reorders columns with its native ALTER operation. Schedule it in a maintenance window. SQLite
+rebuilds ordinary tables in a transaction, comparing rows and checking the source definition and dependent objects
+before cutover. SQLite stops the rebuild if foreign keys, external dependencies, or a table definition it cannot
+preserve are present. Structural changes that require integrity checks run through startup schema synchronization.
+
+| Dialect | Schema maintenance coverage |
+| --- | --- |
+| PostgreSQL | Schema moves and constraint operations supported, with live verification for default removal and partial uniqueness |
+| MySQL 8.4 InnoDB | Live verification for column reordering, default removal and single-column conditional uniqueness |
+| SQLite | Live verification for transactional rebuilds of ordinary tables, column reordering, default removal and partial uniqueness |
+| H2 and HSQLDB | Live verification for default removal |
+| SQL Server and SQL Server 2012 | Named default constraint removal and filtered index discovery implemented, engine verification pending |
+| Db2, Dameng and Firebird | Native default removal and check-constraint DDL implemented, engine verification pending |
+
+When a dialect cannot enforce an equivalent mapped conditional index, startup synchronization explains why in the
+schema report. Each dialect continues to provide ordinary schema operations according to its declared capabilities.
+
 This feature does not use Flyway, does not use Liquibase, and does not create a migration history table.
 
 -----
@@ -1346,56 +1365,77 @@ This feature does not use Flyway, does not use Liquibase, and does not create a 
 ## 🔧 Configuration Example
 
 ```yaml
-mapper:
-  # Global configuration, effective for all databases
-  # Tenant Isolation
-  tenant:
-    column: tenant_id
-    ignore: sys_tenant,sys_config,sys_dict
+bus:
+  mapper:
+    # Global configuration, effective for all databases
+    # Tenant Isolation
+    tenant:
+      column: tenant_id
+      ignore: sys_tenant,sys_config,sys_dict
 
-  # SQL Auditing
-  audit:
-    enabled: true
-    slow-sql-threshold: 500
-    log-parameters: true
-    print-console: true
+    # SQL Auditing
+    audit:
+      enabled: true
+      slow-sql-threshold: 500
+      log-parameters: true
+      print-console: true
 
-  # Data Population
-  populate:
-    created: true
-    modified: true
-    creator: true
-    modifier: true
+    # Data Population
+    populate:
+      created: true
+      modified: true
+      creator: true
+      modifier: true
 
-  # Data Visibility
-  visible:
-    enabled: true
-    ignore: sys_admin_table
+    # Data Visibility
+    visible:
+      enabled: true
+      ignore: sys_admin_table
 
-  # Affix Rules
-  affix:
-    enabled: true
-    prefix:
-      value: prod_
-      ignore: sys_log,sys_config
-    suffix:
-      value: _archive
-      ignore: sys_log
+    # Preview schema changes at startup. Verify the backup and review the report
+    # before applying changes in a maintenance window.
+    schema:
+      enabled: true
+      mode: UPDATE
+      dry-run: true
+      # Match the table name from the entity mapping before applying the affixes below.
+      include-tables: [infra_lookup]
+      # Set the namespace component supported by the JDBC driver. Leave unsupported components unset.
+      # target-schema: public
+      # target-catalog: example
+      # Restrict dangerous operations to default removal and column reordering.
+      allow-dangerous: true
+      dangerous-whitelist: [DROP_COLUMN_DEFAULT, REORDER_COLUMNS]
+      # Use the physical table name after applying affixes. For default removal, also specify the physical column name.
+      reorder-tables: [prod_infra_lookup_archive]
+      drop-column-defaults: [prod_infra_lookup_archive.status]
+      # Before removing a default, confirm that the application supplies values for required columns.
+    # Handle identity and generated columns separately.
 
-  # Per-Database Configuration (overrides global)
-  configurationProperties:
-    com_miaixz:
-      affix:
-        prefix:
-          value: dp_
+    # Affix Rules
+    affix:
+      enabled: true
+      prefix:
+        value: prod_
+        ignore: sys_log,sys_config
+      suffix:
+        value: _archive
+        ignore: sys_log
+
+    # Per-Database Configuration (overrides global)
+    configurationProperties:
+      com_miaixz:
+        affix:
+          prefix:
+            value: dp_
+            ignore: tenant,assets,license
+          suffix:
+            value: _archive
+            ignore: tenant,assets
+        tenant:
+          column: tenant_id
           ignore: tenant,assets,license
-        suffix:
-          value: _archive
-          ignore: tenant,assets
-      tenant:
-        column: tenant_id
-        ignore: tenant,assets,license
-    # ......
+      # ......
 ```
 
 -----

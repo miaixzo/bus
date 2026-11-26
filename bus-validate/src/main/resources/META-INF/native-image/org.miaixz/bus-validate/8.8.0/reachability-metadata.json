@@ -257,6 +257,277 @@
       ]
     },
     {
+      "type": "org.miaixz.bus.validate.Provider",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "getAnnotation",
+          "parameterTypes": [
+            "java.lang.Class"
+          ]
+        },
+        {
+          "name": "isAnnotation",
+          "parameterTypes": [
+            "java.lang.annotation.Annotation"
+          ]
+        },
+        {
+          "name": "isArray",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "isCollection",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "isGroup",
+          "parameterTypes": [
+            "java.lang.String[]",
+            "java.util.List"
+          ]
+        },
+        {
+          "name": "isMap",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "on",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "on",
+          "parameterTypes": [
+            "java.lang.Object",
+            "java.lang.annotation.Annotation[]"
+          ]
+        },
+        {
+          "name": "on",
+          "parameterTypes": [
+            "java.lang.Object",
+            "java.lang.annotation.Annotation[]",
+            "org.miaixz.bus.validate.Context"
+          ]
+        },
+        {
+          "name": "on",
+          "parameterTypes": [
+            "java.lang.Object",
+            "java.lang.annotation.Annotation[]",
+            "org.miaixz.bus.validate.Context",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "on",
+          "parameterTypes": [
+            "java.lang.Object",
+            "org.miaixz.bus.validate.Context"
+          ]
+        },
+        {
+          "name": "resolve",
+          "parameterTypes": [
+            "org.miaixz.bus.validate.magic.Criterion"
+          ]
+        },
+        {
+          "name": "resolve",
+          "parameterTypes": [
+            "org.miaixz.bus.validate.magic.Criterion",
+            "org.miaixz.bus.validate.Context"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.validate.Registry",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "contains",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getInstance",
+          "parameterTypes": []
+        },
+        {
+          "name": "register",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "require",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "require",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.Class"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.validate.Verified",
+      "fields": [
+        {
+          "name": "context"
+        },
+        {
+          "name": "field"
+        },
+        {
+          "name": "list"
+        },
+        {
+          "name": "object"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.Object",
+            "java.lang.annotation.Annotation[]"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.Object",
+            "java.lang.annotation.Annotation[]",
+            "org.miaixz.bus.validate.Context"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.Object",
+            "java.lang.annotation.Annotation[]",
+            "org.miaixz.bus.validate.Context",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.Object",
+            "org.miaixz.bus.validate.Context"
+          ]
+        },
+        {
+          "name": "access",
+          "parameterTypes": []
+        },
+        {
+          "name": "build",
+          "parameterTypes": [
+            "java.lang.annotation.Annotation",
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "canEqual",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "getContext",
+          "parameterTypes": []
+        },
+        {
+          "name": "getField",
+          "parameterTypes": []
+        },
+        {
+          "name": "getList",
+          "parameterTypes": []
+        },
+        {
+          "name": "getObject",
+          "parameterTypes": []
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "resolve",
+          "parameterTypes": [
+            "java.lang.annotation.Annotation[]"
+          ]
+        },
+        {
+          "name": "resolve",
+          "parameterTypes": [
+            "org.miaixz.bus.validate.Context",
+            "java.lang.annotation.Annotation[]"
+          ]
+        },
+        {
+          "name": "setContext",
+          "parameterTypes": [
+            "org.miaixz.bus.validate.Context"
+          ]
+        },
+        {
+          "name": "setField",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setList",
+          "parameterTypes": [
+            "java.util.List"
+          ]
+        },
+        {
+          "name": "setObject",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        }
+      ]
+    },
+    {
       "type": "org.miaixz.bus.validate.magic.Checker",
       "methods": [
         {
@@ -527,782 +798,6 @@
           "name": "not",
           "parameterTypes": [
             "org.miaixz.bus.validate.magic.Validator"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.validate.nimble.AlwaysMatcher",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "on",
-          "parameterTypes": [
-            "java.lang.Object",
-            "java.lang.Object",
-            "org.miaixz.bus.validate.Context"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.validate.nimble.BlankMatcher",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "on",
-          "parameterTypes": [
-            "java.lang.Object",
-            "org.miaixz.bus.validate.Context"
-          ]
-        },
-        {
-          "name": "on",
-          "parameterTypes": [
-            "java.lang.Object",
-            "org.miaixz.bus.validate.magic.annotation.Blank",
-            "org.miaixz.bus.validate.Context"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.validate.nimble.ChineseMatcher",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "on",
-          "parameterTypes": [
-            "java.lang.Object",
-            "org.miaixz.bus.validate.magic.annotation.Chinese",
-            "org.miaixz.bus.validate.Context"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.validate.nimble.CitizenIdMatcher",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "on",
-          "parameterTypes": [
-            "java.lang.Object",
-            "org.miaixz.bus.validate.magic.annotation.CitizenId",
-            "org.miaixz.bus.validate.Context"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.validate.nimble.CompareMatcher",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "on",
-          "parameterTypes": [
-            "java.lang.Object",
-            "org.miaixz.bus.validate.magic.annotation.Compare",
-            "org.miaixz.bus.validate.Context"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.validate.nimble.DateMatcher",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "on",
-          "parameterTypes": [
-            "java.lang.Object",
-            "org.miaixz.bus.validate.magic.annotation.Date",
-            "org.miaixz.bus.validate.Context"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.validate.nimble.EachMatcher",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "fastValidate",
-          "parameterTypes": [
-            "java.util.List",
-            "java.lang.Object",
-            "org.miaixz.bus.validate.Context"
-          ]
-        },
-        {
-          "name": "on",
-          "parameterTypes": [
-            "java.lang.Object",
-            "org.miaixz.bus.validate.magic.annotation.Each",
-            "org.miaixz.bus.validate.Context"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.validate.nimble.EmailMatcher",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "on",
-          "parameterTypes": [
-            "java.lang.Object",
-            "org.miaixz.bus.validate.magic.annotation.Email",
-            "org.miaixz.bus.validate.Context"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.validate.nimble.EnglishMatcher",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "on",
-          "parameterTypes": [
-            "java.lang.Object",
-            "org.miaixz.bus.validate.magic.annotation.English",
-            "org.miaixz.bus.validate.Context"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.validate.nimble.EqualsMatcher",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "on",
-          "parameterTypes": [
-            "java.lang.Object",
-            "org.miaixz.bus.validate.magic.annotation.Equals",
-            "org.miaixz.bus.validate.Context"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.validate.nimble.FalseMatcher",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "on",
-          "parameterTypes": [
-            "java.lang.Boolean",
-            "org.miaixz.bus.validate.magic.annotation.False",
-            "org.miaixz.bus.validate.Context"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.validate.nimble.InEnumMatcher",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "on",
-          "parameterTypes": [
-            "java.lang.Object",
-            "org.miaixz.bus.validate.magic.annotation.InEnum",
-            "org.miaixz.bus.validate.Context"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.validate.nimble.InMatcher",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "on",
-          "parameterTypes": [
-            "java.lang.Object",
-            "org.miaixz.bus.validate.magic.annotation.In",
-            "org.miaixz.bus.validate.Context"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.validate.nimble.IntRangeMatcher",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "on",
-          "parameterTypes": [
-            "java.lang.Object",
-            "org.miaixz.bus.validate.magic.annotation.IntRange",
-            "org.miaixz.bus.validate.Context"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.validate.nimble.IPAddressMatcher",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "on",
-          "parameterTypes": [
-            "java.lang.Object",
-            "org.miaixz.bus.validate.magic.annotation.IPAddress",
-            "org.miaixz.bus.validate.Context"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.validate.nimble.LengthMatcher",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "on",
-          "parameterTypes": [
-            "java.lang.Object",
-            "org.miaixz.bus.validate.magic.annotation.Length",
-            "org.miaixz.bus.validate.Context"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.validate.nimble.MobileMatcher",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "on",
-          "parameterTypes": [
-            "java.lang.Object",
-            "org.miaixz.bus.validate.magic.annotation.Mobile",
-            "org.miaixz.bus.validate.Context"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.validate.nimble.MultipleMatcher",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "on",
-          "parameterTypes": [
-            "java.lang.Object",
-            "org.miaixz.bus.validate.magic.annotation.Multiple",
-            "org.miaixz.bus.validate.Context"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.validate.nimble.NotBlankMatcher",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "on",
-          "parameterTypes": [
-            "java.lang.Object",
-            "org.miaixz.bus.validate.Context"
-          ]
-        },
-        {
-          "name": "on",
-          "parameterTypes": [
-            "java.lang.Object",
-            "org.miaixz.bus.validate.magic.annotation.NotBlank",
-            "org.miaixz.bus.validate.Context"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.validate.nimble.NotEmptyMatcher",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "on",
-          "parameterTypes": [
-            "java.lang.Object",
-            "org.miaixz.bus.validate.magic.annotation.NotEmpty",
-            "org.miaixz.bus.validate.Context"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.validate.nimble.NotInMatcher",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "on",
-          "parameterTypes": [
-            "java.lang.Object",
-            "org.miaixz.bus.validate.magic.annotation.NotIn",
-            "org.miaixz.bus.validate.Context"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.validate.nimble.NotNullMatcher",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "on",
-          "parameterTypes": [
-            "java.lang.Object",
-            "org.miaixz.bus.validate.magic.annotation.NotNull",
-            "org.miaixz.bus.validate.Context"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.validate.nimble.NullMatcher",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "on",
-          "parameterTypes": [
-            "java.lang.Object",
-            "org.miaixz.bus.validate.Context"
-          ]
-        },
-        {
-          "name": "on",
-          "parameterTypes": [
-            "java.lang.Object",
-            "org.miaixz.bus.validate.magic.annotation.Null",
-            "org.miaixz.bus.validate.Context"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.validate.nimble.PhoneMatcher",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "on",
-          "parameterTypes": [
-            "java.lang.Object",
-            "org.miaixz.bus.validate.magic.annotation.Phone",
-            "org.miaixz.bus.validate.Context"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.validate.nimble.ReflectMatcher",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "on",
-          "parameterTypes": [
-            "java.lang.Object",
-            "org.miaixz.bus.validate.magic.annotation.Reflect",
-            "org.miaixz.bus.validate.Context"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.validate.nimble.RegexMatcher",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "on",
-          "parameterTypes": [
-            "java.lang.Object",
-            "org.miaixz.bus.validate.magic.annotation.Regex",
-            "org.miaixz.bus.validate.Context"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.validate.nimble.SizeMatcher",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "on",
-          "parameterTypes": [
-            "java.lang.Object",
-            "org.miaixz.bus.validate.magic.annotation.Size",
-            "org.miaixz.bus.validate.Context"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.validate.nimble.TrueMatcher",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "on",
-          "parameterTypes": [
-            "java.lang.Boolean",
-            "org.miaixz.bus.validate.magic.annotation.True",
-            "org.miaixz.bus.validate.Context"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.validate.Provider",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "getAnnotation",
-          "parameterTypes": [
-            "java.lang.Class"
-          ]
-        },
-        {
-          "name": "isAnnotation",
-          "parameterTypes": [
-            "java.lang.annotation.Annotation"
-          ]
-        },
-        {
-          "name": "isArray",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "isCollection",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "isGroup",
-          "parameterTypes": [
-            "java.lang.String[]",
-            "java.util.List"
-          ]
-        },
-        {
-          "name": "isMap",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "on",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "on",
-          "parameterTypes": [
-            "java.lang.Object",
-            "java.lang.annotation.Annotation[]"
-          ]
-        },
-        {
-          "name": "on",
-          "parameterTypes": [
-            "java.lang.Object",
-            "java.lang.annotation.Annotation[]",
-            "org.miaixz.bus.validate.Context"
-          ]
-        },
-        {
-          "name": "on",
-          "parameterTypes": [
-            "java.lang.Object",
-            "java.lang.annotation.Annotation[]",
-            "org.miaixz.bus.validate.Context",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "on",
-          "parameterTypes": [
-            "java.lang.Object",
-            "org.miaixz.bus.validate.Context"
-          ]
-        },
-        {
-          "name": "resolve",
-          "parameterTypes": [
-            "org.miaixz.bus.validate.magic.Criterion"
-          ]
-        },
-        {
-          "name": "resolve",
-          "parameterTypes": [
-            "org.miaixz.bus.validate.magic.Criterion",
-            "org.miaixz.bus.validate.Context"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.validate.Registry",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "contains",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "getInstance",
-          "parameterTypes": []
-        },
-        {
-          "name": "register",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "require",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "require",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.Class"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.validate.Verified",
-      "fields": [
-        {
-          "name": "context"
-        },
-        {
-          "name": "field"
-        },
-        {
-          "name": "list"
-        },
-        {
-          "name": "object"
-        }
-      ],
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.Object",
-            "java.lang.annotation.Annotation[]"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.Object",
-            "java.lang.annotation.Annotation[]",
-            "org.miaixz.bus.validate.Context"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.Object",
-            "java.lang.annotation.Annotation[]",
-            "org.miaixz.bus.validate.Context",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.Object",
-            "org.miaixz.bus.validate.Context"
-          ]
-        },
-        {
-          "name": "access",
-          "parameterTypes": []
-        },
-        {
-          "name": "build",
-          "parameterTypes": [
-            "java.lang.annotation.Annotation",
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "canEqual",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "equals",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "getContext",
-          "parameterTypes": []
-        },
-        {
-          "name": "getField",
-          "parameterTypes": []
-        },
-        {
-          "name": "getList",
-          "parameterTypes": []
-        },
-        {
-          "name": "getObject",
-          "parameterTypes": []
-        },
-        {
-          "name": "hashCode",
-          "parameterTypes": []
-        },
-        {
-          "name": "resolve",
-          "parameterTypes": [
-            "java.lang.annotation.Annotation[]"
-          ]
-        },
-        {
-          "name": "resolve",
-          "parameterTypes": [
-            "org.miaixz.bus.validate.Context",
-            "java.lang.annotation.Annotation[]"
-          ]
-        },
-        {
-          "name": "setContext",
-          "parameterTypes": [
-            "org.miaixz.bus.validate.Context"
-          ]
-        },
-        {
-          "name": "setField",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setList",
-          "parameterTypes": [
-            "java.util.List"
-          ]
-        },
-        {
-          "name": "setObject",
-          "parameterTypes": [
-            "java.lang.Object"
           ]
         }
       ]
@@ -1979,6 +1474,511 @@
         {
           "name": "field",
           "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.validate.nimble.AlwaysMatcher",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "on",
+          "parameterTypes": [
+            "java.lang.Object",
+            "java.lang.Object",
+            "org.miaixz.bus.validate.Context"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.validate.nimble.BlankMatcher",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "on",
+          "parameterTypes": [
+            "java.lang.Object",
+            "org.miaixz.bus.validate.Context"
+          ]
+        },
+        {
+          "name": "on",
+          "parameterTypes": [
+            "java.lang.Object",
+            "org.miaixz.bus.validate.magic.annotation.Blank",
+            "org.miaixz.bus.validate.Context"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.validate.nimble.ChineseMatcher",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "on",
+          "parameterTypes": [
+            "java.lang.Object",
+            "org.miaixz.bus.validate.magic.annotation.Chinese",
+            "org.miaixz.bus.validate.Context"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.validate.nimble.CitizenIdMatcher",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "on",
+          "parameterTypes": [
+            "java.lang.Object",
+            "org.miaixz.bus.validate.magic.annotation.CitizenId",
+            "org.miaixz.bus.validate.Context"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.validate.nimble.CompareMatcher",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "on",
+          "parameterTypes": [
+            "java.lang.Object",
+            "org.miaixz.bus.validate.magic.annotation.Compare",
+            "org.miaixz.bus.validate.Context"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.validate.nimble.DateMatcher",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "on",
+          "parameterTypes": [
+            "java.lang.Object",
+            "org.miaixz.bus.validate.magic.annotation.Date",
+            "org.miaixz.bus.validate.Context"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.validate.nimble.EachMatcher",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "fastValidate",
+          "parameterTypes": [
+            "java.util.List",
+            "java.lang.Object",
+            "org.miaixz.bus.validate.Context"
+          ]
+        },
+        {
+          "name": "on",
+          "parameterTypes": [
+            "java.lang.Object",
+            "org.miaixz.bus.validate.magic.annotation.Each",
+            "org.miaixz.bus.validate.Context"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.validate.nimble.EmailMatcher",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "on",
+          "parameterTypes": [
+            "java.lang.Object",
+            "org.miaixz.bus.validate.magic.annotation.Email",
+            "org.miaixz.bus.validate.Context"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.validate.nimble.EnglishMatcher",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "on",
+          "parameterTypes": [
+            "java.lang.Object",
+            "org.miaixz.bus.validate.magic.annotation.English",
+            "org.miaixz.bus.validate.Context"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.validate.nimble.EqualsMatcher",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "on",
+          "parameterTypes": [
+            "java.lang.Object",
+            "org.miaixz.bus.validate.magic.annotation.Equals",
+            "org.miaixz.bus.validate.Context"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.validate.nimble.FalseMatcher",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "on",
+          "parameterTypes": [
+            "java.lang.Boolean",
+            "org.miaixz.bus.validate.magic.annotation.False",
+            "org.miaixz.bus.validate.Context"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.validate.nimble.IPAddressMatcher",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "on",
+          "parameterTypes": [
+            "java.lang.Object",
+            "org.miaixz.bus.validate.magic.annotation.IPAddress",
+            "org.miaixz.bus.validate.Context"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.validate.nimble.InEnumMatcher",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "on",
+          "parameterTypes": [
+            "java.lang.Object",
+            "org.miaixz.bus.validate.magic.annotation.InEnum",
+            "org.miaixz.bus.validate.Context"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.validate.nimble.InMatcher",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "on",
+          "parameterTypes": [
+            "java.lang.Object",
+            "org.miaixz.bus.validate.magic.annotation.In",
+            "org.miaixz.bus.validate.Context"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.validate.nimble.IntRangeMatcher",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "on",
+          "parameterTypes": [
+            "java.lang.Object",
+            "org.miaixz.bus.validate.magic.annotation.IntRange",
+            "org.miaixz.bus.validate.Context"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.validate.nimble.LengthMatcher",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "on",
+          "parameterTypes": [
+            "java.lang.Object",
+            "org.miaixz.bus.validate.magic.annotation.Length",
+            "org.miaixz.bus.validate.Context"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.validate.nimble.MobileMatcher",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "on",
+          "parameterTypes": [
+            "java.lang.Object",
+            "org.miaixz.bus.validate.magic.annotation.Mobile",
+            "org.miaixz.bus.validate.Context"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.validate.nimble.MultipleMatcher",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "on",
+          "parameterTypes": [
+            "java.lang.Object",
+            "org.miaixz.bus.validate.magic.annotation.Multiple",
+            "org.miaixz.bus.validate.Context"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.validate.nimble.NotBlankMatcher",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "on",
+          "parameterTypes": [
+            "java.lang.Object",
+            "org.miaixz.bus.validate.Context"
+          ]
+        },
+        {
+          "name": "on",
+          "parameterTypes": [
+            "java.lang.Object",
+            "org.miaixz.bus.validate.magic.annotation.NotBlank",
+            "org.miaixz.bus.validate.Context"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.validate.nimble.NotEmptyMatcher",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "on",
+          "parameterTypes": [
+            "java.lang.Object",
+            "org.miaixz.bus.validate.magic.annotation.NotEmpty",
+            "org.miaixz.bus.validate.Context"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.validate.nimble.NotInMatcher",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "on",
+          "parameterTypes": [
+            "java.lang.Object",
+            "org.miaixz.bus.validate.magic.annotation.NotIn",
+            "org.miaixz.bus.validate.Context"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.validate.nimble.NotNullMatcher",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "on",
+          "parameterTypes": [
+            "java.lang.Object",
+            "org.miaixz.bus.validate.magic.annotation.NotNull",
+            "org.miaixz.bus.validate.Context"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.validate.nimble.NullMatcher",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "on",
+          "parameterTypes": [
+            "java.lang.Object",
+            "org.miaixz.bus.validate.Context"
+          ]
+        },
+        {
+          "name": "on",
+          "parameterTypes": [
+            "java.lang.Object",
+            "org.miaixz.bus.validate.magic.annotation.Null",
+            "org.miaixz.bus.validate.Context"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.validate.nimble.PhoneMatcher",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "on",
+          "parameterTypes": [
+            "java.lang.Object",
+            "org.miaixz.bus.validate.magic.annotation.Phone",
+            "org.miaixz.bus.validate.Context"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.validate.nimble.ReflectMatcher",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "on",
+          "parameterTypes": [
+            "java.lang.Object",
+            "org.miaixz.bus.validate.magic.annotation.Reflect",
+            "org.miaixz.bus.validate.Context"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.validate.nimble.RegexMatcher",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "on",
+          "parameterTypes": [
+            "java.lang.Object",
+            "org.miaixz.bus.validate.magic.annotation.Regex",
+            "org.miaixz.bus.validate.Context"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.validate.nimble.SizeMatcher",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "on",
+          "parameterTypes": [
+            "java.lang.Object",
+            "org.miaixz.bus.validate.magic.annotation.Size",
+            "org.miaixz.bus.validate.Context"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.validate.nimble.TrueMatcher",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "on",
+          "parameterTypes": [
+            "java.lang.Boolean",
+            "org.miaixz.bus.validate.magic.annotation.True",
+            "org.miaixz.bus.validate.Context"
+          ]
         }
       ]
     }

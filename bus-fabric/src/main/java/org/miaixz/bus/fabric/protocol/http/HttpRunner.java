@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.VarHandle;
 import java.net.SocketTimeoutException;
+import java.time.Duration;
 import java.util.List;
 import java.util.concurrent.CancellationException;
 
@@ -732,7 +733,10 @@ public class HttpRunner {
             this.materializeMaxBytes = context.options().materializeMaxBytes();
             this.bridge = new HttpBridge(cookies, userAgent);
             this.connect = new HttpConnect(context.reactor().directory().connectionPool(), tlsContext, tlsSettings,
-                    context.listener(), context.reactor().resolver(), context.reactor().dispatcher());
+                    context.listener(), context.reactor().resolver(), context.reactor().dispatcher(),
+                    context.options());
+            final Duration pingInterval = context.options().get(Builder.HTTP2_PING_INTERVAL);
+            final Duration pingTimeout = context.options().get(Builder.HTTP2_PING_TIMEOUT);
             this.stages = List.of(
                     new HttpRetry(HttpRetryPolicy.resolve(context.options()), authenticator),
                     new HttpProxyRouting(context.options()),
@@ -740,7 +744,9 @@ public class HttpRunner {
                     cache == null ? HttpCoordinator.disabled(context.reactor().clock())
                             : HttpCoordinator.create(cache, context.reactor().clock()),
                     connect,
-                    new HttpTransport(context.reactor().dispatcher(), context.reactor().clock()));
+                    new HttpTransport(context.reactor().dispatcher(), context.reactor().clock(),
+                            pingInterval == null ? Duration.ZERO : pingInterval,
+                            pingTimeout == null ? Duration.ofSeconds(10) : pingTimeout));
             if (Logger.isInfoEnabled()) {
                 Logger.info(
                         true,
@@ -761,6 +767,7 @@ public class HttpRunner {
         private static Pipeline create(final Context context) {
             return new Pipeline(context);
         }
+
     }
 
     /**

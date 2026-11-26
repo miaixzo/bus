@@ -76,6 +76,9 @@ public interface SourceModule {
 
         /**
          * Validates and detaches one explicit module value.
+         *
+         * @param drivers     immutable driver list
+         * @param descriptors immutable descriptor list
          */
         public Fixed {
             Assert.notNull(drivers, "Source module driver list must not be null");

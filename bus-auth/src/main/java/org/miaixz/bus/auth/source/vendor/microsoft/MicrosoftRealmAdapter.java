@@ -43,6 +43,8 @@ import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.cache.nimble.MemoryCache;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.basic.normal.Errors;
+import org.miaixz.bus.core.center.function.BiFunctionX;
+import org.miaixz.bus.core.center.function.FunctionX;
 import org.miaixz.bus.core.codec.binary.Base64;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Charset;
@@ -54,6 +56,7 @@ import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.net.url.RFC3986;
+import org.miaixz.bus.core.xyz.FunctionKit;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.extra.json.JsonValue;
 
@@ -85,13 +88,14 @@ public class MicrosoftRealmAdapter implements VendorAdapter {
             Realm.Kind.ORGANIZATION,
             Realm.Kind.GROUP,
             Realm.Kind.ROLE,
-            Realm.Kind.SERVICE_ACCOUNT);
+            Realm.Kind.SERVICE_ACCOUNT,
+            Realm.Kind.APPLICATION);
 
     /**
      * Exact resource categories with an official Graph delta feed in this contract.
      */
     private static final Set<Realm.Kind> CHANGE_KINDS = Set
-            .of(Realm.Kind.USER, Realm.Kind.GROUP, Realm.Kind.SERVICE_ACCOUNT);
+            .of(Realm.Kind.USER, Realm.Kind.GROUP, Realm.Kind.SERVICE_ACCOUNT, Realm.Kind.APPLICATION);
 
     /**
      * Ordered management-target key closure required from each selected manifest.
@@ -107,6 +111,7 @@ public class MicrosoftRealmAdapter implements VendorAdapter {
             Builder.REALM_ROLE_MEMBERS,
             Builder.REALM_ROLE_ASSIGNMENTS,
             Builder.REALM_SERVICE_ACCOUNTS,
+            Builder.REALM_APPLICATIONS,
             Builder.REALM_CHANGES);
 
     /**
@@ -239,9 +244,18 @@ public class MicrosoftRealmAdapter implements VendorAdapter {
         for (JsonValue memberValue : optionalArray(value, "members@delta")) {
             final JsonValue.ObjectValue member = requiredObject(memberValue, "group delta member");
             final String memberId = requiredString(member, "id");
+            final String objectType = optionalString(member, "@odata.type").orElse("");
+            final Realm.Kind memberKind = switch (objectType) {
+                case "#microsoft.graph.user" -> Realm.Kind.USER;
+                case "#microsoft.graph.group" -> Realm.Kind.GROUP;
+                case "#microsoft.graph.servicePrincipal" -> Realm.Kind.SERVICE_ACCOUNT;
+                default -> null;
+            };
+            if (memberKind == null)
+                continue;
             final Realm.Relation relation = relation(
                     Realm.RelationKind.MEMBER,
-                    Realm.Kind.USER,
+                    memberKind,
                     memberId,
                     Realm.Kind.GROUP,
                     id,
@@ -252,6 +266,93 @@ public class MicrosoftRealmAdapter implements VendorAdapter {
                 appendChange(changes, new Realm.RelationUpsert(relation));
             }
         }
+    }
+
+    /**
+     * Maps a registration or service identity without exposing credential material.
+     *
+     * @param value   Graph directory-object change, including an optional removal marker
+     * @param kind    resource category represented by the directory object
+     * @param at      observation time assigned to the projected change
+     * @param changes destination list receiving the normalized resource upsert or deletion
+     */
+    private static void directoryChanges(
+            JsonValue.ObjectValue value,
+            Realm.Kind kind,
+            Instant at,
+            List<Realm.Change> changes) {
+        if (removed(value)) {
+            appendChange(changes, new Realm.ResourceDelete(new Realm.Key(kind, requiredString(value, "id")), at));
+        } else {
+            appendChange(changes, new Realm.ResourceUpsert(directoryResource(value, kind, at)));
+        }
+    }
+
+    /**
+     * Maps a distinct application registration.
+     *
+     * @param value Graph application registration to project
+     * @param at    observation time assigned to the normalized resource
+     * @return normalized application registration without credential values
+     */
+    private static Realm.Resource applicationResource(JsonValue.ObjectValue value, Instant at) {
+        return directoryResource(value, Realm.Kind.APPLICATION, at);
+    }
+
+    /**
+     * Selects public directory fields and strips credential values even from malformed upstream responses.
+     *
+     * @param value Graph directory object to project without credential values
+     * @param kind  resource category and public-field projection to use
+     * @param at    observation time assigned to the normalized resource
+     * @return normalized directory resource containing only the selected public fields and safe credential metadata
+     */
+    private static Realm.Resource directoryResource(JsonValue.ObjectValue value, Realm.Kind kind, Instant at) {
+        Map<String, JsonValue> attributes = new LinkedHashMap<>();
+        for (String field : select(kind).split(",")) {
+            if (Set.of("id", "appId", "displayName", "accountEnabled").contains(field))
+                continue;
+            JsonValue data = value.values().get(field);
+            if (data == null)
+                continue;
+            if (field.equals("passwordCredentials") || field.equals("keyCredentials")) {
+                List<JsonValue> safe = new ArrayList<>();
+                for (JsonValue item : requiredArray(value, field)) {
+                    JsonValue.ObjectValue credential = requiredObject(item, field);
+                    Map<String, JsonValue> metadata = new LinkedHashMap<>();
+                    for (String key : List
+                            .of("keyId", "displayName", "startDateTime", "endDateTime", "type", "usage")) {
+                        if (credential.values().containsKey(key))
+                            metadata.put(key, credential.values().get(key));
+                    }
+                    safe.add(new JsonValue.ObjectValue(metadata));
+                }
+                data = new JsonValue.ArrayValue(safe);
+            }
+            attributes.put(field, data);
+        }
+        Realm.State state = kind == Realm.Kind.SERVICE_ACCOUNT
+                ? (requiredBoolean(value, "accountEnabled") ? Realm.State.ACTIVE : Realm.State.INACTIVE)
+                : Realm.State.UNKNOWN;
+        return new Realm.Resource(new Realm.Key(kind, requiredString(value, "id")),
+                Map.of("appId", requiredString(value, "appId")), directoryDisplayName(value), state,
+                new JsonValue.ObjectValue(attributes), at);
+    }
+
+    /**
+     * Normalizes the presentation label returned by Graph for an application or service principal. Graph can preserve
+     * surrounding spaces in this editable label. Realm requires a nonblank, trimmed display name, so normalize it at
+     * the directory boundary while preserving strict validation for stable keys and cursor values.
+     *
+     * @param object directory object containing the original Microsoft display name
+     * @return nonblank display name with surrounding whitespace removed
+     * @throws ValidateException if Graph omits the name or supplies a blank or non-string value
+     */
+    private static String directoryDisplayName(final JsonValue.ObjectValue object) {
+        if (!(object.values().get("displayName") instanceof JsonValue.StringValue name)) {
+            throw new ValidateException("displayName must be a JSON string");
+        }
+        return requireText(name.value().strip(), "displayName");
     }
 
     /**
@@ -361,7 +462,8 @@ public class MicrosoftRealmAdapter implements VendorAdapter {
         final String expected = operation == Realm.Operation.CHANGES && phase == Phase.DELTA_GROUPS
                 ? select(phase.kind()) + ",members"
                 : select(phase.kind());
-        if (selected != null && !expected.equals(selected)) {
+        if (selected != null && !expected.equals(selected)
+                && !(phase == Phase.DELTA_GROUPS && select(phase.kind()).equals(selected))) {
             return false;
         }
         if (operation == Realm.Operation.SNAPSHOT && url.query("$deltatoken") != null) {
@@ -424,6 +526,7 @@ public class MicrosoftRealmAdapter implements VendorAdapter {
                 case DELTA_USERS -> "/v1.0/users/delta";
                 case DELTA_GROUPS -> "/v1.0/groups/delta";
                 case DELTA_SERVICE_ACCOUNTS -> "/v1.0/servicePrincipals/delta";
+                case DELTA_APPLICATIONS -> "/v1.0/applications/delta";
                 default -> Normal.EMPTY;
             });
         }
@@ -436,6 +539,7 @@ public class MicrosoftRealmAdapter implements VendorAdapter {
             case ROLE_MEMBERS -> path.equals("/v1.0/directoryRoles")
                     || childPath(path, "/v1.0/directoryRoles/", "/members");
             case SERVICE_ACCOUNTS -> path.equals("/v1.0/servicePrincipals");
+            case APPLICATIONS -> path.equals("/v1.0/applications");
             case APPLICATION_ASSIGNMENTS -> path.equals("/v1.0/servicePrincipals")
                     || childPath(path, "/v1.0/servicePrincipals/", "/appRoleAssignments");
             case ORGANIZATION -> path.equals("/v1.0/organization");
@@ -485,7 +589,8 @@ public class MicrosoftRealmAdapter implements VendorAdapter {
             case ORGANIZATION -> "id,displayName";
             case GROUP -> "id,displayName,mail,mailEnabled,securityEnabled";
             case ROLE -> "id,displayName";
-            case SERVICE_ACCOUNT -> "id,appId,displayName,accountEnabled";
+            case SERVICE_ACCOUNT -> "id,appId,displayName,accountEnabled,servicePrincipalType,appOwnerOrganizationId,homepage,replyUrls,logoutUrl,appRoleAssignmentRequired,preferredSingleSignOnMode,appRoles,tags";
+            case APPLICATION -> "id,appId,displayName,description,signInAudience,identifierUris,web,spa,publicClient,api,appRoles,requiredResourceAccess,passwordCredentials,keyCredentials,tags,publisherDomain";
         };
     }
 
@@ -541,7 +646,7 @@ public class MicrosoftRealmAdapter implements VendorAdapter {
      */
     private static ServiceAccount serviceAccount(final JsonValue.ObjectValue value) {
         return new ServiceAccount(requiredString(value, "id"), requiredString(value, "appId"),
-                requiredString(value, "displayName"), requiredBoolean(value, "accountEnabled"));
+                directoryDisplayName(value), requiredBoolean(value, "accountEnabled"));
     }
 
     /**
@@ -551,7 +656,7 @@ public class MicrosoftRealmAdapter implements VendorAdapter {
      * @return validated member projection
      */
     private static Member member(final JsonValue.ObjectValue value) {
-        return new Member(requiredString(value, "id"));
+        return new Member(requiredString(value, "id"), optionalString(value, "@odata.type").orElse(""));
     }
 
     /**
@@ -621,7 +726,8 @@ public class MicrosoftRealmAdapter implements VendorAdapter {
     }
 
     /**
-     * Maps one service principal to the implementation-neutral service-account resource category.
+     * Maps one service principal to the implementation-neutral service-account resource category. Retains the
+     * directory's enablement decision so delta consumers can revoke machine access on disablement.
      *
      * @param value      minimal service-principal projection
      * @param observedAt shared invocation observation instant
@@ -633,7 +739,7 @@ public class MicrosoftRealmAdapter implements VendorAdapter {
                 value.id(),
                 Map.of("appId", value.appId()),
                 value.name(),
-                Realm.State.UNKNOWN,
+                value.enabled() ? Realm.State.ACTIVE : Realm.State.INACTIVE,
                 observedAt);
     }
 
@@ -1293,6 +1399,15 @@ public class MicrosoftRealmAdapter implements VendorAdapter {
                         MicrosoftRealmAdapter::role,
                         MicrosoftRealmAdapter::roleResource);
                 case ROLE_MEMBERS -> members(access, request, state, observedAt, timeout, Phase.ROLE_MEMBERS);
+                case APPLICATIONS -> resourcePage(
+                        access,
+                        request,
+                        state,
+                        observedAt,
+                        timeout,
+                        Builder.REALM_APPLICATIONS,
+                        value -> value,
+                        MicrosoftRealmAdapter::applicationResource);
                 case SERVICE_ACCOUNTS -> resourcePage(
                         access,
                         request,
@@ -1300,8 +1415,8 @@ public class MicrosoftRealmAdapter implements VendorAdapter {
                         observedAt,
                         timeout,
                         Builder.REALM_SERVICE_ACCOUNTS,
-                        MicrosoftRealmAdapter::serviceAccount,
-                        MicrosoftRealmAdapter::serviceAccountResource);
+                        value -> value,
+                        (value, at) -> directoryResource(value, Realm.Kind.SERVICE_ACCOUNT, at));
                 case APPLICATION_ASSIGNMENTS -> assignments(access, request, state, observedAt, timeout);
                 default -> failed(ErrorCode._500, "Microsoft snapshot cursor selected a change phase");
             };
@@ -1364,8 +1479,8 @@ public class MicrosoftRealmAdapter implements VendorAdapter {
             final Instant observedAt,
             final Timeout timeout,
             final String targetName,
-            final Function<JsonValue.ObjectValue, T> parser,
-            final ResourceMapper<T> mapper) {
+            final FunctionX<JsonValue.ObjectValue, T> parser,
+            final BiFunctionX<T, Instant, Realm.Resource> mapper) {
         final Url requestUrl = state.position().next().isPresent()
                 ? pagination(state.position().next().getOrNull(), state.phase(), Realm.Operation.SNAPSHOT)
                 : listUrl(targetName, state.phase(), request.limit());
@@ -1376,7 +1491,7 @@ public class MicrosoftRealmAdapter implements VendorAdapter {
         final List<Realm.Resource> resources = new ArrayList<>(success.value().items().size());
         final Map<Realm.Key, Realm.Resource> unique = new LinkedHashMap<>();
         for (T item : success.value().items()) {
-            final Realm.Resource resource = mapper.map(item, observedAt);
+            final Realm.Resource resource = FunctionKit.applyUnwrapped(mapper, item, observedAt);
             final Realm.Resource previous = unique.putIfAbsent(resource.key(), resource);
             if (previous != null && !previous.equals(resource)) {
                 return failed(ErrorCode._502, "Microsoft Graph page contains a conflicting resource key");
@@ -1519,9 +1634,17 @@ public class MicrosoftRealmAdapter implements VendorAdapter {
         final List<Realm.Relation> relations = new ArrayList<>();
         final Set<Realm.RelationKey> unique = new LinkedHashSet<>();
         for (Member member : success.value().items()) {
+            Realm.Kind memberKind = switch (member.type()) {
+                case "#microsoft.graph.user" -> Realm.Kind.USER;
+                case "#microsoft.graph.group" -> Realm.Kind.GROUP;
+                case "#microsoft.graph.servicePrincipal" -> Realm.Kind.SERVICE_ACCOUNT;
+                default -> null;
+            };
+            if (memberKind == null)
+                continue;
             final Realm.Relation relation = relation(
                     relationKind,
-                    Realm.Kind.USER,
+                    memberKind,
                     member.id(),
                     container,
                     parentId,
@@ -1688,7 +1811,15 @@ public class MicrosoftRealmAdapter implements VendorAdapter {
         try {
             final Url requestUrl = state.position().next().isPresent()
                     ? pagination(state.position().next().getOrNull(), state.phase(), Realm.Operation.CHANGES)
-                    : deltaUrl(state.phase());
+                    : deltaUrl(state.phase(), request.includeRelations());
+            if (state.phase() == Phase.DELTA_GROUPS) {
+                String projection = requestUrl.query("$select");
+                if (projection != null && projection.endsWith(",members") != request.includeRelations()) {
+                    return rejected(
+                            ErrorCode._400,
+                            "Microsoft cursor relation selection changed; establish a new baseline");
+                }
+            }
             final Outcome<JsonValue.ObjectValue> fetched = get(requestUrl, access, timeout, "changes", false);
             if (!(fetched instanceof Outcome.Succeeded<JsonValue.ObjectValue> success)) {
                 return propagate(fetched);
@@ -1698,8 +1829,23 @@ public class MicrosoftRealmAdapter implements VendorAdapter {
                 final JsonValue.ObjectValue item = requiredObject(value, "delta item");
                 switch (state.phase()) {
                     case DELTA_USERS -> userChanges(item, observedAt, mapped);
-                    case DELTA_GROUPS -> groupChanges(item, observedAt, mapped);
-                    case DELTA_SERVICE_ACCOUNTS -> serviceAccountChanges(item, observedAt, mapped);
+                    case DELTA_GROUPS -> {
+                        if (request.includeRelations())
+                            groupChanges(item, observedAt, mapped);
+                        else if (removed(item))
+                            appendChange(
+                                    mapped,
+                                    new Realm.ResourceDelete(
+                                            new Realm.Key(Realm.Kind.GROUP, requiredString(item, "id")), observedAt));
+                        else if (item.values().containsKey("displayName"))
+                            appendChange(mapped, new Realm.ResourceUpsert(groupResource(group(item), observedAt)));
+                    }
+                    case DELTA_SERVICE_ACCOUNTS -> directoryChanges(
+                            item,
+                            Realm.Kind.SERVICE_ACCOUNT,
+                            observedAt,
+                            mapped);
+                    case DELTA_APPLICATIONS -> directoryChanges(item, Realm.Kind.APPLICATION, observedAt, mapped);
                     default -> throw new ValidateException("Microsoft delta cursor selected a snapshot phase");
                 }
             }
@@ -1729,7 +1875,8 @@ public class MicrosoftRealmAdapter implements VendorAdapter {
             final Realm.Cursor cursor = encode(
                     new CursorState(Realm.Operation.CHANGES, state.phase(), state.kinds(),
                             Position.changes(continuation, 0)));
-            return Outcome.succeeded(new Realm.ChangePage(changes, Optional.of(cursor)));
+            return next.isPresent() ? Outcome.succeeded(new Realm.ChangePage(changes, Optional.of(cursor)))
+                    : Outcome.succeeded(new Realm.ChangePage(changes, Optional.empty(), Optional.of(cursor)));
         } catch (ValidateException ignored) {
             return failed(ErrorCode._502, "Microsoft Graph returned an invalid delta projection");
         } catch (RuntimeException ignored) {
@@ -1800,14 +1947,22 @@ public class MicrosoftRealmAdapter implements VendorAdapter {
                         Builder.REALM_ROLES,
                         MicrosoftRealmAdapter::role,
                         MicrosoftRealmAdapter::roleResource);
+                case APPLICATION -> retrieve(
+                        access,
+                        key,
+                        observedAt,
+                        timeout,
+                        Builder.REALM_APPLICATIONS,
+                        value -> value,
+                        MicrosoftRealmAdapter::applicationResource);
                 case SERVICE_ACCOUNT -> retrieve(
                         access,
                         key,
                         observedAt,
                         timeout,
                         Builder.REALM_SERVICE_ACCOUNTS,
-                        MicrosoftRealmAdapter::serviceAccount,
-                        MicrosoftRealmAdapter::serviceAccountResource);
+                        value -> value,
+                        (value, at) -> directoryResource(value, Realm.Kind.SERVICE_ACCOUNT, at));
             };
         } catch (ValidateException ignored) {
             return failed(ErrorCode._502, "Microsoft Graph returned an invalid retrieval projection");
@@ -1835,8 +1990,8 @@ public class MicrosoftRealmAdapter implements VendorAdapter {
             final Instant observedAt,
             final Timeout timeout,
             final String targetName,
-            final Function<JsonValue.ObjectValue, T> parser,
-            final ResourceMapper<T> mapper) {
+            final FunctionX<JsonValue.ObjectValue, T> parser,
+            final BiFunctionX<T, Instant, Realm.Resource> mapper) {
         final Url url = child(targetName, key.externalId(), null, Map.of("$select", select(key.kind())));
         final Outcome<JsonValue.ObjectValue> fetched = get(url, access, timeout, "retrieve", true);
         if (!(fetched instanceof Outcome.Succeeded<JsonValue.ObjectValue> success)) {
@@ -1845,7 +2000,8 @@ public class MicrosoftRealmAdapter implements VendorAdapter {
         if (success.value() == null) {
             return Outcome.succeeded(new Realm.Retrieved(Optional.empty()));
         }
-        final Realm.Resource resource = mapper.map(parser.apply(success.value()), observedAt);
+        final Realm.Resource resource = FunctionKit
+                .applyUnwrapped(mapper, FunctionKit.applyUnwrapped(parser, success.value()), observedAt);
         if (!key.equals(resource.key())) {
             return failed(ErrorCode._502, "Microsoft retrieve returned a different stable resource key");
         }
@@ -1897,7 +2053,7 @@ public class MicrosoftRealmAdapter implements VendorAdapter {
     private <T> CompletionStage<Outcome<T>> authenticated(
             final Context context,
             final Timeout timeout,
-            final Function<Access, Outcome<T>> operation) {
+            final FunctionX<Access, Outcome<T>> operation) {
         return access(context, timeout).thenCompose(resolved -> switch (resolved) {
             case Outcome.Succeeded<Access> success -> execute(success.value(), timeout, operation)
                     .thenCompose(first -> {
@@ -1948,11 +2104,11 @@ public class MicrosoftRealmAdapter implements VendorAdapter {
     private <T> CompletionStage<Outcome<T>> execute(
             final Access access,
             final Timeout timeout,
-            final Function<Access, Outcome<T>> operation) {
+            final FunctionX<Access, Outcome<T>> operation) {
         try {
             return CompletableFuture.<Outcome<T>>supplyAsync(() -> {
                 try {
-                    return operation.apply(access);
+                    return FunctionKit.applyUnwrapped(operation, access);
                 } catch (TimeoutException ignored) {
                     return failed(ErrorCode._408, "Microsoft Realm operation timed out");
                 } catch (RuntimeException ignored) {
@@ -2233,14 +2389,14 @@ public class MicrosoftRealmAdapter implements VendorAdapter {
             final Access access,
             final Timeout timeout,
             final String operation,
-            final Function<JsonValue.ObjectValue, T> parser) {
+            final FunctionX<JsonValue.ObjectValue, T> parser) {
         final Outcome<JsonValue.ObjectValue> fetched = get(url, access, timeout, operation, false);
         if (!(fetched instanceof Outcome.Succeeded<JsonValue.ObjectValue> success)) {
             return propagate(fetched);
         }
         final List<T> items = new ArrayList<>();
         for (JsonValue value : requiredArray(success.value(), "value")) {
-            items.add(parser.apply(requiredObject(value, "Graph collection item")));
+            items.add(FunctionKit.applyUnwrapped(parser, requiredObject(value, "Graph collection item")));
         }
         return Outcome.succeeded(new WirePage<>(items, next(success.value())));
     }
@@ -2321,17 +2477,19 @@ public class MicrosoftRealmAdapter implements VendorAdapter {
     /**
      * Creates one initial Graph delta URL for the selected single-kind changes phase.
      *
-     * @param phase exact delta phase
+     * @param phase            exact delta phase
+     * @param includeRelations whether group delta requests also select membership changes
      * @return validated fixed Graph delta URL
      */
-    private Url deltaUrl(final Phase phase) {
+    private Url deltaUrl(final Phase phase, final boolean includeRelations) {
         final String path = switch (phase) {
             case DELTA_USERS -> "/v1.0/users/delta";
             case DELTA_GROUPS -> "/v1.0/groups/delta";
             case DELTA_SERVICE_ACCOUNTS -> "/v1.0/servicePrincipals/delta";
+            case DELTA_APPLICATIONS -> "/v1.0/applications/delta";
             default -> throw new ValidateException("Microsoft changes selected a non-delta phase");
         };
-        final String projection = phase == Phase.DELTA_GROUPS ? select(phase.kind()) + ",members"
+        final String projection = phase == Phase.DELTA_GROUPS && includeRelations ? select(phase.kind()) + ",members"
                 : select(phase.kind());
         return build(target(Builder.REALM_CHANGES).url(), path, Map.of("$select", projection));
     }
@@ -2634,7 +2792,15 @@ public class MicrosoftRealmAdapter implements VendorAdapter {
         /**
          * Reads the service-principal delta feed.
          */
-        DELTA_SERVICE_ACCOUNTS(12, Realm.Operation.CHANGES, Realm.Kind.SERVICE_ACCOUNT);
+        DELTA_SERVICE_ACCOUNTS(12, Realm.Operation.CHANGES, Realm.Kind.SERVICE_ACCOUNT),
+        /**
+         * Reads the application-registration snapshot.
+         */
+        APPLICATIONS(13, Realm.Operation.SNAPSHOT, Realm.Kind.APPLICATION),
+        /**
+         * Reads the application-registration delta feed.
+         */
+        DELTA_APPLICATIONS(14, Realm.Operation.CHANGES, Realm.Kind.APPLICATION);
 
         /**
          * Stable persisted phase code.
@@ -2727,29 +2893,12 @@ public class MicrosoftRealmAdapter implements VendorAdapter {
                 case ROLES -> ROLE_MEMBERS;
                 case ROLE_MEMBERS -> SERVICE_ACCOUNTS;
                 case SERVICE_ACCOUNTS -> APPLICATION_ASSIGNMENTS;
-                case APPLICATION_ASSIGNMENTS -> null;
+                case APPLICATION_ASSIGNMENTS -> APPLICATIONS;
+                case APPLICATIONS -> null;
                 default -> throw new ValidateException("Microsoft delta phase has no snapshot successor");
             };
         }
-    }
 
-    /**
-     * Maps one minimal wire projection to a implementation-neutral resource.
-     *
-     * @param <T> minimal wire projection type
-     * @author Kimi Liu
-     */
-    @FunctionalInterface
-    private interface ResourceMapper<T> {
-
-        /**
-         * Maps one minimal projection at the shared observation instant.
-         *
-         * @param value      minimal projection
-         * @param observedAt shared invocation observation instant
-         * @return immutable implementation-neutral resource
-         */
-        Realm.Resource map(T value, Instant observedAt);
     }
 
     /**
@@ -2820,6 +2969,7 @@ public class MicrosoftRealmAdapter implements VendorAdapter {
                 case USER -> Phase.DELTA_USERS;
                 case GROUP -> Phase.DELTA_GROUPS;
                 case SERVICE_ACCOUNT -> Phase.DELTA_SERVICE_ACCOUNTS;
+                case APPLICATION -> Phase.DELTA_APPLICATIONS;
                 default -> throw new ValidateException("Microsoft changes kind has no delta phase");
             };
             return new CursorState(Realm.Operation.CHANGES, phase, ordered, Position.initial());
@@ -2866,6 +3016,7 @@ public class MicrosoftRealmAdapter implements VendorAdapter {
         private void validate() {
             validate(operation, phase, kinds, position);
         }
+
     }
 
     /**
@@ -2958,6 +3109,7 @@ public class MicrosoftRealmAdapter implements VendorAdapter {
             Assert.notNull(value, label + " container must not be null");
             return value.isPresent() ? Optional.of(requireText(value.getOrNull(), label)) : Optional.empty();
         }
+
     }
 
     /**
@@ -2980,6 +3132,7 @@ public class MicrosoftRealmAdapter implements VendorAdapter {
             items = List.copyOf(Assert.notNull(items, "Microsoft Graph page items must not be null"));
             next = Position.optional(next, "Microsoft Graph nextLink");
         }
+
     }
 
     /**
@@ -3001,6 +3154,7 @@ public class MicrosoftRealmAdapter implements VendorAdapter {
             id = requireText(id, "Microsoft organization identifier");
             name = requireText(name, "Microsoft organization display name");
         }
+
     }
 
     /**
@@ -3030,6 +3184,7 @@ public class MicrosoftRealmAdapter implements VendorAdapter {
             principalName = Position.optional(principalName, "Microsoft user principal name");
             mail = Position.optional(mail, "Microsoft user mail");
         }
+
     }
 
     /**
@@ -3058,6 +3213,7 @@ public class MicrosoftRealmAdapter implements VendorAdapter {
             name = requireText(name, "Microsoft group display name");
             mail = Position.optional(mail, "Microsoft group mail");
         }
+
     }
 
     /**
@@ -3079,6 +3235,7 @@ public class MicrosoftRealmAdapter implements VendorAdapter {
             id = requireText(id, "Microsoft role identifier");
             name = requireText(name, "Microsoft role display name");
         }
+
     }
 
     /**
@@ -3105,24 +3262,28 @@ public class MicrosoftRealmAdapter implements VendorAdapter {
             appId = requireText(appId, "Microsoft service-principal application identifier");
             name = requireText(name, "Microsoft service-principal display name");
         }
+
     }
 
     /**
      * Minimal stable Graph member projection.
      *
-     * @param id stable directory-object identifier
+     * @param id   stable directory-object identifier
+     * @param type Graph directory-object type discriminator, or empty when absent
      * @author Kimi Liu
      */
-    private record Member(String id) {
+    private record Member(String id, String type) {
 
         /**
          * Validates one member projection.
          *
-         * @param id stable member identifier
+         * @param id   stable member identifier
+         * @param type Graph directory-object type discriminator, or empty when absent
          */
         private Member {
             id = requireText(id, "Microsoft member identifier");
         }
+
     }
 
     /**
@@ -3150,6 +3311,7 @@ public class MicrosoftRealmAdapter implements VendorAdapter {
             resourceId = requireText(resourceId, "Microsoft assignment resource identifier");
             appRoleId = requireText(appRoleId, "Microsoft assignment application role identifier");
         }
+
     }
 
     /**
@@ -3183,6 +3345,7 @@ public class MicrosoftRealmAdapter implements VendorAdapter {
         public String toString() {
             return Builder.REDACTED_VALUE;
         }
+
     }
 
 }

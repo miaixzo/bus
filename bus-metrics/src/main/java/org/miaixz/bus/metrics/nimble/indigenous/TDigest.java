@@ -150,6 +150,8 @@ class TDigest {
 
     /**
      * Returns the total number of values added.
+     *
+     * @return number of values added to the digest
      */
     long count() {
         return countTotal.get();
@@ -157,6 +159,8 @@ class TDigest {
 
     /**
      * Returns the sum of all values added.
+     *
+     * @return sum of the values added to the digest
      */
     double sum() {
         return sumTotal.sum();
@@ -164,6 +168,8 @@ class TDigest {
 
     /**
      * Returns the maximum value added, or {@link Double#NEGATIVE_INFINITY} if empty.
+     *
+     * @return maximum value, or negative infinity when the digest is empty
      */
     double max() {
         return maxValue;

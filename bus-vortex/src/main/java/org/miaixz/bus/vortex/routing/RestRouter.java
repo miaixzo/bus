@@ -19,16 +19,21 @@
 */
 package org.miaixz.bus.vortex.routing;
 
+import java.net.InetSocketAddress;
+
+import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
+import org.springframework.web.server.ResponseStatusException;
 
+import org.miaixz.bus.auth.guard.CallerValidator;
+import org.miaixz.bus.auth.guard.inbound.InboundDecision;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.vortex.Context;
 import org.miaixz.bus.vortex.Router;
 import org.miaixz.bus.vortex.routing.rest.RestExecutor;
 
 import reactor.core.publisher.Mono;
-import reactor.util.annotation.NonNull;
 
 /**
  * A {@link Router} implementation for forwarding requests to standard RESTful HTTP/HTTPS downstream services.
@@ -68,7 +73,6 @@ public class RestRouter implements Router<ServerRequest, ServerResponse> {
      * @param input The ServerRequest object (strongly typed)
      * @return A {@code Mono<ServerResponse>} containing the ServerResponse from the downstream service.
      */
-    @NonNull
     @Override
     public Mono<ServerResponse> route(ServerRequest input) {
         ServerRequest request = input;
@@ -93,6 +97,25 @@ public class RestRouter implements Router<ServerRequest, ServerResponse> {
                     context.getX_request_ip(),
                     context.getParameters().keySet());
             return this.executor.execute(context, request);
+        });
+    }
+
+    /**
+     * Routes a callback accessible only to the named service through its loopback listener.
+     *
+     * @param request qualified gateway request
+     * @param service expected direct service identity
+     * @return downstream response if admitted
+     */
+    public Mono<ServerResponse> routeLocal(ServerRequest request, String service) {
+        return Mono.defer(() -> {
+            InboundDecision decision = request.exchange().getAttribute(InboundDecision.ATTRIBUTE);
+            if (!CallerValidator.matchesDirect(decision == null ? null : decision.verified(), service)
+                    || request.remoteAddress().map(InetSocketAddress::getAddress)
+                            .filter(address -> address.isLoopbackAddress()).isEmpty()) {
+                return Mono.error(new ResponseStatusException(HttpStatus.FORBIDDEN));
+            }
+            return route(request);
         });
     }
 

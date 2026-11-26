@@ -19,8 +19,7 @@
 */
 package org.miaixz.bus.fabric.protocol.http.chain;
 
-import java.util.function.Supplier;
-
+import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.fabric.network.Connection;
 import org.miaixz.bus.fabric.network.Destination;
 import org.miaixz.bus.fabric.registry.connection.ConnectionLease;
@@ -59,7 +58,7 @@ final class HttpConnectionAcquirer {
      */
     ConnectionLease acquire(
             final Destination destination,
-            final Supplier<Connection> factory,
+            final SupplierX<Connection> factory,
             final Cancellation cancellation,
             final boolean transientConnection) {
         cancellation.throwIfCancelled();

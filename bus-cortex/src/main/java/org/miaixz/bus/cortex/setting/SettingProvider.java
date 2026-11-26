@@ -20,8 +20,6 @@
 package org.miaixz.bus.cortex.setting;
 
 import org.miaixz.bus.cortex.Instance;
-import org.miaixz.bus.cortex.guard.CortexGuard;
-import org.miaixz.bus.cortex.guard.GuardContext;
 
 /**
  * Supplies invocation coordinates and current process data without authenticating callers or evaluating permissions.
@@ -41,7 +39,7 @@ public interface SettingProvider {
      * Reads the current process for this invocation and application. The host owns process creation, renewal,
      * replacement and retirement. Each call, including a subscription callback, must read current session data; a
      * retired, missing, expired or replaced bound process must be rejected rather than returned as null or as a cached
-     * active snapshot. Caller authentication and access decisions belong to the host's optional guard policy.
+     * active snapshot. The host authenticates callers and authorizes access to the requested application.
      *
      * @param context invocation coordinates
      * @param app     requested application
@@ -81,36 +79,11 @@ public interface SettingProvider {
         }
 
         /**
-         * Requires an actor for immutable approval evidence without verifying an account or credential.
+         * Requires an actor identifier for auditing a flow stage decision. The caller verifies the actor's identity.
          */
         public void requireActor() {
             if (actor == null || actor.isBlank())
-                throw new IllegalArgumentException("Approval actor required");
-        }
-
-        /**
-         * Delegates an access decision only when the host supplied an enabled guard. Business consistency checks remain
-         * the responsibility of the calling service and its transaction regardless of this hook.
-         *
-         * @param guard    optional host guard, or null to skip access checks
-         * @param action   requested operation
-         * @param resource resource category
-         * @param id       exact resource or null for creation and collection reads
-         */
-        public void check(CortexGuard guard, String action, String resource, String id) {
-            if (guard == null)
-                return;
-            GuardContext input = new GuardContext();
-            input.setDomain("setting");
-            input.setTenant_id(tenant);
-            input.setUserId(actor);
-            input.setAction(action);
-            input.setResourceType(resource);
-            input.setResourceId(id);
-            if ("app".equals(resource))
-                input.setApp_id(id);
-            input.putAttribute("request", request);
-            guard.enforce(input);
+                throw new IllegalArgumentException("Setting actor required");
         }
 
     }

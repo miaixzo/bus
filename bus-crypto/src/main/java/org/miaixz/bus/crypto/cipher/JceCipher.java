@@ -33,6 +33,8 @@ import org.miaixz.bus.core.lang.exception.CryptoException;
 import org.miaixz.bus.core.lang.wrapper.SimpleWrapper;
 import org.miaixz.bus.crypto.Builder;
 import org.miaixz.bus.crypto.Cipher;
+import org.miaixz.bus.errors.ComponentFailure;
+import org.miaixz.bus.errors.ErrorType;
 import org.miaixz.bus.logger.Logger;
 
 /**
@@ -42,6 +44,11 @@ import org.miaixz.bus.logger.Logger;
  * @author Kimi Liu
  */
 public class JceCipher extends SimpleWrapper<javax.crypto.Cipher> implements Cipher {
+
+    /**
+     * Reports JCE input, key and provider failures without exposing key material.
+     */
+    private static final ComponentFailure FAILURES = new ComponentFailure("bus-crypto", "cipher");
 
     /**
      * Constructs a {@code JceCipher} instance for the specified algorithm.
@@ -111,6 +118,7 @@ public class JceCipher extends SimpleWrapper<javax.crypto.Cipher> implements Cip
         try {
             init(mode.getValue(), (JceParameters) parameters);
         } catch (final InvalidAlgorithmParameterException | InvalidKeyException e) {
+            FAILURES.failed(ErrorType.SECURITY_FAILURE, e);
             Logger.warn(
                     false,
                     "Crypto",
@@ -138,6 +146,7 @@ public class JceCipher extends SimpleWrapper<javax.crypto.Cipher> implements Cip
         try {
             this.raw.updateAAD(aad);
         } catch (final IllegalArgumentException | IllegalStateException cause) {
+            FAILURES.failed(ErrorType.INVALID_REQUEST, cause);
             throw new CryptoException(cause);
         }
     }
@@ -173,6 +182,7 @@ public class JceCipher extends SimpleWrapper<javax.crypto.Cipher> implements Cip
         try {
             return this.raw.update(in, inOff, len, out);
         } catch (final ShortBufferException e) {
+            FAILURES.failed(ErrorType.INVALID_REQUEST, e);
             Logger.warn(
                     false,
                     "Crypto",
@@ -239,6 +249,7 @@ public class JceCipher extends SimpleWrapper<javax.crypto.Cipher> implements Cip
         try {
             return this.raw.update(in, inOff, len, out, outOff);
         } catch (final ShortBufferException e) {
+            FAILURES.failed(ErrorType.INVALID_REQUEST, e);
             Logger.warn(
                     false,
                     "Crypto",
@@ -264,6 +275,7 @@ public class JceCipher extends SimpleWrapper<javax.crypto.Cipher> implements Cip
         try {
             return this.raw.doFinal(out, outOff);
         } catch (final Exception e) {
+            FAILURES.failed(ErrorType.SECURITY_FAILURE, e);
             Logger.warn(
                     false,
                     "Crypto",
@@ -290,6 +302,7 @@ public class JceCipher extends SimpleWrapper<javax.crypto.Cipher> implements Cip
         try {
             return this.raw.doFinal(data, inOffset, inputLen);
         } catch (final Exception e) {
+            FAILURES.failed(ErrorType.SECURITY_FAILURE, e);
             Logger.warn(
                     false,
                     "Crypto",

@@ -95,6 +95,8 @@ public class MutableByte extends Number implements Comparable<MutableByte>, Muta
 
     /**
      * Set method.
+     *
+     * @param value replacement value
      */
     @Override
     public void set(final Number value) {

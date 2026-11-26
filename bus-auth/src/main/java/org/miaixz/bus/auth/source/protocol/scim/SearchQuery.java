@@ -34,6 +34,8 @@ public record SearchQuery(ResourceTarget target, SearchParameters parameters) {
     /**
      * Requires a collection target and non-null parameter object.
      *
+     * @param target     exact resource collection target
+     * @param parameters common standard search parameters
      * @throws IllegalArgumentException if a component is {@code null}
      * @throws ValidateException        if the target identifies one resource
      */

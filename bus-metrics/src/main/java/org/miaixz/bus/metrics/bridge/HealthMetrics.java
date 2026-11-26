@@ -24,6 +24,8 @@ import java.util.*;
 import java.util.OptionalLong;
 import java.util.function.Supplier;
 
+import org.miaixz.bus.core.center.function.SupplierX;
+import org.miaixz.bus.core.xyz.FunctionKit;
 import org.miaixz.bus.health.Collector;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.metrics.Metrics;
@@ -113,6 +115,12 @@ public class HealthMetrics implements MetricBinder {
         bind(Metrics.getProvider());
     }
 
+    /**
+     * Registers the enabled host metric categories with the selected provider.
+     *
+     * @param provider destination metrics provider
+     * @throws IllegalStateException if binding was already attempted or required observables are unsupported
+     */
     @Override
     public synchronized void bind(Provider provider) {
         Objects.requireNonNull(provider, "Metrics provider must not be null");
@@ -228,9 +236,9 @@ public class HealthMetrics implements MetricBinder {
      * @param category fixed category name
      * @param supplier category binder supplier
      */
-    private void bindCategory(Provider provider, String category, Supplier<MetricBinder> supplier) {
+    private void bindCategory(Provider provider, String category, SupplierX<MetricBinder> supplier) {
         try {
-            add(provider, supplier.get());
+            add(provider, FunctionKit.getUnwrapped(supplier));
         } catch (RuntimeException exception) {
             if (options.required()) {
                 throw new IllegalStateException("Required host metric category failed: " + category, exception);
@@ -268,6 +276,9 @@ public class HealthMetrics implements MetricBinder {
         close();
     }
 
+    /**
+     * Releases all successfully registered host metric categories in reverse order.
+     */
     @Override
     public synchronized void close() {
         closeBound();
@@ -303,56 +314,107 @@ public class HealthMetrics implements MetricBinder {
          */
         INSTANCE;
 
+        /**
+         * Reports which host metric categories the inert source supports.
+         *
+         * @return capabilities with optional host data disabled
+         */
         @Override
         public HostMetricCapabilities capabilities() {
             return new HostMetricCapabilities(HostMetricCapabilities.PagingFaultShape.NONE, false, false, false, false,
                     false);
         }
 
+        /**
+         * Supplies a placeholder for general host information.
+         *
+         * @return snapshot with zero uptime and no process-state counts
+         */
         @Override
         public GeneralSnapshot general() {
             return new GeneralSnapshot(0, Map.of());
         }
 
+        /**
+         * Supplies a placeholder for CPU information.
+         *
+         * @return snapshot with zero CPU counts and no time or frequency samples
+         */
         @Override
         public CpuSnapshot cpu() {
             return new CpuSnapshot(0, 0, List.of(), List.of());
         }
 
+        /**
+         * Supplies a placeholder for memory information.
+         *
+         * @return snapshot with zero memory measurements
+         */
         @Override
         public MemorySnapshot memory() {
             return new MemorySnapshot(0, 0, 0);
         }
 
+        /**
+         * Supplies a placeholder for paging information.
+         *
+         * @return snapshot with zero totals and no optional counters
+         */
         @Override
         public PagingSnapshot paging() {
             return new PagingSnapshot(0, 0, 0, OptionalLong.empty(), OptionalLong.empty());
         }
 
+        /**
+         * Supplies no disk observations.
+         *
+         * @return empty disk snapshot list
+         */
         @Override
         public List<DiskSnapshot> disks() {
             return List.of();
         }
 
+        /**
+         * Supplies no file system observations.
+         *
+         * @return empty file system snapshot list
+         */
         @Override
         public List<FileSystemSnapshot> fileSystems() {
             return List.of();
         }
 
+        /**
+         * Supplies a placeholder for network information.
+         *
+         * @return snapshot with no network observations
+         */
         @Override
         public NetworkSnapshot network() {
             return new NetworkSnapshot(List.of(), List.of());
         }
 
+        /**
+         * Supplies no observation for the current process.
+         *
+         * @return empty optional
+         */
         @Override
         public Optional<ProcessSnapshot> currentProcess() {
             return Optional.empty();
         }
 
+        /**
+         * Supplies no container observation.
+         *
+         * @return empty optional
+         */
         @Override
         public Optional<ContainerSnapshot> container() {
             return Optional.empty();
         }
+
     }
 
 }

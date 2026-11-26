@@ -31,7 +31,6 @@ import org.springframework.validation.annotation.Validated;
 import org.miaixz.bus.cache.Options;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.xyz.StringKit;
-import org.miaixz.bus.cortex.guard.token.TokenGuardConfig;
 import org.miaixz.bus.starter.GeniusBuilder;
 
 /**
@@ -80,11 +79,6 @@ public class CortexProperties {
     private final Bridge bridge;
 
     /**
-     * Optional host access checks for Cortex operations; disabling them preserves business validation.
-     */
-    private final Guard guard;
-
-    /**
      * Audit event collection and retention settings.
      */
     private final Audit audit;
@@ -104,14 +98,13 @@ public class CortexProperties {
      * @param cache               optional cache backend options
      * @param watch               watch options
      * @param bridge              bridge options
-     * @param guard               guard options
      * @param audit               audit options
      * @param release             release-registry options
      */
     public CortexProperties(@DefaultValue(Normal.FALSE) boolean enabled, @DefaultValue("1000") int maxWatchesPerTenant,
             @DefaultValue("24h") Duration watchExpire, @DefaultValue("1h") Duration cacheExpire, Options cache,
-            @DefaultValue Watch watch, @DefaultValue Bridge bridge, @DefaultValue Guard guard,
-            @DefaultValue Audit audit, @DefaultValue Release release) {
+            @DefaultValue Watch watch, @DefaultValue Bridge bridge, @DefaultValue Audit audit,
+            @DefaultValue Release release) {
         if (maxWatchesPerTenant <= 0) {
             throw new IllegalArgumentException("Cortex watch limits must be greater than zero");
         }
@@ -126,7 +119,6 @@ public class CortexProperties {
         this.cache = cache;
         this.watch = watch == null ? new Watch(false) : watch;
         this.bridge = bridge == null ? new Bridge("pull-only", Normal.EMPTY, 3, Normal.EMPTY) : bridge;
-        this.guard = guard == null ? new Guard(true, new Token()) : guard;
         this.audit = audit == null ? new Audit(false) : audit;
         this.release = release == null ? new Release(false) : release;
     }
@@ -159,12 +151,14 @@ public class CortexProperties {
     }
 
     /**
+     * Returns a safe diagnostic representation of this configuration.
+     *
      * @return safe diagnostic text
      */
     @Override
     public String toString() {
         return "CortexProperties[enabled=" + enabled + ", maxWatchesPerTenant=" + maxWatchesPerTenant + ", watchExpire="
-                + watchExpire + ", cacheExpire=" + cacheExpire + ", guard=***]";
+                + watchExpire + ", cacheExpire=" + cacheExpire + "]";
     }
 
     /**
@@ -198,6 +192,11 @@ public class CortexProperties {
 
         /**
          * Creates and validates bridge options.
+         *
+         * @param mode       configured operating mode
+         * @param url        service endpoint URL
+         * @param maxRetries max retries
+         * @param source     source schema settings
          */
         public Bridge {
             mode = StringKit.isBlank(mode) ? "pull-only" : mode.trim();
@@ -245,60 +244,6 @@ public class CortexProperties {
          */
         public String resolveSource() {
             return source;
-        }
-
-    }
-
-    /**
-     * Guard integration options.
-     *
-     * @param enabled whether the feature is enabled
-     * @param token   guard token
-     * @author Kimi Liu
-     */
-    public record Guard(@DefaultValue("true") boolean enabled, @DefaultValue Token token) {
-
-        /**
-         * Binds the canonical guard options even when the convenience constructor is present.
-         *
-         * @param enabled whether optional access checks are enabled
-         * @param token   credential pre-validation options, or null to use defaults
-         */
-        @ConstructorBinding
-        public Guard {
-            token = token == null ? new Token() : token;
-        }
-
-        /**
-         * Creates guard defaults.
-         */
-        public Guard() {
-            this(true, new Token());
-        }
-
-        /**
-         * Returns the token.
-         *
-         * @return token guard configuration
-         */
-        public Token getToken() {
-            return token;
-        }
-
-    }
-
-    /**
-     * Token guard binding type retained for the Cortex guard contract.
-     *
-     * @author Kimi Liu
-     */
-    public static class Token extends TokenGuardConfig {
-
-        /**
-         * Creates token guard defaults.
-         */
-        public Token() {
-            super();
         }
 
     }

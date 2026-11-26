@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.concurrent.locks.LockSupport;
 import java.util.function.LongConsumer;
 
+import org.miaixz.bus.core.center.function.RunnableX;
 import org.miaixz.bus.core.io.ByteString;
 import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.io.sink.Sink;
@@ -35,6 +36,7 @@ import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.*;
 import org.miaixz.bus.core.net.Http;
+import org.miaixz.bus.core.xyz.FunctionKit;
 import org.miaixz.bus.fabric.Headers;
 import org.miaixz.bus.fabric.Payload;
 
@@ -73,12 +75,12 @@ public class Http2Stream implements AutoCloseable {
     /**
      * One-shot callback removing this stream from its owning connection after terminal ownership is claimed.
      */
-    private final Runnable terminalCallback;
+    private final RunnableX terminalCallback;
 
     /**
      * Callback sending {@code RST_STREAM CANCEL} after an early body close or inbound queue overflow.
      */
-    private final Runnable cancelCallback;
+    private final RunnableX cancelCallback;
 
     /**
      * One-shot stream payload.
@@ -214,8 +216,8 @@ public class Http2Stream implements AutoCloseable {
      * @param cancel          callback sending cancellation for early close or queue overflow
      * @throws ValidateException if the id is not positive or a required reference is {@code null}
      */
-    Http2Stream(final int id, final Headers headers, final LongConsumer inboundConsumed, final Runnable terminal,
-            final Runnable cancel) {
+    Http2Stream(final int id, final Headers headers, final LongConsumer inboundConsumed, final RunnableX terminal,
+            final RunnableX cancel) {
         this(id, headers, inboundConsumed, terminal, cancel, Normal.MEBI);
     }
 
@@ -231,8 +233,8 @@ public class Http2Stream implements AutoCloseable {
      * @throws ValidateException if the id or byte budget is outside its supported range or a required reference is
      *                           {@code null}
      */
-    Http2Stream(final int id, final Headers headers, final LongConsumer inboundConsumed, final Runnable terminal,
-            final Runnable cancel, final long maxQueuedBytes) {
+    Http2Stream(final int id, final Headers headers, final LongConsumer inboundConsumed, final RunnableX terminal,
+            final RunnableX cancel, final long maxQueuedBytes) {
         if (id <= Normal._0) {
             throw new ValidateException("HTTP/2 stream id must be positive");
         }
@@ -288,9 +290,9 @@ public class Http2Stream implements AutoCloseable {
      *
      * @param callback ownership callback to run, or {@code null} for no operation
      */
-    private static void run(final Runnable callback) {
+    private static void run(final RunnableX callback) {
         if (callback != null) {
-            callback.run();
+            FunctionKit.runUnwrapped(callback);
         }
     }
 
@@ -444,7 +446,7 @@ public class Http2Stream implements AutoCloseable {
      */
     void receiveHeaders(final Headers headers, final String responseStatus, final boolean endStream) {
         final Headers checked = require(headers, "HTTP/2 headers");
-        Runnable terminal = null;
+        RunnableX terminal = null;
         synchronized (this) {
             throwIfFailed();
             final String status = responseStatus;
@@ -511,8 +513,8 @@ public class Http2Stream implements AutoCloseable {
      */
     public void receiveData(final ByteString data, final boolean endStream) {
         final ByteString checked = require(data, "HTTP/2 data");
-        Runnable terminal = null;
-        Runnable cancel = null;
+        RunnableX terminal = null;
+        RunnableX cancel = null;
         long discarded = Normal.LONG_ZERO;
         try {
             synchronized (this) {
@@ -574,8 +576,8 @@ public class Http2Stream implements AutoCloseable {
         if (length < Normal.LONG_ZERO || length > checked.size()) {
             throw new ValidateException("HTTP/2 DATA buffer length is invalid");
         }
-        Runnable terminal = null;
-        Runnable cancel = null;
+        RunnableX terminal = null;
+        RunnableX cancel = null;
         long discarded = Normal.LONG_ZERO;
         try {
             synchronized (this) {
@@ -756,7 +758,7 @@ public class Http2Stream implements AutoCloseable {
      */
     void fail(final RuntimeException cause, final Outcome terminalOutcome) {
         final RuntimeException checked = require(cause, "HTTP/2 stream failure");
-        Runnable terminal;
+        RunnableX terminal;
         long discarded = Normal.LONG_ZERO;
         synchronized (this) {
             if (failure == null) {
@@ -821,8 +823,8 @@ public class Http2Stream implements AutoCloseable {
      * Closes the source and chooses normal completion or early cancellation.
      */
     private void closeSource() {
-        Runnable cancel = null;
-        Runnable terminal;
+        RunnableX cancel = null;
+        RunnableX terminal;
         long discarded = Normal.LONG_ZERO;
         synchronized (this) {
             if (sourceClosed) {
@@ -851,7 +853,7 @@ public class Http2Stream implements AutoCloseable {
      * @return newly claimed terminal callback when remote end is reached and no body bytes remain; otherwise
      *         {@code null}
      */
-    private Runnable terminalIfCompleteLocked() {
+    private RunnableX terminalIfCompleteLocked() {
         return remoteEnd && body.queuedBytes() == Normal.LONG_ZERO ? terminalLocked() : null;
     }
 
@@ -860,7 +862,7 @@ public class Http2Stream implements AutoCloseable {
      *
      * @return terminal ownership callback on the first claim, or {@code null} after it was already claimed
      */
-    private Runnable terminalLocked() {
+    private RunnableX terminalLocked() {
         if (terminalNotified) {
             return null;
         }
@@ -934,6 +936,8 @@ public class Http2Stream implements AutoCloseable {
     private final class StreamPayload implements Payload, Source {
 
         /**
+         * Reports that the streaming payload length is unknown.
+         *
          * @return unknown streaming length
          */
         @Override
@@ -942,6 +946,8 @@ public class Http2Stream implements AutoCloseable {
         }
 
         /**
+         * Returns the payload's source for a single consumption.
+         *
          * @return this source on the first invocation
          */
         @Override
@@ -956,6 +962,8 @@ public class Http2Stream implements AutoCloseable {
         }
 
         /**
+         * Reports that the streaming payload cannot be replayed.
+         *
          * @return false
          */
         @Override
@@ -992,7 +1000,7 @@ public class Http2Stream implements AutoCloseable {
                 throw new SocketException("Unable to read HTTP/2 stream body", e);
             }
             if (consumed == Normal.__1) {
-                Runnable terminal;
+                RunnableX terminal;
                 synchronized (Http2Stream.this) {
                     sourceClosed = true;
                     terminal = terminalLocked();
@@ -1004,6 +1012,8 @@ public class Http2Stream implements AutoCloseable {
         }
 
         /**
+         * Returns the no-timeout policy of the stream source.
+         *
          * @return no per-source timeout
          */
         @Override
@@ -1031,6 +1041,7 @@ public class Http2Stream implements AutoCloseable {
          *
          * @param source    source buffer
          * @param byteCount byte count
+         * @throws IOException if an underlying input or output operation fails
          */
         @Override
         public void write(final Buffer source, final long byteCount) throws IOException {
@@ -1050,6 +1061,8 @@ public class Http2Stream implements AutoCloseable {
         }
 
         /**
+         * Returns the no-timeout policy of the inbound sink.
+         *
          * @return no per-sink timeout
          */
         @Override

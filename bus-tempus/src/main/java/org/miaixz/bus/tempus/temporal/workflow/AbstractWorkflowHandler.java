@@ -20,9 +20,12 @@
 package org.miaixz.bus.tempus.temporal.workflow;
 
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.errors.ComponentFailure;
+import org.miaixz.bus.errors.ErrorType;
 import org.miaixz.bus.logger.Logger;
 
 import io.temporal.activity.ActivityOptions;
+import io.temporal.workflow.unsafe.WorkflowUnsafe;
 
 /**
  * Provides a reusable execution template for Temporal workflows.
@@ -35,6 +38,11 @@ import io.temporal.activity.ActivityOptions;
  * @author Kimi Liu
  */
 public abstract class AbstractWorkflowHandler<A, R> {
+
+    /**
+     * Reports workflow failures only during live execution, keeping replay deterministic.
+     */
+    private static final ComponentFailure FAILURES = new ComponentFailure("bus-tempus", "workflow");
 
     /**
      * Default activity stub used when no request-specific timeout override is provided.
@@ -134,6 +142,9 @@ public abstract class AbstractWorkflowHandler<A, R> {
                     "Workflow execution failed: requestType={}, exception={}",
                     request == null ? null : request.getClass().getName(),
                     e.getClass().getSimpleName());
+            if (!WorkflowUnsafe.isWorkflowThread() || !WorkflowUnsafe.isReplaying()) {
+                FAILURES.failed(ErrorType.EXECUTION_FAILURE, e);
+            }
             throw e;
         }
     }

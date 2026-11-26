@@ -44,6 +44,7 @@ import org.miaixz.bus.health.builtin.hardware.common.AbstractHWDiskStore;
 import org.miaixz.bus.health.linux.DevPath;
 import org.miaixz.bus.health.linux.ProcPath;
 import org.miaixz.bus.health.linux.SysPath;
+import org.miaixz.bus.health.linux.UdevData;
 import org.miaixz.bus.health.linux.software.LinuxOperatingSystem;
 import org.miaixz.bus.logger.Logger;
 
@@ -260,8 +261,8 @@ public class LinuxHWDiskStore extends AbstractHWDiskStore {
      */
     private static List<HWDiskStore> getDisks(LinuxHWDiskStore storeToUpdate) {
         if (!LinuxOperatingSystem.HAS_UDEV) {
-            Logger.warn(false, "Health", "Disk Store information requires libudev, which is not present.");
-            return Collections.emptyList();
+            Logger.debug(false, "Health", "libudev is not present; reading disk stores from sysfs.");
+            return getDisksFromSysfs(storeToUpdate);
         }
         LinuxHWDiskStore store = null;
         List<HWDiskStore> result = new ArrayList<>();
@@ -387,19 +388,139 @@ public class LinuxHWDiskStore extends AbstractHWDiskStore {
     }
 
     /**
+     * Reads disk stores directly from sysfs and supplements them with the udev property database when available.
+     *
+     * @param storeToUpdate an existing store to update, or {@code null} to enumerate all stores
+     * @return matching disk stores
+     */
+    private static List<HWDiskStore> getDisksFromSysfs(LinuxHWDiskStore storeToUpdate) {
+        List<HWDiskStore> result = new ArrayList<>();
+        Map<String, String> mountsMap = readMountsMap();
+        File[] blockDevices = new File(SysPath.BLOCK).listFiles();
+        if (blockDevices == null) {
+            return result;
+        }
+        for (File blockDevice : blockDevices) {
+            String sysname = blockDevice.getName();
+            String devnode = DevPath.NODE_ROOT + toDevName(sysname);
+            if (devnode.startsWith(DevPath.LOOP) || devnode.startsWith(DevPath.RAM)) {
+                continue;
+            }
+            String syspath = blockDevice.getPath() + Symbol.SLASH;
+            long size = Parsing.parseLongOrDefault(Builder.getStringFromFile(syspath + SIZE).trim(), 0L) * SECTORSIZE;
+            int[] majorMinor = readMajorMinor(syspath);
+            Map<String, String> udev = UdevData.queryBlockDevice(majorMinor[Normal._0], majorMinor[Normal._1]);
+            LinuxHWDiskStore store;
+            if (new File(syspath + "dm").isDirectory()) {
+                String dmUuid = Builder.getStringFromFile(syspath + "dm/uuid").trim();
+                store = new LinuxHWDiskStore(devnode, getModelForDmDevice(dmUuid),
+                        Parsing.getStringValueOrUnknown(dmUuid), size, "Virtual");
+                String dmName = Builder.getStringFromFile(syspath + "dm/name").trim();
+                String[] vgLv = isLogicalVolume(dmUuid) ? splitLvmDmName(dmName)
+                        : new String[] { Normal.EMPTY, Normal.EMPTY };
+                addDeviceMapperPartition(
+                        store,
+                        mountsMap,
+                        dmUuid,
+                        vgLv[Normal._0],
+                        vgLv[Normal._1],
+                        dmName,
+                        devnode,
+                        sysname,
+                        syspath,
+                        udev.get(ID_FS_TYPE),
+                        udev.get(ID_FS_UUID),
+                        udev.get(ID_FS_LABEL),
+                        size,
+                        majorMinor[Normal._0],
+                        majorMinor[Normal._1]);
+            } else {
+                String model = Parsing.getStringValueOrDefault(
+                        udev.get(ID_MODEL),
+                        Builder.getStringFromFile(syspath + "device/model").trim());
+                String serial = Parsing.getStringValueOrDefault(
+                        udev.get(ID_SERIAL_SHORT),
+                        Builder.getStringFromFile(syspath + "device/serial").trim());
+                store = new LinuxHWDiskStore(devnode, Parsing.getStringValueOrUnknown(model),
+                        Parsing.getStringValueOrUnknown(serial), size, detectDiskType(syspath));
+            }
+            if (storeToUpdate != null) {
+                if (store.getName().equals(storeToUpdate.getName()) && store.getModel().equals(storeToUpdate.getModel())
+                        && store.getSerial().equals(storeToUpdate.getSerial())
+                        && store.getSize() == storeToUpdate.getSize()) {
+                    computeDiskStats(storeToUpdate, Builder.getStringFromFile(syspath + STAT).trim());
+                    result.add(storeToUpdate);
+                    break;
+                }
+                continue;
+            }
+            computeDiskStats(store, Builder.getStringFromFile(syspath + STAT).trim());
+            File[] partitions = blockDevice.listFiles(file -> new File(file, PARTITION).isFile());
+            if (partitions != null) {
+                for (File partition : partitions) {
+                    String partName = partition.getName();
+                    String partPath = partition.getPath() + Symbol.SLASH;
+                    int[] partMajorMinor = readMajorMinor(partPath);
+                    Map<String, String> partUdev = UdevData
+                            .queryBlockDevice(partMajorMinor[Normal._0], partMajorMinor[Normal._1]);
+                    String partDevnode = DevPath.NODE_ROOT + toDevName(partName);
+                    long partSize = Parsing.parseLongOrDefault(Builder.getStringFromFile(partPath + SIZE).trim(), 0L)
+                            * SECTORSIZE;
+                    store.partitionList.add(
+                            new HWPartition(partDevnode, partName,
+                                    Parsing.getStringValueOrDefault(partUdev.get(ID_FS_TYPE), PARTITION),
+                                    Parsing.getStringValueOrEmpty(partUdev.get(ID_FS_UUID)),
+                                    Parsing.getStringValueOrEmpty(partUdev.get(ID_FS_LABEL)), partSize,
+                                    partMajorMinor[Normal._0], partMajorMinor[Normal._1],
+                                    mountsMap.getOrDefault(
+                                            partDevnode,
+                                            getDependentNamesFromHoldersDirectory(partPath))));
+                }
+            }
+            store.partitionList = Collections.unmodifiableList(store.partitionList);
+            result.add(store);
+        }
+        return result;
+    }
+
+    /**
+     * Reads a block device's major and minor numbers from its sysfs {@code dev} file.
+     *
+     * @param sysPath the device sysfs path, ending with a slash
+     * @return the major and minor numbers
+     */
+    private static int[] readMajorMinor(String sysPath) {
+        String[] values = Builder.getStringFromFile(sysPath + "dev").trim().split(Symbol.COLON, Normal._2);
+        if (values.length < Normal._2) {
+            return new int[] { Normal._0, Normal._0 };
+        }
+        return new int[] { Parsing.parseIntOrDefault(values[Normal._0], Normal._0),
+                Parsing.parseIntOrDefault(values[Normal._1], Normal._0) };
+    }
+
+    /**
      * Reads the mounts map.
      *
      * @return the read mounts map result
      */
     private static Map<String, String> readMountsMap() {
+        return parseMountsMap(Builder.readFile(ProcPath.MOUNTS));
+    }
+
+    /**
+     * Parses mount records into device names and their first mount points.
+     *
+     * @param mounts the mount records
+     * @return the device-to-mount map with kernel octal escapes decoded
+     */
+    static Map<String, String> parseMountsMap(List<String> mounts) {
         Map<String, String> mountsMap = new HashMap<>();
-        List<String> mounts = Builder.readFile(ProcPath.MOUNTS);
         for (String mount : mounts) {
             String[] split = Pattern.SPACES_PATTERN.split(mount);
-            if (split.length < 2 || !split[0].startsWith(DevPath.DEV)) {
+            if (split.length < Normal._2 || !split[Normal._0].startsWith(DevPath.NODE_ROOT)) {
                 continue;
             }
-            mountsMap.put(split[0], split[1]);
+            mountsMap.putIfAbsent(Parsing.unescapeOctal(split[Normal._0]), Parsing.unescapeOctal(split[Normal._1]));
         }
         return mountsMap;
     }
@@ -412,12 +533,11 @@ public class LinuxHWDiskStore extends AbstractHWDiskStore {
      * @return The sorted backing stores, or an empty optional if the directory could not be read.
      */
     static Optional<List<String>> readBackingStores(String sysBlock, String name) {
-        String udevRoot = Symbol.SLASH + "dev" + Symbol.SLASH;
-        String devRoot = name.startsWith(DevPath.DEV) ? DevPath.DEV : udevRoot;
-        if (!name.startsWith(devRoot)) {
+        if (!name.startsWith(DevPath.NODE_ROOT)) {
             return Optional.empty();
         }
-        File[] slaves = new File(sysBlock + toSysfsName(name.substring(devRoot.length())) + "/slaves").listFiles();
+        File[] slaves = new File(sysBlock + toSysfsName(name.substring(DevPath.NODE_ROOT.length())) + "/slaves")
+                .listFiles();
         if (slaves == null) {
             return Optional.empty();
         }
@@ -425,7 +545,7 @@ public class LinuxHWDiskStore extends AbstractHWDiskStore {
         for (File slave : slaves) {
             String slaveName = slave.getName();
             StoreKind kind = new File(sysBlock + slaveName).exists() ? StoreKind.DISK : StoreKind.PARTITION;
-            stores.add(kind.entry(devRoot + toDevName(slaveName)));
+            stores.add(kind.entry(DevPath.NODE_ROOT + toDevName(slaveName)));
         }
         stores.sort(null);
         return Optional.of(Collections.unmodifiableList(stores));
@@ -479,7 +599,36 @@ public class LinuxHWDiskStore extends AbstractHWDiskStore {
      * @return the get partition name for dm device result
      */
     private static String getPartitionNameForDmDevice(String vgName, String lvName) {
-        return DevPath.DEV + vgName + Symbol.C_SLASH + lvName;
+        return DevPath.NODE_ROOT + vgName + Symbol.C_SLASH + lvName;
+    }
+
+    /**
+     * Splits an LVM device-mapper name into volume-group and logical-volume names.
+     *
+     * @param dmName the device-mapper name, with literal hyphens escaped as doubled hyphens
+     * @return the volume-group and logical-volume names
+     */
+    protected static String[] splitLvmDmName(String dmName) {
+        String[] names = { Normal.EMPTY, Normal.EMPTY };
+        StringBuilder value = new StringBuilder();
+        int component = Normal._0;
+        int index = Normal._0;
+        while (index < dmName.length() && component < names.length) {
+            char character = dmName.charAt(index++);
+            if (character != Symbol.C_MINUS) {
+                value.append(character);
+            } else if (index < dmName.length() && dmName.charAt(index) == Symbol.C_MINUS) {
+                value.append(Symbol.C_MINUS);
+                index++;
+            } else {
+                names[component++] = value.toString();
+                value.setLength(Normal._0);
+            }
+        }
+        if (component < names.length) {
+            names[component] = value.toString();
+        }
+        return names;
     }
 
     /**
@@ -645,6 +794,25 @@ public class LinuxHWDiskStore extends AbstractHWDiskStore {
             return "HDD";
         }
         return "Unknown";
+    }
+
+    /**
+     * Detects a disk type from Linux sysfs attributes.
+     *
+     * @param sysPath the disk sysfs path, ending with a slash
+     * @return the detected disk type
+     */
+    private static String detectDiskType(String sysPath) {
+        if (Builder.getIntFromFile(sysPath + "removable") == Normal._1) {
+            return "Removable";
+        }
+        int rotational = Builder.getIntFromFile(sysPath + "queue/rotational");
+        if (rotational == Normal._0) {
+            return "SSD";
+        } else if (rotational == Normal._1) {
+            return "HDD";
+        }
+        return Normal.UNKNOWN;
     }
 
     /**

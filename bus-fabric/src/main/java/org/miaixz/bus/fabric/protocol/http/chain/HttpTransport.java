@@ -20,8 +20,10 @@
 package org.miaixz.bus.fabric.protocol.http.chain;
 
 import java.net.SocketTimeoutException;
-import java.util.function.Function;
+import java.time.Duration;
 
+import org.miaixz.bus.core.center.function.FunctionX;
+import org.miaixz.bus.core.center.function.RunnableX;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
@@ -52,13 +54,13 @@ public class HttpTransport implements HttpStage {
     /**
      * Shared unregister action for synchronous scopes without an external cancellation handle.
      */
-    private static final Runnable NOOP_UNREGISTER = () -> {
+    private static final RunnableX NOOP_UNREGISTER = () -> {
     };
 
     /**
      * Shared stateless default codec factory.
      */
-    private static final Function<HttpChain, HttpCodec> DEFAULT_CODECS = HttpTransport::networkCodec;
+    private static final FunctionX<HttpChain, HttpCodec> DEFAULT_CODECS = HttpTransport::networkCodec;
 
     /**
      * Normalized identifier exposed to the HTTP stage chain.
@@ -68,7 +70,7 @@ public class HttpTransport implements HttpStage {
     /**
      * Factory that selects or creates the protocol codec for the current chain connection.
      */
-    private final Function<HttpChain, HttpCodec> codecs;
+    private final FunctionX<HttpChain, HttpCodec> codecs;
 
     /**
      * Runtime time source used for request/response timing.
@@ -99,7 +101,24 @@ public class HttpTransport implements HttpStage {
      * @param clock      runtime time source used for response timing
      */
     public HttpTransport(final Dispatcher dispatcher, final Clock clock) {
-        this(chain -> networkCodec(chain, require(dispatcher, "Dispatcher")), clock);
+        this(chain -> networkCodec(chain, require(dispatcher, "Dispatcher"), null, null), clock);
+    }
+
+    /**
+     * Creates a transport stage with explicit HTTP/2 session settings.
+     *
+     * @param dispatcher   shared runtime dispatcher
+     * @param clock        runtime time source
+     * @param pingInterval keepalive scheduling delay; zero disables keepalive
+     * @param pingTimeout  maximum time to wait for a matching PING acknowledgement
+     */
+    public HttpTransport(final Dispatcher dispatcher, final Clock clock, final Duration pingInterval,
+            final Duration pingTimeout) {
+        this(chain -> networkCodec(
+                chain,
+                require(dispatcher, "Dispatcher"),
+                require(pingInterval, "HTTP/2 PING interval"),
+                require(pingTimeout, "HTTP/2 PING timeout")), clock);
     }
 
     /**
@@ -108,7 +127,7 @@ public class HttpTransport implements HttpStage {
      * @param codecs chain-aware codec factory used for each exchange
      * @throws ValidateException if {@code codecs} is {@code null}
      */
-    HttpTransport(final Function<HttpChain, HttpCodec> codecs) {
+    HttpTransport(final FunctionX<HttpChain, HttpCodec> codecs) {
         this(codecs, Clock.system());
     }
 
@@ -118,7 +137,7 @@ public class HttpTransport implements HttpStage {
      * @param codecs chain-aware codec factory used for each exchange
      * @param clock  runtime time source
      */
-    HttpTransport(final Function<HttpChain, HttpCodec> codecs, final Clock clock) {
+    HttpTransport(final FunctionX<HttpChain, HttpCodec> codecs, final Clock clock) {
         this.name = normalizeName("http-transport");
         this.codecs = require(codecs, "HTTP codec factory");
         this.clock = require(clock, "Clock");
@@ -136,7 +155,7 @@ public class HttpTransport implements HttpStage {
                 chain.connection(),
                 () -> new StatefulException("HTTP chain does not contain a network connection"));
         if (http2(connection)) {
-            return new Http2Codec(http2Session(connection, null));
+            return new Http2Codec(http2Session(connection, null, null, null));
         }
         return http1Codec(connection);
     }
@@ -144,17 +163,23 @@ public class HttpTransport implements HttpStage {
     /**
      * Creates a network codec from the current chain.
      *
-     * @param chain      chain whose selected physical connection is adapted
-     * @param dispatcher shared dispatcher used for a newly initialized HTTP/2 session
+     * @param chain        chain whose selected physical connection is adapted
+     * @param dispatcher   shared dispatcher used for a newly initialized HTTP/2 session
+     * @param pingInterval interval between HTTP/2 keepalive pings when configured
+     * @param pingTimeout  time allowed for an HTTP/2 ping acknowledgement when configured
      * @return HTTP/1 codec or HTTP/2 stream codec matching the connection protocol
      * @throws StatefulException if the chain has no selected network connection
      */
-    private static HttpCodec networkCodec(final HttpChain chain, final Dispatcher dispatcher) {
+    private static HttpCodec networkCodec(
+            final HttpChain chain,
+            final Dispatcher dispatcher,
+            final Duration pingInterval,
+            final Duration pingTimeout) {
         final Connection connection = Assert.notNull(
                 chain.connection(),
                 () -> new StatefulException("HTTP chain does not contain a network connection"));
         if (http2(connection)) {
-            return new Http2Codec(http2Session(connection, dispatcher));
+            return new Http2Codec(http2Session(connection, dispatcher, pingInterval, pingTimeout));
         }
         return http1Codec(connection);
     }
@@ -198,12 +223,18 @@ public class HttpTransport implements HttpStage {
     /**
      * Atomically initializes and reuses one HTTP/2 connection session per physical connection.
      *
-     * @param connection physical HTTP/2 connection
-     * @param dispatcher shared runtime dispatcher, or {@code null} for an owned dispatcher
+     * @param connection   physical HTTP/2 connection
+     * @param dispatcher   shared runtime dispatcher, or {@code null} for an owned dispatcher
+     * @param pingInterval interval between keepalive pings when configured
+     * @param pingTimeout  time allowed for a ping acknowledgement when configured
      * @return connection-local HTTP/2 session
      * @throws StatefulException if multiplex state is missing, incompatible, or changes non-atomically
      */
-    private static Http2Connection http2Session(final Connection connection, final Dispatcher dispatcher) {
+    private static Http2Connection http2Session(
+            final Connection connection,
+            final Dispatcher dispatcher,
+            final Duration pingInterval,
+            final Duration pingTimeout) {
         final Connection.MultiplexAttachment attachment = Assert.notNull(
                 connection.multiplexAttachment(),
                 () -> new StatefulException("HTTP/2 connection does not expose a multiplex attachment"));
@@ -223,7 +254,8 @@ public class HttpTransport implements HttpStage {
                 throw new StatefulException("HTTP/2 multiplex attachment contains an incompatible session");
             }
             final Http2Connection created = dispatcher == null ? Http2Connection.create(connection)
-                    : Http2Connection.create(connection, dispatcher);
+                    : pingInterval == null && pingTimeout == null ? Http2Connection.create(connection, dispatcher)
+                            : Http2Connection.create(connection, dispatcher, pingInterval, pingTimeout);
             if (!attachment.compareAndSetSession(null, created)) {
                 throw new StatefulException("HTTP/2 session initialization was not linearizable");
             }

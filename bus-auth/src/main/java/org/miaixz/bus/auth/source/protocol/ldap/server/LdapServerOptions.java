@@ -54,6 +54,14 @@ public record LdapServerOptions(boolean anonymousBindSupported, boolean simpleBi
     /**
      * Freezes mechanism names and verifies that the directory server has a usable Bind and positive resource limits.
      *
+     * @param anonymousBindSupported   whether an anonymous LDAPv3 Bind is accepted
+     * @param simpleBindSupported      whether password-based simple Bind is accepted over a TLS-protected connection
+     * @param saslMechanisms           supported RFC 4422 SASL mechanism names
+     * @param startTlsSupported        whether the standard LDAP StartTLS extended operation is enabled
+     * @param maximumSearchEntries     positive maximum entries produced by one Search operation
+     * @param maximumSearchTimeSeconds positive maximum Search execution time in seconds
+     * @param maximumMessageBytes      positive maximum encoded LDAP message size
+     * @param maximumBerDepth          positive maximum nested BER depth
      * @throws IllegalArgumentException if the mechanism set or one of its members is {@code null}
      * @throws ValidateException        if no Bind choice is enabled or a numeric limit is not positive
      */

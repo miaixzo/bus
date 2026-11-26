@@ -35,6 +35,8 @@ import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.errors.ComponentFailure;
+import org.miaixz.bus.errors.ErrorType;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.validate.magic.Checker;
 import org.miaixz.bus.validate.magic.Criterion;
@@ -50,6 +52,11 @@ import org.miaixz.bus.validate.magic.annotation.*;
 @Setter
 @EqualsAndHashCode(callSuper = false)
 public class Verified extends Provider {
+
+    /**
+     * Reports invalid validation metadata independently of ordinary field rejections.
+     */
+    private static final ComponentFailure FAILURES = new ComponentFailure("bus-validate", "constraint-metadata");
 
     /**
      * List of validation criterions.
@@ -168,7 +175,7 @@ public class Verified extends Provider {
     /**
      * Configures the validation context based on object annotations.
      *
-     * @param context     The context.
+     * @param context     Validation context associated with the current value.
      * @param annotations The annotation information.
      * @return The configured context.
      */
@@ -247,8 +254,8 @@ public class Verified extends Provider {
     /**
      * Creates a validation criterion object.
      *
-     * @param annotation The annotation.
-     * @param object     The object.
+     * @param annotation Validation annotation whose metadata defines the criterion.
+     * @param object     Value being validated against the annotation.
      * @return The validation criterion object.
      */
     public Criterion build(Annotation annotation, Object object) {
@@ -319,6 +326,7 @@ public class Verified extends Provider {
                     criterion.getName());
             return criterion;
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+            FAILURES.failed(ErrorType.CONFIGURATION_FAILURE, e);
             Logger.warn(
                     false,
                     "Validate",

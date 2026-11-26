@@ -53,6 +53,13 @@ public record AmazonOptions(Vendor.Id vendor, Vendor.Variant variant, String cli
     /**
      * Validates and freezes one Login with Amazon registration without resolving its client secret.
      *
+     * @param vendor      exact Amazon platform identifier
+     * @param variant     exact default variant
+     * @param clientId    registered Login with Amazon client identifier
+     * @param credential  external client-secret reference
+     * @param redirectUri exact registered redirect URI
+     * @param scopes      ordered requested scopes, or empty to use manifest defaults
+     * @param pkce        whether this registration uses optional S256 PKCE
      * @throws IllegalArgumentException if a required component, container, or scope is null or blank
      * @throws ValidateException        if routing, credential type, scope vocabulary, uniqueness, or identity scope
      *                                  coverage differs from the frozen manifest

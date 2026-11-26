@@ -50,6 +50,34 @@ public class FunctionKit {
     }
 
     /**
+     * Gets the supplied value and propagates the original failure unchanged.
+     *
+     * @param supplier Value supplier.
+     * @param <T>      Value type.
+     * @return The supplied value.
+     */
+    public static <T> T getUnwrapped(final SupplierX<T> supplier) {
+        try {
+            return supplier.getting();
+        } catch (final Throwable failure) {
+            throw rethrow(failure);
+        }
+    }
+
+    /**
+     * Runs the task and propagates the original failure unchanged.
+     *
+     * @param task Task to run.
+     */
+    public static void runUnwrapped(final RunnableX task) {
+        try {
+            task.running();
+        } catch (final Throwable failure) {
+            throw rethrow(failure);
+        }
+    }
+
+    /**
      * Applies the unary operator.
      * <p>
      * Returns {@code null} when the operator is {@code null}.
@@ -62,6 +90,39 @@ public class FunctionKit {
      */
     public static <T> T apply(final UnaryOperatorX<T> operator, final T t) {
         return operator == null ? null : operator.apply(t);
+    }
+
+    /**
+     * Applies the unary operator and propagates the original failure unchanged.
+     *
+     * @param operator Operator to apply.
+     * @param value    Input argument.
+     * @param <T>      Operand and result type.
+     * @return The result.
+     */
+    public static <T> T applyUnaryUnwrapped(final UnaryOperatorX<T> operator, final T value) {
+        try {
+            return operator.applying(value);
+        } catch (final Throwable failure) {
+            throw rethrow(failure);
+        }
+    }
+
+    /**
+     * Applies the binary operator and propagates the original failure unchanged.
+     *
+     * @param operator Operator to apply.
+     * @param first    First operand.
+     * @param second   Second operand.
+     * @param <T>      Operand and result type.
+     * @return The result.
+     */
+    public static <T> T applyBinaryUnwrapped(final BinaryOperatorX<T> operator, final T first, final T second) {
+        try {
+            return operator.applying(first, second);
+        } catch (final Throwable failure) {
+            throw rethrow(failure);
+        }
     }
 
     /**
@@ -81,6 +142,45 @@ public class FunctionKit {
     }
 
     /**
+     * Applies the function and propagates the original failure unchanged.
+     *
+     * @param function Function to apply.
+     * @param value    Input argument.
+     * @param <T>      Input type.
+     * @param <R>      Result type.
+     * @return The function result.
+     */
+    public static <T, R> R applyUnwrapped(final FunctionX<? super T, ? extends R> function, final T value) {
+        try {
+            return function.applying(value);
+        } catch (final Throwable failure) {
+            throw rethrow(failure);
+        }
+    }
+
+    /**
+     * Applies the two-argument function and propagates the original failure unchanged.
+     *
+     * @param function Function to apply.
+     * @param first    First input argument.
+     * @param second   Second input argument.
+     * @param <T>      First input type.
+     * @param <U>      Second input type.
+     * @param <R>      Result type.
+     * @return The function result.
+     */
+    public static <T, U, R> R applyUnwrapped(
+            final BiFunctionX<? super T, ? super U, ? extends R> function,
+            final T first,
+            final U second) {
+        try {
+            return function.applying(first, second);
+        } catch (final Throwable failure) {
+            throw rethrow(failure);
+        }
+    }
+
+    /**
      * Executes the consumer.
      * <p>
      * Does nothing when the consumer is {@code null}.
@@ -94,6 +194,32 @@ public class FunctionKit {
         if (consumer != null) {
             consumer.accept(t);
         }
+    }
+
+    /**
+     * Executes the consumer and propagates the original failure unchanged.
+     *
+     * @param consumer Consumer to execute.
+     * @param value    Input argument.
+     * @param <T>      Input type.
+     */
+    public static <T> void acceptUnwrapped(final ConsumerX<? super T> consumer, final T value) {
+        try {
+            consumer.accepting(value);
+        } catch (final Throwable failure) {
+            throw rethrow(failure);
+        }
+    }
+
+    /**
+     * Rethrows the original failure for callers with an unchecked signature.
+     *
+     * @param failure Failure to propagate.
+     * @return Never returns.
+     */
+    private static RuntimeException rethrow(final Throwable failure) {
+        IoKit.sneakyRethrow(failure);
+        throw new AssertionError(failure);
     }
 
     /**
@@ -111,6 +237,26 @@ public class FunctionKit {
     public static <T, U> void accept(final BiConsumerX<T, U> consumer, final T t, final U u) {
         if (consumer != null) {
             consumer.accept(t, u);
+        }
+    }
+
+    /**
+     * Executes the two-argument consumer and propagates the original failure unchanged.
+     *
+     * @param consumer Consumer to execute.
+     * @param first    First input argument.
+     * @param second   Second input argument.
+     * @param <T>      First input type.
+     * @param <U>      Second input type.
+     */
+    public static <T, U> void acceptUnwrapped(
+            final BiConsumerX<? super T, ? super U> consumer,
+            final T first,
+            final U second) {
+        try {
+            consumer.accepting(first, second);
+        } catch (final Throwable failure) {
+            throw rethrow(failure);
         }
     }
 
@@ -168,6 +314,27 @@ public class FunctionKit {
      */
     public static <T, U> boolean test(final BiPredicateX<T, U> predicate, final T t, final U u) {
         return predicate != null && predicate.test(t, u);
+    }
+
+    /**
+     * Evaluates the two-argument predicate and propagates the original failure unchanged.
+     *
+     * @param predicate Predicate to evaluate.
+     * @param first     First input argument.
+     * @param second    Second input argument.
+     * @param <T>       First input type.
+     * @param <U>       Second input type.
+     * @return Whether the inputs satisfy the predicate.
+     */
+    public static <T, U> boolean testUnwrapped(
+            final BiPredicateX<? super T, ? super U> predicate,
+            final T first,
+            final U second) {
+        try {
+            return predicate.testing(first, second);
+        } catch (final Throwable failure) {
+            throw rethrow(failure);
+        }
     }
 
 }

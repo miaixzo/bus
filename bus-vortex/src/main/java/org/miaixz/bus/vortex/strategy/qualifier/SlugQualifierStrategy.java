@@ -22,11 +22,13 @@ package org.miaixz.bus.vortex.strategy.qualifier;
 import org.springframework.web.server.ServerWebExchange;
 
 import org.miaixz.bus.core.Order;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.cortex.Assets;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.vortex.Args;
 import org.miaixz.bus.vortex.Context;
+import org.miaixz.bus.vortex.guard.IdentityGuard;
 import org.miaixz.bus.vortex.guard.SignatureVerifier;
 import org.miaixz.bus.vortex.magic.ErrorCode;
 import org.miaixz.bus.vortex.provider.AuthorizeProvider;
@@ -60,13 +62,25 @@ public class SlugQualifierStrategy extends QualifierStrategy {
     }
 
     /**
+     * Creates the slug qualifier with the gateway identity adapter.
+     *
+     * @param matcher    public slug asset matcher
+     * @param provider   credential validation provider
+     * @param identities shared service identity adapter
+     */
+    public SlugQualifierStrategy(SlugRouteMatcher matcher, AuthorizeProvider provider, IdentityGuard identities) {
+        super(provider, null, identities);
+        this.matcher = matcher;
+    }
+
+    /**
      * Returns this strategy's dynamic protocol.
      *
      * @return slug protocol number
      */
     @Override
     public Integer protocol() {
-        return Args.PROTOCOL_SLUG;
+        return Args.ROUTE_SLUG;
     }
 
     /**
@@ -81,27 +95,27 @@ public class SlugQualifierStrategy extends QualifierStrategy {
         return Mono.deferContextual(contextView -> {
             final Context context = contextView.get(Context.class);
             SlugRouteMatcher.Match match = this.matcher.match(exchange);
+            validateIdentity(exchange, match == null ? null : match.assets());
             if (match == null) {
                 return Mono.error(new ValidateException(ErrorCode._100800));
             }
+            exchange.getAttributes().put(SlugRouteMatcher.MATCH_ATTRIBUTE, match);
             Assets assets = match.assets();
             context.setAssets(assets);
             Logger.info(
                     true,
                     "Vortex",
-                    "Public slug asset resolved: clientIp={}, method={}, version={}, verb={}, policy={}, signing={}, host={}, port={}, path={}, url={}",
+                    "Public slug asset resolved: clientIp={}, method={}, version={}, verb={}, policy={}, signing={}, instances={}, url={}",
                     context.getX_request_ip(),
                     assets.getMethod(),
                     assets.getVersion(),
                     assets.getVerb(),
                     assets.getPolicy(),
                     assets.getSigning(),
-                    assets.getHost(),
-                    assets.getPort(),
-                    assets.getPath(),
+                    assets.getInstances() == null ? Normal._0 : assets.getInstances().size(),
                     assets.getUrl());
-            return method(context, assets).then(SignatureVerifier.verifySlug(context, assets)).then(authorize(context))
-                    .then(finalizeParameters(exchange, context)).then(chain.apply(exchange));
+            return validateOperation(context, assets).then(SignatureVerifier.verifySlug(context, assets))
+                    .then(authorize(context)).then(finalizeParameters(exchange, context)).then(chain.apply(exchange));
         });
     }
 

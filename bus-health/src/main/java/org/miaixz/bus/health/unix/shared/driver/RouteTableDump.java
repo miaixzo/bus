@@ -372,6 +372,7 @@ public final class RouteTableDump {
         public int getPfRoute() {
             return pfRoute;
         }
+
     }
 
 }

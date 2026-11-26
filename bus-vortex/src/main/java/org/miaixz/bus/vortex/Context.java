@@ -20,6 +20,7 @@
 package org.miaixz.bus.vortex;
 
 import java.io.Serial;
+import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -27,7 +28,10 @@ import lombok.Getter;
 
 import org.springframework.http.codec.multipart.Part;
 
+import org.miaixz.bus.auth.guard.CallerValidator;
+import org.miaixz.bus.auth.guard.GuardConfig;
 import org.miaixz.bus.core.basic.entity.Tracer;
+import org.miaixz.bus.core.center.function.BiFunctionX;
 import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.cortex.Assets;
 import org.miaixz.bus.vortex.filter.PrimaryFilter;
@@ -47,6 +51,9 @@ import org.miaixz.bus.vortex.magic.Parameter;
 @Getter
 public class Context extends Tracer {
 
+    /**
+     * Serialization version identifier.
+     */
     @Serial
     private static final long serialVersionUID = 2560609205001L;
 
@@ -67,9 +74,9 @@ public class Context extends Tracer {
     public static final String JSON_ARRAY_BODY_ATTRIBUTE = "X.JSON_ARRAY_BODY";
 
     /**
-     * The exchange attribute marking a CST JSON body that must be forwarded without parsing or replay caching.
+     * Marks a request body that must be forwarded without parsing or replay caching.
      */
-    public static final String RAW_JSON_PASSTHROUGH_ATTRIBUTE = "X.RAW_JSON_PASSTHROUGH";
+    public static final String RAW_BODY_PASSTHROUGH_ATTRIBUTE = "X.RAW_BODY_PASSTHROUGH";
 
     /**
      * A map of the HTTP request headers. This map is a direct, single-value representation of the incoming request's
@@ -116,6 +123,20 @@ public class Context extends Tracer {
     private Assets assets;
 
     /**
+     * Signs the selected downstream URI and the exact forwarded body.
+     */
+    private transient BiFunctionX<URI, byte[], String> forwardProof;
+
+    /**
+     * Installs the signer after successful authentication for the current protected REST call.
+     *
+     * @param signer signer bound to this request's verified authorization
+     */
+    public void setForwardProof(BiFunctionX<URI, byte[], String> signer) {
+        this.forwardProof = signer;
+    }
+
+    /**
      * The remaining request path produced by route resolution. Prefix-routed protocols can use this value for
      * downstream path rewriting without repeating route matching in executors.
      */
@@ -133,10 +154,70 @@ public class Context extends Tracer {
     private Http.Method httpMethod;
 
     /**
+     * Whether direct client Bearer authentication is enabled for this listener.
+     */
+    private final boolean bearerEnabled;
+
+    /**
+     * Whether client API key authentication is enabled for this listener.
+     */
+    private final boolean apiKeyEnabled;
+
+    /**
+     * Maximum Bearer credential length for V1 request signing.
+     */
+    private final int bearerMaxLength;
+
+    /**
+     * Maximum API key length for V1 request signing.
+     */
+    private final int apiKeyMaxLength;
+
+    /**
+     * Whether the client's request signature is verified when required by the asset.
+     */
+    private final boolean signingEnabled;
+
+    /**
      * Creates an empty request context.
      */
     public Context() {
-        // No initialization required.
+        this(true, true, true);
+    }
+
+    /**
+     * Creates an empty request context using the client's effective Guard switches.
+     *
+     * @param bearerEnabled  whether direct client Bearer authentication is enabled
+     * @param apiKeyEnabled  whether client API key authentication is enabled
+     * @param signingEnabled whether client request-signature verification is enabled
+     */
+    public Context(boolean bearerEnabled, boolean apiKeyEnabled, boolean signingEnabled) {
+        this(new GuardConfig.Bearer(bearerEnabled), new GuardConfig.ApiKey(apiKeyEnabled), signingEnabled);
+    }
+
+    /**
+     * Creates a request context with the listener's client credential and signing settings.
+     *
+     * @param bearerGuard    direct Bearer authentication settings
+     * @param apiKeyGuard    API key authentication settings
+     * @param signingEnabled whether client request-signature verification is enabled
+     */
+    public Context(GuardConfig.Bearer bearerGuard, GuardConfig.ApiKey apiKeyGuard, boolean signingEnabled) {
+        this.bearerEnabled = bearerGuard.enabled();
+        this.apiKeyEnabled = apiKeyGuard.enabled();
+        this.bearerMaxLength = bearerGuard.maxLength();
+        this.apiKeyMaxLength = apiKeyGuard.maxLength();
+        this.signingEnabled = signingEnabled;
+    }
+
+    /**
+     * Selects the first presented, enabled client authentication method.
+     *
+     * @return the enabled Bearer or API key credential, or {@code null} if neither is available
+     */
+    public Http.Auth.Credential clientCredential() {
+        return CallerValidator.credential(getHeaders(), bearerEnabled, apiKeyEnabled);
     }
 
     /**
@@ -165,6 +246,15 @@ public class Context extends Tracer {
      */
     public void setHeader(String key, String value) {
         this.headers.put(key, value);
+    }
+
+    /**
+     * Removes a single request header from the controlled header view.
+     *
+     * @param key header name
+     */
+    public void removeHeader(String key) {
+        this.headers.remove(key);
     }
 
     /**

@@ -44,6 +44,9 @@ public record TlsPolicy(TlsContext context, TlsSettings settings) implements Pol
 
     /**
      * Validates the complete TLS configuration pair.
+     *
+     * @param context  TLS engine context
+     * @param settings immutable handshake settings
      */
     public TlsPolicy {
         context = Assert.notNull(context, () -> new ValidateException("TLS context must not be null"));

@@ -220,6 +220,9 @@ public class Blueprint {
 
         /**
          * Validates and detaches one Library Blueprint entry.
+         *
+         * @param enabled  whether the Library participates in the compiled view
+         * @param resource project-supplied Library or subclass
          */
         public LibraryEntry {
             resource = copy(Assert.notNull(resource, "Library Blueprint entry must not be null"));
@@ -258,6 +261,9 @@ public class Blueprint {
 
         /**
          * Validates and detaches one Provider Blueprint entry.
+         *
+         * @param enabled  whether the Provider participates in the compiled view
+         * @param resource project-supplied Provider or subclass
          */
         public ProviderEntry {
             resource = copy(Assert.notNull(resource, "Provider Blueprint entry must not be null"));
@@ -296,6 +302,9 @@ public class Blueprint {
 
         /**
          * Validates and detaches one Source Blueprint entry.
+         *
+         * @param enabled  whether the Source participates in the compiled view
+         * @param resource project-supplied Source or subclass
          */
         public SourceEntry {
             resource = copy(Assert.notNull(resource, "Source Blueprint entry must not be null"));

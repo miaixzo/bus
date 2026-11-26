@@ -19,28 +19,32 @@
 */
 package org.miaixz.bus.vortex;
 
-import java.time.Duration;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.springframework.context.SmartLifecycle;
 
+import org.miaixz.bus.errors.ErrorBoundary;
+import org.miaixz.bus.errors.ErrorContext;
 import org.miaixz.bus.logger.Logger;
 
 import reactor.netty.DisposableServer;
 import reactor.netty.http.server.HttpServer;
-import reactor.netty.resources.ConnectionProvider;
-import reactor.netty.resources.LoopResources;
 
 /**
- * Manages the lifecycle of the core Reactor Netty HTTP server for the Vortex application.
+ * Manages the Reactor Netty HTTP listener for Vortex.
  * <p>
- * This class implements {@link SmartLifecycle} to integrate seamlessly with the Spring application context. It is
- * responsible for starting the {@link HttpServer} when the application starts and gracefully shutting it down when the
- * application stops.
+ * The {@link SmartLifecycle} integration binds the listener on Spring startup and disposes it on shutdown. Applications
+ * managing the lifecycle directly can call {@link #start()} and {@link #stop()} and use {@link #await()} to wait for
+ * the listener to close.
  *
  * @author Kimi Liu
  */
 public class Vortex implements SmartLifecycle {
+
+    /**
+     * Identifies server lifecycle diagnostics before and after the HTTP listener is available.
+     */
+    private static final ErrorContext LIFECYCLE = new ErrorContext("vortex", "lifecycle", ErrorContext.Phase.LOCAL);
 
     /**
      * The underlying, configured Reactor Netty HTTP server instance.
@@ -67,8 +71,9 @@ public class Vortex implements SmartLifecycle {
     }
 
     /**
-     * Starts the HTTP server. This method is called by the Spring container upon application startup. It binds the
-     * server to its configured port and logs the outcome.
+     * Binds the configured gateway listener to its port if it is not already running.
+     *
+     * @throws RuntimeException if the listener cannot be bound
      */
     @Override
     public void start() {
@@ -78,17 +83,33 @@ public class Vortex implements SmartLifecycle {
                 Logger.info(true, "Vortex", "Gateway listener started: port={}", disposableServer.port());
             } catch (Exception e) {
                 running.set(false);
-                Logger.error(false, "Vortex", "Gateway listener failed to start", e);
+                if (disposableServer != null) {
+                    disposableServer.disposeNow();
+                }
+                ErrorBoundary.diagnose(LIFECYCLE, "gateway-start", e, null);
                 throw new RuntimeException("Failed to bind Vortex server", e);
             }
         }
     }
 
     /**
-     * Stops the HTTP server during graceful Spring shutdown.
+     * Blocks the calling thread until the bound listener is disposed.
+     *
+     * @throws IllegalStateException if the listener has not been started
+     */
+    public void await() {
+        DisposableServer server = disposableServer;
+        if (server == null) {
+            throw new IllegalStateException("Vortex listener has not started");
+        }
+        server.onDispose().block();
+    }
+
+    /**
+     * Disposes the gateway listener and releases shared runtime resources.
      * <p>
-     * The listener is disposed first, followed by the outbound connection pool and event loops. Finally, the memory
-     * sampler and byte budgets are closed so queued capacity waiters fail instead of surviving shutdown.
+     * Shutdown then closes the outbound HTTP resources, memory sampler, and byte budgets, which also ends any queued
+     * capacity waits.
      */
     @Override
     public void stop() {
@@ -97,34 +118,16 @@ public class Vortex implements SmartLifecycle {
                 disposableServer.disposeNow();
                 Logger.info(false, "Vortex", "Gateway listener stopped: port={}", disposableServer.port());
             } catch (Exception e) {
-                Logger.error(false, "Vortex", "Gateway listener stop failed", e);
+                ErrorBoundary.diagnose(LIFECYCLE, "gateway-stop", e, null);
             }
 
-            try {
-                ConnectionProvider connectionProvider = Holder.getConnectionProviderIfPresent();
-                if (connectionProvider != null) {
-                    connectionProvider.dispose();
-                    Logger.info(false, "Vortex", "Runtime HTTP connection pool closed");
-                }
-            } catch (Exception e) {
-                Logger.error(false, "Vortex", "Runtime HTTP connection pool close failed", e);
-            }
-
-            try {
-                LoopResources loopResources = Holder.getLoopResourcesIfPresent();
-                if (loopResources != null) {
-                    loopResources.disposeLater().block(Duration.ofSeconds(5));
-                    Logger.info(false, "Vortex", "Runtime HTTP event loops closed");
-                }
-            } catch (Exception e) {
-                Logger.error(false, "Vortex", "Runtime HTTP event loops close failed", e);
-            }
+            Egress.Http.close(LIFECYCLE);
 
             try {
                 Holder.closeCapacityResources();
                 Logger.info(false, "Vortex", "Runtime capacity resources closed");
             } catch (Exception e) {
-                Logger.error(false, "Vortex", "Runtime capacity resource close failed", e);
+                ErrorBoundary.diagnose(LIFECYCLE, "capacity-resources-close", e, null);
             }
         }
     }

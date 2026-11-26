@@ -56,6 +56,12 @@ public record HuaweiOptions(Vendor.Id vendor, Vendor.Variant variant, String cli
     /**
      * Validates and freezes one Huawei registration without resolving secret material.
      *
+     * @param vendor      exact Huawei platform identifier
+     * @param variant     exact default Huawei web variant
+     * @param clientId    registered AppGallery Connect client identifier
+     * @param credential  external Client Secret reference
+     * @param redirectUri exact registered HTTPS callback URI
+     * @param scopes      ordered scopes which are exactly {@code openid}, {@code profile}, and {@code email}
      * @throws IllegalArgumentException if a required component, container, or scope is {@code null} or blank
      * @throws ValidateException        if routing, credential type, callback, or scope order differs from the frozen
      *                                  profile

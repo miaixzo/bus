@@ -54,17 +54,17 @@ public class StateCache extends AuthCache<Callback.Correlation> {
     }
 
     /**
-     * Creates a Source-generation-scoped callback-state cache view for compiled runtime use.
+     * Creates a Source-epoch-scoped callback-state cache view for compiled runtime use.
      *
      * @param cache      shared bus-cache backend
      * @param deployment deployment-unique cache scope
      * @param sourceId   exact Source identifier
-     * @param generation non-negative Source configuration generation
+     * @param epoch      non-negative Source configuration epoch
      * @param clock      shared runtime clock used to derive entry lifetimes
      */
     public StateCache(final CacheX<String, Object> cache, final String deployment, final String sourceId,
-            final long generation, final Clock clock) {
-        super(cache, deployment, PURPOSE, Callback.Correlation.class, sourceId, generation, clock);
+            final long epoch, final Clock clock) {
+        super(cache, deployment, PURPOSE, Callback.Correlation.class, sourceId, epoch, clock);
     }
 
     /**

@@ -25,6 +25,8 @@ import java.util.Map;
 
 import lombok.Getter;
 
+import org.miaixz.bus.core.lang.Symbol;
+
 /**
  * SQL Audit Record, used to record detailed information about SQL execution
  *
@@ -252,8 +254,8 @@ public class AuditRecord {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("AuditRecord{");
-        sb.append("sqlId='").append(sqlId).append('\'');
-        sb.append(", sqlType='").append(sqlType).append('\'');
+        sb.append("sqlId='").append(sqlId).append(Symbol.C_SINGLE_QUOTE);
+        sb.append(", sqlType='").append(sqlType).append(Symbol.C_SINGLE_QUOTE);
         sb.append(", elapsedTime=").append(elapsedTime).append("ms");
         sb.append(", success=").append(success);
         if (affectedRows > 0) {
@@ -265,7 +267,7 @@ public class AuditRecord {
         if (exception != null) {
             sb.append(", exception=").append(exception.getClass().getSimpleName());
         }
-        sb.append('}');
+        sb.append(Symbol.C_BRACE_RIGHT);
         return sb.toString();
     }
 

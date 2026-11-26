@@ -55,10 +55,7 @@ public class RandomStrategy extends AbstractStrategy {
     }
 
     /**
-     * Description inherited from parent class or interface.
-     * <p>
      * Generates a random CAPTCHA string by selecting characters randomly from the configured base character set.
-     * </p>
      *
      * @return a randomly generated CAPTCHA string of the configured length
      */
@@ -68,10 +65,7 @@ public class RandomStrategy extends AbstractStrategy {
     }
 
     /**
-     * Description inherited from parent class or interface.
-     * <p>
      * Verifies the user's input by performing a case-insensitive comparison with the generated CAPTCHA code.
-     * </p>
      *
      * @param code          the generated CAPTCHA code
      * @param userInputCode the user's input to verify

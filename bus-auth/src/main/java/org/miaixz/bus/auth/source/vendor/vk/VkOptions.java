@@ -78,6 +78,12 @@ public record VkOptions(Vendor.Id vendor, Vendor.Variant variant, String clientI
     /**
      * Validates and freezes one VK ID registration without resolving credential material.
      *
+     * @param vendor      exact VK platform identifier
+     * @param variant     exact default VK variant
+     * @param clientId    VK ID application identifier
+     * @param credential  external VK application-secret reference
+     * @param redirectUri exact callback URI registered with VK ID
+     * @param scopes      ordered approved VK scopes, or empty to select manifest defaults
      * @throws IllegalArgumentException if a required component, container, or scope is {@code null} or blank
      * @throws ValidateException        if routing, credential, callback, or scope state violates the frozen profile
      */

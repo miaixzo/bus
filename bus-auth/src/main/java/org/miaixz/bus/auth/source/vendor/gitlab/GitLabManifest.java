@@ -175,6 +175,7 @@ public class GitLabManifest implements VendorManifest<GitLabOptions> {
      * Creates the stateless GitLab manifest used by Vendor locator assembly.
      */
     public GitLabManifest() {
+        // No initialization required.
     }
 
     /**

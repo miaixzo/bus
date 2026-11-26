@@ -10,171 +10,6 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.setting.format.AbstractFormatter",
-      "fields": [
-        {
-          "name": "commentElementFormatter"
-        }
-      ],
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "org.miaixz.bus.setting.format.CommentFormatter"
-          ]
-        },
-        {
-          "name": "getCommentElementFormatter",
-          "parameterTypes": []
-        },
-        {
-          "name": "setCommentElementFormatter",
-          "parameterTypes": [
-            "org.miaixz.bus.setting.format.CommentFormatter"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.setting.format.CommentFormatter",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "char"
-          ]
-        },
-        {
-          "name": "check",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "format",
-          "parameterTypes": [
-            "java.lang.String",
-            "int"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.setting.format.DefaultFormatter",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "org.miaixz.bus.setting.format.ElementFormatter",
-            "org.miaixz.bus.setting.format.ElementFormatter",
-            "org.miaixz.bus.setting.format.ElementFormatter"
-          ]
-        },
-        {
-          "name": "formatLine",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "init",
-          "parameterTypes": []
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.setting.format.PropertyFormatter",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "char"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "char",
-            "org.miaixz.bus.setting.format.CommentFormatter"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "org.miaixz.bus.setting.format.CommentFormatter"
-          ]
-        },
-        {
-          "name": "check",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "format",
-          "parameterTypes": [
-            "java.lang.String",
-            "int"
-          ]
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.setting.format.SectionFormatter",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "char",
-            "char"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "char",
-            "char",
-            "org.miaixz.bus.setting.format.CommentFormatter"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "org.miaixz.bus.setting.format.CommentFormatter"
-          ]
-        },
-        {
-          "name": "check",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "format",
-          "parameterTypes": [
-            "java.lang.String",
-            "int"
-          ]
-        }
-      ]
-    },
-    {
       "type": "org.miaixz.bus.setting.Loader",
       "fields": [
         {
@@ -348,6 +183,508 @@
           "parameterTypes": [
             "org.miaixz.bus.setting.magic.GroupedMap",
             "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.setting.Setting",
+      "fields": [
+        {
+          "name": "groupedMap"
+        },
+        {
+          "name": "logIfNull"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.io.File",
+            "java.nio.charset.Charset",
+            "boolean"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "boolean"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.nio.charset.Charset",
+            "boolean"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.core.io.resource.Resource",
+            "java.nio.charset.Charset",
+            "boolean"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.core.io.resource.Resource",
+            "org.miaixz.bus.setting.Loader"
+          ]
+        },
+        {
+          "name": "addSetting",
+          "parameterTypes": [
+            "org.miaixz.bus.setting.Setting"
+          ]
+        },
+        {
+          "name": "autoLoad",
+          "parameterTypes": []
+        },
+        {
+          "name": "autoLoad",
+          "parameterTypes": [
+            "org.miaixz.bus.core.center.function.ConsumerX"
+          ]
+        },
+        {
+          "name": "clear",
+          "parameterTypes": []
+        },
+        {
+          "name": "clear",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "containsKey",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "containsKey",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "containsValue",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "containsValue",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "entrySet",
+          "parameterTypes": []
+        },
+        {
+          "name": "entrySet",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "equals",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "get",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "getAndRemove",
+          "parameterTypes": [
+            "java.lang.String[]"
+          ]
+        },
+        {
+          "name": "getGroupedMap",
+          "parameterTypes": []
+        },
+        {
+          "name": "getGroups",
+          "parameterTypes": []
+        },
+        {
+          "name": "getMap",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getObjectByGroup",
+          "parameterTypes": [
+            "java.lang.CharSequence",
+            "java.lang.CharSequence",
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "getProperties",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getProps",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getSetting",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "getSettingPath",
+          "parameterTypes": []
+        },
+        {
+          "name": "getSettingUrl",
+          "parameterTypes": []
+        },
+        {
+          "name": "hashCode",
+          "parameterTypes": []
+        },
+        {
+          "name": "isEmpty",
+          "parameterTypes": []
+        },
+        {
+          "name": "isEmpty",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "keySet",
+          "parameterTypes": []
+        },
+        {
+          "name": "keySet",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "load",
+          "parameterTypes": []
+        },
+        {
+          "name": "of",
+          "parameterTypes": []
+        },
+        {
+          "name": "put",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "putAll",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.util.Map"
+          ]
+        },
+        {
+          "name": "putAll",
+          "parameterTypes": [
+            "java.util.Map"
+          ]
+        },
+        {
+          "name": "putByGroup",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "remove",
+          "parameterTypes": [
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "remove",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.Object"
+          ]
+        },
+        {
+          "name": "set",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setByGroup",
+          "parameterTypes": [
+            "java.lang.String",
+            "java.lang.String",
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "setFields",
+          "parameterTypes": [
+            "org.miaixz.bus.core.center.function.SupplierX[]"
+          ]
+        },
+        {
+          "name": "setLogIfNull",
+          "parameterTypes": [
+            "boolean"
+          ]
+        },
+        {
+          "name": "setVarRegex",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "size",
+          "parameterTypes": []
+        },
+        {
+          "name": "stopAutoLoad",
+          "parameterTypes": []
+        },
+        {
+          "name": "store",
+          "parameterTypes": []
+        },
+        {
+          "name": "store",
+          "parameterTypes": [
+            "java.io.File"
+          ]
+        },
+        {
+          "name": "store",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "toProps",
+          "parameterTypes": []
+        },
+        {
+          "name": "toString",
+          "parameterTypes": []
+        },
+        {
+          "name": "values",
+          "parameterTypes": []
+        },
+        {
+          "name": "values",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.setting.format.AbstractFormatter",
+      "fields": [
+        {
+          "name": "commentElementFormatter"
+        }
+      ],
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.setting.format.CommentFormatter"
+          ]
+        },
+        {
+          "name": "getCommentElementFormatter",
+          "parameterTypes": []
+        },
+        {
+          "name": "setCommentElementFormatter",
+          "parameterTypes": [
+            "org.miaixz.bus.setting.format.CommentFormatter"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.setting.format.CommentFormatter",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "char"
+          ]
+        },
+        {
+          "name": "check",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "format",
+          "parameterTypes": [
+            "java.lang.String",
+            "int"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.setting.format.DefaultFormatter",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.setting.format.ElementFormatter",
+            "org.miaixz.bus.setting.format.ElementFormatter",
+            "org.miaixz.bus.setting.format.ElementFormatter"
+          ]
+        },
+        {
+          "name": "formatLine",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "init",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.setting.format.PropertyFormatter",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "char"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "char",
+            "org.miaixz.bus.setting.format.CommentFormatter"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.setting.format.CommentFormatter"
+          ]
+        },
+        {
+          "name": "check",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "format",
+          "parameterTypes": [
+            "java.lang.String",
+            "int"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "org.miaixz.bus.setting.format.SectionFormatter",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "char",
+            "char"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "char",
+            "char",
+            "org.miaixz.bus.setting.format.CommentFormatter"
+          ]
+        },
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.miaixz.bus.setting.format.CommentFormatter"
+          ]
+        },
+        {
+          "name": "check",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        },
+        {
+          "name": "format",
+          "parameterTypes": [
+            "java.lang.String",
+            "int"
           ]
         }
       ]
@@ -1726,343 +2063,6 @@
         {
           "name": "<init>",
           "parameterTypes": []
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.setting.Setting",
-      "fields": [
-        {
-          "name": "groupedMap"
-        },
-        {
-          "name": "logIfNull"
-        }
-      ],
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": []
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.io.File",
-            "java.nio.charset.Charset",
-            "boolean"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "boolean"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.nio.charset.Charset",
-            "boolean"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "org.miaixz.bus.core.io.resource.Resource",
-            "java.nio.charset.Charset",
-            "boolean"
-          ]
-        },
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "org.miaixz.bus.core.io.resource.Resource",
-            "org.miaixz.bus.setting.Loader"
-          ]
-        },
-        {
-          "name": "addSetting",
-          "parameterTypes": [
-            "org.miaixz.bus.setting.Setting"
-          ]
-        },
-        {
-          "name": "autoLoad",
-          "parameterTypes": []
-        },
-        {
-          "name": "autoLoad",
-          "parameterTypes": [
-            "org.miaixz.bus.core.center.function.ConsumerX"
-          ]
-        },
-        {
-          "name": "clear",
-          "parameterTypes": []
-        },
-        {
-          "name": "clear",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "containsKey",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "containsKey",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "containsValue",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "containsValue",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "entrySet",
-          "parameterTypes": []
-        },
-        {
-          "name": "entrySet",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "equals",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "get",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "getAndRemove",
-          "parameterTypes": [
-            "java.lang.String[]"
-          ]
-        },
-        {
-          "name": "getGroupedMap",
-          "parameterTypes": []
-        },
-        {
-          "name": "getGroups",
-          "parameterTypes": []
-        },
-        {
-          "name": "getMap",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "getObjectByGroup",
-          "parameterTypes": [
-            "java.lang.CharSequence",
-            "java.lang.CharSequence",
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "getProperties",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "getProps",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "getSetting",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "getSettingPath",
-          "parameterTypes": []
-        },
-        {
-          "name": "getSettingUrl",
-          "parameterTypes": []
-        },
-        {
-          "name": "hashCode",
-          "parameterTypes": []
-        },
-        {
-          "name": "isEmpty",
-          "parameterTypes": []
-        },
-        {
-          "name": "isEmpty",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "keySet",
-          "parameterTypes": []
-        },
-        {
-          "name": "keySet",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "load",
-          "parameterTypes": []
-        },
-        {
-          "name": "of",
-          "parameterTypes": []
-        },
-        {
-          "name": "put",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "putAll",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.util.Map"
-          ]
-        },
-        {
-          "name": "putAll",
-          "parameterTypes": [
-            "java.util.Map"
-          ]
-        },
-        {
-          "name": "putByGroup",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "remove",
-          "parameterTypes": [
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "remove",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.Object"
-          ]
-        },
-        {
-          "name": "set",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setByGroup",
-          "parameterTypes": [
-            "java.lang.String",
-            "java.lang.String",
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "setFields",
-          "parameterTypes": [
-            "org.miaixz.bus.core.center.function.SupplierX[]"
-          ]
-        },
-        {
-          "name": "setLogIfNull",
-          "parameterTypes": [
-            "boolean"
-          ]
-        },
-        {
-          "name": "setVarRegex",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "size",
-          "parameterTypes": []
-        },
-        {
-          "name": "stopAutoLoad",
-          "parameterTypes": []
-        },
-        {
-          "name": "store",
-          "parameterTypes": []
-        },
-        {
-          "name": "store",
-          "parameterTypes": [
-            "java.io.File"
-          ]
-        },
-        {
-          "name": "store",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
-        },
-        {
-          "name": "toProps",
-          "parameterTypes": []
-        },
-        {
-          "name": "toString",
-          "parameterTypes": []
-        },
-        {
-          "name": "values",
-          "parameterTypes": []
-        },
-        {
-          "name": "values",
-          "parameterTypes": [
-            "java.lang.String"
-          ]
         }
       ]
     }

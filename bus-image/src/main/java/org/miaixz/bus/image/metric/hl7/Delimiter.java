@@ -35,6 +35,7 @@ public enum Delimiter {
         Delimiter parent() {
             return null;
         }
+
     },
     /**
      * The component value.
@@ -45,6 +46,7 @@ public enum Delimiter {
         Delimiter parent() {
             return repeat;
         }
+
     },
     /**
      * The repeat value.
@@ -55,6 +57,7 @@ public enum Delimiter {
         Delimiter parent() {
             return field;
         }
+
     },
     /**
      * The escape value.
@@ -65,6 +68,7 @@ public enum Delimiter {
         Delimiter parent() {
             return subcomponent;
         }
+
     },
     /**
      * The subcomponent value.
@@ -75,6 +79,7 @@ public enum Delimiter {
         Delimiter parent() {
             return component;
         }
+
     };
 
     /**

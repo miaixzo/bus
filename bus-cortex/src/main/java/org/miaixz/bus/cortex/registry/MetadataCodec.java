@@ -32,7 +32,7 @@ import org.miaixz.bus.logger.Logger;
 /**
  * Encodes and decodes metadata payloads as JSON.
  * <p>
- * This class deliberately knows only JSON shapes, not subtype-specific metadata fields.
+ * Asset-specific metadata remains opaque unless a caller explicitly selects a Cortex-owned object.
  * </p>
  *
  * @author Kimi Liu
@@ -80,6 +80,32 @@ public class MetadataCodec {
         Map<String, Object> root = new LinkedHashMap<>();
         object.values().forEach((key, value) -> root.put(key, JsonKit.toJavaValue(value)));
         return root;
+    }
+
+    /**
+     * Extracts the service identity object from the Cortex metadata namespace for Auth to interpret.
+     *
+     * @param metadata registered asset metadata
+     * @return detached service identity object, or null when absent
+     * @throws IllegalArgumentException if the metadata or a selected object is malformed
+     */
+    public static Map<String, Object> serviceIdentity(String metadata) {
+        return section(section(root(metadata), ROOT), "serviceIdentity");
+    }
+
+    /**
+     * Reads one optional section and rejects an explicitly declared non-object value.
+     *
+     * @param parent containing object
+     * @param name   section key
+     * @return detached section, or null when absent
+     */
+    private static Map<String, Object> section(Map<String, Object> parent, String name) {
+        if (parent == null || !parent.containsKey(name))
+            return null;
+        if (parent.get(name) instanceof Map<?, ?> section)
+            return object(section);
+        throw new IllegalArgumentException("Invalid asset service identity configuration");
     }
 
     /**

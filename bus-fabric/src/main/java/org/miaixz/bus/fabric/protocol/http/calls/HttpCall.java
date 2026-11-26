@@ -19,8 +19,7 @@
 */
 package org.miaixz.bus.fabric.protocol.http.calls;
 
-import java.util.function.Function;
-
+import org.miaixz.bus.core.center.function.FunctionX;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
@@ -44,7 +43,7 @@ public class HttpCall extends MonoCall<HttpResponse> {
     /**
      * One-shot protocol operation, cleared immediately before invocation.
      */
-    private Function<Cancellation, HttpResponse> operation;
+    private FunctionX<Cancellation, HttpResponse> operation;
 
     /**
      * Request authority retained until execution starts or the dispatch key is materialized.
@@ -65,7 +64,7 @@ public class HttpCall extends MonoCall<HttpResponse> {
      * @param operation  non-null one-shot HTTP operation receiving the lifecycle cancellation handle
      */
     public HttpCall(final HttpRequest request, final Dispatcher dispatcher,
-            final Callback<? super HttpResponse> callback, final Function<Cancellation, HttpResponse> operation) {
+            final Callback<? super HttpResponse> callback, final FunctionX<Cancellation, HttpResponse> operation) {
         super("http-call", dispatcher, EventObserver.noop(), callback, timeout(request));
         final HttpRequest current = require(request, "HTTP request");
         this.address = current.url().address();
@@ -85,7 +84,7 @@ public class HttpCall extends MonoCall<HttpResponse> {
             final HttpRequest request,
             final Dispatcher dispatcher,
             final Callback<? super HttpResponse> callback,
-            final Function<Cancellation, HttpResponse> operation) {
+            final FunctionX<Cancellation, HttpResponse> operation) {
         return new HttpCall(request, require(dispatcher, "Dispatcher"), callback, operation);
     }
 
@@ -118,7 +117,7 @@ public class HttpCall extends MonoCall<HttpResponse> {
      */
     @Override
     protected HttpResponse perform() {
-        final Function<Cancellation, HttpResponse> current = operation;
+        final FunctionX<Cancellation, HttpResponse> current = operation;
         operation = null;
         try {
             return current.apply(cancellation());

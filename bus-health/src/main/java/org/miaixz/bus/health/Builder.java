@@ -70,6 +70,11 @@ public class Builder {
     public static final String _ARCHITECTURE_PROPERTIES = "bus.health.architecture.properties";
 
     /**
+     * Device-tree vendor configuration file path.
+     */
+    public static final String _DEVICETREE_PROPERTIES = "bus.health.devicetree.properties";
+
+    /**
      * Linux filename configuration file path.
      */
     public static final String _LINUX_FILENAME_PROPERTIES = "bus.health.linux.filename.properties";

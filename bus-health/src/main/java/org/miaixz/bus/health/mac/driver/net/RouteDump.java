@@ -40,6 +40,7 @@ public class RouteDump {
      * Prevents instantiation.
      */
     private RouteDump() {
+        // No initialization required.
     }
 
     /**

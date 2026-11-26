@@ -40,6 +40,8 @@ public record RevocationRequest(String token, Optional<String> tokenTypeHint) {
     /**
      * Creates and validates an immutable token revocation request.
      *
+     * @param token         opaque access or refresh token submitted for revocation
+     * @param tokenTypeHint optional registered token type hint
      * @throws IllegalArgumentException if the token or hint container is {@code null}, or token is empty
      * @throws ValidateException        if a present hint is empty or contains an invalid registration-name character
      */

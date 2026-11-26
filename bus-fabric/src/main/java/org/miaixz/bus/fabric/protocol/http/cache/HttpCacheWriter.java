@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.miaixz.bus.core.center.function.RunnableX;
 import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.io.source.Source;
 import org.miaixz.bus.core.io.timout.Timeout;
@@ -30,6 +31,7 @@ import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.StatefulException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.core.xyz.FunctionKit;
 import org.miaixz.bus.fabric.Payload;
 import org.miaixz.bus.fabric.cache.CacheWriter;
 
@@ -53,12 +55,12 @@ final class HttpCacheWriter implements Payload, AutoCloseable {
     /**
      * Callback invoked after the cache destination commits a complete body.
      */
-    private final Runnable commitCallback;
+    private final RunnableX commitCallback;
 
     /**
      * Callback invoked after an incomplete cache destination is aborted.
      */
-    private final Runnable abortCallback;
+    private final RunnableX abortCallback;
 
     /**
      * Guards the one-shot transition from unopened to opened.
@@ -83,8 +85,8 @@ final class HttpCacheWriter implements Payload, AutoCloseable {
      * @param commitCallback non-null callback run after a complete body is committed
      * @param abortCallback  non-null callback run after an incomplete body is aborted
      */
-    HttpCacheWriter(final Payload delegate, final CacheWriter writer, final Runnable commitCallback,
-            final Runnable abortCallback) {
+    HttpCacheWriter(final Payload delegate, final CacheWriter writer, final RunnableX commitCallback,
+            final RunnableX abortCallback) {
         this.delegate = Assert.notNull(delegate, () -> new ValidateException("Payload must not be null"));
         this.writer = Assert.notNull(writer, () -> new ValidateException("Cache writer must not be null"));
         this.commitCallback = Assert
@@ -188,7 +190,7 @@ final class HttpCacheWriter implements Payload, AutoCloseable {
             return;
         }
         writer.commit();
-        commitCallback.run();
+        FunctionKit.runUnwrapped(commitCallback);
     }
 
     /**
@@ -199,7 +201,7 @@ final class HttpCacheWriter implements Payload, AutoCloseable {
             return;
         }
         writer.abort();
-        abortCallback.run();
+        FunctionKit.runUnwrapped(abortCallback);
         if (current != null) {
             try {
                 current.close();
@@ -227,12 +229,12 @@ final class HttpCacheWriter implements Payload, AutoCloseable {
         /**
          * Completion action invoked when the source reaches end-of-stream.
          */
-        private final Runnable commit;
+        private final RunnableX commit;
 
         /**
          * Failure action invoked on read failure or close before end-of-stream.
          */
-        private final Runnable abort;
+        private final RunnableX abort;
 
         /**
          * Scratch buffer used to copy newly read bytes from the caller's target into the cache writer.
@@ -252,8 +254,8 @@ final class HttpCacheWriter implements Payload, AutoCloseable {
          * @param commit action to run when end-of-stream is reached
          * @param abort  action to run after a read failure or premature close
          */
-        private CacheWritingSource(final Source source, final CacheWriter writer, final Runnable commit,
-                final Runnable abort) {
+        private CacheWritingSource(final Source source, final CacheWriter writer, final RunnableX commit,
+                final RunnableX abort) {
             this.source = source;
             this.writer = writer;
             this.commit = commit;
@@ -277,7 +279,7 @@ final class HttpCacheWriter implements Payload, AutoCloseable {
                 final long offset = target.size();
                 final long read = source.read(target, byteCount);
                 if (read < 0) {
-                    commit.run();
+                    FunctionKit.runUnwrapped(commit);
                     closed.set(true);
                     return -1;
                 }
@@ -287,7 +289,7 @@ final class HttpCacheWriter implements Payload, AutoCloseable {
                 }
                 return read;
             } catch (final IOException | RuntimeException e) {
-                abort.run();
+                FunctionKit.runUnwrapped(abort);
                 throw e;
             }
         }
@@ -310,7 +312,7 @@ final class HttpCacheWriter implements Payload, AutoCloseable {
         @Override
         public void close() throws IOException {
             if (closed.compareAndSet(false, true)) {
-                abort.run();
+                FunctionKit.runUnwrapped(abort);
             }
             source.close();
         }

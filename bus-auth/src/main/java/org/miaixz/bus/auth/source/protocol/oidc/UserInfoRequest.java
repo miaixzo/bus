@@ -37,6 +37,7 @@ public record UserInfoRequest(String accessToken) {
     /**
      * Creates an immutable UserInfo request.
      *
+     * @param accessToken sensitive bearer access token authorizing the UserInfo request
      * @throws IllegalArgumentException if {@code accessToken} is {@code null} or blank
      * @throws ValidateException        if the token contains a control character
      */

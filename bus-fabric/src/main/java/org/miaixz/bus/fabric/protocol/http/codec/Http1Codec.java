@@ -26,8 +26,9 @@ import java.nio.charset.Charset;
 import java.time.Duration;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.Supplier;
 
+import org.miaixz.bus.core.Lifecycle;
+import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.io.sink.Sink;
 import org.miaixz.bus.core.io.source.BufferSource;
@@ -108,7 +109,7 @@ public class Http1Codec implements HttpCodec {
     /**
      * Reusable lazy trailer view retained with the connection-local codec.
      */
-    private final Supplier<Headers> trailerSupplier;
+    private final SupplierX<Headers> trailerSupplier;
 
     /**
      * Whether the current exchange has not yet received an HTTP status line.
@@ -394,9 +395,10 @@ public class Http1Codec implements HttpCodec {
     /**
      * Opens a response body directly from parsed response metadata.
      *
-     * @param request originating request used to determine body semantics
-     * @param code    response status
-     * @param headers response headers
+     * @param request       originating request used to determine body semantics
+     * @param code          response status
+     * @param headers       response headers
+     * @param responseMedia media type of the response payload
      * @return response stream source
      */
     private Source openResponseBody(
@@ -653,6 +655,11 @@ public class Http1Codec implements HttpCodec {
         /**
          * Fills one known-length body array through the timeout-aware buffered source. Header read-ahead bytes are
          * consumed before subsequent socket reads.
+         *
+         * @param target  buffer receiving the read bytes
+         * @param offset  first array position to read or write
+         * @param length  number of bytes in the buffered region to inspect
+         * @param timeout timeout governing the I/O operation
          */
         private void readFixed(final byte[] target, final int offset, final int length, final Duration timeout) {
             int written = Normal._0;
@@ -703,6 +710,9 @@ public class Http1Codec implements HttpCodec {
 
         /**
          * Returns the raw byte count before LF while leaving the header line buffered.
+         *
+         * @param timeout timeout governing the I/O operation
+         * @return number of bytes before the buffered line-feed delimiter
          */
         private int peekHeaderLine(final Duration timeout) {
             configureTimeout(source.timeout(), timeout);
@@ -719,6 +729,9 @@ public class Http1Codec implements HttpCodec {
 
         /**
          * Returns the logical line length without a trailing CR.
+         *
+         * @param rawLength buffered header-line length before removing a trailing carriage return
+         * @return header-line length without a trailing carriage return
          */
         private int headerContentLength(final int rawLength) {
             return rawLength > Normal._0 && source.getBuffer().getByte(rawLength - Normal._1) == Symbol.C_CR
@@ -728,6 +741,10 @@ public class Http1Codec implements HttpCodec {
 
         /**
          * Finds a byte in the currently buffered header line.
+         *
+         * @param value  byte value to locate in the buffered header
+         * @param length number of bytes in the buffered region to inspect
+         * @return index of the requested byte, or -1 if it is not present in the inspected range
          */
         private int headerIndexOf(final int value, final int length) {
             final Buffer buffer = source.getBuffer();
@@ -741,6 +758,10 @@ public class Http1Codec implements HttpCodec {
 
         /**
          * Finds the first non-whitespace header value byte.
+         *
+         * @param start  inclusive first byte index in the buffered header
+         * @param length number of bytes in the buffered region to inspect
+         * @return index of the first non-whitespace value byte
          */
         private int headerValueStart(final int start, final int length) {
             final Buffer buffer = source.getBuffer();
@@ -753,6 +774,10 @@ public class Http1Codec implements HttpCodec {
 
         /**
          * Finds the exclusive final non-whitespace header value byte.
+         *
+         * @param start  inclusive first byte index in the buffered header
+         * @param length number of bytes in the buffered region to inspect
+         * @return exclusive index after the last non-whitespace value byte
          */
         private int headerValueEnd(final int start, final int length) {
             final Buffer buffer = source.getBuffer();
@@ -766,6 +791,11 @@ public class Http1Codec implements HttpCodec {
 
         /**
          * Compares a buffered ASCII span with a cached header string.
+         *
+         * @param value byte value to locate in the buffered header
+         * @param start inclusive first byte index in the buffered header
+         * @param end   exclusive final byte index in the buffered header
+         * @return whether the buffered ASCII span equals the cached header string
          */
         private boolean headerMatches(final String value, final int start, final int end) {
             if (value.length() != end - start) {
@@ -782,6 +812,8 @@ public class Http1Codec implements HttpCodec {
 
         /**
          * Materializes and consumes the currently buffered header line after a cache miss.
+         *
+         * @return header line removed from the input buffer
          */
         private String consumeHeaderLine() {
             try {
@@ -795,6 +827,8 @@ public class Http1Codec implements HttpCodec {
 
         /**
          * Consumes a cached header line and its LF delimiter without decoding.
+         *
+         * @param rawLength buffered header-line length before removing a trailing carriage return
          */
         private void skipHeaderLine(final int rawLength) {
             try {
@@ -937,6 +971,7 @@ public class Http1Codec implements HttpCodec {
          *
          * @param source    buffer containing the fixed-length body bytes
          * @param byteCount number of bytes to consume from the source
+         * @throws IOException if an underlying input or output operation fails
          */
         @Override
         public void write(final Buffer source, final long byteCount) throws IOException {
@@ -984,6 +1019,7 @@ public class Http1Codec implements HttpCodec {
          *
          * @param source    buffer containing one chunk payload
          * @param byteCount number of chunk payload bytes to consume
+         * @throws IOException if an underlying input or output operation fails
          */
         @Override
         public void write(final Buffer source, final long byteCount) throws IOException {
@@ -1032,6 +1068,7 @@ public class Http1Codec implements HttpCodec {
          *
          * @param source    buffer containing unframed body bytes
          * @param byteCount number of bytes to consume from the source
+         * @throws IOException if an underlying input or output operation fails
          */
         @Override
         public void write(final Buffer source, final long byteCount) throws IOException {
@@ -1183,7 +1220,7 @@ public class Http1Codec implements HttpCodec {
     /**
      * Network response body source.
      */
-    private static final class NetworkSource implements Source, Payload {
+    private static final class NetworkSource implements Source, Payload, Lifecycle {
 
         /**
          * Input stream.
@@ -1216,6 +1253,11 @@ public class Http1Codec implements HttpCodec {
         private InputStream current;
 
         /**
+         * Idempotent close state.
+         */
+        private boolean closed;
+
+        /**
          * Creates a source.
          *
          * @param input  stream providing the response body bytes
@@ -1229,6 +1271,21 @@ public class Http1Codec implements HttpCodec {
             this.length = length;
             require(media, "MediaType");
             this.codec = require(codec, "HTTP codec");
+        }
+
+        /**
+         * Returns the completion state of this message's own framing decoder.
+         *
+         * @return completed only after the full body and framing have been consumed
+         */
+        @Override
+        public State state() {
+            if (input instanceof FixedInputStream fixed && fixed.remaining == Normal._0
+                    || input instanceof ChunkedInputStream chunked && chunked.done
+                    || input instanceof UnknownInputStream unknown && unknown.done) {
+                return State.COMPLETED;
+            }
+            return closed ? State.CANCELLED : opened ? State.RUNNING : State.NEW;
         }
 
         /**
@@ -1397,6 +1454,10 @@ public class Http1Codec implements HttpCodec {
          */
         @Override
         public void close() {
+            if (closed) {
+                return;
+            }
+            closed = true;
             boolean drained = false;
             if (input instanceof FixedInputStream fixed) {
                 drained = fixed.drain();
@@ -1556,6 +1617,8 @@ public class Http1Codec implements HttpCodec {
 
         /**
          * Reads the complete remaining fixed body into its final materialized array.
+         *
+         * @param target buffer receiving the read bytes
          */
         private void readFully(final byte[] target) {
             if (closed || target.length != remaining) {

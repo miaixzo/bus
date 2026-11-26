@@ -134,6 +134,7 @@ public class MapperClassPathScanner extends ClassPathBeanDefinitionScanner {
                 protected boolean matchClassName(String className) {
                     return false;
                 }
+
             });
             acceptAllInterfaces = false;
         }
@@ -338,10 +339,11 @@ public class MapperClassPathScanner extends ClassPathBeanDefinitionScanner {
                 explicitFactoryUsed = true;
             }
 
-            // If no explicit factory was configured, explicitly wire to the default 'sqlSessionFactory' bean.
-            // This is the most robust solution for AOT compatibility.
+            // Use the framework session so default mappers share its exception translation and executor policy.
+            // Keep an explicit bean reference for AOT compatibility.
             if (!explicitFactoryUsed) {
-                definition.getPropertyValues().add("sqlSessionFactory", new RuntimeBeanReference("sqlSessionFactory"));
+                definition.getPropertyValues()
+                        .add("sqlSessionTemplate", new RuntimeBeanReference("sqlSessionTemplate"));
             }
         }
     }

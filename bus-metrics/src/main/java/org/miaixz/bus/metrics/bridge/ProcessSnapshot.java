@@ -48,6 +48,21 @@ public record ProcessSnapshot(long userTimeMillis, long kernelTimeMillis, long u
 
     /**
      * Validates all required and optional cumulative values.
+     *
+     * @param userTimeMillis      cumulative user CPU time
+     * @param kernelTimeMillis    cumulative kernel CPU time
+     * @param uptimeMillis        process uptime
+     * @param residentBytes       resident memory size
+     * @param virtualBytes        virtual memory size
+     * @param readBytes           cumulative bytes read
+     * @param writeBytes          cumulative bytes written
+     * @param threadCount         live process threads
+     * @param openFiles           open file descriptors when available
+     * @param handles             open handles when available
+     * @param minorFaults         minor page faults when available
+     * @param majorFaults         major page faults when available
+     * @param voluntarySwitches   voluntary context switches when available
+     * @param involuntarySwitches involuntary context switches when available
      */
     public ProcessSnapshot {
         long[] values = { userTimeMillis, kernelTimeMillis, uptimeMillis, residentBytes, virtualBytes, readBytes,

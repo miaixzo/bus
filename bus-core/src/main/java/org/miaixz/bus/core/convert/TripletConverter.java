@@ -55,9 +55,10 @@ public class TripletConverter extends ConverterWithRoot implements Serializable 
     /**
      * Converts Map to Triplet
      *
-     * @param leftType  the key type
-     * @param rightType the value type
-     * @param map       the map to convert
+     * @param leftType   the key type
+     * @param rightType  the value type
+     * @param map        the map to convert
+     * @param middleType target middle-element type
      * @return the Triplet
      */
     private Triplet<?, ?, ?> mapToTriple(
@@ -79,7 +80,10 @@ public class TripletConverter extends ConverterWithRoot implements Serializable 
     /**
      * Convert method.
      *
+     * @param targetType The target type to convert to.
+     * @param value      The value to convert.
      * @return the Object value
+     * @throws ConvertException if the value cannot be converted to the requested target type
      */
     @Override
     public Object convert(Type targetType, final Object value) throws ConvertException {

@@ -394,7 +394,7 @@ public class HierarchicalAnnotatedElements implements AnnotatedElement, Iterable
 
     /**
      * Checks if a given class needs to be processed. A class needs processing if it is not {@code null}, has not been
-     * accessed yet, and is not {@link Object.class}.
+     * accessed yet, and is not {@code Object.class}.
      *
      * @param type          The class to check.
      * @param accessedTypes A set of classes that have already been accessed.

@@ -217,7 +217,7 @@ public class OperationHandler<T> extends AbstractSqlHandler implements MapperHan
      * @return {@code true} when protection is enabled for the effective key
      */
     private boolean currentEnabled() {
-        return Boolean.parseBoolean(find(Args.PROP_ENABLED, "true"));
+        return Boolean.parseBoolean(find(Args.PROP_ENABLED, Normal.TRUE));
     }
 
     /**
@@ -247,7 +247,7 @@ public class OperationHandler<T> extends AbstractSqlHandler implements MapperHan
             value = properties.getProperty(Args.SHARED_KEY + suffix);
         }
         if (value == null) {
-            value = properties.getProperty("default" + suffix, fallback);
+            value = properties.getProperty(Normal.DEFAULT + suffix, fallback);
         }
         return value;
     }

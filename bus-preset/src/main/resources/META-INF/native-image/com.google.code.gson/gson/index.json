@@ -1,10 +1,11 @@
 [
   {
     "latest": true,
-    "metadata-version": "2.14.0",
-    "description": "Supplemental Bus integration metadata; complements the upstream metadata repository.",
+    "metadata-version": "2.15.0",
+    "description": "Gson JSON library",
     "tested-versions": [
-      "2.14.0"
+      "2.14.0",
+      "2.15.0"
     ]
   }
 ]

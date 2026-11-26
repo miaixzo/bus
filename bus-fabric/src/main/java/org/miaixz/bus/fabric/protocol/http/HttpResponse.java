@@ -34,8 +34,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.BiConsumer;
-import java.util.function.Supplier;
 
+import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.io.sink.Sink;
 import org.miaixz.bus.core.io.source.Source;
@@ -104,7 +104,7 @@ public class HttpResponse implements AutoCloseable {
     /**
      * Response trailers supplier.
      */
-    private final Supplier<Headers> trailers;
+    private final SupplierX<Headers> trailers;
 
     /**
      * Network response metadata.
@@ -175,7 +175,7 @@ public class HttpResponse implements AutoCloseable {
      */
     public HttpResponse(final HttpRequest request, final int code, final String message, final Headers headers,
             final PayloadBody body, final Protocol protocol, final TlsHandshake handshake,
-            final Supplier<Headers> trailers, final HttpResponse networkResponse, final HttpResponse cacheResponse,
+            final SupplierX<Headers> trailers, final HttpResponse networkResponse, final HttpResponse cacheResponse,
             final HttpResponse priorResponse, final long sentRequestAtMillis, final long receivedResponseAtMillis) {
         this.request = require(request, "HTTP request");
         this.code = validateCode(code);
@@ -221,7 +221,7 @@ public class HttpResponse implements AutoCloseable {
             final Headers headers,
             final PayloadBody body,
             final Protocol protocol,
-            final Supplier<Headers> trailers) {
+            final SupplierX<Headers> trailers) {
         return new HttpResponse(request, code, message, headers, body, protocol, null, trailers, null, null, null,
                 Normal.LONG_ZERO, Normal.LONG_ZERO);
     }
@@ -973,7 +973,7 @@ public class HttpResponse implements AutoCloseable {
         /**
          * Trailers candidate.
          */
-        private Supplier<Headers> trailers = Headers::empty;
+        private SupplierX<Headers> trailers = Headers::empty;
 
         /**
          * Network response candidate.
@@ -1134,7 +1134,7 @@ public class HttpResponse implements AutoCloseable {
          * @param trailers trailers supplier
          * @return this builder
          */
-        public Builder trailers(final Supplier<Headers> trailers) {
+        public Builder trailers(final SupplierX<Headers> trailers) {
             this.trailers = require(trailers, "Response trailers");
             return this;
         }

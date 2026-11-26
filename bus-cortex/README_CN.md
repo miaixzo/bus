@@ -9,14 +9,15 @@ Cortex 提供服务注册与发现，以及按应用投递已发布配置的能�
 | Registry | 服务定义、路由关联、实例发现与健康状态 |
 | Item / ItemEditor / ItemService | 当前配置定义、敏感保护、管理读取与编辑并发校验 |
 | Reference | 应用关联、别名、覆盖规则、固定已发布 Revision |
-| Rollout / Approval | 发布选择、审批材料冻结与工作流状态 |
+| Rollout | 发布选择、冻结方案和发布生命周期 |
+| Flow | 流程策略校验和绑定到冻结方案的阶段决定 |
 | Revision / Release | 成功发布的不可变快照、发布记录及发布事务 |
 | Delivery / Watch | 已发布内容读取、实例会话校验、订阅与投递证据 |
 | Starter | 条件装配、依赖接线与生命周期绑定 |
 
-保存 Item 不生成版本或修改历史。Reference 的 `revision_id` 仅用于固定成功发布的快照；Item 的 `edition` 用于编辑并发控制。Rollout 的草稿属于审批工作流。
+保存 Item 不生成版本或修改历史。Reference 的 `revision_id` 仅用于固定成功发布的快照；Item 的 `edition` 用于编辑并发控制。Rollout 的草稿属于发布流程。
 
-`ItemCodec`、`ReferenceCodec`、`Plan` 分别解析配置内容、关联规则和审批材料；`ReleaseCodec` 编解码并验证已发布图，协议标识为 `services-release-v3`。
+`ItemCodec`、`ReferenceCodec`、`Plan` 分别解析配置内容、关联规则和冻结的发布材料；`ReleaseCodec` 编解码并验证已发布图，协议标识为 `services-release-v3`。
 
 ## Spring Boot 接入
 
@@ -61,20 +62,20 @@ bus:
 | `bridge.url` | 空 | `push+pull` 模式下必须非空 |
 | `bridge.max-retries` | `3` | 桥接重试上限，必须大于零 |
 | `bridge.source` | 空 | 桥接来源标记 |
-| `guard.enabled` | `true` | 启用可选访问检查及 TokenGuard 预检 |
-| `guard.token` | TokenGuardConfig 默认值 | Token 传输预校验选项 |
 | `audit.enabled` | `false` | 装配审计记录器 |
 | `release.enabled` | `false` | 存在 ReleaseStore 时装配只读发布 Registry |
 
 ## 宿主接线与事务
 
-Starter 根据宿主提供的 Store 条件装配配置服务。当前定义读写需要 `ItemStore`、`ReferenceStore`、`SettingStore` 等；发布与审批需要 `RolloutStore`、`ApprovalStore`、`PublicationStore`、`ReleaseStore` 和 `RevisionStore`；运行时读取还需要 `WatchStore` 和 `SettingProvider`。具体组合以各 Bean 的 `ConditionalOnBean` 为准。
+Starter 根据宿主提供的 Store 条件装配配置服务。当前定义读写需要 `ItemStore`、`ReferenceStore`、`SettingStore` 等；发布流程需要 `RolloutStore`、`FlowStore`、`PublicationStore`、`ReleaseStore` 和 `RevisionStore`；运行时读取还需要 `WatchStore` 和 `SettingProvider`。具体组合以各 Bean 的 `ConditionalOnBean` 为准。
 
-网关已完成访问控制时，可设置 `bus.cortex.guard.enabled=false`，跳过 Registry 和 Setting 的可选访问检查，包括宿主提供的 Guard。租户匹配、edition、审批状态、冻结摘要、发布回执和敏感保护仍然执行。开启时由宿主 `GuardStrategy` 提供权限决定；Cortex 不认证用户或凭据。普通读取无需操作人和请求编号；幂等写入需要请求编号，审批留痕还需要操作人。
+服务身份通过 `bus.auth.guard` 配置。Auth 提供令牌签发、验签和密钥轮换。需要自定义时，使用 `org.miaixz.bus.auth.guard.token` 下的 `ServiceTokenProvider` 或 `ServiceKeyProvider` 注册 Bean。Cortex 从资产注册信息中提取身份策略元数据，交由 Auth 解释。
 
-宿主实现负责租户数据范围、当前实例与会话一致性、CAS 和原子事务。`SettingProvider` 只提供调用坐标和当前实例数据，不执行身份认证；审批策略有效性由 `ApprovalStore` 检查。`SettingStore` 原子保存当前定义及关系，`RolloutStore.submit` 原子校验冻结读集，`PublicationStore` 原子提交正式发布。
+资源和操作权限由应用处理。租户匹配、edition、流程状态、冻结摘要、发布回执和敏感保护在服务执行时校验。幂等写入需要请求编号，记录流程阶段决定还需要操作人。
 
-默认 `NoOpSecretCodec` 拒绝敏感内容，宿主需要提供真实保护实现；不会静默降级为明文。TokenGuard 只做凭据存在性及传输预校验，认证、权限与许可证检查仍由宿主执行。
+宿主实现负责租户数据范围、当前实例与会话一致性、CAS 和原子事务。`SettingProvider` 只提供调用坐标和当前实例数据，不执行身份认证；`FlowStore` 校验流程策略，并在同一事务中记录阶段决定和更新发布状态。`SettingStore` 原子保存当前定义及关系，`RolloutStore.submit` 原子校验冻结读集，`PublicationStore` 原子提交正式发布。
+
+默认 `NoOpSecretCodec` 拒绝敏感内容，宿主需要提供能够保护敏感值的实现。
 
 Registry Bean 可以直接注入。静态 Cortex 门面需要绑定 Runtime；Starter 支持在没有 Curator 时创建 Registry-only Runtime；此时配置门面调用会明确报错。RuntimeHandle 在上下文关闭时释放绑定。
 
@@ -149,8 +150,8 @@ void unsubscribe(Curator curator, String watchId) {
 ## 发布链路
 
 1. 用 ItemService 准备当前配置修改，通过 SettingService 联合保存定义与 Reference。
-2. 用 RolloutService 创建发布选择；提交时校验当前读集，冻结审批材料。
-3. 用 ApprovalService 记录审批决定，已提交材料不得任意修改。
+2. 用 RolloutService 创建发布选择；提交时校验当前读集，冻结发布方案。
+3. 通过 `FlowService.decide` 记录各流程阶段的决定。宿主流程策略决定发布前必须完成哪些阶段。
 4. 用 ReleasePublisher 执行批准后的发布；只有成功发布才产生 Revision / Release。
 5. Curator 读取正式或匹配灰度规则的已发布内容，不回读可编辑 Item 或实时 Reference。
 
@@ -162,14 +163,19 @@ Watch 的所有事件类型共享租户内序号，混合订阅保持递增。Ou
 
 ## 包结构
 
+从 `org.miaixz.bus.cortex.setting.flow` 导入 `Flow`、`FlowService` 和 `FlowStore`。宿主实现 `FlowStore.decide`，按名称注入时使用 `flowService`。
+
 ```text
 org.miaixz.bus.cortex
 ├── Cortex / Registry / Curator / Nature / Assets / Instance
 ├── registry/    api, mcp, prompt, routing, queries and batch operations
-├── setting/     item, curator, reference, rollout, approval, revision, delivery, watch, secret
+├── setting/     item, curator, reference, rollout, flow, revision, delivery, watch, secret
 ├── release/     Release, ReleaseCodec, ReleasePublisher, publication stores and read-only registry
 ├── bridge/      Vortex integration
-├── guard/       authorization pre-validation
+├── guard/       服务身份配置与协调
+│   ├── inbound/  入站规则、验签与结果
+│   ├── outbound/ 下一跳规则、签发与令牌缓存
+│   └── token/    密钥与令牌 Provider、签发与验签
 ├── health/      health probers
 ├── builtin/     key generation, selectors and batch models
 └── magic/       identity, event, watch and runtime infrastructure

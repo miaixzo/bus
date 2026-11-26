@@ -54,6 +54,7 @@ public enum FileMagicNumber {
         public boolean match(final byte[] bytes) {
             return false;
         }
+
     },
     /**
      * JPEG image format.
@@ -75,6 +76,7 @@ public enum FileMagicNumber {
             return bytes.length > 2 && Objects.equals(bytes[0], (byte) 0xff) && Objects.equals(bytes[1], (byte) 0xd8)
                     && Objects.equals(bytes[2], (byte) 0xff);
         }
+
     },
     /**
      * JXR image format.
@@ -97,6 +99,7 @@ public enum FileMagicNumber {
             return bytes.length > 2 && Objects.equals(bytes[0], (byte) 0x49) && Objects.equals(bytes[1], (byte) 0x49)
                     && Objects.equals(bytes[2], (byte) 0xbc);
         }
+
     },
     /**
      * APNG image format.
@@ -147,6 +150,7 @@ public enum FileMagicNumber {
             }
             return false;
         }
+
     },
     /**
      * PNG image format.
@@ -167,6 +171,7 @@ public enum FileMagicNumber {
         public boolean match(final byte[] bytes) {
             return ArrayKit.startWith(bytes, (byte) 0x89, (byte) 0x50, (byte) 0x4e, (byte) 0x47);
         }
+
     },
     /**
      * GIF image format.
@@ -187,6 +192,7 @@ public enum FileMagicNumber {
         public boolean match(final byte[] bytes) {
             return ArrayKit.startWith(bytes, (byte) 0x47, (byte) 0x49, (byte) 0x46);
         }
+
     },
     /**
      * BMP image format.
@@ -207,6 +213,7 @@ public enum FileMagicNumber {
         public boolean match(final byte[] bytes) {
             return ArrayKit.startWith(bytes, (byte) 0x42, (byte) 0x4d);
         }
+
     },
     /**
      * TIFF image format.
@@ -228,6 +235,7 @@ public enum FileMagicNumber {
             return ArrayKit.startWith(bytes, (byte) 0x49, (byte) 0x49, (byte) 0x2a, (byte) 0x00)
                     || ArrayKit.startWith(bytes, (byte) 0x4d, (byte) 0x4d, (byte) 0x00, (byte) 0x2a);
         }
+
     },
     /**
      * DWG image format.
@@ -248,6 +256,7 @@ public enum FileMagicNumber {
         public boolean match(final byte[] bytes) {
             return ArrayKit.startWith(bytes, (byte) 0x41, (byte) 0x43, (byte) 0x31, (byte) 0x30);
         }
+
     },
     /**
      * WEBP image format.
@@ -268,6 +277,7 @@ public enum FileMagicNumber {
         public boolean match(final byte[] bytes) {
             return ArrayKit.isSubEquals(bytes, 8, (byte) 0x57, (byte) 0x45, (byte) 0x42, (byte) 0x50);
         }
+
     },
     /**
      * PSD image format.
@@ -288,6 +298,7 @@ public enum FileMagicNumber {
         public boolean match(final byte[] bytes) {
             return ArrayKit.startWith(bytes, (byte) 0x38, (byte) 0x42, (byte) 0x50, (byte) 0x53);
         }
+
     },
     /**
      * ICO image format.
@@ -308,6 +319,7 @@ public enum FileMagicNumber {
         public boolean match(final byte[] bytes) {
             return ArrayKit.startWith(bytes, (byte) 0x00, (byte) 0x00, (byte) 0x01, (byte) 0x00);
         }
+
     },
     /**
      * XCF image format.
@@ -339,6 +351,7 @@ public enum FileMagicNumber {
                     (byte) 0x20,
                     (byte) 0x76);
         }
+
     },
 
     /**
@@ -362,6 +375,7 @@ public enum FileMagicNumber {
             return ArrayKit.startWith(bytes, (byte) 0x52, (byte) 0x49, (byte) 0x46, (byte) 0x46)
                     && ArrayKit.isSubEquals(bytes, 8, (byte) 0x57, (byte) 0x41, (byte) 0x56, (byte) 0x45);
         }
+
     },
     /**
      * MIDI audio format.
@@ -382,6 +396,7 @@ public enum FileMagicNumber {
         public boolean match(final byte[] bytes) {
             return ArrayKit.startWith(bytes, (byte) 0x4d, (byte) 0x54, (byte) 0x68, (byte) 0x64);
         }
+
     },
     /**
      * MP3 audio format.
@@ -405,6 +420,7 @@ public enum FileMagicNumber {
                     || ArrayKit.startWith(bytes, (byte) 0xFF, (byte) 0xF3)
                     || ArrayKit.startWith(bytes, (byte) 0xFF, (byte) 0xF2);
         }
+
     },
     /**
      * OGG audio format.
@@ -425,6 +441,7 @@ public enum FileMagicNumber {
         public boolean match(final byte[] bytes) {
             return ArrayKit.startWith(bytes, (byte) 0x4F, (byte) 0x67, (byte) 0x67, (byte) 0x53);
         }
+
     },
     /**
      * FLAC audio format.
@@ -445,6 +462,7 @@ public enum FileMagicNumber {
         public boolean match(final byte[] bytes) {
             return ArrayKit.startWith(bytes, (byte) 0x66, (byte) 0x4c, (byte) 0x61, (byte) 0x43);
         }
+
     },
     /**
      * M4A audio format.
@@ -467,6 +485,7 @@ public enum FileMagicNumber {
                             && (Objects.equals(bytes[0], (byte) 0x4d) && Objects.equals(bytes[1], (byte) 0x34)
                                     && Objects.equals(bytes[2], (byte) 0x41) && Objects.equals(bytes[3], (byte) 0x20));
         }
+
     },
     /**
      * AAC audio format.
@@ -488,6 +507,7 @@ public enum FileMagicNumber {
             final boolean flag2 = Objects.equals(bytes[0], (byte) 0xFF) && Objects.equals(bytes[1], (byte) 0xF9);
             return flag1 || flag2;
         }
+
     },
     /**
      * AMR audio format.
@@ -519,6 +539,7 @@ public enum FileMagicNumber {
                             (byte) 0x30,
                             (byte) 0x0a);
         }
+
     },
     /**
      * AC3 audio format.
@@ -535,6 +556,7 @@ public enum FileMagicNumber {
         public boolean match(final byte[] bytes) {
             return ArrayKit.startWith(bytes, (byte) 0x0b, (byte) 0x77);
         }
+
     },
     /**
      * AIFF audio format.
@@ -555,6 +577,7 @@ public enum FileMagicNumber {
                     && Objects.equals(bytes[8], (byte) 0x41) && Objects.equals(bytes[9], (byte) 0x49)
                     && Objects.equals(bytes[10], (byte) 0x46) && Objects.equals(bytes[11], (byte) 0x46);
         }
+
     },
 
     /**
@@ -583,6 +606,7 @@ public enum FileMagicNumber {
                     && Objects.equals(bytes[6], (byte) 0x75) && Objects.equals(bytes[7], (byte) 0x65);
             return flag1 && (flag2 || flag3 || flag4);
         }
+
     },
     /**
      * WOFF2 font format.
@@ -610,6 +634,7 @@ public enum FileMagicNumber {
                     && Objects.equals(bytes[6], (byte) 0x75) && Objects.equals(bytes[7], (byte) 0x65);
             return flag1 && (flag2 || flag3 || flag4);
         }
+
     },
     /**
      * TTF font format.
@@ -628,6 +653,7 @@ public enum FileMagicNumber {
                     && Objects.equals(bytes[2], (byte) 0x00) && Objects.equals(bytes[3], (byte) 0x00)
                     && Objects.equals(bytes[4], (byte) 0x00);
         }
+
     },
     /**
      * OTF font format.
@@ -646,6 +672,7 @@ public enum FileMagicNumber {
                     && Objects.equals(bytes[2], (byte) 0x54) && Objects.equals(bytes[3], (byte) 0x4f)
                     && Objects.equals(bytes[4], (byte) 0x00);
         }
+
     },
 
     /**
@@ -679,6 +706,7 @@ public enum FileMagicNumber {
                     && Objects.equals(bytes[54], (byte) 0x2b) && Objects.equals(bytes[55], (byte) 0x7a)
                     && Objects.equals(bytes[56], (byte) 0x69) && Objects.equals(bytes[57], (byte) 0x70);
         }
+
     },
     /**
      * ZIP archive format.
@@ -703,6 +731,7 @@ public enum FileMagicNumber {
                     || Objects.equals(bytes[3], (byte) 0x08);
             return flag1 && flag2 && flag3;
         }
+
     },
     /**
      * TAR archive format.
@@ -721,6 +750,7 @@ public enum FileMagicNumber {
                     && Objects.equals(bytes[258], (byte) 0x73) && Objects.equals(bytes[259], (byte) 0x74)
                     && Objects.equals(bytes[260], (byte) 0x61) && Objects.equals(bytes[261], (byte) 0x72);
         }
+
     },
     /**
      * RAR archive format.
@@ -740,6 +770,7 @@ public enum FileMagicNumber {
                     && Objects.equals(bytes[4], (byte) 0x1a) && Objects.equals(bytes[5], (byte) 0x07)
                     && (Objects.equals(bytes[6], (byte) 0x00) || Objects.equals(bytes[6], (byte) 0x01));
         }
+
     },
     /**
      * GZ archive format.
@@ -757,6 +788,7 @@ public enum FileMagicNumber {
             return bytes.length > 2 && Objects.equals(bytes[0], (byte) 0x1f) && Objects.equals(bytes[1], (byte) 0x8b)
                     && Objects.equals(bytes[2], (byte) 0x08);
         }
+
     },
     /**
      * BZ2 archive format.
@@ -774,6 +806,7 @@ public enum FileMagicNumber {
             return bytes.length > 2 && Objects.equals(bytes[0], (byte) 0x42) && Objects.equals(bytes[1], (byte) 0x5a)
                     && Objects.equals(bytes[2], (byte) 0x68);
         }
+
     },
     /**
      * 7Z archive format.
@@ -793,6 +826,7 @@ public enum FileMagicNumber {
                     && Objects.equals(bytes[4], (byte) 0x27) && Objects.equals(bytes[5], (byte) 0x1c)
                     && Objects.equals(bytes[6], (byte) 0x00);
         }
+
     },
     /**
      * PDF format.
@@ -816,6 +850,7 @@ public enum FileMagicNumber {
             return bytes.length > 3 && Objects.equals(bytes[0], (byte) 0x25) && Objects.equals(bytes[1], (byte) 0x50)
                     && Objects.equals(bytes[2], (byte) 0x44) && Objects.equals(bytes[3], (byte) 0x46);
         }
+
     },
     /**
      * EXE executable format.
@@ -832,6 +867,7 @@ public enum FileMagicNumber {
         public boolean match(final byte[] bytes) {
             return bytes.length > 1 && Objects.equals(bytes[0], (byte) 0x4d) && Objects.equals(bytes[1], (byte) 0x5a);
         }
+
     },
     /**
      * SWF format.
@@ -851,6 +887,7 @@ public enum FileMagicNumber {
                             || Objects.equals(bytes[0], (byte) 0x5a))
                     && Objects.equals(bytes[1], (byte) 0x57) && Objects.equals(bytes[2], (byte) 0x53);
         }
+
     },
     /**
      * RTF format.
@@ -869,6 +906,7 @@ public enum FileMagicNumber {
                     && Objects.equals(bytes[2], (byte) 0x72) && Objects.equals(bytes[3], (byte) 0x74)
                     && Objects.equals(bytes[4], (byte) 0x66);
         }
+
     },
     /**
      * NES ROM format.
@@ -886,6 +924,7 @@ public enum FileMagicNumber {
             return bytes.length > 3 && Objects.equals(bytes[0], (byte) 0x4e) && Objects.equals(bytes[1], (byte) 0x45)
                     && Objects.equals(bytes[2], (byte) 0x53) && Objects.equals(bytes[3], (byte) 0x1a);
         }
+
     },
     /**
      * CRX format.
@@ -903,6 +942,7 @@ public enum FileMagicNumber {
             return bytes.length > 3 && Objects.equals(bytes[0], (byte) 0x43) && Objects.equals(bytes[1], (byte) 0x72)
                     && Objects.equals(bytes[2], (byte) 0x32) && Objects.equals(bytes[3], (byte) 0x34);
         }
+
     },
     /**
      * CAB format.
@@ -926,6 +966,7 @@ public enum FileMagicNumber {
                     && Objects.equals(bytes[2], (byte) 0x63) && Objects.equals(bytes[3], (byte) 0x28);
             return flag1 || flag2;
         }
+
     },
     /**
      * PS format.
@@ -942,6 +983,7 @@ public enum FileMagicNumber {
         public boolean match(final byte[] bytes) {
             return bytes.length > 1 && Objects.equals(bytes[0], (byte) 0x25) && Objects.equals(bytes[1], (byte) 0x21);
         }
+
     },
     /**
      * XZ archive format.
@@ -960,6 +1002,7 @@ public enum FileMagicNumber {
                     && Objects.equals(bytes[2], (byte) 0x7a) && Objects.equals(bytes[3], (byte) 0x58)
                     && Objects.equals(bytes[4], (byte) 0x5A) && Objects.equals(bytes[5], (byte) 0x00);
         }
+
     },
     /**
      * SQLITE format.
@@ -983,6 +1026,7 @@ public enum FileMagicNumber {
                     && Objects.equals(bytes[12], (byte) 0x74) && Objects.equals(bytes[13], (byte) 0x20)
                     && Objects.equals(bytes[14], (byte) 0x33) && Objects.equals(bytes[15], (byte) 0x00);
         }
+
     },
     /**
      * DEB format.
@@ -1009,6 +1053,7 @@ public enum FileMagicNumber {
                     && Objects.equals(bytes[18], (byte) 0x61) && Objects.equals(bytes[19], (byte) 0x72)
                     && Objects.equals(bytes[20], (byte) 0x79);
         }
+
     },
     /**
      * AR archive format.
@@ -1028,6 +1073,7 @@ public enum FileMagicNumber {
                     && Objects.equals(bytes[4], (byte) 0x63) && Objects.equals(bytes[5], (byte) 0x68)
                     && Objects.equals(bytes[6], (byte) 0x3e);
         }
+
     },
     /**
      * LZOP format.
@@ -1047,6 +1093,7 @@ public enum FileMagicNumber {
                     && Objects.equals(bytes[4], (byte) 0x00) && Objects.equals(bytes[5], (byte) 0x0d)
                     && Objects.equals(bytes[6], (byte) 0x0a) && Objects.equals(bytes[7], (byte) 0x1a);
         }
+
     },
     /**
      * LZ format.
@@ -1064,6 +1111,7 @@ public enum FileMagicNumber {
             return bytes.length > 3 && Objects.equals(bytes[0], (byte) 0x4c) && Objects.equals(bytes[1], (byte) 0x5a)
                     && Objects.equals(bytes[2], (byte) 0x49) && Objects.equals(bytes[3], (byte) 0x50);
         }
+
     },
     /**
      * ELF executable format.
@@ -1081,6 +1129,7 @@ public enum FileMagicNumber {
             return bytes.length > 52 && Objects.equals(bytes[0], (byte) 0x7f) && Objects.equals(bytes[1], (byte) 0x45)
                     && Objects.equals(bytes[2], (byte) 0x4c) && Objects.equals(bytes[3], (byte) 0x46);
         }
+
     },
     /**
      * LZ4 format.
@@ -1098,6 +1147,7 @@ public enum FileMagicNumber {
             return bytes.length > 4 && Objects.equals(bytes[0], (byte) 0x04) && Objects.equals(bytes[1], (byte) 0x22)
                     && Objects.equals(bytes[2], (byte) 0x4d) && Objects.equals(bytes[3], (byte) 0x18);
         }
+
     },
     /**
      * BR format. Reference: https://github.com/madler/brotli/blob/master/br-format-v3.txt, brotli does not have a fixed
@@ -1116,6 +1166,7 @@ public enum FileMagicNumber {
             return bytes.length > 3 && Objects.equals(bytes[0], (byte) 0xce) && Objects.equals(bytes[1], (byte) 0xb2)
                     && Objects.equals(bytes[2], (byte) 0xcf) && Objects.equals(bytes[3], (byte) 0x81);
         }
+
     },
     /**
      * DCM format.
@@ -1134,6 +1185,7 @@ public enum FileMagicNumber {
                     && Objects.equals(bytes[129], (byte) 0x49) && Objects.equals(bytes[130], (byte) 0x43)
                     && Objects.equals(bytes[131], (byte) 0x4d);
         }
+
     },
     /**
      * RPM format.
@@ -1151,6 +1203,7 @@ public enum FileMagicNumber {
             return bytes.length > 4 && Objects.equals(bytes[0], (byte) 0xed) && Objects.equals(bytes[1], (byte) 0xab)
                     && Objects.equals(bytes[2], (byte) 0xee) && Objects.equals(bytes[3], (byte) 0xdb);
         }
+
     },
     /**
      * ZSTD format.
@@ -1181,6 +1234,7 @@ public enum FileMagicNumber {
             }
             return false;
         }
+
     },
 
     /**
@@ -1209,6 +1263,7 @@ public enum FileMagicNumber {
                     && Objects.equals(bytes[10], (byte) 0x6f) && Objects.equals(bytes[11], (byte) 0x6d);
             return flag1 || flag2;
         }
+
     },
     /**
      * AVI video format.
@@ -1228,6 +1283,7 @@ public enum FileMagicNumber {
                     && Objects.equals(bytes[8], (byte) 0x41) && Objects.equals(bytes[9], (byte) 0x56)
                     && Objects.equals(bytes[10], (byte) 0x49) && Objects.equals(bytes[11], (byte) 0x20);
         }
+
     },
     /**
      * WMV video format.
@@ -1248,6 +1304,7 @@ public enum FileMagicNumber {
                     && Objects.equals(bytes[6], (byte) 0xcf) && Objects.equals(bytes[7], (byte) 0x11)
                     && Objects.equals(bytes[8], (byte) 0xa6) && Objects.equals(bytes[9], (byte) 0xd9);
         }
+
     },
     /**
      * M4V video format.
@@ -1275,6 +1332,7 @@ public enum FileMagicNumber {
                     && Objects.equals(bytes[10], (byte) 0x34) && Objects.equals(bytes[11], (byte) 0x32);
             return flag1 || flag2;
         }
+
     },
     /**
      * FLV video format.
@@ -1292,6 +1350,7 @@ public enum FileMagicNumber {
             return bytes.length > 3 && Objects.equals(bytes[0], (byte) 0x46) && Objects.equals(bytes[1], (byte) 0x4c)
                     && Objects.equals(bytes[2], (byte) 0x56) && Objects.equals(bytes[3], (byte) 0x01);
         }
+
     },
     /**
      * MKV video format.
@@ -1320,6 +1379,7 @@ public enum FileMagicNumber {
             }
             return false;
         }
+
     },
     /**
      * WEBM video format.
@@ -1346,6 +1406,7 @@ public enum FileMagicNumber {
             }
             return false;
         }
+
     },
     /**
      * MOV video format. This file signature is very complex, only checking common ones.
@@ -1382,6 +1443,7 @@ public enum FileMagicNumber {
                     && Objects.equals(bytes[6], (byte) 0x69) && Objects.equals(bytes[7], (byte) 0x70);
             return flag1 || flag2 || flag3 || flag4 || flag5 || flag6 || flag7;
         }
+
     },
     /**
      * MPEG video format.
@@ -1399,6 +1461,7 @@ public enum FileMagicNumber {
             return bytes.length > 3 && Objects.equals(bytes[0], (byte) 0x00) && Objects.equals(bytes[1], (byte) 0x00)
                     && Objects.equals(bytes[2], (byte) 0x01) && (bytes[3] >= (byte) 0xb0 && bytes[3] <= (byte) 0xbf);
         }
+
     },
     /**
      * RMVB video format.
@@ -1416,6 +1479,7 @@ public enum FileMagicNumber {
             return bytes.length > 4 && Objects.equals(bytes[0], (byte) 0x2E) && Objects.equals(bytes[1], (byte) 0x52)
                     && Objects.equals(bytes[2], (byte) 0x4D) && Objects.equals(bytes[3], (byte) 0x46);
         }
+
     },
     /**
      * 3GP video format.
@@ -1435,6 +1499,7 @@ public enum FileMagicNumber {
                     && Objects.equals(bytes[8], (byte) 0x33) && Objects.equals(bytes[9], (byte) 0x67)
                     && Objects.equals(bytes[10], (byte) 0x70);
         }
+
     },
 
     /**
@@ -1469,6 +1534,7 @@ public enum FileMagicNumber {
             }
             return false;
         }
+
     },
     /**
      * XLS format.
@@ -1541,6 +1607,7 @@ public enum FileMagicNumber {
             }
             return false;
         }
+
     },
     /**
      * DOCX format.
@@ -1557,6 +1624,7 @@ public enum FileMagicNumber {
         public boolean match(final byte[] bytes) {
             return Objects.equals(FileMagicNumber.matchDocument(bytes), DOCX);
         }
+
     },
     /**
      * PPTX format.
@@ -1573,6 +1641,7 @@ public enum FileMagicNumber {
         public boolean match(final byte[] bytes) {
             return Objects.equals(FileMagicNumber.matchDocument(bytes), PPTX);
         }
+
     },
     /**
      * XLSX format.
@@ -1589,6 +1658,7 @@ public enum FileMagicNumber {
         public boolean match(final byte[] bytes) {
             return Objects.equals(FileMagicNumber.matchDocument(bytes), XLSX);
         }
+
     },
     /**
      * WASM format.
@@ -1614,6 +1684,7 @@ public enum FileMagicNumber {
                     (byte) 0x00,
                     (byte) 0x00);
         }
+
     },
     /**
      * DEX format. Reference: https://source.android.com/devices/tech/dalvik/dex-format#dex-file-magic
@@ -1632,6 +1703,7 @@ public enum FileMagicNumber {
                     && Objects.equals(bytes[2], (byte) 0x78) && Objects.equals(bytes[3], (byte) 0x0A)
                     && Objects.equals(bytes[36], (byte) 0x70);
         }
+
     },
     /**
      * DEY format.
@@ -1650,6 +1722,7 @@ public enum FileMagicNumber {
                     && Objects.equals(bytes[2], (byte) 0x79) && Objects.equals(bytes[3], (byte) 0x0A)
                     && DEX.match(Arrays.copyOfRange(bytes, 40, 100));
         }
+
     },
     /**
      * EML format.
@@ -1682,6 +1755,7 @@ public enum FileMagicNumber {
                     || Arrays.equals(Arrays.copyOfRange(bytes, 0, 6), byte3)
                     || bytes.length > 13 && Arrays.equals(Arrays.copyOfRange(bytes, 0, 13), byte4);
         }
+
     },
     /**
      * MDB format.
@@ -1701,6 +1775,7 @@ public enum FileMagicNumber {
                     (byte) 0x20, (byte) 0x4A, (byte) 0x65, (byte) 0x74, (byte) 0x20, (byte) 0x44, (byte) 0x42 };
             return bytes.length > 18 && Arrays.equals(Arrays.copyOfRange(bytes, 0, 18), byte1);
         }
+
     },
     /**
      * CHM format. 49 54 53 46
@@ -1718,6 +1793,7 @@ public enum FileMagicNumber {
             final byte[] byte1 = new byte[] { (byte) 0x49, (byte) 0x54, (byte) 0x53, (byte) 0x46 };
             return bytes.length > 4 && Arrays.equals(Arrays.copyOfRange(bytes, 0, 4), byte1);
         }
+
     },
 
     /**
@@ -1736,6 +1812,7 @@ public enum FileMagicNumber {
             final byte[] byte1 = new byte[] { (byte) 0xCA, (byte) 0xFE, (byte) 0xBA, (byte) 0xBE };
             return bytes.length > 4 && Arrays.equals(Arrays.copyOfRange(bytes, 0, 4), byte1);
         }
+
     },
     /**
      * TORRENT format. 64 38 3A 61 6E 6E 6F 75 6E 63 65
@@ -1754,6 +1831,7 @@ public enum FileMagicNumber {
                     (byte) 0x6E, (byte) 0x6F, (byte) 0x75, (byte) 0x6E, (byte) 0x63, (byte) 0x65 };
             return bytes.length > 11 && Arrays.equals(Arrays.copyOfRange(bytes, 0, 11), byte1);
         }
+
     },
     /**
      * WPD format.
@@ -1771,6 +1849,7 @@ public enum FileMagicNumber {
             final byte[] byte1 = new byte[] { (byte) 0xFF, (byte) 0x57, (byte) 0x50, (byte) 0x43 };
             return bytes.length > 4 && Arrays.equals(Arrays.copyOfRange(bytes, 0, 4), byte1);
         }
+
     },
     /**
      * DBX format.
@@ -1788,6 +1867,7 @@ public enum FileMagicNumber {
             final byte[] byte1 = new byte[] { (byte) 0xCF, (byte) 0xAD, (byte) 0x12, (byte) 0xFE };
             return bytes.length > 4 && Arrays.equals(Arrays.copyOfRange(bytes, 0, 4), byte1);
         }
+
     },
     /**
      * PST format.
@@ -1805,6 +1885,7 @@ public enum FileMagicNumber {
             final byte[] byte1 = new byte[] { (byte) 0x21, (byte) 0x42, (byte) 0x44, (byte) 0x4E };
             return bytes.length > 4 && Arrays.equals(Arrays.copyOfRange(bytes, 0, 4), byte1);
         }
+
     },
     /**
      * RAM format.
@@ -1822,6 +1903,7 @@ public enum FileMagicNumber {
             final byte[] byte1 = new byte[] { (byte) 0x2E, (byte) 0x72, (byte) 0x61, (byte) 0xFD, (byte) 0x00 };
             return bytes.length > 5 && Arrays.equals(Arrays.copyOfRange(bytes, 0, 5), byte1);
         }
+
     };
 
     /**

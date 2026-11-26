@@ -105,6 +105,8 @@ public class TemporalAccessorConverter extends AbstractConverter {
     /**
      * Convertinternal method.
      *
+     * @param targetClass The target class to convert to.
+     * @param value       The non-null value to be converted.
      * @return the TemporalAccessor value
      */
     @Override
@@ -130,7 +132,8 @@ public class TemporalAccessorConverter extends AbstractConverter {
     /**
      * Parses a string to java.time object using reflection
      *
-     * @param value the string value
+     * @param value       the string value
+     * @param targetClass requested conversion target class
      * @return the date object
      */
     private TemporalAccessor parseFromCharSequence(final Class<?> targetClass, final CharSequence value) {
@@ -219,6 +222,7 @@ public class TemporalAccessorConverter extends AbstractConverter {
      * Converts TemporalAccessor to java.time object
      *
      * @param temporalAccessor the TemporalAccessor object
+     * @param targetClass      requested conversion target class
      * @return the java.time object
      */
     private TemporalAccessor parseFromTemporalAccessor(
@@ -280,6 +284,7 @@ public class TemporalAccessorConverter extends AbstractConverter {
      * Converts ZonedDateTime to java.time object
      *
      * @param zonedDateTime the {@link ZonedDateTime} object
+     * @param targetClass   requested conversion target class
      * @return the java.time object
      */
     private TemporalAccessor parseFromZonedDateTime(final Class<?> targetClass, final ZonedDateTime zonedDateTime) {
@@ -308,8 +313,9 @@ public class TemporalAccessorConverter extends AbstractConverter {
     /**
      * Converts Instant to java.time object
      *
-     * @param instant the {@link Instant} object
-     * @param zoneId  the zone ID, null means system default timezone
+     * @param instant     the {@link Instant} object
+     * @param zoneId      the zone ID, null means system default timezone
+     * @param targetClass requested conversion target class
      * @return the java.time object
      */
     private TemporalAccessor parseFromInstant(final Class<?> targetClass, final Instant instant, ZoneId zoneId) {

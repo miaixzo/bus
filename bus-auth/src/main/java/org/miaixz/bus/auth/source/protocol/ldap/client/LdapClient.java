@@ -26,7 +26,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.Executor;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Supplier;
 
 import org.miaixz.bus.auth.Context;
 import org.miaixz.bus.auth.FabricX;
@@ -38,10 +37,12 @@ import org.miaixz.bus.auth.source.protocol.ldap.codec.LdapMessageDecoder;
 import org.miaixz.bus.auth.source.protocol.ldap.codec.LdapMessageEncoder;
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.basic.normal.Errors;
+import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.core.xyz.FunctionKit;
 import org.miaixz.bus.extra.json.JsonValue;
 
 /**
@@ -224,7 +225,7 @@ public class LdapClient implements AutoCloseable {
     private <T> CompletionStage<Outcome<T>> serial(
             final Context context,
             final Timeout timeout,
-            final Supplier<Outcome<T>> operation) {
+            final SupplierX<Outcome<T>> operation) {
         Assert.notNull(context, "LDAP client invocation context must not be null");
         Assert.notNull(timeout, "LDAP client timeout must not be null");
         Assert.notNull(operation, "LDAP client operation must not be null");
@@ -247,13 +248,13 @@ public class LdapClient implements AutoCloseable {
      * @param <T>       success type
      * @return successful, rejected, or operational failure value
      */
-    private <T> Outcome<T> execute(final Supplier<Outcome<T>> operation, final Timeout timeout) {
+    private <T> Outcome<T> execute(final SupplierX<Outcome<T>> operation, final Timeout timeout) {
         if (timeout.expired()) {
             closeSession();
             return failed(ErrorCode._504, "LDAP operation timeout expired.");
         }
         try {
-            return operation.get();
+            return FunctionKit.getUnwrapped(operation);
         } catch (RuntimeException exception) {
             closeSession();
             if (exception instanceof ProtocolException) {

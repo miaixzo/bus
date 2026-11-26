@@ -38,6 +38,8 @@ public record StatusCode(String value, Optional<StatusCode> nested) {
     /**
      * Validates the required status URI and normalizes the optional recursive child.
      *
+     * @param value  required absolute status-code URI
+     * @param nested optional second-level status code
      * @throws IllegalArgumentException if a component is {@code null} or the value is blank
      * @throws ValidateException        if the status-code value is not an absolute URI
      */

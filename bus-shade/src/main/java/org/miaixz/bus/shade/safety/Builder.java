@@ -72,6 +72,12 @@ public abstract class Builder {
             + Symbol.SLASH;
 
     /**
+     * Packages injected into the encrypted JAR so that the launcher can run before the application class path exists.
+     */
+    public static final String[] XJAR_INJECT_PACKAGES = { XJAR_SRC_DIR, "org/miaixz/bus/core/",
+            "org/miaixz/bus/logger/", "org/miaixz/bus/errors/" };
+
+    /**
      * Info directory for xjar.
      */
     public static final String XJAR_INF_DIR = Normal.META_INF + Symbol.SLASH;

@@ -22,12 +22,16 @@ package org.miaixz.bus.notify;
 import java.util.Map;
 
 import org.miaixz.bus.core.center.function.BiConsumerX;
+import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
+import org.miaixz.bus.core.xyz.FunctionKit;
 import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.errors.ComponentFailure;
+import org.miaixz.bus.errors.ErrorType;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.fabric.Context;
 import org.miaixz.bus.fabric.Fabric;
@@ -39,6 +43,11 @@ import org.miaixz.bus.fabric.Payload;
  * @author Kimi Liu
  */
 public abstract class FabricX {
+
+    /**
+     * Observes outbound notification failures at the common HTTP transport boundary.
+     */
+    private static final ComponentFailure FAILURES = new ComponentFailure("bus-notify", "http");
 
     /**
      * Shared Fabric context for notification HTTP calls.
@@ -90,7 +99,7 @@ public abstract class FabricX {
         final var builder = Fabric.http(CONTEXT).get(url);
         apply(builder::query, query);
         apply(builder::header, headers);
-        return builder.executeText();
+        return execute(builder::executeText, ErrorType.DEPENDENCY_UNAVAILABLE);
     }
 
     /**
@@ -122,7 +131,7 @@ public abstract class FabricX {
         } else {
             apply(builder::form, body);
         }
-        return builder.executeText();
+        return execute(builder::executeText, ErrorType.OUTCOME_UNKNOWN);
     }
 
     /**
@@ -141,7 +150,7 @@ public abstract class FabricX {
             final String contentType) {
         final var builder = Fabric.http(CONTEXT).post(url).body(body == null ? Normal.EMPTY : body, media(contentType));
         apply(builder::header, headers);
-        return builder.executeText();
+        return execute(builder::executeText, ErrorType.OUTCOME_UNKNOWN);
     }
 
     /**
@@ -213,6 +222,21 @@ public abstract class FabricX {
             throw new ValidateException("Content-Type must be non-blank and single-line");
         }
         return MediaType.parse(contentType);
+    }
+
+    /**
+     * Reports a failed request while propagating the original Fabric exception to the notification provider.
+     *
+     * @param request request using the original transport and response decoding
+     * @param type    dependency failure for reads, or uncertain delivery for sends
+     * @return response body from the existing HTTP transport
+     */
+    private static String execute(SupplierX<String> request, ErrorType type) {
+        try {
+            return FunctionKit.getUnwrapped(request);
+        } catch (RuntimeException failure) {
+            throw FAILURES.propagate(type, failure);
+        }
     }
 
 }

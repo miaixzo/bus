@@ -50,6 +50,12 @@ public record TeambitionOptions(Vendor.Id vendor, Vendor.Variant variant, String
     /**
      * Validates and freezes one Teambition registration without resolving its secret.
      *
+     * @param vendor      exact Teambition platform identifier
+     * @param variant     exact default Teambition variant
+     * @param clientId    public client identifier issued by Teambition
+     * @param credential  external client-secret reference
+     * @param redirectUri exact callback URI registered for the application
+     * @param scopes      empty list because the historical Teambition flow does not send a scope parameter
      * @throws IllegalArgumentException if a required component or container is {@code null} or blank
      * @throws ValidateException        if routing, credential, callback, or scope state is invalid
      */

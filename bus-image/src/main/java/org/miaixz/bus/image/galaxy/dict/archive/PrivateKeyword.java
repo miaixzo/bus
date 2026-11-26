@@ -112,6 +112,9 @@ public class PrivateKeyword {
             case PrivateTag.StudyModifiedDateTime:
                 return "StudyModifiedDateTime";
 
+            case PrivateTag.LogicalStudyID:
+                return "LogicalStudyID";
+
             case PrivateTag.SeriesReceiveDateTime:
                 return "SeriesReceiveDateTime";
 

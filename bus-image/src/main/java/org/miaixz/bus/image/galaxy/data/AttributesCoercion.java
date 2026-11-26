@@ -40,6 +40,7 @@ public interface AttributesCoercion {
         public String remapUID(String uid) {
             return uid;
         }
+
     };
 
     /**

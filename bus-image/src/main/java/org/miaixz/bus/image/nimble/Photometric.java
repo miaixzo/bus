@@ -44,6 +44,7 @@ public enum Photometric {
         public ColorModel createColorModel(int bits, int dataType, ColorSpace cspace, Attributes ds) {
             return ColorModelFactory.createMonochromeColorModel(bits, dataType);
         }
+
     },
     /**
      * The monochrome2 value.
@@ -54,6 +55,7 @@ public enum Photometric {
         public ColorModel createColorModel(int bits, int dataType, ColorSpace cspace, Attributes ds) {
             return ColorModelFactory.createMonochromeColorModel(bits, dataType);
         }
+
     },
     /**
      * The palette color value.
@@ -69,6 +71,7 @@ public enum Photometric {
         public ColorModel createColorModel(int bits, int dataType, ColorSpace cspace, Attributes ds) {
             return ColorModelFactory.createPaletteColorModel(bits, dataType, cspace, ds);
         }
+
     },
     /**
      * The rgb value.
@@ -109,6 +112,7 @@ public enum Photometric {
             }
             return this;
         }
+
     },
     /**
      * The ybr full value.
@@ -119,6 +123,7 @@ public enum Photometric {
         public ColorModel createColorModel(int bits, int dataType, ColorSpace cspace, Attributes ds) {
             return ColorModelFactory.createYBRFullColorModel(bits, dataType, new YBRColorSpace(cspace, YBR.FULL));
         }
+
     },
     /**
      * The ybr full 422 value.
@@ -143,6 +148,7 @@ public enum Photometric {
         public SampleModel createSampleModel(int dataType, int w, int h, int samples, boolean banded) {
             return new SampledSampleModel(w, h, ColorSubsampling.YBR_XXX_422);
         }
+
     },
     /**
      * The ybr ict value.
@@ -178,6 +184,7 @@ public enum Photometric {
         public SampleModel createSampleModel(int dataType, int w, int h, int samples, boolean banded) {
             return new SampledSampleModel(w, h, ColorSubsampling.YBR_XXX_420);
         }
+
     },
     /**
      * The ybr partial 422 value.
@@ -202,6 +209,7 @@ public enum Photometric {
         public SampleModel createSampleModel(int dataType, int w, int h, int samples, boolean banded) {
             return new SampledSampleModel(w, h, ColorSubsampling.YBR_XXX_422);
         }
+
     },
     /**
      * The ybr rct value.
@@ -212,6 +220,7 @@ public enum Photometric {
         public ColorModel createColorModel(int bits, int dataType, ColorSpace cspace, Attributes ds) {
             throw new UnsupportedOperationException();
         }
+
     },
     /**
      * The xyb value.
@@ -222,6 +231,7 @@ public enum Photometric {
         public ColorModel createColorModel(int bits, int dataType, ColorSpace cspace, Attributes ds) {
             throw new UnsupportedOperationException();
         }
+
     };
 
     /**

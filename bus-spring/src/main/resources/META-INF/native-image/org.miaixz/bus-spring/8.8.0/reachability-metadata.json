@@ -1,6 +1,17 @@
 {
   "reflection": [
     {
+      "type": "org.miaixz.bus.spring.boot.SpringApplicationRunListener",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": [
+            "org.springframework.boot.SpringApplication"
+          ]
+        }
+      ]
+    },
+    {
       "type": "org.miaixz.bus.spring.boot.condition.EnabledCondition",
       "methods": [
         {
@@ -33,17 +44,6 @@
         {
           "name": "<init>",
           "parameterTypes": []
-        }
-      ]
-    },
-    {
-      "type": "org.miaixz.bus.spring.boot.SpringApplicationRunListener",
-      "methods": [
-        {
-          "name": "<init>",
-          "parameterTypes": [
-            "org.springframework.boot.SpringApplication"
-          ]
         }
       ]
     },

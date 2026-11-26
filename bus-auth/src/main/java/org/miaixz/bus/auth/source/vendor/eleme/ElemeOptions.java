@@ -55,6 +55,12 @@ public record ElemeOptions(Vendor.Id vendor, Vendor.Variant variant, String clie
     /**
      * Validates and freezes one Eleme registration without resolving its application secret.
      *
+     * @param vendor      exact Eleme platform identifier
+     * @param variant     exact default service-provider variant
+     * @param clientId    registered application key
+     * @param credential  external application-secret reference
+     * @param redirectUri exact registered callback URI
+     * @param scopes      ordered requested scope, or empty to use the manifest default
      * @throws IllegalArgumentException if a required component or collection member is {@code null} or blank
      * @throws ValidateException        if routing, credential, callback, or scope data violate the frozen manifest
      */

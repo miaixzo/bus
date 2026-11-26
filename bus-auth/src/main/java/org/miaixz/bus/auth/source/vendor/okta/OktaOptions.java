@@ -64,6 +64,14 @@ public record OktaOptions(Vendor.Id vendor, Vendor.Variant variant, String clien
     /**
      * Validates and freezes one Okta login or management registration without resolving credential material.
      *
+     * @param vendor                exact Okta platform identifier
+     * @param variant               exact default login or management Variant
+     * @param clientId              public OIDC client or service-app identifier issued by Okta
+     * @param credential            external Client Secret or Private Key reference selected by the Variant
+     * @param redirectUri           exact Sign-in callback for login, empty for management
+     * @param scopes                ordered OIDC or fixed Management API scopes
+     * @param instance              Okta organization DNS label preceding {@code .okta.com}
+     * @param authorizationServerId custom authorization-server identifier for login, empty for management
      * @throws IllegalArgumentException if a required component, container, or scope is {@code null} or blank
      * @throws ValidateException        if routing, credential type, callback, scopes, or template selectors are invalid
      */

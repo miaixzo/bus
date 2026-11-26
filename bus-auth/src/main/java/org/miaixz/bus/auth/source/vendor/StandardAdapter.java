@@ -240,6 +240,9 @@ public class StandardAdapter implements VendorAdapter {
 
         /**
          * Validates one typed operation association.
+         *
+         * @param capability standard protocol capability
+         * @param operation  operation implemented by a protocol client and codec
          */
         public Binding {
             capability = Assert.notNull(capability, "Standard Vendor binding capability must not be null");

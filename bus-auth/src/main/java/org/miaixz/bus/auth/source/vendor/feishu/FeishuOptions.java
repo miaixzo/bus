@@ -55,6 +55,12 @@ public record FeishuOptions(Vendor.Id vendor, Vendor.Variant variant, String cli
     /**
      * Validates and freezes one Feishu registration without resolving its App Secret.
      *
+     * @param vendor      exact Feishu platform identifier
+     * @param variant     exact default or enterprise Feishu variant
+     * @param clientId    registered Feishu App ID
+     * @param credential  external App Secret reference
+     * @param redirectUri exact registered callback for the default Variant, empty for enterprise
+     * @param scopes      ordered requested login scopes, empty for enterprise
      * @throws IllegalArgumentException if a required component, container, or scope is {@code null} or blank
      * @throws ValidateException        if routing, credential, callback, or scope differs from the selected manifest
      */

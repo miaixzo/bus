@@ -66,6 +66,7 @@ public class LambdaFactory {
      *
      *     private Long id;
      *     private String name;
+     *
      *     // ... Getter and Setter methods omitted
      * }
      *

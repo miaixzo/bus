@@ -87,6 +87,7 @@ public interface PushObserver {
             public void onReset(final int streamId, final int errorCode) {
                 // Reset is already terminal for a canceled observer.
             }
+
         });
     }
 

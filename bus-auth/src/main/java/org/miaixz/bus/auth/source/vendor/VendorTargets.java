@@ -512,6 +512,7 @@ public record VendorTargets(Optional<Target> authorization, Optional<Target> tok
         /**
          * Validates a fixed endpoint target.
          *
+         * @param endpoint complete endpoint
          * @throws IllegalArgumentException if the endpoint is null
          */
         public Fixed {
@@ -548,6 +549,11 @@ public record VendorTargets(Optional<Target> authorization, Optional<Target> tok
         /**
          * Validates and freezes one constrained official endpoint template.
          *
+         * @param value             immutable official HTTPS template
+         * @param method            HTTP request method
+         * @param authentication    supported endpoint authentication methods
+         * @param minimumTlsVersion optional minimum TLS version
+         * @param clientAuth        TLS client authentication requirement
          * @throws IllegalArgumentException if a component or collection member is null
          * @throws ValidateException        if the template is not HTTPS or contains an unsupported or misplaced
          *                                  variable

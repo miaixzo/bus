@@ -34,8 +34,8 @@ import org.miaixz.bus.core.io.resource.Resource;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.net.url.RFC3986;
 import org.miaixz.bus.core.net.url.UrlDecoder;
-import org.miaixz.bus.core.net.url.UrlEncoder;
 
 /**
  * A standard resource loader that uses a {@link ClassLoader} to find and load resources. It supports loading resources
@@ -189,7 +189,7 @@ public class StdLoader extends ResourceLoader implements Loader {
                     try {
                         String uri = UrlDecoder.decode(url.getPath(), Charset.UTF_8);
                         String root = uri.substring(0, uri.lastIndexOf(path));
-                        URL context = URI.create(Normal.FILE_URL_PREFIX + UrlEncoder.encodeAll(root, Charset.UTF_8))
+                        URL context = URI.create(Normal.FILE_URL_PREFIX + RFC3986.PATH.encode(root, Charset.UTF_8))
                                 .toURL();
                         File file = new File(root);
                         resources = new FileLoader(context, file).load(path, recursively, filter);
@@ -201,7 +201,7 @@ public class StdLoader extends ResourceLoader implements Loader {
                     try {
                         String uri = UrlDecoder.decode(url.getPath(), Charset.UTF_8);
                         String root = uri.substring(0, uri.lastIndexOf(path));
-                        URL context = URI.create(Normal.JAR_URL_PREFIX + UrlEncoder.encodeAll(root, Charset.UTF_8))
+                        URL context = URI.create(Normal.JAR_URL_PREFIX + RFC3986.PATH.encode(root, Charset.UTF_8))
                                 .toURL();
                         JarURLConnection jarURLConnection = (JarURLConnection) url.openConnection();
                         JarFile jarFile = jarURLConnection.getJarFile();

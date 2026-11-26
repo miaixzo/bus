@@ -252,6 +252,9 @@ bus:
     enabled: true
     hosts: "127.0.0.1:9200"
     schema: "http"
+    http-version: "auto"
+    http2-ping-interval: 0s
+    http2-ping-timeout: 10s
     connect-timeout: 6s
     socket-timeout: 60s
     connection-request-timeout: 6s
@@ -260,6 +263,35 @@ bus:
 ```
 
 每个主机必须包含 `1..65535` 范围内的有效端口。超时和连接限制必须为正数，并且 每条路线的限制不能超过总限制。
+
+`http-version` 接受 `auto`、`1.1` 和 `2`。`auto` 在 TLS ALPN 中优先协商 HTTP/2，其次为 HTTP/1.1；
+`2` 只提供 `h2` 协商标识，表示协议偏好，并不强制要求 HTTP/2。对端未协商 ALPN 时仍回退到 HTTP/1.1；
+明文 HTTP 使用 HTTP/1.1。这些配置不启用 h2c，也不提供严格 HTTP/2 模式。
+
+`http2-ping-interval` 控制首个 PING 及后续 keepalive 的调度间隔，`0s` 禁用 keepalive；
+`http2-ping-timeout` 为等待匹配 ACK 的最大时长，必须大于零。PING 仅用于已建立的 HTTP/2 会话，
+超时会关闭该连接；HTTP/1.1 不发送 PING。
+
+主机列表也支持 `[::1]:9200` 这样的 IPv6 地址。默认在可用节点中轮询，同一次调用对每个候选节点进行一次基本尝试。
+请求尚未发送时可以切换节点；已经发送后，只有 `GET`、`HEAD` 和明确的只读 `POST` 查询端点（如 search）
+会在 `502`、`503`、`504` 或网络故障后重放，Bulk 默认不重放。
+
+响应交付前发生可重试的网络故障或返回 `502/503/504` 时，该节点会被暂时隔离。隔离从 60 秒开始，连续失败按约 √2 倍增长，
+最高 30 分钟；到期后重新进入候选，收到有效响应后清除失败记录。所有节点都在隔离期时，只探测最早到期的一个。
+这只管理已配置节点的健康状态，不进行节点自动发现。
+
+安全读取通过 Fabric 的请求级状态重试策略处理 `429`，可在同一节点额外重试一次；`429` 不会使节点被隔离。
+等待时间采用 `Retry-After` 的正秒数或未来 HTTP 日期，缺失、无效、非正值或过去日期使用 1 秒。
+等待超过 `socket-timeout` 或本次 Call 剩余预算时直接返回原响应，不提前重试。
+等待前释放响应连接，取消或中断会终止等待。写请求不会因 `429` 自动重放。
+
+显式启用 Elasticsearch SDK 的 `RetryConfig` 后，安全读取每次只选择一个节点，由 SDK 控制重试次数，
+适配器不额外等待或重试 `429`；SDK 按其 `BackoffPolicy` 调度，不解析 `Retry-After`。
+写请求在进入 SDK 前使用关闭重试的请求级 options 副本，不修改共享配置；即使显式开启 SDK 重试，
+结果未知的写请求也不会自动重放。只有明确未发送或对端确认未处理时，才可沿用安全的节点切换。
+适配器的 Fabric Context 禁用连接重试、陈旧连接补试和重定向；
+只有安全读取且未启用 SDK 重试时，才在该请求上开启一次 `429` 重试，避免多层重试放大尝试次数。
+异步响应交付与取消复用 Fabric 的 `Call.toFuture(...)`，ES 节点健康、操作安全判定和 SDK 类型转换仍由适配器负责。
 
 ## Fabric 与 DNS
 
@@ -413,6 +445,48 @@ bus:
 
 请求对象绑定需要 `@RequestObject`，排除框架和简单标量类型，并且不允许请求 输入以替换受信任的租户上下文。正文缓存是有限的；多部分和响应诊断缓存仍然存在
 选择加入。
+
+## 统一 HTTP 错误响应
+
+`bus.errors.routing` 选择哪些已确认的错误使用原生 HTTP 状态、经过校验的响应头和空响应体。其余错误继续使用所属入口的协议格式或兼容响应格式。关闭路由规则后，`bus-errors` 仍负责保护对外错误内容。
+
+| 配置项 | 默认值 | 作用 |
+|---|---|---|
+| `bus.errors.routing.enabled` | `false` | 启用匹配错误的原生 HTTP 响应。 |
+| `bus.errors.routing.targets` | 空集合 | 启用时必填。可选 `[mvc]`、`[vortex]` 或 `[mvc, vortex]`。`vortex` 只选网关监听端口，独立的 Spring MVC 管理端口属于 `mvc`。 |
+| `bus.errors.routing.path-prefixes` | 空列表 | 启用时必填。填写以 `/` 开头和结尾的字面路径，`/` 覆盖所选入口的所有路径。MVC 前缀省略应用上下文和 Servlet 映射前缀。 |
+| `bus.errors.routing.statuses` | 空集合 | 启用时必填。显式填写 `400` 到 `599` 的数字状态码。监听入口、路径和已确认的状态码同时匹配时生效。 |
+| `bus.errors.routing.cache-control` | 空字符串 | 覆盖匹配的原生 HTTP 响应的 `Cache-Control`。留空时保留可用且经过校验的缓存头。 |
+| `bus.errors.logging.enabled` | `true` | 启用发送至 `bus-logger` 的标准错误日志订阅。错误响应独立于该订阅。 |
+
+两个目标共用同一组路径和状态码。旧的 `bus.wrapper.route-errors` 配置应迁移到这里。Vortex 网关可独立于 Wrapper 使用这套规则。独立网关缺少 Spring MVC 时，可通过 `bus.wrapper.message-converters.enabled=false` 关闭 Wrapper 的 MVC 转换器。
+
+MVC 私有协议路径示例。
+
+```yaml
+bus:
+  errors:
+    routing:
+      enabled: true
+      targets: [mvc]
+      path-prefixes: [/internal/sso/, /internal/application/o/, /internal/application/saml/]
+      statuses: [404, 405, 415]
+      cache-control: no-store
+```
+
+Vortex 网关示例。
+
+```yaml
+bus:
+  errors:
+    routing:
+      enabled: true
+      targets: [vortex]
+      path-prefixes: [/]
+      statuses: [404, 405, 415, 429]
+```
+
+监听入口先确认错误事实。MVC 使用 Spring 的 `ErrorResponse`，Vortex 还使用路由确认的错误及上游状态错误。存在可用且经过校验的响应头时，`405` 可保留 `Allow`，`415` 可保留 `Accept`。网关过载直接返回的 `503` 等响应仍按各自的协议契约输出。REST 的具体条件见 [Bus Vortex](../bus-vortex/README_CN.md#网关错误响应)。
 
 ## 客户端和服务生命周期
 

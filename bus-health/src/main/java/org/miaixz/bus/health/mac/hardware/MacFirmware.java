@@ -27,6 +27,7 @@ import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.annotation.Immutable;
+import org.miaixz.bus.core.lang.tuple.Pair;
 import org.miaixz.bus.core.lang.tuple.Tuple;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.health.Memoizer;
@@ -58,6 +59,8 @@ final class MacFirmware extends AbstractFirmware {
         String description = null;
         String version = null;
         String releaseDate = null;
+        String systemFirmware = null;
+        String nameMatch = null;
 
         IORegistryEntry platformExpert = IOKitUtil.getMatchingService("IOPlatformExpertDevice");
         byte[] data;
@@ -87,6 +90,10 @@ final class MacFirmware extends AbstractFirmware {
                             if (data != null) {
                                 name = Parsing.decodeNulTerminated(data, Charset.UTF_8);
                             }
+                            data = entry.getByteArrayProperty("system-firmware-version");
+                            if (data != null) {
+                                systemFirmware = Parsing.decodeNulTerminated(data, Charset.UTF_8);
+                            }
                             break;
 
                         case "efi":
@@ -97,8 +104,8 @@ final class MacFirmware extends AbstractFirmware {
                             break;
 
                         default:
-                            if (StringKit.isBlank(name)) {
-                                name = entry.getStringProperty("IONameMatch");
+                            if (StringKit.isBlank(nameMatch)) {
+                                nameMatch = entry.getStringProperty("IONameMatch");
                             }
                             break;
                     }
@@ -114,10 +121,14 @@ final class MacFirmware extends AbstractFirmware {
                 }
             }
             if (StringKit.isBlank(version)) {
-                data = platformExpert.getByteArrayProperty("target-type");
-                if (data != null) {
-                    version = Parsing.decodeNulTerminated(data, Charset.UTF_8);
+                Pair<String, String> nameVersion = splitSystemFirmwareVersion(systemFirmware);
+                version = nameVersion.getRight();
+                if (StringKit.isBlank(name)) {
+                    name = nameVersion.getLeft();
                 }
+            }
+            if (StringKit.isBlank(name)) {
+                name = nameMatch;
             }
             if (StringKit.isBlank(name)) {
                 data = platformExpert.getByteArrayProperty("device_type");
@@ -135,7 +146,24 @@ final class MacFirmware extends AbstractFirmware {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Splits an Apple Silicon system-firmware value into its name and version.
+     *
+     * @param value the system-firmware value
+     * @return the firmware name and version
+     */
+    static Pair<String, String> splitSystemFirmwareVersion(String value) {
+        String firmware = Parsing.getStringValueOrEmpty(value).trim();
+        int dash = firmware.indexOf('-');
+        if (dash < Normal._0) {
+            return Pair.of(Normal.EMPTY, firmware);
+        }
+        return Pair.of(firmware.substring(Normal._0, dash), firmware.substring(dash + Normal._1));
+    }
+
+    /**
+     * Get the firmware manufacturer.
+     *
+     * @return the manufacturer
      */
     @Override
     public String getManufacturer() {
@@ -143,7 +171,9 @@ final class MacFirmware extends AbstractFirmware {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Get the firmware name.
+     *
+     * @return the name
      */
     @Override
     public String getName() {
@@ -151,7 +181,9 @@ final class MacFirmware extends AbstractFirmware {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Get the firmware description.
+     *
+     * @return the description
      */
     @Override
     public String getDescription() {
@@ -159,7 +191,9 @@ final class MacFirmware extends AbstractFirmware {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Get the firmware version.
+     *
+     * @return the version
      */
     @Override
     public String getVersion() {
@@ -167,7 +201,9 @@ final class MacFirmware extends AbstractFirmware {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Get the firmware release date.
+     *
+     * @return The release date.
      */
     @Override
     public String getReleaseDate() {

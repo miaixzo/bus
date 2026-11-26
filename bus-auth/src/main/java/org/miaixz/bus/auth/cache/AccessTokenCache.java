@@ -59,17 +59,17 @@ public class AccessTokenCache extends AuthCache<AccessTokenCache.Entry> {
     }
 
     /**
-     * Creates a Source-generation-scoped access-token cache view for compiled runtime use.
+     * Creates a Source-epoch-scoped access-token cache view for compiled runtime use.
      *
      * @param cache      shared bus-cache backend
      * @param deployment deployment-unique cache scope
      * @param sourceId   exact Source identifier
-     * @param generation non-negative Source configuration generation
+     * @param epoch      non-negative Source configuration epoch
      * @param clock      shared runtime clock used to derive entry lifetimes
      */
     public AccessTokenCache(final CacheX<String, Object> cache, final String deployment, final String sourceId,
-            final long generation, final Clock clock) {
-        super(cache, deployment, PURPOSE, Entry.class, sourceId, generation, clock);
+            final long epoch, final Clock clock) {
+        super(cache, deployment, PURPOSE, Entry.class, sourceId, epoch, clock);
     }
 
     /**
@@ -124,14 +124,15 @@ public class AccessTokenCache extends AuthCache<AccessTokenCache.Entry> {
         /**
          * Creates immutable access-token validation metadata.
          *
-         * @param sourceId       OAuth authorization-server Source identifier
-         * @param clientId       OAuth client identifier
-         * @param subjectId      authorized subject identifier
-         * @param scope          granted scope values
-         * @param audience       resource audience values
-         * @param actorSubjectId optional delegated acting-subject identifier
-         * @param confirmation   optional sender confirmation identifier
-         * @param openIdBinding  optional OpenID Connect authorization context
+         * @param sourceId        OAuth authorization-server Source identifier
+         * @param clientId        OAuth client identifier
+         * @param subjectId       authorized subject identifier
+         * @param scope           granted scope values
+         * @param audience        resource audience values
+         * @param actorSubjectId  optional delegated acting-subject identifier
+         * @param confirmation    optional sender confirmation identifier
+         * @param openIdBinding   optional OpenID Connect authorization context
+         * @param authorizationId authoritative authorization identifier shared by derived credentials
          * @throws IllegalArgumentException if required text is blank, a list contains a blank entry, or an optional
          *                                  container is invalid
          */

@@ -1,0 +1,46 @@
+{
+  "resources": [
+    {
+      "condition": {
+        "typeReached": "org.apache.logging.log4j.LogManager"
+      },
+      "glob": "META-INF/log4j-provider.properties"
+    },
+    {
+      "condition": {
+        "typeReached": "org.apache.logging.log4j.LogManager"
+      },
+      "glob": "META-INF/services/org.apache.logging.log4j.spi.Provider"
+    },
+    {
+      "condition": {
+        "typeReached": "org.apache.logging.log4j.LogManager"
+      },
+      "glob": "META-INF/services/org.apache.logging.log4j.util.PropertySource"
+    },
+    {
+      "condition": {
+        "typeReached": "org.apache.logging.log4j.LogManager"
+      },
+      "glob": "log4j2.component.properties"
+    },
+    {
+      "condition": {
+        "typeReached": "org.apache.logging.log4j.LogManager"
+      },
+      "glob": "log4j2.system.properties"
+    },
+    {
+      "condition": {
+        "typeReached": "org.apache.logging.log4j.LogManager"
+      },
+      "glob": "log4j2.simplelog.properties"
+    },
+    {
+      "condition": {
+        "typeReached": "org.apache.logging.log4j.LogManager"
+      },
+      "glob": "log4j2.StatusLogger.properties"
+    }
+  ]
+}

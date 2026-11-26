@@ -345,7 +345,12 @@ public class Realm {
         /**
          * Non-human application or service identity.
          */
-        SERVICE_ACCOUNT(5);
+        SERVICE_ACCOUNT(5),
+
+        /**
+         * Application registration, distinct from a tenant-local service identity.
+         */
+        APPLICATION(6);
 
         /**
          * Stable persisted code independent of enum declaration order.
@@ -370,6 +375,7 @@ public class Realm {
         public int code() {
             return code;
         }
+
     }
 
     /**
@@ -432,6 +438,7 @@ public class Realm {
         public int code() {
             return code;
         }
+
     }
 
     /**
@@ -479,6 +486,7 @@ public class Realm {
         public int code() {
             return code;
         }
+
     }
 
     /**
@@ -526,6 +534,7 @@ public class Realm {
         public int code() {
             return code;
         }
+
     }
 
     /**
@@ -578,6 +587,7 @@ public class Realm {
         public int code() {
             return code;
         }
+
     }
 
     /**
@@ -607,6 +617,7 @@ public class Realm {
             kind = Assert.notNull(kind, "Realm key kind must not be null");
             externalId = requireText(externalId, "Realm key external id");
         }
+
     }
 
     /**
@@ -634,6 +645,7 @@ public class Realm {
                 throw new ValidateException("Realm relation must not form a self-loop");
             }
         }
+
     }
 
     /**
@@ -668,6 +680,7 @@ public class Realm {
             attributes = object(attributes, "Realm resource attributes");
             observedAt = Assert.notNull(observedAt, "Realm resource observation time must not be null");
         }
+
     }
 
     /**
@@ -692,6 +705,7 @@ public class Realm {
             attributes = object(attributes, "Realm relation attributes");
             observedAt = Assert.notNull(observedAt, "Realm relation observation time must not be null");
         }
+
     }
 
     /**
@@ -723,6 +737,7 @@ public class Realm {
         public String toString() {
             return Builder.REDACTED_VALUE;
         }
+
     }
 
     /**
@@ -759,6 +774,7 @@ public class Realm {
             }
             limitations = Realm.limitations(limitations);
         }
+
     }
 
     /**
@@ -772,7 +788,9 @@ public class Realm {
          * Creates the stateless Realm description request.
          */
         public Describe {
+            // No initialization required.
         }
+
     }
 
     /**
@@ -797,30 +815,45 @@ public class Realm {
             limit = Realm.limit(limit, "Realm snapshot limit");
             cursor = optional(cursor, "Realm snapshot cursor");
         }
+
     }
 
     /**
      * Requests one bounded page from a recoverable Realm change feed.
      *
-     * @param kinds  non-empty requested resource categories
-     * @param limit  maximum number of returned changes
-     * @param cursor opaque continuation position, or empty for the first page
+     * @param kinds            non-empty requested resource categories
+     * @param limit            maximum number of returned changes
+     * @param cursor           opaque continuation position, or empty for the first page
+     * @param includeRelations whether to include supported relation changes in the requested feed
      * @author Kimi Liu
      */
-    public record Changes(Set<Kind> kinds, int limit, Optional<Cursor> cursor) {
+    public record Changes(Set<Kind> kinds, int limit, Optional<Cursor> cursor, boolean includeRelations) {
+
+        /**
+         * Preserves existing callers which request the full supported relation projection.
+         *
+         * @param kinds  non-empty requested resource categories
+         * @param limit  maximum number of returned changes
+         * @param cursor opaque continuation position, or empty for the first page
+         */
+        public Changes(Set<Kind> kinds, int limit, Optional<Cursor> cursor) {
+            this(kinds, limit, cursor, true);
+        }
 
         /**
          * Validates and normalizes one Realm change request.
          *
-         * @param kinds  non-empty requested resource categories
-         * @param limit  maximum number of returned changes
-         * @param cursor opaque continuation position
+         * @param kinds            non-empty requested resource categories
+         * @param limit            maximum number of returned changes
+         * @param cursor           opaque continuation position
+         * @param includeRelations whether to include supported relation changes in the requested feed
          */
         public Changes {
             kinds = enumSet(kinds, true, "Realm change resource kinds");
             limit = Realm.limit(limit, "Realm change limit");
             cursor = optional(cursor, "Realm change cursor");
         }
+
     }
 
     /**
@@ -839,6 +872,7 @@ public class Realm {
         public Retrieve {
             key = Assert.notNull(key, "Realm retrieve key must not be null");
         }
+
     }
 
     /**
@@ -869,6 +903,7 @@ public class Realm {
             }
             next = optional(next, "Realm page next cursor");
         }
+
     }
 
     /**
@@ -887,6 +922,7 @@ public class Realm {
         public Retrieved {
             resource = optional(resource, "Realm retrieved resource");
         }
+
     }
 
     /**
@@ -905,6 +941,7 @@ public class Realm {
         public ResourceUpsert {
             resource = Assert.notNull(resource, "Realm resource upsert must not be null");
         }
+
     }
 
     /**
@@ -926,6 +963,7 @@ public class Realm {
             key = Assert.notNull(key, "Realm resource delete key must not be null");
             observedAt = Assert.notNull(observedAt, "Realm resource delete observation time must not be null");
         }
+
     }
 
     /**
@@ -944,6 +982,7 @@ public class Realm {
         public RelationUpsert {
             relation = Assert.notNull(relation, "Realm relation upsert must not be null");
         }
+
     }
 
     /**
@@ -965,22 +1004,35 @@ public class Realm {
             key = Assert.notNull(key, "Realm relation delete key must not be null");
             observedAt = Assert.notNull(observedAt, "Realm relation delete observation time must not be null");
         }
+
     }
 
     /**
      * Returns one normalized Realm change-feed page.
      *
-     * @param changes changes in stable output order
-     * @param next    opaque next position, or empty when complete
+     * @param changes    changes in stable output order
+     * @param next       opaque next position, or empty when complete
+     * @param checkpoint optional completed-feed checkpoint for resuming a later change request
      * @author Kimi Liu
      */
-    public record ChangePage(List<Change> changes, Optional<Cursor> next) {
+    public record ChangePage(List<Change> changes, Optional<Cursor> next, Optional<Cursor> checkpoint) {
+
+        /**
+         * Preserves the finite-feed constructor used by other adapters.
+         *
+         * @param changes changes in stable output order
+         * @param next    opaque next position, or empty when complete
+         */
+        public ChangePage(List<Change> changes, Optional<Cursor> next) {
+            this(changes, next, Optional.empty());
+        }
 
         /**
          * Validates, de-duplicates, and freezes one Realm change page.
          *
-         * @param changes changes in stable output order
-         * @param next    opaque next position
+         * @param changes    changes in stable output order
+         * @param next       opaque next position
+         * @param checkpoint optional completed-feed checkpoint for resuming a later change request
          */
         public ChangePage {
             changes = Realm.changes(changes);
@@ -988,7 +1040,12 @@ public class Realm {
                 throw new ValidateException("Realm change page contains too many changes");
             }
             next = optional(next, "Realm change page next cursor");
+            checkpoint = optional(checkpoint, "Realm change page checkpoint");
+            if (next.isPresent() && checkpoint.isPresent()) {
+                throw new ValidateException("An unfinished page cannot publish a completed checkpoint");
+            }
         }
+
     }
 
 }

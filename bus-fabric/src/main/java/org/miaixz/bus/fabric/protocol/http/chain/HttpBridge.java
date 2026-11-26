@@ -389,6 +389,10 @@ public class HttpBridge implements HttpStage {
 
         /**
          * Compares ordered header pairs without materializing map views.
+         *
+         * @param left  first immutable headers
+         * @param right second immutable headers
+         * @return whether both header collections contain the same ordered pairs
          */
         private static boolean sameHeaders(final Headers left, final Headers right) {
             final int size = left.size();
@@ -405,6 +409,10 @@ public class HttpBridge implements HttpStage {
 
         /**
          * Compares timeout values because Timeout intentionally has identity equality.
+         *
+         * @param left  first value to compare
+         * @param right second value to compare
+         * @return whether the timeout durations and deadlines are equal
          */
         private static boolean sameTimeout(final Timeout left, final Timeout right) {
             return left.connect().equals(right.connect()) && left.read().equals(right.read())
@@ -414,6 +422,9 @@ public class HttpBridge implements HttpStage {
 
         /**
          * Returns whether a request is value-identical for all fields changed or observed by this bridge.
+         *
+         * @param candidate request to compare with the prepared request
+         * @return whether the request matches the values captured by this prepared request
          */
         private boolean matches(final HttpRequest candidate) {
             return source.method() == candidate.method() && source.url().toString().equals(candidate.url().toString())
@@ -421,6 +432,7 @@ public class HttpBridge implements HttpStage {
                     && source.proxy().equals(candidate.proxy()) && sameTimeout(source.timeout(), candidate.timeout())
                     && candidate.tag() == null && sameHeaders(source.headers(), candidate.headers());
         }
+
     }
 
 }

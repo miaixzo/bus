@@ -20,8 +20,8 @@
 package org.miaixz.bus.fabric.protocol.stomp;
 
 import java.net.URI;
-import java.util.function.Consumer;
 
+import org.miaixz.bus.core.center.function.ConsumerX;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.fabric.*;
@@ -51,7 +51,7 @@ import org.miaixz.bus.fabric.observe.EventObserver;
  */
 record StompSpec(Context context, URI uri, Address address, Headers headers, Timeout timeout, StompPolicy policy,
         ProxyPlan proxy, String destination, String login, String passcode, GuardRule guard, Filter filter,
-        EventObserver observer, Consumer<StompMessage> handler, Listener<? super StompSession> listener) {
+        EventObserver observer, ConsumerX<StompMessage> handler, Listener<? super StompSession> listener) {
 
     /**
      * Creates a validated specification.

@@ -55,11 +55,20 @@ public @interface ConditionalOnEnabled {
     String prefix();
 
     /**
-     * Returns the property name appended to {@link #prefix()} for secondary activation.
+     * Returns the property name appended to {@link #prefix()} for secondary activation. An empty name disables
+     * property-based activation.
      *
      * @return feature property name
      */
     String name() default Normal.ENABLED;
+
+    /**
+     * Returns the annotation member that must be {@code true}. An empty value keeps presence-only semantics, and an
+     * explicit {@code false} disables the feature even when the secondary property is true.
+     *
+     * @return required member name
+     */
+    String member() default "";
 
     /**
      * Returns whether a missing secondary property activates the feature when the explicit annotation is absent.

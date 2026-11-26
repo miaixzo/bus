@@ -296,6 +296,7 @@ public class WeakCache<K, V> extends TimedCache<K, V> {
                         public void remove() {
                             keys.remove();
                         }
+
                     };
                 }
 
@@ -352,6 +353,7 @@ public class WeakCache<K, V> extends TimedCache<K, V> {
                             iterator(),
                             Spliterator.DISTINCT | Spliterator.NONNULL | Spliterator.CONCURRENT);
                 }
+
             };
         }
 
@@ -411,6 +413,7 @@ public class WeakCache<K, V> extends TimedCache<K, V> {
                                             delegate.put(key, replacement);
                                             return super.setValue(replacement);
                                         }
+
                                     };
                                 }
                             }
@@ -447,6 +450,7 @@ public class WeakCache<K, V> extends TimedCache<K, V> {
                             delegate.remove(last.getKey().get(), last.getValue());
                             last = null;
                         }
+
                     };
                 }
 
@@ -508,8 +512,10 @@ public class WeakCache<K, V> extends TimedCache<K, V> {
                 public void clear() {
                     delegate.clear();
                 }
+
             };
         }
+
     }
 
 }

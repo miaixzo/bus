@@ -349,6 +349,7 @@ public class HttpLine {
             length = Normal._0;
             carriageReturn = false;
         }
+
     }
 
 }

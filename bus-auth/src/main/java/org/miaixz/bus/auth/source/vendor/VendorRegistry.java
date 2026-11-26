@@ -281,6 +281,9 @@ public interface VendorRegistry extends Registry<Vendor.Id, VendorConnector> {
 
         /**
          * Validates and freezes one typed adapter declaration.
+         *
+         * @param variants exact non-empty variant list
+         * @param factory  typed adapter factory
          */
         public Adapter {
             Assert.notNull(variants, "Vendor adapter variants must not be null");

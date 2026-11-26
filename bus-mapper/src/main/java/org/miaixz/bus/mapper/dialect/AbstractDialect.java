@@ -37,6 +37,7 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.mapper.Charter.Behavior;
 import org.miaixz.bus.mapper.Charter.Modify;
+import org.miaixz.bus.mapper.feature.identifier.IdentifierValidator;
 import org.miaixz.bus.mapper.feature.paging.Pageable;
 import org.miaixz.bus.mapper.feature.schema.ColumnSnapshot;
 import org.miaixz.bus.mapper.feature.schema.SqlTypeDescriptor;
@@ -64,6 +65,26 @@ public abstract class AbstractDialect implements Dialect {
      * Comma plus one trailing space used in generated SQL lists.
      */
     protected static final String COMMA_SPACE = Symbol.COMMA + Symbol.SPACE;
+
+    /**
+     * SQL prefix that changes an existing table definition.
+     */
+    protected static final String ALTER_TABLE = "ALTER TABLE";
+
+    /**
+     * SQL clause that targets an existing column.
+     */
+    protected static final String ALTER_COLUMN = "ALTER COLUMN";
+
+    /**
+     * SQL clause that removes the default of an existing column.
+     */
+    protected static final String DROP_DEFAULT = "DROP DEFAULT";
+
+    /**
+     * SQL clause that creates a namespace when it is not already present.
+     */
+    protected static final String CREATE_SCHEMA_IF_ABSENT = "CREATE SCHEMA IF NOT EXISTS";
 
     /**
      * JDBC table type used for table metadata lookup.
@@ -109,6 +130,36 @@ public abstract class AbstractDialect implements Dialect {
      * SQL Server Unicode string literal prefix.
      */
     protected static final String SQLSERVER_UNICODE_PREFIX = "N";
+
+    /**
+     * SQL clause that adds a named table constraint.
+     */
+    private static final String ADD_CONSTRAINT = "ADD CONSTRAINT";
+
+    /**
+     * SQL keyword identifying a database check constraint.
+     */
+    private static final String CHECK = "CHECK";
+
+    /**
+     * JDBC metadata label for a column default expression.
+     */
+    private static final String COLUMN_DEFAULT = "COLUMN_DEF";
+
+    /**
+     * JDBC metadata label for automatic identity generation on write.
+     */
+    private static final String AUTO_INCREMENT = "IS_AUTOINCREMENT";
+
+    /**
+     * JDBC metadata label for columns derived from a database expression.
+     */
+    private static final String GENERATED_COLUMN = "IS_GENERATEDCOLUMN";
+
+    /**
+     * Affirmative value used in JDBC column metadata flags.
+     */
+    private static final String METADATA_YES = "YES";
 
     /**
      * Human-readable database name.
@@ -217,10 +268,80 @@ public abstract class AbstractDialect implements Dialect {
                 Behavior.READ_INDEX_METADATA,
                 Behavior.READ_PRIMARY_KEY_METADATA,
                 Behavior.READ_FOREIGN_KEY_METADATA);
+        if (supportsStandardColumnDefault()) {
+            types.add(Behavior.DROP_COLUMN_DEFAULT);
+        }
         if (upsertType != null && upsertType != Behavior.NONE) {
             types.add(upsertType);
         }
         return types;
+    }
+
+    /**
+     * Indicates whether this dialect supports the standard column default removal syntax.
+     *
+     * @return whether the dialect can remove a default directly without rebuilding the table
+     */
+    protected boolean supportsStandardColumnDefault() {
+        return false;
+    }
+
+    /**
+     * Generates the standard SQL statement that removes a database default from a physical column.
+     *
+     * @param table  mapped table with its physical qualification
+     * @param column actual column name returned by database metadata
+     * @return schema SQL to remove the default
+     */
+    @Override
+    public String dropColumnDefault(TableMeta table, String column) {
+        if (!supportsStandardColumnDefault()) {
+            throw unsupportedSchema("DROP_COLUMN_DEFAULT", table);
+        }
+        return ALTER_TABLE + Symbol.SPACE + tableName(table) + Symbol.SPACE + ALTER_COLUMN + Symbol.SPACE
+                + quotePhysicalIdentifier(column, schemaQuote()) + Symbol.SPACE + DROP_DEFAULT;
+    }
+
+    /**
+     * Builds native DDL for a check constraint read from the same database's catalogue.
+     *
+     * @param table      physical table receiving the constraint
+     * @param name       actual constraint name
+     * @param definition trusted single CHECK expression from the catalogue
+     * @return the generated check constraint statement
+     */
+    protected String standardRestoreCheck(TableMeta table, String name, String definition) {
+        if (StringKit.isBlank(definition)
+                || !definition.strip().startsWith(CHECK + Symbol.SPACE + Symbol.PARENTHESE_LEFT)
+                || !definition.strip().endsWith(Symbol.PARENTHESE_RIGHT)
+                || definition.indexOf(Symbol.C_SEMICOLON) >= 0) {
+            throw new IllegalArgumentException("A single catalogue CHECK definition is required");
+        }
+        return ALTER_TABLE + Symbol.SPACE + tableName(table) + Symbol.SPACE + ADD_CONSTRAINT + Symbol.SPACE
+                + quotePhysicalIdentifier(name, schemaQuote()) + Symbol.SPACE + definition;
+    }
+
+    /**
+     * Supplies the identifier delimiter used by the dialect's physical maintenance SQL.
+     *
+     * @return native identifier delimiter
+     */
+    protected String schemaQuote() {
+        return Symbol.DOUBLE_QUOTES;
+    }
+
+    /**
+     * Delimits one physical identifier, escaping embedded occurrences of the native delimiter.
+     *
+     * @param name  identifier exactly as stored in the database
+     * @param quote native identifier delimiter
+     * @return a single escaped SQL identifier
+     */
+    protected static String quotePhysicalIdentifier(String name, String quote) {
+        if (StringKit.isBlank(name) || name.indexOf(0) >= 0) {
+            throw new IllegalArgumentException("A physical SQL identifier is required");
+        }
+        return quote + name.replace(quote, quote + quote) + quote;
     }
 
     /**
@@ -265,7 +386,7 @@ public abstract class AbstractDialect implements Dialect {
      */
     @Override
     public String toString() {
-        return "Dialect[" + this.databaseName + "]";
+        return "Dialect[" + this.databaseName + Symbol.BRACKET_RIGHT;
     }
 
     /**
@@ -303,10 +424,14 @@ public abstract class AbstractDialect implements Dialect {
     public boolean existsTable(Connection connection, TableMeta table) throws SQLException {
         DatabaseMetaData metaData = connection.getMetaData();
         for (String tableName : tableLookupNames(metaData, table)) {
-            try (ResultSet rs = metaData
-                    .getTables(table.catalog(), table.schema(), tableName, new String[] { "TABLE" })) {
-                if (rs.next()) {
-                    return true;
+            try (ResultSet rs = metaData.getTables(
+                    metadataTarget(metaData, table).catalog(),
+                    metadataPattern(metaData, metadataTarget(metaData, table).schema()),
+                    metadataPattern(metaData, tableName),
+                    new String[] { "TABLE" })) {
+                while (rs.next()) {
+                    if (metadataMatches(rs, metaData, table, Normal.EMPTY))
+                        return true;
                 }
             }
         }
@@ -323,11 +448,20 @@ public abstract class AbstractDialect implements Dialect {
      */
     @Override
     public TableSnapshot readTable(Connection connection, TableMeta table) throws SQLException {
-        TableSnapshot snapshot = new TableSnapshot().name(table.tableName()).exists(existsTable(connection, table));
+        MetadataTarget target = metadataTarget(connection.getMetaData(), table);
+        TableSnapshot snapshot = new TableSnapshot().name(table.tableName()).catalog(target.catalog())
+                .schema(target.schema()).identifierRules(IdentifierValidator.metadataRules(connection.getMetaData()))
+                .exists(existsTable(connection, table));
         if (snapshot.exists()) {
             snapshot.comment(readTableComment(connection, table));
             snapshot.columns(readColumns(connection, table));
             snapshot.indexes(readIndexes(connection, table));
+            for (IndexMeta index : snapshot.indexes()) {
+                if (index.columns().isEmpty()) {
+                    snapshot.incompleteIndexes().add(snapshot.actualKey(index.name()));
+                    snapshot.issues().add("Incomplete or non-column index metadata: " + index.name());
+                }
+            }
             snapshot.primaryKey(readPrimaryKey(connection, table));
             snapshot.foreignKeys(readForeignKeys(connection, table));
         }
@@ -345,10 +479,14 @@ public abstract class AbstractDialect implements Dialect {
     protected String readTableComment(Connection connection, TableMeta table) throws SQLException {
         DatabaseMetaData metaData = connection.getMetaData();
         for (String tableName : tableLookupNames(metaData, table)) {
-            try (ResultSet rs = metaData
-                    .getTables(table.catalog(), table.schema(), tableName, new String[] { TABLE_TYPE })) {
-                if (rs.next()) {
-                    return getString(rs, REMARKS_COLUMN);
+            try (ResultSet rs = metaData.getTables(
+                    metadataTarget(metaData, table).catalog(),
+                    metadataPattern(metaData, metadataTarget(metaData, table).schema()),
+                    metadataPattern(metaData, tableName),
+                    new String[] { TABLE_TYPE })) {
+                while (rs.next()) {
+                    if (metadataMatches(rs, metaData, table, Normal.EMPTY))
+                        return getString(rs, REMARKS_COLUMN);
                 }
             }
         }
@@ -387,23 +525,40 @@ public abstract class AbstractDialect implements Dialect {
      */
     private void readColumns(DatabaseMetaData metaData, TableMeta table, String tableName, List<ColumnSnapshot> columns)
             throws SQLException {
-        try (ResultSet rs = metaData.getColumns(table.catalog(), table.schema(), tableName, null)) {
+        try (ResultSet rs = metaData.getColumns(
+                metadataTarget(metaData, table).catalog(),
+                metadataPattern(metaData, metadataTarget(metaData, table).schema()),
+                metadataPattern(metaData, tableName),
+                null)) {
             while (rs.next()) {
-                String typeName = normalizeTypeName(rs.getString("TYPE_NAME"));
+                if (!metadataMatches(rs, metaData, table, Normal.EMPTY))
+                    continue;
+                String typeName = rs.getString("TYPE_NAME");
                 int jdbc = rs.getInt("DATA_TYPE");
-                int size = rs.getInt("COLUMN_SIZE");
-                int scale = rs.getInt("DECIMAL_DIGITS");
+                int sizeValue = rs.getInt("COLUMN_SIZE");
+                Integer size = rs.wasNull() ? null : sizeValue;
+                int scaleValue = rs.getInt("DECIMAL_DIGITS");
+                Integer scale = rs.wasNull() ? null : scaleValue;
                 int nullable = rs.getInt("NULLABLE");
+                Boolean nullableValue = rs.wasNull() || nullable == DatabaseMetaData.columnNullableUnknown ? null
+                        : nullable == DatabaseMetaData.columnNullable;
                 SqlTypeDescriptor type = new SqlTypeDescriptor().jdbcType(toJdbcType(jdbc)).typeName(typeName);
                 if (isLengthType(typeName)) {
-                    type.length(size);
+                    type.length(size).lengthUnit(SqlTypeDescriptor.LengthUnit.CHARACTER);
                 }
                 if (isDecimalType(typeName)) {
                     type.precision(size).scale(scale);
                 }
-                columns.add(
-                        new ColumnSnapshot().name(rs.getString("COLUMN_NAME")).comment(getString(rs, REMARKS_COLUMN))
-                                .type(type).nullable(nullable == DatabaseMetaData.columnNullable));
+                ColumnSnapshot snapshot = new ColumnSnapshot().name(rs.getString("COLUMN_NAME"))
+                        .comment(getString(rs, REMARKS_COLUMN)).type(type).nullable(nullableValue)
+                        .identity(METADATA_YES.equals(getString(rs, AUTO_INCREMENT)))
+                        .generated(METADATA_YES.equals(getString(rs, GENERATED_COLUMN)));
+                try {
+                    snapshot.defaultExpression(rs.getString(COLUMN_DEFAULT)).defaultKnown(true);
+                } catch (SQLException unavailable) {
+                    snapshot.defaultKnown(false);
+                }
+                columns.add(snapshot);
             }
         }
     }
@@ -439,10 +594,15 @@ public abstract class AbstractDialect implements Dialect {
      */
     private PrimaryKeyMeta readPrimaryKey(DatabaseMetaData metaData, TableMeta table, String tableName)
             throws SQLException {
-        Map<Short, String> columns = new LinkedHashMap<>();
+        Map<Short, String> columns = new TreeMap<>();
         String name = null;
-        try (ResultSet rs = metaData.getPrimaryKeys(table.catalog(), table.schema(), tableName)) {
+        try (ResultSet rs = metaData.getPrimaryKeys(
+                metadataTarget(metaData, table).catalog(),
+                metadataTarget(metaData, table).schema(),
+                tableName)) {
             while (rs.next()) {
+                if (!metadataMatches(rs, metaData, table, Normal.EMPTY))
+                    continue;
                 if (name == null) {
                     name = rs.getString("PK_NAME");
                 }
@@ -491,8 +651,14 @@ public abstract class AbstractDialect implements Dialect {
             TableMeta table,
             String tableName,
             Map<String, ForeignKeyMeta> foreignKeys) throws SQLException {
-        try (ResultSet rs = metaData.getImportedKeys(table.catalog(), table.schema(), tableName)) {
+        Map<String, SortedMap<Short, String[]>> members = new LinkedHashMap<>();
+        try (ResultSet rs = metaData.getImportedKeys(
+                metadataTarget(metaData, table).catalog(),
+                metadataTarget(metaData, table).schema(),
+                tableName)) {
             while (rs.next()) {
+                if (!metadataMatches(rs, metaData, table, "FK"))
+                    continue;
                 String name = rs.getString("FK_NAME");
                 String column = rs.getString("FKCOLUMN_NAME");
                 String referencedColumn = rs.getString("PKCOLUMN_NAME");
@@ -504,18 +670,27 @@ public abstract class AbstractDialect implements Dialect {
                         : name;
                 ForeignKeyMeta foreignKey = foreignKeys.get(key);
                 if (foreignKey == null) {
-                    foreignKey = new ForeignKeyMeta().name(key).referencedTable(referencedTable(rs))
+                    foreignKey = new ForeignKeyMeta().name(key).referencedTable(referencedTable(rs, metaData))
                             .onDelete(foreignKeyRule(rs, "DELETE_RULE")).onUpdate(foreignKeyRule(rs, "UPDATE_RULE"));
                     foreignKeys.put(key, foreignKey);
                 }
-                foreignKey.columns().add(column);
-                foreignKey.referencedColumns().add(referencedColumn);
+                members.computeIfAbsent(key, ignored -> new TreeMap<>())
+                        .put(rs.getShort("KEY_SEQ"), new String[] { column, referencedColumn });
+            }
+        }
+        for (var entry : members.entrySet()) {
+            ForeignKeyMeta key = foreignKeys.get(entry.getKey());
+            for (String[] member : entry.getValue().values()) {
+                key.columns().add(member[0]);
+                key.referencedColumns().add(member[1]);
             }
         }
     }
 
     /**
-     * Reads the index metadata for the supplied mapper table.
+     * Reads index metadata for the supplied mapper table. Columns are ordered by JDBC ordinal position; definitions
+     * with unsupported filters, expression members, missing ordinals, or unknown uniqueness retain an empty column list
+     * so the table snapshot can diagnose incomplete information instead of automatically replacing those indexes.
      *
      * @param connection the JDBC connection used to read database metadata
      * @param table      the mapper table metadata
@@ -549,18 +724,45 @@ public abstract class AbstractDialect implements Dialect {
             TableMeta table,
             String tableName,
             Map<String, IndexMeta> indexes) throws SQLException {
-        try (ResultSet rs = metaData.getIndexInfo(table.catalog(), table.schema(), tableName, false, false)) {
+        Map<String, SortedMap<Integer, String>> ordered = new LinkedHashMap<>();
+        Set<String> incomplete = new HashSet<>();
+        try (ResultSet rs = metaData.getIndexInfo(
+                metadataTarget(metaData, table).catalog(),
+                metadataTarget(metaData, table).schema(),
+                tableName,
+                false,
+                false)) {
             while (rs.next()) {
+                if (!metadataMatches(rs, metaData, table, Normal.EMPTY))
+                    continue;
                 short type = rs.getShort("TYPE");
                 String name = rs.getString("INDEX_NAME");
-                String column = rs.getString("COLUMN_NAME");
-                if (type == DatabaseMetaData.tableIndexStatistic || name == null || column == null) {
+                if (type == DatabaseMetaData.tableIndexStatistic || name == null)
                     continue;
+                String column = rs.getString("COLUMN_NAME");
+                int ordinal = rs.getInt("ORDINAL_POSITION");
+                boolean missingOrdinal = rs.wasNull() || ordinal <= 0;
+                boolean nonUnique = rs.getBoolean("NON_UNIQUE");
+                boolean missingUniqueness = rs.wasNull();
+                IndexMeta index = indexes.computeIfAbsent(name, key -> new IndexMeta().name(key).unique(!nonUnique));
+                String filter;
+                try {
+                    filter = rs.getString("FILTER_CONDITION");
+                } catch (SQLException unsupported) {
+                    filter = "unavailable";
                 }
-                IndexMeta index = indexes
-                        .computeIfAbsent(name, key -> new IndexMeta().name(key).unique(!getBoolean(rs, "NON_UNIQUE")));
-                index.columns().add(column);
+                boolean filtered = filter != null && !filter.isBlank();
+                String predicate = filtered && supportsPartialIndexes() ? IndexMeta.integerEquality(filter) : null;
+                index.predicate(predicate);
+                SortedMap<Integer, String> cols = ordered.computeIfAbsent(name, key -> new TreeMap<>());
+                if (column == null || missingOrdinal || missingUniqueness || filtered && predicate == null
+                        || cols.putIfAbsent(ordinal, column) != null)
+                    incomplete.add(name);
             }
+        }
+        for (var entry : ordered.entrySet()) {
+            if (!incomplete.contains(entry.getKey()))
+                indexes.get(entry.getKey()).columns().addAll(entry.getValue().values());
         }
     }
 
@@ -705,7 +907,27 @@ public abstract class AbstractDialect implements Dialect {
     @Override
     public String createIndex(TableMeta table, IndexMeta index) {
         return "CREATE INDEX " + identifier(index.name()) + " ON " + tableName(table) + " ("
-                + columnList(index.columns()) + Symbol.PARENTHESE_RIGHT;
+                + columnList(index.columns()) + Symbol.PARENTHESE_RIGHT + indexOptions(index);
+    }
+
+    /**
+     * Appends the supported dialect predicate to an index definition.
+     *
+     * @param index mapped index definition
+     * @return SQL clause for filtered indexes or an empty string for ordinary indexes
+     */
+    private String indexOptions(IndexMeta index) {
+        if (index.predicate() == null) {
+            return Normal.EMPTY;
+        }
+        if (!supportsPartialIndexes()) {
+            throw new UnsupportedOperationException("Partial index requires a supporting dialect: " + index.name());
+        }
+        String predicate = IndexMeta.integerEquality(index.predicate());
+        if (predicate == null) {
+            throw new IllegalArgumentException("Unsupported partial index predicate: " + index.name());
+        }
+        return " WHERE " + predicate;
     }
 
     /**
@@ -730,7 +952,7 @@ public abstract class AbstractDialect implements Dialect {
     @Override
     public String createUnique(TableMeta table, IndexMeta index) {
         return "CREATE UNIQUE INDEX " + identifier(index.name()) + " ON " + tableName(table) + " ("
-                + columnList(index.columns()) + Symbol.PARENTHESE_RIGHT;
+                + columnList(index.columns()) + Symbol.PARENTHESE_RIGHT + indexOptions(index);
     }
 
     /**
@@ -1156,14 +1378,13 @@ public abstract class AbstractDialect implements Dialect {
     }
 
     /**
-     * Removes common identifier quote characters.
+     * Removes one complete outer identifier delimiter without deleting quotes embedded in the component.
      *
      * @param value the identifier value
      * @return the unquoted identifier value
      */
     protected String unquote(String value) {
-        return value == null ? null
-                : value.replace(Symbol.BACKTICK, Normal.EMPTY).replace(Symbol.DOUBLE_QUOTES, Normal.EMPTY);
+        return IdentifierValidator.unquoteIdentifier(value);
     }
 
     /**
@@ -1229,28 +1450,110 @@ public abstract class AbstractDialect implements Dialect {
     }
 
     /**
-     * Builds candidate table names for metadata lookup.
+     * Exact physical lookup coordinates, before any JDBC pattern escaping.
+     *
+     * @param catalog the resolved physical catalog, or null for drivers without catalog scope
+     * @param schema  the resolved physical schema, or null for drivers without schema scope
+     * @param table   the resolved physical table component
+     */
+    private record MetadataTarget(String catalog, String schema, String table) {
+
+    }
+
+    /**
+     * Resolves mapped qualifiers and the active connection namespace into exact physical coordinates. A missing active
+     * namespace is an error when the driver advertises that namespace, preventing an accidental search of unrelated
+     * schemas or catalogs. No resolved names are written back to shared table metadata.
+     *
+     * @param metadata the active connection metadata
+     * @param table    the mapped table, possibly qualified or explicitly delimited
+     * @return exact catalog/schema/table coordinates
+     * @throws SQLException when metadata access fails, qualification is unsupported, or required namespace is absent
+     */
+    private MetadataTarget metadataTarget(DatabaseMetaData metadata, TableMeta table) throws SQLException {
+        var rules = IdentifierValidator.metadataRules(metadata);
+        List<String> parts = rules.parts(table.table());
+        if (parts.size() > 3)
+            throw new SQLException("Unsupported qualified table: " + table.table());
+        String catalog = table.catalog(), schema = table.schema();
+        String name = parts.getLast();
+        if (parts.size() >= 2) {
+            if (metadata.supportsSchemasInTableDefinitions())
+                schema = parts.get(parts.size() - 2);
+            else
+                catalog = parts.get(parts.size() - 2);
+        }
+        if (parts.size() == 3)
+            catalog = parts.getFirst();
+        Connection connection = metadata.getConnection();
+        String actualCatalog = catalog == null || catalog.isBlank() ? connection.getCatalog() : rules.key(catalog);
+        String actualSchema = schema == null || schema.isBlank() ? connection.getSchema() : rules.key(schema);
+        if ((actualSchema == null || actualSchema.isBlank()) && metadata.supportsSchemasInTableDefinitions()) {
+            throw new SQLException(
+                    "Schema metadata lookup requires an explicit or active schema: " + table.tableName());
+        }
+        if ((actualCatalog == null || actualCatalog.isBlank()) && metadata.supportsCatalogsInTableDefinitions()
+                && !metadata.supportsSchemasInTableDefinitions()) {
+            throw new SQLException(
+                    "Schema metadata lookup requires an explicit or active catalog: " + table.tableName());
+        }
+        return new MetadataTarget(actualCatalog, actualSchema, rules.key(name));
+    }
+
+    /**
+     * Escapes a physical component for JDBC methods accepting search patterns, not exact-name parameters. When the
+     * driver supplies no escape string, null requests a broader search whose returned rows must still pass
+     * metadataMatches before they are accepted.
+     *
+     * @param metadata the driver supplying the search escape string
+     * @param value    the physical component, or null when the namespace has no value
+     * @return an escaped pattern, or null when a broader filtered search is required
+     * @throws SQLException when the driver cannot provide its escape string
+     */
+    private String metadataPattern(DatabaseMetaData metadata, String value) throws SQLException {
+        if (value == null)
+            return null;
+        String escape = metadata.getSearchStringEscape();
+        if (escape == null || escape.isEmpty())
+            return null; // broader pattern, exact return filtering remains required
+        return value.replace(escape, escape + escape).replace(Symbol.UNDERLINE, escape + Symbol.UNDERLINE)
+                .replace(Symbol.PERCENT, escape + Symbol.PERCENT);
+    }
+
+    /**
+     * Checks the current metadata row against all resolved physical coordinates. This filtering is required even when
+     * the query pattern was escaped successfully.
+     *
+     * @param rs       the metadata result positioned on the candidate row
+     * @param metadata the active driver metadata
+     * @param table    the expected table mapping
+     * @param prefix   column-label prefix: empty for table/column/index rows, or FK for imported-key rows
+     * @return true when the row belongs to the exact resolved target
+     * @throws SQLException when metadata coordinates cannot be resolved or read
+     */
+    private boolean metadataMatches(ResultSet rs, DatabaseMetaData metadata, TableMeta table, String prefix)
+            throws SQLException {
+        MetadataTarget target = metadataTarget(metadata, table);
+        var rules = IdentifierValidator.metadataRules(metadata);
+        String actualTable = rs.getString(prefix + "TABLE_NAME");
+        String actualSchema = rs.getString(prefix + "TABLE_SCHEM");
+        String actualCatalog = rs.getString(prefix + "TABLE_CAT");
+        return rules.actualKey(actualTable).equals(rules.actualKey(target.table()))
+                && (target.schema() == null || rules.actualKey(actualSchema).equals(rules.actualKey(target.schema())))
+                && (target.catalog() == null
+                        || rules.actualKey(actualCatalog).equals(rules.actualKey(target.catalog())));
+    }
+
+    /**
+     * Returns the resolved physical table component for metadata lookup without speculative upper/lowercase aliases.
      *
      * @param metaData the database metadata
      * @param table    the table metadata
-     * @return the candidate table names
+     * @return a singleton list containing the exact physical table component
      * @throws SQLException when metadata access fails
      */
     private List<String> tableLookupNames(DatabaseMetaData metaData, TableMeta table) throws SQLException {
-        List<String> names = new ArrayList<>();
-        String name = unquote(table.table());
-        addLookupName(names, name);
-        if (name != null) {
-            if (metaData.storesUpperCaseIdentifiers()) {
-                addLookupName(names, StringKit.toUpperCase(name));
-            }
-            if (metaData.storesLowerCaseIdentifiers()) {
-                addLookupName(names, StringKit.toLowerCase(name));
-            }
-            addLookupName(names, StringKit.toUpperCase(name));
-            addLookupName(names, StringKit.toLowerCase(name));
-        }
-        return names;
+        return List.of(metadataTarget(metaData, table).table());
     }
 
     /**
@@ -1268,23 +1571,20 @@ public abstract class AbstractDialect implements Dialect {
     /**
      * Builds a referenced table name from foreign key metadata.
      *
-     * @param rs the imported key result set
-     * @return the referenced table name
+     * @param rs       the imported key result set
+     * @param metadata the active metadata supplying the physical-name delimiter
+     * @return the qualified referenced table name with each physical component separately delimited
      * @throws SQLException when metadata access fails
      */
-    private String referencedTable(ResultSet rs) throws SQLException {
-        String catalog = rs.getString("PKTABLE_CAT");
-        String schema = rs.getString("PKTABLE_SCHEM");
-        String table = rs.getString("PKTABLE_NAME");
+    private String referencedTable(ResultSet rs, DatabaseMetaData metadata) throws SQLException {
+        String quote = metadata.getIdentifierQuoteString();
+        if (quote == null || quote.isBlank())
+            quote = Normal.EMPTY;
         StringJoiner joiner = new StringJoiner(Symbol.DOT);
-        if (catalog != null && !catalog.isBlank()) {
-            joiner.add(catalog);
-        }
-        if (schema != null && !schema.isBlank()) {
-            joiner.add(schema);
-        }
-        if (table != null && !table.isBlank()) {
-            joiner.add(table);
+        for (String label : List.of("PKTABLE_CAT", "PKTABLE_SCHEM", "PKTABLE_NAME")) {
+            String value = rs.getString(label);
+            if (value != null && !value.isBlank())
+                joiner.add(quote.isEmpty() ? value : quote + value.replace(quote, quote + quote) + quote);
         }
         return joiner.toString();
     }
@@ -1346,7 +1646,8 @@ public abstract class AbstractDialect implements Dialect {
      */
     protected SqlTypeDescriptor stringType(ColumnMeta column) {
         return new SqlTypeDescriptor().jdbcType(JdbcType.VARCHAR).typeName("VARCHAR")
-                .length(column.length() == null || column.length() <= 0 ? 255 : column.length());
+                .length(column.length() == null || column.length() <= 0 ? 255 : column.length())
+                .lengthUnit(SqlTypeDescriptor.LengthUnit.CHARACTER);
     }
 
     /**

@@ -864,6 +864,8 @@ public class ToutiaoSourceAdapter implements VendorAdapter {
         /**
          * Validates one private Toutiao token result.
          *
+         * @param accessToken sensitive access token
+         * @param expiresIn   positive access-token lifetime in seconds
          * @throws IllegalArgumentException if the access token is blank
          * @throws ValidateException        if the lifetime is not positive
          */

@@ -20,7 +20,10 @@
 package org.miaixz.bus.fabric.network.tls;
 
 import java.io.IOException;
+import java.net.SocketTimeoutException;
 import java.nio.ByteBuffer;
+import java.nio.channels.AsynchronousCloseException;
+import java.nio.channels.ClosedChannelException;
 import java.time.Duration;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.CompletableFuture;
@@ -28,12 +31,12 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.ReentrantLock;
-import java.util.function.Supplier;
 
 import javax.net.ssl.SSLEngineResult;
 import javax.net.ssl.SSLEngineResult.HandshakeStatus;
 
 import org.miaixz.bus.core.Lifecycle;
+import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.io.buffer.NioBuffer;
 import org.miaixz.bus.core.io.buffer.NioBufferAllocator;
@@ -359,7 +362,7 @@ public class TlsChannel implements Conduit, Lifecycle {
      * @param <T>       operation result type
      * @return already completed or failed future containing the operation outcome
      */
-    private static <T> CompletableFuture<T> directFuture(final Supplier<T> operation) {
+    private static <T> CompletableFuture<T> directFuture(final SupplierX<T> operation) {
         try {
             return CompletableFuture.completedFuture(operation.get());
         } catch (final Throwable failure) {
@@ -1266,6 +1269,30 @@ public class TlsChannel implements Conduit, Lifecycle {
     }
 
     /**
+     * Classifies a plaintext read failure.
+     * <p>
+     * A closed or aborted connection is not a read timeout. Distinguishing the two keeps shutdown paths from surfacing
+     * misleading {@code TLS read timed out} errors while preserving the timeout message for real socket timeouts.
+     * </p>
+     *
+     * @param timeoutMessage message to retain for a genuine read timeout
+     * @param failure        read failure
+     * @return failure message
+     */
+    private static String readFailure(final String timeoutMessage, final Throwable failure) {
+        boolean timeout = false;
+        for (Throwable cause = failure; cause != null; cause = cause.getCause()) {
+            if (cause instanceof AsynchronousCloseException || cause instanceof ClosedChannelException) {
+                return "TLS read failed: connection closed";
+            }
+            if (cause instanceof SocketTimeoutException) {
+                timeout = true;
+            }
+        }
+        return timeout ? timeoutMessage : "TLS read failed";
+    }
+
+    /**
      * Reads encrypted bytes while retaining any unconsumed prefix.
      * <p>
      * The selected timeout is copied to the encrypted conduit immediately before the physical read. A non-null duration
@@ -1293,7 +1320,7 @@ public class TlsChannel implements Conduit, Lifecycle {
             }
             read = conduit.readSynchronously(encryptedInput);
         } catch (final IOException e) {
-            throw new SocketException(message, e);
+            throw new SocketException(readFailure(message, e), e);
         }
         if (read > Normal._0) {
             if (read > writable) {
@@ -1522,7 +1549,7 @@ public class TlsChannel implements Conduit, Lifecycle {
      * @param <T>       result type
      * @return operation future
      */
-    private <T> CompletableFuture<T> background(final String name, final Supplier<T> operation) {
+    private <T> CompletableFuture<T> background(final String name, final SupplierX<T> operation) {
         final CompletableFuture<T> result = new CompletableFuture<>();
         final Activity activity = Activity.of(name, () -> {
             if (result.isCancelled()) {

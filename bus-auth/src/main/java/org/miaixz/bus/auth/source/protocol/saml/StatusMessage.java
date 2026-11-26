@@ -32,6 +32,7 @@ public record StatusMessage(String value) {
     /**
      * Requires non-null XML character content while preserving schema-permitted emptiness.
      *
+     * @param value exact message character content
      * @throws IllegalArgumentException if {@code value} is {@code null}
      */
     public StatusMessage {

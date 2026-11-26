@@ -89,8 +89,9 @@ public class SshjSession implements Session {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Retrieves the raw, unwrapped object.
      *
+     * @return The original object.
      */
     @Override
     public net.schmizz.sshj.connection.channel.direct.Session getRaw() {
@@ -98,8 +99,9 @@ public class SshjSession implements Session {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Checks if the SSH session is currently connected and active.
      *
+     * @return {@code true} if the session is connected, {@code false} otherwise.
      */
     @Override
     public boolean isConnected() {
@@ -107,8 +109,9 @@ public class SshjSession implements Session {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Closes the SSH command session and client while suppressing close failures.
      *
+     * @throws IOException not thrown by this implementation because close failures are suppressed
      */
     @Override
     public void close() throws IOException {
@@ -127,8 +130,12 @@ public class SshjSession implements Session {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Binds a local address (host and port) to a remote address, creating a local port forwarding tunnel. This is an
+     * extended version of {@link #bindLocalPort(int, InetSocketAddress)} that allows specifying the local bind address.
      *
+     * @param localAddress  The local {@link InetSocketAddress} on the client machine to bind to.
+     * @param remoteAddress The remote {@link InetSocketAddress} to forward traffic to.
+     * @throws InternalException if the SSH port-forwarding operation fails
      */
     @Override
     public void bindLocalPort(final InetSocketAddress localAddress, final InetSocketAddress remoteAddress)
@@ -153,8 +160,10 @@ public class SshjSession implements Session {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Removes a local port forwarding binding for a specific local address.
      *
+     * @param localAddress The local {@link InetSocketAddress} that was previously bound.
+     * @throws InternalException if the SSH port-forwarding operation fails
      */
     @Override
     public void unBindLocalPort(final InetSocketAddress localAddress) throws InternalException {
@@ -166,8 +175,14 @@ public class SshjSession implements Session {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Binds a port on the remote SSH server to a local address, creating a remote port forwarding tunnel. This is
+     * useful for allowing the remote server to access a service running on the local client machine. For example, a
+     * connection to {@code remoteAddress} on the SSH server will be forwarded through the tunnel to
+     * {@code localAddress} on the client machine.
      *
+     * @param remoteAddress The {@link InetSocketAddress} on the SSH server to bind.
+     * @param localAddress  The local {@link InetSocketAddress} to forward traffic to.
+     * @throws InternalException if an error occurs while binding the remote port.
      */
     @Override
     public void bindRemotePort(final InetSocketAddress remoteAddress, final InetSocketAddress localAddress)
@@ -182,8 +197,9 @@ public class SshjSession implements Session {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Removes a remote port forwarding binding.
      *
+     * @param remoteAddress The remote {@link InetSocketAddress} that was previously bound.
      */
     @Override
     public void unBindRemotePort(final InetSocketAddress remoteAddress) {

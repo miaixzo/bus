@@ -52,6 +52,12 @@ public record BaiduOptions(Vendor.Id vendor, Vendor.Variant variant, String clie
     /**
      * Validates and freezes one Baidu registration without resolving its client secret.
      *
+     * @param vendor      exact Baidu platform identifier
+     * @param variant     exact default variant
+     * @param clientId    registered Baidu client identifier
+     * @param credential  external client-secret reference
+     * @param redirectUri exact registered callback URI
+     * @param scopes      ordered requested Baidu scopes, or empty to use the basic default
      * @throws IllegalArgumentException if a required component, optional container, or scope is null or blank
      * @throws ValidateException        if routing, credential type, scope vocabulary, or uniqueness differs from the
      *                                  frozen manifest

@@ -26,6 +26,7 @@ import jakarta.servlet.DispatcherType;
 import jakarta.servlet.Filter;
 import jakarta.servlet.Servlet;
 
+import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -37,15 +38,17 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
 import org.springframework.core.env.Environment;
 import org.springframework.util.unit.DataSize;
+import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter;
 
 import org.miaixz.bus.spring.context.spi.ContextProvider;
 import org.miaixz.bus.spring.context.web.ContextBindingFilter;
 import org.miaixz.bus.spring.web.RequestContext;
+import org.miaixz.bus.spring.web.converter.MessageWebMvcConfigurer;
 import org.miaixz.bus.spring.web.resolver.RequestBindingOptions;
 import org.miaixz.bus.starter.GeniusBuilder;
 
 /**
- * Configures runtime context propagation for Servlet web applications.
+ * Configures shared Servlet request context and MVC message output.
  *
  * <p>
  * This configuration supplies the shared request accessor for every Servlet application. Context binding is activated
@@ -122,6 +125,34 @@ public class WebConfiguration {
         registration.setAsyncSupported(true);
         registration.setDispatcherTypes(EnumSet.of(DispatcherType.REQUEST, DispatcherType.ASYNC, DispatcherType.ERROR));
         return registration;
+    }
+
+    /**
+     * Installs explicit HTTP message output on the initialized Servlet MVC adapter.
+     *
+     * @return post-processor extending the MVC return-value chain
+     */
+    @Bean
+    @ConditionalOnClass(name = "org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter")
+    static BeanPostProcessor messageHandlerRegistrar() {
+        return new BeanPostProcessor() {
+
+            /**
+             * Adds HTTP message output after MVC has initialized its handlers.
+             *
+             * @param bean     initialized Spring bean
+             * @param beanName registered bean name
+             * @return the initialized bean
+             */
+            @Override
+            public Object postProcessAfterInitialization(Object bean, String beanName) {
+                if (bean instanceof RequestMappingHandlerAdapter adapter) {
+                    MessageWebMvcConfigurer.configureMessageHandler(adapter);
+                }
+                return bean;
+            }
+
+        };
     }
 
 }

@@ -38,6 +38,8 @@ public record ResourceTarget(ResourceType resourceType, Optional<String> resourc
     /**
      * Validates and freezes one resource target.
      *
+     * @param resourceType registered resource-type discovery object
+     * @param resourceId   optional service-provider-issued resource identifier
      * @throws IllegalArgumentException if a component or optional container is {@code null}
      */
     public ResourceTarget {

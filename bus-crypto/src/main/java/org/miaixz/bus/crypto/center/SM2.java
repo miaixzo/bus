@@ -253,7 +253,7 @@ public class SM2 extends AbstractCrypto<SM2> {
     }
 
     /**
-     * Description inherited from parent class or interface.
+     * Generates a random public and private key pair.
      *
      * @return this instance
      */
@@ -638,11 +638,9 @@ public class SM2 extends AbstractCrypto<SM2> {
     }
 
     /**
-     * Description inherited from parent class or interface.
-     * <p>
      * Re-initializes key parameters to prevent update failure when resetting the key.
      *
-     * @param privateKey Description inherited from parent class or interface.
+     * @param privateKey replacement private key
      * @return this instance
      */
     @Override
@@ -678,11 +676,9 @@ public class SM2 extends AbstractCrypto<SM2> {
     }
 
     /**
-     * Description inherited from parent class or interface.
-     * <p>
      * Re-initializes key parameters to prevent update failure when resetting the key.
      *
-     * @param publicKey Description inherited from parent class or interface.
+     * @param publicKey replacement public key
      * @return this instance
      */
     @Override

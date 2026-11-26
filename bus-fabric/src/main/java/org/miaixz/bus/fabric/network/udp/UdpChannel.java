@@ -28,9 +28,9 @@ import java.nio.channels.DatagramChannel;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Supplier;
 
 import org.miaixz.bus.core.Lifecycle;
+import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.io.buffer.NioBuffer;
 import org.miaixz.bus.core.io.buffer.NioBufferAllocator;
@@ -298,7 +298,7 @@ public class UdpChannel implements Lifecycle, AutoCloseable {
      * @param <T>      result type
      * @return operation future
      */
-    private <T> CompletableFuture<T> background(final String key, final Supplier<T> supplier) {
+    private <T> CompletableFuture<T> background(final String key, final SupplierX<T> supplier) {
         final CompletableFuture<T> result = new CompletableFuture<>();
         final DispatchHandle handle = dispatcher.background(key, this, Activity.of(key, () -> {
             try {
@@ -326,6 +326,9 @@ public class UdpChannel implements Lifecycle, AutoCloseable {
 
         /**
          * Creates a validated received datagram.
+         *
+         * @param message immutable received message
+         * @param peer    numeric datagram peer
          */
         ReceivedDatagram {
             message = Assert.notNull(message, () -> new ValidateException("UDP message must not be null"));

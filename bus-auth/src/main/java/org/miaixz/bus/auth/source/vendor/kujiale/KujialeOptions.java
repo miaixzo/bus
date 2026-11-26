@@ -55,6 +55,12 @@ public record KujialeOptions(Vendor.Id vendor, Vendor.Variant variant, String cl
     /**
      * Validates and freezes one Kujiale registration without resolving its secret.
      *
+     * @param vendor      exact Kujiale platform identifier
+     * @param variant     exact default Kujiale variant
+     * @param clientId    registered Kujiale client identifier
+     * @param credential  external client-secret reference
+     * @param redirectUri exact registered callback URI
+     * @param scopes      non-empty ordered Kujiale authorization scopes
      * @throws IllegalArgumentException if a required component, container, or scope is {@code null} or blank
      * @throws ValidateException        if routing, credential type, callback, or scopes differ from the frozen manifest
      */

@@ -23,12 +23,12 @@
  * {@code CortexIdentity} owns mandatory tenant and optional application identifier normalization that are shared by
  * registry assets, setting resources, watch subscriptions, guard policies, and adapter code. {@code IdGenerator} is a
  * pluggable string ID generator: the no-arg constructor uses {@code ID.objectId()} (MongoDB ObjectId format) as the
- * default strategy, and a second constructor accepts any {@code Supplier<String>} to substitute an alternative strategy
- * such as Snowflake, UUID or NanoId at deployment time. {@code Sequence} is a named monotonic counter backed by CacheX:
- * each call to {@code next(key)} atomically increments the counter stored under {@code SEQUENCE_PREFIX + key} and
- * returns the new value. {@code Checksum} is a stateless class that derives a stable 32-character lowercase hex
- * identifier from a {@code host:port} string via SHA-256, used to uniquely identify a runtime service instance without
- * exposing its network coordinates directly.
+ * default strategy, and a second constructor accepts any {@code SupplierX<String>} to substitute a strategy such as
+ * Snowflake, UUID or NanoId at deployment time. {@code Sequence} is a named monotonic counter backed by CacheX: each
+ * call to {@code next(key)} atomically increments the counter stored under {@code SEQUENCE_PREFIX + key} and returns
+ * the new value. {@code Checksum} is a stateless class that derives a stable 32-character lowercase hex identifier from
+ * a {@code host:port} string via SHA-256, used to uniquely identify a runtime service instance without exposing its
+ * network coordinates directly.
  *
  * @author Kimi Liu
  */

@@ -88,6 +88,9 @@ public class DateConverter extends AbstractConverter implements MatcherConverter
     /**
      * Match method.
      *
+     * @param targetType The target type.
+     * @param rawType    The raw class of the target type.
+     * @param value      The value to be converted.
      * @return the boolean value
      */
     @Override
@@ -124,7 +127,8 @@ public class DateConverter extends AbstractConverter implements MatcherConverter
     /**
      * Converts Date to subtype
      *
-     * @param date the Date
+     * @param date        the Date
+     * @param targetClass requested conversion target class
      * @return the target type object
      */
     private Date wrap(final Class<?> targetClass, final Date date) {
@@ -145,7 +149,8 @@ public class DateConverter extends AbstractConverter implements MatcherConverter
      * <li>{@link java.sql.Timestamp}</li>
      * </ul>
      *
-     * @param mills the timestamp in milliseconds
+     * @param mills       the timestamp in milliseconds
+     * @param targetClass The target class.
      * @return the target type object
      */
     private Date wrap(final Class<?> targetClass, final long mills) {

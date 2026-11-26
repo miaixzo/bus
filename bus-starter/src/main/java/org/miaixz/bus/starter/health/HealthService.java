@@ -19,7 +19,10 @@
 */
 package org.miaixz.bus.starter.health;
 
-import java.util.*;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.springframework.boot.availability.ApplicationAvailability;
 import org.springframework.boot.availability.AvailabilityChangeEvent;
@@ -32,6 +35,7 @@ import org.miaixz.bus.core.lang.EnumValue;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
+import org.miaixz.bus.core.xyz.BeanKit;
 import org.miaixz.bus.core.xyz.DateKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.health.Collector;
@@ -104,23 +108,21 @@ public class HealthService {
         boolean healthy = LivenessState.CORRECT.equals(liveness) && ReadinessState.ACCEPTING_TRAFFIC.equals(readiness);
         List<String> details = resolveDetails(tid);
 
-        Map<String, Object> result = new LinkedHashMap<>();
-        result.put(TID.LIVENESS, state(liveness));
-        result.put(TID.READINESS, state(readiness));
-        result.put("source", details.isEmpty() ? "lightweight" : "bus-health");
+        Map<String, Object> values = null;
         if (!details.isEmpty()) {
             try {
-                Map<String, Object> values = details.contains(TID.ALL) ? this.collector.getAll()
-                        : this.collector.get(details);
-                if (values != null && !values.isEmpty()) {
-                    result.put("details", values);
-                }
+                values = details.contains(TID.ALL) ? this.collector.getAll() : this.collector.get(details);
+                if (values != null && values.isEmpty())
+                    values = null;
             } catch (RuntimeException e) {
                 throw new InternalException(ErrorCode._503.getKey(), "System health data unavailable", e);
             }
         }
-        result.put("status", healthy ? "UP" : "DOWN");
-        return result;
+        return BeanKit.beanToMap(
+                new Health(state(liveness), state(readiness), details.isEmpty() ? "lightweight" : "bus-health", values,
+                        healthy ? "UP" : "DOWN"),
+                false,
+                true);
     }
 
     /**
@@ -170,7 +172,7 @@ public class HealthService {
      * @return immutable map containing the state value and current timestamp
      */
     public Map<String, Object> builder(EnumValue.Probe probe) {
-        return Map.of("state", probe.getValue(), "timestamp", DateKit.current());
+        return BeanKit.beanToMap(new Transition(probe.getValue(), DateKit.current()));
     }
 
     /**
@@ -225,6 +227,31 @@ public class HealthService {
             }
         }
         return List.copyOf(requested);
+    }
+
+    /**
+     * Fixed availability response with optional dynamically selected system measurements.
+     *
+     * @param liveness  application liveness state
+     * @param readiness application readiness state
+     * @param source    selected measurement source
+     * @param details   optional measurements indexed by requested detail identifier
+     * @param status    aggregate health status
+     * @author Kimi Liu
+     */
+    public record Health(String liveness, String readiness, String source, Map<String, Object> details, String status) {
+
+    }
+
+    /**
+     * Result of an explicit application availability transition.
+     *
+     * @param state     selected transition state
+     * @param timestamp transition timestamp
+     * @author Kimi Liu
+     */
+    public record Transition(String state, long timestamp) {
+
     }
 
 }

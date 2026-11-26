@@ -67,6 +67,7 @@ public class CharFinder extends TextFinder {
     /**
      * Start method.
      *
+     * @param from The starting position for the search (inclusive).
      * @return the int value
      */
     @Override
@@ -92,6 +93,7 @@ public class CharFinder extends TextFinder {
     /**
      * End method.
      *
+     * @param start The found starting position.
      * @return the int value
      */
     @Override

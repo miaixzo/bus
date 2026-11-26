@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.auth.cache;
 
+import java.io.InvalidObjectException;
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,9 +34,9 @@ import org.miaixz.bus.core.lang.Optional;
 /**
  * Stores OAuth refresh-token family state for rotation and reuse detection.
  * <p>
- * Each backend key is an isolated irreversible refresh-token digest. Atomic replace advances one token generation,
- * while {@link AuthorizationCache} is the authoritative lifecycle shared by the complete family and its access tokens.
- * Plaintext refresh tokens are never retained in this value.
+ * Each backend key is an isolated irreversible refresh-token digest. Atomic replace advances one refresh-token
+ * lifecycle, while {@link AuthorizationCache} is the authoritative lifecycle shared by the complete family and its
+ * access tokens. Plaintext refresh tokens are never retained in this value.
  * </p>
  *
  * @author Kimi Liu
@@ -58,21 +60,21 @@ public class RefreshTokenCache extends AuthCache<RefreshTokenCache.Entry> {
     }
 
     /**
-     * Creates a Source-generation-scoped refresh-token cache view for compiled runtime use.
+     * Creates a Source-epoch-scoped refresh-token cache view for compiled runtime use.
      *
      * @param cache      shared bus-cache backend
      * @param deployment deployment-unique cache scope
      * @param sourceId   exact Source identifier
-     * @param generation non-negative Source configuration generation
+     * @param epoch      non-negative Source configuration epoch
      * @param clock      shared runtime clock used to derive entry lifetimes
      */
     public RefreshTokenCache(final CacheX<String, Object> cache, final String deployment, final String sourceId,
-            final long generation, final Clock clock) {
-        super(cache, deployment, PURPOSE, Entry.class, sourceId, generation, clock);
+            final long epoch, final Clock clock) {
+        super(cache, deployment, PURPOSE, Entry.class, sourceId, epoch, clock);
     }
 
     /**
-     * Stores a new refresh-token generation.
+     * Stores a new refresh-token entry.
      *
      * @param key   token digest
      * @param value state and expiry
@@ -83,7 +85,7 @@ public class RefreshTokenCache extends AuthCache<RefreshTokenCache.Entry> {
     }
 
     /**
-     * Finds one refresh-token generation.
+     * Finds one refresh-token entry.
      *
      * @param key token digest
      * @return stored state stage
@@ -93,7 +95,7 @@ public class RefreshTokenCache extends AuthCache<RefreshTokenCache.Entry> {
     }
 
     /**
-     * Atomically rotates one exact token generation.
+     * Atomically rotates one exact token entry.
      *
      * @param key      token digest
      * @param expected current state
@@ -108,7 +110,7 @@ public class RefreshTokenCache extends AuthCache<RefreshTokenCache.Entry> {
     }
 
     /**
-     * Revokes one refresh-token generation.
+     * Revokes one refresh-token entry.
      *
      * @param key token digest
      * @return removal stage
@@ -118,7 +120,7 @@ public class RefreshTokenCache extends AuthCache<RefreshTokenCache.Entry> {
     }
 
     /**
-     * Enumerates the lifecycle state of one refresh-token generation.
+     * Enumerates the lifecycle state of one refresh-token entry.
      *
      * @author Kimi Liu
      */
@@ -153,7 +155,7 @@ public class RefreshTokenCache extends AuthCache<RefreshTokenCache.Entry> {
      * @param clientId      OAuth client identifier
      * @param subjectId     authorized subject identifier
      * @param familyId      stable identifier shared by all rotations in one family
-     * @param generation    non-negative rotation generation
+     * @param sequence      non-negative rotation sequence
      * @param scope         scope retained by this refresh token
      * @param audience      intended resource audience retained across rotation
      * @param confirmation  optional safe sender-constraining confirmation identifier
@@ -161,7 +163,7 @@ public class RefreshTokenCache extends AuthCache<RefreshTokenCache.Entry> {
      * @param status        current token lifecycle status
      * @author Kimi Liu
      */
-    public record Entry(String sourceId, String clientId, String subjectId, String familyId, long generation,
+    public record Entry(String sourceId, String clientId, String subjectId, String familyId, long sequence,
             List<String> scope, List<String> audience, Optional<String> confirmation,
             Optional<AuthorizationCodeCache.OpenIdBinding> openIdBinding, Status status) implements Serializable {
 
@@ -172,13 +174,13 @@ public class RefreshTokenCache extends AuthCache<RefreshTokenCache.Entry> {
          * @param clientId      OAuth client identifier
          * @param subjectId     authorized subject identifier
          * @param familyId      rotation family identifier
-         * @param generation    non-negative family generation
+         * @param sequence      non-negative family sequence
          * @param scope         retained scope values
          * @param audience      retained intended resource audience
          * @param confirmation  optional sender confirmation identifier
          * @param openIdBinding optional OpenID Connect authorization context
          * @param status        current lifecycle status
-         * @throws IllegalArgumentException if required text is blank, generation is negative, scope is invalid, or a
+         * @throws IllegalArgumentException if required text is blank, sequence is negative, scope is invalid, or a
          *                                  container is {@code null}
          */
         public Entry {
@@ -186,7 +188,7 @@ public class RefreshTokenCache extends AuthCache<RefreshTokenCache.Entry> {
             Assert.notBlank(clientId, "Refresh token client id must not be blank");
             Assert.notBlank(subjectId, "Refresh token subject id must not be blank");
             Assert.notBlank(familyId, "Refresh token family id must not be blank");
-            Assert.isTrue(generation >= 0, "Refresh token generation must not be negative");
+            Assert.isTrue(sequence >= 0, "Refresh token sequence must not be negative");
             Assert.notNull(scope, "Refresh token scope must not be null");
             final List<String> scopeCopy = new ArrayList<>(scope.size());
             for (String value : scope) {
@@ -207,6 +209,62 @@ public class RefreshTokenCache extends AuthCache<RefreshTokenCache.Entry> {
             Assert.notNull(openIdBinding, "Refresh token OpenID Connect binding container must not be null");
             openIdBinding = Optional.ofNullable(openIdBinding.getOrNull());
             Assert.notNull(status, "Refresh token status must not be null");
+        }
+
+        /**
+         * Uses the required native serialization form for the current refresh-entry schema.
+         *
+         * @return stable native serialization proxy
+         */
+        @Serial
+        private Object writeReplace() {
+            return new SerializedEntry(sourceId, clientId, subjectId, familyId, sequence, scope, audience, confirmation,
+                    openIdBinding, status);
+        }
+
+        /**
+         * Rejects direct record streams that bypass the required serialization form and canonical validation.
+         *
+         * @return never returns normally
+         * @throws InvalidObjectException if a direct record stream bypasses the serialization proxy
+         */
+        @Serial
+        private Object readResolve() throws InvalidObjectException {
+            throw new InvalidObjectException("Refresh token entries require the sequence serialization proxy");
+        }
+
+    }
+
+    /**
+     * Explicit native wire form for refresh entries; reconstructed entries always pass canonical validation.
+     *
+     * @param sourceId      exact Source identifier
+     * @param clientId      registered client identifier
+     * @param subjectId     authorized subject identifier
+     * @param familyId      authorization family identifier
+     * @param sequence      zero-based rotation sequence within the family
+     * @param scope         retained scopes
+     * @param audience      retained audiences
+     * @param confirmation  optional sender constraint
+     * @param openIdBinding optional OpenID Connect binding
+     * @param status        refresh-token lifecycle state
+     */
+    private record SerializedEntry(String sourceId, String clientId, String subjectId, String familyId, long sequence,
+            List<String> scope, List<String> audience, Optional<String> confirmation,
+            Optional<AuthorizationCodeCache.OpenIdBinding> openIdBinding, Status status) implements Serializable {
+
+        @Serial
+        private static final long serialVersionUID = 1L;
+
+        /**
+         * Reconstructs a refresh-token entry through its canonical validation after deserialization.
+         *
+         * @return validated refresh-token entry replacing this serialized wire form
+         */
+        @Serial
+        private Object readResolve() {
+            return new Entry(sourceId, clientId, subjectId, familyId, sequence, scope, audience, confirmation,
+                    openIdBinding, status);
         }
 
     }

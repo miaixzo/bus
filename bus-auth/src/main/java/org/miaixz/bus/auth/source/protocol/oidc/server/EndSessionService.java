@@ -330,6 +330,10 @@ public class EndSessionService {
         /**
          * Creates an immutable normalized verified hint view.
          *
+         * @param clientId  verified relying-party client identifier
+         * @param sessionId optional verified {@code sid} claim
+         * @param subjectId optional verified {@code sub} claim retained for audit correlation only
+         * @param digest    optional irreversible ID Token binding digest
          * @throws IllegalArgumentException if an optional container is {@code null}
          */
         private Hint {

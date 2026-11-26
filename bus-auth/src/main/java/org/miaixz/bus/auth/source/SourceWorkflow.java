@@ -138,6 +138,9 @@ public class SourceWorkflow {
 
             /**
              * Creates a browser interaction request and verifies its Source binding.
+             *
+             * @param sourceId       Source identifier
+             * @param callbackTarget registered callback target bound to the same Source
              */
             public BrowserStart {
                 Assert.notBlank(sourceId, "Browser Source id must not be blank");
@@ -161,6 +164,8 @@ public class SourceWorkflow {
 
             /**
              * Creates a device interaction request.
+             *
+             * @param sourceId Source identifier
              */
             public DeviceStart {
                 Assert.notBlank(sourceId, "Device Source id must not be blank");
@@ -180,6 +185,10 @@ public class SourceWorkflow {
 
             /**
              * Creates a direct authentication request without resolving secret material.
+             *
+             * @param sourceId      Source identifier
+             * @param principalHint non-secret principal identifier supplied to the Source
+             * @param credential    reference to secret material managed by the external credential store
              */
             public Direct {
                 Assert.notBlank(sourceId, "Direct Source id must not be blank");
@@ -204,6 +213,9 @@ public class SourceWorkflow {
 
             /**
              * Creates a bounded single-use-code request.
+             *
+             * @param sourceId Source identifier
+             * @param code     opaque single-use code issued for the current Source interaction
              */
             public OneTimeCode {
                 Assert.notBlank(sourceId, "One-time-code Source id must not be blank");
@@ -237,6 +249,9 @@ public class SourceWorkflow {
 
             /**
              * Creates a browser completion request and verifies its Source binding.
+             *
+             * @param sourceId Source identifier selected by the route
+             * @param callback raw callback transport bound to the same Source
              */
             public BrowserCallback {
                 Assert.notBlank(sourceId, "Browser callback Source id must not be blank");
@@ -257,6 +272,9 @@ public class SourceWorkflow {
 
             /**
              * Creates a device polling request without interpreting the opaque device code.
+             *
+             * @param sourceId   Source identifier
+             * @param deviceCode opaque device code returned by the initiation stage
              */
             public DevicePoll {
                 Assert.notBlank(sourceId, "Device polling Source id must not be blank");
@@ -290,6 +308,9 @@ public class SourceWorkflow {
 
             /**
              * Creates a browser redirect stage.
+             *
+             * @param location    absolute or application-approved redirect location
+             * @param correlation one-time callback correlation
              */
             public Redirect {
                 Assert.notBlank(location, "Source authentication redirect location must not be blank");
@@ -314,6 +335,13 @@ public class SourceWorkflow {
 
             /**
              * Creates an immutable device authorization stage.
+             *
+             * @param deviceCode              opaque code used only for token endpoint polling
+             * @param userCode                short code displayed to the user
+             * @param verificationUri         URI at which the user enters the code
+             * @param verificationUriComplete optional URI that already contains the user code
+             * @param interval                minimum polling interval required by the authorization server
+             * @param expiresAt               absolute expiration time of the device authorization
              */
             public Device {
                 Assert.notBlank(deviceCode, "Device authorization code must not be blank");
@@ -343,6 +371,8 @@ public class SourceWorkflow {
 
             /**
              * Creates a completed direct-authentication stage.
+             *
+             * @param identity verified external identity
              */
             public Completed {
                 Assert.notNull(identity, "Completed Source authentication identity must not be null");

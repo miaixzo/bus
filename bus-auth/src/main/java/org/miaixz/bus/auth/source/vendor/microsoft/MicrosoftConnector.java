@@ -63,6 +63,7 @@ public class MicrosoftConnector implements VendorConnector {
                         variant.platform(), variant.variant(), clientId, credential, callback, scopes,
                         MicrosoftManifest.ENTERPRISE_GLOBAL.equals(variant.variant())
                                 || MicrosoftManifest.ENTERPRISE_CHINA.equals(variant.variant())
+                                || MicrosoftManifest.oidc(variant.variant())
                                         ? VendorRegistry.requiredString(parameters, "tenant")
                                         : VendorRegistry.string(
                                                 parameters,
@@ -79,7 +80,12 @@ public class MicrosoftConnector implements VendorConnector {
                                 MicrosoftManifest.class,
                                 MicrosoftRealmAdapter::new,
                                 MicrosoftManifest.ENTERPRISE_GLOBAL,
-                                MicrosoftManifest.ENTERPRISE_CHINA)));
+                                MicrosoftManifest.ENTERPRISE_CHINA),
+                        VendorRegistry.adapter(
+                                MicrosoftManifest.class,
+                                MicrosoftOidcAdapter::new,
+                                MicrosoftManifest.OIDC_GLOBAL,
+                                MicrosoftManifest.OIDC_CHINA)));
     }
 
 }

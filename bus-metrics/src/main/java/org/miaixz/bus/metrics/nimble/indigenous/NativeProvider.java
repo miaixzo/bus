@@ -27,12 +27,13 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Supplier;
 import java.util.function.ToDoubleFunction;
 
 import org.miaixz.bus.core.center.function.ConsumerX;
+import org.miaixz.bus.core.center.function.FunctionX;
+import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.xyz.FunctionKit;
 import org.miaixz.bus.metrics.Builder;
 import org.miaixz.bus.metrics.Provider;
 import org.miaixz.bus.metrics.guard.CardinalityGuard;
@@ -156,15 +157,22 @@ public class NativeProvider implements Provider {
         });
         ScrapeSupport scrape = new ScrapeSupport() {
 
+            /**
+             * {@inheritDoc}
+             */
             @Override
             public String scrape() {
                 return textEncoder.encode(snapshot());
             }
 
+            /**
+             * {@inheritDoc}
+             */
             @Override
             public String contentType() {
                 return Builder.PROMETHEUS_CONTENT_TYPE;
             }
+
         };
         SnapshotSupport snapshot = this::snapshot;
         this.capabilities = new ProviderCapabilities(true, Optional.of(scrape), Optional.of(snapshot));
@@ -281,6 +289,9 @@ public class NativeProvider implements Provider {
         families.computeIfAbsent(key, ignored -> new MutableFamily(descriptor)).add(point);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Counter counter(String name, Tag... tags) {
         Tag[] guarded = cardinalityGuard.enforce(name, tags);
@@ -288,6 +299,9 @@ public class NativeProvider implements Provider {
         return counter(MetricDescriptor.counter(name, attributes), attributes);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Counter counter(MetricDescriptor descriptor, Attributes attributes) {
         validateActive(descriptor, InstrumentKind.COUNTER, NumberKind.LONG);
@@ -295,6 +309,9 @@ public class NativeProvider implements Provider {
         return active(descriptor, guarded, counters, () -> new ValidatingCounter(new NativeCounter()));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Meter meter(String name, Tag... tags) {
         ensureOpen();
@@ -302,6 +319,9 @@ public class NativeProvider implements Provider {
         return meters.computeIfAbsent(key(name, guarded), ignored -> new NativeMeter());
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public RatePair ratePair(String name, Tag... tags) {
         ensureOpen();
@@ -309,6 +329,9 @@ public class NativeProvider implements Provider {
         return ratePairs.computeIfAbsent(key(name, guarded), ignored -> RatePair.create(this, name, guarded));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public <T> Gauge gauge(String name, T stateObj, ToDoubleFunction<T> fn, Tag... tags) {
         Tag[] guarded = cardinalityGuard.enforce(name, tags);
@@ -316,6 +339,9 @@ public class NativeProvider implements Provider {
         return gauge(MetricDescriptor.gauge(name, attributes), attributes, stateObj, fn);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public <T> Gauge gauge(MetricDescriptor descriptor, Attributes attributes, T stateObj, ToDoubleFunction<T> fn) {
         validateActive(descriptor, InstrumentKind.GAUGE, NumberKind.DOUBLE);
@@ -325,6 +351,9 @@ public class NativeProvider implements Provider {
         return active(descriptor, guarded, gauges, () -> new NativeGauge<>(stateObj, fn));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Timer timer(String name, Tag... tags) {
         Tag[] guarded = cardinalityGuard.enforce(name, tags);
@@ -332,6 +361,9 @@ public class NativeProvider implements Provider {
         return timer(MetricDescriptor.timer(name, attributes), attributes);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Timer timer(MetricDescriptor descriptor, Attributes attributes) {
         validateActive(descriptor, InstrumentKind.TIMER, NumberKind.DOUBLE);
@@ -343,6 +375,9 @@ public class NativeProvider implements Provider {
                 () -> new ValidatingTimer(new NativeTimer(descriptor.name(), guarded.toTags())));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Histogram histogram(String name, Tag... tags) {
         Tag[] guarded = cardinalityGuard.enforce(name, tags);
@@ -350,6 +385,9 @@ public class NativeProvider implements Provider {
         return histogram(MetricDescriptor.histogram(name, attributes), attributes);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Histogram histogram(MetricDescriptor descriptor, Attributes attributes) {
         validateActive(descriptor, InstrumentKind.HISTOGRAM, NumberKind.DOUBLE);
@@ -361,6 +399,9 @@ public class NativeProvider implements Provider {
                 () -> new ValidatingHistogram(new NativeHistogram(descriptor.name(), guarded.toTags())));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public LlmTimer llmTimer(String name, Tag... tags) {
         ensureOpen();
@@ -368,6 +409,9 @@ public class NativeProvider implements Provider {
         return llmTimers.computeIfAbsent(key(name, guarded), ignored -> new NativeLlmTimer(name, guarded, this));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public MetricRegistration registerObservable(MetricDescriptor descriptor, ObservableCallback callback) {
         ensureOpen();
@@ -389,51 +433,81 @@ public class NativeProvider implements Provider {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public MetricDiagnostics diagnostics() {
         return diagnostics;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public ProviderCapabilities capabilities() {
         return capabilities;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public SloTracker sloTracker() {
         return sloTracker;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Iterable<Counter> counters() {
         return counters.values().stream().map(ActiveMetric::instrument).toList();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Iterable<Meter> meters() {
         return List.copyOf(meters.values());
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Iterable<Gauge> gauges() {
         return gauges.values().stream().map(ActiveMetric::instrument).toList();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Iterable<Timer> timers() {
         return timers.values().stream().map(ActiveMetric::instrument).toList();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Iterable<Histogram> histograms() {
         return histograms.values().stream().map(ActiveMetric::instrument).toList();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Iterable<LlmTimer> llmTimers() {
         return List.copyOf(llmTimers.values());
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void close() {
         if (!closed.compareAndSet(false, true)) {
@@ -545,13 +619,13 @@ public class NativeProvider implements Provider {
             MetricDescriptor descriptor,
             Attributes attributes,
             ConcurrentHashMap<String, ActiveMetric<T>> registry,
-            Supplier<T> factory) {
+            SupplierX<T> factory) {
         ensureOpen();
         String activeKey = MetricFamilyKey.identity(descriptor).logical() + attributes.toString();
         return registry.computeIfAbsent(activeKey, ignored -> {
             MetricFamilyRegistry.Lease lease = familyRegistry.acquire(descriptor);
             try {
-                return new ActiveMetric<>(descriptor, attributes, factory.get(), lease);
+                return new ActiveMetric<>(descriptor, attributes, FunctionKit.getUnwrapped(factory), lease);
             } catch (RuntimeException exception) {
                 lease.close();
                 throw exception;
@@ -635,6 +709,7 @@ public class NativeProvider implements Provider {
         private MetricFamilySnapshot snapshot() {
             return new MetricFamilySnapshot(descriptor, List.copyOf(points.values()));
         }
+
     }
 
     /**
@@ -656,11 +731,17 @@ public class NativeProvider implements Provider {
             this.delegate = delegate;
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public void increment() {
             delegate.increment();
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public void increment(long amount) {
             if (amount < 0) {
@@ -669,10 +750,14 @@ public class NativeProvider implements Provider {
             delegate.increment(amount);
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public long count() {
             return delegate.count();
         }
+
     }
 
     /**
@@ -694,11 +779,17 @@ public class NativeProvider implements Provider {
             this.delegate = delegate;
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public Sample start() {
             return delegate.start();
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public void record(long amount, TimeUnit unit) {
             if (amount < 0) {
@@ -707,31 +798,49 @@ public class NativeProvider implements Provider {
             delegate.record(amount, unit);
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public long count() {
             return delegate.count();
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public double totalTime(TimeUnit unit) {
             return delegate.totalTime(unit);
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public double max(TimeUnit unit) {
             return delegate.max(unit);
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public double percentile(double percentile, TimeUnit unit) {
             return delegate.percentile(percentile, unit);
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public double percentile(double percentile, TimeUnit unit, Window window) {
             return delegate.percentile(percentile, unit, window);
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public Timer onViolation(
                 double percentile,
@@ -743,10 +852,14 @@ public class NativeProvider implements Provider {
             return this;
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public TimerSnapshot snapshot() {
             return delegate.snapshot();
         }
+
     }
 
     /**
@@ -768,6 +881,9 @@ public class NativeProvider implements Provider {
             this.delegate = delegate;
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public void record(double value) {
             if (!Double.isFinite(value)) {
@@ -776,30 +892,46 @@ public class NativeProvider implements Provider {
             delegate.record(value);
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public long count() {
             return delegate.count();
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public double totalAmount() {
             return delegate.totalAmount();
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public double max() {
             return delegate.max();
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public double percentile(double percentile) {
             return delegate.percentile(percentile);
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public TimerSnapshot snapshot() {
             return delegate.snapshot();
         }
+
     }
 
     /**
@@ -895,6 +1027,9 @@ public class NativeProvider implements Provider {
             return measurement;
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public void close() {
             if (registrationClosed.compareAndSet(false, true)) {
@@ -902,6 +1037,7 @@ public class NativeProvider implements Provider {
                 familyLease.close();
             }
         }
+
     }
 
     /**
@@ -933,6 +1069,9 @@ public class NativeProvider implements Provider {
             this.allowedAttributes = allowedAttributes;
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public void recordLong(long value, Attributes attributes) {
             if (descriptor.numberKind() != NumberKind.LONG) {
@@ -942,6 +1081,9 @@ public class NativeProvider implements Provider {
             record(attributes, checked -> new LongMetricPoint(checked, value));
         }
 
+        /**
+         * {@inheritDoc}
+         */
         @Override
         public void recordDouble(double value, Attributes attributes) {
             if (descriptor.numberKind() != NumberKind.DOUBLE || !Double.isFinite(value)) {
@@ -957,14 +1099,14 @@ public class NativeProvider implements Provider {
          * @param attributes point attributes
          * @param factory    numeric point factory
          */
-        private void record(Attributes attributes, Function<Attributes, MetricPoint> factory) {
+        private void record(Attributes attributes, FunctionX<Attributes, MetricPoint> factory) {
             try {
                 descriptor.validateAttributes(attributes);
                 if (allowedAttributes != null && !allowedAttributes.contains(attributes)) {
                     diagnostics.resourceDropped("native", "inventory_changed");
                     return;
                 }
-                MetricPoint point = factory.apply(attributes);
+                MetricPoint point = FunctionKit.applyUnwrapped(factory, attributes);
                 if (points.putIfAbsent(attributes, point) != null) {
                     diagnostics.collectionError("native", "duplicate_attributes");
                 }
@@ -972,6 +1114,7 @@ public class NativeProvider implements Provider {
                 diagnostics.collectionError("native", "invalid_point");
             }
         }
+
     }
 
 }

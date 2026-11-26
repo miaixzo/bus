@@ -123,6 +123,11 @@ public interface Resource {
         /**
          * Validates and defensively copies all common resource attributes.
          *
+         * @param schemas    non-empty unique schema URI list in wire order
+         * @param id         service-provider-issued resource identifier when assigned
+         * @param externalId provisioning-client correlation identifier when present
+         * @param meta       service-provider-maintained resource metadata when assigned
+         * @param extensions extension objects keyed by their declared schema URIs
          * @throws IllegalArgumentException if a required value or container is {@code null}
          * @throws ValidateException        if a schema, optional text, or extension key violates RFC 7643
          */
@@ -179,6 +184,11 @@ public interface Resource {
         /**
          * Validates the resource type, timestamps, entity-tag, and location.
          *
+         * @param resourceType resource type name
+         * @param created      resource creation time when known
+         * @param lastModified most recent modification time when known
+         * @param version      complete HTTP entity-tag lexical value when versioning is enabled
+         * @param location     absolute resource URI when assigned
          * @throws IllegalArgumentException if a required value or container is {@code null}
          * @throws ValidateException        if text, temporal order, entity-tag, or location is invalid
          */
@@ -217,6 +227,9 @@ public interface Resource {
         /**
          * Validates the resource identity and optional conditional entity-tag.
          *
+         * @param resourceType exact resource type name
+         * @param id           service-provider-issued resource identifier
+         * @param version      complete If-Match entity-tag when conditional mutation is requested
          * @throws IllegalArgumentException if a required value or container is {@code null}
          * @throws ValidateException        if the entity-tag lexical value is invalid
          */

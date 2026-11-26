@@ -24,8 +24,11 @@ import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.LinkedHashSet;
+import java.util.Objects;
+import java.util.regex.Pattern;
 
 import org.miaixz.bus.core.instance.Instances;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.CollKit;
@@ -39,6 +42,16 @@ import org.miaixz.bus.core.xyz.NetKit;
 public class IPv6 {
 
     /**
+     * Marker for a compressed run of zero-valued IPv6 groups.
+     */
+    private static final String COMPRESSION = Symbol.COLON + Symbol.COLON;
+
+    /**
+     * Excess leading zeros before a four-digit hexadecimal group.
+     */
+    private static final Pattern HEX_PADDING = Pattern.compile("(^|:)0+(?=[0-9a-fA-F]{4}(?=:|$))");
+
+    /**
      * Cached local hostname.
      */
     private static volatile String localhostName;
@@ -48,6 +61,134 @@ public class IPv6 {
      */
     public IPv6() {
         // No initialization required.
+    }
+
+    /**
+     * Parses an IPv6 address into its sixteen bytes in network order. Any scope identifier is discarded.
+     *
+     * @param address The IPv6 address text without brackets.
+     * @return The address bytes, or an empty array if the text is invalid.
+     * @throws NullPointerException If the address is {@code null}.
+     */
+    public static byte[] parseAddressToBytes(final String address) {
+        int scope = address.indexOf(Symbol.C_PERCENT);
+        String text = scope < Normal._0 ? address : address.substring(Normal._0, scope);
+        if (text.indexOf(Symbol.C_COLON) < Normal._0) {
+            return Normal.EMPTY_BYTE_ARRAY;
+        }
+        int compression = text.indexOf(COMPRESSION);
+        if (compression >= Normal._0 && compression != text.lastIndexOf(COMPRESSION)) {
+            return Normal.EMPTY_BYTE_ARRAY;
+        }
+        byte[] bytes = new byte[Normal._16];
+        String head = compression < Normal._0 ? text : text.substring(Normal._0, compression);
+        if (compression >= Normal._0 && head.indexOf(Symbol.C_DOT) >= Normal._0) {
+            return Normal.EMPTY_BYTE_ARRAY;
+        }
+        int headBytes = parseGroups(head, bytes);
+        if (headBytes < Normal._0) {
+            return Normal.EMPTY_BYTE_ARRAY;
+        }
+        if (compression < Normal._0) {
+            return headBytes == Normal._16 ? bytes : Normal.EMPTY_BYTE_ARRAY;
+        }
+        byte[] tail = new byte[Normal._16];
+        int tailBytes = parseGroups(text.substring(compression + COMPRESSION.length()), tail);
+        if (tailBytes < Normal._0 || headBytes + tailBytes >= Normal._16) {
+            return Normal.EMPTY_BYTE_ARRAY;
+        }
+        System.arraycopy(tail, Normal._0, bytes, Normal._16 - tailBytes, tailBytes);
+        return bytes;
+    }
+
+    /**
+     * Parses an unscoped IPv6 literal without DNS. Square brackets are optional. An IPv4-mapped literal yields an IPv4
+     * address.
+     *
+     * @param literal The IPv6 address literal.
+     * @return The parsed address.
+     * @throws IllegalArgumentException If the literal is invalid or contains a scope identifier.
+     * @throws NullPointerException     If the literal is {@code null}.
+     */
+    public static InetAddress parseLiteral(final String literal) {
+        Objects.requireNonNull(literal, "IPv6 address literal");
+        if (literal.indexOf(Symbol.C_PERCENT) >= Normal._0) {
+            throw new IllegalArgumentException("Invalid unscoped IPv6 address literal");
+        }
+        String address = literal.startsWith(Symbol.BRACKET_LEFT) && literal.endsWith(Symbol.BRACKET_RIGHT)
+                ? literal.substring(Normal._1, literal.length() - Normal._1)
+                : literal;
+        int tailStart = address.lastIndexOf(Symbol.C_COLON) + Normal._1;
+        String tail = address.substring(tailStart);
+        if (tail.indexOf(Symbol.C_DOT) >= Normal._0) {
+            if (tail.length() > Normal._15) {
+                throw new IllegalArgumentException("Invalid IPv6 address literal");
+            }
+            address = address.substring(Normal._0, tailStart) + IPv4.normalizeDecimalPadding(tail);
+        }
+        byte[] bytes = parseAddressToBytes(HEX_PADDING.matcher(address).replaceAll("$1"));
+        try {
+            return InetAddress.getByAddress(bytes);
+        } catch (final UnknownHostException invalid) {
+            throw new IllegalArgumentException("Invalid IPv6 address literal", invalid);
+        }
+    }
+
+    /**
+     * Writes colon-separated groups, including an optional final dotted IPv4 address.
+     *
+     * @param groups The group text.
+     * @param bytes  The destination buffer.
+     * @return The number of bytes written, or {@code -1} if the groups are invalid.
+     */
+    private static int parseGroups(final String groups, final byte[] bytes) {
+        if (groups.isEmpty()) {
+            return Normal._0;
+        }
+        String[] parts = groups.split(Symbol.COLON, Normal.__1);
+        int offset = Normal._0;
+        for (int i = Normal._0; i < parts.length; i++) {
+            String part = parts[i];
+            if (i == parts.length - Normal._1 && part.indexOf(Symbol.C_DOT) >= Normal._0) {
+                byte[] ipv4 = IPv4.parseAddressToBytes(part);
+                if (ipv4.length != Integer.BYTES
+                        || part.chars().filter(digit -> digit == Symbol.C_DOT).count() != Normal._3
+                        || offset + Integer.BYTES > bytes.length) {
+                    return Normal.__1;
+                }
+                System.arraycopy(ipv4, Normal._0, bytes, offset, Integer.BYTES);
+                return offset + Integer.BYTES;
+            }
+            int group = parseHexGroup(part);
+            if (group < Normal._0 || offset + Short.BYTES > bytes.length) {
+                return Normal.__1;
+            }
+            bytes[offset++] = (byte) (group >>> Byte.SIZE);
+            bytes[offset++] = (byte) group;
+        }
+        return offset;
+    }
+
+    /**
+     * Parses one group of up to four ASCII hexadecimal digits.
+     *
+     * @param part The group text.
+     * @return The group value, or {@code -1} if the text is invalid.
+     */
+    private static int parseHexGroup(final String part) {
+        if (part.isEmpty() || part.length() > Normal._4) {
+            return Normal.__1;
+        }
+        int value = Normal._0;
+        for (int i = Normal._0; i < part.length(); i++) {
+            char digit = part.charAt(i);
+            int number = digit < Normal._128 ? Character.digit(digit, Normal._16) : Normal.__1;
+            if (number < Normal._0) {
+                return Normal.__1;
+            }
+            value = (value << Normal._4) | number;
+        }
+        return value;
     }
 
     /**

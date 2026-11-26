@@ -91,6 +91,8 @@ public class SeekableInMemoryByteChannel implements SeekableByteChannel {
      * Returns this channel's position. This method violates the contract of {@link SeekableByteChannel#position()} as
      * it will not throw any exception when invoked on a closed channel. Instead it will return the position the channel
      * had when close has been called.
+     *
+     * @return current byte position, including after the channel has been closed
      */
     @Override
     public long position() {
@@ -118,6 +120,8 @@ public class SeekableInMemoryByteChannel implements SeekableByteChannel {
      * Returns the current size of entity to which this channel is connected. This method violates the contract of
      * {@link SeekableByteChannel#size} as it will not throw any exception when invoked on a closed channel. Instead it
      * will return the size the channel had when close has been called.
+     *
+     * @return current size of the backing data, including after closure
      */
     @Override
     public long size() {
@@ -127,6 +131,9 @@ public class SeekableInMemoryByteChannel implements SeekableByteChannel {
     /**
      * Truncates the entity, to which this channel is connected, to the given size. This method violates the contract of
      * {@link SeekableByteChannel#truncate} as it will not throw any exception when invoked on a closed channel.
+     *
+     * @param newSize new maximum channel size
+     * @return this channel after truncation
      */
     @Override
     public SeekableByteChannel truncate(long newSize) {

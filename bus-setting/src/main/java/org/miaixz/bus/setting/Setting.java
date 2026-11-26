@@ -270,6 +270,7 @@ public class Setting extends AbstractSetting implements Map<String, String> {
                         groupedMap.keySet().size(),
                         groupedMap.size());
             }
+
         }, 600));
         this.watchMonitor.start();
         Logger.info(

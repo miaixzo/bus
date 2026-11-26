@@ -23,8 +23,8 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
-import java.util.function.Function;
 
+import org.miaixz.bus.core.center.function.FunctionX;
 import org.miaixz.bus.core.instance.Instances;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Symbol;
@@ -60,7 +60,7 @@ public class Demuxer implements Handler {
     /**
      * Primary channel resolver, or {@code null} when header and tag lookup are used directly.
      */
-    private final Function<Message, String> resolver;
+    private final FunctionX<Message, String> resolver;
 
     /**
      * Creates a demuxer.
@@ -71,7 +71,7 @@ public class Demuxer implements Handler {
      * @param resolver      optional function that resolves a channel directly from a message
      */
     public Demuxer(final Map<String, Handler> handlers, final Handler fallback, final String channelHeader,
-            final Function<Message, String> resolver) {
+            final FunctionX<Message, String> resolver) {
         this.handlers = Collections.unmodifiableMap(new LinkedHashMap<>(require(handlers, "Handlers")));
         this.fallback = fallback;
         this.channelHeader = validateToken(channelHeader, "Channel header");
@@ -253,7 +253,7 @@ public class Demuxer implements Handler {
         /**
          * Optional function that derives a channel from a message.
          */
-        private Function<Message, String> resolver;
+        private FunctionX<Message, String> resolver;
 
         /**
          * Creates a builder.
@@ -302,7 +302,7 @@ public class Demuxer implements Handler {
          * @param resolver function that optionally derives a channel from each message
          * @return this builder
          */
-        public Builder resolver(final Function<Message, String> resolver) {
+        public Builder resolver(final FunctionX<Message, String> resolver) {
             this.resolver = require(resolver, "Message channel resolver");
             return this;
         }

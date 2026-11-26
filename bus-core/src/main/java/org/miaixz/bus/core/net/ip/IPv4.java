@@ -23,14 +23,17 @@ import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.regex.Matcher;
 
 import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.instance.Instances;
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.net.MaskBit;
 import org.miaixz.bus.core.net.Protocol;
@@ -57,6 +60,18 @@ import org.miaixz.bus.core.xyz.*;
  * @author Kimi Liu
  */
 public class IPv4 {
+
+    /**
+     * Shape of a decimal IPv4 literal with one to four components.
+     */
+    private static final java.util.regex.Pattern LITERAL_PATTERN = java.util.regex.Pattern
+            .compile("[0-9]+(?:\\.[0-9]+){0,3}");
+
+    /**
+     * Leading decimal zeros that can be removed while keeping at least one digit in each component.
+     */
+    private static final java.util.regex.Pattern DECIMAL_PADDING = java.util.regex.Pattern
+            .compile("(^|\\.)0+(?=[0-9])");
 
     /**
      * The numeric value of the default localhost IP address (127.0.0.1).
@@ -702,6 +717,101 @@ public class IPv4 {
         final Matcher matcher = Pattern.IPV4_PATTERN.matcher(strIp);
         Assert.isTrue(matcher.matches(), "Invalid IPv4 address: {}", strIp);
         return matchAddress(matcher);
+    }
+
+    /**
+     * Parses one to four decimal octets and zero-fills omitted trailing octets.
+     *
+     * @param address The address text.
+     * @return The four bytes in network order, or an empty array if the text is invalid.
+     * @throws NullPointerException If the address is {@code null}.
+     * @see #parseLiteral(String)
+     */
+    public static byte[] parseAddressToBytes(final String address) {
+        if (address.isEmpty()) {
+            return Normal.EMPTY_BYTE_ARRAY;
+        }
+        String[] parts = address.split(Symbol.BACKSLASH + Symbol.DOT, Normal.__1);
+        if (parts.length > Integer.BYTES) {
+            return Normal.EMPTY_BYTE_ARRAY;
+        }
+        byte[] bytes = new byte[Integer.BYTES];
+        for (int i = Normal._0; i < parts.length; i++) {
+            String part = parts[i];
+            if (part.isEmpty() || part.length() > Normal._3) {
+                return Normal.EMPTY_BYTE_ARRAY;
+            }
+            int octet = Normal._0;
+            for (int j = Normal._0; j < part.length(); j++) {
+                char digit = part.charAt(j);
+                if (digit < Symbol.C_ZERO || digit > Symbol.C_NINE) {
+                    return Normal.EMPTY_BYTE_ARRAY;
+                }
+                octet = octet * Normal._10 + (digit - Symbol.C_ZERO);
+            }
+            if (octet >= Normal._256) {
+                return Normal.EMPTY_BYTE_ARRAY;
+            }
+            bytes[i] = (byte) octet;
+        }
+        return bytes;
+    }
+
+    /**
+     * Parses an IPv4 literal without DNS. In abbreviated notation the final component fills the remaining address
+     * bytes.
+     *
+     * @param literal The IPv4 address literal.
+     * @return The parsed IPv4 address.
+     * @throws IllegalArgumentException If the literal is invalid.
+     * @throws NullPointerException     If the literal is {@code null}.
+     */
+    public static InetAddress parseLiteral(final String literal) {
+        Objects.requireNonNull(literal, "IPv4 address literal");
+        if (literal.length() > Normal._15 || !LITERAL_PATTERN.matcher(literal).matches()) {
+            throw new IllegalArgumentException("Invalid IPv4 address literal");
+        }
+        String[] parts = literal.split(Symbol.BACKSLASH + Symbol.DOT);
+        byte[] bytes = parts.length == Integer.BYTES ? parseAddressToBytes(normalizeDecimalPadding(literal))
+                : parseAbbreviatedLiteral(parts);
+        try {
+            return InetAddress.getByAddress(bytes);
+        } catch (final UnknownHostException invalid) {
+            throw new IllegalArgumentException("Invalid IPv4 address literal", invalid);
+        }
+    }
+
+    /**
+     * Removes leading zero padding from decimal components while retaining one digit per component.
+     *
+     * @param literal The decimal address text.
+     * @return The normalized address text.
+     */
+    static String normalizeDecimalPadding(final String literal) {
+        return DECIMAL_PADDING.matcher(literal).replaceAll("$1");
+    }
+
+    /**
+     * Parses validated decimal components in abbreviated literal notation.
+     *
+     * @param parts The one to three address components.
+     * @return The four bytes in network order.
+     */
+    private static byte[] parseAbbreviatedLiteral(final String[] parts) {
+        int last = parts.length - Normal._1;
+        int tailBits = (Integer.BYTES - last) * Byte.SIZE;
+        long address = Long.parseLong(parts[last]);
+        if (address >= (Normal.LONG_ONE << tailBits)) {
+            throw new IllegalArgumentException("Invalid IPv4 address literal");
+        }
+        for (int i = Normal._0; i < last; i++) {
+            long octet = Long.parseLong(parts[i]);
+            if (octet >= Normal._256) {
+                throw new IllegalArgumentException("Invalid IPv4 address literal");
+            }
+            address |= octet << ((Integer.BYTES - Normal._1 - i) * Byte.SIZE);
+        }
+        return ByteBuffer.allocate(Integer.BYTES).putInt((int) address).array();
     }
 
     /**

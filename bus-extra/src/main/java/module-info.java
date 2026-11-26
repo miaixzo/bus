@@ -34,6 +34,7 @@ module bus.extra {
     requires java.desktop;
 
     requires bus.core;
+    requires bus.errors;
     requires bus.logger;
     requires bus.setting;
 
@@ -61,8 +62,8 @@ module bus.extra {
     requires static jpinyin;
     requires static kafka.clients;
     requires static lombok;
-    requires static lucene.analyzers.smartcn;
-    requires static lucene.core;
+    requires static org.apache.lucene.analysis.smartcn;
+    requires static org.apache.lucene.core;
     requires static mmseg4j.core;
     requires static mynlp;
     requires static org.apache.commons.compress;

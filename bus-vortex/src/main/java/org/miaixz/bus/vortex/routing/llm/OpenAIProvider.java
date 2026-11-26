@@ -23,8 +23,12 @@ import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.codec.ServerSentEvent;
+import org.springframework.web.server.ResponseStatusException;
 
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Charset;
@@ -33,7 +37,9 @@ import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.core.xyz.UrlKit;
+import org.miaixz.bus.errors.transport.reactive.ReactiveErrorHandler;
 import org.miaixz.bus.extra.json.JsonKit;
+import org.miaixz.bus.extra.json.JsonValue;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.vortex.Egress;
 import org.miaixz.bus.vortex.Holder;
@@ -61,6 +67,12 @@ import reactor.core.publisher.Mono;
  * @author Kimi Liu
  */
 public class OpenAIProvider implements LlmProvider {
+
+    /**
+     * Binds the complete SSE frame so errors cannot be split across transport chunks.
+     */
+    private static final ParameterizedTypeReference<ServerSentEvent<String>> STREAM_EVENT = new ParameterizedTypeReference<>() {
+    };
 
     /**
      * The provider type identifier.
@@ -98,8 +110,8 @@ public class OpenAIProvider implements LlmProvider {
      * Constructs a new {@code OpenAIProvider} instance.
      * <p>
      * This constructor initializes the provider with the specified configuration. Outbound calls are executed through
-     * the shared {@link Egress} client so LLM traffic reuses the same connection pool and codec settings as REST and
-     * MCP routing. The endpoint URL is normalized by removing any trailing slashes.
+     * the shared {@link Egress.Http} client so LLM traffic reuses the same connection pool and codec settings as REST
+     * and MCP routing. The endpoint URL is normalized by removing any trailing slashes.
      * </p>
      *
      * @param type     The provider type identifier (e.g., "openai", "gemini", "qwen", "vllm", "ollama"). Must not be
@@ -147,10 +159,13 @@ public class OpenAIProvider implements LlmProvider {
 
         Logger.debug(true, "Vortex", "Sending non-streaming request to {}: model={}", type, request.getModel());
 
-        return Egress.request(HttpMethod.POST, chatCompletionsUri())
+        return Egress.Http.request(HttpMethod.POST, chatCompletionsUri())
                 .header(Http.Header.AUTHORIZATION, Http.Auth.BEARER_PREFIX + this.apiKey)
-                .header(Http.Header.CONTENT_TYPE, MediaType.APPLICATION_JSON).bodyValue(requestBody).retrieve()
-                .onStatus(status -> true, clientResponse -> Mono.empty()).toEntityFlux(DataBuffer.class)
+                .header(Http.Header.CONTENT_TYPE, MediaType.APPLICATION_JSON)
+                .bodyValue(JsonKit.toJsonString(requestBody)).retrieve()
+                .onStatus(status -> status.isError(), ReactiveErrorHandler::upstreamFailure)
+                .toEntityFlux(
+                        DataBuffer.class)
                 .flatMap(
                         responseEntity -> Octets
                                 .readForParsing(
@@ -158,13 +173,14 @@ public class OpenAIProvider implements LlmProvider {
                                         Math.toIntExact(Holder.get().getMaxBufferedResponseSize()),
                                         Holder.responseBufferBudget(),
                                         responseEntity.getHeaders().getContentLength())
-                                .flatMap(
-                                        bufferedBody -> Mono
-                                                .fromCallable(
-                                                        () -> this.parseResponse(
-                                                                new String(bufferedBody.bytes(), Charset.UTF_8)))
-                                                .doFinally(signalType -> bufferedBody.close())))
-                .doOnError(e -> Logger.error(false, "Vortex", "Request failed: {}", e.getClass().getSimpleName()));
+                                .flatMap(bufferedBody -> Mono.fromCallable(() -> {
+                                    if (!responseEntity.getStatusCode().is2xxSuccessful()) {
+                                        throw new IllegalStateException(
+                                                "LLM provider returned HTTP " + responseEntity.getStatusCode().value());
+                                    }
+                                    rejectProviderError(bufferedBody.bytes());
+                                    return this.parseResponse(new String(bufferedBody.bytes(), Charset.UTF_8));
+                                }).doFinally(signalType -> bufferedBody.close())));
     }
 
     /**
@@ -189,12 +205,33 @@ public class OpenAIProvider implements LlmProvider {
 
         Logger.debug(true, "Vortex", "Sending streaming request to {}: model={}", type, request.getModel());
 
-        return Egress.request(HttpMethod.POST, chatCompletionsUri())
+        return Egress.Http.request(HttpMethod.POST, chatCompletionsUri())
                 .header(Http.Header.AUTHORIZATION, Http.Auth.BEARER_PREFIX + this.apiKey)
-                .header(Http.Header.CONTENT_TYPE, MediaType.APPLICATION_JSON).bodyValue(requestBody).retrieve()
-                .bodyToFlux(String.class).map(chunk -> "data: " + chunk + Symbol.LF + Symbol.LF).doOnError(
-                        e -> Logger
-                                .error(false, "Vortex", "Streaming request failed: {}", e.getClass().getSimpleName()));
+                .header(Http.Header.CONTENT_TYPE, MediaType.APPLICATION_JSON)
+                .bodyValue(JsonKit.toJsonString(requestBody)).retrieve()
+                .onStatus(status -> status.isError(), ReactiveErrorHandler::upstreamFailure).bodyToFlux(STREAM_EVENT)
+                .<String>handle((event, sink) -> {
+                    if ("error".equalsIgnoreCase(event.event())) {
+                        sink.error(new ResponseStatusException(HttpStatus.BAD_GATEWAY));
+                    } else if (event.data() != null) {
+                        if (!"[DONE]".equals(event.data())) {
+                            rejectProviderError(event.data().getBytes(Charset.UTF_8));
+                        }
+                        sink.next("data: " + event.data().replace("\n", "\ndata: ") + Symbol.LF + Symbol.LF);
+                    }
+                });
+    }
+
+    /**
+     * Rejects an error payload sent under a successful provider HTTP status.
+     *
+     * @param body detached provider JSON or event data
+     */
+    private static void rejectProviderError(byte[] body) {
+        if (JsonKit.readValue(body, 64, true) instanceof JsonValue.ObjectValue object
+                && object.values().containsKey("error")) {
+            throw new ResponseStatusException(HttpStatus.BAD_GATEWAY);
+        }
     }
 
     /**
@@ -297,7 +334,6 @@ public class OpenAIProvider implements LlmProvider {
         try {
             return JsonKit.toPojo(json, LlmResponse.class);
         } catch (Exception e) {
-            Logger.error(false, "Vortex", "Failed to parse response: {}", e.getClass().getSimpleName());
             throw new RuntimeException("Failed to parse LLM response", e);
         }
     }

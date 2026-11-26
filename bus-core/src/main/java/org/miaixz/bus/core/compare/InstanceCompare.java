@@ -71,6 +71,8 @@ public class InstanceCompare<T> implements Comparator<T> {
     /**
      * Compare method.
      *
+     * @param o1 the first object to be compared.
+     * @param o2 the second object to be compared.
      * @return the int value
      */
     @Override
