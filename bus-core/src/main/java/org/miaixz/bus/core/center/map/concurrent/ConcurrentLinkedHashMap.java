@@ -83,9 +83,6 @@ import org.miaixz.bus.core.xyz.RuntimeKit;
  */
 public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements ConcurrentMap<K, V>, Serializable {
 
-    /**
-     * Serialization version identifier.
-     */
     @Serial
     private static final long serialVersionUID = 2535885800001L;
 
@@ -1327,9 +1324,6 @@ public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements 
      */
     static final class Node<K, V> extends AtomicReference<WeightedValue<V>> implements Linked<Node<K, V>> {
 
-        /**
-         * Serialization version identifier.
-         */
         @Serial
         private static final long serialVersionUID = 2535888961801L;
 
@@ -1424,9 +1418,6 @@ public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements 
      */
     static final class BoundedEntryWeigher<K, V> implements EntryWeigher<K, V>, Serializable {
 
-        /**
-         * Serialization version identifier.
-         */
         @Serial
         private static final long serialVersionUID = 2535891203266L;;
 
@@ -1483,9 +1474,6 @@ public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements 
      */
     static final class SerializationProxy<K, V> implements Serializable {
 
-        /**
-         * Serialization version identifier.
-         */
         @Serial
         private static final long serialVersionUID = 2535895000001L;;
 
@@ -2190,9 +2178,6 @@ public class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V> implements 
      */
     final class WriteThroughEntry extends SimpleEntry<K, V> {
 
-        /**
-         * Serialization version identifier.
-         */
         @Serial
         private static final long serialVersionUID = 2535898150001L;
 

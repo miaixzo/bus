@@ -51,9 +51,6 @@ import org.miaixz.bus.vortex.magic.Parameter;
 @Getter
 public class Context extends Tracer {
 
-    /**
-     * Serialization version identifier.
-     */
     @Serial
     private static final long serialVersionUID = 2560609205001L;
 

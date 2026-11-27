@@ -1226,9 +1226,6 @@ public class MemoryCache<K, V> implements CacheX<K, V> {
      */
     private static final class Entry<V> implements Serializable {
 
-        /**
-         * Serialization version identifier.
-         */
         @Serial
         private static final long serialVersionUID = 2555882250001L;
 
