@@ -489,7 +489,7 @@ public class WebApplication {
         return "WebApplication[name=" + applicationName + ",serviceClasses=" + serviceClasses + ",path=" + servicePath
                 + ",aet=" + aeTitle + ",applicationClusters=" + Arrays.toString(applicationClusters)
                 + ",keycloakClientID=" + keycloakClientID + ",properties=" + properties + ",installed=" + installed
-                + ']';
+                + Symbol.C_BRACKET_RIGHT;
     }
 
     /**

@@ -70,25 +70,39 @@ public class MacHWDiskStore extends AbstractHWDiskStore {
      */
     private static final DiskArbitration DA = DiskArbitration.INSTANCE;
 
-    /** IORegistry property naming a media object's BSD device. */
+    /**
+     * IORegistry property naming a media object's BSD device.
+     */
     private static final String BSD_NAME = "BSD Name";
 
-    /** IORegistry property marking a whole disk. */
+    /**
+     * IORegistry property marking a whole disk.
+     */
     private static final String WHOLE = "Whole";
 
-    /** IOKit class of a block storage medium. */
+    /**
+     * IOKit class of a block storage medium.
+     */
     private static final String IO_MEDIA = "IOMedia";
 
-    /** IORegistry property naming a disk image URL. */
+    /**
+     * IORegistry property naming a disk image URL.
+     */
     private static final String DISK_IMAGE_URL = "DiskImageURL";
 
-    /** IOKit class of a modern disk image device. */
+    /**
+     * IOKit class of a modern disk image device.
+     */
     private static final String DISK_IMAGE_DEVICE = "AppleDiskImageDevice";
 
-    /** IOKit class of a legacy disk image device. */
+    /**
+     * IOKit class of a legacy disk image device.
+     */
     private static final String LEGACY_DISK_IMAGE_DEVICE = "IOHDIXHDDrive";
 
-    /** IOKit class at the top of the IOService device tree. */
+    /**
+     * IOKit class at the top of the IOService device tree.
+     */
     private static final String PLATFORM_EXPERT = "IOPlatformExpertDevice";
 
     /**

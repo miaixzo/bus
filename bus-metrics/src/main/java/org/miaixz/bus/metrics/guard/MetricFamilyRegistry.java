@@ -27,6 +27,7 @@ import java.util.function.Function;
 import java.util.function.UnaryOperator;
 
 import org.miaixz.bus.core.center.function.RunnableX;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.FunctionKit;
 import org.miaixz.bus.metrics.nimble.MetricDescriptor;
 import org.miaixz.bus.metrics.nimble.MetricRegistration;
@@ -106,9 +107,9 @@ public final class MetricFamilyRegistry {
             String field,
             MetricDescriptor requested,
             MetricDescriptor existing) {
-        return new IllegalArgumentException("Metric family " + requested.scope() + "/" + requested.name()
+        return new IllegalArgumentException("Metric family " + requested.scope() + Symbol.SLASH + requested.name()
                 + " conflicts on " + field + "; existing description='" + existing.description()
-                + "', requested description='" + requested.description() + "'");
+                + "', requested description='" + requested.description() + Symbol.SINGLE_QUOTE);
     }
 
     /**
@@ -137,15 +138,15 @@ public final class MetricFamilyRegistry {
             MetricFamilyKey.Logical exportOwner = exportFamilies.get(key.export());
             if (exportOwner != null && !exportOwner.equals(key.logical())) {
                 throw new IllegalArgumentException("Metric family export collision for " + descriptor.name()
-                        + ": normalized identity is already owned by " + exportOwner.scope() + "/"
+                        + ": normalized identity is already owned by " + exportOwner.scope() + Symbol.SLASH
                         + exportOwner.name());
             }
 
             MetricFamilyKey.Logical nameOwner = exportNameOwners.get(key.export().name());
             if (nameOwner != null && !nameOwner.equals(key.logical())) {
                 throw new IllegalArgumentException("Metric family export-name collision for " + descriptor.name()
-                        + ": final name '" + key.export().name() + "' is already owned by " + nameOwner.scope() + "/"
-                        + nameOwner.name());
+                        + ": final name '" + key.export().name() + "' is already owned by " + nameOwner.scope()
+                        + Symbol.SLASH + nameOwner.name());
             }
 
             logicalFamilies.put(key.logical(), new Entry(descriptor, key));

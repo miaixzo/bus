@@ -236,7 +236,7 @@ public class MySql extends AbstractDialect {
     @Override
     public String moveTable(TableMeta table, String schema) {
         return RENAME_TABLE + Symbol.SPACE + tableName(table) + Symbol.SPACE + TO + Symbol.SPACE
-                + quotePhysicalIdentifier(schema, schemaQuote()) + "."
+                + quotePhysicalIdentifier(schema, schemaQuote()) + Symbol.DOT
                 + quotePhysicalIdentifier(unquote(table.table()), schemaQuote());
     }
 

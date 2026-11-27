@@ -23,6 +23,8 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.util.Objects;
 
+import org.miaixz.bus.core.lang.Symbol;
+
 /**
  * Transforms coordinates between supported systems. Mainstream coordinate systems include:
  * <ul>
@@ -363,7 +365,7 @@ public class Coordinate {
          */
         @Override
         public String toString() {
-            return "Point{" + "lng=" + lng + ", lat=" + lat + '}';
+            return "Point{" + "lng=" + lng + ", lat=" + lat + Symbol.C_BRACE_RIGHT;
         }
 
     }

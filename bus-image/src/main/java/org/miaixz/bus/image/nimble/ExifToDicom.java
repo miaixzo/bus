@@ -28,6 +28,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.miaixz.bus.core.lang.Charset;
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.image.Tag;
 import org.miaixz.bus.image.galaxy.data.Attributes;
@@ -347,7 +349,7 @@ public final class ExifToDicom {
         String text = value;
         if (vr == VR.CS || vr == VR.LO || vr == VR.SH) {
             // Single-valued: the backslash is the DICOM value delimiter
-            text = text.replace('\\', '/');
+            text = text.replace(Symbol.C_BACKSLASH, Symbol.C_SLASH);
             int max = vr == VR.LO ? 64 : 16;
             if (text.length() > max) {
                 text = text.substring(0, max).trim();
@@ -366,9 +368,9 @@ public final class ExifToDicom {
      * @param attrs the mutable DICOM dataset
      */
     private static void putImageComments(ExifData exif, Attributes attrs) {
-        String comment = exif.get(IMAGE_DESCRIPTION).map(ExifValue::asString).orElse("");
+        String comment = exif.get(IMAGE_DESCRIPTION).map(ExifValue::asString).orElse(Normal.EMPTY);
         if (comment.isEmpty()) {
-            comment = exif.get(USER_COMMENT).map(ExifToDicom::decodeUserComment).orElse("");
+            comment = exif.get(USER_COMMENT).map(ExifToDicom::decodeUserComment).orElse(Normal.EMPTY);
         }
         putString(attrs, Tag.ImageComments, VR.LT, comment);
     }
@@ -382,9 +384,10 @@ public final class ExifToDicom {
     static String decodeUserComment(ExifValue value) {
         byte[] data = value.bytes();
         if (data.length <= USER_COMMENT_CODE_LENGTH) {
-            return "";
+            return Normal.EMPTY;
         }
-        String code = new String(data, 0, USER_COMMENT_CODE_LENGTH, Charset.US_ASCII).replace("\0", "").trim();
+        String code = new String(data, 0, USER_COMMENT_CODE_LENGTH, Charset.US_ASCII).replace("\0", Normal.EMPTY)
+                .trim();
         byte[] text = Arrays.copyOfRange(data, USER_COMMENT_CODE_LENGTH, data.length);
         String comment;
         if ("UNICODE".equals(code)) {
@@ -392,11 +395,11 @@ public final class ExifToDicom {
             boolean littleEndian = text.length > 1 && text[0] != 0 && text[1] == 0;
             comment = new String(text, littleEndian ? Charset.UTF_16_LE : Charset.UTF_16_BE);
         } else if ("JIS".equals(code)) {
-            return ""; // Not supported
+            return Normal.EMPTY; // Not supported
         } else {
             comment = new String(text, Charset.UTF_8);
         }
-        return comment.replace("\0", "").trim();
+        return comment.replace("\0", Normal.EMPTY).trim();
     }
 
     /**
@@ -448,7 +451,10 @@ public final class ExifToDicom {
         putString(attrs, Tag.AcquisitionDateTime, VR.DT, original);
 
         if (!attrs.containsValue(Tag.ContentDate) && !attrs.containsValue(Tag.ContentTime)) {
-            String digitized = toDicomDateTime(text(exif, DATE_TIME_DIGITIZED), text(exif, SUB_SEC_TIME_DIGITIZED), "");
+            String digitized = toDicomDateTime(
+                    text(exif, DATE_TIME_DIGITIZED),
+                    text(exif, SUB_SEC_TIME_DIGITIZED),
+                    Normal.EMPTY);
             if (digitized != null) {
                 attrs.setString(Tag.ContentDate, VR.DA, digitized.substring(0, 8));
                 attrs.setString(Tag.ContentTime, VR.TM, digitized.substring(8));
@@ -463,7 +469,7 @@ public final class ExifToDicom {
      * @param attrs the mutable DICOM dataset
      */
     private static void putGpsDateTime(ExifData exif, Attributes attrs) {
-        Matcher date = EXIF_DATE.matcher(exif.getGps(GPS_DATE_STAMP).map(ExifValue::asString).orElse(""));
+        Matcher date = EXIF_DATE.matcher(exif.getGps(GPS_DATE_STAMP).map(ExifValue::asString).orElse(Normal.EMPTY));
         if (!date.matches() || "0000".equals(date.group(1))) {
             return;
         }
@@ -493,7 +499,7 @@ public final class ExifToDicom {
      * @return the decoded text or null
      */
     private static String text(ExifData exif, int tag) {
-        return exif.get(tag).map(ExifValue::asString).orElse("");
+        return exif.get(tag).map(ExifValue::asString).orElse(Normal.EMPTY);
     }
 
     /**
@@ -506,7 +512,7 @@ public final class ExifToDicom {
      * @param offset   the number of results to skip
      */
     static String toDicomDateTime(String dateTime, String subSec, String offset) {
-        Matcher m = EXIF_DATE_TIME.matcher(dateTime == null ? "" : dateTime.trim());
+        Matcher m = EXIF_DATE_TIME.matcher(dateTime == null ? Normal.EMPTY : dateTime.trim());
         if (!m.matches() || "0000".equals(m.group(1)) || "00".equals(m.group(2))) {
             return null;
         }
@@ -514,11 +520,11 @@ public final class ExifToDicom {
         for (int i = 1; i <= 6; i++) {
             dt.append(m.group(i));
         }
-        String fraction = subSec == null ? "" : subSec.trim();
+        String fraction = subSec == null ? Normal.EMPTY : subSec.trim();
         if (DIGITS.matcher(fraction).matches()) {
-            dt.append('.').append(fraction, 0, Math.min(fraction.length(), MAX_FRACTION_DIGITS));
+            dt.append(Symbol.C_DOT).append(fraction, 0, Math.min(fraction.length(), MAX_FRACTION_DIGITS));
         }
-        Matcher o = EXIF_OFFSET.matcher(offset == null ? "" : offset.trim());
+        Matcher o = EXIF_OFFSET.matcher(offset == null ? Normal.EMPTY : offset.trim());
         if (o.matches()) {
             dt.append(o.group(1)).append(o.group(2)).append(o.group(3));
         }

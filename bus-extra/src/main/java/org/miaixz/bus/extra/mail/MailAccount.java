@@ -27,6 +27,7 @@ import java.util.Properties;
 
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Charset;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.ArrayKit;
 import org.miaixz.bus.core.xyz.ObjectKit;
@@ -719,9 +720,9 @@ public class MailAccount implements Serializable {
     @Override
     public String toString() {
         return "MailAccount [host=" + host + ", port=" + port + ", auth=" + auth + ", user=" + user + ", pass="
-                + (ArrayKit.isEmpty(this.pass) ? "" : "******") + ", from=" + from + ", startttlsEnable="
+                + (ArrayKit.isEmpty(this.pass) ? Normal.EMPTY : "******") + ", from=" + from + ", startttlsEnable="
                 + starttlsEnable + ", socketFactoryClass=" + socketFactoryClass + ", socketFactoryFallback="
-                + socketFactoryFallback + ", socketFactoryPort=" + socketFactoryPort + "]";
+                + socketFactoryFallback + ", socketFactoryPort=" + socketFactoryPort + Symbol.BRACKET_RIGHT;
     }
 
 }

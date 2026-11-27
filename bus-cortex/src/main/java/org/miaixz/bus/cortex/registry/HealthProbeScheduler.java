@@ -31,6 +31,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.miaixz.bus.core.center.date.Chrono;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.net.Port;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.xyz.BeanKit;
@@ -238,15 +239,15 @@ public class HealthProbeScheduler implements AutoCloseable, CortexLifecycle, Cor
                             Instance target = probeTarget(expected);
                             HealthInfo health = target.healthView();
                             List<String> identity = List.of(
-                                    Objects.toString(expected.getTenant_id(), ""),
+                                    Objects.toString(expected.getTenant_id(), Normal.EMPTY),
                                     expected.getApp_id(),
-                                    Objects.toString(expected.getId(), ""),
+                                    Objects.toString(expected.getId(), Normal.EMPTY),
                                     expected.getChecksum(),
-                                    Objects.toString(health.getSession(), ""),
+                                    Objects.toString(health.getSession(), Normal.EMPTY),
                                     target.getHost(),
                                     target.getPort().toString(),
                                     health.getScheme(),
-                                    Protocol.TCP.name.equals(health.getScheme()) ? "" : health.getPath());
+                                    Protocol.TCP.name.equals(health.getScheme()) ? Normal.EMPTY : health.getPath());
                             processes.computeIfAbsent(identity, ignored -> new LinkedHashMap<>())
                                     .put(RegistryAssets.api(service), expected);
                         } catch (IllegalArgumentException invalid) {

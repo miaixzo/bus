@@ -24,6 +24,7 @@ import java.net.UnknownHostException;
 import java.util.Arrays;
 import java.util.List;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.Immutable;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 
@@ -485,7 +486,7 @@ public interface InternetProtocolStats {
                     + connectionsActive + ", connectionsPassive=" + connectionsPassive + ", connectionFailures="
                     + connectionFailures + ", connectionsReset=" + connectionsReset + ", segmentsSent=" + segmentsSent
                     + ", segmentsReceived=" + segmentsReceived + ", segmentsRetransmitted=" + segmentsRetransmitted
-                    + ", inErrors=" + inErrors + ", outResets=" + outResets + "]";
+                    + ", inErrors=" + inErrors + ", outResets=" + outResets + Symbol.BRACKET_RIGHT;
         }
 
     }
@@ -581,7 +582,7 @@ public interface InternetProtocolStats {
         public String toString() {
             return "UdpStats [datagramsSent=" + datagramsSent + ", datagramsReceived=" + datagramsReceived
                     + ", datagramsNoPort=" + datagramsNoPort + ", datagramsReceivedErrors=" + datagramsReceivedErrors
-                    + "]";
+                    + Symbol.BRACKET_RIGHT;
         }
 
     }
@@ -762,12 +763,12 @@ public interface InternetProtocolStats {
          */
         @Override
         public String toString() {
-            String localIp = "*";
+            String localIp = Symbol.STAR;
             try {
                 localIp = InetAddress.getByAddress(localAddress).toString();
             } catch (UnknownHostException e) { // NOSONAR squid:S108
             }
-            String foreignIp = "*";
+            String foreignIp = Symbol.STAR;
             try {
                 foreignIp = InetAddress.getByAddress(foreignAddress).toString();
             } catch (UnknownHostException e) { // NOSONAR squid:S108
@@ -775,7 +776,7 @@ public interface InternetProtocolStats {
             return "IPConnection [type=" + type + ", localAddress=" + localIp + ", localPort=" + localPort
                     + ", foreignAddress=" + foreignIp + ", foreignPort=" + foreignPort + ", state=" + state
                     + ", transmitQueue=" + transmitQueue + ", receiveQueue=" + receiveQueue + ", owningProcessId="
-                    + owningProcessId + "]";
+                    + owningProcessId + Symbol.BRACKET_RIGHT;
         }
 
     }

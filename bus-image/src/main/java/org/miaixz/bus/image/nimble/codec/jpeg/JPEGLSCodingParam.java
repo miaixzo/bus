@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.image.nimble.codec.jpeg;
 
+import org.miaixz.bus.core.lang.Symbol;
+
 /**
  * Represents the JPEGLSCodingParam type.
  *
@@ -201,7 +203,7 @@ public class JPEGLSCodingParam {
     @Override
     public String toString() {
         return "JPEGLSCodingParam[MAXVAL=" + maxVal + ", T1=" + t1 + ", T2=" + t2 + ", T3=" + t3 + ", RESET=" + reset
-                + "]";
+                + Symbol.BRACKET_RIGHT;
     }
 
 }

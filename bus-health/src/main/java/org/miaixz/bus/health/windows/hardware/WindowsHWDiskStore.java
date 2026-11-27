@@ -100,25 +100,39 @@ public class WindowsHWDiskStore extends AbstractHWDiskStore {
      */
     private static final int LABEL_BUFSIZE = 33;
 
-    /** Disk type reported when the media technology is unknown. */
+    /**
+     * Disk type reported when the media technology is unknown.
+     */
     private static final String DISK_TYPE_UNKNOWN = "Unknown";
 
-    /** Solid-state disk type. */
+    /**
+     * Solid-state disk type.
+     */
     private static final String DISK_TYPE_SSD = "SSD";
 
-    /** Rotating hard disk type. */
+    /**
+     * Rotating hard disk type.
+     */
     private static final String DISK_TYPE_HDD = "HDD";
 
-    /** Removable disk type. */
+    /**
+     * Removable disk type.
+     */
     private static final String DISK_TYPE_REMOVABLE = "Removable";
 
-    /** Virtual disk type. */
+    /**
+     * Virtual disk type.
+     */
     private static final String DISK_TYPE_VIRTUAL = "Virtual";
 
-    /** IOCTL code for storage property queries. */
+    /**
+     * IOCTL code for storage property queries.
+     */
     private static final int IOCTL_STORAGE_QUERY_PROPERTY = 0x002D1400;
 
-    /** Timeout for Storage namespace fallback queries. */
+    /**
+     * Timeout for Storage namespace fallback queries.
+     */
     private static final int MSFT_PHYSICAL_DISK_TIMEOUT_MS = 5_000;
 
     /**
@@ -776,13 +790,19 @@ public class WindowsHWDiskStore extends AbstractHWDiskStore {
      */
     private static final class StorageProperties {
 
-        /** The storage bus type. */
+        /**
+         * The storage bus type.
+         */
         private final int busType;
 
-        /** Whether the device holds removable media. */
+        /**
+         * Whether the device holds removable media.
+         */
         private final boolean removableMedia;
 
-        /** Whether the device incurs a seek penalty, or {@code null} if unsupported. */
+        /**
+         * Whether the device incurs a seek penalty, or {@code null} if unsupported.
+         */
         private final Boolean incursSeekPenalty;
 
         /**

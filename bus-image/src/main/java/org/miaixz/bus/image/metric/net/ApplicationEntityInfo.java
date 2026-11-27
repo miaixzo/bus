@@ -24,6 +24,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.image.metric.Connection;
 
 /**
@@ -271,7 +272,7 @@ public class ApplicationEntityInfo implements Serializable {
      */
     @Override
     public String toString() {
-        return "ApplicationEntityInfo[dicomAETitle=" + aet + "]";
+        return "ApplicationEntityInfo[dicomAETitle=" + aet + Symbol.BRACKET_RIGHT;
     }
 
 }

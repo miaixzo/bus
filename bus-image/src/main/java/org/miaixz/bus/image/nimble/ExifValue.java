@@ -24,6 +24,7 @@ import java.nio.ByteOrder;
 import java.util.Arrays;
 
 import org.miaixz.bus.core.lang.Charset;
+import org.miaixz.bus.core.lang.Symbol;
 
 /**
  * Value of one EXIF/TIFF tag, kept as its raw bytes with the byte order of the TIFF block it comes from, and decoded on
@@ -294,7 +295,7 @@ public final class ExifValue {
      */
     @Override
     public String toString() {
-        return "ExifValue{type=" + type + ", count=" + count + '}';
+        return "ExifValue{type=" + type + ", count=" + count + Symbol.C_BRACE_RIGHT;
     }
 
 }

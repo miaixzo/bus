@@ -21,6 +21,7 @@ package org.miaixz.bus.core.text.finder;
 
 import java.util.*;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
@@ -314,7 +315,7 @@ public class MultiStringFinder {
          */
         @Override
         public String toString() {
-            return value + ":" + nodeIndex;
+            return value + Symbol.COLON + nodeIndex;
         }
 
     }

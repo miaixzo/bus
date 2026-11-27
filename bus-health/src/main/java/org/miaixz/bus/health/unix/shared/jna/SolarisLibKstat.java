@@ -33,7 +33,9 @@ import com.sun.jna.platform.unix.solaris.LibKstat.Kstat;
  */
 public interface SolarisLibKstat extends Library {
 
-    /** Singleton instance of the Solaris kstat library. */
+    /**
+     * Singleton instance of the Solaris kstat library.
+     */
     SolarisLibKstat INSTANCE = Native.load("kstat", SolarisLibKstat.class);
 
     /**

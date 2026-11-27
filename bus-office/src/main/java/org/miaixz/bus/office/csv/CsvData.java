@@ -24,6 +24,7 @@ import java.io.Serializable;
 import java.util.Iterator;
 import java.util.List;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.ListKit;
 
 /**
@@ -112,7 +113,7 @@ public class CsvData implements Iterable<CsvRow>, Serializable {
      */
     @Override
     public String toString() {
-        return "CsvData{" + "header=" + header + ", rows=" + rows + '}';
+        return "CsvData{" + "header=" + header + ", rows=" + rows + Symbol.C_BRACE_RIGHT;
     }
 
 }

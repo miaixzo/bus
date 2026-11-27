@@ -53,19 +53,18 @@ final class AixNetworkParams extends AbstractNetworkParams {
      * @return the get default gateway result
      */
     private static String getDefaultGateway(String netstat) {
-        /*-
-        $ netstat -rnf inet
-        Routing tables
-        Destination        Gateway           Flags   Refs     Use  If   Exp  Groups
-        *
-        Route Tree for Protocol Family 2 (Internet):
-        default            192.168.10.1      UG        9    873816 en0      -      -
-        127/8              127.0.0.1         U         9    839480 lo0      -      -
-        192.168.10.0       192.168.10.80     UHSb      0         0 en0      -      -   =>
-        192.168.10/24      192.168.10.80     U         3    394820 en0      -      -
-        192.168.10.80      127.0.0.1         UGHS      0         7 lo0      -      -
-        192.168.10.255     192.168.10.80     UHSb      2      7466 en0      -      -
-        */
+        // -
+        // $ netstat -rnf inet
+        // Routing tables
+        // Destination Gateway Flags Refs Use If Exp Groups
+        //
+        // Route Tree for Protocol Family 2 (Internet):
+        // default 192.168.10.1 UG 9 873816 en0 - -
+        // 127/8 127.0.0.1 U 9 839480 lo0 - -
+        // 192.168.10.0 192.168.10.80 UHSb 0 0 en0 - - =>
+        // 192.168.10/24 192.168.10.80 U 3 394820 en0 - -
+        // 192.168.10.80 127.0.0.1 UGHS 0 7 lo0 - -
+        // 192.168.10.255 192.168.10.80 UHSb 2 7466 en0 - -
         for (String line : Executor.runNative(netstat)) {
             String[] split = Pattern.SPACES_PATTERN.split(line);
             if (split.length > 7 && "default".equals(split[0])) {

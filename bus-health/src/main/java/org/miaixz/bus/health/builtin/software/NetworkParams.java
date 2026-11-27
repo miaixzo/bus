@@ -25,6 +25,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.Immutable;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.builtin.hardware.NetworkIF;
@@ -165,7 +166,7 @@ public interface NetworkParams {
                     // Cannot happen for a length of 4 or 16.
                 }
             }
-            return "*";
+            return Symbol.STAR;
         }
 
         /**
@@ -247,9 +248,10 @@ public interface NetworkParams {
          */
         @Override
         public String toString() {
-            return "IPRoute [destination=" + addressToString(destination) + "/" + prefixLength + ", gateway="
+            return "IPRoute [destination=" + addressToString(destination) + Symbol.SLASH + prefixLength + ", gateway="
                     + addressToString(gateway) + ", interfaceName=" + interfaceName + ", interfaceIndex="
-                    + interfaceIndex + ", metric=" + metric + ", isGateway=" + isGateway + ", isHost=" + isHost + "]";
+                    + interfaceIndex + ", metric=" + metric + ", isGateway=" + isGateway + ", isHost=" + isHost
+                    + Symbol.BRACKET_RIGHT;
         }
 
     }

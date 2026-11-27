@@ -25,6 +25,7 @@ import java.util.Set;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.bind.DefaultValue;
 
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.starter.GeniusBuilder;
 
 /**
@@ -79,7 +80,7 @@ public record ErrorsProperties(@DefaultValue Logging logging, @DefaultValue Rout
      */
     public record Routing(@DefaultValue("false") boolean enabled, @DefaultValue Set<Target> targets,
             @DefaultValue List<String> pathPrefixes, @DefaultValue Set<Integer> statuses,
-            @DefaultValue("") String cacheControl) {
+            @DefaultValue(Normal.EMPTY) String cacheControl) {
 
         /**
          * Detaches the bound collections and requires explicit selection when routing is enabled.

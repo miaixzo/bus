@@ -61,6 +61,7 @@ import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.cortex.Assets;
 import org.miaixz.bus.cortex.Keying;
 import org.miaixz.bus.cortex.builtin.RegistryGenerator;
+import org.miaixz.bus.cortex.registry.RegistryEndpoint;
 import org.miaixz.bus.errors.ErrorBoundary;
 import org.miaixz.bus.errors.transport.reactive.ReactiveErrorHandler;
 import org.miaixz.bus.errors.transport.reactive.ReactiveResponseGuard;
@@ -249,16 +250,12 @@ public class VortexConfiguration {
             @Qualifier("slug") Router<ServerRequest, ?> slugRouter,
             @Qualifier("sdc") Router<ServerRequest, ?> sdcRouter) {
         Map<Integer, Router<ServerRequest, ?>> routers = Map.ofEntries(
-                /*
-                 * HTTP outbound routes, each with its own strategy chain and executor.
-                 */
+                // HTTP outbound routes, each with its own strategy chain and executor.
                 Map.entry(Args.ROUTE_REST, restRouter),
                 Map.entry(Args.ROUTE_LLM, llmRouter),
                 Map.entry(Args.ROUTE_SLUG, slugRouter),
                 Map.entry(Args.ROUTE_SDC, sdcRouter),
-                /*
-                 * Protocol and message broker adapters.
-                 */
+                // Protocol and message broker adapters.
                 Map.entry(Args.ROUTE_MQ, mqRouter),
                 Map.entry(Args.ROUTE_MCP, mcpRouter),
                 Map.entry(Args.ROUTE_GRPC, grpcRouter),
@@ -791,6 +788,7 @@ public class VortexConfiguration {
      * @param registry         runtime directory of applications and assets
      * @param requiresIdentity optional application policy for assets requiring service identity
      * @param admission        optional application policy called before business authorization with a nullable caller
+     * @param environment      deployment route configuration
      * @return gateway service identity adapter
      */
     @Bean
@@ -799,10 +797,11 @@ public class VortexConfiguration {
             GuardEvaluator identity,
             AssetsRegistry registry,
             ObjectProvider<PredicateX<Assets>> requiresIdentity,
-            ObjectProvider<BiConsumerX<Assets, GuardEvaluator.Verified>> admission) {
+            ObjectProvider<BiConsumerX<Assets, GuardEvaluator.Verified>> admission,
+            Environment environment) {
         return new IdentityGuard(identity, registry::code, requiresIdentity.getIfAvailable(() -> asset -> false),
                 admission.getIfAvailable(() -> (asset, caller) -> {
-                }));
+                }), environment.getProperty(RegistryEndpoint.PATH_PROPERTY));
     }
 
     /**
@@ -968,13 +967,14 @@ public class VortexConfiguration {
      * instances based on the incoming request. Spring will inject all available {@link Strategy} beans into the
      * constructor.
      *
-     * @param strategies A list of all available {@link Strategy} beans, injected by Spring.
+     * @param strategies  A list of all available {@link Strategy} beans, injected by Spring.
+     * @param environment deployment route configuration
      * @return A new instance of StrategyFactory.
      */
     @Bean
     @ConditionalOnMissingBean(StrategyFactory.class)
-    public StrategyFactory strategyFactory(List<Strategy> strategies) {
-        return new StrategyFactory(strategies);
+    public StrategyFactory strategyFactory(List<Strategy> strategies, Environment environment) {
+        return new StrategyFactory(strategies, environment.getProperty(RegistryEndpoint.PATH_PROPERTY));
     }
 
     /**

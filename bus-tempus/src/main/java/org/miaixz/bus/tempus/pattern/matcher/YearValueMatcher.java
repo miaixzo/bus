@@ -23,6 +23,8 @@ import java.io.Serial;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 
+import org.miaixz.bus.core.lang.Symbol;
+
 /**
  * A matcher for the year field of a cron expression.
  * <p>
@@ -100,7 +102,7 @@ public class YearValueMatcher implements PartMatcher {
      */
     @Override
     public String toString() {
-        return "YearValueMatcher{" + "valueList=" + valueList + '}';
+        return "YearValueMatcher{" + "valueList=" + valueList + Symbol.C_BRACE_RIGHT;
     }
 
 }

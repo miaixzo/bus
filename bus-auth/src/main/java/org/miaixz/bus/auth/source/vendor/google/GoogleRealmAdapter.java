@@ -2117,7 +2117,7 @@ public class GoogleRealmAdapter implements VendorAdapter {
         final StringBuilder path = new StringBuilder(base.path());
         if (segments != null) {
             for (String segment : segments) {
-                path.append('/')
+                path.append(Symbol.C_SLASH)
                         .append(RFC3986.SEGMENT.encode(requireText(segment, "Google path segment"), Charset.UTF_8));
             }
         }

@@ -622,14 +622,12 @@ public class RepositoryApi extends AbstractApi {
             format = ArchiveFormat.TAR_GZ;
         }
 
-        /*
-         * Gitlab-ce has a bug when you try to download file archives with format by using
-         * "&format=zip(or tar... etc.)", there is a solution to request .../archive.:format instead of
-         * .../archive?format=:format.
-         *
-         * Issue: https://gitlab.com/gitlab-org/gitlab-ce/issues/45992
-         * https://gitlab.com/gitlab-com/support-forum/issues/3067
-         */
+        // Gitlab-ce has a bug when you try to download file archives with format by using
+        // "&format=zip(or tar... etc.)", there is a solution to request .../archive.:format instead of
+        // .../archive?format=:format.
+        //
+        // Issue: https://gitlab.com/gitlab-org/gitlab-ce/issues/45992
+        // https://gitlab.com/gitlab-com/support-forum/issues/3067
         Form formData = new GitLabApiForm(params.getForm());
         Response response = getWithAccepts(
                 Response.Status.OK,
@@ -747,14 +745,12 @@ public class RepositoryApi extends AbstractApi {
             format = ArchiveFormat.TAR_GZ;
         }
 
-        /*
-         * Gitlab-ce has a bug when you try to download file archives with format by using
-         * "&format=zip(or tar... etc.)", there is a solution to request .../archive.:format instead of
-         * .../archive?format=:format.
-         *
-         * Issue: https://gitlab.com/gitlab-org/gitlab-ce/issues/45992
-         * https://gitlab.com/gitlab-com/support-forum/issues/3067
-         */
+        // Gitlab-ce has a bug when you try to download file archives with format by using
+        // "&format=zip(or tar... etc.)", there is a solution to request .../archive.:format instead of
+        // .../archive?format=:format.
+        //
+        // Issue: https://gitlab.com/gitlab-org/gitlab-ce/issues/45992
+        // https://gitlab.com/gitlab-com/support-forum/issues/3067
         Form formData = new GitLabApiForm(params.getForm());
         Response response = getWithAccepts(
                 Response.Status.OK,

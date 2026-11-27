@@ -223,7 +223,7 @@ public class CorsProperties {
     public String toString() {
         return "CorsProperties[enabled=" + enabled + ", path=" + path + ", allowedOrigins="
                 + Arrays.toString(allowedOrigins) + ", allowCredentials=" + allowCredentials + ", maxAge=" + maxAge
-                + "]";
+                + Symbol.BRACKET_RIGHT;
     }
 
 }

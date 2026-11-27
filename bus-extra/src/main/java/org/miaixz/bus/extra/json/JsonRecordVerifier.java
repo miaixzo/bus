@@ -32,6 +32,7 @@ import java.util.Map;
 
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Optional;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 
 /**
@@ -160,7 +161,7 @@ public class JsonRecordVerifier<T extends Record> {
             require(path, value, JsonValue.ObjectValue.class);
             final Type elementType = requiredTypeArgument(path, parameterizedType, 1);
             ((JsonValue.ObjectValue) value).values()
-                    .forEach((member, element) -> validateValue(path + "." + member, element, elementType));
+                    .forEach((member, element) -> validateValue(path + Symbol.DOT + member, element, elementType));
             return;
         }
         validateClass(path, value, rawClass);
@@ -178,7 +179,7 @@ public class JsonRecordVerifier<T extends Record> {
         require(path, value, JsonValue.ArrayValue.class);
         final var elements = ((JsonValue.ArrayValue) value).values();
         for (int index = 0; index < elements.size(); index++) {
-            validateValue(path + "[" + index + "]", elements.get(index), elementType);
+            validateValue(path + Symbol.BRACKET_LEFT + index + Symbol.BRACKET_RIGHT, elements.get(index), elementType);
         }
     }
 
@@ -324,7 +325,7 @@ public class JsonRecordVerifier<T extends Record> {
                 }
                 return;
             }
-            validateValue(type.getName() + "." + member, memberValue, component.getGenericType());
+            validateValue(type.getName() + Symbol.DOT + member, memberValue, component.getGenericType());
         });
         return object;
     }

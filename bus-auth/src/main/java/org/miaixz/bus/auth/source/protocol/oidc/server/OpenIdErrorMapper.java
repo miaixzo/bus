@@ -168,7 +168,7 @@ public class OpenIdErrorMapper {
         final OAuth2ErrorCode error = bearerError(failure, OAuth2ErrorCode.INVALID_TOKEN);
         final int status = OAuth2ErrorCode.INSUFFICIENT_SCOPE.equals(error) ? Http.Status.FORBIDDEN
                 : OAuth2ErrorCode.INVALID_REQUEST.equals(error) ? Http.Status.BAD_REQUEST : Http.Status.UNAUTHORIZED;
-        return empty(request, status, "Bearer error=\"" + error.value() + "\"");
+        return empty(request, status, "Bearer error=\"" + error.value() + Symbol.DOUBLE_QUOTES);
     }
 
     /**

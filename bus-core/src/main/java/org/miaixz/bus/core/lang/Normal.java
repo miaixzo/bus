@@ -1268,12 +1268,12 @@ public class Normal {
     /**
      * Simple Chinese numeral units.
      */
-    public static final String[] SIMPLE_UNITS = { "", "十", "百", "千" };
+    public static final String[] SIMPLE_UNITS = { EMPTY, "十", "百", "千" };
 
     /**
      * Traditional Chinese numeral units.
      */
-    public static final String[] TRADITIONAL_UNITS = { "", "拾", "佰", "仟" };
+    public static final String[] TRADITIONAL_UNITS = { EMPTY, "拾", "佰", "仟" };
 
     /**
      * Simple Chinese numeral characters.
@@ -1288,8 +1288,8 @@ public class Normal {
     /**
      * English numbers 1-9.
      */
-    public static final String[] EN_NUMBER = new String[] { "", "ONE", "TWO", "THREE", "FOUR", "FIVE", "SIX", "SEVEN",
-            "EIGHT", "NINE" };
+    public static final String[] EN_NUMBER = new String[] { EMPTY, "ONE", "TWO", "THREE", "FOUR", "FIVE", "SIX",
+            "SEVEN", "EIGHT", "NINE" };
 
     /**
      * English numbers 10-19.
@@ -1306,7 +1306,7 @@ public class Normal {
     /**
      * English number units for thousands, millions, billions, etc.
      */
-    public static final String[] EN_NUMBER_MORE = new String[] { "", "THOUSAND", "MILLION", "BILLION", "TRILLION" };
+    public static final String[] EN_NUMBER_MORE = new String[] { EMPTY, "THOUSAND", "MILLION", "BILLION", "TRILLION" };
 
     /**
      * Strings representing a boolean true value.
@@ -1338,7 +1338,7 @@ public class Normal {
     public static final byte[] ENCODE_64_TABLE = { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N',
             'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i',
             'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '0', '1', '2', '3',
-            '4', '5', '6', '7', '8', '9', '+', '/' };
+            '4', '5', '6', '7', '8', '9', Symbol.C_PLUS, Symbol.C_SLASH };
 
     /**
      * Base64 decoding table.

@@ -26,6 +26,7 @@ import java.util.NoSuchElementException;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Symbol;
 
 /**
  * Range generator. Generates a stepped list based on given start value, end value, and a stepper. Since the user
@@ -226,7 +227,7 @@ public class Range<T> implements Iterable<T>, Serializable {
      */
     @Override
     public String toString() {
-        return "Range [start=" + start + ", end=" + end + "]";
+        return "Range [start=" + start + ", end=" + end + Symbol.BRACKET_RIGHT;
     }
 
     /**

@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.opencv.core;
 
+import org.miaixz.bus.core.lang.Symbol;
+
 /**
  * An axis-aligned rectangle with double-precision coordinates and dimensions.
  */
@@ -230,7 +232,7 @@ public class Rect2d {
      */
     @Override
     public String toString() {
-        return "{" + x + ", " + y + ", " + width + "x" + height + "}";
+        return Symbol.BRACE_LEFT + x + ", " + y + ", " + width + "x" + height + Symbol.BRACE_RIGHT;
     }
 
 }

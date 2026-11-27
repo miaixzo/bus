@@ -44,6 +44,7 @@ import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Optional;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.TimeoutException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Http;
@@ -1152,7 +1153,7 @@ public class SlackRealmAdapter implements VendorAdapter {
     private Url url(final String targetName, final String id) {
         final Url base = target(targetName).url();
         return Url.builder().scheme(base.scheme()).host(base.host()).path(
-                base.path() + "/"
+                base.path() + Symbol.SLASH
                         + RFC3986.SEGMENT.encode(requireText(id, "Slack SCIM resource identifier"), Charset.UTF_8))
                 .build();
     }

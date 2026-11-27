@@ -392,7 +392,7 @@ final class CloudProtocol {
                 return map;
             }
         } catch (RuntimeException ignored) {
-            /* Never expose backend payload or parser diagnostics. */
+            // Never expose backend payload or parser diagnostics.
         }
         throw new CryptoException("Secret backend is unavailable");
     }

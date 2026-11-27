@@ -26,6 +26,7 @@ import org.springframework.http.server.PathContainer;
 import org.springframework.web.util.pattern.PathPattern;
 import org.springframework.web.util.pattern.PathPatternParser;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.errors.ErrorDecision;
 import org.miaixz.bus.errors.ErrorType;
 import org.miaixz.bus.errors.policy.ErrorPolicyCompiler;
@@ -120,7 +121,8 @@ public final class HttpErrorPolicy {
     private HttpErrorPolicy(List<String> prefixes, Set<Integer> statuses, String cacheControl, PolicySnapshot snapshot,
             boolean statusOnly) {
         if ((prefixes.isEmpty() && snapshot.rules().isEmpty()) || prefixes.stream().anyMatch(
-                prefix -> !(statusOnly && "/".equals(prefix)) && !ErrorPolicyCompiler.isLiteralPrefix(prefix))) {
+                prefix -> !(statusOnly && Symbol.SLASH.equals(prefix))
+                        && !ErrorPolicyCompiler.isLiteralPrefix(prefix))) {
             throw new IllegalArgumentException(
                     statusOnly ? "bus.errors.routing.path-prefixes requires / or literal slash-terminated paths"
                             : "route-errors.path-prefixes requires literal paths starting and ending with /");
@@ -132,13 +134,13 @@ public final class HttpErrorPolicy {
                     statusOnly ? "bus.errors.routing.statuses requires at least one HTTP status from 400 through 599"
                             : "route-errors.statuses requires at least one 4xx HTTP status");
         }
-        if (cacheControl.indexOf('\r') >= 0 || cacheControl.indexOf('\n') >= 0) {
+        if (cacheControl.indexOf(Symbol.C_CR) >= 0 || cacheControl.indexOf(Symbol.C_LF) >= 0) {
             throw new IllegalArgumentException(
                     statusOnly ? "Invalid bus.errors.routing.cache-control" : "Invalid route-errors.cache-control");
         }
-        this.matchAll = statusOnly && prefixes.contains("/");
+        this.matchAll = statusOnly && prefixes.contains(Symbol.SLASH);
         this.statusOnly = statusOnly;
-        this.prefixes = prefixes.stream().filter(prefix -> !"/".equals(prefix))
+        this.prefixes = prefixes.stream().filter(prefix -> !Symbol.SLASH.equals(prefix))
                 .map(PathPatternParser.defaultInstance::parse).toList();
         this.statuses = Set.copyOf(statuses);
         this.cacheControl = cacheControl;

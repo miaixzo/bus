@@ -243,7 +243,7 @@ class LZWEncoder {
      */
     void compress(int init_bits, OutputStream outs) throws IOException {
         int fcode;
-        int i /* = 0 */;
+        int i; // = 0
         int c;
         int ent;
         int disp;

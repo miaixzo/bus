@@ -100,23 +100,22 @@ public class Disklabel {
             } else if (line.contains(duidMarker)) {
                 duid = Parsing.getTextAfterString(line, duidMarker).trim();
             }
-            /*-
-            16 partitions:
-            #                size           offset  fstype [fsize bsize   cpg]
-              a:          2097152             1024  4.2BSD   2048 16384 12958 # /
-              b:         17023368          2098176    swap                    # none
-              c:        500118192                0  unused
-              d:          8388576         19121568  4.2BSD   2048 16384 12958 # /tmp
-              e:         41386752         27510144  4.2BSD   2048 16384 12958 # /var
-              f:          4194304         68896896  4.2BSD   2048 16384 12958 # /usr
-              g:          2097152         73091200  4.2BSD   2048 16384 12958 # /usr/X11R6
-              h:         20971520         75188352  4.2BSD   2048 16384 12958 # /usr/local
-              i:              960               64   MSDOS
-              j:          4194304         96159872  4.2BSD   2048 16384 12958 # /usr/src
-              k:         12582912        100354176  4.2BSD   2048 16384 12958 # /usr/obj
-              l:        387166336        112937088  4.2BSD   4096 32768 26062 # /home
-             Note size is in sectors
-             */
+            // -
+            // 16 partitions:
+            // # size offset fstype [fsize bsize cpg]
+            // a: 2097152 1024 4.2BSD 2048 16384 12958 # /
+            // b: 17023368 2098176 swap # none
+            // c: 500118192 0 unused
+            // d: 8388576 19121568 4.2BSD 2048 16384 12958 # /tmp
+            // e: 41386752 27510144 4.2BSD 2048 16384 12958 # /var
+            // f: 4194304 68896896 4.2BSD 2048 16384 12958 # /usr
+            // g: 2097152 73091200 4.2BSD 2048 16384 12958 # /usr/X11R6
+            // h: 20971520 75188352 4.2BSD 2048 16384 12958 # /usr/local
+            // i: 960 64 MSDOS
+            // j: 4194304 96159872 4.2BSD 2048 16384 12958 # /usr/src
+            // k: 12582912 100354176 4.2BSD 2048 16384 12958 # /usr/obj
+            // l: 387166336 112937088 4.2BSD 4096 32768 26062 # /home
+            // Note size is in sectors
             if (line.trim().indexOf(Symbol.C_COLON) == 1) {
                 // partition table values have a single letter followed by a colon
                 String[] split = Pattern.SPACES_PATTERN.split(line.trim(), 9);

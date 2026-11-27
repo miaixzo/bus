@@ -46,6 +46,7 @@ import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Optional;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.TimeoutException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Http;
@@ -332,7 +333,7 @@ public class FeishuRealmAdapter implements VendorAdapter {
             if (!checked.equals(RFC3986.SEGMENT.encode(checked, Charset.UTF_8))) {
                 throw new ValidateException("Feishu path segment contains a character outside RFC 3986 segment syntax");
             }
-            path.append('/').append(checked);
+            path.append(Symbol.C_SLASH).append(checked);
         }
         return endpoint.url().newBuilder().path(path.toString()).build();
     }

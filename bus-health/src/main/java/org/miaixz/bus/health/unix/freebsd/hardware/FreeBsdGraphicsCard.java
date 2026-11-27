@@ -155,17 +155,29 @@ final class FreeBsdGraphicsCard extends AbstractGraphicsCard {
      */
     private static final class PciDevice {
 
-        /** Whether the device belongs to the display class. */
+        /**
+         * Whether the device belongs to the display class.
+         */
         private boolean display;
-        /** Vendor identifier. */
+        /**
+         * Vendor identifier.
+         */
         private String vendorId = Normal.UNKNOWN;
-        /** Device identifier. */
+        /**
+         * Device identifier.
+         */
         private String deviceId = Normal.UNKNOWN;
-        /** Revision information. */
+        /**
+         * Revision information.
+         */
         private String versionInfo = Normal.UNKNOWN;
-        /** Vendor name. */
+        /**
+         * Vendor name.
+         */
         private String vendorName = Normal.EMPTY;
-        /** Device name. */
+        /**
+         * Device name.
+         */
         private String name = Normal.EMPTY;
 
         /**

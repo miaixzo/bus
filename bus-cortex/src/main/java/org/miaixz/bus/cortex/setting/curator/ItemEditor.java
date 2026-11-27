@@ -24,6 +24,8 @@ import java.util.*;
 import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.data.id.ID;
 import org.miaixz.bus.core.lang.EnumValue.Format;
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.PatternKit;
 import org.miaixz.bus.cortex.setting.item.Item;
 import org.miaixz.bus.cortex.setting.item.Item.Property;
@@ -76,7 +78,7 @@ public final class ItemEditor {
      * @return ancestry result
      */
     private static boolean ancestor(String parent, String child) {
-        return parent.isEmpty() || parent.equals(child) || child.startsWith(parent + "/");
+        return parent.isEmpty() || parent.equals(child) || child.startsWith(parent + Symbol.SLASH);
     }
 
     /**
@@ -159,7 +161,7 @@ public final class ItemEditor {
         Map<String, SecretAction> commands = actions == null ? Map.of() : Map.copyOf(actions);
         Map<String, Map<String, SecretAction>> attributeActions = new HashMap<>();
         commands.forEach((coordinate, action) -> {
-            if (coordinate.startsWith("#")) {
+            if (coordinate.startsWith(Symbol.HASH)) {
                 List<String> tokens = ItemCodec.attributePath(coordinate);
                 attributeActions.computeIfAbsent(tokens.getFirst(), ignored -> new TreeMap<>())
                         .put(tokens.get(1), action);
@@ -175,7 +177,8 @@ public final class ItemEditor {
         for (String name : names) {
             Property old = before == null ? null : before.properties().get(name),
                     fresh = incoming.properties().get(name);
-            String path = name.isEmpty() || name.startsWith("/") ? name : JsonSchema.pointer("", name);
+            String path = name.isEmpty() || name.startsWith(Symbol.SLASH) ? name
+                    : JsonSchema.pointer(Normal.EMPTY, name);
             JsonValue value = edit(
                     path,
                     "value",
@@ -226,7 +229,8 @@ public final class ItemEditor {
             });
         if (whole)
             properties.keySet().forEach(name -> {
-                String path = name.isEmpty() || name.startsWith("/") ? name : JsonSchema.pointer("", name);
+                String path = name.isEmpty() || name.startsWith(Symbol.SLASH) ? name
+                        : JsonSchema.pointer(Normal.EMPTY, name);
                 var rule = rules.get(path);
                 rules.put(path, new ItemCodec.Rule(JsonSchema.tokens(path), true, rule == null ? null : rule.schema()));
             });
@@ -390,7 +394,7 @@ public final class ItemEditor {
             if (sensitive.stream().anyMatch(p -> !p.equals(pointer) && ancestor(p, pointer) && ancestor(path, p)))
                 continue;
             String selected = ancestor(pointer, path) ? path : pointer, relative = selected.substring(path.length());
-            String command = selected + "/" + member;
+            String command = selected + Symbol.SLASH + member;
             SecretAction action = commands.get(command);
             JsonValue previous = relative.isEmpty() ? old : ItemCodec.at(old, relative),
                     candidate = relative.isEmpty() ? result : ItemCodec.at(result, relative);
@@ -488,8 +492,9 @@ public final class ItemEditor {
                                 && protection(stored) != ItemCodec.Protection.VALUES ? null : stored.getSchema(),
                         stored.getExtension());
         if (pointer == null
-                || pointer.isEmpty() && (document.properties().size() != 1 || !document.properties().containsKey(""))
-                || !pointer.isEmpty() && (!pointer.startsWith("/") || JsonSchema.tokens(pointer).isEmpty()))
+                || pointer.isEmpty()
+                        && (document.properties().size() != 1 || !document.properties().containsKey(Normal.EMPTY))
+                || !pointer.isEmpty() && (!pointer.startsWith(Symbol.SLASH) || JsonSchema.tokens(pointer).isEmpty()))
             throw new IllegalArgumentException("Exact value cell required");
         var values = document.values();
         var ancestors = document.rules().entrySet().stream()
@@ -540,7 +545,8 @@ public final class ItemEditor {
             ItemCodec.Document stored) {
         Map<String, Property> properties = new TreeMap<>();
         document.properties().forEach((name, property) -> {
-            String path = name.isEmpty() || name.startsWith("/") ? name : JsonSchema.pointer("", name);
+            String path = name.isEmpty() || name.startsWith(Symbol.SLASH) ? name
+                    : JsonSchema.pointer(Normal.EMPTY, name);
             Property old = previous == null ? null : previous.properties().get(name),
                     protectedOld = stored == null ? null : stored.properties().get(name);
             Property changed = property.with(
@@ -674,7 +680,7 @@ public final class ItemEditor {
     public ItemCodec.Protection protection(Item item) {
         if (!Integer.valueOf(1).equals(item.getEncrypted()))
             return ItemCodec.Protection.NONE;
-        if (item.getExtension() == null || !item.getExtension().stripLeading().startsWith("{"))
+        if (item.getExtension() == null || !item.getExtension().stripLeading().startsWith(Symbol.BRACE_LEFT))
             return ItemCodec.Protection.WHOLE;
         JsonValue raw = ItemCodec.tree(item.getExtension());
         if (raw instanceof JsonValue.ObjectValue root
@@ -704,7 +710,7 @@ public final class ItemEditor {
         candidate.setExtension(codec.extension(plain));
         Map<String, SecretAction> actions = new TreeMap<>();
         doc.properties().forEach((key, p) -> {
-            String path = key.isEmpty() || key.startsWith("/") ? key : JsonSchema.pointer("", key);
+            String path = key.isEmpty() || key.startsWith(Symbol.SLASH) ? key : JsonSchema.pointer(Normal.EMPTY, key);
             if (doc.protection() == ItemCodec.Protection.WHOLE) {
                 if (p.value() != null)
                     actions.put(path + "/value", SecretAction.REPLACE);
@@ -733,7 +739,8 @@ public final class ItemEditor {
         Set<String> names = new TreeSet<>(currentDocument.properties().keySet());
         names.addAll(doc.properties().keySet());
         for (String name : names) {
-            String path = name.isEmpty() || name.startsWith("/") ? name : JsonSchema.pointer("", name);
+            String path = name.isEmpty() || name.startsWith(Symbol.SLASH) ? name
+                    : JsonSchema.pointer(Normal.EMPTY, name);
             Set<String> selected = new TreeSet<>();
             if (currentDocument.protection() == ItemCodec.Protection.WHOLE)
                 selected.add(path);
@@ -759,7 +766,7 @@ public final class ItemEditor {
                             : member.equals("value") ? target.value() : target.defaultValue();
                     node = ItemCodec.at(node, protectedPath.substring(path.length()));
                     actions.put(
-                            protectedPath + "/" + member,
+                            protectedPath + Symbol.SLASH + member,
                             node == null ? SecretAction.DELETE : SecretAction.REPLACE);
                 }
         }

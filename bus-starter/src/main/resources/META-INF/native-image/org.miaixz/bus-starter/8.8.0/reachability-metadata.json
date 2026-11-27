@@ -1824,9 +1824,6 @@
   ],
   "resources": [
     {
-      "glob": "META-INF/spring.factories"
-    },
-    {
       "glob": "META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports"
     }
   ]

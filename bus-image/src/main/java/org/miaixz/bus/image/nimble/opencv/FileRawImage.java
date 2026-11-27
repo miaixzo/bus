@@ -24,6 +24,7 @@ import java.nio.file.Path;
 import java.util.Objects;
 import java.util.Optional;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
@@ -125,7 +126,7 @@ public record FileRawImage(Path path) {
      */
     @Override
     public String toString() {
-        return "FileRawImage[path=" + path + "]";
+        return "FileRawImage[path=" + path + Symbol.BRACKET_RIGHT;
     }
 
 }

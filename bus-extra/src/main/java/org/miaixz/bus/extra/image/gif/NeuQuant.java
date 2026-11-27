@@ -36,7 +36,7 @@ public class NeuQuant {
     /**
      * The number of colors used in the output palette.
      */
-    protected static final int netsize = 256; /* number of colours used */
+    protected static final int netsize = 256;
 
     /**
      * First of four primes near 500, used for sampling.
@@ -91,7 +91,9 @@ public class NeuQuant {
     /**
      * Gamma shift value.
      */
-    protected static final int gammashift = 10; /* gamma = 1024 */
+    protected static final int gammashift = 10; /*
+                                                 * gamma = 1024
+                                                 */
     /**
      * Gamma constant.
      */
@@ -224,7 +226,7 @@ public class NeuQuant {
             network[i] = new int[4];
             p = network[i];
             p[0] = p[1] = p[2] = (i << (netbiasshift + 8)) / netsize;
-            freq[i] = intbias / netsize; /* 1/netsize */
+            freq[i] = intbias / netsize; // 1/netsize
             bias[i] = 0;
         }
     }
@@ -265,17 +267,17 @@ public class NeuQuant {
         for (i = 0; i < netsize; i++) {
             p = network[i];
             smallpos = i;
-            smallval = p[1]; /* index on g */
-            /* find smallest in i..netsize-1 */
+            smallval = p[1]; // index on g
+            // find smallest in i..netsize-1
             for (j = i + 1; j < netsize; j++) {
                 q = network[j];
-                if (q[1] < smallval) { /* index on g */
+                if (q[1] < smallval) { // index on g
                     smallpos = j;
-                    smallval = q[1]; /* index on g */
+                    smallval = q[1]; // index on g
                 }
             }
             q = network[smallpos];
-            /* swap p (i) and q (smallpos) entries */
+            // swap p (i) and q (smallpos) entries
             if (i != smallpos) {
                 j = q[0];
                 q[0] = p[0];
@@ -290,7 +292,7 @@ public class NeuQuant {
                 q[3] = p[3];
                 p[3] = j;
             }
-            /* smallval entry is now in position i */
+            // smallval entry is now in position i
             if (smallval != previouscol) {
                 netindex[previouscol] = (startpos + i) >> 1;
                 for (j = previouscol + 1; j < smallval; j++)
@@ -301,7 +303,7 @@ public class NeuQuant {
         }
         netindex[previouscol] = (startpos + maxnetpos) >> 1;
         for (j = previouscol + 1; j < 256; j++)
-            netindex[j] = maxnetpos; /* really 256 */
+            netindex[j] = maxnetpos; // really 256
     }
 
     /**
@@ -358,7 +360,7 @@ public class NeuQuant {
 
             altersingle(alpha, j, b, g, r);
             if (rad != 0)
-                alterneigh(rad, j, b, g, r); /* alter neighbours */
+                alterneigh(rad, j, b, g, r); // alter neighbours
 
             pix += step;
             if (pix >= lim)
@@ -394,17 +396,17 @@ public class NeuQuant {
         int[] p;
         int best;
 
-        bestd = 1000; /* biggest possible dist is 256*3 */
+        bestd = 1000; // biggest possible dist is 256*3
         best = -1;
-        i = netindex[g]; /* index on g */
-        j = i - 1; /* start at netindex[g] and work outwards */
+        i = netindex[g]; // index on g
+        j = i - 1; // start at netindex[g] and work outwards
 
         while ((i < netsize) || (j >= 0)) {
             if (i < netsize) {
                 p = network[i];
-                dist = p[1] - g; /* inx key */
+                dist = p[1] - g; // inx key
                 if (dist >= bestd)
-                    i = netsize; /* stop iter */
+                    i = netsize; // stop iter
                 else {
                     i++;
                     if (dist < 0)
@@ -427,9 +429,9 @@ public class NeuQuant {
             }
             if (j >= 0) {
                 p = network[j];
-                dist = g - p[1]; /* inx key - reverse dif */
+                dist = g - p[1]; // inx key - reverse dif
                 if (dist >= bestd)
-                    j = -1; /* stop iter */
+                    j = -1; // stop iter
                 else {
                     j--;
                     if (dist < 0)
@@ -478,7 +480,7 @@ public class NeuQuant {
             network[i][0] >>= netbiasshift;
             network[i][1] >>= netbiasshift;
             network[i][2] >>= netbiasshift;
-            network[i][3] = i; /* record colour no */
+            network[i][3] = i; // record colour no
         }
     }
 
@@ -540,7 +542,7 @@ public class NeuQuant {
      */
     protected void altersingle(int alpha, int i, int b, int g, int r) {
 
-        /* alter hit neuron */
+        // alter hit neuron
         int[] n = network[i];
         n[0] -= (alpha * (n[0] - b)) / initalpha;
         n[1] -= (alpha * (n[1] - g)) / initalpha;
@@ -558,10 +560,10 @@ public class NeuQuant {
      */
     protected int contest(int b, int g, int r) {
 
-        /* finds closest neuron (min dist) and updates freq */
-        /* finds best neuron (min dist-bias) and returns position */
-        /* for frequently chosen neurons, freq[i] is high and bias[i] is negative */
-        /* bias[i] = gamma*((1/netsize)-freq[i]) */
+        // finds closest neuron (min dist) and updates freq
+        // finds best neuron (min dist-bias) and returns position
+        // for frequently chosen neurons, freq[i] is high and bias[i] is negative
+        // bias[i] = gamma*((1/netsize)-freq[i])
 
         int i, dist, a, biasdist, betafreq;
         int bestpos, bestbiaspos, bestd, bestbiasd;

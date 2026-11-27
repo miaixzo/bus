@@ -27,6 +27,8 @@ import java.util.ListIterator;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.locks.ReentrantLock;
 
+import org.miaixz.bus.core.lang.Symbol;
+
 /**
  * Fixed-size slab that leases reusable {@link SliceBuffer} views from one backing {@link ByteBuffer}.
  *
@@ -286,7 +288,8 @@ public class SlabBuffer {
      */
     @Override
     public String toString() {
-        return "SlabBuffer{" + "availableSlices=" + availableSlices + ", releasedSlices=" + releasedSlices + '}';
+        return "SlabBuffer{" + "availableSlices=" + availableSlices + ", releasedSlices=" + releasedSlices
+                + Symbol.C_BRACE_RIGHT;
     }
 
 }

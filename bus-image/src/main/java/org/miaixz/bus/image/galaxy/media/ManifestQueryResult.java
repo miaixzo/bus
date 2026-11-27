@@ -215,7 +215,7 @@ public class ManifestQueryResult extends Manifest {
     @Override
     public String toString() {
         return "ManifestQueryResult{" + "patientCount=" + getPatientCount() + ", wadoParameters=" + wadoParameters
-                + ", viewerMessageCount=" + viewerMessages.size() + '}';
+                + ", viewerMessageCount=" + viewerMessages.size() + Symbol.C_BRACE_RIGHT;
     }
 
 }

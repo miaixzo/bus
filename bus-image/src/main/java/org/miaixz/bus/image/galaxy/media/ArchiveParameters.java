@@ -306,9 +306,10 @@ public class ArchiveParameters {
      */
     @Override
     public String toString() {
-        return "ArchiveParameters{" + "archiveID='" + archiveID + '\'' + ", baseURL='" + baseURL + '\'' + ", webLogin='"
-                + webLogin + '\'' + ", additionalParameters='" + additionalParameters + '\'' + ", overrideTags="
-                + Arrays.toString(overrideDicomTagIDList) + ", httpTagCount=" + httpTags.size() + '}';
+        return "ArchiveParameters{" + "archiveID='" + archiveID + Symbol.C_SINGLE_QUOTE + ", baseURL='" + baseURL
+                + Symbol.C_SINGLE_QUOTE + ", webLogin='" + webLogin + Symbol.C_SINGLE_QUOTE + ", additionalParameters='"
+                + additionalParameters + Symbol.C_SINGLE_QUOTE + ", overrideTags="
+                + Arrays.toString(overrideDicomTagIDList) + ", httpTagCount=" + httpTags.size() + Symbol.C_BRACE_RIGHT;
     }
 
 }

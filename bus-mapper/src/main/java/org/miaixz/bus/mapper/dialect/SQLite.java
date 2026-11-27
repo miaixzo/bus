@@ -248,7 +248,7 @@ public class SQLite extends AbstractDialect {
     public List<IndexMeta> readIndexes(Connection connection, TableMeta table) throws SQLException {
         List<IndexMeta> indexes = super.readIndexes(connection, table);
         String name = unquote(table.table());
-        if (name.indexOf('.') >= 0
+        if (name.indexOf(Symbol.C_DOT) >= 0
                 || table.schema() != null && !MAIN_SCHEMA.equalsIgnoreCase(unquote(table.schema()))) {
             return indexes;
         }
@@ -258,7 +258,7 @@ public class SQLite extends AbstractDialect {
                 while (rows.next()) {
                     String indexName = rows.getString(1);
                     String definition = rows.getString(2);
-                    var filter = PARTIAL_FILTER.matcher(definition == null ? "" : definition);
+                    var filter = PARTIAL_FILTER.matcher(definition == null ? Normal.EMPTY : definition);
                     String predicate = filter.find() ? IndexMeta.integerEquality(filter.group(1)) : null;
                     for (IndexMeta index : indexes) {
                         if (index.name().equals(indexName)) {

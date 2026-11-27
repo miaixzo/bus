@@ -36,8 +36,10 @@ module bus.spring {
     requires java.sql;
 
     requires bus.core;
+    requires bus.cortex;
     requires bus.errors;
     requires bus.extra;
+    requires bus.fabric;
     requires bus.logger;
 
     requires static jakarta.servlet;

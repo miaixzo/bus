@@ -46,6 +46,7 @@ import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Optional;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.TimeoutException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Http;
@@ -172,7 +173,7 @@ public class GitHubRealmAdapter implements VendorAdapter {
      * @return whether the relation is next
      */
     private static boolean nextRelation(final String parameters) {
-        for (String parameter : parameters.split(";")) {
+        for (String parameter : parameters.split(Symbol.SEMICOLON)) {
             final String normalized = StringKit.toLowerCase(StringKit.trim(parameter));
             if ("rel=next".equals(normalized) || "rel=\"next\"".equals(normalized)) {
                 return true;
@@ -1386,9 +1387,9 @@ public class GitHubRealmAdapter implements VendorAdapter {
             final int current) {
         Integer selected = null;
         for (String header : headers.values(Http.Header.LINK)) {
-            for (String element : header.split(",")) {
-                final int opening = element.indexOf('<');
-                final int closing = element.indexOf('>', opening + 1);
+            for (String element : header.split(Symbol.COMMA)) {
+                final int opening = element.indexOf(Symbol.C_LT);
+                final int closing = element.indexOf(Symbol.C_GT, opening + 1);
                 final String parameters = closing < 0 ? element : element.substring(closing + 1);
                 if (!nextRelation(parameters)) {
                     continue;
@@ -1422,7 +1423,8 @@ public class GitHubRealmAdapter implements VendorAdapter {
         final Url candidate = Url.parse(requireText(value, "GitHub continuation URL"));
         final Url base = target(Builder.REALM_GROUPS).url();
         final String expectedPath = phase == Phase.TEAMS ? base.path()
-                : base.path() + "/" + RFC3986.SEGMENT.encode(requireText(parent, "GitHub Team slug"), Charset.UTF_8)
+                : base.path() + Symbol.SLASH
+                        + RFC3986.SEGMENT.encode(requireText(parent, "GitHub Team slug"), Charset.UTF_8)
                         + (phase == Phase.TEAM_MEMBERS ? "/memberships" : "/organizations");
         if (!Protocol.HTTPS.getName().equalsIgnoreCase(candidate.scheme()) || candidate.port() != Port._443.getPort()
                 || !base.host().equals(candidate.host())
@@ -1455,7 +1457,8 @@ public class GitHubRealmAdapter implements VendorAdapter {
         final Url base = target(targetName).url();
         final StringBuilder path = new StringBuilder(base.path());
         for (String segment : segments) {
-            path.append('/').append(RFC3986.SEGMENT.encode(requireText(segment, "GitHub path segment"), Charset.UTF_8));
+            path.append(Symbol.C_SLASH)
+                    .append(RFC3986.SEGMENT.encode(requireText(segment, "GitHub path segment"), Charset.UTF_8));
         }
         final UrlBuilder builder = Url.builder().scheme(base.scheme()).host(base.host()).path(path.toString());
         query.forEach(builder::query);

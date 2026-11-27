@@ -23,6 +23,7 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.util.Objects;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.CloneException;
 
 /**
@@ -130,7 +131,7 @@ public class Pair<L, R> implements Serializable, Cloneable {
      */
     @Override
     public String toString() {
-        return "Pair{" + "left=" + left + ", right=" + right + '}';
+        return "Pair{" + "left=" + left + ", right=" + right + Symbol.C_BRACE_RIGHT;
     }
 
     /**

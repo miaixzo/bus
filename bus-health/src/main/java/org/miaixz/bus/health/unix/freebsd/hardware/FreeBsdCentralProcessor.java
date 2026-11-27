@@ -208,14 +208,22 @@ final class FreeBsdCentralProcessor extends AbstractCentralProcessor {
         return cpus;
     }
 
-    /** A CPU group from the scheduler topology specification. */
+    /**
+     * A CPU group from the scheduler topology specification.
+     */
     private static final class TopologyGroup {
 
-        /** Nesting level. */
+        /**
+         * Nesting level.
+         */
         private final int level;
-        /** CPUs in the group. */
+        /**
+         * CPUs in the group.
+         */
         private final List<Integer> cpus = new ArrayList<>();
-        /** Whether the group represents hardware threads of one core. */
+        /**
+         * Whether the group represents hardware threads of one core.
+         */
         private boolean thread;
 
         /**

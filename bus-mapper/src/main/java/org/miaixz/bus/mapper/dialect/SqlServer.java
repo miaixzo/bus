@@ -29,6 +29,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.regex.Pattern;
 
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.mapper.Charter.Behavior;
 import org.miaixz.bus.mapper.Charter.Modify;
@@ -198,7 +199,7 @@ public class SqlServer extends AbstractDialect {
                     IndexMeta index = filtered.get(name);
                     if (index == null) {
                         String filter = rows.getString(2);
-                        var match = FILTER.matcher(filter == null ? "" : filter.strip());
+                        var match = FILTER.matcher(filter == null ? Normal.EMPTY : filter.strip());
                         String predicate = match.matches()
                                 ? IndexMeta.integerEquality(match.group(1) + " = " + match.group(2))
                                 : null;

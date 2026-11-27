@@ -382,14 +382,14 @@ public class Props extends Properties implements TypeGetter<CharSequence> {
                 @Serial
                 private static final long serialVersionUID = 2552552161081L;
 
+                /**
+                 * Called when the watched file is modified. Reloads the properties from the file.
+                 *
+                 * @param event the watch event that occurred
+                 * @param key   the watch key representing the directory being watched
+                 */
                 @Override
                 public void onModify(final WatchEvent<?> event, final WatchKey key) {
-                    /**
-                     * Called when the watched file is modified. Reloads the properties from the file.
-                     *
-                     * @param event the watch event that occurred
-                     * @param key   the watch key representing the directory being watched
-                     */
                     Logger.info(
                             true,
                             "Setting",

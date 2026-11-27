@@ -22,6 +22,7 @@ package org.miaixz.bus.core.lang.reflect.kotlin;
 import java.lang.reflect.Method;
 import java.util.Objects;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.ClassKit;
 import org.miaixz.bus.core.xyz.MethodKit;
 
@@ -140,7 +141,7 @@ public class KParameter {
      */
     @Override
     public String toString() {
-        return "KotlinParameter{" + "name='" + name + '\'' + ", type=" + type + '}';
+        return "KotlinParameter{" + "name='" + name + Symbol.C_SINGLE_QUOTE + ", type=" + type + Symbol.C_BRACE_RIGHT;
     }
 
 }

@@ -25,6 +25,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.bind.DefaultValue;
 import org.springframework.validation.annotation.Validated;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.starter.GeniusBuilder;
 
 /**
@@ -139,7 +140,7 @@ public class SensitiveProperties {
          */
         @Override
         public String toString() {
-            return "Encrypt[key=***, type=" + type + "]";
+            return "Encrypt[key=***, type=" + type + Symbol.BRACKET_RIGHT;
         }
 
     }
@@ -179,7 +180,7 @@ public class SensitiveProperties {
          */
         @Override
         public String toString() {
-            return "Decrypt[key=***, type=" + type + "]";
+            return "Decrypt[key=***, type=" + type + Symbol.BRACKET_RIGHT;
         }
 
     }

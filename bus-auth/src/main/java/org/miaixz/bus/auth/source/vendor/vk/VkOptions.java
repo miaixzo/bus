@@ -32,6 +32,7 @@ import org.miaixz.bus.auth.source.vendor.Vendor;
 import org.miaixz.bus.auth.source.vendor.VendorOptions;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Optional;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Protocol;
 
@@ -163,7 +164,7 @@ public record VkOptions(Vendor.Id vendor, Vendor.Variant variant, String clientI
     @Override
     public String toString() {
         return "VkOptions[vendor=" + vendor + Builder.VARIANT + variant + Builder.REDACTED_SOURCE_OPTIONS + scopes
-                + "]";
+                + Symbol.BRACKET_RIGHT;
     }
 
 }

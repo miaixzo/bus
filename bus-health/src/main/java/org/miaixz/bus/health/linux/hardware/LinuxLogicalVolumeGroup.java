@@ -27,6 +27,7 @@ import com.sun.jna.platform.linux.Udev;
 
 import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.health.Builder;
 import org.miaixz.bus.health.Executor;
@@ -133,7 +134,7 @@ public class LinuxLogicalVolumeGroup extends AbstractLogicalVolumeGroup {
                                         File[] slaves = slavesDir.listFiles();
                                         if (slaves != null) {
                                             for (File f : slaves) {
-                                                String pvName = f.getName().replace('!', '/');
+                                                String pvName = f.getName().replace(Symbol.C_NOT, Symbol.C_SLASH);
                                                 lvMapForGroup.computeIfAbsent(lv, k -> new HashSet<>())
                                                         .add(DevPath.NODE_ROOT + pvName);
                                                 // Backup to add to pv set if pvs command failed
@@ -229,7 +230,7 @@ public class LinuxLogicalVolumeGroup extends AbstractLogicalVolumeGroup {
         File[] slaves = new File(syspath + "/slaves").listFiles();
         if (slaves != null) {
             for (File slave : slaves) {
-                String pvName = DevPath.NODE_ROOT + slave.getName().replace('!', '/');
+                String pvName = DevPath.NODE_ROOT + slave.getName().replace(Symbol.C_NOT, Symbol.C_SLASH);
                 lvMap.computeIfAbsent(lvName, key -> new HashSet<>()).add(pvName);
                 pvSet.add(pvName);
             }

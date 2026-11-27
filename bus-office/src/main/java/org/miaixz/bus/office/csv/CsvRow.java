@@ -24,6 +24,7 @@ import java.util.*;
 import org.miaixz.bus.core.bean.copier.CopyOptions;
 import org.miaixz.bus.core.center.list.ListWrapper;
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.BeanKit;
 
 /**
@@ -136,29 +137,29 @@ public class CsvRow extends ListWrapper<String> {
         final StringBuilder sb = new StringBuilder("CsvRow{");
         sb.append("originalLineNumber=");
         sb.append(originalLineNumber);
-        sb.append(",").append(" ");
+        sb.append(Symbol.COMMA).append(Symbol.SPACE);
 
         sb.append("fields=");
         if (headerMap != null) {
-            sb.append('{');
+            sb.append(Symbol.C_BRACE_LEFT);
             for (final Iterator<Map.Entry<String, String>> it = getFieldMap().entrySet().iterator(); it.hasNext();) {
 
                 final Map.Entry<String, String> entry = it.next();
                 sb.append(entry.getKey());
-                sb.append('=');
+                sb.append(Symbol.C_EQUAL);
                 if (entry.getValue() != null) {
                     sb.append(entry.getValue());
                 }
                 if (it.hasNext()) {
-                    sb.append(",").append(" ");
+                    sb.append(Symbol.COMMA).append(Symbol.SPACE);
                 }
             }
-            sb.append('}');
+            sb.append(Symbol.C_BRACE_RIGHT);
         } else {
             sb.append(this.raw.toString());
         }
 
-        sb.append('}');
+        sb.append(Symbol.C_BRACE_RIGHT);
         return sb.toString();
     }
 

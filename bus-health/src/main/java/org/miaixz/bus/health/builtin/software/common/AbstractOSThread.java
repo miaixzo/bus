@@ -23,6 +23,7 @@ import java.util.Locale;
 
 import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.Memoizer;
 import org.miaixz.bus.health.builtin.software.OSProcess;
@@ -293,7 +294,7 @@ public abstract class AbstractOSThread implements OSThread {
                 + getUserTime() + ", upTime=" + getUpTime() + ", startTime=" + getStartTime()
                 + ", startMemoryAddress=0x" + String.format(Locale.ROOT, "%x", getStartMemoryAddress())
                 + ", contextSwitches=" + getContextSwitches() + ", minorFaults=" + getMinorFaults() + ", majorFaults="
-                + getMajorFaults() + "]";
+                + getMajorFaults() + Symbol.BRACKET_RIGHT;
     }
 
 }

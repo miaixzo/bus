@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.health.builtin.software.common;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.builtin.software.OSFileStore;
 
@@ -191,7 +192,7 @@ public abstract class AbstractOSFileStore implements OSFileStore {
                 + getDescription() + ", fsType=" + getType() + ", options=\"" + getOptions() + "\", uuid=" + getUUID()
                 + ", isLocal=" + isLocal() + ", freeSpace=" + getFreeSpace() + ", usableSpace=" + getUsableSpace()
                 + ", totalSpace=" + getTotalSpace() + ", freeInodes=" + getFreeInodes() + ", totalInodes="
-                + getTotalInodes() + "]";
+                + getTotalInodes() + Symbol.BRACKET_RIGHT;
     }
 
 }

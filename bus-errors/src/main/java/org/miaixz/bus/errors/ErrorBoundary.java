@@ -25,6 +25,7 @@ import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.regex.Pattern;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.errors.internal.ErrorIncident;
 import org.miaixz.bus.errors.internal.ThrowableNormalizer;
 import org.miaixz.bus.errors.policy.ErrorLogPolicy;
@@ -294,7 +295,7 @@ public final class ErrorBoundary {
                 String owner = safeToken(frame.getClassName());
                 String method = safeToken(frame.getMethodName());
                 if (owner != null && method != null) {
-                    frames.add(owner + "." + method + ":" + frame.getLineNumber());
+                    frames.add(owner + Symbol.DOT + method + Symbol.COLON + frame.getLineNumber());
                 }
             }
         }

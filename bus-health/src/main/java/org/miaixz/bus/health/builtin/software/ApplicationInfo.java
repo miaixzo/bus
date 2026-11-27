@@ -24,6 +24,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.health.Parsing;
 
 /**
@@ -170,7 +171,7 @@ public class ApplicationInfo {
     @Override
     public String toString() {
         return "AppInfo{" + "name=" + name + ", version=" + version + ", vendor=" + vendor + ", timestamp=" + timestamp
-                + ", additionalInfo=" + additionalInfo + '}';
+                + ", additionalInfo=" + additionalInfo + Symbol.C_BRACE_RIGHT;
     }
 
 }

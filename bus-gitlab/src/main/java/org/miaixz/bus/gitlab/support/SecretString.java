@@ -21,6 +21,8 @@ package org.miaixz.bus.gitlab.support;
 
 import java.util.Arrays;
 
+import org.miaixz.bus.core.lang.Symbol;
+
 /**
  * This class implements a CharSequence that can be cleared of it's contained characters. This class is utilized to pass
  * around secrets (passwords) instead of a String instance.
@@ -121,7 +123,7 @@ public class SecretString implements CharSequence, AutoCloseable {
      * Clear the contents of this SecretString instance by setting each character to 0.
      */
     public void clear() {
-        Arrays.fill(chars, '\0');
+        Arrays.fill(chars, Symbol.C_NUL);
     }
 
 }

@@ -394,9 +394,11 @@ public class GuardConfig {
     public record Admission(String path, Set<String> origins, String directGetParameter,
             boolean localReadWithoutIdentity) {
 
-        /** Creates an endpoint admission rule with an immutable origin allowlist. */
+        /**
+         * Creates an endpoint admission rule with an immutable origin allowlist.
+         */
         public Admission {
-            if (path == null || !path.startsWith("/")) {
+            if (path == null || !path.startsWith(Symbol.SLASH)) {
                 throw new IllegalArgumentException("Service admission requires a context-relative path");
             }
             if (localReadWithoutIdentity && (directGetParameter == null || directGetParameter.isBlank())) {

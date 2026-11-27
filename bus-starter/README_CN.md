@@ -41,8 +41,7 @@ Spring Boot 通过以下方式发现候选人：
 META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports
 ```
 
-早期启动侦听器和环境处理器通过 Starter 拥有的单一注册
-`META-INF/spring.factories` 文件。 `bus-spring` 提供了可重用的实现，但没有发布竞争的 发现资源。
+`bus-spring` 提供早期启动监听器和环境处理器，并通过它的 `META-INF/spring.factories` 注册。
 
 根包包含两个主要类：
 
@@ -52,6 +51,16 @@ META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports
 | `GeniusStarter` | 注册共享 Spring Bean 服务和应用程序上下文拥有的运行时上下文基础结构。 |
 
 因此，根包仍然有意义且非空。
+
+### 从 Cortex 加载启动配置
+
+在现有 `bus.cortex.config` 配置 Vortex 的 HTTPS `endpoint`、与注册一致的 `app.id` 和应用读取凭据 `token`。Spring Boot 装配本地配置后，Cortex 通过 Fabric 请求 `GET /router/sdc?app_id=<app-id>&configs=all`。现有 Starter 和项目属性类直接绑定已发布的 Spring 属性，无需额外声明前缀。
+
+使用私有 CA 时，设置 `bus.cortex.config.ca.file`。有加密配置项时，通过 `bus.cortex.config.secret.key.file` 提供应用交付密钥。可用 `bus.cortex.config.fallback.location` 指定单文档 YAML 或 Properties 的绝对 `file:` URI。远程暂时不可用或已注册应用尚未发布时，Cortex 读取该文件。认证、TLS 和配置校验失败会中止启动。
+
+### 冲突与更新
+
+把由 Cortex 交付的属性从普通应用配置中迁出。Spring 用选定的快照初始化这些属性。重新发布后，通过重新启动应用加载新版本。
 
 ## 默认启用的基础设施
 
@@ -562,7 +571,7 @@ Abarth 元数据审计根据以下内容解析每个配置的类、构造函数�
 - 将可重用机制保留在 `bus-spring` 中，并将域行为保留在所属Bus模块中。
 - 不要在 Starter 下引入 `internal` 包。
 - 按 Bean 类型或记录的 Bean 名称覆盖默认值。
-- 保持 `AutoConfiguration.imports`、`spring.factories`、模块描述符和可达性元数据与类保持一致 重命名。
+- 类重命名时，同步更新 `AutoConfiguration.imports`、模块描述符和可达性元数据。
 
 ## 验证边界
 

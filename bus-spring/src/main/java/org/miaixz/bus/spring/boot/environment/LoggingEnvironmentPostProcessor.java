@@ -58,7 +58,7 @@ public class LoggingEnvironmentPostProcessor implements EnvironmentPostProcessor
      * Property that controls whether Bus logging pattern defaults are contributed.
      */
     private static final ConfigurationPropertyName PATTERN_DEFAULTS = ConfigurationPropertyName
-            .of(EnvironmentKeys.BUS_LOGGING_PATTERN_DEFAULTS);
+            .of(BootEnvironmentPropertyRegistry.BUS_LOGGING_PATTERN_DEFAULTS);
 
     /**
      * Default console logging pattern.
@@ -76,7 +76,7 @@ public class LoggingEnvironmentPostProcessor implements EnvironmentPostProcessor
      * Source namespace for Bus logging properties.
      */
     private static final ConfigurationPropertyName SOURCE_NAMESPACE = ConfigurationPropertyName
-            .of(EnvironmentKeys.BUS_LOGGING_PREFIX);
+            .of(BootEnvironmentPropertyRegistry.BUS_LOGGING_PREFIX);
 
     /**
      * Source namespace element count.
@@ -145,8 +145,8 @@ public class LoggingEnvironmentPostProcessor implements EnvironmentPostProcessor
         }
 
         Map<String, Object> defaults = new LinkedHashMap<>();
-        defaults.put(EnvironmentKeys.LOGGING_PATTERN_CONSOLE, CONSOLE_PATTERN);
-        defaults.put(EnvironmentKeys.LOGGING_PATTERN_FILE, FILE_PATTERN);
+        defaults.put(BootEnvironmentPropertyRegistry.LOGGING_PATTERN_CONSOLE, CONSOLE_PATTERN);
+        defaults.put(BootEnvironmentPropertyRegistry.LOGGING_PATTERN_FILE, FILE_PATTERN);
         propertySources.addLast(new MapPropertySource(DEFAULTS_PROPERTY_SOURCE, defaults));
     }
 
@@ -178,7 +178,7 @@ public class LoggingEnvironmentPostProcessor implements EnvironmentPostProcessor
      * @return target Spring Boot logging property name
      */
     private String getTargetName(ConfigurationPropertyName name) {
-        StringBuilder targetName = new StringBuilder(EnvironmentKeys.LOGGING_PREFIX);
+        StringBuilder targetName = new StringBuilder(BootEnvironmentPropertyRegistry.LOGGING_PREFIX);
         for (int i = SOURCE_NAMESPACE_ELEMENTS; i < name.getNumberOfElements(); i++) {
             if (i > SOURCE_NAMESPACE_ELEMENTS) {
                 targetName.append(Symbol.C_DOT);
@@ -195,7 +195,7 @@ public class LoggingEnvironmentPostProcessor implements EnvironmentPostProcessor
      */
     @Override
     public int getOrder() {
-        return ConfigDataEnvironmentPostProcessor.ORDER + 1;
+        return ConfigDataEnvironmentPostProcessor.ORDER + 2;
     }
 
 }

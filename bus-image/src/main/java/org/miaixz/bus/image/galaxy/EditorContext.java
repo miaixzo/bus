@@ -24,6 +24,7 @@ import static org.miaixz.bus.image.nimble.Transcoder.getMaskedImage;
 import java.util.Objects;
 import java.util.Properties;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.image.Builder;
 import org.miaixz.bus.image.Node;
 import org.miaixz.bus.image.metric.Editable;
@@ -224,9 +225,10 @@ public class EditorContext {
      */
     @Override
     public String toString() {
-        return "EditorContext{" + "tsuid='" + tsuid + '\'' + ", sourceNode=" + sourceNode + ", destinationNode="
-                + destinationNode + ", abort=" + abort + ", abortMessage='" + abortMessage + '\'' + ", maskArea="
-                + maskArea + ", propertiesCount=" + properties.size() + '}';
+        return "EditorContext{" + "tsuid='" + tsuid + Symbol.C_SINGLE_QUOTE + ", sourceNode=" + sourceNode
+                + ", destinationNode=" + destinationNode + ", abort=" + abort + ", abortMessage='" + abortMessage
+                + Symbol.C_SINGLE_QUOTE + ", maskArea=" + maskArea + ", propertiesCount=" + properties.size()
+                + Symbol.C_BRACE_RIGHT;
     }
 
     /**

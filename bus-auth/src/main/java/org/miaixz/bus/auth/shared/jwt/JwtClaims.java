@@ -518,7 +518,7 @@ public class JwtClaims {
     @Override
     public String toString() {
         return "JwtClaims[registered=" + values().values().keySet().stream().filter(JwtClaims::registered).toList()
-                + ",extensions=" + extensions.values().keySet() + "]";
+                + ",extensions=" + extensions.values().keySet() + Symbol.BRACKET_RIGHT;
     }
 
     /**

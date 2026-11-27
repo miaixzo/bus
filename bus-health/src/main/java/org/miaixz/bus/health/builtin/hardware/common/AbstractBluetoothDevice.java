@@ -20,6 +20,7 @@
 package org.miaixz.bus.health.builtin.hardware.common;
 
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.Immutable;
 import org.miaixz.bus.health.builtin.hardware.BluetoothDevice;
 
@@ -213,7 +214,8 @@ public abstract class AbstractBluetoothDevice implements BluetoothDevice {
     @Override
     public String toString() {
         return "BluetoothDevice [name=" + name + ", address=" + address + ", class=" + majorDeviceClass + ", connected="
-                + connected + ", paired=" + paired + ", battery=" + batteryLevel + ", adapter=" + adapterName + "]";
+                + connected + ", paired=" + paired + ", battery=" + batteryLevel + ", adapter=" + adapterName
+                + Symbol.BRACKET_RIGHT;
     }
 
 }

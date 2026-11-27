@@ -558,7 +558,7 @@ public class LinuxHWDiskStore extends AbstractHWDiskStore {
      * @return The relative device path.
      */
     private static String toDevName(String sysfsName) {
-        return sysfsName.replace('!', Symbol.C_SLASH);
+        return sysfsName.replace(Symbol.C_NOT, Symbol.C_SLASH);
     }
 
     /**
@@ -568,7 +568,7 @@ public class LinuxHWDiskStore extends AbstractHWDiskStore {
      * @return The sysfs device name.
      */
     private static String toSysfsName(String devName) {
-        return devName.replace(Symbol.C_SLASH, '!');
+        return devName.replace(Symbol.C_SLASH, Symbol.C_NOT);
     }
 
     /**

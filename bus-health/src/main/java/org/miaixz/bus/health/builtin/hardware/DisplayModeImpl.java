@@ -23,6 +23,7 @@ import java.util.Locale;
 import java.util.Objects;
 
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.Immutable;
 
 /**
@@ -245,7 +246,7 @@ public final class DisplayModeImpl implements DisplayMode {
         if (this.rotation != Normal._0) {
             builder.append(", rotated ").append(this.rotation).append(" degrees");
         }
-        builder.append(" at (").append(this.x).append(',').append(this.y).append(')');
+        builder.append(" at (").append(this.x).append(Symbol.C_COMMA).append(this.y).append(Symbol.C_PARENTHESE_RIGHT);
         return builder.toString();
     }
 

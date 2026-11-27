@@ -50,11 +50,10 @@ public class Ls {
      */
     public static Map<String, Pair<Integer, Integer>> queryDeviceMajorMinor() {
         // Map major and minor from ls
-        /*-
-         $ ls -l /dev
-        brw-rw----  1 root system 10,  5 Sep 12  2017 hd2
-        brw-------  1 root system 20,  0 Jun 28  1970 hdisk0
-         */
+        // -
+        // $ ls -l /dev
+        // brw-rw---- 1 root system 10, 5 Sep 12 2017 hd2
+        // brw------- 1 root system 20, 0 Jun 28 1970 hdisk0
         Map<String, Pair<Integer, Integer>> majMinMap = new HashMap<>();
         for (String s : Executor.runNative("ls -l /dev")) {
             // Filter to block devices

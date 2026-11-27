@@ -307,8 +307,8 @@ public final class ItemCodec {
     public static String attributePath(String property, String attribute) {
         if (!isAttribute(attribute) || attribute.isBlank() || attribute.codePoints().anyMatch(Character::isISOControl))
             throw invalid("attribute");
-        return "#"
-                + JsonSchema.pointer(JsonSchema.pointer("", coordinate(Objects.requireNonNull(property))), attribute);
+        return Symbol.HASH + JsonSchema
+                .pointer(JsonSchema.pointer(Normal.EMPTY, coordinate(Objects.requireNonNull(property))), attribute);
     }
 
     /**
@@ -568,13 +568,13 @@ public final class ItemCodec {
             if (property.value() == null)
                 properties.put(name, property);
         });
-        if (names.containsKey(""))
-            importValue(values, "", "", previous, names, properties);
+        if (names.containsKey(Normal.EMPTY))
+            importValue(values, Normal.EMPTY, Normal.EMPTY, previous, names, properties);
         else
             values.values().forEach(
                     (name, value) -> importValue(
                             value,
-                            JsonSchema.pointer("", name),
+                            JsonSchema.pointer(Normal.EMPTY, name),
                             name,
                             previous,
                             names,
@@ -599,8 +599,8 @@ public final class ItemCodec {
             Document previous,
             NavigableMap<String, String> names,
             Map<String, Property> properties) {
-        String name = names.get(pointer), descendant = names.ceilingKey(pointer + "/");
-        boolean split = descendant != null && descendant.startsWith(pointer + "/");
+        String name = names.get(pointer), descendant = names.ceilingKey(pointer + Symbol.SLASH);
+        boolean split = descendant != null && descendant.startsWith(pointer + Symbol.SLASH);
         Property property = name == null ? null : previous.properties().get(name);
         if (property != null && (property.value() != null || !split)) {
             properties.put(name, property.with("value", value));
@@ -619,7 +619,7 @@ public final class ItemCodec {
         }
         if (split && value instanceof JsonValue.ArrayValue)
             throw invalid("pathContainer");
-        String target = name != null ? name : literal != null && !literal.startsWith("/") ? literal : pointer;
+        String target = name != null ? name : literal != null && !literal.startsWith(Symbol.SLASH) ? literal : pointer;
         properties.put(target, property == null ? new Property(Map.of("value", value)) : property.with("value", value));
     }
 
@@ -757,8 +757,9 @@ public final class ItemCodec {
             throw invalid("properties");
         StringBuilder out = new StringBuilder();
         object.values().forEach(
-                (k, v) -> out.append(k).append('=')
-                        .append(v instanceof JsonValue.StringValue text ? text.value() : encode(v)).append('\n'));
+                (k, v) -> out.append(k).append(Symbol.C_EQUAL)
+                        .append(v instanceof JsonValue.StringValue text ? text.value() : encode(v))
+                        .append(Symbol.C_LF));
         return out.toString();
     }
 

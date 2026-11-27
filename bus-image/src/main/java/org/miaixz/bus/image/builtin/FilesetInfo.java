@@ -23,6 +23,8 @@ import java.nio.file.Path;
 import java.util.Objects;
 import java.util.Optional;
 
+import org.miaixz.bus.core.lang.Symbol;
+
 /**
  * Represents information about a DICOM Fileset, including its UID, ID, descriptor file, and character set. This class
  * provides a structured way to store and access metadata related to a DICOM fileset.
@@ -219,8 +221,9 @@ public class FilesetInfo {
      */
     @Override
     public String toString() {
-        return "FilesetInfo{" + "uid='" + uid + '\'' + ", id='" + id + '\'' + ", descriptorFile=" + descriptorFile
-                + ", descriptorFileCharset='" + descriptorFileCharset + '\'' + '}';
+        return "FilesetInfo{" + "uid='" + uid + Symbol.C_SINGLE_QUOTE + ", id='" + id + Symbol.C_SINGLE_QUOTE
+                + ", descriptorFile=" + descriptorFile + ", descriptorFileCharset='" + descriptorFileCharset
+                + Symbol.C_SINGLE_QUOTE + Symbol.C_BRACE_RIGHT;
     }
 
 }

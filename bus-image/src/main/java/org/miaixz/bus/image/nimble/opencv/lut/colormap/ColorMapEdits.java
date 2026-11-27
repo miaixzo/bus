@@ -23,6 +23,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import org.miaixz.bus.core.lang.Symbol;
+
 /**
  * Whole-map edits an editor offers as single actions; every method returns a new map.
  *
@@ -51,7 +53,7 @@ public final class ColorMapEdits {
         double lo = domain.isRelative() ? Math.max(0.0, newMin) : newMin;
         double hi = domain.isRelative() ? Math.min(1.0, newMax) : newMax;
         if (!(hi > lo)) {
-            throw new IllegalArgumentException("Range must have max > min: [" + lo + ", " + hi + "]");
+            throw new IllegalArgumentException("Range must have max > min: [" + lo + ", " + hi + Symbol.BRACKET_RIGHT);
         }
         double scale = (hi - lo) / domain.span();
         var stops = new ArrayList<ColorStop>(map.stops().size());

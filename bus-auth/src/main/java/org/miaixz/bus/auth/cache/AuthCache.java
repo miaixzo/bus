@@ -137,12 +137,13 @@ public abstract class AuthCache<V> {
                 purposeName.indexOf(Symbol.C_BRACE_LEFT) >= 0 || purposeName.indexOf(Symbol.C_BRACE_RIGHT) >= 0,
                 "Authentication cache purpose must not contain Redis hash-tag braces");
         if (sourceId == null) {
-            return deploymentName + ":auth:" + purposeName + ":";
+            return deploymentName + ":auth:" + purposeName + Symbol.COLON;
         }
         final String source = Assert.notBlank(sourceId, "Authentication cache Source id must not be blank");
         Assert.isTrue(epoch >= 0L, "Authentication cache Source epoch must not be negative");
         final String sourceKey = Builder.sha256Hex(source);
-        return deploymentName + ":auth:source:" + sourceKey + ":epoch:" + epoch + ":" + purposeName + ":";
+        return deploymentName + ":auth:source:" + sourceKey + ":epoch:" + epoch + Symbol.COLON + purposeName
+                + Symbol.COLON;
     }
 
     /**

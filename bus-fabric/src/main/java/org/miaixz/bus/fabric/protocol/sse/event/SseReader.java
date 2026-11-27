@@ -210,7 +210,7 @@ public class SseReader implements AutoCloseable {
                 case Normal._3 -> {
                     seen = true;
                     final String value = value(valueStart, length);
-                    id = value.indexOf('\0') >= Normal._0 ? id : value;
+                    id = value.indexOf(Symbol.C_NUL) >= Normal._0 ? id : value;
                 }
                 case Normal._4 -> {
                     final Duration parsed = parseRetry(valueStart, length);
@@ -427,7 +427,7 @@ public class SseReader implements AutoCloseable {
                 case Normal._2 -> event = value(valueStart, length);
                 case Normal._3 -> {
                     final String value = value(valueStart, length);
-                    id = value.indexOf('\0') >= Normal._0 ? id : value;
+                    id = value.indexOf(Symbol.C_NUL) >= Normal._0 ? id : value;
                 }
                 case Normal._4 -> {
                     final Duration parsed = parseRetry(valueStart, length);

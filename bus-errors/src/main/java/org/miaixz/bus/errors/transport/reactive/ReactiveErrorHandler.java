@@ -35,6 +35,8 @@ import org.springframework.web.server.WebExceptionHandler;
 
 import org.miaixz.bus.core.basic.normal.ErrorCode;
 import org.miaixz.bus.core.center.function.SupplierX;
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.FunctionKit;
 import org.miaixz.bus.errors.*;
 import org.miaixz.bus.errors.ErrorDecision.Basis;
@@ -223,12 +225,11 @@ public final class ReactiveErrorHandler implements WebExceptionHandler {
      */
     private static final class UpstreamStatus extends ResponseStatusException {
 
-        /**
-         * Serialization version identifier.
-         */
         @java.io.Serial
         private static final long serialVersionUID = 1L;
-        /** Common media types that can be advertised without reflecting an upstream token. */
+        /**
+         * Common media types that can be advertised without reflecting an upstream token.
+         */
         private static final Set<String> PUBLIC_MEDIA = Set.of(
                 "application/json",
                 "application/xml",
@@ -237,7 +238,9 @@ public final class ReactiveErrorHandler implements WebExceptionHandler {
                 "multipart/form-data",
                 "text/event-stream",
                 "*/*");
-        /** Detached protocol hints with catalogued or numeric values. */
+        /**
+         * Detached protocol hints with catalogued or numeric values.
+         */
         private final transient HttpHeaders headers;
 
         /**
@@ -251,14 +254,14 @@ public final class ReactiveErrorHandler implements WebExceptionHandler {
             var safe = new HttpHeaders();
             if (status.value() == 405) {
                 for (String value : remote.getOrEmpty(HttpHeaders.ALLOW)) {
-                    Arrays.stream(value.split(",")).map(String::trim).filter(
+                    Arrays.stream(value.split(Symbol.COMMA)).map(String::trim).filter(
                             method -> Arrays.stream(HttpMethod.values()).anyMatch(known -> known.matches(method)))
                             .forEach(method -> safe.add(HttpHeaders.ALLOW, method));
                 }
             }
             if (status.value() == 415 || status.value() == 406) {
                 for (String value : remote.getOrEmpty(HttpHeaders.ACCEPT)) {
-                    Arrays.stream(value.split(",")).map(String::trim).filter(PUBLIC_MEDIA::contains)
+                    Arrays.stream(value.split(Symbol.COMMA)).map(String::trim).filter(PUBLIC_MEDIA::contains)
                             .forEach(media -> safe.add(HttpHeaders.ACCEPT, media));
                 }
             }
@@ -474,7 +477,7 @@ public final class ReactiveErrorHandler implements WebExceptionHandler {
         return writeResponse(exchange, operation, context, decision, failure, () -> {
             response.setStatusCode(outputStatus);
             if (error != null) {
-                HttpErrorResponse.empty(outputStatus, error.getHeaders(), "").headers()
+                HttpErrorResponse.empty(outputStatus, error.getHeaders(), Normal.EMPTY).headers()
                         .forEach((name, values) -> response.getHeaders().put(name, values));
             }
             if (outputStatus.value() == 503 && !response.getHeaders().containsHeader(HttpHeaders.RETRY_AFTER)) {

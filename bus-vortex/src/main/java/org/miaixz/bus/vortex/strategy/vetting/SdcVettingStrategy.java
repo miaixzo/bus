@@ -28,6 +28,7 @@ import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.UnsupportedMediaTypeStatusException;
 
 import org.miaixz.bus.core.Order;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.net.Http;
 import org.miaixz.bus.core.net.MediaType;
 import org.miaixz.bus.vortex.Args;
@@ -83,7 +84,7 @@ public class SdcVettingStrategy extends VettingStrategy {
             if (method == Http.Method.GET) {
                 for (String selector : List.of("routes", "configs")) {
                     if (input.queryNames().contains(selector)) {
-                        context.getParameters().putIfAbsent(selector, "");
+                        context.getParameters().putIfAbsent(selector, Normal.EMPTY);
                     }
                 }
             }

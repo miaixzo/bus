@@ -28,6 +28,7 @@ import org.springframework.boot.context.properties.bind.DefaultValue;
 import org.springframework.validation.annotation.Validated;
 
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.starter.GeniusBuilder;
 
 /**
@@ -95,7 +96,7 @@ public class DubboProperties {
     @Override
     public String toString() {
         return "DubboProperties[enabled=" + enabled + ", basePackages=" + Arrays.toString(basePackages)
-                + ", basePackageClasses=" + Arrays.toString(basePackageClasses) + "]";
+                + ", basePackageClasses=" + Arrays.toString(basePackageClasses) + Symbol.BRACKET_RIGHT;
     }
 
 }

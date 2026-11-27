@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.opencv.core;
 
+import org.miaixz.bus.core.lang.Symbol;
+
 /**
  * A detected image feature with its location, scale, orientation, response, octave, and class identifier.
  */
@@ -134,7 +136,7 @@ public class KeyPoint {
     @Override
     public String toString() {
         return "KeyPoint [pt=" + pt + ", size=" + size + ", angle=" + angle + ", response=" + response + ", octave="
-                + octave + ", class_id=" + class_id + "]";
+                + octave + ", class_id=" + class_id + Symbol.BRACKET_RIGHT;
     }
 
 }

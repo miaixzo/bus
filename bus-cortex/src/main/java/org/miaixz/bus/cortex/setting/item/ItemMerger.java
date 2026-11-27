@@ -21,6 +21,7 @@ package org.miaixz.bus.cortex.setting.item;
 
 import java.util.*;
 
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.cortex.setting.reference.Reference;
 import org.miaixz.bus.cortex.setting.reference.ReferenceCodec;
@@ -165,7 +166,7 @@ public final class ItemMerger {
                 value = layer(
                         value,
                         wrap(input.get(i).document().applicableDefaults(), options.get(i).prefix()),
-                        "",
+                        Normal.EMPTY,
                         input.get(i).key(),
                         true,
                         0);
@@ -185,14 +186,14 @@ public final class ItemMerger {
                             authorize(
                                     wrap(input.get(j).document().effective(), options.get(j).prefix()),
                                     addition,
-                                    "",
+                                    Normal.EMPTY,
                                     options.get(j),
                                     0);
-                value = layer(value, addition, "", source.key(), false, 0);
+                value = layer(value, addition, Normal.EMPTY, source.key(), false, 0);
                 if (usage.overlay() != null && !usage.overlay().values().isEmpty()) {
                     JsonValue overlay = wrap(usage.overlay(), usage.prefix());
-                    authorize(wrap(source.document().effective(), usage.prefix()), overlay, "", usage, 0);
-                    value = layer(value, overlay, "", source.key(), false, 0);
+                    authorize(wrap(source.document().effective(), usage.prefix()), overlay, Normal.EMPTY, usage, 0);
+                    value = layer(value, overlay, Normal.EMPTY, source.key(), false, 0);
                 }
                 JsonValue schema = source.document().schema();
                 if (schema != null) {
@@ -218,7 +219,7 @@ public final class ItemMerger {
                 for (var rule : input.get(i).document().rules().entrySet()) {
                     tick(0);
                     String path = options.get(i).prefix().isEmpty() ? rule.getKey()
-                            : JsonSchema.pointer("", options.get(i).prefix()) + rule.getKey();
+                            : JsonSchema.pointer(Normal.EMPTY, options.get(i).prefix()) + rule.getKey();
                     JsonValue selected = ItemCodec.at(value, path);
                     if (selected != null && rule.getValue().schema() != null && !JsonSchema
                             .validate(rule.getValue().schema(), selected, maximumDepth, maximumSteps - steps).isEmpty())
@@ -258,7 +259,7 @@ public final class ItemMerger {
             }
             if (before != null && defaults && !same(before, after))
                 throw new IllegalArgumentException("Conflicting defaults");
-            origins.keySet().removeIf(p -> p.equals(path) || p.startsWith(path + "/"));
+            origins.keySet().removeIf(p -> p.equals(path) || p.startsWith(path + Symbol.SLASH));
             origin(after, path, source, depth);
             return after;
         }
@@ -291,8 +292,9 @@ public final class ItemMerger {
                             depth + 1);
                 return;
             }
-            String prefix = policy.prefix().isEmpty() ? "" : JsonSchema.pointer("", policy.prefix());
-            String local = path.startsWith(prefix) ? path.substring(prefix.length()) : "";
+            String prefix = policy.prefix().isEmpty() ? Normal.EMPTY
+                    : JsonSchema.pointer(Normal.EMPTY, policy.prefix());
+            String local = path.startsWith(prefix) ? path.substring(prefix.length()) : Normal.EMPTY;
             if (policy.override() != ReferenceCodec.Override.ALL
                     && !(policy.override() == ReferenceCodec.Override.KEYS && policy.keys().contains(local)))
                 throw new IllegalArgumentException("Override denied");

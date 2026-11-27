@@ -29,6 +29,7 @@ import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
+import org.miaixz.bus.spring.boot.environment.EnvironmentSnapshotPropertySource;
 
 /**
  * Resolves the first configured datasource namespace from an ordered prefix list without creating connection pools.
@@ -55,6 +56,7 @@ public class DataSourceResolver {
      *
      * @param environment current Spring environment
      * @param prefixes    datasource prefixes in descending priority order
+     * @throws IllegalArgumentException if the environment is absent or the prefixes are empty, blank, or repeated
      */
     public DataSourceResolver(Environment environment, List<String> prefixes) {
         if (environment == null) {
@@ -78,21 +80,24 @@ public class DataSourceResolver {
     /**
      * Resolves the root and additional entries under one selected prefix.
      *
-     * @param binder property binder for the current environment
-     * @param prefix selected datasource prefix
+     * @param binder             binder for the selected property source or environment
+     * @param prefix             selected datasource prefix
+     * @param literalCredentials whether credentials from the selected source must retain surrounding whitespace
      * @return validated datasource mapping
+     * @throws IllegalStateException if multiple entries resolve to the same datasource name
      */
-    private static DataSourceMapping resolve(Binder binder, String prefix) {
+    private static DataSourceMapping resolve(Binder binder, String prefix, boolean literalCredentials) {
         String primary = bindString(binder, property(prefix, "name"));
         if (StringKit.isEmpty(primary)) {
             primary = Normal.DEFAULT;
         }
         Map<String, Object> hikari = binder.bind(property(prefix, "hikari"), Bindable.mapOf(String.class, Object.class))
                 .map(HashMap::new).orElseGet(HashMap::new);
+        String username = credential(binder, property(prefix, "username"), literalCredentials);
+        String password = credential(binder, property(prefix, "password"), literalCredentials);
         DataSourceDefinition root = new DataSourceDefinition(primary, bindString(binder, property(prefix, "url")),
-                bindString(binder, property(prefix, "username")), bindString(binder, property(prefix, "password")),
-                bindString(binder, property(prefix, "driver-class-name")), bindString(binder, property(prefix, "type")),
-                hikari);
+                username, password, bindString(binder, property(prefix, "driver-class-name")),
+                bindString(binder, property(prefix, "type")), hikari);
 
         LinkedHashMap<String, DataSourceDefinition> sources = new LinkedHashMap<>();
         sources.put(root.getName(), root);
@@ -140,6 +145,24 @@ public class DataSourceResolver {
     }
 
     /**
+     * Binds credentials while preserving whitespace for literal and programmatic values.
+     * <p>
+     * Installation sources can use a non-{@link String} value to bypass placeholder expansion.
+     *
+     * @param binder   binder for the selected source or environment
+     * @param property complete credential property name
+     * @param literal  whether to preserve whitespace in string values
+     * @return bound credential, or {@code null} when absent
+     */
+    private static String credential(Binder binder, String property, boolean literal) {
+        CharSequence value = binder.bind(property, CharSequence.class).orElse(null);
+        if (value == null) {
+            return null;
+        }
+        return literal || !(value instanceof String) ? value.toString() : StringKit.trim(value.toString());
+    }
+
+    /**
      * Builds one complete property name.
      *
      * @param prefix selected datasource prefix
@@ -152,14 +175,29 @@ public class DataSourceResolver {
 
     /**
      * Resolves the first configured complete datasource mapping.
+     * <p>
+     * If a startup snapshot supplies a datasource prefix, the mapping is bound from that snapshot alone.
      *
      * @return validated datasource mapping
+     * @throws IllegalStateException if no datasource URL is present or a datasource name is repeated
      */
     public DataSourceMapping resolve() {
-        Binder binder = Binder.get(this.environment);
+        Binder snapshot = EnvironmentSnapshotPropertySource.isolatedBinder(environment, prefixes);
+        return snapshot == null ? resolve(Binder.get(environment), false) : resolve(snapshot, true);
+    }
+
+    /**
+     * Selects the first configured datasource namespace in prefix order.
+     *
+     * @param binder             binder to use for the entire mapping
+     * @param literalCredentials whether credentials should retain surrounding whitespace
+     * @return validated datasource mapping
+     * @throws IllegalStateException if no datasource URL is present or a datasource name is repeated
+     */
+    private DataSourceMapping resolve(Binder binder, boolean literalCredentials) {
         for (String prefix : this.prefixes) {
             if (hasUrl(binder, prefix)) {
-                return resolve(binder, prefix);
+                return resolve(binder, prefix, literalCredentials);
             }
         }
         throw new IllegalStateException("JDBC requires a datasource URL under one of: " + this.prefixes);

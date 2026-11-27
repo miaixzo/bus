@@ -237,7 +237,8 @@ public class Headers {
         }
         for (int i = 0; i < value.length(); i++) {
             final char current = value.charAt(i);
-            if (current == '\0' || current == '\u007f' || (current < Symbol.C_SPACE && current != Symbol.C_TAB)) {
+            if (current == Symbol.C_NUL || current == '\u007f'
+                    || (current < Symbol.C_SPACE && current != Symbol.C_TAB)) {
                 throw new ValidateException("Header value contains a prohibited control character");
             }
         }

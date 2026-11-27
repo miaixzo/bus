@@ -1855,7 +1855,7 @@ public class Http {
             @Override
             public String toString() {
                 return "Credential[type=" + this.type + ", value=<redacted>, source=" + this.source + ", key="
-                        + this.key + ", scheme=" + this.scheme + "]";
+                        + this.key + ", scheme=" + this.scheme + Symbol.BRACKET_RIGHT;
             }
 
         }

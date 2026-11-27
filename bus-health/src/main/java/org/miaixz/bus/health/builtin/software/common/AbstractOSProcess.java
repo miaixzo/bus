@@ -21,6 +21,7 @@ package org.miaixz.bus.health.builtin.software.common;
 
 import org.miaixz.bus.core.center.function.SupplierX;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.Memoizer;
 import org.miaixz.bus.health.builtin.software.OSProcess;
@@ -108,7 +109,7 @@ public abstract class AbstractOSProcess implements OSProcess {
     @Override
     public String toString() {
         String builder = "OSProcess@" + Integer.toHexString(hashCode()) + "[processID=" + this.processID + ", name="
-                + getName() + ']';
+                + getName() + Symbol.C_BRACKET_RIGHT;
         return builder;
     }
 

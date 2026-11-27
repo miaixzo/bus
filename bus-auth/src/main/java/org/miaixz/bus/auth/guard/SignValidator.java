@@ -393,7 +393,7 @@ public final class SignValidator {
         byte[] bytes = value.getBytes(Charset.UTF_8);
         try {
             digest.update(bytes);
-            digest.update((byte) '\n');
+            digest.update((byte) Symbol.C_LF);
         } finally {
             Arrays.fill(bytes, (byte) 0);
         }
@@ -406,7 +406,8 @@ public final class SignValidator {
         for (int index = start; index < end; index++) {
             char character = value.charAt(index);
             if (!(character >= 'A' && character <= 'Z') && !(character >= 'a' && character <= 'z')
-                    && !(character >= '0' && character <= '9') && character != '-' && character != '_')
+                    && !(character >= '0' && character <= '9') && character != Symbol.C_MINUS
+                    && character != Symbol.C_UNDERLINE)
                 return false;
         }
         return true;

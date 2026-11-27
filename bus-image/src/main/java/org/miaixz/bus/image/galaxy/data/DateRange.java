@@ -24,6 +24,8 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;
 
+import org.miaixz.bus.core.lang.Symbol;
+
 /**
  * Represents the DateRange type.
  *
@@ -131,7 +133,7 @@ public class DateRange implements Serializable {
      */
     @Override
     public String toString() {
-        return "[" + start + ", " + end + "]";
+        return Symbol.BRACKET_LEFT + start + ", " + end + Symbol.BRACKET_RIGHT;
     }
 
 }

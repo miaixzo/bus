@@ -36,6 +36,7 @@ import org.miaixz.bus.auth.source.SourceModule;
 import org.miaixz.bus.auth.worker.RosterListener;
 import org.miaixz.bus.auth.worker.loader.BlueprintLoader;
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.logger.Logger;
 
@@ -103,7 +104,8 @@ public class RuntimeBuilder {
         final String resource = fault.id().isPresent() ? fault.id().getOrNull() : "snapshot";
         final String field = fault.field().isPresent() ? fault.field().getOrNull() : "unknown";
         return "Initial authentication Blueprint snapshot was rejected: " + report.faults().size() + " fault(s); first="
-                + fault.stage().name() + "/" + resource + "/" + field + ": " + fault.safeDescription();
+                + fault.stage().name() + Symbol.SLASH + resource + Symbol.SLASH + field + ": "
+                + fault.safeDescription();
     }
 
     /**

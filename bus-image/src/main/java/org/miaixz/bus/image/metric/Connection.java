@@ -1261,7 +1261,7 @@ public class Connection implements Serializable {
      */
     @Override
     public String toString() {
-        return promptTo(new StringBuilder(), "").toString();
+        return promptTo(new StringBuilder(), Normal.EMPTY).toString();
     }
 
     /**

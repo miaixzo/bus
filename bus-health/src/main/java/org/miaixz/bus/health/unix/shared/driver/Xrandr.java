@@ -29,6 +29,7 @@ import java.util.stream.Collectors;
 
 import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.Immutable;
 import org.miaixz.bus.core.lang.annotation.NotThreadSafe;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
@@ -396,7 +397,7 @@ public class Xrandr {
                     this.height = Parsing.parseIntOrDefault(matcher.group(Normal._2), Normal._0);
                     this.x = Parsing.parseIntOrDefault(matcher.group(Normal._3), Normal._0);
                     this.y = Parsing.parseIntOrDefault(matcher.group(Normal._4), Normal._0);
-                } else if (token.startsWith("(") && !token.startsWith("(0x")) {
+                } else if (token.startsWith(Symbol.PARENTHESE_LEFT) && !token.startsWith("(0x")) {
                     break;
                 } else if (this.width > Normal._0) {
                     this.rotation = parseRotation(token, this.rotation);
@@ -417,7 +418,7 @@ public class Xrandr {
             } else if (trimmed.startsWith("v:")) {
                 if (this.inCurrentMode) {
                     this.modeHeight = parseTimingValue(trimmed, "height");
-                    String last = trimmed.substring(trimmed.lastIndexOf(' ') + Normal._1);
+                    String last = trimmed.substring(trimmed.lastIndexOf(Symbol.C_SPACE) + Normal._1);
                     if (last.endsWith("Hz") && !last.endsWith("KHz") && !last.endsWith("MHz")) {
                         this.refreshRate = Parsing
                                 .parseDoubleOrDefault(last.substring(Normal._0, last.length() - Normal._2), Normal._0);

@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.opencv.core;
 
+import org.miaixz.bus.core.lang.Symbol;
+
 /**
  * A two-dimensional point with double-precision coordinates.
  */
@@ -150,7 +152,7 @@ public class Point {
      */
     @Override
     public String toString() {
-        return "{" + x + ", " + y + "}";
+        return Symbol.BRACE_LEFT + x + ", " + y + Symbol.BRACE_RIGHT;
     }
 
 }

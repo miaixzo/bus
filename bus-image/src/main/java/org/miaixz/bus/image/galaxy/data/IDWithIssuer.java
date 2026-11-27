@@ -296,9 +296,9 @@ public class IDWithIssuer {
         StringBuilder sb = new StringBuilder(HL7Separator.escapeAll(id));
         sb.append("^^^");
         if (issuer != null)
-            sb.append(issuer.toString('&'));
+            sb.append(issuer.toString(Symbol.C_AND));
         if (identifierTypeCode != null)
-            sb.append('^').append(HL7Separator.escapeAll(identifierTypeCode));
+            sb.append(Symbol.C_CARET).append(HL7Separator.escapeAll(identifierTypeCode));
         return sb.toString();
     }
 

@@ -331,7 +331,9 @@ public final class RouteTableDump {
          */
         private final int linkInfoFlag;
 
-        /** Protocol family used to request this platform's routing table. */
+        /**
+         * Protocol family used to request this platform's routing table.
+         */
         private final int pfRoute;
 
         /**

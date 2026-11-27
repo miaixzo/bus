@@ -31,7 +31,7 @@ import org.springframework.core.env.PropertiesPropertySource;
 
 import org.miaixz.bus.core.Version;
 import org.miaixz.bus.core.lang.Keys;
-import org.miaixz.bus.spring.boot.environment.EnvironmentKeys;
+import org.miaixz.bus.spring.boot.environment.BootEnvironmentPropertyRegistry;
 
 /**
  * An {@link ApplicationListener} for the {@link ApplicationEnvironmentPreparedEvent}. It registers a custom property
@@ -65,7 +65,7 @@ public class SpringBootConfigListener implements ApplicationListener<Application
      */
     @Override
     public void onApplicationEvent(ApplicationEnvironmentPreparedEvent event) {
-        if (event.getEnvironment().getProperty(EnvironmentKeys.CONFIG_ENABLED, Boolean.class, false)
+        if (event.getEnvironment().getProperty(BootEnvironmentPropertyRegistry.CONFIG_ENABLED, Boolean.class, false)
                 && registered.compareAndSet(false, true)) {
             registerConfigs(event.getEnvironment());
         }

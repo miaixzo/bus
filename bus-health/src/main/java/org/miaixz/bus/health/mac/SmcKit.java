@@ -33,6 +33,7 @@ import com.sun.jna.platform.mac.IOKit.IOConnect;
 import com.sun.jna.platform.mac.IOKit.IOService;
 import com.sun.jna.platform.mac.IOKitUtil;
 
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.Builder;
 import org.miaixz.bus.health.Parsing;
@@ -360,7 +361,7 @@ public class SmcKit {
     public static String smcGetDataType(IOConnect conn, String key) {
         try (SMCVal val = new SMCVal()) {
             if (smcReadKey(conn, key, val) != 0 || val.dataType == null) {
-                return "";
+                return Normal.EMPTY;
             }
             StringBuilder sb = new StringBuilder(4);
             for (byte b : val.dataType) {
@@ -418,7 +419,7 @@ public class SmcKit {
      */
     public static List<String> getCpuVoltageKeys() {
         List<String> configured = SmcKeyIndex
-                .parseConfiguredKeys(Builder.get(Builder._MAC_SENSORS_CPUVOLTAGE_KEYS, ""));
+                .parseConfiguredKeys(Builder.get(Builder._MAC_SENSORS_CPUVOLTAGE_KEYS, Normal.EMPTY));
         return configured.isEmpty() ? SMC_KEYS_CPU_VOLTAGE : configured;
     }
 

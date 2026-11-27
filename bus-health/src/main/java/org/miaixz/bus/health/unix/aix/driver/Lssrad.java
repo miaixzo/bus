@@ -52,19 +52,18 @@ public class Lssrad {
      * @return A map of processor number to a pair containing the ref (NUMA equivalent) and srad (package)
      */
     public static Map<Integer, Pair<Integer, Integer>> queryNodesPackages() {
-        /*-
-        # lssrad -av
-        REF1        SRAD        MEM        CPU
-        0
-                       0       32749.12    0-63
-                       1        9462.00    64-67 72-75
-                                           80-83 88-91
-        1
-                       2        2471.19    92-95
-        2
-                       3        1992.00
-                       4         249.00
-         */
+        // -
+        // # lssrad -av
+        // REF1 SRAD MEM CPU
+        // 0
+        // 0 32749.12 0-63
+        // 1 9462.00 64-67 72-75
+        // 80-83 88-91
+        // 1
+        // 2 2471.19 92-95
+        // 2
+        // 3 1992.00
+        // 4 249.00
         int node = 0;
         int slot = 0;
         Map<Integer, Pair<Integer, Integer>> nodeMap = new HashMap<>();

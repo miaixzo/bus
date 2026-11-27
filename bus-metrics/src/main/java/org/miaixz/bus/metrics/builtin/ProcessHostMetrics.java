@@ -26,6 +26,7 @@ import java.util.OptionalLong;
 import java.util.function.ToLongFunction;
 
 import org.miaixz.bus.core.center.function.FunctionX;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.xyz.FunctionKit;
 import org.miaixz.bus.metrics.Provider;
 import org.miaixz.bus.metrics.bridge.HostMetricCapabilities;
@@ -105,7 +106,7 @@ public final class ProcessHostMetrics implements MetricBinder {
             NumberKind number,
             String unit,
             List<AttributeDescriptor<?>> attributes) {
-        return MetricDescriptor.of(name, kind, number, unit, "", attributes);
+        return MetricDescriptor.of(name, kind, number, unit, Normal.EMPTY, attributes);
     }
 
     /**

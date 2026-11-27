@@ -26,6 +26,7 @@ import java.lang.management.ThreadMXBean;
 import java.util.List;
 import java.util.function.LongSupplier;
 
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
@@ -157,7 +158,7 @@ public class JvmMetrics implements MetricBinder {
             NumberKind number,
             String unit,
             List<AttributeDescriptor<?>> attributes) {
-        return MetricDescriptor.of(name, kind, number, unit, "", attributes);
+        return MetricDescriptor.of(name, kind, number, unit, Normal.EMPTY, attributes);
     }
 
     @Override

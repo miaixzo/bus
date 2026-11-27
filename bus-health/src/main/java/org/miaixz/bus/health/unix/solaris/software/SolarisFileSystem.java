@@ -108,12 +108,11 @@ public class SolarisFileSystem extends AbstractFileSystem {
         String free = null;
         String command = "df -g" + (localOnly ? " -l" : Normal.EMPTY);
         for (String line : Executor.runNative(command)) {
-            /*- Sample Output:
-            /                  (/dev/md/dsk/d0    ):         8192 block size          1024 frag size
-            41310292 total blocks   18193814 free blocks 17780712 available        2486848 total files
-             2293351 free files     22282240 filesys id
-                 ufs fstype       0x00000004 flag             255 filename length
-            */
+            // - Sample Output:
+            // / (/dev/md/dsk/d0 ): 8192 block size 1024 frag size
+            // 41310292 total blocks 18193814 free blocks 17780712 available 2486848 total files
+            // 2293351 free files 22282240 filesys id
+            // ufs fstype 0x00000004 flag 255 filename length
             if (line.startsWith(Symbol.SLASH)) {
                 key = Pattern.SPACES_PATTERN.split(line)[0];
                 total = null;

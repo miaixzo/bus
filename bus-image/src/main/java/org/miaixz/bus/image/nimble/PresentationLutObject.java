@@ -34,6 +34,7 @@ import java.util.OptionalDouble;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.image.Builder;
 import org.miaixz.bus.image.Tag;
@@ -644,7 +645,7 @@ public class PresentationLutObject implements PresentationStateLut {
      * @return the supported presentation-state type
      */
     private PresentationStateType validateAndGetPresentationStateType() {
-        String sopClassUid = dcmPR.getString(Tag.SOPClassUID, "");
+        String sopClassUid = dcmPR.getString(Tag.SOPClassUID, Normal.EMPTY);
         Optional<PresentationStateType> type = PresentationStateType.fromUid(sopClassUid);
         if (type.isEmpty()) {
             throw new IllegalStateException(

@@ -384,11 +384,6 @@ public class RequestStrategy extends AbstractStrategy {
             Octets.BufferedBody body) {
 
         return Mono.defer(() -> {
-            /**
-             * Decorator that exposes the already buffered request body to the form reader.
-             * <p>
-             * The form reader consumes one wrapped view of the exact array; no second aggregation is performed.
-             */
             ServerHttpRequest newRequest = new ServerHttpRequestDecorator(exchange.getRequest()) {
 
                 /**

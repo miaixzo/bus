@@ -186,8 +186,8 @@ public class FreeBsdUsbDevice extends AbstractUsbDevice {
         Matcher matcher = PNP_FIELD.matcher(fields);
         while (matcher.find()) {
             String value = matcher.group(Normal._2);
-            if (value.length() >= Normal._2 && value.charAt(Normal._0) == '"'
-                    && value.charAt(value.length() - Normal._1) == '"') {
+            if (value.length() >= Normal._2 && value.charAt(Normal._0) == Symbol.C_DOUBLE_QUOTES
+                    && value.charAt(value.length() - Normal._1) == Symbol.C_DOUBLE_QUOTES) {
                 value = value.substring(Normal._1, value.length() - Normal._1);
             }
             values.put(matcher.group(Normal._1), value);

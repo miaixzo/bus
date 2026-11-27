@@ -197,7 +197,7 @@ public class OktaRealmAdapter implements VendorAdapter {
      * @return whether the parameter closure declares {@code rel=next}
      */
     private static boolean nextRelation(final String parameters) {
-        for (String parameter : parameters.split(";")) {
+        for (String parameter : parameters.split(Symbol.SEMICOLON)) {
             final String normalized = StringKit.toLowerCase(StringKit.trim(parameter));
             if ("rel=next".equals(normalized) || "rel=\"next\"".equals(normalized)) {
                 return true;
@@ -218,11 +218,12 @@ public class OktaRealmAdapter implements VendorAdapter {
         if (phase == Phase.USERS || phase == Phase.GROUPS) {
             return base.equals(candidate);
         }
-        if (phase != Phase.GROUP_MEMBERS || !candidate.startsWith(base + "/") || !candidate.endsWith("/users")) {
+        if (phase != Phase.GROUP_MEMBERS || !candidate.startsWith(base + Symbol.SLASH)
+                || !candidate.endsWith("/users")) {
             return false;
         }
         final String parent = candidate.substring(base.length() + 1, candidate.length() - "/users".length());
-        return !parent.isEmpty() && parent.indexOf('/') < 0;
+        return !parent.isEmpty() && parent.indexOf(Symbol.C_SLASH) < 0;
     }
 
     /**
@@ -2034,9 +2035,9 @@ public class OktaRealmAdapter implements VendorAdapter {
     private Optional<String> nextLink(final FabricX.Headers headers, final Phase phase) {
         String selected = null;
         for (String header : headers.values(Http.Header.LINK)) {
-            for (String element : header.split(",")) {
-                final int opening = element.indexOf('<');
-                final int closing = element.indexOf('>', opening + 1);
+            for (String element : header.split(Symbol.COMMA)) {
+                final int opening = element.indexOf(Symbol.C_LT);
+                final int closing = element.indexOf(Symbol.C_GT, opening + 1);
                 final String parameters = closing < 0 ? element : element.substring(closing + 1);
                 if (!nextRelation(parameters)) {
                     continue;
@@ -2110,7 +2111,7 @@ public class OktaRealmAdapter implements VendorAdapter {
         final StringBuilder path = new StringBuilder(base.path());
         if (segments != null) {
             for (String segment : segments) {
-                path.append('/')
+                path.append(Symbol.C_SLASH)
                         .append(RFC3986.SEGMENT.encode(requireText(segment, "Okta path segment"), Charset.UTF_8));
             }
         }

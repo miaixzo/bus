@@ -95,7 +95,7 @@ public record BulkRequest(List<String> schemas, Optional<Integer> failOnErrors, 
      * @param value candidate entity-tag
      */
     private static void validateEntityTag(final String value) {
-        final int quote = value.startsWith("W/\"") ? 2 : value.startsWith("\"") ? 0 : -1;
+        final int quote = value.startsWith("W/\"") ? 2 : value.startsWith(Symbol.DOUBLE_QUOTES) ? 0 : -1;
         if (quote < 0 || value.length() <= quote + 1 || value.charAt(value.length() - 1) != Symbol.C_DOUBLE_QUOTES) {
             throw new ValidateException("SCIM bulk operation version must be a complete HTTP entity-tag");
         }

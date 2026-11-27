@@ -33,6 +33,7 @@ import org.springframework.util.ClassUtils;
 
 import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.cache.Collector;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.metrics.Metrics;
@@ -229,7 +230,7 @@ public class MetricsConfiguration {
          */
         HostMetricsAvailability {
             missingClasses = List.copyOf(missingClasses == null ? List.of() : missingClasses);
-            reason = reason == null ? "" : reason;
+            reason = reason == null ? Normal.EMPTY : reason;
         }
 
         /**
@@ -249,7 +250,7 @@ public class MetricsConfiguration {
             check(loader, "com.sun.jna.Native", missing);
             check(loader, "com.sun.jna.platform.FileUtils", missing);
             if (missing.isEmpty()) {
-                return new HostMetricsAvailability(Status.AVAILABLE, List.of(), "");
+                return new HostMetricsAvailability(Status.AVAILABLE, List.of(), Normal.EMPTY);
             }
             String explanation = "Host metrics require bus-health and JNA; missing " + String.join(", ", missing)
                     + ". Add bus-health with its JNA dependencies or disable bus.metrics.host.enabled";

@@ -20,6 +20,7 @@
 package org.miaixz.bus.metrics.observe.tag;
 
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 
 /**
  * An immutable key=value metric tag.
@@ -64,7 +65,7 @@ public record Tag(String key, String value) {
      */
     @Override
     public String toString() {
-        return key + "=\"" + value + "\"";
+        return key + "=\"" + value + Symbol.DOUBLE_QUOTES;
     }
 
 }

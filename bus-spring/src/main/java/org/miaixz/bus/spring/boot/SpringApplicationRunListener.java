@@ -36,7 +36,7 @@ import org.springframework.core.env.ConfigurableEnvironment;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
-import org.miaixz.bus.spring.boot.environment.EnvironmentKeys;
+import org.miaixz.bus.spring.boot.environment.BootEnvironmentPropertyRegistry;
 import org.miaixz.bus.spring.boot.startup.SpringStartupCollector;
 import org.miaixz.bus.spring.boot.startup.SpringStartupPublisher;
 import org.miaixz.bus.spring.boot.startup.SpringStartupSummary;
@@ -125,15 +125,16 @@ public class SpringApplicationRunListener implements org.springframework.boot.Sp
             ConfigurableBootstrapContext bootstrapContext,
             ConfigurableEnvironment environment) {
         if (!activationChecked.compareAndSet(false, true)
-                || !environment.getProperty(EnvironmentKeys.METRICS_ENABLED, Boolean.class, false)
-                || !environment.getProperty(EnvironmentKeys.STARTUP_METRICS_ENABLED, Boolean.class, false)) {
+                || !environment.getProperty(BootEnvironmentPropertyRegistry.METRICS_ENABLED, Boolean.class, false)
+                || !environment
+                        .getProperty(BootEnvironmentPropertyRegistry.STARTUP_METRICS_ENABLED, Boolean.class, false)) {
             return;
         }
 
         long applicationBootTime = ManagementFactory.getRuntimeMXBean().getStartTime();
         long enabledAt = System.currentTimeMillis();
         SpringStartupCollector collector = new SpringStartupCollector(
-                environment.getProperty(EnvironmentKeys.APPLICATION_NAME), applicationBootTime);
+                environment.getProperty(BootEnvironmentPropertyRegistry.APPLICATION_NAME), applicationBootTime);
         startupCollector = collector;
         environmentPreparedTime = enabledAt;
         collector.addStage(Stage.between(Stage.JVM_STARTING, applicationBootTime, enabledAt));
@@ -280,15 +281,17 @@ public class SpringApplicationRunListener implements org.springframework.boot.Sp
     private String getStartedMessage(ConfigurableApplicationContext context, Duration timeTaken) {
         StringBuilder message = new StringBuilder("Started");
         ConfigurableEnvironment environment = context.getEnvironment();
-        message.append(" - App Name: ")
-                .append(StringKit.defaultIfEmpty(environment.getProperty(EnvironmentKeys.APPLICATION_NAME), "unknown"));
+        message.append(" - App Name: ").append(
+                StringKit.defaultIfEmpty(
+                        environment.getProperty(BootEnvironmentPropertyRegistry.APPLICATION_NAME),
+                        "unknown"));
         message.append(" - Config Name: ")
                 .append(StringKit.defaultIfEmpty(environment.getProperty("spring.config.name"), "application"));
         String[] activeProfiles = environment.getActiveProfiles();
         message.append(" - Active Profiles: ")
                 .append(activeProfiles.length > 0 ? String.join(", ", activeProfiles) : "none");
 
-        String logging = environment.getProperty(EnvironmentKeys.LOGGING_LEVEL);
+        String logging = environment.getProperty(BootEnvironmentPropertyRegistry.LOGGING_LEVEL);
         if (!StringKit.hasText(logging)) {
             LoggingSystem loggingSystem = context.getBean(LoggingSystem.class);
             for (LoggerConfiguration config : loggingSystem.getLoggerConfigurations()) {

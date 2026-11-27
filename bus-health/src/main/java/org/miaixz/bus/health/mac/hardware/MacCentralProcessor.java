@@ -187,7 +187,7 @@ final class MacCentralProcessor extends AbstractCentralProcessor {
      * @return the decoded string, or {@code null} if the property is absent
      */
     private static String ioRegString(byte[] data) {
-        return data == null ? null : new String(data, Charset.UTF_8).replace('\0', Symbol.C_SPACE).trim();
+        return data == null ? null : new String(data, Charset.UTF_8).replace(Symbol.C_NUL, Symbol.C_SPACE).trim();
     }
 
     /**

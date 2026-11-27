@@ -21,6 +21,7 @@ package org.miaixz.bus.opencv.core;
 
 import java.util.List;
 
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.opencv.utils.Converters;
 
 /**
@@ -86,7 +87,7 @@ public class Core {
      * @return the status suffix embedded in the OpenCV engine version
      */
     private static String getVersionStatusJ() {
-        return "";
+        return Normal.EMPTY;
     }
 
     /**

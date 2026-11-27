@@ -32,6 +32,8 @@ import java.util.Set;
 
 import org.springframework.boot.loader.net.protocol.jar.Handler;
 
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.shade.safety.Builder;
 import org.miaixz.bus.shade.safety.algorithm.Key;
@@ -111,7 +113,7 @@ public class BootURLHandler extends Handler {
             return null;
         }
         String name = normalize(spec.substring(index + 2));
-        return name.isEmpty() || name.endsWith("/") ? null : name;
+        return name.isEmpty() || name.endsWith(Symbol.SLASH) ? null : name;
     }
 
     /**
@@ -122,13 +124,13 @@ public class BootURLHandler extends Handler {
      */
     private static String normalize(final String value) {
         if (null == value) {
-            return "";
+            return Normal.EMPTY;
         }
-        String name = value.replace("!/", "/");
+        String name = value.replace("!/", Symbol.SLASH);
         while (name.contains("//")) {
-            name = name.replace("//", "/");
+            name = name.replace("//", Symbol.SLASH);
         }
-        while (name.startsWith("/")) {
+        while (name.startsWith(Symbol.SLASH)) {
             name = name.substring(1);
         }
         return name;

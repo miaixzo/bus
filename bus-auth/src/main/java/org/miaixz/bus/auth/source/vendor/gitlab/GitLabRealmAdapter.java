@@ -46,6 +46,7 @@ import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Optional;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.TimeoutException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Http;
@@ -1452,7 +1453,8 @@ public class GitLabRealmAdapter implements VendorAdapter {
         final Url base = target(targetName).url();
         final StringBuilder path = new StringBuilder(base.path());
         for (String segment : segments) {
-            path.append('/').append(RFC3986.SEGMENT.encode(requireText(segment, "GitLab path segment"), Charset.UTF_8));
+            path.append(Symbol.C_SLASH)
+                    .append(RFC3986.SEGMENT.encode(requireText(segment, "GitLab path segment"), Charset.UTF_8));
         }
         final UrlBuilder builder = Url.builder().scheme(base.scheme()).host(base.host()).path(path.toString());
         query.forEach(builder::query);

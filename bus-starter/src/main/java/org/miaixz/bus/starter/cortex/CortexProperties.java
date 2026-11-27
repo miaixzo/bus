@@ -30,6 +30,7 @@ import org.springframework.validation.annotation.Validated;
 
 import org.miaixz.bus.cache.Options;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.starter.GeniusBuilder;
 
@@ -158,7 +159,7 @@ public class CortexProperties {
     @Override
     public String toString() {
         return "CortexProperties[enabled=" + enabled + ", maxWatchesPerTenant=" + maxWatchesPerTenant + ", watchExpire="
-                + watchExpire + ", cacheExpire=" + cacheExpire + "]";
+                + watchExpire + ", cacheExpire=" + cacheExpire + Symbol.BRACKET_RIGHT;
     }
 
     /**

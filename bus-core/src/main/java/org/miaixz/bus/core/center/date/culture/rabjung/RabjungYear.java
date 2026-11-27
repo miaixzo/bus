@@ -25,6 +25,7 @@ import org.miaixz.bus.core.center.date.culture.Zodiac;
 import org.miaixz.bus.core.center.date.culture.parts.AbstractTraditionalYear;
 import org.miaixz.bus.core.center.date.culture.sixty.SixtyCycle;
 import org.miaixz.bus.core.center.date.culture.solar.SolarYear;
+import org.miaixz.bus.core.lang.Normal;
 
 /**
  * Represents a year in the Tibetan calendar (Gregorian year 1027 is the first year of the Tibetan calendar, the first
@@ -160,14 +161,14 @@ public class RabjungYear extends AbstractTraditionalYear {
     public String getName() {
         int n = getRabByungIndex() + 1;
         String d = "零一二三四五六七八九";
-        String s = n > 99 ? d.charAt(n / 100) + "百" : "";
+        String s = n > 99 ? d.charAt(n / 100) + "百" : Normal.EMPTY;
         n %= 100;
         return String.format(
                 "第%s饶迥%s%s年",
                 n == 0 ? s
-                        : n < 10 ? s + (s.isEmpty() ? "" : "零") + d.charAt(n)
-                                : s + (n < 20 ? (s.isEmpty() ? "" : "一") : d.charAt(n / 10)) + "十"
-                                        + (n % 10 > 0 ? d.charAt(n % 10) + "" : ""),
+                        : n < 10 ? s + (s.isEmpty() ? Normal.EMPTY : "零") + d.charAt(n)
+                                : s + (n < 20 ? (s.isEmpty() ? Normal.EMPTY : "一") : d.charAt(n / 10)) + "十"
+                                        + (n % 10 > 0 ? d.charAt(n % 10) + Normal.EMPTY : Normal.EMPTY),
                 getElement(),
                 getZodiac());
     }

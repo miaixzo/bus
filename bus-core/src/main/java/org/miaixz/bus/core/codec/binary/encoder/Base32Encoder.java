@@ -100,7 +100,7 @@ public class Base32Encoder implements Encoder<byte[], String> {
             // unsign
             currByte = (data[i] >= 0) ? data[i] : (data[i] + 256);
 
-            /* Is the current digit going to span a byte boundary? */
+            // Is the current digit going to span a byte boundary?
             if (index > 3) {
                 if ((i + 1) < data.length) {
                     nextByte = (data[i + 1] >= 0) ? data[i + 1] : (data[i + 1] + 256);

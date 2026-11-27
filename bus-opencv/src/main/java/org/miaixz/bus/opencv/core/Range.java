@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.opencv.core;
 
+import org.miaixz.bus.core.lang.Symbol;
+
 /**
  * A half-open integer interval whose start is inclusive and end is exclusive.
  */
@@ -178,7 +180,7 @@ public class Range {
      */
     @Override
     public String toString() {
-        return "[" + start + ", " + end + ")";
+        return Symbol.BRACKET_LEFT + start + ", " + end + Symbol.PARENTHESE_RIGHT;
     }
 
 }

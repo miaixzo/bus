@@ -402,12 +402,10 @@ public class ImageRendering {
      * @return whether the VOI stage must be skipped
      */
     private static boolean shouldSkipVoiLutForColorImage(WindLevelParameters params, ImageDescriptor desc) {
-        /*
-         * C.11.2.1.2 Window center and window width
-         *
-         * These Attributes shall be used only for Images with Photometric Interpretation (0028,0004) values of
-         * MONOCHROME1 and MONOCHROME2. They have no meaning for other Images.
-         */
+        // C.11.2.1.2 Window center and window width
+        //
+        // These Attributes shall be used only for Images with Photometric Interpretation (0028,0004) values of
+        // MONOCHROME1 and MONOCHROME2. They have no meaning for other Images.
         var photometricInterpretation = desc.getPhotometricInterpretation();
         if (photometricInterpretation.isMonochrome()) {
             return false;

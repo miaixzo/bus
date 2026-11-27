@@ -176,7 +176,7 @@ public class PersonName {
                 if (s != null) {
                     int d = c.ordinal() - lastCompOfGroup.ordinal();
                     while (d-- > 0)
-                        ch[wpos++] = '^';
+                        ch[wpos++] = Symbol.C_CARET;
                     d = s.length();
                     s.getChars(0, d, ch, wpos);
                     wpos += d;
@@ -185,7 +185,7 @@ public class PersonName {
             }
             if (g == lastGroup)
                 break;
-            ch[wpos++] = '=';
+            ch[wpos++] = Symbol.C_EQUAL;
         }
         return new String(ch);
     }
@@ -220,7 +220,7 @@ public class PersonName {
             if (trim && c == lastCompOfGroup)
                 break;
             if (wpos < ch.length)
-                ch[wpos++] = '^';
+                ch[wpos++] = Symbol.C_CARET;
         }
         return new String(ch);
     }

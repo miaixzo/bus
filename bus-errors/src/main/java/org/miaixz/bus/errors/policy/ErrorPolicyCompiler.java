@@ -22,6 +22,7 @@ package org.miaixz.bus.errors.policy;
 import java.util.*;
 import java.util.regex.Pattern;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.errors.ErrorType;
 import org.miaixz.bus.errors.policy.PolicySnapshot.Mode;
 import org.miaixz.bus.errors.policy.PolicySnapshot.Rule;
@@ -93,7 +94,7 @@ public final class ErrorPolicyCompiler {
         Set<RuleKey> seen = new HashSet<>();
         for (RuleSpec spec : rules) {
             String prefix = spec.pathPrefix();
-            if (!"/".equals(prefix) && !isLiteralPrefix(prefix)) {
+            if (!Symbol.SLASH.equals(prefix) && !isLiteralPrefix(prefix)) {
                 throw new IllegalArgumentException("Invalid route-errors rule path-prefix: " + prefix);
             }
             if (spec.types().isEmpty()) {
@@ -104,10 +105,12 @@ public final class ErrorPolicyCompiler {
                     throw new IllegalArgumentException("Unknown route-errors type: " + type.id());
                 }
                 if (!seen.add(new RuleKey(prefix, type))) {
-                    throw new IllegalArgumentException("Duplicate route-errors rule: " + prefix + " " + type.id());
+                    throw new IllegalArgumentException(
+                            "Duplicate route-errors rule: " + prefix + Symbol.SPACE + type.id());
                 }
             }
-            List<String> segments = "/".equals(prefix) ? List.of() : List.of(prefix.substring(1).split("/"));
+            List<String> segments = Symbol.SLASH.equals(prefix) ? List.of()
+                    : List.of(prefix.substring(1).split(Symbol.SLASH));
             compiled.add(new Rule(segments, spec.types(), spec.mode()));
         }
         compiled.sort(Comparator.comparingInt((Rule rule) -> rule.prefix().size()).reversed());

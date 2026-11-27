@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.opencv.core;
 
+import org.miaixz.bus.core.lang.Symbol;
+
 /**
  * Runtime exception raised when a native OpenCV operation reports an error.
  */
@@ -42,7 +44,7 @@ public class CvException extends RuntimeException {
      */
     @Override
     public String toString() {
-        return "CvException [" + super.toString() + "]";
+        return "CvException [" + super.toString() + Symbol.BRACKET_RIGHT;
     }
 
 }

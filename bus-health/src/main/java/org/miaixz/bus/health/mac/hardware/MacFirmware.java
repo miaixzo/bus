@@ -26,6 +26,7 @@ import com.sun.jna.platform.mac.IOKitUtil;
 import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.Immutable;
 import org.miaixz.bus.core.lang.tuple.Pair;
 import org.miaixz.bus.core.lang.tuple.Tuple;
@@ -153,7 +154,7 @@ final class MacFirmware extends AbstractFirmware {
      */
     static Pair<String, String> splitSystemFirmwareVersion(String value) {
         String firmware = Parsing.getStringValueOrEmpty(value).trim();
-        int dash = firmware.indexOf('-');
+        int dash = firmware.indexOf(Symbol.C_MINUS);
         if (dash < Normal._0) {
             return Pair.of(Normal.EMPTY, firmware);
         }

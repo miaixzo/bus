@@ -242,7 +242,7 @@ public class BeanPath<T> implements Iterator<BeanPath<T>> {
      */
     @Override
     public String toString() {
-        return "BeanPath{" + "node=" + node + ", child='" + child + '\'' + '}';
+        return "BeanPath{" + "node=" + node + ", child='" + child + Symbol.C_SINGLE_QUOTE + Symbol.C_BRACE_RIGHT;
     }
 
 }

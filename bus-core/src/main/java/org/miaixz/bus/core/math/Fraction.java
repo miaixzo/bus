@@ -345,7 +345,7 @@ public class Fraction extends Number implements Comparable<Fraction> {
      * @throws ArithmeticException If the result cannot be represented as an int or if either parameter is not positive.
      */
     private static int mulPosAndCheck(final int x, final int y) {
-        /* assert x>=0 && y>=0; */
+        // assert x>=0 && y>=0;
         final long m = (long) x * (long) y;
         if (m > Integer.MAX_VALUE) {
             throw new ArithmeticException("overflow: mulPos");
@@ -397,7 +397,7 @@ public class Fraction extends Number implements Comparable<Fraction> {
      * @throws ArithmeticException  If the numerator or denominator of the result exceeds {@code Integer.MAX_VALUE}.
      */
     public Fraction add(final Fraction fraction) {
-        return addSub(fraction, true /* add */);
+        return addSub(fraction, true); // add
     }
 
     /**
@@ -640,7 +640,7 @@ public class Fraction extends Number implements Comparable<Fraction> {
      *                              {@code int}.
      */
     public Fraction subtract(final Fraction fraction) {
-        return addSub(fraction, false /* subtract */);
+        return addSub(fraction, false); // subtract
     }
 
     /**
@@ -779,7 +779,7 @@ public class Fraction extends Number implements Comparable<Fraction> {
     @Override
     public String toString() {
         if (toString == null) {
-            toString = getNumerator() + "/" + getDenominator();
+            toString = getNumerator() + Symbol.SLASH + getDenominator();
         }
         return toString;
     }

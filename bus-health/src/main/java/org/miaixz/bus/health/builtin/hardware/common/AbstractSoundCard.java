@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.health.builtin.hardware.common;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.Immutable;
 import org.miaixz.bus.health.builtin.hardware.SoundCard;
 
@@ -96,7 +97,7 @@ public abstract class AbstractSoundCard implements SoundCard {
     @Override
     public String toString() {
         String builder = "SoundCard@" + Integer.toHexString(hashCode()) + " [name=" + this.name + ", kernelVersion="
-                + this.kernelVersion + ", codec=" + this.codec + ']';
+                + this.kernelVersion + ", codec=" + this.codec + Symbol.C_BRACKET_RIGHT;
         return builder;
     }
 

@@ -27,6 +27,7 @@ import java.util.Objects;
 import java.util.Set;
 
 import org.miaixz.bus.cache.CacheX;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.cortex.setting.revision.Revision;
 import org.miaixz.bus.cortex.setting.revision.RevisionStore;
 import org.miaixz.bus.extra.json.JsonKit;
@@ -75,7 +76,7 @@ public final class CacheRevisionStore implements RevisionStore {
                 return value;
             }
         } catch (RuntimeException unavailable) {
-            /* Authoritative immutable source remains available. */
+            // Authoritative immutable source remains available.
         }
         Revision value = delegate.find(tenant, id);
         if (value != null) {
@@ -110,7 +111,7 @@ public final class CacheRevisionStore implements RevisionStore {
                     missing.remove(id);
                 }
             } catch (RuntimeException unavailable) {
-                /* Invalid or unavailable cache entries remain authoritative batch misses. */
+                // Invalid or unavailable cache entries remain authoritative batch misses.
             }
         }
         if (!missing.isEmpty()) {
@@ -149,7 +150,7 @@ public final class CacheRevisionStore implements RevisionStore {
         try {
             cache.write(key(tenant, id), JsonKit.toJsonString(value), 0L);
         } catch (RuntimeException unavailable) {
-            /* Cache population is not a persistence boundary. */
+            // Cache population is not a persistence boundary.
         }
     }
 
@@ -163,7 +164,7 @@ public final class CacheRevisionStore implements RevisionStore {
     private String key(String tenant, String id) {
         if (tenant == null || tenant.isBlank() || id == null || id.isBlank())
             throw new IllegalArgumentException("Exact store identity required");
-        return "setting:revision:" + tenant.length() + ":" + tenant + id.length() + ":" + id;
+        return "setting:revision:" + tenant.length() + Symbol.COLON + tenant + id.length() + Symbol.COLON + id;
     }
 
     /**

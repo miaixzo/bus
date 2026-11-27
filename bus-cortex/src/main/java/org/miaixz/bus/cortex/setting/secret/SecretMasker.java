@@ -22,6 +22,8 @@ package org.miaixz.bus.cortex.setting.secret;
 import java.util.Map;
 import java.util.TreeMap;
 
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.cortex.setting.item.Item.Property;
 import org.miaixz.bus.cortex.setting.item.ItemCodec;
 import org.miaixz.bus.extra.json.JsonSchema;
@@ -42,7 +44,8 @@ public final class SecretMasker {
     /**
      * Creates a stateless projector.
      */
-    public SecretMasker() { // No initialization required.
+    public SecretMasker() {
+        // No initialization required.
     }
 
     /**
@@ -64,7 +67,8 @@ public final class SecretMasker {
     public ItemCodec.Document mask(ItemCodec.Document document) {
         Map<String, Property> properties = new TreeMap<>();
         document.properties().forEach((name, p) -> {
-            String path = name.isEmpty() || name.startsWith("/") ? name : JsonSchema.pointer("", name);
+            String path = name.isEmpty() || name.startsWith(Symbol.SLASH) ? name
+                    : JsonSchema.pointer(Normal.EMPTY, name);
             Property changed = p.with("value", member(p.value(), path, document))
                     .with("default", member(p.defaultValue(), path, document));
             if (document.protection() != ItemCodec.Protection.NONE)
@@ -94,9 +98,9 @@ public final class SecretMasker {
         for (var rule : document.rules().entrySet())
             if (rule.getValue().sensitive()) {
                 String key = rule.getKey();
-                if (key.isEmpty() || key.equals(path) || path.startsWith(key + "/"))
+                if (key.isEmpty() || key.equals(path) || path.startsWith(key + Symbol.SLASH))
                     return new JsonValue.StringValue(MASK);
-                if (path.isEmpty() || key.startsWith(path + "/")) {
+                if (path.isEmpty() || key.startsWith(path + Symbol.SLASH)) {
                     String relative = key.substring(path.length());
                     if (ItemCodec.at(result, relative) != null)
                         result = ItemCodec.write(result, relative, new JsonValue.StringValue(MASK), false);

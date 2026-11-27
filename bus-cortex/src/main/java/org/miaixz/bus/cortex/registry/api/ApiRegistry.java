@@ -27,6 +27,7 @@ import java.util.Objects;
 
 import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.data.id.ID;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.xyz.BeanKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.cortex.*;
@@ -723,7 +724,10 @@ public class ApiRegistry extends StoreBackedRegistry<ApiAssets> implements Regis
      * @return tenant, application and checksum coordinates
      */
     private List<String> identity(Instance instance) {
-        return List.of(Objects.toString(instance.getTenant_id(), ""), instance.getApp_id(), instance.getChecksum());
+        return List.of(
+                Objects.toString(instance.getTenant_id(), Normal.EMPTY),
+                instance.getApp_id(),
+                instance.getChecksum());
     }
 
 }

@@ -39,10 +39,6 @@ public interface Matcher<T, K> {
      * @return A {@code Matcher} object.
      */
     static <T> Matcher<T, ?> of(Validator<T> validator) {
-        /**
-         * Adapter implementation that wraps a Validator as a Matcher. This implementation ignores the annotation
-         * parameter and delegates to the underlying validator.
-         */
         return (object, annotation, context) -> validator.on(object, context);
     }
 
@@ -55,10 +51,6 @@ public interface Matcher<T, K> {
      * @return A new validator whose result is always the opposite of the input validator's result.
      */
     static <T, K> Matcher<T, K> not(Matcher<T, K> matcher) {
-        /**
-         * Negating matcher implementation that inverts the result of the wrapped matcher. This implementation applies
-         * logical NOT to the validation result.
-         */
         return (object, anno, context) -> !matcher.on(object, anno, context);
     }
 

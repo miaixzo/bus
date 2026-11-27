@@ -20,17 +20,26 @@
 package org.miaixz.bus.crypto.center;
 
 import java.io.Serial;
+import java.security.GeneralSecurityException;
 import java.security.spec.AlgorithmParameterSpec;
+import java.util.Arrays;
 
+import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
+import javax.crypto.spec.GCMParameterSpec;
 import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
 
 import org.miaixz.bus.core.lang.Algorithm;
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.exception.CryptoException;
 import org.miaixz.bus.core.xyz.ArrayKit;
+import org.miaixz.bus.core.xyz.RandomKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.crypto.Keeper;
 import org.miaixz.bus.crypto.Padding;
 import org.miaixz.bus.crypto.builtin.symmetric.Crypto;
+import org.miaixz.bus.crypto.cipher.JceCipher;
 
 /**
  * AES (Advanced Encryption Standard) encryption algorithm implementation. Also known as Rijndael in cryptography.
@@ -62,6 +71,21 @@ public class AES extends Crypto {
 
     @Serial
     private static final long serialVersionUID = 2539228818001L;
+
+    /**
+     * Length of the initialization vector used in GCM payloads.
+     */
+    private static final int GCM_IV_BYTES = Normal._12;
+
+    /**
+     * Length of the authentication tag used in GCM payloads.
+     */
+    private static final int GCM_TAG_BYTES = Normal._16;
+
+    /**
+     * Number of extra bytes in a GCM payload for its initialization vector and authentication tag.
+     */
+    public static final int GCM_OVERHEAD_BYTES = GCM_IV_BYTES + GCM_TAG_BYTES;
 
     /**
      * Constructs an AES encryptor/decryptor with default settings: AES/ECB/PKCS5Padding. A random key is generated.
@@ -216,6 +240,84 @@ public class AES extends Crypto {
      */
     public AES(final String mode, final String padding, final SecretKey key, final AlgorithmParameterSpec paramsSpec) {
         super(StringKit.format("AES/{}/{}", mode, padding), key, paramsSpec);
+    }
+
+    /**
+     * Encrypts plaintext with AES-GCM using a fresh 96-bit initialization vector and a 128-bit authentication tag.
+     *
+     * @param key       raw AES key of 16, 24, or 32 bytes
+     * @param aad       additional authenticated data, which may be empty
+     * @param plaintext plaintext to encrypt
+     * @return initialization vector followed by ciphertext and authentication tag
+     * @throws IllegalArgumentException if the key is null or empty
+     * @throws GeneralSecurityException if the cipher cannot encrypt the plaintext
+     */
+    public static byte[] sealGcm(final byte[] key, final byte[] aad, final byte[] plaintext)
+            throws GeneralSecurityException {
+        byte[] iv = RandomKit.randomBytes(GCM_IV_BYTES, RandomKit.getSecureRandom());
+        byte[] ciphertext = processGcm(Algorithm.Type.ENCRYPT, key, iv, aad, plaintext, 0);
+        byte[] payload = Arrays.copyOf(iv, iv.length + ciphertext.length);
+        System.arraycopy(ciphertext, 0, payload, iv.length, ciphertext.length);
+        return payload;
+    }
+
+    /**
+     * Decrypts and authenticates a payload produced by {@link #sealGcm(byte[], byte[], byte[])}.
+     *
+     * @param key     raw AES key of 16, 24, or 32 bytes
+     * @param aad     additional authenticated data supplied on encryption
+     * @param payload initialization vector followed by ciphertext and authentication tag
+     * @return authenticated plaintext
+     * @throws IllegalArgumentException if the key is null or empty
+     * @throws GeneralSecurityException if the payload is truncated or authentication fails
+     */
+    public static byte[] openGcm(final byte[] key, final byte[] aad, final byte[] payload)
+            throws GeneralSecurityException {
+        if (payload.length < GCM_OVERHEAD_BYTES) {
+            throw new GeneralSecurityException("Truncated AES-GCM payload");
+        }
+        return processGcm(
+                Algorithm.Type.DECRYPT,
+                key,
+                Arrays.copyOf(payload, GCM_IV_BYTES),
+                aad,
+                payload,
+                GCM_IV_BYTES);
+    }
+
+    /**
+     * Processes one authenticated AES-GCM message using the platform security provider.
+     *
+     * @param mode   cipher operation mode
+     * @param key    raw AES key
+     * @param iv     initialization vector for the message
+     * @param aad    additional authenticated data
+     * @param input  plaintext or encrypted payload
+     * @param offset index where the cipher input begins
+     * @return ciphertext with authentication tag or authenticated plaintext
+     * @throws GeneralSecurityException if the cipher cannot process the input
+     */
+    private static byte[] processGcm(
+            final Algorithm.Type mode,
+            final byte[] key,
+            final byte[] iv,
+            final byte[] aad,
+            final byte[] input,
+            final int offset) throws GeneralSecurityException {
+        JceCipher cipher = new JceCipher(Cipher.getInstance("AES/GCM/NoPadding"));
+        cipher.init(
+                mode.getValue(),
+                new JceCipher.JceParameters(new SecretKeySpec(key, Algorithm.AES.getValue()),
+                        new GCMParameterSpec(GCM_TAG_BYTES * Byte.SIZE, iv), null));
+        try {
+            cipher.updateAad(aad);
+            return cipher.processFinal(input, offset, input.length - offset);
+        } catch (CryptoException failure) {
+            if (failure.getCause() instanceof GeneralSecurityException cause) {
+                throw cause;
+            }
+            throw new GeneralSecurityException("AES-GCM operation failed", failure);
+        }
     }
 
 }

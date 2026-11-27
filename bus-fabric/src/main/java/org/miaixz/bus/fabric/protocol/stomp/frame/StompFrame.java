@@ -213,7 +213,7 @@ public class StompFrame {
             return "StompFrame[heartbeat]";
         }
         return "StompFrame[command=" + command + ", headers=" + headers + ", body=" + body + ", receipt=" + receipt
-                + "]";
+                + Symbol.BRACKET_RIGHT;
     }
 
 }

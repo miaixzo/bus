@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.opencv.core;
 
+import org.miaixz.bus.core.lang.Symbol;
+
 /**
  * A rotated rectangle represented by its center, dimensions, and rotation angle.
  */
@@ -185,7 +187,7 @@ public class RotatedRect {
      */
     @Override
     public String toString() {
-        return "{ " + center + " " + size + " * " + angle + " }";
+        return "{ " + center + Symbol.SPACE + size + " * " + angle + " }";
     }
 
 }

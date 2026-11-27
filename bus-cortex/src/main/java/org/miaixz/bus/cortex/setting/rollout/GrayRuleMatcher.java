@@ -23,6 +23,7 @@ import java.math.BigInteger;
 import java.util.Map;
 
 import org.miaixz.bus.core.center.regex.Pattern;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.net.ip.IPv4;
 import org.miaixz.bus.core.xyz.PatternKit;
 import org.miaixz.bus.cortex.Instance;
@@ -75,7 +76,7 @@ public final class GrayRuleMatcher {
     public boolean validRange(String range) {
         if (range == null)
             return false;
-        String[] parts = range.split("-", -1);
+        String[] parts = range.split(Symbol.MINUS, -1);
         if (parts.length != 2)
             return false;
         long a = address(parts[0].trim()), b = address(parts[1].trim());
@@ -90,7 +91,7 @@ public final class GrayRuleMatcher {
      * @return match
      */
     private boolean inRange(String range, String host) {
-        String[] parts = range.split("-", -1);
+        String[] parts = range.split(Symbol.MINUS, -1);
         long value = address(host);
         return value >= 0 && value >= address(parts[0].trim()) && value <= address(parts[1].trim());
     }

@@ -388,19 +388,18 @@ public class AixOperatingSystem extends AbstractOperatingSystem {
     public List<OSService> getServices() {
         List<OSService> services = new ArrayList<>();
         // Get system services from lssrc command
-        /*-
-         Output:
-         Subsystem         Group            PID          Status
-            platform_agent                    2949214      active
-            cimsys                            2490590      active
-            snmpd            tcpip            2883698      active
-            syslogd          ras              2359466      active
-            sendmail         mail             3145828      active
-            portmap          portmap          2818188      active
-            inetd            tcpip            2752656      active
-            lpd              spooler                       inoperative
-                        ...
-        */
+        // -
+        // Output:
+        // Subsystem Group PID Status
+        // platform_agent 2949214 active
+        // cimsys 2490590 active
+        // snmpd tcpip 2883698 active
+        // syslogd ras 2359466 active
+        // sendmail mail 3145828 active
+        // portmap portmap 2818188 active
+        // inetd tcpip 2752656 active
+        // lpd spooler inoperative
+        // ...
         List<String> systemServicesInfoList = Executor.runNative("lssrc -a");
         if (systemServicesInfoList.size() > 1) {
             boolean header = true;

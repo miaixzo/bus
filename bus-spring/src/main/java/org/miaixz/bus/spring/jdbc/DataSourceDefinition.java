@@ -22,6 +22,7 @@ package org.miaixz.bus.spring.jdbc;
 import java.util.Map;
 import java.util.Objects;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
@@ -287,7 +288,8 @@ public class DataSourceDefinition {
     @Override
     public String toString() {
         return "DataSourceDefinition[name=" + this.name + ", url=***, username=***, password=***, driverClassName="
-                + this.driverClassName + ", type=" + this.type + ", hikari=" + this.hikari.keySet() + "]";
+                + this.driverClassName + ", type=" + this.type + ", hikari=" + this.hikari.keySet()
+                + Symbol.BRACKET_RIGHT;
     }
 
 }

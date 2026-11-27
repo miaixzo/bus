@@ -130,7 +130,7 @@ public record Route(Address address, ProxyPlan proxy, InetSocketAddress socket) 
      */
     @Override
     public String toString() {
-        return "Route[id=" + id() + ", secure=" + secure() + ", tunnel=" + requiresTunnel() + "]";
+        return "Route[id=" + id() + ", secure=" + secure() + ", tunnel=" + requiresTunnel() + Symbol.BRACKET_RIGHT;
     }
 
 }

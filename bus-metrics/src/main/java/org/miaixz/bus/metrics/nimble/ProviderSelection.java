@@ -24,6 +24,8 @@ import java.util.Comparator;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.errors.ComponentFailure;
 import org.miaixz.bus.errors.ErrorType;
@@ -85,11 +87,12 @@ public final class ProviderSelection {
         if (selected == null) {
             throw new IllegalStateException(
                     "No candidate was registered for metrics provider " + StringKit.toLowerCase(selectedType.name())
-                            + " (expected " + EXPECTED_TYPES.get(selectedType) + ")");
+                            + " (expected " + EXPECTED_TYPES.get(selectedType) + Symbol.PARENTHESE_RIGHT);
         }
         if (!selected.available()) {
             throw new IllegalStateException("Metrics provider " + StringKit.toLowerCase(selectedType.name())
-                    + " is unavailable: " + selected.reason() + " (expected " + EXPECTED_TYPES.get(selectedType) + ")");
+                    + " is unavailable: " + selected.reason() + " (expected " + EXPECTED_TYPES.get(selectedType)
+                    + Symbol.PARENTHESE_RIGHT);
         }
         try {
             return Objects.requireNonNull(selected.factory().orElseThrow().get(), "Provider factory returned null");
@@ -201,7 +204,7 @@ public final class ProviderSelection {
             if (type == Type.AUTO) {
                 throw new IllegalArgumentException("AUTO is a selection policy, not a provider candidate");
             }
-            reason = reason == null ? "" : reason;
+            reason = reason == null ? Normal.EMPTY : reason;
             factory = Objects.requireNonNull(factory, "Provider candidate factory must not be null");
             if (available != factory.isPresent()) {
                 throw new IllegalArgumentException("Available provider candidates must have exactly one factory");
@@ -217,7 +220,7 @@ public final class ProviderSelection {
          * @return available candidate
          */
         public static Candidate available(Type type, boolean external, Supplier<Provider> factory) {
-            return new Candidate(type, external, true, "",
+            return new Candidate(type, external, true, Normal.EMPTY,
                     Optional.of(Objects.requireNonNull(factory, "Provider candidate factory must not be null")));
         }
 

@@ -26,6 +26,7 @@ import java.util.Arrays;
 
 import org.miaixz.bus.core.codec.Decoder;
 import org.miaixz.bus.core.codec.Encoder;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.ArrayKit;
 
 /**
@@ -130,8 +131,11 @@ public class Base85Codec implements Encoder<byte[], byte[]>, Decoder<byte[], byt
         private static final byte[] Z85 = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e',
                 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
                 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U',
-                'V', 'W', 'X', 'Y', 'Z', '.', '-', ':', '+', '=', '^', '!', '/', '*', '?', '&', '<', '>', '(', ')', '[',
-                ']', '{', '}', '@', '%', '$', '#' };
+                'V', 'W', 'X', 'Y', 'Z', Symbol.C_DOT, Symbol.C_MINUS, Symbol.C_COLON, Symbol.C_PLUS, Symbol.C_EQUAL,
+                Symbol.C_CARET, Symbol.C_NOT, Symbol.C_SLASH, Symbol.C_STAR, Symbol.C_QUESTION_MARK, Symbol.C_AND,
+                Symbol.C_LT, Symbol.C_GT, Symbol.C_PARENTHESE_LEFT, Symbol.C_PARENTHESE_RIGHT, Symbol.C_BRACKET_LEFT,
+                Symbol.C_BRACKET_RIGHT, Symbol.C_BRACE_LEFT, Symbol.C_BRACE_RIGHT, Symbol.C_AT, Symbol.C_PERCENT,
+                Symbol.C_DOLLAR, Symbol.C_HASH };
 
         /**
          * The shared encoder for the ZeroMQ Z85 alphabet.
@@ -140,7 +144,7 @@ public class Base85Codec implements Encoder<byte[], byte[]>, Decoder<byte[], byt
 
         static {
             for (int i = 0; i < STANDARD.length; i++) {
-                STANDARD[i] = (byte) ('!' + i);
+                STANDARD[i] = (byte) (Symbol.C_NOT + i);
             }
         }
 
@@ -308,7 +312,8 @@ public class Base85Codec implements Encoder<byte[], byte[]>, Decoder<byte[], byt
             for (final byte value : encoded) {
                 final int index = value & 0xff;
                 if (index >= lookupTable.length || lookupTable[index] == -1) {
-                    throw new IllegalArgumentException("Invalid Base85 character: '" + (char) value + "'");
+                    throw new IllegalArgumentException(
+                            "Invalid Base85 character: '" + (char) value + Symbol.SINGLE_QUOTE);
                 }
 
                 tuple = tuple * 85 + lookupTable[index];

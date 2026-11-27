@@ -24,6 +24,8 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.util.Objects;
 
+import org.miaixz.bus.core.lang.Symbol;
+
 /**
  * Represents text to be displayed, used for storing text information for drawing on an image, including content, font,
  * size, position, and transparency.
@@ -223,8 +225,8 @@ public class ImageText implements Serializable {
      */
     @Override
     public String toString() {
-        return "ImageText{" + "pressText='" + pressText + '\'' + ", color=" + color + ", font=" + font + ", point="
-                + point + ", alpha=" + alpha + '}';
+        return "ImageText{" + "pressText='" + pressText + Symbol.C_SINGLE_QUOTE + ", color=" + color + ", font=" + font
+                + ", point=" + point + ", alpha=" + alpha + Symbol.C_BRACE_RIGHT;
     }
 
 }

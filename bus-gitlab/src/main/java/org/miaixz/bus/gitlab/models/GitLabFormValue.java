@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.gitlab.models;
 
+import org.miaixz.bus.core.lang.Symbol;
+
 /**
  * The Git lab form value class.
  *
@@ -94,7 +96,7 @@ public class GitLabFormValue {
 
     @Override
     public String toString() {
-        return "GitLabFormValue [value=" + value + ", type=" + type + ", required=" + required + "]";
+        return "GitLabFormValue [value=" + value + ", type=" + type + ", required=" + required + Symbol.BRACKET_RIGHT;
     }
 
 }

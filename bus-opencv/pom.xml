@@ -33,7 +33,8 @@
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
-    <description>Bus OpenCV - Computer vision bindings for native OpenCV interop, matrix operators, codec hooks and camera capture.</description>
+    <description>Bus OpenCV - Computer vision bindings for native OpenCV interop, matrix operators, codec hooks and
+        camera capture.</description>
     <url>https://github.com/818000/bus</url>
     <inceptionYear>2015</inceptionYear>
 
@@ -82,5 +83,12 @@
         <system>Github Issues</system>
         <url>https://github.com/818000/bus/issues</url>
     </issueManagement>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.miaixz</groupId>
+            <artifactId>bus-core</artifactId>
+        </dependency>
+    </dependencies>
 
 </project>

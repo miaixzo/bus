@@ -26,6 +26,7 @@ import java.util.List;
 
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.fabric.network.dns.message.DnsCodec;
 import org.miaixz.bus.fabric.network.dns.message.DnsName;
@@ -500,7 +501,8 @@ public interface DnsRecordData {
          */
         @Override
         public String toString() {
-            return "DnsRecordData[type=" + type() + ", typeCode=" + typeCode + ", bytes=" + wireData.length + "]";
+            return "DnsRecordData[type=" + type() + ", typeCode=" + typeCode + ", bytes=" + wireData.length
+                    + Symbol.BRACKET_RIGHT;
         }
 
     }

@@ -24,6 +24,7 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.concurrent.atomic.AtomicLong;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.DateKit;
 
 /**
@@ -133,7 +134,7 @@ public class CacheObject<K, V> implements Serializable {
     @Override
     public String toString() {
         return "CacheObject [key=" + key + ", value=" + object + ", lastAccess=" + lastAccess + ", accessCount="
-                + accessCount + ", ttl=" + ttl + "]";
+                + accessCount + ", ttl=" + ttl + Symbol.BRACKET_RIGHT;
     }
 
     /**

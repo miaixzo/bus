@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.extra.ssh;
 
+import org.miaixz.bus.core.lang.Symbol;
+
 /**
  * Represents a connector object that provides basic connection information for services like SSH, FTP, etc. This class
  * encapsulates the following details:
@@ -234,8 +236,9 @@ public class Connector {
      */
     @Override
     public String toString() {
-        return "Connector{" + "host='" + host + '\'' + ", port=" + port + ", user='" + user + '\'' + ", password='"
-                + password + '\'' + ", timeout=" + timeout + '}';
+        return "Connector{" + "host='" + host + Symbol.C_SINGLE_QUOTE + ", port=" + port + ", user='" + user
+                + Symbol.C_SINGLE_QUOTE + ", password='" + password + Symbol.C_SINGLE_QUOTE + ", timeout=" + timeout
+                + Symbol.C_BRACE_RIGHT;
     }
 
 }

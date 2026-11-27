@@ -80,7 +80,7 @@ public interface Resource {
      * @return {@code true} when the value has a valid quoted HTTP entity-tag shape
      */
     private static boolean isEntityTag(final String value) {
-        final int quote = value.startsWith("W/\"") ? 2 : value.startsWith("\"") ? 0 : -1;
+        final int quote = value.startsWith("W/\"") ? 2 : value.startsWith(Symbol.DOUBLE_QUOTES) ? 0 : -1;
         if (quote < 0 || value.length() <= quote + 1 || value.charAt(value.length() - 1) != Symbol.C_DOUBLE_QUOTES) {
             return false;
         }

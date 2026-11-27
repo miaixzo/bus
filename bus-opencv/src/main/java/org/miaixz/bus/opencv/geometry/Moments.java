@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.opencv.geometry;
 
+import org.miaixz.bus.core.lang.Symbol;
+
 /**
  * Spatial, central, and normalized central moments of an image or contour.
  */
@@ -223,13 +225,13 @@ public class Moments {
      */
     @Override
     public String toString() {
-        return "Moments [ " + "\n" + "m00=" + m00 + ", " + "\n" + "m10=" + m10 + ", " + "m01=" + m01 + ", " + "\n"
-                + "m20=" + m20 + ", " + "m11=" + m11 + ", " + "m02=" + m02 + ", " + "\n" + "m30=" + m30 + ", " + "m21="
-                + m21 + ", " + "m12=" + m12 + ", " + "m03=" + m03 + ", " + "\n" + "mu20=" + mu20 + ", " + "mu11=" + mu11
-                + ", " + "mu02=" + mu02 + ", " + "\n" + "mu30=" + mu30 + ", " + "mu21=" + mu21 + ", " + "mu12=" + mu12
-                + ", " + "mu03=" + mu03 + ", " + "\n" + "nu20=" + nu20 + ", " + "nu11=" + nu11 + ", " + "nu02=" + nu02
-                + ", " + "\n" + "nu30=" + nu30 + ", " + "nu21=" + nu21 + ", " + "nu12=" + nu12 + ", " + "nu03=" + nu03
-                + ", " + "\n]";
+        return "Moments [ " + Symbol.LF + "m00=" + m00 + ", " + Symbol.LF + "m10=" + m10 + ", " + "m01=" + m01 + ", "
+                + Symbol.LF + "m20=" + m20 + ", " + "m11=" + m11 + ", " + "m02=" + m02 + ", " + Symbol.LF + "m30=" + m30
+                + ", " + "m21=" + m21 + ", " + "m12=" + m12 + ", " + "m03=" + m03 + ", " + Symbol.LF + "mu20=" + mu20
+                + ", " + "mu11=" + mu11 + ", " + "mu02=" + mu02 + ", " + Symbol.LF + "mu30=" + mu30 + ", " + "mu21="
+                + mu21 + ", " + "mu12=" + mu12 + ", " + "mu03=" + mu03 + ", " + Symbol.LF + "nu20=" + nu20 + ", "
+                + "nu11=" + nu11 + ", " + "nu02=" + nu02 + ", " + Symbol.LF + "nu30=" + nu30 + ", " + "nu21=" + nu21
+                + ", " + "nu12=" + nu12 + ", " + "nu03=" + nu03 + ", " + "\n]";
     }
 
     /**

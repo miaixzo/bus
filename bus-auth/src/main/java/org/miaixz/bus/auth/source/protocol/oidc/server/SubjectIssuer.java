@@ -182,7 +182,7 @@ public class SubjectIssuer {
      */
     @Override
     public String toString() {
-        return "SubjectIssuer[sourceId=" + sourceId + ']';
+        return "SubjectIssuer[sourceId=" + sourceId + Symbol.C_BRACKET_RIGHT;
     }
 
 }

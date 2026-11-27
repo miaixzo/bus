@@ -154,13 +154,6 @@ public class Checker {
                         NotBlank.class.getClassLoader(),
                         // The implemented interface.
                         new Class<?>[] { NotBlank.class },
-                        /**
-                         * Invocation handler for the dynamic proxy that returns default annotation values. This handler
-                         * intercepts all method calls on the proxied annotation and returns the default value defined
-                         * in the annotation interface.
-                         *
-                         * @return the default value of the invoked annotation method.
-                         */
                         (proxy, method, args) -> {
                             // Return the default value of the annotation method.
                             return method.getDefaultValue();

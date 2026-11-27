@@ -124,15 +124,6 @@ public final class CloudCredentials implements AutoCloseable {
      *                                                               diagnostics are deliberately sanitized
      */
     private void requireKind(boolean signing) {
-        /**
-         * Rejects a closed credential or one whose known absolute expiration has been reached.
-         *
-         * @throws org.miaixz.bus.core.lang.exception.ForbiddenException if access is denied or the supplied credential
-         *                                                               representation is not permitted
-         * @throws org.miaixz.bus.core.lang.exception.CryptoException    if the deadline, lifecycle, backend or payload
-         *                                                               checks fail; inspect the exception type;
-         *                                                               diagnostics are deliberately sanitized
-         */
         check();
         if ((accessKeyId != null) != signing) {
             throw new ForbiddenException("Secret access denied");

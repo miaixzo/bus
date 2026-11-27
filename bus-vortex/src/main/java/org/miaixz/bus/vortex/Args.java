@@ -25,6 +25,7 @@ import lombok.experimental.SuperBuilder;
 
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.net.Http;
+import org.miaixz.bus.cortex.registry.RegistryEndpoint;
 import org.miaixz.bus.vortex.strategy.RequestStrategy;
 import org.miaixz.bus.vortex.strategy.qualifier.McpQualifierStrategy;
 import org.miaixz.bus.vortex.strategy.qualifier.RestQualifierStrategy;
@@ -137,11 +138,6 @@ public class Args {
      * The base URI path for custom (CST) requests.
      */
     public static final String CST_PATH_PREFIX = Symbol.SLASH + "router" + Symbol.SLASH + "cst";
-
-    /**
-     * The base URI path for service discovery and configuration (SDC) requests.
-     */
-    public static final String SDC_PATH_PREFIX = Symbol.SLASH + "router" + Symbol.SLASH + "sdc";
 
     /**
      * A constant for a default API version, e.g., "1.0".
@@ -266,24 +262,52 @@ public class Args {
     }
 
     /**
-     * Checks if the given path is the service discovery and configuration (SDC) request path.
+     * Checks the request path against the configured SDC route family.
      *
-     * @param path The URL path string to check.
-     * @return {@code true} if the path equals the SDC path, {@code false} otherwise.
+     * @param path             request path
+     * @param registrationPath configured registration path
+     * @return whether the request selects SDC
      */
-    public static boolean isSdcRequest(String path) {
-        return isPathPrefix(path, SDC_PATH_PREFIX);
+    public static boolean isSdcRequest(String path, String registrationPath) {
+        return registrationPath != null && !registrationPath.isEmpty() && isPathPrefix(path, registrationPath);
     }
 
     /**
-     * Checks if the given path matches a known gateway route.
+     * Validates that a registration path is distinct from other fixed gateway route families.
      *
-     * @param path The URL path string to check.
-     * @return {@code true} if the path matches any known gateway route, {@code false} otherwise.
+     * @param path configured registration path
+     * @throws IllegalArgumentException if the route conflicts with another gateway protocol
+     */
+    public static void validateSdcPath(String path) {
+        RegistryEndpoint.validatePath(path);
+        for (String other : new String[] { REST_PATH_PREFIX, CST_PATH_PREFIX, MCP_PATH_PREFIX, MQ_PATH_PREFIX,
+                GRPC_PATH_PREFIX, WS_PATH_PREFIX, LLM_PATH_PREFIX }) {
+            if (isPathPrefix(path, other) || isPathPrefix(other, path)) {
+                throw new IllegalArgumentException("The registration path overlaps the gateway route " + other);
+            }
+        }
+    }
+
+    /**
+     * Checks the protocol routes that do not require a configured registration path.
+     *
+     * @param path request path
+     * @return whether a built-in route matches
      */
     public static boolean isKnownRequest(String path) {
+        return isKnownRequest(path, null);
+    }
+
+    /**
+     * Checks if the path matches any built-in or configured gateway route.
+     *
+     * @param path             The URL path string to check.
+     * @param registrationPath configured registration path
+     * @return {@code true} if the path matches any known gateway route, {@code false} otherwise.
+     */
+    public static boolean isKnownRequest(String path, String registrationPath) {
         return isRestRequest(path) || isMcpRequest(path) || isMqRequest(path) || isWsRequest(path) || isCstRequest(path)
-                || isGrpcRequest(path) || isLlmRequest(path) || isSdcRequest(path);
+                || isGrpcRequest(path) || isLlmRequest(path) || isSdcRequest(path, registrationPath);
     }
 
     /**

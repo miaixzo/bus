@@ -100,7 +100,7 @@ public class JPEGParser implements XPEGParser {
     @Override
     public String toString() {
         return "JPEGParser{" + "codeStreamPos=" + codeStreamPosition + ", posAfterAPP=" + positionAfterAPP + ", "
-                + params + '}';
+                + params + Symbol.C_BRACE_RIGHT;
     }
 
     /**
@@ -454,7 +454,7 @@ public class JPEGParser implements XPEGParser {
                     byte[] values = buf.array();
                     if (values[0] == 0x41 && values[1] == 0x64 && values[2] == 0x6F && values[3] == 0x62
                             && values[4] == 0x65 && values[11] == 0) {
-                        /* Found Adobe APP14 marker for RGB transform */
+                        // Found Adobe APP14 marker for RGB transform
                         rgb = true;
                     }
                 } else {
@@ -754,12 +754,13 @@ public class JPEGParser implements XPEGParser {
             sb.append(", Csiz=").append(sizParams.getShort(34) & 0xffff);
             sb.append(", Comps{");
             for (int i = 36; i + 2 < sizParams.limit();) {
-                sb.append('{');
+                sb.append(Symbol.C_BRACE_LEFT);
                 int ssiz = sizParams.get(i++);
                 if (ssiz < 0)
                     sb.append('±');
-                sb.append((ssiz & 0x7f) + 1).append(':').append(sizParams.get(i++) & 0xff).append(':')
-                        .append(sizParams.get(i++) & 0xff).append('}').append(',');
+                sb.append((ssiz & 0x7f) + 1).append(Symbol.C_COLON).append(sizParams.get(i++) & 0xff)
+                        .append(Symbol.C_COLON).append(sizParams.get(i++) & 0xff).append(Symbol.C_BRACE_RIGHT)
+                        .append(Symbol.C_COMMA);
             }
             sb.setLength(sb.length() - 1);
             sb.append("}},\n  COD{Lcod=").append(codParams.limit() + 2);
@@ -775,8 +776,9 @@ public class JPEGParser implements XPEGParser {
             if (codParams.limit() > 10) {
                 sb.append(", Precincts{");
                 for (int i = 10; i < codParams.limit(); i++) {
-                    sb.append('{').append(codParams.get(i) & 0xf).append(',').append((codParams.get(i) & 0xf0) >>> 4)
-                            .append('}').append(',');
+                    sb.append(Symbol.C_BRACE_LEFT).append(codParams.get(i) & 0xf).append(Symbol.C_COMMA)
+                            .append((codParams.get(i) & 0xf0) >>> 4).append(Symbol.C_BRACE_RIGHT)
+                            .append(Symbol.C_COMMA);
                 }
                 sb.setLength(sb.length() - 1);
             }

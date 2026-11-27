@@ -1,6 +1,36 @@
 {
   "properties": [
     {
+      "name": "bus.cortex.config.endpoint",
+      "type": "java.lang.String",
+      "description": "HTTPS origin of the SDC gateway. Setting it enables startup configuration from Cortex."
+    },
+    {
+      "name": "bus.cortex.config.app.id",
+      "type": "java.lang.String",
+      "description": "Application identifier registered in SDC."
+    },
+    {
+      "name": "bus.cortex.config.token",
+      "type": "java.lang.String",
+      "description": "Application-specific credential used to read the published snapshot."
+    },
+    {
+      "name": "bus.cortex.config.ca.file",
+      "type": "java.lang.String",
+      "description": "Optional absolute path to PEM trust roots for the SDC gateway."
+    },
+    {
+      "name": "bus.cortex.config.secret.key.file",
+      "type": "java.lang.String",
+      "description": "Absolute path to the application delivery keys used for encrypted SDC items."
+    },
+    {
+      "name": "bus.cortex.config.fallback.location",
+      "type": "java.lang.String",
+      "description": "Optional absolute file URI for a single YAML or properties document used when SDC is unavailable."
+    },
+    {
       "name": "bus.errors.logging.enabled",
       "type": "java.lang.Boolean",
       "description": "Whether the standard Bus error log subscription sends records to bus-logger. Public response handling is independent of this setting. Independent diagnostics can use the JDK logging fallback.",

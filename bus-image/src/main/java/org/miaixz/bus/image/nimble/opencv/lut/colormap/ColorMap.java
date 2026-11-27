@@ -23,6 +23,8 @@ import java.awt.*;
 import java.util.*;
 import java.util.List;
 
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.image.nimble.opencv.lut.ByteLut;
 import org.miaixz.bus.image.nimble.opencv.lut.ColorLut;
@@ -140,11 +142,11 @@ public record ColorMap(String id, String name, ColorMapType type, Set<String> mo
      */
     public static String slug(String name) {
         Objects.requireNonNull(name, "Name cannot be null");
-        String dashed = StringKit.toLowerCase(name).replaceAll("[^\\p{L}\\p{N}]+", "-");
+        String dashed = StringKit.toLowerCase(name).replaceAll("[^\\p{L}\\p{N}]+", Symbol.MINUS);
         // Separator runs are already collapsed, so at most one dash remains at each end
-        int start = dashed.startsWith("-") ? 1 : 0;
-        int end = dashed.endsWith("-") ? dashed.length() - 1 : dashed.length();
-        return start >= end ? "" : dashed.substring(start, end);
+        int start = dashed.startsWith(Symbol.MINUS) ? 1 : 0;
+        int end = dashed.endsWith(Symbol.MINUS) ? dashed.length() - 1 : dashed.length();
+        return start >= end ? Normal.EMPTY : dashed.substring(start, end);
     }
 
     /**

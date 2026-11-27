@@ -426,17 +426,16 @@ public class SolarisOperatingSystem extends AbstractOperatingSystem {
         }
         // Iterate service list
         List<String> svcs = Executor.runNative("svcs -p");
-        /*-
-         Output:
-         STATE          STIME    FRMI
-         legacy_run     23:56:49 lrc:/etc/rc2_d/S47pppd
-         legacy_run     23:56:49 lrc:/etc/rc2_d/S81dodatadm_udaplt
-         legacy_run     23:56:49 lrc:/etc/rc2_d/S89PRESERVE
-         online         23:56:25 svc:/system/early-manifest-import:default
-         online         23:56:25 svc:/system/svc/restarter:default
-                        23:56:24       13 svc.startd
-                        ...
-         */
+        // -
+        // Output:
+        // STATE STIME FRMI
+        // legacy_run 23:56:49 lrc:/etc/rc2_d/S47pppd
+        // legacy_run 23:56:49 lrc:/etc/rc2_d/S81dodatadm_udaplt
+        // legacy_run 23:56:49 lrc:/etc/rc2_d/S89PRESERVE
+        // online 23:56:25 svc:/system/early-manifest-import:default
+        // online 23:56:25 svc:/system/svc/restarter:default
+        // 23:56:24 13 svc.startd
+        // ...
         for (String line : svcs) {
             if (line.startsWith("online")) {
                 int delim = line.lastIndexOf(":/");

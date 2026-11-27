@@ -395,8 +395,9 @@ public class PrometheusProvider implements Provider {
      * @param descriptor family descriptor
      */
     private void track(MetricDescriptor descriptor) {
-        String key = descriptor.scope() + '|' + descriptor.name() + '|' + descriptor.kind() + '|'
-                + descriptor.numberKind() + '|' + descriptor.unit() + '|' + descriptor.attributes();
+        String key = descriptor.scope() + Symbol.C_OR + descriptor.name() + Symbol.C_OR + descriptor.kind()
+                + Symbol.C_OR + descriptor.numberKind() + Symbol.C_OR + descriptor.unit() + Symbol.C_OR
+                + descriptor.attributes();
         activeLeases.computeIfAbsent(key, ignored -> familyRegistry.acquire(descriptor));
     }
 

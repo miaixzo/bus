@@ -777,9 +777,7 @@ public class Octets {
             try {
                 this.reservation.close();
             } catch (Exception ignored) {
-                /*
-                 * Terminal cleanup must not mask the original reactive signal.
-                 */
+                // Terminal cleanup must not mask the original reactive signal.
             }
         }
 

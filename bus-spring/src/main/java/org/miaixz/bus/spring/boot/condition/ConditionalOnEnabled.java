@@ -68,7 +68,7 @@ public @interface ConditionalOnEnabled {
      *
      * @return required member name
      */
-    String member() default "";
+    String member() default Normal.EMPTY;
 
     /**
      * Returns whether a missing secondary property activates the feature when the explicit annotation is absent.

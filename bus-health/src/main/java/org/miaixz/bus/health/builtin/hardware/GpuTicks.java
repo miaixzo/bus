@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.health.builtin.hardware;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.Immutable;
 
 /**
@@ -92,7 +93,7 @@ public class GpuTicks {
      */
     @Override
     public String toString() {
-        return "GpuTicks{activeTicks=" + activeTicks + ", idleTicks=" + idleTicks + '}';
+        return "GpuTicks{activeTicks=" + activeTicks + ", idleTicks=" + idleTicks + Symbol.C_BRACE_RIGHT;
     }
 
 }

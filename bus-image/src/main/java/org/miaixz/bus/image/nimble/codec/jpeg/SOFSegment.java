@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.image.nimble.codec.jpeg;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.ByteKit;
 
 /**
@@ -171,11 +172,12 @@ public class SOFSegment {
                 .append(getPrecision()).append(", Y=").append(getY()).append(", X=").append(getX()).append(", Nf=")
                 .append(numComponents);
         for (int i = 0; i < numComponents; i++) {
-            sb.append(", C").append(i + 1).append('=').append(getComponentID(i)).append(", H").append(i + 1).append('=')
-                    .append(getXSubsampling(i)).append(", V").append(i + 1).append('=').append(getYSubsampling(i))
-                    .append(", Tq").append(i + 1).append('=').append(getQTableSelector(i));
+            sb.append(", C").append(i + 1).append(Symbol.C_EQUAL).append(getComponentID(i)).append(", H").append(i + 1)
+                    .append(Symbol.C_EQUAL).append(getXSubsampling(i)).append(", V").append(i + 1)
+                    .append(Symbol.C_EQUAL).append(getYSubsampling(i)).append(", Tq").append(i + 1)
+                    .append(Symbol.C_EQUAL).append(getQTableSelector(i));
         }
-        sb.append(']');
+        sb.append(Symbol.C_BRACKET_RIGHT);
         return sb.toString();
     }
 

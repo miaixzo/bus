@@ -19,40 +19,43 @@
 */
 package org.miaixz.bus.spring.boot.environment;
 
+import java.util.Map;
 import java.util.Properties;
 
 import org.springframework.boot.EnvironmentPostProcessor;
 import org.springframework.boot.SpringApplication;
 import org.springframework.core.Ordered;
 import org.springframework.core.env.ConfigurableEnvironment;
+import org.springframework.core.env.MapPropertySource;
 import org.springframework.core.env.PropertiesPropertySource;
 
 import org.miaixz.bus.core.Version;
 import org.miaixz.bus.core.lang.Keys;
+import org.miaixz.bus.cortex.registry.RegistryEndpoint;
 
 /**
  * An {@link EnvironmentPostProcessor} implementation that sets up some default properties for the application
  * environment.
  * <p>
- * This post-processor adds a property source named {@code EnvironmentKeys.BUS_PROPERTY_SOURCE} to the environment,
+ * This post-processor adds a property source named {@code BootEnvironmentPropertyRegistry.BUS_PROPERTY_SOURCE}
  * containing the application version and a deterministic application-name fallback.
  *
  * @author Kimi Liu
  */
-public class SpringEnvironmentPostProcessor implements EnvironmentPostProcessor, Ordered {
+public class DefaultsEnvironmentPostProcessor implements EnvironmentPostProcessor, Ordered {
 
     /**
      * Initializes the post-processor that contributes Bus version and application-name defaults.
      */
-    public SpringEnvironmentPostProcessor() {
+    public DefaultsEnvironmentPostProcessor() {
         // No initialization required.
     }
 
     /**
      * Post-processes the environment to add default properties.
      * <p>
-     * If the property source {@code EnvironmentKeys.BUS_PROPERTY_SOURCE} is not already present, it adds the
-     * application version and sets {@code EnvironmentKeys.APPLICATION_NAME} as a required property.
+     * When {@code BootEnvironmentPropertyRegistry.BUS_PROPERTY_SOURCE} is absent, this adds the application version and
+     * supplies a default value for {@code BootEnvironmentPropertyRegistry.APPLICATION_NAME}.
      * </p>
      *
      * @param environment The configurable environment.
@@ -60,23 +63,29 @@ public class SpringEnvironmentPostProcessor implements EnvironmentPostProcessor,
      */
     @Override
     public void postProcessEnvironment(ConfigurableEnvironment environment, SpringApplication application) {
-        if (environment.getPropertySources().get(EnvironmentKeys.BUS_PROPERTY_SOURCE) != null) {
+        String registerUrl = environment.getProperty(RegistryEndpoint.REGISTER_URL);
+        if (registerUrl != null && !registerUrl.isBlank()) {
+            environment.getPropertySources().addFirst(
+                    new MapPropertySource("busRegistryEndpoint",
+                            Map.of(RegistryEndpoint.PATH_PROPERTY, RegistryEndpoint.path(registerUrl))));
+        }
+        if (environment.getPropertySources().get(BootEnvironmentPropertyRegistry.BUS_PROPERTY_SOURCE) != null) {
             return;
         }
 
         // Version configuration
         Properties properties = new Properties();
         properties.setProperty(Keys.VERSION, Version._VERSION);
-        if (!environment.containsProperty(EnvironmentKeys.APPLICATION_NAME)) {
+        if (!environment.containsProperty(BootEnvironmentPropertyRegistry.APPLICATION_NAME)) {
             Class<?> mainClass = application.getMainApplicationClass();
             properties.setProperty(
-                    EnvironmentKeys.APPLICATION_NAME,
+                    BootEnvironmentPropertyRegistry.APPLICATION_NAME,
                     mainClass == null ? "application" : mainClass.getSimpleName());
         }
 
         // Default configuration properties
-        PropertiesPropertySource propertySource = new PropertiesPropertySource(EnvironmentKeys.BUS_PROPERTY_SOURCE,
-                properties);
+        PropertiesPropertySource propertySource = new PropertiesPropertySource(
+                BootEnvironmentPropertyRegistry.BUS_PROPERTY_SOURCE, properties);
         environment.getPropertySources().addLast(propertySource);
     }
 

@@ -24,6 +24,7 @@ import org.miaixz.bus.auth.resolver.ConsumerMetadata;
 import org.miaixz.bus.auth.source.protocol.oauth2.ClientAuthenticationMethod;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Optional;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.extra.json.JsonValue;
 
@@ -105,7 +106,7 @@ public record ClientAuthentication(ConsumerMetadata consumer, Kind kind, Optiona
         final Federation facts = federation.getOrNull();
         return "ClientAuthentication[consumer=" + consumer.id() + ", kind=" + kind + ", method="
                 + method.map(ClientAuthenticationMethod::value).orElse(null) + ", issuer="
-                + (facts == null ? null : facts.issuer()) + ']';
+                + (facts == null ? null : facts.issuer()) + Symbol.C_BRACKET_RIGHT;
     }
 
     /**

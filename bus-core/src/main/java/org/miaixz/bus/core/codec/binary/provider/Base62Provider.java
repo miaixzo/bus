@@ -27,6 +27,7 @@ import org.miaixz.bus.core.codec.Decoder;
 import org.miaixz.bus.core.codec.Encoder;
 import org.miaixz.bus.core.codec.binary.decoder.Base62Decoder;
 import org.miaixz.bus.core.codec.binary.encoder.Base62Encoder;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.ArrayKit;
 
 /**
@@ -66,7 +67,8 @@ public class Base62Provider implements Encoder<byte[], byte[]>, Decoder<byte[], 
 
         for (int i = 0; i < indices.length; i++) {
             if (indices[i] < 0 || indices[i] >= dictionary.length || dictionary[indices[i]] < 0) {
-                throw new IllegalArgumentException("Invalid char '" + (char) (indices[i] & 0xff) + "' at [" + i + "]");
+                throw new IllegalArgumentException(
+                        "Invalid char '" + (char) (indices[i] & 0xff) + "' at [" + i + Symbol.BRACKET_RIGHT);
             }
             translation[i] = dictionary[indices[i]];
         }

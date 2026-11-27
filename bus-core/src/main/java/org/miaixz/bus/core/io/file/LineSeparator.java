@@ -48,7 +48,7 @@ public enum LineSeparator {
     /**
      * Windows system line separator: "\r\n"
      */
-    WINDOWS("\r\n");
+    WINDOWS(Symbol.CRLF);
 
     /**
      * The string value of the line separator.

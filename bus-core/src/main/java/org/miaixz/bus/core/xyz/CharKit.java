@@ -272,8 +272,9 @@ public class CharKit {
      * @see Character#isSpaceChar(int)
      */
     public static boolean isBlankChar(final int c) {
-        return Character.isWhitespace(c) || Character.isSpaceChar(c) || c == '\ufeff' || c == '\u202a' || c == '\u0000'
-        // Hangul Filler
+        return Character.isWhitespace(c) || Character.isSpaceChar(c) || c == '\ufeff' || c == '\u202a'
+                || c == Symbol.C_NUL
+                // Hangul Filler
                 || c == '\u3164'
                 // Braille Pattern Blank
                 || c == '\u2800'

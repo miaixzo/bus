@@ -135,15 +135,25 @@ public final class ServletErrorFilter implements Filter {
      */
     private static final class Guard extends HttpServletResponseWrapper {
 
-        /** Current request, shared with the fallback writer and observation. */
+        /**
+         * Current request, shared with the fallback writer and observation.
+         */
         private final HttpServletRequest request;
-        /** Whether an approved writer has selected the error response. */
+        /**
+         * Whether an approved writer has selected the error response.
+         */
         private boolean approved;
-        /** Whether the original body has been suppressed. */
+        /**
+         * Whether the original body has been suppressed.
+         */
         private boolean rejected;
-        /** Lazy wrapper around the container's binary writer. */
+        /**
+         * Lazy wrapper around the container's binary writer.
+         */
         private ServletOutputStream stream;
-        /** Lazy wrapper around the container's character writer. */
+        /**
+         * Lazy wrapper around the container's character writer.
+         */
         private PrintWriter writer;
 
         /**
@@ -258,7 +268,9 @@ public final class ServletErrorFilter implements Filter {
          */
         private final class GuardedStream extends ServletOutputStream {
 
-            /** Container's Servlet stream. */
+            /**
+             * Container's Servlet stream.
+             */
             private final ServletOutputStream delegate;
 
             /**
@@ -349,7 +361,9 @@ public final class ServletErrorFilter implements Filter {
          */
         private final class GuardedWriter extends Writer {
 
-            /** Container's character writer. */
+            /**
+             * Container's character writer.
+             */
             private final PrintWriter delegate;
 
             /**

@@ -44,9 +44,8 @@ Spring Boot discovers candidates through:
 META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports
 ```
 
-Early Boot listeners and environment processors are registered through the single Starter-owned
-`META-INF/spring.factories` file. `bus-spring` supplies their reusable implementations but does not publish a competing
-discovery resource.
+`bus-spring` provides the early Boot listeners and environment processors and registers them through its
+`META-INF/spring.factories` file.
 
 The root package contains two primary classes:
 
@@ -598,7 +597,7 @@ current runtime model and also enforces ordering.
 - Keep reusable mechanics in `bus-spring` and domain behavior in the owning Bus module.
 - Do not introduce an `internal` package under Starter.
 - Override defaults by Bean type or documented Bean name.
-- Keep `AutoConfiguration.imports`, `spring.factories`, module descriptors, and reachability metadata aligned with class
+- Keep `AutoConfiguration.imports`, module descriptors, and reachability metadata aligned with class
   renames.
 
 ## Verification boundary

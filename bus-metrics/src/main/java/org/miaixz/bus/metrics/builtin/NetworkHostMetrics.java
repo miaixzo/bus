@@ -22,6 +22,7 @@ package org.miaixz.bus.metrics.builtin;
 import java.util.List;
 import java.util.Objects;
 
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.metrics.Provider;
 import org.miaixz.bus.metrics.bridge.NetworkSnapshot;
 import org.miaixz.bus.metrics.bridge.SnapshotCache;
@@ -96,7 +97,7 @@ public final class NetworkHostMetrics implements MetricBinder {
      * @return metric descriptor
      */
     private static MetricDescriptor descriptor(String name, String unit, List<AttributeDescriptor<?>> attributes) {
-        return MetricDescriptor.of(name, InstrumentKind.COUNTER, NumberKind.LONG, unit, "", attributes);
+        return MetricDescriptor.of(name, InstrumentKind.COUNTER, NumberKind.LONG, unit, Normal.EMPTY, attributes);
     }
 
     /**
@@ -180,7 +181,7 @@ public final class NetworkHostMetrics implements MetricBinder {
                                         InstrumentKind.UP_DOWN_COUNTER,
                                         NumberKind.LONG,
                                         "{connection}",
-                                        "",
+                                        Normal.EMPTY,
                                         List.of(TRANSPORT, CONNECTION_STATE)),
                                 measurement -> cache.get().ifPresent(
                                         snapshot -> snapshot.connections().forEach(

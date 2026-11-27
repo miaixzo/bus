@@ -21,6 +21,8 @@ package org.miaixz.bus.image.nimble.codec.mp4;
 
 import java.nio.ByteBuffer;
 
+import org.miaixz.bus.core.lang.Symbol;
+
 /**
  * Represents the MP4FileType type.
  *
@@ -69,11 +71,11 @@ public class MP4FileType {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         append4CC(sb.append("ftyp["), brands[0]);
-        sb.append('.').append(brands[1]);
+        sb.append(Symbol.C_DOT).append(brands[1]);
         for (int i = 2; i < brands.length; i++) {
-            append4CC(sb.append(",").append(" "), brands[i]);
+            append4CC(sb.append(Symbol.COMMA).append(Symbol.SPACE), brands[i]);
         }
-        sb.append(']');
+        sb.append(Symbol.C_BRACKET_RIGHT);
         return sb.toString();
     }
 

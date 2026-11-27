@@ -80,19 +80,18 @@ public class Lspv {
             String device,
             Map<String, Pair<Integer, Integer>> majMinMap) {
         List<HWPartition> partitions = new ArrayList<>();
-        /*-
-         $ lspv -L hdisk0
-        PHYSICAL VOLUME:    hdisk0                   VOLUME GROUP:     rootvg
-        PV IDENTIFIER:      000acfde95524f85 VG IDENTIFIER     000acfde00004c000000000395525276
-        PV STATE:           active
-        STALE PARTITIONS:   0                        ALLOCATABLE:      yes
-        PP SIZE:            128 megabyte(s)          LOGICAL VOLUMES:  12
-        TOTAL PPs:          271 (34688 megabytes)    VG DESCRIPTORS:   2
-        FREE PPs:           227 (29056 megabytes)    HOT SPARE:        no
-        USED PPs:           44 (5632 megabytes)      MAX REQUEST:      256 kilobytes
-        FREE DISTRIBUTION:  54..46..19..54..54
-        USED DISTRIBUTION:  01..08..35..00..00
-         */
+        // -
+        // $ lspv -L hdisk0
+        // PHYSICAL VOLUME: hdisk0 VOLUME GROUP: rootvg
+        // PV IDENTIFIER: 000acfde95524f85 VG IDENTIFIER 000acfde00004c000000000395525276
+        // PV STATE: active
+        // STALE PARTITIONS: 0 ALLOCATABLE: yes
+        // PP SIZE: 128 megabyte(s) LOGICAL VOLUMES: 12
+        // TOTAL PPs: 271 (34688 megabytes) VG DESCRIPTORS: 2
+        // FREE PPs: 227 (29056 megabytes) HOT SPARE: no
+        // USED PPs: 44 (5632 megabytes) MAX REQUEST: 256 kilobytes
+        // FREE DISTRIBUTION: 54..46..19..54..54
+        // USED DISTRIBUTION: 01..08..35..00..00
         String stateMarker = "PV STATE:";
         String sizeMarker = "PP SIZE:";
         long ppSize = 0L; // All physical partitions are the same size
@@ -110,34 +109,33 @@ public class Lspv {
         }
         // Convert to megabytes
         ppSize <<= 20;
-        /*-
-         $ lspv -p hdisk0
-        hdisk0:
-        PP RANGE  STATE   REGION        LV NAME             TYPE       MOUNT POINT
-        1-1     used    outer edge    hd5                 boot       N/A
-        2-55    free    outer edge
-        56-59    used    outer middle  hd6                 paging     N/A
-        60-61    used    outer middle  livedump            jfs2       /var/adm/ras/livedump
-        62-62    used    outer middle  loglv01             jfslog     N/A
-        63-63    used    outer middle  lv01                jfs        N/A
-        64-109   free    outer middle
-        110-110   used    center        hd8                 jfs2log    N/A
-        111-112   used    center        hd4                 jfs2       /
-        113-128   used    center        hd2                 jfs2       /usr
-        129-131   used    center        hd9var              jfs2       /var
-        132-132   used    center        hd3                 jfs2       /tmp
-        133-133   used    center        hd9var              jfs2       /var
-        134-136   used    center        hd10opt             jfs2       /opt
-        137-137   used    center        hd11admin           jfs2       /admin
-        138-140   used    center        hd2                 jfs2       /usr
-        141-141   used    center        hd3                 jfs2       /tmp
-        142-142   used    center        hd4                 jfs2       /
-        143-143   used    center        hd9var              jfs2       /var
-        144-144   used    center        hd2                 jfs2       /usr
-        145-163   free    center
-        164-217   free    inner middle
-        218-271   free    inner edge
-         */
+        // -
+        // $ lspv -p hdisk0
+        // hdisk0:
+        // PP RANGE STATE REGION LV NAME TYPE MOUNT POINT
+        // 1-1 used outer edge hd5 boot N/A
+        // 2-55 free outer edge
+        // 56-59 used outer middle hd6 paging N/A
+        // 60-61 used outer middle livedump jfs2 /var/adm/ras/livedump
+        // 62-62 used outer middle loglv01 jfslog N/A
+        // 63-63 used outer middle lv01 jfs N/A
+        // 64-109 free outer middle
+        // 110-110 used center hd8 jfs2log N/A
+        // 111-112 used center hd4 jfs2 /
+        // 113-128 used center hd2 jfs2 /usr
+        // 129-131 used center hd9var jfs2 /var
+        // 132-132 used center hd3 jfs2 /tmp
+        // 133-133 used center hd9var jfs2 /var
+        // 134-136 used center hd10opt jfs2 /opt
+        // 137-137 used center hd11admin jfs2 /admin
+        // 138-140 used center hd2 jfs2 /usr
+        // 141-141 used center hd3 jfs2 /tmp
+        // 142-142 used center hd4 jfs2 /
+        // 143-143 used center hd9var jfs2 /var
+        // 144-144 used center hd2 jfs2 /usr
+        // 145-163 free center
+        // 164-217 free inner middle
+        // 218-271 free inner edge
         Map<String, String> mountMap = new HashMap<>();
         Map<String, String> typeMap = new HashMap<>();
         Map<String, Integer> ppMap = new HashMap<>();

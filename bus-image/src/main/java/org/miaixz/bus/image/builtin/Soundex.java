@@ -117,7 +117,7 @@ public class Soundex implements FuzzyString {
         for (; i < in.length && j < codeLength; i++) {
             curout = map(in[i]);
             switch (curout) {
-                case '\0':
+                case Symbol.C_NUL:
                     prevout = curout;
                 case '\1':
                     break;
@@ -143,7 +143,7 @@ public class Soundex implements FuzzyString {
         try {
             return map[c >= 'a' ? c - 'a' : c - 'A'];
         } catch (IndexOutOfBoundsException e) {
-            return (c == 'ß' || c == 'Ç' || c == 'ç') ? map['c' - 'a'] : '\u0000';
+            return (c == 'ß' || c == 'Ç' || c == 'ç') ? map['c' - 'a'] : Symbol.C_NUL;
         }
     }
 

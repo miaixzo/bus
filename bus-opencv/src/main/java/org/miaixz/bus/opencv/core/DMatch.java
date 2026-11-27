@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.opencv.core;
 
+import org.miaixz.bus.core.lang.Symbol;
+
 /**
  * A correspondence between query and training descriptors, including its matching distance.
  */
@@ -97,7 +99,7 @@ public class DMatch {
     @Override
     public String toString() {
         return "DMatch [queryIdx=" + queryIdx + ", trainIdx=" + trainIdx + ", imgIdx=" + imgIdx + ", distance="
-                + distance + "]";
+                + distance + Symbol.BRACKET_RIGHT;
     }
 
 }

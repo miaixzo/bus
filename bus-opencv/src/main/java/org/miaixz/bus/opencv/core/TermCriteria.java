@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.opencv.core;
 
+import org.miaixz.bus.core.lang.Symbol;
+
 /**
  * Termination criteria based on an iteration limit, an accuracy threshold, or both.
  */
@@ -149,7 +151,7 @@ public class TermCriteria {
      */
     @Override
     public String toString() {
-        return "{ type: " + type + ", maxCount: " + maxCount + ", epsilon: " + epsilon + "}";
+        return "{ type: " + type + ", maxCount: " + maxCount + ", epsilon: " + epsilon + Symbol.BRACE_RIGHT;
     }
 
 }

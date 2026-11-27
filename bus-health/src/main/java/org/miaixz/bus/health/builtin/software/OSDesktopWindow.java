@@ -23,6 +23,7 @@ import java.awt.*;
 
 import com.sun.jna.platform.win32.WinDef.HWND;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.Immutable;
 
 /**
@@ -177,7 +178,7 @@ public class OSDesktopWindow {
     public String toString() {
         return "OSDesktopWindow [windowId=" + windowId + ", title=" + title + ", command=" + command + ", locAndSize="
                 + locAndSize.toString() + ", owningProcessId=" + owningProcessId + ", order=" + order + ", visible="
-                + visible + "]";
+                + visible + Symbol.BRACKET_RIGHT;
     }
 
 }

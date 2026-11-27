@@ -28,6 +28,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatusCode;
 
 import org.miaixz.bus.core.lang.Charset;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.errors.ErrorBoundary;
 import org.miaixz.bus.errors.ErrorContext;
 import org.miaixz.bus.errors.ErrorDecision.Action;
@@ -178,7 +179,7 @@ public final class ServletErrorHandler {
             var selected = HttpErrorResponse.empty(
                     HttpStatusCode.valueOf(decision.status()),
                     headers,
-                    cacheControl == null ? "" : cacheControl);
+                    cacheControl == null ? Normal.EMPTY : cacheControl);
             operation.complete(CONTEXT, decision, cause, request == null ? null : request.getRequestId(), () -> {
                 ServletErrorFilter.approve(response);
                 response.setStatus(selected.status().value());

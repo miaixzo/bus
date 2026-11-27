@@ -23,6 +23,8 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.util.Objects;
 
+import org.miaixz.bus.core.lang.Symbol;
+
 /**
  * Represents the ItemPointer type.
  *
@@ -134,8 +136,8 @@ public class ItemPointer implements Serializable {
      */
     @Override
     public String toString() {
-        return "ItemPointer{" + "sequenceTag=" + sequenceTag + ", privateCreator='" + privateCreator + '\''
-                + ", itemIndex=" + itemIndex + '}';
+        return "ItemPointer{" + "sequenceTag=" + sequenceTag + ", privateCreator='" + privateCreator
+                + Symbol.C_SINGLE_QUOTE + ", itemIndex=" + itemIndex + Symbol.C_BRACE_RIGHT;
     }
 
 }

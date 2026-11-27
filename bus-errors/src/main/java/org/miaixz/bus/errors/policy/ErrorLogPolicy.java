@@ -72,15 +72,25 @@ public final class ErrorLogPolicy {
      */
     public enum Level {
 
-        /** Detailed diagnostic signal. */
+        /**
+         * Detailed diagnostic signal.
+         */
         TRACE,
-        /** Expected rejection or recoverable attempt. */
+        /**
+         * Expected rejection or recoverable attempt.
+         */
         DEBUG,
-        /** Observable operational rejection. */
+        /**
+         * Observable operational rejection.
+         */
         INFO,
-        /** Failure requiring operational attention. */
+        /**
+         * Failure requiring operational attention.
+         */
         WARN,
-        /** Unexpected terminal or handler failure. */
+        /**
+         * Unexpected terminal or handler failure.
+         */
         ERROR
 
     }

@@ -23,6 +23,7 @@ import java.util.Arrays;
 import java.util.Objects;
 
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.image.galaxy.data.ElementDictionary;
 
 /**
@@ -137,8 +138,9 @@ public class ImageParam {
      */
     @Override
     public String toString() {
-        return "ImageParam{" + "tag=" + String.format("0x%08X", tag) + ", tagName='" + getTagName() + '\'' + ", values="
-                + Arrays.toString(values) + ", parentSeqTags=" + Arrays.toString(parentSeqTags) + '}';
+        return "ImageParam{" + "tag=" + String.format("0x%08X", tag) + ", tagName='" + getTagName()
+                + Symbol.C_SINGLE_QUOTE + ", values=" + Arrays.toString(values) + ", parentSeqTags="
+                + Arrays.toString(parentSeqTags) + Symbol.C_BRACE_RIGHT;
     }
 
 }

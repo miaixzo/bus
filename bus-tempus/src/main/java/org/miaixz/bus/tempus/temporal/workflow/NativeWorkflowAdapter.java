@@ -287,7 +287,7 @@ public class NativeWorkflowAdapter {
             return false;
         }
         if (type == char.class) {
-            return '\0';
+            return Symbol.C_NUL;
         }
         if (type == byte.class) {
             return (byte) 0;

@@ -76,13 +76,12 @@ final class AixComputerSystem extends AbstractComputerSystem {
         String serialNumber = null;
         String uuid = null;
 
-        /*-
-        fwversion       IBM,RG080425_d79e22_r                Firmware version and revision levels                False
-        modelname       IBM,9114-275                         Machine name                                        False
-        os_uuid         789f930f-b15c-4639-b842-b42603862704 N/A                                                 True
-        rtasversion     1                                    Open Firmware RTAS version                          False
-        systemid        IBM,0110ACFDE                        Hardware system identifier                          False
-        */
+        // -
+        // fwversion IBM,RG080425_d79e22_r Firmware version and revision levels False
+        // modelname IBM,9114-275 Machine name False
+        // os_uuid 789f930f-b15c-4639-b842-b42603862704 N/A True
+        // rtasversion 1 Open Firmware RTAS version False
+        // systemid IBM,0110ACFDE Hardware system identifier False
 
         final String fwVersionMarker = "fwversion";
         final String modelMarker = "modelname";
@@ -116,10 +115,9 @@ final class AixComputerSystem extends AbstractComputerSystem {
             }
         }
         for (final String checkLine : Executor.runNative("lsmcode -c")) {
-            /*-
-             Platform Firmware level is 3F080425
-             System Firmware level is RG080425_d79e22_regatta
-             */
+            // -
+            // Platform Firmware level is 3F080425
+            // System Firmware level is RG080425_d79e22_regatta
             if (checkLine.startsWith(fwPlatformVersionMarker)) {
                 fwPlatformVersion = Parsing.getTextAfterString(checkLine, fwPlatformVersionMarker).trim();
                 break;

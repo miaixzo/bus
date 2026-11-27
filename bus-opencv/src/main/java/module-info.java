@@ -31,6 +31,8 @@
  */
 module bus.opencv {
 
+    requires static bus.core;
+
     exports org.miaixz.bus.opencv.core;
     exports org.miaixz.bus.opencv.geometry;
     exports org.miaixz.bus.opencv.img_hash;

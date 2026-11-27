@@ -23,6 +23,7 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.Immutable;
 import org.miaixz.bus.health.mac.driver.CpuFrequencyResidency;
 
@@ -95,7 +96,8 @@ public class CpuResidencySample {
      */
     @Override
     public String toString() {
-        return "CpuResidencySample{cores=" + coreStates.keySet() + ", complexes=" + complexStates.keySet() + '}';
+        return "CpuResidencySample{cores=" + coreStates.keySet() + ", complexes=" + complexStates.keySet()
+                + Symbol.C_BRACE_RIGHT;
     }
 
 }

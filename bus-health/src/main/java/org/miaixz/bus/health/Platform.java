@@ -690,9 +690,7 @@ public class Platform {
      * @return The path prefix.
      */
     public static String getNativeLibraryResourcePrefix(int osType, String arch, String name) {
-        /*
-         * Normalize architecture name.
-         */
+        // Normalize architecture name.
         arch = StringKit.toLowerCase(arch).trim();
         arch = switch (arch) {
             case "powerpc" -> "ppc";
@@ -702,9 +700,7 @@ public class Platform {
             default -> arch;
         };
 
-        /*
-         * Generate prefix based on OS type.
-         */
+        // Generate prefix based on OS type.
         switch (osType) {
             case com.sun.jna.Platform.ANDROID:
                 return "android-" + (arch.startsWith("arm") ? "arm" : arch);

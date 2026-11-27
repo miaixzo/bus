@@ -9,15 +9,15 @@
 ```text
 bus-spring                              bus-starter
 -----------------------------------     -----------------------------------
-Spring and Web integration mechanics    discovery and startup assembly
+Spring and Web integration mechanics    feature discovery and assembly
 context capture/install/restore         bus.* configuration properties
 Bean, environment, and condition APIs   feature activation decisions
-Boot listener implementations           default Bean declarations
+Boot lifecycle and discovery            default Bean declarations
 request/converter/wrapper primitives     feature-specific integration
 ```
 
-这种分离使 Spring 实用程序可重用，而无需将每个Bus功能强加到应用程序中。 `bus-spring`
-不包含 `spring.factories` 注册资源； `bus-starter` 拥有发现并引用生命周期 此处提供的实现。
+`bus-spring` 通过 `META-INF/spring.factories` 注册 Spring Boot 监听器和环境处理器。
+`bus-starter` 通过 `AutoConfiguration.imports` 注册功能自动配置。
 
 ## 依赖关系
 
@@ -279,7 +279,7 @@ Bus Starter 默认在 Servlet MVC 中安装返回值处理器。Wrapper 的转�
 - 启动指标捕获稳定的顶级应用程序阶段；
 - `SpringStartupPublisher` 通过Bus等可选集成发布完整的 Spring 启动摘要 指标提供者。
 
-发现仍然集中在 `bus-starter/src/main/resources/META-INF/spring.factories` 中。不要添加第二个 发现文件至 `bus-spring`。
+Spring Boot 从 `bus-spring/src/main/resources/META-INF/spring.factories` 发现启动组件。
 
 ### 日志命名空间桥接
 

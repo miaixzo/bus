@@ -998,8 +998,8 @@ public class JschSftp extends AbstractFtp {
     @Override
     public String toString() {
         final Connector connector = this.ftpConfig.getConnector();
-        return "JschSftp{" + "host='" + connector.getHost() + '\'' + ", port=" + connector.getPort() + ", user='"
-                + connector.getUser() + '\'' + '}';
+        return "JschSftp{" + "host='" + connector.getHost() + Symbol.C_SINGLE_QUOTE + ", port=" + connector.getPort()
+                + ", user='" + connector.getUser() + Symbol.C_SINGLE_QUOTE + Symbol.C_BRACE_RIGHT;
     }
 
     /**

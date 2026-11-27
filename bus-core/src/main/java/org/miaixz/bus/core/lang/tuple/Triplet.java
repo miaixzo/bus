@@ -22,6 +22,8 @@ package org.miaixz.bus.core.lang.tuple;
 import java.io.Serial;
 import java.util.Objects;
 
+import org.miaixz.bus.core.lang.Symbol;
+
 /**
  * An immutable triplet consisting of three elements.
  * <p>
@@ -119,7 +121,8 @@ public class Triplet<L, M, R> extends Pair<L, R> {
      */
     @Override
     public String toString() {
-        return "Triplet{" + "left=" + getLeft() + ", middle=" + getMiddle() + ", right=" + getRight() + '}';
+        return "Triplet{" + "left=" + getLeft() + ", middle=" + getMiddle() + ", right=" + getRight()
+                + Symbol.C_BRACE_RIGHT;
     }
 
     /**

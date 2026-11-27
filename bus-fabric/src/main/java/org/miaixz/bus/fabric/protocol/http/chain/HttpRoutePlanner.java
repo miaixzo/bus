@@ -20,6 +20,7 @@
 package org.miaixz.bus.fabric.protocol.http.chain;
 
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.ProtocolException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Protocol;
@@ -118,7 +119,7 @@ final class HttpRoutePlanner {
         if (proxy.isDirect()) {
             return Builder.PROXY_PLAN_DIRECT_ID;
         }
-        final String authentication = proxy.authorization().size() == 0 ? ""
+        final String authentication = proxy.authorization().size() == 0 ? Normal.EMPTY
                 : "#auth=" + Integer.toHexString(proxy.authorization().asMap().hashCode());
         return proxy.id() + authentication;
     }

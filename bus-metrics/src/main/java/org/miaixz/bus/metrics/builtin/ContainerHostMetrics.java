@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.metrics.Provider;
 import org.miaixz.bus.metrics.bridge.ContainerSnapshot;
 import org.miaixz.bus.metrics.bridge.SnapshotCache;
@@ -68,7 +69,7 @@ public final class ContainerHostMetrics implements MetricBinder {
      * @return metric descriptor
      */
     private static MetricDescriptor descriptor(String name, InstrumentKind kind, NumberKind number, String unit) {
-        return MetricDescriptor.of(name, kind, number, unit, "", List.of());
+        return MetricDescriptor.of(name, kind, number, unit, Normal.EMPTY, List.of());
     }
 
     @Override

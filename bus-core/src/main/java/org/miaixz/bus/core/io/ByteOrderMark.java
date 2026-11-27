@@ -26,6 +26,7 @@ import java.util.Arrays;
 import org.miaixz.bus.core.center.function.PredicateX;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Charset;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.ArrayKit;
 import org.miaixz.bus.core.xyz.StringKit;
 
@@ -216,17 +217,17 @@ public record ByteOrderMark(String charsetName, byte... bytes)
     public String toString() {
         final StringBuilder builder = new StringBuilder();
         builder.append(getClass().getSimpleName());
-        builder.append('[');
+        builder.append(Symbol.C_BRACKET_LEFT);
         builder.append(charsetName);
-        builder.append(":").append(" ");
+        builder.append(Symbol.COLON).append(Symbol.SPACE);
         for (int i = 0; i < bytes.length; i++) {
             if (i > 0) {
-                builder.append(",");
+                builder.append(Symbol.COMMA);
             }
             builder.append("0x");
             builder.append(StringKit.toUpperCase(Integer.toHexString(0xFF & bytes[i])));
         }
-        builder.append(']');
+        builder.append(Symbol.C_BRACKET_RIGHT);
         return builder.toString();
     }
 

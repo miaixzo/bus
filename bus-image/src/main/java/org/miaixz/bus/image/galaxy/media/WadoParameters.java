@@ -24,6 +24,7 @@ import java.net.URISyntaxException;
 import java.util.Objects;
 
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 
 /**
  * WADO-URI/WADO-RS access parameters for manifest query results.
@@ -238,10 +239,10 @@ public class WadoParameters extends ArchiveParameters {
      */
     @Override
     public String toString() {
-        return "WadoParameters{" + "archiveID='" + getArchiveID() + '\'' + ", wadoURL='" + getBaseURL() + '\''
-                + ", protocol='" + getProtocolName() + '\'' + ", queryMode=" + queryMode
-                + ", requireOnlySOPInstanceUID=" + requireOnlySOPInstanceUID + ", httpTagCount=" + getHttpTags().size()
-                + '}';
+        return "WadoParameters{" + "archiveID='" + getArchiveID() + Symbol.C_SINGLE_QUOTE + ", wadoURL='" + getBaseURL()
+                + Symbol.C_SINGLE_QUOTE + ", protocol='" + getProtocolName() + Symbol.C_SINGLE_QUOTE + ", queryMode="
+                + queryMode + ", requireOnlySOPInstanceUID=" + requireOnlySOPInstanceUID + ", httpTagCount="
+                + getHttpTags().size() + Symbol.C_BRACE_RIGHT;
     }
 
     /**

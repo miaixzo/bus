@@ -185,10 +185,10 @@ public class UUID implements Serializable, Comparable<UUID> {
     public static UUID randomUUID(final Random random) {
         final byte[] randomBytes = RandomKit.randomBytes(16, random);
 
-        randomBytes[6] &= 0x0f; /* clear version */
-        randomBytes[6] |= 0x40; /* set to version 4 */
-        randomBytes[8] &= 0x3f; /* clear variant */
-        randomBytes[8] |= (byte) 0x80; /* set to IETF variant */
+        randomBytes[6] &= 0x0f; // clear version
+        randomBytes[6] |= 0x40; // set to version 4
+        randomBytes[8] &= 0x3f; // clear variant
+        randomBytes[8] |= (byte) 0x80; // set to IETF variant
 
         return new UUID(randomBytes);
     }
@@ -207,10 +207,10 @@ public class UUID implements Serializable, Comparable<UUID> {
             throw new InternalError("MD5 not supported");
         }
         final byte[] md5Bytes = md.digest(name);
-        md5Bytes[6] &= 0x0f; /* clear version */
-        md5Bytes[6] |= 0x30; /* set to version 3 */
-        md5Bytes[8] &= 0x3f; /* clear variant */
-        md5Bytes[8] |= (byte) 0x80; /* set to IETF variant */
+        md5Bytes[6] &= 0x0f; // clear version
+        md5Bytes[6] |= 0x30; // set to version 3
+        md5Bytes[8] &= 0x3f; // clear variant
+        md5Bytes[8] |= (byte) 0x80; // set to IETF variant
         return new UUID(md5Bytes);
     }
 
@@ -237,8 +237,8 @@ public class UUID implements Serializable, Comparable<UUID> {
 
         randomBytes[6] = (byte) (0x70 | (0x0f & (sequence >> 8)));
         randomBytes[7] = (byte) sequence;
-        randomBytes[8] &= 0x3f; /* clear variant */
-        randomBytes[8] |= (byte) 0x80; /* set to IETF variant */
+        randomBytes[8] &= 0x3f; // clear variant
+        randomBytes[8] |= (byte) 0x80; // set to IETF variant
 
         return new UUID(ByteKit.toLong(randomBytes, 0, ByteOrder.BIG_ENDIAN),
                 ByteKit.toLong(randomBytes, 8, ByteOrder.BIG_ENDIAN));

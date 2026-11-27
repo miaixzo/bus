@@ -288,7 +288,7 @@ public class AuthProperties {
          */
         @Override
         public String toString() {
-            return "Jwt[secret=<masked>, secretPolicy=" + secretPolicy + ']';
+            return "Jwt[secret=<masked>, secretPolicy=" + secretPolicy + Symbol.C_BRACKET_RIGHT;
         }
 
     }
@@ -327,7 +327,7 @@ public class AuthProperties {
         @Override
         public String toString() {
             return "Client[enabled=" + enabled + ", clientId=" + clientId + ", clientSecret=<masked>, redirectUri="
-                    + redirectUri + ", scopeCount=" + scopes.size() + "]";
+                    + redirectUri + ", scopeCount=" + scopes.size() + Symbol.BRACKET_RIGHT;
         }
 
     }

@@ -554,7 +554,7 @@ public interface CentralProcessor {
         public String toString() {
             return "LogicalProcessor [processorNumber=" + processorNumber + ", coreNumber=" + physicalProcessorNumber
                     + ", packageNumber=" + physicalPackageNumber + ", numaNode=" + numaNode + ", processorGroup="
-                    + processorGroup + "]";
+                    + processorGroup + Symbol.BRACKET_RIGHT;
         }
 
     }
@@ -687,8 +687,8 @@ public interface CentralProcessor {
          */
         @Override
         public String toString() {
-            return "PhysicalProcessor [package/core=" + physicalPackageNumber + "/" + physicalProcessorNumber
-                    + ", efficiency=" + efficiency + ", idString=" + idString + "]";
+            return "PhysicalProcessor [package/core=" + physicalPackageNumber + Symbol.SLASH + physicalProcessorNumber
+                    + ", efficiency=" + efficiency + ", idString=" + idString + Symbol.BRACKET_RIGHT;
         }
 
     }
@@ -809,8 +809,8 @@ public interface CentralProcessor {
          */
         @Override
         public String toString() {
-            return "ProcessorCache [L" + level + " " + type + ", cacheSize=" + cacheSize + ", "
-                    + describeAssociativity() + " associativity, lineSize=" + lineSize + "]";
+            return "ProcessorCache [L" + level + Symbol.SPACE + type + ", cacheSize=" + cacheSize + ", "
+                    + describeAssociativity() + " associativity, lineSize=" + lineSize + Symbol.BRACKET_RIGHT;
         }
 
         /**

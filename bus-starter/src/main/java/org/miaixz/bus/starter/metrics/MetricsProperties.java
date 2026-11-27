@@ -30,6 +30,7 @@ import org.springframework.boot.context.properties.bind.DefaultValue;
 import org.springframework.validation.annotation.Validated;
 
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.starter.GeniusBuilder;
 
@@ -156,7 +157,7 @@ public class MetricsProperties {
      * @return validated path
      */
     private static String validPath(String value, String name) {
-        if (value == null || value.isBlank() || !value.startsWith("/")) {
+        if (value == null || value.isBlank() || !value.startsWith(Symbol.SLASH)) {
             throw new IllegalArgumentException(name + " must be an absolute non-blank path");
         }
         return value;
@@ -426,7 +427,7 @@ public class MetricsProperties {
      * @author Kimi Liu
      */
     public record Cortex(@DefaultValue("false") boolean enabled, @DefaultValue("15s") Duration interval,
-            @DefaultValue("default") String space, @DefaultValue("") String serviceId) {
+            @DefaultValue("default") String space, @DefaultValue(Normal.EMPTY) String serviceId) {
 
         /**
          * Creates disabled defaults.

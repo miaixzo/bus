@@ -26,6 +26,7 @@ import java.lang.reflect.Type;
 import org.miaixz.bus.core.convert.Convert;
 import org.miaixz.bus.core.lang.EnumValue;
 import org.miaixz.bus.core.lang.Keys;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.Alias;
 import org.miaixz.bus.core.lang.annotation.Ignore;
 import org.miaixz.bus.core.lang.exception.BeanException;
@@ -348,7 +349,7 @@ public class PropDesc {
     @Override
     public String toString() {
         return "PropDesc{" + "field=" + field + ", fieldName=" + fieldName + ", getter=" + getter + ", setter=" + setter
-                + '}';
+                + Symbol.C_BRACE_RIGHT;
     }
 
     /**

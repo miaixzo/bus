@@ -23,6 +23,8 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.metrics.magic.*;
 import org.miaixz.bus.metrics.nimble.InstrumentKind;
 import org.miaixz.bus.metrics.nimble.MetricDescriptor;
@@ -56,12 +58,13 @@ public final class NativePrometheusTextEncoder {
         StringBuilder normalized = new StringBuilder(value.length() + 1);
         for (int i = 0; i < value.length(); i++) {
             char character = value.charAt(i);
-            boolean allowed = character == '_' || character == ':' || Character.isLetterOrDigit(character);
-            normalized.append(allowed ? character : '_');
+            boolean allowed = character == Symbol.C_UNDERLINE || character == Symbol.C_COLON
+                    || Character.isLetterOrDigit(character);
+            normalized.append(allowed ? character : Symbol.C_UNDERLINE);
         }
         char first = normalized.charAt(0);
-        if (!(first == '_' || first == ':' || Character.isLetter(first))) {
-            normalized.insert(0, '_');
+        if (!(first == Symbol.C_UNDERLINE || first == Symbol.C_COLON || Character.isLetter(first))) {
+            normalized.insert(0, Symbol.C_UNDERLINE);
         }
         return normalized.toString();
     }
@@ -76,10 +79,10 @@ public final class NativePrometheusTextEncoder {
         MetricDescriptor descriptor = family.descriptor();
         String name = exportName(descriptor);
         String type = type(descriptor.kind());
-        output.append("# HELP ").append(name).append(' ')
+        output.append("# HELP ").append(name).append(Symbol.C_SPACE)
                 .append(escapeHelp(descriptor.description().isEmpty() ? descriptor.name() : descriptor.description()))
-                .append('\n');
-        output.append("# TYPE ").append(name).append(' ').append(type).append('\n');
+                .append(Symbol.C_LF);
+        output.append("# TYPE ").append(name).append(Symbol.C_SPACE).append(type).append(Symbol.C_LF);
 
         List<MetricPoint> points = new ArrayList<>(family.points());
         points.sort(Comparator.comparing(point -> point.attributes().toString()));
@@ -109,7 +112,7 @@ public final class NativePrometheusTextEncoder {
                     output,
                     name + "_bucket",
                     point.attributes(),
-                    "le=\"" + bound + "\"",
+                    "le=\"" + bound + Symbol.DOUBLE_QUOTES,
                     Long.toString(bucket.cumulativeCount()));
             infiniteBucket = bucket.upperBound() == Double.POSITIVE_INFINITY;
         }
@@ -137,25 +140,25 @@ public final class NativePrometheusTextEncoder {
             String value) {
         output.append(name);
         if (!attributes.isEmpty() || extraLabel != null) {
-            output.append('{');
+            output.append(Symbol.C_BRACE_LEFT);
             boolean comma = false;
             for (Attributes.Value<?> attribute : attributes.values()) {
                 if (comma) {
-                    output.append(',');
+                    output.append(Symbol.C_COMMA);
                 }
                 output.append(normalizeName(attribute.descriptor().key())).append("=\"")
-                        .append(escapeLabel(String.valueOf(attribute.value()))).append('"');
+                        .append(escapeLabel(String.valueOf(attribute.value()))).append(Symbol.C_DOUBLE_QUOTES);
                 comma = true;
             }
             if (extraLabel != null) {
                 if (comma) {
-                    output.append(',');
+                    output.append(Symbol.C_COMMA);
                 }
                 output.append(extraLabel);
             }
-            output.append('}');
+            output.append(Symbol.C_BRACE_RIGHT);
         }
-        output.append(' ').append(value).append('\n');
+        output.append(Symbol.C_SPACE).append(value).append(Symbol.C_LF);
     }
 
     /**
@@ -167,8 +170,8 @@ public final class NativePrometheusTextEncoder {
     public static String exportName(MetricDescriptor descriptor) {
         String name = normalizeName(descriptor.name());
         String unit = normalizeUnit(descriptor.unit());
-        if (!unit.isEmpty() && !name.endsWith("_" + unit)) {
-            name = name + "_" + unit;
+        if (!unit.isEmpty() && !name.endsWith(Symbol.UNDERLINE + unit)) {
+            name = name + Symbol.UNDERLINE + unit;
         }
         if (descriptor.kind() == InstrumentKind.COUNTER && !name.endsWith("_total")) {
             name = name + "_total";
@@ -187,15 +190,15 @@ public final class NativePrometheusTextEncoder {
      */
     private static String normalizeUnit(String unit) {
         if (unit.isEmpty() || "1".equals(unit)) {
-            return "";
+            return Normal.EMPTY;
         }
-        if (unit.startsWith("{") && unit.endsWith("}")) {
-            return "";
+        if (unit.startsWith(Symbol.BRACE_LEFT) && unit.endsWith(Symbol.BRACE_RIGHT)) {
+            return Normal.EMPTY;
         }
         return switch (unit) {
             case "s" -> "seconds";
             case "By" -> "bytes";
-            default -> normalizeName(unit).replace(':', '_');
+            default -> normalizeName(unit).replace(Symbol.C_COLON, Symbol.C_UNDERLINE);
         };
     }
 
@@ -236,7 +239,7 @@ public final class NativePrometheusTextEncoder {
      * @return escaped text
      */
     static String escapeHelp(String value) {
-        return value.replace("\\", "\\\\").replace("\n", "\\n");
+        return value.replace(Symbol.BACKSLASH, "\\\\").replace(Symbol.LF, "\\n");
     }
 
     /**
@@ -246,7 +249,7 @@ public final class NativePrometheusTextEncoder {
      * @return escaped label value
      */
     static String escapeLabel(String value) {
-        return escapeHelp(value).replace("\"", "\\\"");
+        return escapeHelp(value).replace(Symbol.DOUBLE_QUOTES, "\\\"");
     }
 
     /**

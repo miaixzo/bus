@@ -22,6 +22,8 @@ package org.miaixz.bus.metrics.bridge;
 import java.util.*;
 import java.util.Objects;
 
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.health.Collector;
 import org.miaixz.bus.health.Platform;
@@ -107,7 +109,7 @@ final class HealthMetricSource implements HostMetricSource {
      * @return normalized transport
      */
     private static String transport(String type) {
-        String normalized = type == null ? "" : StringKit.toLowerCase(type);
+        String normalized = type == null ? Normal.EMPTY : StringKit.toLowerCase(type);
         if (normalized.startsWith("tcp"))
             return "tcp";
         if (normalized.startsWith("udp"))
@@ -143,7 +145,7 @@ final class HealthMetricSource implements HostMetricSource {
      * @return whether the option is present
      */
     private static boolean containsOption(String optionsText, String option) {
-        return ("," + optionsText + ",").contains("," + option + ",");
+        return (Symbol.COMMA + optionsText + Symbol.COMMA).contains(Symbol.COMMA + option + Symbol.COMMA);
     }
 
     /**
@@ -303,7 +305,7 @@ final class HealthMetricSource implements HostMetricSource {
             if (!store.updateAttributes()) {
                 continue;
             }
-            String optionsText = store.getOptions() == null ? "" : StringKit.toLowerCase(store.getOptions());
+            String optionsText = store.getOptions() == null ? Normal.EMPTY : StringKit.toLowerCase(store.getOptions());
             String mode = containsOption(optionsText, "ro") ? "ro"
                     : containsOption(optionsText, "rw") ? "rw" : "unknown";
             snapshots.add(
@@ -387,10 +389,10 @@ final class HealthMetricSource implements HostMetricSource {
         for (IPConnection connection : collector.getOperatingSystem().getInternetProtocolStats().getConnections()) {
             String transport = transport(connection.getType());
             String state = connectionState(connection.getState().name());
-            counts.merge(transport + '\0' + state, 1L, Long::sum);
+            counts.merge(transport + Symbol.C_NUL + state, 1L, Long::sum);
         }
         return counts.entrySet().stream().map(entry -> {
-            int separator = entry.getKey().indexOf('\0');
+            int separator = entry.getKey().indexOf(Symbol.C_NUL);
             return new NetworkSnapshot.ConnectionSnapshot(entry.getKey().substring(0, separator),
                     entry.getKey().substring(separator + 1), entry.getValue());
         }).toList();

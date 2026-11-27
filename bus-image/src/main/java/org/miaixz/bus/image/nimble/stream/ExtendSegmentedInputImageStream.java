@@ -23,6 +23,8 @@ import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Objects;
 
+import org.miaixz.bus.core.lang.Symbol;
+
 /**
  * Represents the ExtendSegmentedInputImageStream record.
  *
@@ -74,7 +76,7 @@ public record ExtendSegmentedInputImageStream(
      */
     @Override
     public String toString() {
-        return "ExtendSegmentedInputImageStream{" + "path=" + path + '}';
+        return "ExtendSegmentedInputImageStream{" + "path=" + path + Symbol.C_BRACE_RIGHT;
     }
 
 }

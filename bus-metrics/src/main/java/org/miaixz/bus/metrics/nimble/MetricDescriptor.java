@@ -21,6 +21,7 @@ package org.miaixz.bus.metrics.nimble;
 
 import java.util.*;
 
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.metrics.Builder;
 import org.miaixz.bus.metrics.observe.tag.AttributeDescriptor;
 import org.miaixz.bus.metrics.observe.tag.Attributes;
@@ -163,7 +164,7 @@ public record MetricDescriptor(String scope, String name, InstrumentKind kind, N
         for (Attributes.Value<?> value : attributes.values()) {
             schema.add(value.descriptor());
         }
-        return of(name, kind, numberKind, "", "", schema);
+        return of(name, kind, numberKind, Normal.EMPTY, Normal.EMPTY, schema);
     }
 
     /**

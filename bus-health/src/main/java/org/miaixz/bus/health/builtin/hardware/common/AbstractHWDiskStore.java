@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.health.builtin.hardware.common;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.Formats;
 import org.miaixz.bus.health.builtin.hardware.HWDiskStore;
@@ -144,11 +145,12 @@ public abstract class AbstractHWDiskStore implements HWDiskStore {
     public String toString() {
         boolean readwrite = getReads() > 0 || getWrites() > 0;
         String sb = getName() + ": " + "(model: " + getModel() + " - S/N: " + getSerial() + " - type: " + getDiskType()
-                + ") " + "size: " + (getSize() > 0 ? Formats.formatBytesDecimal(getSize()) : "?") + ", " + "reads: "
-                + (readwrite ? getReads() : "?") + " (" + (readwrite ? Formats.formatBytes(getReadBytes()) : "?")
-                + "), " + "writes: " + (readwrite ? getWrites() : "?") + " ("
-                + (readwrite ? Formats.formatBytes(getWriteBytes()) : "?") + "), " + "xfer: "
-                + (readwrite ? getTransferTime() : "?");
+                + ") " + "size: " + (getSize() > 0 ? Formats.formatBytesDecimal(getSize()) : Symbol.QUESTION_MARK)
+                + ", " + "reads: " + (readwrite ? getReads() : Symbol.QUESTION_MARK) + " ("
+                + (readwrite ? Formats.formatBytes(getReadBytes()) : Symbol.QUESTION_MARK) + "), " + "writes: "
+                + (readwrite ? getWrites() : Symbol.QUESTION_MARK) + " ("
+                + (readwrite ? Formats.formatBytes(getWriteBytes()) : Symbol.QUESTION_MARK) + "), " + "xfer: "
+                + (readwrite ? getTransferTime() : Symbol.QUESTION_MARK);
         return sb;
     }
 

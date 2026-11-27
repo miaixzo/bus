@@ -79,6 +79,11 @@ public final class IdentityGuard {
     private final BiConsumerX<Assets, GuardEvaluator.Verified> admission;
 
     /**
+     * Configured service discovery and configuration route.
+     */
+    private final String registrationPath;
+
+    /**
      * Creates the gateway service identity adapter.
      *
      * @param identity shared service identity evaluator
@@ -111,6 +116,25 @@ public final class IdentityGuard {
      */
     public IdentityGuard(GuardEvaluator identity, FunctionX<String, String> resolver,
             PredicateX<Assets> requiresIdentity, BiConsumerX<Assets, GuardEvaluator.Verified> admission) {
+        this(identity, resolver, requiresIdentity, admission, null);
+    }
+
+    /**
+     * Creates the adapter with the deployment's service discovery and configuration route.
+     *
+     * @param identity         shared service identity evaluator
+     * @param resolver         trusted application code directory
+     * @param requiresIdentity application decision to require inbound service verification
+     * @param admission        application admission policy for resolved assets
+     * @param registrationPath configured SDC route, or {@code null} when disabled
+     */
+    public IdentityGuard(GuardEvaluator identity, FunctionX<String, String> resolver,
+            PredicateX<Assets> requiresIdentity, BiConsumerX<Assets, GuardEvaluator.Verified> admission,
+            String registrationPath) {
+        if (registrationPath != null) {
+            Args.validateSdcPath(registrationPath);
+        }
+        this.registrationPath = registrationPath;
         this.identity = Objects.requireNonNull(identity);
         this.resolver = Objects.requireNonNull(resolver);
         this.requiresIdentity = Objects.requireNonNull(requiresIdentity);
@@ -189,7 +213,7 @@ public final class IdentityGuard {
      */
     private void verifyRouteIdentity(ServerWebExchange exchange, Assets assets) {
         String path = exchange.getRequest().getPath().pathWithinApplication().value();
-        boolean control = Args.isSdcRequest(path);
+        boolean control = Args.isSdcRequest(path, registrationPath);
         boolean rest = Args.isRestRequest(path);
         boolean sdcAsset = assets != null && Integer.valueOf(Args.ROUTE_SDC).equals(assets.getProtocol());
         if (!identity.inboundEnabled()) {
@@ -348,8 +372,8 @@ public final class IdentityGuard {
      * @param path actual gateway route path
      * @return fixed mode for SDC or MCP, or null for a configurable route
      */
-    private static Mode fixed(String path) {
-        if (Args.isSdcRequest(path))
+    private Mode fixed(String path) {
+        if (Args.isSdcRequest(path, registrationPath))
             return Mode.REQUIRED;
         return Args.isMcpRequest(path) ? Mode.OFF : null;
     }

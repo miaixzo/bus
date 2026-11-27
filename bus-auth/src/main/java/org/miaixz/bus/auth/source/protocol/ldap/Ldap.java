@@ -24,6 +24,7 @@ import org.miaixz.bus.auth.source.SourceDriver;
 import org.miaixz.bus.auth.source.protocol.ldap.client.LdapClientOptions;
 import org.miaixz.bus.auth.source.protocol.ldap.server.LdapServerOptions;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.net.Protocol;
 
 /**
@@ -45,7 +46,7 @@ public class Ldap {
     /**
      * RFC 4511 selector requesting every user attribute.
      */
-    public static final String ALL_USER_ATTRIBUTES = "*";
+    public static final String ALL_USER_ATTRIBUTES = Symbol.STAR;
 
     /**
      * RFC 4511 selector requesting no attributes.

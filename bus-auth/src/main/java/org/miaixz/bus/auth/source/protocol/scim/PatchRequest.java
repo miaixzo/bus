@@ -63,7 +63,7 @@ public record PatchRequest(ResourceTarget target, PatchOp patch, Optional<String
      * @param value complete entity-tag candidate
      */
     private static void validateEntityTag(final String value) {
-        final int quote = value.startsWith("W/\"") ? 2 : value.startsWith("\"") ? 0 : -1;
+        final int quote = value.startsWith("W/\"") ? 2 : value.startsWith(Symbol.DOUBLE_QUOTES) ? 0 : -1;
         if (quote < 0 || value.length() <= quote + 1 || value.charAt(value.length() - 1) != Symbol.C_DOUBLE_QUOTES) {
             throw new ValidateException("SCIM patch If-Match must be a complete HTTP entity-tag");
         }

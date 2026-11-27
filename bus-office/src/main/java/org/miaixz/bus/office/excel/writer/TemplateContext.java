@@ -242,7 +242,7 @@ public class TemplateContext {
      */
     @Override
     public String toString() {
-        return "TemplateContext{" + "varMap=" + varMap + '}';
+        return "TemplateContext{" + "varMap=" + varMap + Symbol.C_BRACE_RIGHT;
     }
 
 }

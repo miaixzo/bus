@@ -623,19 +623,21 @@ public class McpExecutor extends Coordinator<ServerRequest, ServerResponse> {
             }
             if (line.startsWith("data:")) {
                 if (!data.isEmpty()) {
-                    data.append('\n');
+                    data.append(Symbol.C_LF);
                 }
                 String value = line.substring(5);
-                data.append(value.startsWith(" ") ? value.substring(1) : value);
+                data.append(value.startsWith(Symbol.SPACE) ? value.substring(1) : value);
             }
         }
         String payload = data.toString();
         String leading = payload.stripLeading();
-        var safe = publicRpcError(payload.getBytes(Charset.UTF_8), leading.startsWith("{") || leading.startsWith("["));
+        var safe = publicRpcError(
+                payload.getBytes(Charset.UTF_8),
+                leading.startsWith(Symbol.BRACE_LEFT) || leading.startsWith(Symbol.BRACKET_LEFT));
         if (!errorEvent && safe == null) {
             return frame.getBytes(Charset.UTF_8);
         }
-        String event = errorEvent ? "event: error\n" : "";
+        String event = errorEvent ? "event: error\n" : Normal.EMPTY;
         return ReactiveErrorHandler.renderFrame(exchange, ErrorType.DEPENDENCY_UNAVAILABLE, RPC_ERROR, error -> {
             var document = safe == null ? rpcError(JsonValue.NullValue.instance(), error) : safe;
             return (event + "data: " + new String(JsonKit.writeValue(document), Charset.UTF_8) + "\n\n")

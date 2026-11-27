@@ -25,6 +25,7 @@ import java.util.*;
 
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Optional;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.extra.json.JsonValue;
 
@@ -580,7 +581,7 @@ public class JoseHeader {
     @Override
     public String toString() {
         return "JoseHeader[algorithm=" + algorithm() + ",protected=" + protectedParameters().values().keySet()
-                + ",unprotected=" + unprotectedParameters().values().keySet() + "]";
+                + ",unprotected=" + unprotectedParameters().values().keySet() + Symbol.BRACKET_RIGHT;
     }
 
     /**

@@ -26,6 +26,7 @@ import java.util.function.Predicate;
 import java.util.function.ToDoubleFunction;
 import java.util.regex.Pattern;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.logger.Logger;
 
@@ -275,7 +276,7 @@ public class SmcKeyIndex {
             return Collections.emptyList();
         }
         List<String> keys = new ArrayList<>();
-        for (String token : csv.split(",")) {
+        for (String token : csv.split(Symbol.COMMA)) {
             String key = token.trim();
             if (key.length() == KEY_LENGTH) {
                 keys.add(key);

@@ -162,7 +162,7 @@ public class Builder {
      *         maps each generated key back to the element.
      */
     public static Map[] generateMultiKey(AnnoHolder annoHolder, Object[] argValues) {
-        /* The elements of the collection will be used as Map keys, so they must implement hashCode() & equals(). */
+        // The elements of the collection will be used as Map keys, so they must implement hashCode() & equals().
         Map<Object, String> multiEntry2Key = new LinkedHashMap<>();
         Map<String, Object> key2MultiEntry = new LinkedHashMap<>();
 

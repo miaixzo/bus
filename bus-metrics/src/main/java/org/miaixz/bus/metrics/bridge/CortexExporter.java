@@ -119,20 +119,21 @@ public class CortexExporter implements AutoCloseable {
      * @param point metric point
      */
     private static void point(StringBuilder json, MetricPoint point) {
-        json.append('{').append("\"attributes\":{");
+        json.append(Symbol.C_BRACE_LEFT).append("\"attributes\":{");
         int attributeIndex = 0;
         for (Attributes.Value<?> attribute : point.attributes().values()) {
             if (attributeIndex++ > 0)
-                json.append(',');
-            json.append('\"').append(escape(attribute.descriptor().key())).append("\":");
+                json.append(Symbol.C_COMMA);
+            json.append(Symbol.C_DOUBLE_QUOTES).append(escape(attribute.descriptor().key())).append("\":");
             Object value = attribute.value();
             if (value instanceof Number || value instanceof Boolean) {
                 json.append(value);
             } else {
-                json.append('\"').append(escape(String.valueOf(value))).append('\"');
+                json.append(Symbol.C_DOUBLE_QUOTES).append(escape(String.valueOf(value)))
+                        .append(Symbol.C_DOUBLE_QUOTES);
             }
         }
-        json.append('}');
+        json.append(Symbol.C_BRACE_RIGHT);
         if (point instanceof LongMetricPoint value) {
             json.append(",\"value\":").append(value.value());
         } else if (point instanceof DoubleMetricPoint value) {
@@ -142,13 +143,14 @@ public class CortexExporter implements AutoCloseable {
                     .append(value.max()).append(",\"buckets\":[");
             for (int i = 0; i < value.buckets().size(); i++) {
                 if (i > 0)
-                    json.append(',');
-                json.append('{').append("\"le\":").append(value.buckets().get(i).upperBound()).append(",\"count\":")
-                        .append(value.buckets().get(i).cumulativeCount()).append('}');
+                    json.append(Symbol.C_COMMA);
+                json.append(Symbol.C_BRACE_LEFT).append("\"le\":").append(value.buckets().get(i).upperBound())
+                        .append(",\"count\":").append(value.buckets().get(i).cumulativeCount())
+                        .append(Symbol.C_BRACE_RIGHT);
             }
-            json.append(']');
+            json.append(Symbol.C_BRACKET_RIGHT);
         }
-        json.append('}');
+        json.append(Symbol.C_BRACE_RIGHT);
     }
 
     /**
@@ -162,11 +164,11 @@ public class CortexExporter implements AutoCloseable {
         for (int i = 0; i < value.length(); i++) {
             char character = value.charAt(i);
             switch (character) {
-                case '\\' -> escaped.append("\\\\");
-                case '"' -> escaped.append("\\\"");
-                case '\n' -> escaped.append("\\n");
-                case '\r' -> escaped.append("\\r");
-                case '\t' -> escaped.append("\\t");
+                case Symbol.C_BACKSLASH -> escaped.append("\\\\");
+                case Symbol.C_DOUBLE_QUOTES -> escaped.append("\\\"");
+                case Symbol.C_LF -> escaped.append("\\n");
+                case Symbol.C_CR -> escaped.append("\\r");
+                case Symbol.C_TAB -> escaped.append("\\t");
                 default -> {
                     if (character < 0x20)
                         escaped.append(String.format("\\u%04x", (int) character));
@@ -225,20 +227,20 @@ public class CortexExporter implements AutoCloseable {
      */
     private String serialize(MetricSnapshot snapshot) {
         StringBuilder json = new StringBuilder(256);
-        json.append('{').append("\"schemaVersion\":1,\"collectedAtEpochMillis\":")
+        json.append(Symbol.C_BRACE_LEFT).append("\"schemaVersion\":1,\"collectedAtEpochMillis\":")
                 .append(snapshot.collectedAtEpochMillis()).append(",\"space\":\"").append(escape(space))
                 .append("\",\"serviceId\":\"").append(escape(serviceId)).append("\",\"families\":[");
         for (int familyIndex = 0; familyIndex < snapshot.families().size(); familyIndex++) {
             if (familyIndex > 0) {
-                json.append(',');
+                json.append(Symbol.C_COMMA);
             }
             MetricFamilySnapshot family = snapshot.families().get(familyIndex);
-            json.append('{').append("\"name\":\"").append(escape(family.descriptor().name())).append("\",\"kind\":\"")
-                    .append(family.descriptor().kind()).append("\",\"unit\":\"")
+            json.append(Symbol.C_BRACE_LEFT).append("\"name\":\"").append(escape(family.descriptor().name()))
+                    .append("\",\"kind\":\"").append(family.descriptor().kind()).append("\",\"unit\":\"")
                     .append(escape(family.descriptor().unit())).append("\",\"points\":[");
             for (int pointIndex = 0; pointIndex < family.points().size(); pointIndex++) {
                 if (pointIndex > 0) {
-                    json.append(',');
+                    json.append(Symbol.C_COMMA);
                 }
                 point(json, family.points().get(pointIndex));
             }

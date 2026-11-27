@@ -151,7 +151,9 @@ public class IssueFilter implements Serializable {
         // No initialization required.
     }
 
-    /*- properties -*/
+    /*
+     * - properties -
+     */
 
     /**
      * Returns the iids.
@@ -212,7 +214,9 @@ public class IssueFilter implements Serializable {
         this.state = state;
     }
 
-    /*- builder -*/
+    /*
+     * - builder -
+     */
 
     /**
      * Sets the iids and returns this instance.
@@ -525,7 +529,9 @@ public class IssueFilter implements Serializable {
         this.not = not;
     }
 
-    /*- params generator -*/
+    /*
+     * - params generator -
+     */
 
     /**
      * Returns the query params.

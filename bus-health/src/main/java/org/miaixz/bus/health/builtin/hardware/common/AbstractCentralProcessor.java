@@ -706,9 +706,9 @@ public abstract class AbstractCentralProcessor implements CentralProcessor {
             sb.append(" (").append(pCores).append(" performance + ").append(eCores).append(" efficiency)");
         }
         sb.append("\n ").append(getLogicalProcessorCount()).append(" logical CPU(s)");
-        sb.append('\n').append("Identifier: ").append(getProcessorIdentifier().getIdentifier());
-        sb.append('\n').append("ProcessorID: ").append(getProcessorIdentifier().getProcessorID());
-        sb.append('\n').append("Microarchitecture: ").append(getProcessorIdentifier().getMicroarchitecture());
+        sb.append(Symbol.C_LF).append("Identifier: ").append(getProcessorIdentifier().getIdentifier());
+        sb.append(Symbol.C_LF).append("ProcessorID: ").append(getProcessorIdentifier().getProcessorID());
+        sb.append(Symbol.C_LF).append("Microarchitecture: ").append(getProcessorIdentifier().getMicroarchitecture());
         return sb.toString();
     }
 

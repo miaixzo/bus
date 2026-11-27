@@ -207,6 +207,27 @@ public class MediaType {
     public static final MediaType APPLICATION_JSON_TYPE = new MediaType("application", "json");
 
     /**
+     * JSON media type with an explicit UTF-8 charset parameter.
+     */
+    public static final String APPLICATION_JSON_UTF8 = "application/json; charset=utf-8";
+
+    /**
+     * A {@link MediaType} constant representing {@value #APPLICATION_JSON_UTF8} media type.
+     */
+    public static final MediaType APPLICATION_JSON_UTF8_TYPE = new MediaType("application", JSON,
+            StringKit.toLowerCase(Charset.DEFAULT_UTF_8));
+
+    /**
+     * Miaixz SDC startup configuration media type for the {@code Accept} and {@code Content-Type} headers.
+     */
+    public static final String APPLICATION_VND_MIAIXZ_JSON = "application/vnd.miaixz+json";
+
+    /**
+     * A {@link MediaType} constant representing {@value #APPLICATION_VND_MIAIXZ_JSON} media type.
+     */
+    public static final MediaType APPLICATION_VND_MIAIXZ_JSON_TYPE = new MediaType("application", "vnd.miaixz+json");
+
+    /**
      * A {@code String} constant representing the IANA-registered {@value #APPLICATION_JWK_SET_JSON} media type for a
      * JSON Web Key Set. This value does not imply a character-set parameter because RFC 7517 defines the JSON
      * serialization directly.

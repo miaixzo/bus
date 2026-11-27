@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.image.Tag;
 import org.miaixz.bus.image.galaxy.data.ElementDictionary;
 
@@ -68,9 +69,9 @@ public class JsonManifestSerializer {
      * @throws IOException if the operation cannot be completed.
      */
     public void write(Manifest manifest, String version) throws IOException {
-        writer.append('{');
+        writer.append(Symbol.C_BRACE_LEFT);
         writeName(Manifest.TAG_DOCUMENT_ROOT);
-        writer.append('{');
+        writer.append(Symbol.C_BRACE_LEFT);
 
         boolean first = true;
         first = writeAttribute(first, Manifest.VERSION, version);
@@ -136,20 +137,20 @@ public class JsonManifestSerializer {
         }
         writeComma(first);
         writeName(ArchiveParameters.TAG_HTTP_TAG);
-        writer.append('[');
+        writer.append(Symbol.C_BRACKET_LEFT);
 
         boolean itemFirst = true;
         for (HttpTag tag : tags) {
             writeComma(itemFirst);
-            writer.append('{');
+            writer.append(Symbol.C_BRACE_LEFT);
             boolean propertyFirst = true;
             propertyFirst = writeAttribute(propertyFirst, "key", tag.getKey());
             writeAttribute(propertyFirst, "value", tag.getValue());
-            writer.append('}');
+            writer.append(Symbol.C_BRACE_RIGHT);
             itemFirst = false;
         }
 
-        writer.append(']');
+        writer.append(Symbol.C_BRACKET_RIGHT);
         return false;
     }
 
@@ -167,21 +168,21 @@ public class JsonManifestSerializer {
         }
         writeComma(first);
         writeName(ViewerMessage.TAG_DOCUMENT_MSG);
-        writer.append('[');
+        writer.append(Symbol.C_BRACKET_LEFT);
 
         boolean itemFirst = true;
         for (ViewerMessage message : messages) {
             writeComma(itemFirst);
-            writer.append('{');
+            writer.append(Symbol.C_BRACE_LEFT);
             boolean propertyFirst = true;
             propertyFirst = writeAttribute(propertyFirst, ViewerMessage.MSG_ATTRIBUTE_TITLE, message.title());
             propertyFirst = writeAttribute(propertyFirst, ViewerMessage.MSG_ATTRIBUTE_DESC, message.message());
             writeAttribute(propertyFirst, ViewerMessage.MSG_ATTRIBUTE_LEVEL, message.level().name());
-            writer.append('}');
+            writer.append(Symbol.C_BRACE_RIGHT);
             itemFirst = false;
         }
 
-        writer.append(']');
+        writer.append(Symbol.C_BRACKET_RIGHT);
         return false;
     }
 
@@ -199,7 +200,7 @@ public class JsonManifestSerializer {
         }
         writeComma(first);
         writeName(ManifestXml.Level.PATIENT.getTagName());
-        writer.append('[');
+        writer.append(Symbol.C_BRACKET_LEFT);
 
         ArrayList<ManifestPatient> sortedPatients = new ArrayList<>(patients);
         Collections.sort(sortedPatients);
@@ -210,7 +211,7 @@ public class JsonManifestSerializer {
             itemFirst = false;
         }
 
-        writer.append(']');
+        writer.append(Symbol.C_BRACKET_RIGHT);
         return false;
     }
 
@@ -221,7 +222,7 @@ public class JsonManifestSerializer {
      * @throws IOException if the operation cannot be completed.
      */
     private void writePatient(ManifestPatient patient) throws IOException {
-        writer.append('{');
+        writer.append(Symbol.C_BRACE_LEFT);
         boolean first = true;
         first = writeAttribute(first, keyword(Tag.PatientID), patient.getPatientID());
         first = writeAttribute(first, keyword(Tag.IssuerOfPatientID), patient.getIssuerOfPatientID());
@@ -230,7 +231,7 @@ public class JsonManifestSerializer {
         first = writeAttribute(first, keyword(Tag.PatientBirthTime), patient.getPatientBirthTime());
         first = writeAttribute(first, keyword(Tag.PatientSex), patient.getPatientSex());
         writeStudies(first, patient.getStudies());
-        writer.append('}');
+        writer.append(Symbol.C_BRACE_RIGHT);
     }
 
     /**
@@ -247,7 +248,7 @@ public class JsonManifestSerializer {
         }
         writeComma(first);
         writeName(ManifestXml.Level.STUDY.getTagName());
-        writer.append('[');
+        writer.append(Symbol.C_BRACKET_LEFT);
 
         ArrayList<ManifestStudy> sortedStudies = new ArrayList<>(studies);
         Collections.sort(sortedStudies);
@@ -258,7 +259,7 @@ public class JsonManifestSerializer {
             itemFirst = false;
         }
 
-        writer.append(']');
+        writer.append(Symbol.C_BRACKET_RIGHT);
         return false;
     }
 
@@ -269,7 +270,7 @@ public class JsonManifestSerializer {
      * @throws IOException if the operation cannot be completed.
      */
     private void writeStudy(ManifestStudy study) throws IOException {
-        writer.append('{');
+        writer.append(Symbol.C_BRACE_LEFT);
         boolean first = true;
         first = writeAttribute(first, keyword(Tag.StudyInstanceUID), study.getStudyInstanceUID());
         first = writeAttribute(first, keyword(Tag.StudyDescription), study.getStudyDescription());
@@ -279,7 +280,7 @@ public class JsonManifestSerializer {
         first = writeAttribute(first, keyword(Tag.StudyID), study.getStudyID());
         first = writeAttribute(first, keyword(Tag.ReferringPhysicianName), study.getReferringPhysicianName());
         writeSeries(first, study.getSeries());
-        writer.append('}');
+        writer.append(Symbol.C_BRACE_RIGHT);
     }
 
     /**
@@ -296,7 +297,7 @@ public class JsonManifestSerializer {
         }
         writeComma(first);
         writeName(ManifestXml.Level.SERIES.getTagName());
-        writer.append('[');
+        writer.append(Symbol.C_BRACKET_LEFT);
 
         ArrayList<ManifestSeries> sortedSeries = new ArrayList<>(series);
         Collections.sort(sortedSeries);
@@ -307,7 +308,7 @@ public class JsonManifestSerializer {
             itemFirst = false;
         }
 
-        writer.append(']');
+        writer.append(Symbol.C_BRACKET_RIGHT);
         return false;
     }
 
@@ -318,7 +319,7 @@ public class JsonManifestSerializer {
      * @throws IOException if the operation cannot be completed.
      */
     private void writeSeries(ManifestSeries series) throws IOException {
-        writer.append('{');
+        writer.append(Symbol.C_BRACE_LEFT);
         boolean first = true;
         first = writeAttribute(first, keyword(Tag.SeriesInstanceUID), series.getSeriesInstanceUID());
         first = writeAttribute(first, keyword(Tag.SeriesDescription), series.getSeriesDescription());
@@ -330,7 +331,7 @@ public class JsonManifestSerializer {
             first = writeAttribute(first, "WadoCompressionRate", Integer.toString(series.getWadoCompression()));
         }
         writeInstances(first, series.getInstances());
-        writer.append('}');
+        writer.append(Symbol.C_BRACE_RIGHT);
     }
 
     /**
@@ -347,7 +348,7 @@ public class JsonManifestSerializer {
         }
         writeComma(first);
         writeName(ManifestXml.Level.INSTANCE.getTagName());
-        writer.append('[');
+        writer.append(Symbol.C_BRACKET_LEFT);
 
         ArrayList<ManifestInstance> sortedInstances = new ArrayList<>(instances);
         Collections.sort(sortedInstances);
@@ -358,7 +359,7 @@ public class JsonManifestSerializer {
             itemFirst = false;
         }
 
-        writer.append(']');
+        writer.append(Symbol.C_BRACKET_RIGHT);
         return false;
     }
 
@@ -369,7 +370,7 @@ public class JsonManifestSerializer {
      * @throws IOException if the operation cannot be completed.
      */
     private void writeInstance(ManifestInstance instance) throws IOException {
-        writer.append('{');
+        writer.append(Symbol.C_BRACE_LEFT);
         boolean first = true;
         first = writeAttribute(first, keyword(Tag.SOPInstanceUID), instance.getSopInstanceUID());
         first = writeAttribute(first, keyword(Tag.SOPClassUID), instance.getSopClassUID());
@@ -377,7 +378,7 @@ public class JsonManifestSerializer {
         first = writeAttribute(first, keyword(Tag.ImageComments), instance.getImageComments());
         first = writeAttribute(first, keyword(Tag.InstanceNumber), instance.getStringInstanceNumber());
         writeAttribute(first, "DirectDownloadFile", instance.getDirectDownloadFile());
-        writer.append('}');
+        writer.append(Symbol.C_BRACE_RIGHT);
     }
 
     /**
@@ -423,7 +424,7 @@ public class JsonManifestSerializer {
      */
     private void writeName(String name) throws IOException {
         writeString(name);
-        writer.append(':');
+        writer.append(Symbol.C_COLON);
     }
 
     /**
@@ -433,17 +434,17 @@ public class JsonManifestSerializer {
      * @throws IOException if the operation cannot be completed.
      */
     private void writeString(String value) throws IOException {
-        writer.append('"');
+        writer.append(Symbol.C_DOUBLE_QUOTES);
         for (int i = 0; i < value.length(); i++) {
             char current = value.charAt(i);
             switch (current) {
-                case '"' -> writer.append("\\\"");
-                case '\\' -> writer.append("\\\\");
+                case Symbol.C_DOUBLE_QUOTES -> writer.append("\\\"");
+                case Symbol.C_BACKSLASH -> writer.append("\\\\");
                 case '\b' -> writer.append("\\b");
                 case '\f' -> writer.append("\\f");
-                case '\n' -> writer.append("\\n");
-                case '\r' -> writer.append("\\r");
-                case '\t' -> writer.append("\\t");
+                case Symbol.C_LF -> writer.append("\\n");
+                case Symbol.C_CR -> writer.append("\\r");
+                case Symbol.C_TAB -> writer.append("\\t");
                 default -> {
                     if (current < 0x20) {
                         writer.append(String.format("\\u%04x", (int) current));
@@ -453,7 +454,7 @@ public class JsonManifestSerializer {
                 }
             }
         }
-        writer.append('"');
+        writer.append(Symbol.C_DOUBLE_QUOTES);
     }
 
     /**
@@ -464,7 +465,7 @@ public class JsonManifestSerializer {
      */
     private void writeComma(boolean first) throws IOException {
         if (!first) {
-            writer.append(',');
+            writer.append(Symbol.C_COMMA);
         }
     }
 

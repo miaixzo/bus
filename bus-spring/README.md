@@ -10,16 +10,15 @@ annotations, property prefixes, conditional assembly, and configuration properti
 ```text
 bus-spring                              bus-starter
 -----------------------------------     -----------------------------------
-Spring and Web integration mechanics    discovery and startup assembly
+Spring and Web integration mechanics    feature discovery and assembly
 context capture/install/restore         bus.* configuration properties
 Bean, environment, and condition APIs   feature activation decisions
-Boot listener implementations           default Bean declarations
+Boot lifecycle and discovery            default Bean declarations
 request/converter/wrapper primitives     feature-specific integration
 ```
 
-This separation keeps Spring utilities reusable without forcing every Bus feature into an application. `bus-spring`
-does not contain a `spring.factories` registration resource; `bus-starter` owns discovery and references the lifecycle
-implementations provided here.
+`bus-spring` registers its Spring Boot listeners and environment processors through `META-INF/spring.factories`.
+`bus-starter` registers feature auto-configurations through `AutoConfiguration.imports`.
 
 ## Dependency
 
@@ -298,8 +297,7 @@ The Boot packages contain infrastructure executed before and during application 
 - `SpringStartupPublisher` publishes completed Spring startup summaries through optional integrations such as the Bus
   metrics Provider.
 
-Discovery remains centralized in `bus-starter/src/main/resources/META-INF/spring.factories`. Do not add a second
-discovery file to `bus-spring`.
+Spring Boot discovers the lifecycle hooks in `bus-spring/src/main/resources/META-INF/spring.factories`.
 
 ### Logging namespace bridge
 

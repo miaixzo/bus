@@ -21,6 +21,15 @@
       ]
     },
     {
+      "type": "org.miaixz.bus.spring.boot.environment.RemoteEnvironmentPostProcessor",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
       "type": "org.miaixz.bus.spring.boot.environment.LoggingEnvironmentPostProcessor",
       "methods": [
         {
@@ -30,7 +39,7 @@
       ]
     },
     {
-      "type": "org.miaixz.bus.spring.boot.environment.SpringEnvironmentPostProcessor",
+      "type": "org.miaixz.bus.spring.boot.environment.DefaultsEnvironmentPostProcessor",
       "methods": [
         {
           "name": "<init>",
@@ -205,6 +214,11 @@
           ]
         }
       ]
+    }
+  ],
+  "resources": [
+    {
+      "glob": "META-INF/spring.factories"
     }
   ]
 }

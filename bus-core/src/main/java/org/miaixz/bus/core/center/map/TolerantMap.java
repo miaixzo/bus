@@ -24,6 +24,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+import org.miaixz.bus.core.lang.Symbol;
+
 /**
  * A decorator for a {@link Map} that returns a default value instead of {@code null} when a key is not found. This
  * provides a "tolerant" or forgiving alternative to a standard map, preventing {@code NullPointerException}s in chains
@@ -156,7 +158,7 @@ public class TolerantMap<K, V> extends MapWrapper<K, V> {
      */
     @Override
     public String toString() {
-        return "TolerantMap{" + "map=" + getRaw() + ", defaultValue=" + defaultValue + '}';
+        return "TolerantMap{" + "map=" + getRaw() + ", defaultValue=" + defaultValue + Symbol.C_BRACE_RIGHT;
     }
 
 }

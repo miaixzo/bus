@@ -193,19 +193,29 @@ public class GeomPartList {
      */
     private static final class PartitionBuilder {
 
-        /** Partition name. */
+        /**
+         * Partition name.
+         */
         private final String name;
 
-        /** Partition type. */
+        /**
+         * Partition type.
+         */
         private String type = Normal.UNKNOWN;
 
-        /** Partition UUID. */
+        /**
+         * Partition UUID.
+         */
         private String uuid = Normal.UNKNOWN;
 
-        /** Partition label. */
+        /**
+         * Partition label.
+         */
         private String label = Normal.EMPTY;
 
-        /** Partition size in bytes. */
+        /**
+         * Partition size in bytes.
+         */
         private long size;
 
         /**

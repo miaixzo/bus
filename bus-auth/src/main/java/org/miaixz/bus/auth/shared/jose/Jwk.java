@@ -567,7 +567,7 @@ public class Jwk {
     @Override
     public String toString() {
         return "Jwk[keyType=" + keyType() + ",keyId=" + keyId().orElse(null) + ",privateMaterial="
-                + hasPrivateMaterial() + "]";
+                + hasPrivateMaterial() + Symbol.BRACKET_RIGHT;
     }
 
     /**

@@ -25,6 +25,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 
+import org.miaixz.bus.core.lang.Symbol;
+
 /**
  * Immutable HTTP status and headers for a verified empty error response.
  *
@@ -149,7 +151,7 @@ public record HttpErrorResponse(HttpStatusCode status, HttpHeaders headers) {
      * @return whether the value is nonnull and contains no line breaks
      */
     private static boolean lineSafe(String value) {
-        return value != null && value.indexOf('\r') < 0 && value.indexOf('\n') < 0;
+        return value != null && value.indexOf(Symbol.C_CR) < 0 && value.indexOf(Symbol.C_LF) < 0;
     }
 
 }

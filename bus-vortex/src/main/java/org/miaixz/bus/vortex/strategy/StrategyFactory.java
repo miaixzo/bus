@@ -76,6 +76,19 @@ public class StrategyFactory {
      * @param chain A list of all available {@link Strategy} beans, injected by the Spring container.
      */
     public StrategyFactory(List<Strategy> chain) {
+        this(chain, null);
+    }
+
+    /**
+     * Constructs the strategy chains using the deployment's registration path.
+     *
+     * @param chain            available strategy beans
+     * @param registrationPath configured SDC route, or {@code null} when disabled
+     */
+    public StrategyFactory(List<Strategy> chain, String registrationPath) {
+        if (registrationPath != null) {
+            Args.validateSdcPath(registrationPath);
+        }
         Logger.info(true, "Vortex", "Strategy chain initialization started: discoveredStrategies={}", chain.size());
         chain.sort(AnnotationAwareOrderComparator.INSTANCE);
         Logger.debug(true, "Vortex", "Strategy beans sorted by order: strategies={}", getStrategyNames(chain));
@@ -87,16 +100,20 @@ public class StrategyFactory {
                 && sdcStrategies.stream().anyMatch(QualifierStrategy.class::isInstance)
                 && chain.stream().anyMatch(LimiterStrategy.class::isInstance)
                 && chain.stream().anyMatch(ResponseStrategy.class::isInstance);
-        this.chainSpecs = List.of(
+        var specs = new ArrayList<>(List.of(
                 new ChainSpec(Args.REST_PATH_PREFIX, Args::isRestRequest, this::isRestStrategy),
                 new ChainSpec(Args.CST_PATH_PREFIX, Args::isCstRequest, this::isCstStrategy),
-                new ChainSpec(Args.SDC_PATH_PREFIX, Args::isSdcRequest,
-                        strategy -> sdcReady && (sdcStrategies.contains(strategy) || isSharedStrategy(strategy))),
                 new ChainSpec(Args.MCP_PATH_PREFIX, Args::isMcpRequest, this::isMcpStrategy),
                 new ChainSpec(Args.MQ_PATH_PREFIX, Args::isMqRequest, this::isMqStrategy),
                 new ChainSpec(Args.GRPC_PATH_PREFIX, Args::isGrpcRequest, this::isGrpcStrategy),
                 new ChainSpec(Args.WS_PATH_PREFIX, Args::isWsRequest, this::isWsStrategy),
-                new ChainSpec(Args.LLM_PATH_PREFIX, Args::isLlmRequest, this::isLlmStrategy));
+                new ChainSpec(Args.LLM_PATH_PREFIX, Args::isLlmRequest, this::isLlmStrategy)));
+        if (registrationPath != null) {
+            specs.add(
+                    new ChainSpec(registrationPath, path -> Args.isSdcRequest(path, registrationPath),
+                            strategy -> sdcReady && (sdcStrategies.contains(strategy) || isSharedStrategy(strategy))));
+        }
+        this.chainSpecs = List.copyOf(specs);
 
         Map<String, List<Strategy>> builtChains = new LinkedHashMap<>();
         for (ChainSpec spec : this.chainSpecs) {

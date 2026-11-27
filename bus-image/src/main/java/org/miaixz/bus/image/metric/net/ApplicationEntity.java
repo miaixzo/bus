@@ -1068,7 +1068,7 @@ public class ApplicationEntity implements Serializable {
      */
     @Override
     public String toString() {
-        return promptTo(new StringBuilder(Normal._512), "").toString();
+        return promptTo(new StringBuilder(Normal._512), Normal.EMPTY).toString();
     }
 
     /**

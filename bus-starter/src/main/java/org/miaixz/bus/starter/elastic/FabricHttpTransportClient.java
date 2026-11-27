@@ -572,7 +572,7 @@ final class FabricHttpTransportClient implements TransportHttpClient {
         if (StringKit.isBlank(username)) {
             return null;
         }
-        return HttpAuth.basic(username, password == null ? "" : password).value();
+        return HttpAuth.basic(username, password == null ? Normal.EMPTY : password).value();
     }
 
     /**

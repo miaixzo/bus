@@ -268,28 +268,27 @@ public class OpenBsdHWDiskStore extends AbstractHWDiskStore {
      */
     @Override
     public synchronized boolean updateAttributes() {
-        /*-
-        └─ $ ▶ systat -b iostat
-                0 users Load 2.04 4.02 3.96                          thinkpad.local 00:14:35
-                DEVICE          READ    WRITE     RTPS    WTPS     SEC            STATS
-                sd0           49937M   25774M  1326555 1695370   945.9
-                cd0                0        0        0       0     0.0
-                sd1          1573888      204       29       0     0.1
-                Totals        49939M   25774M  1326585 1695371   946.0
-                                                                               126568 total pages
-                                                                               126568 dma pages
-                                                                                  100 dirty pages
-                                                                                   14 delwri bufs
-                                                                                    0 busymap bufs
-                                                                                 6553 avail kvaslots
-                                                                                 6553 kvaslots
-                                                                                    0 pending writes
-                                                                                   12 pending reads
-                                                                                    0 cache hits
-                                                                                    0 high flips
-                                                                                    0 high flops
-                                                                                    0 dma flips
-        */
+        // -
+        // └─ $ ▶ systat -b iostat
+        // 0 users Load 2.04 4.02 3.96 thinkpad.local 00:14:35
+        // DEVICE READ WRITE RTPS WTPS SEC STATS
+        // sd0 49937M 25774M 1326555 1695370 945.9
+        // cd0 0 0 0 0 0.0
+        // sd1 1573888 204 29 0 0.1
+        // Totals 49939M 25774M 1326585 1695371 946.0
+        // 126568 total pages
+        // 126568 dma pages
+        // 100 dirty pages
+        // 14 delwri bufs
+        // 0 busymap bufs
+        // 6553 avail kvaslots
+        // 6553 kvaslots
+        // 0 pending writes
+        // 12 pending reads
+        // 0 cache hits
+        // 0 high flips
+        // 0 high flops
+        // 0 dma flips
         long now = System.currentTimeMillis();
         boolean diskFound = false;
         for (String line : iostat.get()) {

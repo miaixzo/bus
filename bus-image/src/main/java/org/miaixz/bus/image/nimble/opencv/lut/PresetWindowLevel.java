@@ -32,6 +32,7 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.image.nimble.ImageAdapter;
@@ -561,7 +562,7 @@ public class PresetWindowLevel {
          */
         PresetCollectionBuilder(ImageAdapter adapter, String type, WlPresentation wl) {
             this.adapter = adapter;
-            this.dicomKeyWord = " " + type;
+            this.dicomKeyWord = Symbol.SPACE + type;
             this.wl = wl;
             this.presetList = new ArrayList<>();
             ImageDescriptor desc = adapter.getImageDescriptor();
@@ -667,7 +668,7 @@ public class PresetWindowLevel {
 
             var defaultExplanation = "VOI LUT";
             for (int i = 0; i < voiLUTsData.size(); i++) {
-                var explanation = getPresetExplanation(voiLUTsExplanation, i, defaultExplanation + " " + i);
+                var explanation = getPresetExplanation(voiLUTsExplanation, i, defaultExplanation + Symbol.SPACE + i);
                 var preset = buildPresetFromLutData(adapter, voiLUTsData.get(i), wl, explanation + dicomKeyWord);
 
                 if (preset != null) {

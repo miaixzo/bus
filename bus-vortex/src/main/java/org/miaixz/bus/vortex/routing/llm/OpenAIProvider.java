@@ -217,7 +217,7 @@ public class OpenAIProvider implements LlmProvider {
                         if (!"[DONE]".equals(event.data())) {
                             rejectProviderError(event.data().getBytes(Charset.UTF_8));
                         }
-                        sink.next("data: " + event.data().replace("\n", "\ndata: ") + Symbol.LF + Symbol.LF);
+                        sink.next("data: " + event.data().replace(Symbol.LF, "\ndata: ") + Symbol.LF + Symbol.LF);
                     }
                 });
     }

@@ -50,6 +50,7 @@ import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Optional;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.TimeoutException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.net.Http;
@@ -244,7 +245,7 @@ public class MicrosoftRealmAdapter implements VendorAdapter {
         for (JsonValue memberValue : optionalArray(value, "members@delta")) {
             final JsonValue.ObjectValue member = requiredObject(memberValue, "group delta member");
             final String memberId = requiredString(member, "id");
-            final String objectType = optionalString(member, "@odata.type").orElse("");
+            final String objectType = optionalString(member, "@odata.type").orElse(Normal.EMPTY);
             final Realm.Kind memberKind = switch (objectType) {
                 case "#microsoft.graph.user" -> Realm.Kind.USER;
                 case "#microsoft.graph.group" -> Realm.Kind.GROUP;
@@ -309,7 +310,7 @@ public class MicrosoftRealmAdapter implements VendorAdapter {
      */
     private static Realm.Resource directoryResource(JsonValue.ObjectValue value, Realm.Kind kind, Instant at) {
         Map<String, JsonValue> attributes = new LinkedHashMap<>();
-        for (String field : select(kind).split(",")) {
+        for (String field : select(kind).split(Symbol.COMMA)) {
             if (Set.of("id", "appId", "displayName", "accountEnabled").contains(field))
                 continue;
             JsonValue data = value.values().get(field);
@@ -557,7 +558,7 @@ public class MicrosoftRealmAdapter implements VendorAdapter {
      */
     private static boolean childPath(final String path, final String prefix, final String suffix) {
         return path.startsWith(prefix) && path.endsWith(suffix) && path.length() > prefix.length() + suffix.length()
-                && path.substring(prefix.length(), path.length() - suffix.length()).indexOf('/') < 0;
+                && path.substring(prefix.length(), path.length() - suffix.length()).indexOf(Symbol.C_SLASH) < 0;
     }
 
     /**
@@ -656,7 +657,7 @@ public class MicrosoftRealmAdapter implements VendorAdapter {
      * @return validated member projection
      */
     private static Member member(final JsonValue.ObjectValue value) {
-        return new Member(requiredString(value, "id"), optionalString(value, "@odata.type").orElse(""));
+        return new Member(requiredString(value, "id"), optionalString(value, "@odata.type").orElse(Normal.EMPTY));
     }
 
     /**
@@ -2521,10 +2522,10 @@ public class MicrosoftRealmAdapter implements VendorAdapter {
             final String suffix,
             final Map<String, String> query) {
         final Url base = target(targetName).url();
-        final StringBuilder path = new StringBuilder(base.path()).append('/')
+        final StringBuilder path = new StringBuilder(base.path()).append(Symbol.C_SLASH)
                 .append(RFC3986.SEGMENT.encode(requireText(identifier, "Microsoft Graph identifier"), Charset.UTF_8));
         if (suffix != null) {
-            path.append('/').append(suffix);
+            path.append(Symbol.C_SLASH).append(suffix);
         }
         return build(base, path.toString(), query);
     }

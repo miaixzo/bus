@@ -157,7 +157,7 @@ class Zip64 {
         writeInt(useZip64 ? MAX32 : entry.size); // uncompressed size
         writeShort(entry.filename.length()); // filename length
         writeShort(
-                useZip64 ? (2 + 2 + 8) /* short + short + long */
+                useZip64 ? (2 + 2 + 8) // short + short + long
                         : 0); // extra field len
         writeShort(0); // comment length
         writeShort(0); // disk number where file starts

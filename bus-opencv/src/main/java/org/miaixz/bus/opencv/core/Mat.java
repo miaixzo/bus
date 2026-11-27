@@ -21,6 +21,9 @@ package org.miaixz.bus.opencv.core;
 
 import java.nio.ByteBuffer;
 
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
+
 /**
  * A multidimensional matrix backed by native storage. Matrix views may share pixel storage; release a wrapper when it
  * is no longer needed. A Java wrapper does not make concurrent modifications to shared storage safe.
@@ -968,9 +971,9 @@ public class Mat extends CleanableMat {
      */
     @Override
     public String toString() {
-        String _dims = (dims() > 0) ? "" : "-1*-1*";
+        String _dims = (dims() > 0) ? Normal.EMPTY : "-1*-1*";
         for (int i = 0; i < dims(); i++) {
-            _dims += size(i) + "*";
+            _dims += size(i) + Symbol.STAR;
         }
         return "Mat [ " + _dims + CvType.typeToString(type()) + ", isCont=" + isContinuous() + ", isSubmat="
                 + isSubmatrix() + ", nativeObj=0x" + Long.toHexString(nativeObj) + ", dataAddr=0x"
@@ -999,7 +1002,8 @@ public class Mat extends CleanableMat {
         int t = type();
         if (data == null || data.length % CvType.channels(t) != 0)
             throw new UnsupportedOperationException("Provided data element number (" + (data == null ? 0 : data.length)
-                    + ") should be multiple of the Mat channels count (" + CvType.channels(t) + ")");
+                    + ") should be multiple of the Mat channels count (" + CvType.channels(t)
+                    + Symbol.PARENTHESE_RIGHT);
         return nPutD(nativeObj, row, col, data.length, data);
     }
 
@@ -1017,7 +1021,8 @@ public class Mat extends CleanableMat {
         int t = type();
         if (data == null || data.length % CvType.channels(t) != 0)
             throw new UnsupportedOperationException("Provided data element number (" + (data == null ? 0 : data.length)
-                    + ") should be multiple of the Mat channels count (" + CvType.channels(t) + ")");
+                    + ") should be multiple of the Mat channels count (" + CvType.channels(t)
+                    + Symbol.PARENTHESE_RIGHT);
         if (idx.length != dims())
             throw new IllegalArgumentException("Incorrect number of indices");
         return nPutDIdx(nativeObj, idx, data.length, data);
@@ -1037,7 +1042,8 @@ public class Mat extends CleanableMat {
         int t = type();
         if (data == null || data.length % CvType.channels(t) != 0)
             throw new UnsupportedOperationException("Provided data element number (" + (data == null ? 0 : data.length)
-                    + ") should be multiple of the Mat channels count (" + CvType.channels(t) + ")");
+                    + ") should be multiple of the Mat channels count (" + CvType.channels(t)
+                    + Symbol.PARENTHESE_RIGHT);
         if (CvType.depth(t) == CvType.CV_32F) {
             return nPutF(nativeObj, row, col, data.length, data);
         }
@@ -1059,7 +1065,8 @@ public class Mat extends CleanableMat {
         int t = type();
         if (data == null || data.length % CvType.channels(t) != 0)
             throw new UnsupportedOperationException("Provided data element number (" + (data == null ? 0 : data.length)
-                    + ") should be multiple of the Mat channels count (" + CvType.channels(t) + ")");
+                    + ") should be multiple of the Mat channels count (" + CvType.channels(t)
+                    + Symbol.PARENTHESE_RIGHT);
         if (idx.length != dims())
             throw new IllegalArgumentException("Incorrect number of indices");
         if (CvType.depth(t) == CvType.CV_32F) {
@@ -1082,7 +1089,8 @@ public class Mat extends CleanableMat {
         int t = type();
         if (data == null || data.length % CvType.channels(t) != 0)
             throw new UnsupportedOperationException("Provided data element number (" + (data == null ? 0 : data.length)
-                    + ") should be multiple of the Mat channels count (" + CvType.channels(t) + ")");
+                    + ") should be multiple of the Mat channels count (" + CvType.channels(t)
+                    + Symbol.PARENTHESE_RIGHT);
         if (CvType.depth(t) == CvType.CV_32S) {
             return nPutI(nativeObj, row, col, data.length, data);
         }
@@ -1104,7 +1112,8 @@ public class Mat extends CleanableMat {
         int t = type();
         if (data == null || data.length % CvType.channels(t) != 0)
             throw new UnsupportedOperationException("Provided data element number (" + (data == null ? 0 : data.length)
-                    + ") should be multiple of the Mat channels count (" + CvType.channels(t) + ")");
+                    + ") should be multiple of the Mat channels count (" + CvType.channels(t)
+                    + Symbol.PARENTHESE_RIGHT);
         if (idx.length != dims())
             throw new IllegalArgumentException("Incorrect number of indices");
         if (CvType.depth(t) == CvType.CV_32S) {
@@ -1127,7 +1136,8 @@ public class Mat extends CleanableMat {
         int t = type();
         if (data == null || data.length % CvType.channels(t) != 0)
             throw new UnsupportedOperationException("Provided data element number (" + (data == null ? 0 : data.length)
-                    + ") should be multiple of the Mat channels count (" + CvType.channels(t) + ")");
+                    + ") should be multiple of the Mat channels count (" + CvType.channels(t)
+                    + Symbol.PARENTHESE_RIGHT);
         if (CvType.depth(t) == CvType.CV_16U || CvType.depth(t) == CvType.CV_16S) {
             return nPutS(nativeObj, row, col, data.length, data);
         }
@@ -1149,7 +1159,8 @@ public class Mat extends CleanableMat {
         int t = type();
         if (data == null || data.length % CvType.channels(t) != 0)
             throw new UnsupportedOperationException("Provided data element number (" + (data == null ? 0 : data.length)
-                    + ") should be multiple of the Mat channels count (" + CvType.channels(t) + ")");
+                    + ") should be multiple of the Mat channels count (" + CvType.channels(t)
+                    + Symbol.PARENTHESE_RIGHT);
         if (idx.length != dims())
             throw new IllegalArgumentException("Incorrect number of indices");
         if (CvType.depth(t) == CvType.CV_16U || CvType.depth(t) == CvType.CV_16S) {
@@ -1172,7 +1183,8 @@ public class Mat extends CleanableMat {
         int t = type();
         if (data == null || data.length % CvType.channels(t) != 0)
             throw new UnsupportedOperationException("Provided data element number (" + (data == null ? 0 : data.length)
-                    + ") should be multiple of the Mat channels count (" + CvType.channels(t) + ")");
+                    + ") should be multiple of the Mat channels count (" + CvType.channels(t)
+                    + Symbol.PARENTHESE_RIGHT);
         if (CvType.depth(t) == CvType.CV_8U || CvType.depth(t) == CvType.CV_8S) {
             return nPutB(nativeObj, row, col, data.length, data);
         }
@@ -1194,7 +1206,8 @@ public class Mat extends CleanableMat {
         int t = type();
         if (data == null || data.length % CvType.channels(t) != 0)
             throw new UnsupportedOperationException("Provided data element number (" + (data == null ? 0 : data.length)
-                    + ") should be multiple of the Mat channels count (" + CvType.channels(t) + ")");
+                    + ") should be multiple of the Mat channels count (" + CvType.channels(t)
+                    + Symbol.PARENTHESE_RIGHT);
         if (idx.length != dims())
             throw new IllegalArgumentException("Incorrect number of indices");
         if (CvType.depth(t) == CvType.CV_8U || CvType.depth(t) == CvType.CV_8S) {
@@ -1219,7 +1232,8 @@ public class Mat extends CleanableMat {
         int t = type();
         if (data == null || length % CvType.channels(t) != 0)
             throw new UnsupportedOperationException("Provided data element number (" + (data == null ? 0 : data.length)
-                    + ") should be multiple of the Mat channels count (" + CvType.channels(t) + ")");
+                    + ") should be multiple of the Mat channels count (" + CvType.channels(t)
+                    + Symbol.PARENTHESE_RIGHT);
         if (CvType.depth(t) == CvType.CV_8U || CvType.depth(t) == CvType.CV_8S) {
             return nPutBwOffset(nativeObj, row, col, length, offset, data);
         }
@@ -1243,7 +1257,8 @@ public class Mat extends CleanableMat {
         int t = type();
         if (data == null || length % CvType.channels(t) != 0)
             throw new UnsupportedOperationException("Provided data element number (" + (data == null ? 0 : data.length)
-                    + ") should be multiple of the Mat channels count (" + CvType.channels(t) + ")");
+                    + ") should be multiple of the Mat channels count (" + CvType.channels(t)
+                    + Symbol.PARENTHESE_RIGHT);
         if (idx.length != dims())
             throw new IllegalArgumentException("Incorrect number of indices");
         if (CvType.depth(t) == CvType.CV_8U || CvType.depth(t) == CvType.CV_8S) {
@@ -1266,7 +1281,8 @@ public class Mat extends CleanableMat {
         int t = type();
         if (data == null || data.length % CvType.channels(t) != 0)
             throw new UnsupportedOperationException("Provided data element number (" + (data == null ? 0 : data.length)
-                    + ") should be multiple of the Mat channels count (" + CvType.channels(t) + ")");
+                    + ") should be multiple of the Mat channels count (" + CvType.channels(t)
+                    + Symbol.PARENTHESE_RIGHT);
         if (CvType.depth(t) == CvType.CV_8U || CvType.depth(t) == CvType.CV_8S) {
             return nGetB(nativeObj, row, col, data.length, data);
         }
@@ -1288,7 +1304,8 @@ public class Mat extends CleanableMat {
         int t = type();
         if (data == null || data.length % CvType.channels(t) != 0)
             throw new UnsupportedOperationException("Provided data element number (" + (data == null ? 0 : data.length)
-                    + ") should be multiple of the Mat channels count (" + CvType.channels(t) + ")");
+                    + ") should be multiple of the Mat channels count (" + CvType.channels(t)
+                    + Symbol.PARENTHESE_RIGHT);
         if (idx.length != dims())
             throw new IllegalArgumentException("Incorrect number of indices");
         if (CvType.depth(t) == CvType.CV_8U || CvType.depth(t) == CvType.CV_8S) {
@@ -1311,7 +1328,8 @@ public class Mat extends CleanableMat {
         int t = type();
         if (data == null || data.length % CvType.channels(t) != 0)
             throw new UnsupportedOperationException("Provided data element number (" + (data == null ? 0 : data.length)
-                    + ") should be multiple of the Mat channels count (" + CvType.channels(t) + ")");
+                    + ") should be multiple of the Mat channels count (" + CvType.channels(t)
+                    + Symbol.PARENTHESE_RIGHT);
         if (CvType.depth(t) == CvType.CV_16U || CvType.depth(t) == CvType.CV_16S) {
             return nGetS(nativeObj, row, col, data.length, data);
         }
@@ -1333,7 +1351,8 @@ public class Mat extends CleanableMat {
         int t = type();
         if (data == null || data.length % CvType.channels(t) != 0)
             throw new UnsupportedOperationException("Provided data element number (" + (data == null ? 0 : data.length)
-                    + ") should be multiple of the Mat channels count (" + CvType.channels(t) + ")");
+                    + ") should be multiple of the Mat channels count (" + CvType.channels(t)
+                    + Symbol.PARENTHESE_RIGHT);
         if (idx.length != dims())
             throw new IllegalArgumentException("Incorrect number of indices");
         if (CvType.depth(t) == CvType.CV_16U || CvType.depth(t) == CvType.CV_16S) {
@@ -1356,7 +1375,8 @@ public class Mat extends CleanableMat {
         int t = type();
         if (data == null || data.length % CvType.channels(t) != 0)
             throw new UnsupportedOperationException("Provided data element number (" + (data == null ? 0 : data.length)
-                    + ") should be multiple of the Mat channels count (" + CvType.channels(t) + ")");
+                    + ") should be multiple of the Mat channels count (" + CvType.channels(t)
+                    + Symbol.PARENTHESE_RIGHT);
         if (CvType.depth(t) == CvType.CV_32S) {
             return nGetI(nativeObj, row, col, data.length, data);
         }
@@ -1378,7 +1398,8 @@ public class Mat extends CleanableMat {
         int t = type();
         if (data == null || data.length % CvType.channels(t) != 0)
             throw new UnsupportedOperationException("Provided data element number (" + (data == null ? 0 : data.length)
-                    + ") should be multiple of the Mat channels count (" + CvType.channels(t) + ")");
+                    + ") should be multiple of the Mat channels count (" + CvType.channels(t)
+                    + Symbol.PARENTHESE_RIGHT);
         if (idx.length != dims())
             throw new IllegalArgumentException("Incorrect number of indices");
         if (CvType.depth(t) == CvType.CV_32S) {
@@ -1401,7 +1422,8 @@ public class Mat extends CleanableMat {
         int t = type();
         if (data == null || data.length % CvType.channels(t) != 0)
             throw new UnsupportedOperationException("Provided data element number (" + (data == null ? 0 : data.length)
-                    + ") should be multiple of the Mat channels count (" + CvType.channels(t) + ")");
+                    + ") should be multiple of the Mat channels count (" + CvType.channels(t)
+                    + Symbol.PARENTHESE_RIGHT);
         if (CvType.depth(t) == CvType.CV_32F) {
             return nGetF(nativeObj, row, col, data.length, data);
         }
@@ -1423,7 +1445,8 @@ public class Mat extends CleanableMat {
         int t = type();
         if (data == null || data.length % CvType.channels(t) != 0)
             throw new UnsupportedOperationException("Provided data element number (" + (data == null ? 0 : data.length)
-                    + ") should be multiple of the Mat channels count (" + CvType.channels(t) + ")");
+                    + ") should be multiple of the Mat channels count (" + CvType.channels(t)
+                    + Symbol.PARENTHESE_RIGHT);
         if (idx.length != dims())
             throw new IllegalArgumentException("Incorrect number of indices");
         if (CvType.depth(t) == CvType.CV_32F) {
@@ -1446,7 +1469,8 @@ public class Mat extends CleanableMat {
         int t = type();
         if (data == null || data.length % CvType.channels(t) != 0)
             throw new UnsupportedOperationException("Provided data element number (" + (data == null ? 0 : data.length)
-                    + ") should be multiple of the Mat channels count (" + CvType.channels(t) + ")");
+                    + ") should be multiple of the Mat channels count (" + CvType.channels(t)
+                    + Symbol.PARENTHESE_RIGHT);
         if (CvType.depth(t) == CvType.CV_64F) {
             return nGetD(nativeObj, row, col, data.length, data);
         }
@@ -1468,7 +1492,8 @@ public class Mat extends CleanableMat {
         int t = type();
         if (data == null || data.length % CvType.channels(t) != 0)
             throw new UnsupportedOperationException("Provided data element number (" + (data == null ? 0 : data.length)
-                    + ") should be multiple of the Mat channels count (" + CvType.channels(t) + ")");
+                    + ") should be multiple of the Mat channels count (" + CvType.channels(t)
+                    + Symbol.PARENTHESE_RIGHT);
         if (idx.length != dims())
             throw new IllegalArgumentException("Incorrect number of indices");
         if (CvType.depth(t) == CvType.CV_64F) {

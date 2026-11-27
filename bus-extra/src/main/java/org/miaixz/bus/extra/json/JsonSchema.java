@@ -25,6 +25,7 @@ import java.util.*;
 import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 
 /**
  * Validates the explicitly supported, local-only JSON Schema vocabulary using exact provider-neutral values. Unknown
@@ -143,7 +144,7 @@ public final class JsonSchema {
         evaluation.steps = 0;
         List<Violation> findings = new ArrayList<>();
         try {
-            evaluation.matches(schema, instance, "", findings, 0);
+            evaluation.matches(schema, instance, Normal.EMPTY, findings, 0);
         } catch (ArithmeticException failure) {
             throw invalid("numericBudget");
         }
@@ -184,7 +185,7 @@ public final class JsonSchema {
         if (pointer == null || member == null)
             throw invalid("pointer");
         tokens(pointer);
-        return pointer + "/" + member.replace("~", "~0").replace("/", "~1");
+        return pointer + Symbol.SLASH + member.replace(Symbol.TILDE, "~0").replace(Symbol.SLASH, "~1");
     }
 
     /**
@@ -194,14 +195,14 @@ public final class JsonSchema {
      * @return immutable exact decoded member names; empty for the root
      */
     public static List<String> tokens(String pointer) {
-        if (pointer == null || !pointer.isEmpty() && !pointer.startsWith("/"))
+        if (pointer == null || !pointer.isEmpty() && !pointer.startsWith(Symbol.SLASH))
             throw invalid("pointer");
         if (pointer.isEmpty())
             return List.of();
         List<String> names = new ArrayList<>();
-        for (String token : pointer.substring(1).split("/", -1)) {
-            String name = token.replace("~1", "/").replace("~0", "~");
-            if (!name.replace("~", "~0").replace("/", "~1").equals(token))
+        for (String token : pointer.substring(1).split(Symbol.SLASH, -1)) {
+            String name = token.replace("~1", Symbol.SLASH).replace("~0", Symbol.TILDE);
+            if (!name.replace(Symbol.TILDE, "~0").replace(Symbol.SLASH, "~1").equals(token))
                 throw invalid("pointer");
             names.add(name);
         }
@@ -411,7 +412,7 @@ public final class JsonSchema {
                                 throw invalid(key);
                         }
                         default -> {
-                            /* const and default retain their exact annotation or comparison values. */
+                            // const and default retain their exact annotation or comparison values.
                         }
                     }
             }
@@ -650,7 +651,7 @@ public final class JsonSchema {
          * @return referenced schema node
          */
         private JsonValue resolve(String reference) {
-            if (!reference.startsWith("#") || reference.indexOf('%') >= 0)
+            if (!reference.startsWith(Symbol.HASH) || reference.indexOf(Symbol.C_PERCENT) >= 0)
                 throw invalid("$ref");
             JsonValue selected = at(root, reference.substring(1));
             if (selected == null)

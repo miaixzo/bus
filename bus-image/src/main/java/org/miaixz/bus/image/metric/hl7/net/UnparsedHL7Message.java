@@ -25,6 +25,7 @@ import java.text.ParsePosition;
 import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.image.metric.hl7.HL7Segment;
 
 /**
@@ -276,7 +277,7 @@ public class UnparsedHL7Message implements Serializable {
     public String toString() {
         if (mshLength == 0) {
             int mshlen = 0;
-            while (mshlen < data.length && data[mshlen] != '\r')
+            while (mshlen < data.length && data[mshlen] != Symbol.C_CR)
                 mshlen++;
             mshLength = mshlen;
         }

@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.opencv.core;
 
+import org.miaixz.bus.core.lang.Symbol;
+
 /**
  * A three-dimensional point with double-precision coordinates.
  */
@@ -173,7 +175,7 @@ public class Point3 {
      */
     @Override
     public String toString() {
-        return "{" + x + ", " + y + ", " + z + "}";
+        return Symbol.BRACE_LEFT + x + ", " + y + ", " + z + Symbol.BRACE_RIGHT;
     }
 
 }

@@ -290,7 +290,7 @@ public class ElasticProperties {
         return "ElasticProperties[enabled=" + enabled + ", hosts=" + getHostList() + ", username=***, password=***"
                 + ", schema=" + schema + ", connectTimeout=" + connectTimeout + ", socketTimeout=" + socketTimeout
                 + ", connectionRequestTimeout=" + connectionRequestTimeout + ", maxConnectTotal=" + maxConnectTotal
-                + ", maxConnectPerRoute=" + maxConnectPerRoute + "]";
+                + ", maxConnectPerRoute=" + maxConnectPerRoute + Symbol.BRACKET_RIGHT;
     }
 
 }

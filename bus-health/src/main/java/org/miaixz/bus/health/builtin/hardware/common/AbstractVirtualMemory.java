@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.health.builtin.hardware.common;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.Formats;
 import org.miaixz.bus.health.builtin.hardware.VirtualMemory;
@@ -45,9 +46,9 @@ public abstract class AbstractVirtualMemory implements VirtualMemory {
      */
     @Override
     public String toString() {
-        String sb = "Swap Used/Avail: " + Formats.formatBytes(getSwapUsed()) + "/" + Formats.formatBytes(getSwapTotal())
-                + ", Virtual Memory In Use/Max=" + Formats.formatBytes(getVirtualInUse()) + "/"
-                + Formats.formatBytes(getVirtualMax());
+        String sb = "Swap Used/Avail: " + Formats.formatBytes(getSwapUsed()) + Symbol.SLASH
+                + Formats.formatBytes(getSwapTotal()) + ", Virtual Memory In Use/Max="
+                + Formats.formatBytes(getVirtualInUse()) + Symbol.SLASH + Formats.formatBytes(getVirtualMax());
         return sb;
     }
 

@@ -508,18 +508,24 @@ public final class GuardEvaluator {
          */
         @Override
         public String toString() {
-            return "OutboundDecision[status=" + status + "]";
+            return "OutboundDecision[status=" + status + Symbol.BRACKET_RIGHT;
         }
 
         /**
          * Transport-neutral forwarding disposition.
          */
         public enum Status {
-            /** Forward with the issued credential, if one was required. */
+            /**
+             * Forward with the issued credential, if one was required.
+             */
             READY,
-            /** The channel requires a verified inbound caller. */
+            /**
+             * The channel requires a verified inbound caller.
+             */
             REJECTED,
-            /** The required target policy, coordinates, or signing material are unavailable. */
+            /**
+             * The required target policy, coordinates, or signing material are unavailable.
+             */
             UNAVAILABLE
         }
 

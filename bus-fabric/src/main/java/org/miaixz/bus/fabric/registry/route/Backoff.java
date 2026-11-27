@@ -23,6 +23,7 @@ import java.time.Instant;
 
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 
 /**
@@ -82,7 +83,7 @@ public record Backoff(Route route, Instant failedAt, int failures, Instant backo
     @Override
     public String toString() {
         return "Backoff[routeId=" + routeId() + ", failedAt=" + failedAt + ", failures=" + failures + ", backoffUntil="
-                + backoffUntil + "]";
+                + backoffUntil + Symbol.BRACKET_RIGHT;
     }
 
 }

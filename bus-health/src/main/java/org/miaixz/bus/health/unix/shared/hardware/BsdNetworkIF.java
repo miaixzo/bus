@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 
 import org.miaixz.bus.core.center.regex.Pattern;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.Parsing;
@@ -41,13 +42,19 @@ import org.miaixz.bus.health.builtin.hardware.common.AbstractNetworkIF;
 @ThreadSafe
 public class BsdNetworkIF extends AbstractNetworkIF {
 
-    /** Pattern fragment matching an Ethernet or wireless media rate. */
+    /**
+     * Pattern fragment matching an Ethernet or wireless media rate.
+     */
     private static final String MEDIA_RATE = "(?i)(?<!\\d)(\\d++(?:\\.\\d++)?+)";
 
-    /** Pattern fragment matching the unit used by a BSD media description. */
+    /**
+     * Pattern fragment matching the unit used by a BSD media description.
+     */
     private static final String MEDIA_UNIT = "([GM]?+)(?:base|bps)";
 
-    /** Pattern matching the active media speed in an {@code ifconfig} media line. */
+    /**
+     * Pattern matching the active media speed in an {@code ifconfig} media line.
+     */
     private static final java.util.regex.Pattern MEDIA_SPEED = java.util.regex.Pattern.compile(MEDIA_RATE + MEDIA_UNIT);
 
     /**
@@ -276,8 +283,8 @@ public class BsdNetworkIF extends AbstractNetworkIF {
      */
     private static long parseMediaRate(String mediaLine) {
         String media = mediaLine;
-        int open = media.indexOf('(');
-        int close = media.lastIndexOf(')');
+        int open = media.indexOf(Symbol.C_PARENTHESE_LEFT);
+        int close = media.lastIndexOf(Symbol.C_PARENTHESE_RIGHT);
         if (open >= 0 && close > open) {
             media = media.substring(open + 1, close);
         }

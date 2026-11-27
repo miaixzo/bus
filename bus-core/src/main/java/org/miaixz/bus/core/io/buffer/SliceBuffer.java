@@ -22,6 +22,8 @@ package org.miaixz.bus.core.io.buffer;
 import java.nio.ByteBuffer;
 import java.util.concurrent.Semaphore;
 
+import org.miaixz.bus.core.lang.Symbol;
+
 /**
  * A leased {@link ByteBuffer} slice allocated from a {@link SlabBuffer}.
  *
@@ -178,7 +180,8 @@ public class SliceBuffer {
      */
     @Override
     public String toString() {
-        return "SliceBuffer{" + "parentPosition=" + parentPosition + ", parentLimit=" + parentLimit + '}';
+        return "SliceBuffer{" + "parentPosition=" + parentPosition + ", parentLimit=" + parentLimit
+                + Symbol.C_BRACE_RIGHT;
     }
 
 }

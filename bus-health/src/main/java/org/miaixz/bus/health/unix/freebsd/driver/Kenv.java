@@ -36,7 +36,9 @@ import org.miaixz.bus.health.Parsing;
 @ThreadSafe
 public final class Kenv {
 
-    /** Prevents instantiation. */
+    /**
+     * Prevents instantiation.
+     */
     private Kenv() {
         // No initialization required.
     }

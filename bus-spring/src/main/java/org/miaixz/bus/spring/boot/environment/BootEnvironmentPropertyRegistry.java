@@ -26,7 +26,7 @@ import org.miaixz.bus.core.lang.Symbol;
  *
  * @author Kimi Liu
  */
-public class EnvironmentKeys {
+public class BootEnvironmentPropertyRegistry {
 
     /**
      * Spring application-name property.
@@ -34,7 +34,7 @@ public class EnvironmentKeys {
     public static final String APPLICATION_NAME = "spring.application.name";
 
     /**
-     * Bus configuration property-source name.
+     * Property source name checked by {@link DefaultsEnvironmentPostProcessor} before adding defaults.
      */
     public static final String BUS_PROPERTY_SOURCE = "configurationProperties";
 
@@ -87,7 +87,7 @@ public class EnvironmentKeys {
     /**
      * Creates an environment-key namespace instance with no retained state.
      */
-    public EnvironmentKeys() {
+    public BootEnvironmentPropertyRegistry() {
         // No initialization required.
     }
 

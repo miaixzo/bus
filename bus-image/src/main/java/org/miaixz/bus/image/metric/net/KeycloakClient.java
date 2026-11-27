@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.image.metric.net;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.image.Device;
 
 /**
@@ -325,7 +326,7 @@ public class KeycloakClient {
                 + ",keycloakRealm=" + keycloakRealm + ",keycloakGrantType=" + keycloakGrantType
                 + ",keycloakClientSecret=" + keycloakClientSecret + ",userID=" + userID + ",password=" + password
                 + ",tlsAllowAnyHostname=" + tlsAllowAnyHostname + ",tlsDisableTrustManager=" + tlsDisableTrustManager
-                + ']';
+                + Symbol.C_BRACKET_RIGHT;
     }
 
     /**

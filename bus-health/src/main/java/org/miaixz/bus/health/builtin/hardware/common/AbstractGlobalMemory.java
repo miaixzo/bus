@@ -151,7 +151,8 @@ public abstract class AbstractGlobalMemory implements GlobalMemory {
      */
     @Override
     public String toString() {
-        String sb = "Available: " + Formats.formatBytes(getAvailable()) + "/" + Formats.formatBytes(getTotal());
+        String sb = "Available: " + Formats.formatBytes(getAvailable()) + Symbol.SLASH
+                + Formats.formatBytes(getTotal());
         return sb;
     }
 

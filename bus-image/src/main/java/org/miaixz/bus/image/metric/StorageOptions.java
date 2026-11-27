@@ -22,6 +22,7 @@ package org.miaixz.bus.image.metric;
 import java.io.Serial;
 import java.io.Serializable;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.image.metric.pdu.ExtendedNegotiation;
 
 /**
@@ -182,7 +183,8 @@ public class StorageOptions implements Serializable {
     @Override
     public String toString() {
         return "StorageOptions[levelOfSupport=" + levelOfSupport.ordinal() + ", digitalSignatureSupport="
-                + digitalSignatureSupport.ordinal() + ", elementCoercion=" + elementCoercion.ordinal() + "]";
+                + digitalSignatureSupport.ordinal() + ", elementCoercion=" + elementCoercion.ordinal()
+                + Symbol.BRACKET_RIGHT;
     }
 
     /**

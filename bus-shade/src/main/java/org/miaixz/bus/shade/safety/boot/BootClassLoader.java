@@ -45,6 +45,7 @@ import java.util.zip.ZipInputStream;
 import org.springframework.boot.loader.launch.LaunchedClassLoader;
 
 import org.miaixz.bus.core.lang.Charset;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.errors.ComponentFailure;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.shade.safety.Builder;
@@ -456,7 +457,7 @@ public class BootClassLoader extends LaunchedClassLoader {
      * @return the class bytes, or {@code null} when not present
      */
     private byte[] classBytes(final String name) {
-        String path = name.replace('.', '/') + ".class";
+        String path = name.replace(Symbol.C_DOT, Symbol.C_SLASH) + ".class";
         if (null != this.classes) {
             File file = new File(this.classes, path);
             if (file.isFile()) {

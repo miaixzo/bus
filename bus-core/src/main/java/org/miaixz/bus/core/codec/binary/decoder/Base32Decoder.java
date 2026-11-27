@@ -85,14 +85,14 @@ public class Base32Decoder implements Decoder<CharSequence, byte[]> {
         for (i = 0, index = 0, offset = 0; i < base32.length(); i++) {
             lookup = base32.charAt(i) - Symbol.C_ZERO;
 
-            /* Skip chars outside the lookup table */
+            // Skip chars outside the lookup table
             if (lookup < 0 || lookup >= lookupTable.length) {
                 continue;
             }
 
             digit = lookupTable[lookup];
 
-            /* If this digit is not in the table, ignore it */
+            // If this digit is not in the table, ignore it
             if (digit < 0) {
                 continue;
             }

@@ -21,6 +21,7 @@ package org.miaixz.bus.cortex.setting.reference;
 
 import java.util.*;
 
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.cortex.setting.item.ItemCodec;
 import org.miaixz.bus.extra.json.JsonSchema;
 import org.miaixz.bus.extra.json.JsonValue;
@@ -195,8 +196,8 @@ public final class ReferenceCodec {
         public Options {
             Objects.requireNonNull(type);
             Objects.requireNonNull(override);
-            alias = alias == null ? "" : alias.trim();
-            prefix = prefix == null ? "" : prefix.trim();
+            alias = alias == null ? Normal.EMPTY : alias.trim();
+            prefix = prefix == null ? Normal.EMPTY : prefix.trim();
             keys = Collections.unmodifiableSet(new TreeSet<>(keys));
             if (alias.length() > 255 || prefix.length() > 255)
                 throw new IllegalArgumentException("Relationship name too long");

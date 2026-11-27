@@ -390,13 +390,15 @@ public class Code implements Serializable {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append('(').append(codeValue).append(",").append(" ");
+        sb.append(Symbol.C_PARENTHESE_LEFT).append(codeValue).append(Symbol.COMMA).append(Symbol.SPACE);
         if (codingSchemeDesignator != null) {
             sb.append(codingSchemeDesignator);
             if (codingSchemeVersion != null)
-                sb.append(" ").append('[').append(codingSchemeVersion).append(']');
+                sb.append(Symbol.SPACE).append(Symbol.C_BRACKET_LEFT).append(codingSchemeVersion)
+                        .append(Symbol.C_BRACKET_RIGHT);
         }
-        sb.append(",").append(" ").append('"').append(codeMeaning).append('"').append(')');
+        sb.append(Symbol.COMMA).append(Symbol.SPACE).append(Symbol.C_DOUBLE_QUOTES).append(codeMeaning)
+                .append(Symbol.C_DOUBLE_QUOTES).append(Symbol.C_PARENTHESE_RIGHT);
         return sb.toString();
     }
 

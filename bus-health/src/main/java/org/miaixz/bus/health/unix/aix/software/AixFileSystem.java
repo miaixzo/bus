@@ -107,20 +107,19 @@ public class AixFileSystem extends AbstractFileSystem {
         // AIX 7.3+ supports POSIX df -i, but AIX 7.1/7.2 only have the native format-specifier syntax.
         String command = "df -F %n %l" + (localOnly ? " -T local" : Normal.EMPTY);
         for (String line : Executor.runNative(command)) {
-            /*- Sample Output:
-             * $ df -F %n %l
-             * Filesystem    512-blocks     Ifree    Iused
-             * /dev/hd4         4194304   164951    15969
-             * /dev/hd2        52690944  2894117   196692
-             * /dev/hd9var      6291456   605443     2317
-             * /dev/hd3         6291456   450968     1349
-             * /dev/hd1         6291456   550843      110
-             * /dev/hd11admin    2097152   233048        5
-             * /proc                  -        -        -
-             * /dev/hd10opt    16777216   600058    17220
-             * /dev/livedump     524288    58200        4
-             * NFS mounts appear as hostname:/path or ip:/path and are matched by FS_PATTERN
-             */
+            // - Sample Output:
+            // $ df -F %n %l
+            // Filesystem 512-blocks Ifree Iused
+            // /dev/hd4 4194304 164951 15969
+            // /dev/hd2 52690944 2894117 196692
+            // /dev/hd9var 6291456 605443 2317
+            // /dev/hd3 6291456 450968 1349
+            // /dev/hd1 6291456 550843 110
+            // /dev/hd11admin 2097152 233048 5
+            // /proc - - -
+            // /dev/hd10opt 16777216 600058 17220
+            // /dev/livedump 524288 58200 4
+            // NFS mounts appear as hostname:/path or ip:/path and are matched by FS_PATTERN
             if (FS_PATTERN.matcher(line).find()) {
                 String[] split = Pattern.SPACES_PATTERN.split(line);
                 if (split.length >= 4) {
@@ -134,19 +133,18 @@ public class AixFileSystem extends AbstractFileSystem {
 
         // Get mount table
         for (String fs : Executor.runNative("mount")) { // NOSONAR squid:S135
-            /*- Sample Output:
-             *   node       mounted        mounted over    vfs       date        options
-             * -------- ---------------  ---------------  ------ ------------ ---------------
-             *          /dev/hd4         /                jfs2   Jun 16 09:12 rw,log=/dev/hd8
-             *          /dev/hd2         /usr             jfs2   Jun 16 09:12 rw,log=/dev/hd8
-             *          /dev/hd9var      /var             jfs2   Jun 16 09:12 rw,log=/dev/hd8
-             *          /dev/hd3         /tmp             jfs2   Jun 16 09:12 rw,log=/dev/hd8
-             *          /dev/hd11admin   /admin           jfs2   Jun 16 09:13 rw,log=/dev/hd8
-             *          /proc            /proc            procfs Jun 16 09:13 rw
-             *          /dev/hd10opt     /opt             jfs2   Jun 16 09:13 rw,log=/dev/hd8
-             *          /dev/livedump    /var/adm/ras/livedump jfs2   Jun 16 09:13 rw,log=/dev/hd8
-             * foo      /dev/fslv00      /home            jfs2   Jun 16 09:13 rw,log=/dev/loglv00
-             */
+            // - Sample Output:
+            // node mounted mounted over vfs date options
+            // -------- --------------- --------------- ------ ------------ ---------------
+            // /dev/hd4 / jfs2 Jun 16 09:12 rw,log=/dev/hd8
+            // /dev/hd2 /usr jfs2 Jun 16 09:12 rw,log=/dev/hd8
+            // /dev/hd9var /var jfs2 Jun 16 09:12 rw,log=/dev/hd8
+            // /dev/hd3 /tmp jfs2 Jun 16 09:12 rw,log=/dev/hd8
+            // /dev/hd11admin /admin jfs2 Jun 16 09:13 rw,log=/dev/hd8
+            // /proc /proc procfs Jun 16 09:13 rw
+            // /dev/hd10opt /opt jfs2 Jun 16 09:13 rw,log=/dev/hd8
+            // /dev/livedump /var/adm/ras/livedump jfs2 Jun 16 09:13 rw,log=/dev/hd8
+            // foo /dev/fslv00 /home jfs2 Jun 16 09:13 rw,log=/dev/loglv00
             // Lines begin with optional node, which we don't use. To force sensible split
             // behavior, append any character at the beginning of the string
             String[] split = Pattern.SPACES_PATTERN.split("x" + fs);

@@ -203,7 +203,7 @@ public class BulkData implements Value, Serializable {
      */
     @Override
     public String toString() {
-        return "BulkData[uuid=" + uuid + ", uri=" + uri + ", bigEndian=" + bigEndian + "]";
+        return "BulkData[uuid=" + uuid + ", uri=" + uri + ", bigEndian=" + bigEndian + Symbol.BRACKET_RIGHT;
     }
 
     /**

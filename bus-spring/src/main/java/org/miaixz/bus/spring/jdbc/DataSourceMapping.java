@@ -24,6 +24,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
@@ -109,7 +110,7 @@ public class DataSourceMapping {
      */
     @Override
     public String toString() {
-        return "DataSourceMapping[primary=" + this.primary + ", sources=" + this.sources + "]";
+        return "DataSourceMapping[primary=" + this.primary + ", sources=" + this.sources + Symbol.BRACKET_RIGHT;
     }
 
 }

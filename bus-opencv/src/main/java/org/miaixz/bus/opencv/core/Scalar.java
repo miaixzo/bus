@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.opencv.core;
 
+import org.miaixz.bus.core.lang.Symbol;
+
 /**
  * A four-component scalar used for channel values, colors, and matrix initialization.
  */
@@ -200,7 +202,7 @@ public class Scalar {
      */
     @Override
     public String toString() {
-        return "[" + val[0] + ", " + val[1] + ", " + val[2] + ", " + val[3] + "]";
+        return Symbol.BRACKET_LEFT + val[0] + ", " + val[1] + ", " + val[2] + ", " + val[3] + Symbol.BRACKET_RIGHT;
     }
 
 }

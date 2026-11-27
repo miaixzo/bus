@@ -89,101 +89,63 @@ public class AliyunEmailProvider extends AliyunProvider<AliyunNotice, Context> {
 
         Map<String, String> bodys = new HashMap<>();
         // 1. System parameters
-        /**
-         * The signature method used for authentication.
-         */
+        // The signature method used for authentication.
         bodys.put("SignatureMethod", "HMAC-SHA1");
 
-        /**
-         * A unique random number to prevent replay attacks.
-         */
+        // A unique random number to prevent replay attacks.
         bodys.put("SignatureNonce", UUID.randomUUID().toString());
 
-        /**
-         * The AccessKey ID of your Alibaba Cloud account.
-         */
+        // The AccessKey ID of your Alibaba Cloud account.
         bodys.put("AccessKeyId", context.getAppKey());
 
-        /**
-         * The version of the signature algorithm.
-         */
+        // The version of the signature algorithm.
         bodys.put("SignatureVersion", "1.0");
 
-        /**
-         * The timestamp of the API request in UTC format.
-         */
+        // The timestamp of the API request in UTC format.
         bodys.put("Timestamp", DateKit.format(new Date(), Fields.UTC));
 
-        /**
-         * The format of the response, typically JSON.
-         */
+        // The format of the response, typically JSON.
         bodys.put("Format", "JSON");
         // 2. Business API parameters
-        /**
-         * The API action to be performed, e.g., SingleSendMail.
-         */
+        // The API action to be performed, e.g., SingleSendMail.
         bodys.put("Action", "SingleSendMail");
 
-        /**
-         * The API version.
-         */
+        // The API version.
         bodys.put("Version", "2015-11-23");
 
-        /**
-         * The region ID of the service, e.g., cn-hangzhou.
-         */
+        // The region ID of the service, e.g., cn-hangzhou.
         bodys.put("RegionId", "cn-hangzhou");
 
-        /**
-         * The subject of the email.
-         */
+        // The subject of the email.
         bodys.put("Subject", entity.getSubject());
 
-        /**
-         * The sender's alias.
-         */
+        // The sender's alias.
         bodys.put("FromAlias", entity.getSender());
 
-        /**
-         * The recipient's email address.
-         */
+        // The recipient's email address.
         bodys.put("ToAddress", entity.getReceive());
 
         if (GenericNotice.Type.HTML.equals(entity.getType())) {
-            /**
-             * The HTML body of the email.
-             */
+            // The HTML body of the email.
             bodys.put("HtmlBody", entity.getContent());
         } else if (GenericNotice.Type.TEXT.equals(entity.getType())) {
-            /**
-             * The plain text body of the email.
-             */
+            // The plain text body of the email.
             bodys.put("TextBody", entity.getContent());
         }
 
-        /**
-         * The reply-to email address.
-         */
+        // The reply-to email address.
         bodys.put("ReplyAddress", entity.getSender());
 
-        /**
-         * The reply-to email address.
-         */
+        // The reply-to email address.
         bodys.put("ReplyToAddress", entity.getSender());
 
-        /**
-         * The reply-to address alias.
-         */
+        // The reply-to address alias.
         bodys.put("ReplyAddressAlias", entity.getSender());
 
-        /**
-         * Click tracking setting.
-         */
+        // Click tracking setting.
         bodys.put("ClickTrace", getSign(bodys));
 
-        /**
-         * The signature for the request.
-         */
+        // The signature for the request.
         bodys.put("Signature", getSign(bodys));
 
         Map<String, String> map = new HashMap<>();

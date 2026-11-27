@@ -34,6 +34,7 @@ import java.util.function.Function;
 
 import org.miaixz.bus.core.convert.Convert;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.getter.TypeGetter;
 import org.miaixz.bus.core.xyz.ArrayKit;
 import org.miaixz.bus.core.xyz.BooleanKit;
@@ -422,7 +423,7 @@ public class MapProxy implements Map<Object, Object>, TypeGetter<Object>, Invoca
             return System.identityHashCode(proxy);
         }
         if (Normal.TOSTRING.equals(methodName) && parameterTypes.length == 0 && returnType == String.class) {
-            return proxy.getClass().getName() + "@" + Integer.toHexString(System.identityHashCode(proxy));
+            return proxy.getClass().getName() + Symbol.AT + Integer.toHexString(System.identityHashCode(proxy));
         }
         if (ArrayKit.isEmpty(parameterTypes)) {
             if (void.class != returnType) {

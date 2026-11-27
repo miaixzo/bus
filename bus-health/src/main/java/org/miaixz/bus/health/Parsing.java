@@ -112,11 +112,15 @@ public class Parsing {
     private static final java.util.regex.Pattern UUID_PATTERN = java.util.regex.Pattern
             .compile(".*([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}).*");
 
-    /** Date pattern in MM-DD-YYYY or MM/DD/YYYY form using the same separator. */
+    /**
+     * Date pattern in MM-DD-YYYY or MM/DD/YYYY form using the same separator.
+     */
     private static final java.util.regex.Pattern MM_DD_YYYY = java.util.regex.Pattern
             .compile("\\d{2}([-/])\\d{2}\\1\\d{4}");
 
-    /** Date pattern in compact YYYYMMDD form. */
+    /**
+     * Date pattern in compact YYYYMMDD form.
+     */
     private static final java.util.regex.Pattern YYYYMMDD = java.util.regex.Pattern.compile("\\d{8}");
 
     /**
@@ -411,9 +415,6 @@ public class Parsing {
         if (matcher.find()) {
             Map<String, Long> map = new HashMap<>() {
 
-                /**
-                 * Serialization version identifier.
-                 */
                 @Serial
                 private static final long serialVersionUID = 2555612350001L;
 

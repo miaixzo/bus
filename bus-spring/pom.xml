@@ -83,7 +83,8 @@
     <dependencies>
         <dependency>
             <groupId>org.miaixz</groupId>
-            <artifactId>bus-extra</artifactId>
+            <artifactId>bus-cortex</artifactId>
+            <optional>true</optional>
         </dependency>
 
         <dependency>

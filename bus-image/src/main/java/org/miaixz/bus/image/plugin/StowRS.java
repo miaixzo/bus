@@ -495,11 +495,11 @@ public class StowRS {
      */
     private static void writePartHeaders(OutputStream out, String contentType, String contentLocation)
             throws IOException {
-        out.write(("\r\n--" + boundary + "\r\n").getBytes());
-        out.write(("Content-Type: " + contentType + "\r\n").getBytes());
+        out.write(("\r\n--" + boundary + Symbol.CRLF).getBytes());
+        out.write(("Content-Type: " + contentType + Symbol.CRLF).getBytes());
         if (contentLocation != null)
-            out.write(("Content-Location: " + contentLocation + "\r\n").getBytes());
-        out.write("\r\n".getBytes());
+            out.write(("Content-Location: " + contentLocation + Symbol.CRLF).getBytes());
+        out.write(Symbol.CRLF.getBytes());
     }
 
     /**
@@ -608,7 +608,7 @@ public class StowRS {
         return failed.stream()
                 .map(
                         item -> item.getString(Tag.ReferencedSOPInstanceUID, "unknown SOP Instance UID")
-                                + " (failure reason " + item.getInt(Tag.FailureReason, -1) + ")")
+                                + " (failure reason " + item.getInt(Tag.FailureReason, -1) + Symbol.PARENTHESE_RIGHT)
                 .collect(Collectors.joining(", "));
     }
 

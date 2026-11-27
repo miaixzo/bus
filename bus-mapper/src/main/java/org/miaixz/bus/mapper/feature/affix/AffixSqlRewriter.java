@@ -184,7 +184,7 @@ public class AffixSqlRewriter {
                 continue;
             }
             for (int boundary = index + 1; boundary < end; boundary++) {
-                if (container[boundary] == container[index] && tokens.get(boundary).is(";")) {
+                if (container[boundary] == container[index] && tokens.get(boundary).is(Symbol.SEMICOLON)) {
                     end = boundary;
                     break;
                 }

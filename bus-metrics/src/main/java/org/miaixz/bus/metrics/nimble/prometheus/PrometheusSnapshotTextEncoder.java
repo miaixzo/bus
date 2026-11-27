@@ -23,6 +23,8 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
+import org.miaixz.bus.core.lang.Symbol;
+
 import io.prometheus.metrics.model.snapshots.*;
 
 /**
@@ -49,9 +51,9 @@ public final class PrometheusSnapshotTextEncoder {
         String name = family.getMetadata().getPrometheusName();
         String type = type(family);
         String help = family.getMetadata().getHelp();
-        output.append("# HELP ").append(name).append(' ')
-                .append(NativePrometheusTextEncoder.escapeHelp(help == null ? name : help)).append('\n');
-        output.append("# TYPE ").append(name).append(' ').append(type).append('\n');
+        output.append("# HELP ").append(name).append(Symbol.C_SPACE)
+                .append(NativePrometheusTextEncoder.escapeHelp(help == null ? name : help)).append(Symbol.C_LF);
+        output.append("# TYPE ").append(name).append(Symbol.C_SPACE).append(type).append(Symbol.C_LF);
         if (family instanceof CounterSnapshot counter) {
             String counterName = name.endsWith("_total") ? name : name + "_total";
             sorted(counter.getDataPoints()).forEach(
@@ -82,7 +84,8 @@ public final class PrometheusSnapshotTextEncoder {
                                     output,
                                     name,
                                     point.getLabels(),
-                                    name + "=\"" + NativePrometheusTextEncoder.escapeLabel(state.getName()) + "\"",
+                                    name + "=\"" + NativePrometheusTextEncoder.escapeLabel(state.getName())
+                                            + Symbol.DOUBLE_QUOTES,
                                     state.isTrue() ? "1" : "0")));
         }
     }
@@ -109,7 +112,7 @@ public final class PrometheusSnapshotTextEncoder {
                         output,
                         name + "_bucket",
                         point.getLabels(),
-                        "le=\"" + bound + "\"",
+                        "le=\"" + bound + Symbol.DOUBLE_QUOTES,
                         Long.toString(cumulative));
                 infinity = bucket.getUpperBound() == Double.POSITIVE_INFINITY;
             }
@@ -145,7 +148,8 @@ public final class PrometheusSnapshotTextEncoder {
                     output,
                     name,
                     point.getLabels(),
-                    "quantile=\"" + NativePrometheusTextEncoder.formatDouble(quantile.getQuantile()) + "\"",
+                    "quantile=\"" + NativePrometheusTextEncoder.formatDouble(quantile.getQuantile())
+                            + Symbol.DOUBLE_QUOTES,
                     NativePrometheusTextEncoder.formatDouble(quantile.getValue()));
         }
         appendSample(
@@ -174,7 +178,7 @@ public final class PrometheusSnapshotTextEncoder {
             String value) {
         output.append(name);
         if (!labels.isEmpty() || extraLabel != null) {
-            output.append('{');
+            output.append(Symbol.C_BRACE_LEFT);
             List<Integer> indexes = new ArrayList<>(labels.size());
             for (int i = 0; i < labels.size(); i++) {
                 indexes.add(i);
@@ -183,21 +187,22 @@ public final class PrometheusSnapshotTextEncoder {
             boolean comma = false;
             for (int index : indexes) {
                 if (comma) {
-                    output.append(',');
+                    output.append(Symbol.C_COMMA);
                 }
                 output.append(labels.getPrometheusName(index)).append("=\"")
-                        .append(NativePrometheusTextEncoder.escapeLabel(labels.getValue(index))).append('"');
+                        .append(NativePrometheusTextEncoder.escapeLabel(labels.getValue(index)))
+                        .append(Symbol.C_DOUBLE_QUOTES);
                 comma = true;
             }
             if (extraLabel != null) {
                 if (comma) {
-                    output.append(',');
+                    output.append(Symbol.C_COMMA);
                 }
                 output.append(extraLabel);
             }
-            output.append('}');
+            output.append(Symbol.C_BRACE_RIGHT);
         }
-        output.append(' ').append(value).append('\n');
+        output.append(Symbol.C_SPACE).append(value).append(Symbol.C_LF);
     }
 
     /**

@@ -27,6 +27,7 @@ import java.util.Set;
 
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Charset;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.extra.json.JsonProvider;
 import org.miaixz.bus.extra.json.JsonValue;
@@ -298,7 +299,7 @@ public abstract class AbstractJsonProvider implements JsonProvider {
         private String extract(final String member) {
             selectedMember = member;
             whitespace();
-            if (index >= document.length() || document.charAt(index) != '{') {
+            if (index >= document.length() || document.charAt(index) != Symbol.C_BRACE_LEFT) {
                 throw invalid("JSON raw member extraction requires an object root");
             }
             value(0);
@@ -323,11 +324,11 @@ public abstract class AbstractJsonProvider implements JsonProvider {
                 throw invalid("JSON document ends before a value");
             }
             final char token = document.charAt(index);
-            if (token == '{') {
+            if (token == Symbol.C_BRACE_LEFT) {
                 object(depth + 1);
-            } else if (token == '[') {
+            } else if (token == Symbol.C_BRACKET_LEFT) {
                 array(depth + 1);
-            } else if (token == '"') {
+            } else if (token == Symbol.C_DOUBLE_QUOTES) {
                 string();
             } else {
                 scalar();
@@ -344,12 +345,12 @@ public abstract class AbstractJsonProvider implements JsonProvider {
             index++;
             whitespace();
             final Set<String> names = rejectDuplicateNames ? new HashSet<>() : null;
-            if (consume('}')) {
+            if (consume(Symbol.C_BRACE_RIGHT)) {
                 return;
             }
             while (true) {
                 whitespace();
-                if (index >= document.length() || document.charAt(index) != '"') {
+                if (index >= document.length() || document.charAt(index) != Symbol.C_DOUBLE_QUOTES) {
                     throw invalid("JSON object member name must be a string");
                 }
                 final String name = string();
@@ -357,7 +358,7 @@ public abstract class AbstractJsonProvider implements JsonProvider {
                     throw invalid("JSON object contains a duplicate member name");
                 }
                 whitespace();
-                require(':');
+                require(Symbol.C_COLON);
                 whitespace();
                 final int valueStart = index;
                 value(depth);
@@ -370,10 +371,10 @@ public abstract class AbstractJsonProvider implements JsonProvider {
                     selectedEnd = valueEnd;
                 }
                 whitespace();
-                if (consume('}')) {
+                if (consume(Symbol.C_BRACE_RIGHT)) {
                     return;
                 }
-                require(',');
+                require(Symbol.C_COMMA);
             }
         }
 
@@ -386,16 +387,16 @@ public abstract class AbstractJsonProvider implements JsonProvider {
             requireDepth(depth);
             index++;
             whitespace();
-            if (consume(']')) {
+            if (consume(Symbol.C_BRACKET_RIGHT)) {
                 return;
             }
             while (true) {
                 value(depth);
                 whitespace();
-                if (consume(']')) {
+                if (consume(Symbol.C_BRACKET_RIGHT)) {
                     return;
                 }
-                require(',');
+                require(Symbol.C_COMMA);
             }
         }
 
@@ -405,17 +406,17 @@ public abstract class AbstractJsonProvider implements JsonProvider {
          * @return decoded Java string
          */
         private String string() {
-            require('"');
+            require(Symbol.C_DOUBLE_QUOTES);
             final StringBuilder value = new StringBuilder();
             while (index < document.length()) {
                 final char character = document.charAt(index++);
-                if (character == '"') {
+                if (character == Symbol.C_DOUBLE_QUOTES) {
                     return value.toString();
                 }
                 if (character < 0x20) {
                     throw invalid("JSON string contains an unescaped control character");
                 }
-                if (character != '\\') {
+                if (character != Symbol.C_BACKSLASH) {
                     value.append(character);
                     continue;
                 }
@@ -424,12 +425,12 @@ public abstract class AbstractJsonProvider implements JsonProvider {
                 }
                 final char escaped = document.charAt(index++);
                 switch (escaped) {
-                    case '"', '\\', '/' -> value.append(escaped);
+                    case Symbol.C_DOUBLE_QUOTES, Symbol.C_BACKSLASH, Symbol.C_SLASH -> value.append(escaped);
                     case 'b' -> value.append('\b');
                     case 'f' -> value.append('\f');
-                    case 'n' -> value.append('\n');
-                    case 'r' -> value.append('\r');
-                    case 't' -> value.append('\t');
+                    case 'n' -> value.append(Symbol.C_LF);
+                    case 'r' -> value.append(Symbol.C_CR);
+                    case 't' -> value.append(Symbol.C_TAB);
                     case 'u' -> value.append(unicode());
                     default -> throw invalid("JSON string contains an invalid escape");
                 }
@@ -464,7 +465,8 @@ public abstract class AbstractJsonProvider implements JsonProvider {
             final int start = index;
             while (index < document.length()) {
                 final char character = document.charAt(index);
-                if (character == ',' || character == ']' || character == '}' || Character.isWhitespace(character)) {
+                if (character == Symbol.C_COMMA || character == Symbol.C_BRACKET_RIGHT
+                        || character == Symbol.C_BRACE_RIGHT || Character.isWhitespace(character)) {
                     break;
                 }
                 index++;
@@ -480,7 +482,8 @@ public abstract class AbstractJsonProvider implements JsonProvider {
         private void whitespace() {
             while (index < document.length()) {
                 final char character = document.charAt(index);
-                if (character != ' ' && character != '\t' && character != '\r' && character != '\n') {
+                if (character != Symbol.C_SPACE && character != Symbol.C_TAB && character != Symbol.C_CR
+                        && character != Symbol.C_LF) {
                     return;
                 }
                 index++;

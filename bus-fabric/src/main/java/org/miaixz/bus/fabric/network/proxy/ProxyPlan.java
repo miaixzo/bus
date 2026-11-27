@@ -314,7 +314,8 @@ public class ProxyPlan {
      */
     @Override
     public String toString() {
-        return "ProxyPlan[type=" + type + ", id=" + id() + ", authorization=" + redactedAuthorization() + "]";
+        return "ProxyPlan[type=" + type + ", id=" + id() + ", authorization=" + redactedAuthorization()
+                + Symbol.BRACKET_RIGHT;
     }
 
     /**

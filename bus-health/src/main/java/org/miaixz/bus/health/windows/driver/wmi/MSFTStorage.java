@@ -40,13 +40,19 @@ public class MSFTStorage {
      */
     public static final String STORAGE_NAMESPACE = "ROOT\\Microsoft\\Windows\\Storage";
 
-    /** Matches a storage pool object ID and captures its GUID. */
+    /**
+     * Matches a storage pool object ID and captures its GUID.
+     */
     public static final Pattern SP_OBJECT_ID = Pattern.compile("SP:(\\{[^}]*\\})");
 
-    /** Matches a physical disk object ID and captures its GUID. */
+    /**
+     * Matches a physical disk object ID and captures its GUID.
+     */
     public static final Pattern PD_OBJECT_ID = Pattern.compile("PD:(\\{[^}]*\\})");
 
-    /** Matches a virtual disk object ID and captures its pool and disk GUIDs. */
+    /**
+     * Matches a virtual disk object ID and captures its pool and disk GUIDs.
+     */
     public static final Pattern VD_OBJECT_ID = Pattern.compile("VD:(\\{[^}]*\\})(\\{[^}]*\\})");
 
     /**
@@ -249,11 +255,17 @@ public class MSFTStorage {
      * @author Kimi Liu
      */
     public enum PhysicalDiskMediaTypeProperty {
-        /** The physical drive number. */
+        /**
+         * The physical drive number.
+         */
         DEVICEID,
-        /** The media type. */
+        /**
+         * The media type.
+         */
         MEDIATYPE,
-        /** The spindle speed. */
+        /**
+         * The spindle speed.
+         */
         SPINDLESPEED;
     }
 
@@ -263,9 +275,13 @@ public class MSFTStorage {
      * @author Kimi Liu
      */
     public enum PhysicalDiskIdProperty {
-        /** The physical drive number. */
+        /**
+         * The physical drive number.
+         */
         DEVICEID,
-        /** The physical disk object ID. */
+        /**
+         * The physical disk object ID.
+         */
         OBJECTID;
     }
 
@@ -275,9 +291,13 @@ public class MSFTStorage {
      * @author Kimi Liu
      */
     public enum VirtualDiskToPhysicalDiskProperty {
-        /** The virtual disk reference. */
+        /**
+         * The virtual disk reference.
+         */
         VIRTUALDISK,
-        /** The physical disk reference. */
+        /**
+         * The physical disk reference.
+         */
         PHYSICALDISK;
     }
 
@@ -287,13 +307,21 @@ public class MSFTStorage {
      * @author Kimi Liu
      */
     public enum DiskProperty {
-        /** The disk number. */
+        /**
+         * The disk number.
+         */
         NUMBER,
-        /** The storage bus type. */
+        /**
+         * The storage bus type.
+         */
         BUSTYPE,
-        /** The location of a backing file. */
+        /**
+         * The location of a backing file.
+         */
         LOCATION,
-        /** The disk's unique ID. */
+        /**
+         * The disk's unique ID.
+         */
         UNIQUEID;
     }
 
@@ -303,9 +331,13 @@ public class MSFTStorage {
      * @author Kimi Liu
      */
     public enum VirtualDiskIdProperty {
-        /** The virtual disk unique ID. */
+        /**
+         * The virtual disk unique ID.
+         */
         UNIQUEID,
-        /** The virtual disk object ID. */
+        /**
+         * The virtual disk object ID.
+         */
         OBJECTID;
     }
 

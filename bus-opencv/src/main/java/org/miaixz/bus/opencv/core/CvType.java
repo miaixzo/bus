@@ -19,6 +19,8 @@
 */
 package org.miaixz.bus.opencv.core;
 
+import org.miaixz.bus.core.lang.Symbol;
+
 /**
  * Utilities and constants for encoding matrix element depth and channel count.
  */
@@ -655,7 +657,7 @@ public final class CvType {
         if (ch <= 4)
             return s + "C" + ch;
         else
-            return s + "C(" + ch + ")";
+            return s + "C(" + ch + Symbol.PARENTHESE_RIGHT;
     }
 
 }

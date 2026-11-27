@@ -192,14 +192,14 @@ public class AccessToken {
                 HttpURLConnection.setFollowRedirects(false);
             }
 
-            /*******************************************************************************
-             * Step 1: Login and get the session cookie. *
-             *******************************************************************************/
+            // *****************************************************************************
+            // Step 1: Login and get the session cookie. *
+            // *****************************************************************************
             cookies = login(baseUrl, username, password);
 
-            /*******************************************************************************
-             * Step 2: Go to the /profile/personal_access_tokens page to fetch a * new authenticity token. *
-             *******************************************************************************/
+            // *****************************************************************************
+            // Step 2: Go to the /profile/personal_access_tokens page to fetch a * new authenticity token. *
+            // *****************************************************************************
             String urlString = baseUrl + "/profile/personal_access_tokens";
             URL url = new URL(urlString);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -222,10 +222,10 @@ public class AccessToken {
 
             String csrfToken = matcher.group(1);
 
-            /*******************************************************************************
-             * Step 3: Submit the /profile/personalccess_tokens page with the info to * create a new personal access
-             * token. *
-             *******************************************************************************/
+            // *****************************************************************************
+            // Step 3: Submit the /profile/personalccess_tokens page with the info to * create a new personal access
+            // token. *
+            // *****************************************************************************
             connection = (HttpURLConnection) url.openConnection();
             connection.setRequestProperty(Http.Header.USER_AGENT, USER_AGENT);
             connection.setRequestProperty(Http.Header.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED);
@@ -372,14 +372,14 @@ public class AccessToken {
                 HttpURLConnection.setFollowRedirects(false);
             }
 
-            /*******************************************************************************
-             * Step 1: Login and get the session cookie. *
-             *******************************************************************************/
+            // *****************************************************************************
+            // Step 1: Login and get the session cookie. *
+            // *****************************************************************************
             cookies = login(baseUrl, username, password);
 
-            /*******************************************************************************
-             * Step 2: Go to the /profile/personal_access_tokens page and fetch the * authenticity token. *
-             *******************************************************************************/
+            // *****************************************************************************
+            // Step 2: Go to the /profile/personal_access_tokens page and fetch the * authenticity token. *
+            // *****************************************************************************
             String urlString = baseUrl + "/profile/personal_access_tokens";
             URL url = new URL(urlString);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -402,10 +402,10 @@ public class AccessToken {
 
             String csrfToken = matcher.group(1);
 
-            /*******************************************************************************
-             * Step 3: Submit the /profile/personal_access_tokens page with the info to * revoke the first matching
-             * personal access token. *
-             *******************************************************************************/
+            // *****************************************************************************
+            // Step 3: Submit the /profile/personal_access_tokens page with the info to * revoke the first matching
+            // personal access token. *
+            // *****************************************************************************
             int indexOfTokenName = content.indexOf("<td>" + tokenName + "</td>");
             if (indexOfTokenName == -1) {
                 throw GitLabFailure.exception("personal access token not found, aborting!");
@@ -535,14 +535,14 @@ public class AccessToken {
                 HttpURLConnection.setFollowRedirects(false);
             }
 
-            /*******************************************************************************
-             * Step 1: Login and get the session cookie. *
-             *******************************************************************************/
+            // *****************************************************************************
+            // Step 1: Login and get the session cookie. *
+            // *****************************************************************************
             cookies = login(baseUrl, username, password);
 
-            /*******************************************************************************
-             * Step 2: Go to the /profile/personal_access_tokens page and fetch the * Feed token. *
-             *******************************************************************************/
+            // *****************************************************************************
+            // Step 2: Go to the /profile/personal_access_tokens page and fetch the * Feed token. *
+            // *****************************************************************************
             String urlString = baseUrl + "/profile/personal_access_tokens";
             URL url = new URL(urlString);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -623,14 +623,14 @@ public class AccessToken {
                 HttpURLConnection.setFollowRedirects(false);
             }
 
-            /*******************************************************************************
-             * Step 1: Login and get the session cookie. *
-             *******************************************************************************/
+            // *****************************************************************************
+            // Step 1: Login and get the session cookie. *
+            // *****************************************************************************
             cookies = login(baseUrl, username, password);
 
-            /*******************************************************************************
-             * Step 2: Go to the /admin/health_check page and fetch the * health check access token. *
-             *******************************************************************************/
+            // *****************************************************************************
+            // Step 2: Go to the /admin/health_check page and fetch the * health check access token. *
+            // *****************************************************************************
             String urlString = baseUrl + "/admin/health_check";
             URL url = new URL(urlString);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -710,9 +710,9 @@ public class AccessToken {
                 HttpURLConnection.setFollowRedirects(false);
             }
 
-            /*******************************************************************************
-             * Step 1: Go to the login page to get a session cookie and an athuicity_token *
-             *******************************************************************************/
+            // *****************************************************************************
+            // Step 1: Go to the login page to get a session cookie and an athuicity_token *
+            // *****************************************************************************
             String urlString = baseUrl + "/users/sign_in";
             URL url = new URL(urlString);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -741,10 +741,10 @@ public class AccessToken {
 
             String csrfToken = matcher.group(1);
 
-            /*******************************************************************************
-             * Step 2: Submit the login form wih the session cookie and authenticity_token * fetching a new session
-             * cookie along the way. *
-             *******************************************************************************/
+            // *****************************************************************************
+            // Step 2: Submit the login form wih the session cookie and authenticity_token * fetching a new session
+            // cookie along the way. *
+            // *****************************************************************************
             connection = (HttpURLConnection) url.openConnection();
             connection.setRequestProperty(Http.Header.USER_AGENT, USER_AGENT);
             connection.setRequestProperty(Http.Header.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED);

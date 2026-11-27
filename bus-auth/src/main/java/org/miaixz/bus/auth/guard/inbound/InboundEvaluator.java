@@ -46,6 +46,7 @@ import org.miaixz.bus.auth.shared.jwt.JwtClaims;
 import org.miaixz.bus.auth.shared.jwt.JwtValidator;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Optional;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.extra.json.JsonValue;
 
@@ -232,7 +233,7 @@ public final class InboundEvaluator {
          */
         @Override
         public String toString() {
-            return "Received[present=" + present + "]";
+            return "Received[present=" + present + Symbol.BRACKET_RIGHT;
         }
 
     }

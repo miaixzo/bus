@@ -205,7 +205,7 @@ public abstract class AbstractPrinter implements Printer {
     public String toString() {
         return "Printer [name=" + name + ", driverName=" + driverName + ", description=" + description + ", status="
                 + status + ", statusReason=" + statusReason + ", isDefault=" + isDefault + ", isLocal=" + isLocal
-                + ", portName=" + redactPortName(portName) + "]";
+                + ", portName=" + redactPortName(portName) + Symbol.BRACKET_RIGHT;
     }
 
 }

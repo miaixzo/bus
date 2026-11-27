@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.metrics.Metrics;
 import org.miaixz.bus.metrics.Provider;
 import org.miaixz.bus.metrics.nimble.InstrumentKind;
@@ -120,7 +121,7 @@ public class StartupMetrics {
             NumberKind number,
             String unit,
             List<AttributeDescriptor<?>> attributes) {
-        return MetricDescriptor.of(name, kind, number, unit, "", attributes);
+        return MetricDescriptor.of(name, kind, number, unit, Normal.EMPTY, attributes);
     }
 
 }

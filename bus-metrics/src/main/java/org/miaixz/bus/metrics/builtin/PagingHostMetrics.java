@@ -22,6 +22,7 @@ package org.miaixz.bus.metrics.builtin;
 import java.util.List;
 import java.util.Objects;
 
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.metrics.Provider;
 import org.miaixz.bus.metrics.bridge.PagingSnapshot;
 import org.miaixz.bus.metrics.bridge.SnapshotCache;
@@ -83,7 +84,7 @@ public final class PagingHostMetrics implements MetricBinder {
             NumberKind number,
             String unit,
             List<AttributeDescriptor<?>> attributes) {
-        return MetricDescriptor.of(name, kind, number, unit, "", attributes);
+        return MetricDescriptor.of(name, kind, number, unit, Normal.EMPTY, attributes);
     }
 
     @Override

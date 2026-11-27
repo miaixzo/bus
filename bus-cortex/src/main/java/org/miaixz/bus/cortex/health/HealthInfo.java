@@ -26,6 +26,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import org.miaixz.bus.core.lang.Charset;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.extra.json.JsonValue;
@@ -170,7 +171,7 @@ public class HealthInfo {
         for (String text : Arrays.asList(value.getScheme(), value.getPath(), value.getOrigin(), value.getSession()))
             if (text != null && text.length() > 1024)
                 throw new IllegalArgumentException("Health text too long");
-        if (value.getPath() != null && (!value.getPath().startsWith("/") || value.getPath().startsWith("//"))
+        if (value.getPath() != null && (!value.getPath().startsWith(Symbol.SLASH) || value.getPath().startsWith("//"))
                 || value.getTime() != null && value.getTime() < 0 || value.getBeat() != null && value.getBeat() < 0
                 || value.getLease() != null && value.getLease() < 1)
             throw new IllegalArgumentException("Invalid health value");
