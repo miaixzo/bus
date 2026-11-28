@@ -186,6 +186,15 @@
       "serializable": true
     },
     {
+      "type": "java.util.Properties",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
       "type": "java.util.concurrent.locks.AbstractOwnableSynchronizer",
       "condition": {
         "typeReached": "org.miaixz.bus.core.cache.SimpleCache"

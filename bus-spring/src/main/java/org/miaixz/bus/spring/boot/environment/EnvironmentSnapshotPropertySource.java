@@ -19,6 +19,7 @@
 */
 package org.miaixz.bus.spring.boot.environment;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -56,6 +57,26 @@ public class EnvironmentSnapshotPropertySource extends MapPropertySource {
             Set<ConfigurationPropertyName> names) {
         super(name, Map.copyOf(values));
         this.names = Set.copyOf(names);
+    }
+
+    /**
+     * Creates a startup property snapshot from flattened, canonical Spring Boot property names.
+     *
+     * @param name   property source name
+     * @param values flattened startup properties
+     * @return immutable startup property source
+     * @throws IllegalArgumentException if a property name is empty, invalid, or duplicated under relaxed binding
+     */
+    public static EnvironmentSnapshotPropertySource of(String name, Map<String, ?> values) {
+        Map<String, Object> snapshot = Map.copyOf(values);
+        Set<ConfigurationPropertyName> names = new HashSet<>();
+        for (String property : snapshot.keySet()) {
+            var canonical = ConfigurationPropertyName.of(property);
+            if (canonical.isEmpty() || !names.add(canonical)) {
+                throw new IllegalArgumentException("Empty or duplicate snapshot property name: " + property);
+            }
+        }
+        return new EnvironmentSnapshotPropertySource(name, snapshot, names);
     }
 
     /**
