@@ -19,19 +19,9 @@
 */
 package org.miaixz.bus.mapper.dialect;
 
-import java.math.BigDecimal;
-import java.sql.*;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.util.*;
-import java.util.Date;
-
 import jakarta.persistence.EnumType;
-
 import org.apache.ibatis.type.JdbcType;
-
+import org.miaixz.bus.core.basic.entity.Audit;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.StringKit;
@@ -43,6 +33,15 @@ import org.miaixz.bus.mapper.feature.schema.ColumnSnapshot;
 import org.miaixz.bus.mapper.feature.schema.SqlTypeDescriptor;
 import org.miaixz.bus.mapper.feature.schema.TableSnapshot;
 import org.miaixz.bus.mapper.parsing.*;
+
+import java.math.BigDecimal;
+import java.sql.*;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.*;
+import java.util.Date;
 
 /**
  * Base implementation for database dialects.
@@ -428,7 +427,7 @@ public abstract class AbstractDialect implements Dialect {
                     metadataTarget(metaData, table).catalog(),
                     metadataPattern(metaData, metadataTarget(metaData, table).schema()),
                     metadataPattern(metaData, tableName),
-                    new String[] { "TABLE" })) {
+                    new String[]{"TABLE"})) {
                 while (rs.next()) {
                     if (metadataMatches(rs, metaData, table, Normal.EMPTY))
                         return true;
@@ -483,7 +482,7 @@ public abstract class AbstractDialect implements Dialect {
                     metadataTarget(metaData, table).catalog(),
                     metadataPattern(metaData, metadataTarget(metaData, table).schema()),
                     metadataPattern(metaData, tableName),
-                    new String[] { TABLE_TYPE })) {
+                    new String[]{TABLE_TYPE})) {
                 while (rs.next()) {
                     if (metadataMatches(rs, metaData, table, Normal.EMPTY))
                         return getString(rs, REMARKS_COLUMN);
@@ -675,7 +674,7 @@ public abstract class AbstractDialect implements Dialect {
                     foreignKeys.put(key, foreignKey);
                 }
                 members.computeIfAbsent(key, ignored -> new TreeMap<>())
-                        .put(rs.getShort("KEY_SEQ"), new String[] { column, referencedColumn });
+                        .put(rs.getShort("KEY_SEQ"), new String[]{column, referencedColumn});
             }
         }
         for (var entry : members.entrySet()) {
@@ -1192,14 +1191,14 @@ public abstract class AbstractDialect implements Dialect {
                 return new SqlTypeDescriptor().jdbcType(JdbcType.LONGVARCHAR).typeName("CLOB");
             }
             return new SqlTypeDescriptor().jdbcType(JdbcType.VARCHAR).typeName("VARCHAR2")
-                    .length(column.length() == null || column.length() <= 0 ? 255 : column.length());
+                    .length(resolveVarcharLength(column));
         }
         if (javaType != null && javaType.isEnum()) {
             if (column.enumType() == EnumType.ORDINAL) {
                 return new SqlTypeDescriptor().jdbcType(JdbcType.INTEGER).typeName("NUMBER").precision(10).scale(0);
             }
             return new SqlTypeDescriptor().jdbcType(JdbcType.VARCHAR).typeName("VARCHAR2")
-                    .length(column.length() == null || column.length() <= 0 ? 255 : column.length());
+                    .length(resolveVarcharLength(column));
         }
         if (javaType == int.class || javaType == Integer.class) {
             return new SqlTypeDescriptor().jdbcType(JdbcType.INTEGER).typeName("NUMBER").precision(10).scale(0);
@@ -1224,7 +1223,7 @@ public abstract class AbstractDialect implements Dialect {
             return new SqlTypeDescriptor().jdbcType(JdbcType.BLOB).typeName("BLOB");
         }
         return new SqlTypeDescriptor().jdbcType(JdbcType.VARCHAR).typeName("VARCHAR2")
-                .length(column.length() == null || column.length() <= 0 ? 255 : column.length());
+                .length(resolveVarcharLength(column));
     }
 
     /**
@@ -1450,6 +1449,147 @@ public abstract class AbstractDialect implements Dialect {
     }
 
     /**
+     * Normalizes database-specific type aliases.
+     *
+     * @param typeName the database type name
+     * @return the normalized type name
+     */
+    protected String normalizeTypeName(String typeName) {
+        return SqlTypeDescriptor.normalizeTypeName(typeName);
+    }
+
+    /**
+     * Tests whether a type should expose character length metadata.
+     *
+     * @param typeName the database type name
+     * @return {@code true} when the type uses length
+     */
+    protected boolean isLengthType(String typeName) {
+        return SqlTypeDescriptor.supportsLength(typeName);
+    }
+
+    /**
+     * Tests whether a type should expose decimal precision and scale metadata.
+     *
+     * @param typeName the database type name
+     * @return {@code true} when the type uses decimal metadata
+     */
+    protected boolean isDecimalType(String typeName) {
+        return SqlTypeDescriptor.supportsPrecision(typeName);
+    }
+
+    /**
+     * Builds the default VARCHAR type descriptor.
+     *
+     * @param column the column metadata
+     * @return the SQL type descriptor
+     */
+    protected SqlTypeDescriptor stringType(ColumnMeta column) {
+        return new SqlTypeDescriptor().jdbcType(JdbcType.VARCHAR).typeName("VARCHAR")
+                .length(resolveVarcharLength(column)).lengthUnit(SqlTypeDescriptor.LengthUnit.CHARACTER);
+    }
+
+    /**
+     * Builds a decimal type descriptor.
+     *
+     * @param column the column metadata
+     * @param name   the database decimal type name
+     * @return the SQL type descriptor
+     */
+    protected SqlTypeDescriptor decimalType(ColumnMeta column, String name) {
+        int precision = column.precision() == null || column.precision() <= 0 ? 19 : column.precision();
+        int scale = column.scale() == null ? 2 : column.scale();
+        return new SqlTypeDescriptor().jdbcType(JdbcType.DECIMAL).typeName(name).precision(precision).scale(scale);
+    }
+
+    /**
+     * Resolves common Java types to SQL types.
+     *
+     * @param column        the column metadata
+     * @param integerName   the database integer type name
+     * @param timestampName the database timestamp type name
+     * @param instantName   the database instant type name
+     * @param binaryName    the database binary type name
+     * @param lobTextName   the database text LOB type name
+     * @param decimalName   the database decimal type name
+     * @return the SQL type descriptor
+     */
+    protected SqlTypeDescriptor commonType(
+            ColumnMeta column,
+            String integerName,
+            String timestampName,
+            String instantName,
+            String binaryName,
+            String lobTextName,
+            String decimalName) {
+        if (column.columnDefinition() != null && !column.columnDefinition().isBlank()) {
+            return new SqlTypeDescriptor().nativeDefinition(column.columnDefinition());
+        }
+        Class<?> javaType = column.javaType();
+        if (String.class == javaType) {
+            if (Boolean.TRUE.equals(column.lob())) {
+                return new SqlTypeDescriptor().jdbcType(JdbcType.LONGVARCHAR).typeName(lobTextName);
+            }
+            return stringType(column);
+        }
+        if (javaType != null && javaType.isEnum()) {
+            if (column.enumType() == EnumType.ORDINAL) {
+                return new SqlTypeDescriptor().jdbcType(JdbcType.INTEGER).typeName(integerName);
+            }
+            return stringType(column);
+        }
+        if (javaType == int.class || javaType == Integer.class) {
+            return new SqlTypeDescriptor().jdbcType(JdbcType.INTEGER).typeName(integerName);
+        }
+        if (javaType == long.class || javaType == Long.class) {
+            return new SqlTypeDescriptor().jdbcType(JdbcType.BIGINT).typeName("BIGINT");
+        }
+        if (javaType == boolean.class || javaType == Boolean.class) {
+            return new SqlTypeDescriptor().jdbcType(JdbcType.BOOLEAN).typeName("BOOLEAN");
+        }
+        if (javaType == BigDecimal.class) {
+            return decimalType(column, decimalName);
+        }
+        if (javaType == LocalDate.class) {
+            return new SqlTypeDescriptor().jdbcType(JdbcType.DATE).typeName("DATE");
+        }
+        if (javaType == LocalTime.class) {
+            return new SqlTypeDescriptor().jdbcType(JdbcType.TIME).typeName("TIME");
+        }
+        if (javaType == LocalDateTime.class || javaType == Date.class) {
+            return new SqlTypeDescriptor().jdbcType(JdbcType.TIMESTAMP).typeName(timestampName);
+        }
+        if (javaType == Instant.class) {
+            return new SqlTypeDescriptor().jdbcType(JdbcType.TIMESTAMP).typeName(instantName);
+        }
+        if (javaType == byte[].class || javaType == Byte[].class) {
+            return new SqlTypeDescriptor().jdbcType(JdbcType.BLOB).typeName(binaryName);
+        }
+        return stringType(column);
+    }
+
+    /**
+     * Resolves the configured VARCHAR or VARCHAR2 length, falling back to the mapped column name.
+     *
+     * @param column the column metadata
+     * @return the SQL character length
+     */
+    protected int resolveVarcharLength(ColumnMeta column) {
+        Integer length = column.length();
+        if (length != null && length > 0) {
+            return length;
+        }
+        if (String.class == column.javaType() && column.column() != null) {
+            String name = column.column().toLowerCase(Locale.ROOT);
+            if ("id".equals(name) || name.endsWith("_id") || Audit.FIELD_CREATOR.equals(name)
+                    || Audit.FIELD_MODIFIER.equals(name)) {
+                return Normal._36;
+            }
+        }
+        return Normal._255;
+    }
+
+    /**
      * Exact physical lookup coordinates, before any JDBC pattern escaping.
      *
      * @param catalog the resolved physical catalog, or null for drivers without catalog scope
@@ -1541,7 +1681,7 @@ public abstract class AbstractDialect implements Dialect {
         return rules.actualKey(actualTable).equals(rules.actualKey(target.table()))
                 && (target.schema() == null || rules.actualKey(actualSchema).equals(rules.actualKey(target.schema())))
                 && (target.catalog() == null
-                        || rules.actualKey(actualCatalog).equals(rules.actualKey(target.catalog())));
+                || rules.actualKey(actualCatalog).equals(rules.actualKey(target.catalog())));
     }
 
     /**
@@ -1606,127 +1746,6 @@ public abstract class AbstractDialect implements Dialect {
             case DatabaseMetaData.importedKeyRestrict -> "RESTRICT";
             default -> null;
         };
-    }
-
-    /**
-     * Normalizes database-specific type aliases.
-     *
-     * @param typeName the database type name
-     * @return the normalized type name
-     */
-    protected String normalizeTypeName(String typeName) {
-        return SqlTypeDescriptor.normalizeTypeName(typeName);
-    }
-
-    /**
-     * Tests whether a type should expose character length metadata.
-     *
-     * @param typeName the database type name
-     * @return {@code true} when the type uses length
-     */
-    protected boolean isLengthType(String typeName) {
-        return SqlTypeDescriptor.supportsLength(typeName);
-    }
-
-    /**
-     * Tests whether a type should expose decimal precision and scale metadata.
-     *
-     * @param typeName the database type name
-     * @return {@code true} when the type uses decimal metadata
-     */
-    protected boolean isDecimalType(String typeName) {
-        return SqlTypeDescriptor.supportsPrecision(typeName);
-    }
-
-    /**
-     * Builds the default VARCHAR type descriptor.
-     *
-     * @param column the column metadata
-     * @return the SQL type descriptor
-     */
-    protected SqlTypeDescriptor stringType(ColumnMeta column) {
-        return new SqlTypeDescriptor().jdbcType(JdbcType.VARCHAR).typeName("VARCHAR")
-                .length(column.length() == null || column.length() <= 0 ? 255 : column.length())
-                .lengthUnit(SqlTypeDescriptor.LengthUnit.CHARACTER);
-    }
-
-    /**
-     * Builds a decimal type descriptor.
-     *
-     * @param column the column metadata
-     * @param name   the database decimal type name
-     * @return the SQL type descriptor
-     */
-    protected SqlTypeDescriptor decimalType(ColumnMeta column, String name) {
-        int precision = column.precision() == null || column.precision() <= 0 ? 19 : column.precision();
-        int scale = column.scale() == null ? 2 : column.scale();
-        return new SqlTypeDescriptor().jdbcType(JdbcType.DECIMAL).typeName(name).precision(precision).scale(scale);
-    }
-
-    /**
-     * Resolves common Java types to SQL types.
-     *
-     * @param column        the column metadata
-     * @param integerName   the database integer type name
-     * @param timestampName the database timestamp type name
-     * @param instantName   the database instant type name
-     * @param binaryName    the database binary type name
-     * @param lobTextName   the database text LOB type name
-     * @param decimalName   the database decimal type name
-     * @return the SQL type descriptor
-     */
-    protected SqlTypeDescriptor commonType(
-            ColumnMeta column,
-            String integerName,
-            String timestampName,
-            String instantName,
-            String binaryName,
-            String lobTextName,
-            String decimalName) {
-        if (column.columnDefinition() != null && !column.columnDefinition().isBlank()) {
-            return new SqlTypeDescriptor().nativeDefinition(column.columnDefinition());
-        }
-        Class<?> javaType = column.javaType();
-        if (String.class == javaType) {
-            if (Boolean.TRUE.equals(column.lob())) {
-                return new SqlTypeDescriptor().jdbcType(JdbcType.LONGVARCHAR).typeName(lobTextName);
-            }
-            return stringType(column);
-        }
-        if (javaType != null && javaType.isEnum()) {
-            if (column.enumType() == EnumType.ORDINAL) {
-                return new SqlTypeDescriptor().jdbcType(JdbcType.INTEGER).typeName(integerName);
-            }
-            return stringType(column);
-        }
-        if (javaType == int.class || javaType == Integer.class) {
-            return new SqlTypeDescriptor().jdbcType(JdbcType.INTEGER).typeName(integerName);
-        }
-        if (javaType == long.class || javaType == Long.class) {
-            return new SqlTypeDescriptor().jdbcType(JdbcType.BIGINT).typeName("BIGINT");
-        }
-        if (javaType == boolean.class || javaType == Boolean.class) {
-            return new SqlTypeDescriptor().jdbcType(JdbcType.BOOLEAN).typeName("BOOLEAN");
-        }
-        if (javaType == BigDecimal.class) {
-            return decimalType(column, decimalName);
-        }
-        if (javaType == LocalDate.class) {
-            return new SqlTypeDescriptor().jdbcType(JdbcType.DATE).typeName("DATE");
-        }
-        if (javaType == LocalTime.class) {
-            return new SqlTypeDescriptor().jdbcType(JdbcType.TIME).typeName("TIME");
-        }
-        if (javaType == LocalDateTime.class || javaType == Date.class) {
-            return new SqlTypeDescriptor().jdbcType(JdbcType.TIMESTAMP).typeName(timestampName);
-        }
-        if (javaType == Instant.class) {
-            return new SqlTypeDescriptor().jdbcType(JdbcType.TIMESTAMP).typeName(instantName);
-        }
-        if (javaType == byte[].class || javaType == Byte[].class) {
-            return new SqlTypeDescriptor().jdbcType(JdbcType.BLOB).typeName(binaryName);
-        }
-        return stringType(column);
     }
 
 }

@@ -33,7 +33,6 @@ inputs:
       bus-cache
       bus-image
       bus-sensitive
-      bus-spring
       bus-tempus
       bus-auth
       bus-limiter
@@ -42,6 +41,7 @@ inputs:
       bus-pay
       bus-storage
       bus-cortex
+      bus-spring
       bus-vortex
       bus-starter
       bus-all

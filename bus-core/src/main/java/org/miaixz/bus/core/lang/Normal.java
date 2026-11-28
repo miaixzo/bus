@@ -672,6 +672,11 @@ public class Normal {
     public static final int _200 = 200;
 
     /**
+     * The number 255.
+     */
+    public static final int _255 = 255;
+
+    /**
      * The number 256.
      */
     public static final int _256 = 256;
